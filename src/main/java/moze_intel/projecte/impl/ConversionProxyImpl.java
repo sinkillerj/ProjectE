@@ -60,7 +60,7 @@ public class ConversionProxyImpl implements IConversionProxy
 		}
 
 		if (object instanceof ItemStack) {
-			return NSSItem.create((ItemStack) object);
+			return new NSSItem((ItemStack) object);
 		} else if (object instanceof FluidStack) {
 			return NSSFluid.create(((FluidStack) object).getFluid());
 		} else if (object instanceof ResourceLocation) {

@@ -9,7 +9,6 @@ import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
@@ -55,7 +54,6 @@ public final class EMCMapper
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
-		mappingCollector = new WildcardSetValueFixCollector<>(mappingCollector);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
@@ -130,7 +128,7 @@ public final class EMCMapper
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = Item.REGISTRY.get(new ResourceLocation(normStackItem.itemName));
+			Item obj = Item.REGISTRY.get(normStackItem.itemName);
 			if (obj != null)
 			{
 				emc.put(new SimpleStack(obj.getRegistryName()), entry.getValue());

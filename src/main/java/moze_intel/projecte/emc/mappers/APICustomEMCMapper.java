@@ -1,7 +1,5 @@
 package moze_intel.projecte.emc.mappers;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
@@ -43,7 +41,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 			modMap = new HashMap<>();
 			customEMCforMod.put(modId, modMap);
 		}
-		modMap.put(NSSItem.create(stack), emcValue);
+		modMap.put(new NSSItem(stack), emcValue);
 	}
 
 	public void registerCustomEMC(Object o, long emcValue) {
@@ -155,7 +153,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		if (stack instanceof NSSItem)
 		{
 			NSSItem item = (NSSItem)stack;
-			itemName = item.itemName;
+			itemName = item.itemName.toString();
 		} else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}

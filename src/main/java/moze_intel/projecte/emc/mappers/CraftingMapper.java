@@ -40,7 +40,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput.isEmpty()) continue;
-			NormalizedSimpleStack recipeOutputNorm = NSSItem.create(recipeOutput);
+			NormalizedSimpleStack recipeOutputNorm = new NSSItem(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
 					continue;
@@ -51,9 +51,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						for (ItemStack stack : variation.fixedIngredients) {
 							if (stack.isEmpty()) continue;
 							if (stack.getItem().hasContainerItem(stack)) {
-								ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
+								ingredientMap.addIngredient(new NSSItem(stack.getItem().getContainerItem(stack)), -1);
 							}
-							ingredientMap.addIngredient(NSSItem.create(stack), 1);
+							ingredientMap.addIngredient(new NSSItem(stack), 1);
 						}
 						for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 							NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
@@ -62,9 +62,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 								if (stack.isEmpty()) continue;
 								IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 								if (stack.getItem().hasContainerItem(stack)) {
-									groupIngredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
+									groupIngredientMap.addIngredient(new NSSItem(stack.getItem().getContainerItem(stack)), -1);
 								}
-								groupIngredientMap.addIngredient(NSSItem.create(stack), 1);
+								groupIngredientMap.addIngredient(new NSSItem(stack), 1);
 								mapper.addConversion(1, dummy, groupIngredientMap.getMap());
 							}
 						}

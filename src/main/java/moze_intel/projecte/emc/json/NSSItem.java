@@ -1,50 +1,28 @@
 package moze_intel.projecte.emc.json;
 
-import moze_intel.projecte.PECore;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class NSSItem implements NormalizedSimpleStack {
-	static final Set<String> seenIds = new HashSet<>();
+	public final ResourceLocation itemName;
 
-	public final String itemName;
-
-	NSSItem(String itemName) {
-		this.itemName = itemName;
-	}
-
-	public static NormalizedSimpleStack create(Block block) {
-		return create(block.getRegistryName());
-	}
-
-	public static NormalizedSimpleStack create(ItemStack stack) {
-		if (stack.isEmpty()) return null;
-		return create(stack.getItem());
-	}
-
-	public static NormalizedSimpleStack create(Item item) {
-		return create(item.getRegistryName());
-	}
-
-	private static NormalizedSimpleStack create(ResourceLocation uniqueIdentifier) {
-		return create(uniqueIdentifier.toString());
-	}
-
-	public static NormalizedSimpleStack create(String itemName) {
-		NSSItem normStack;
-		try {
-			normStack = new NSSItem(itemName);
-		} catch (Exception e) {
-			PECore.LOGGER.fatal("Could not create NSSItem: {}", e.getMessage());
-			return null;
+	public NSSItem(ItemStack stack)
+	{
+		this(stack.getItem().getRegistryName());
+		if (stack.isEmpty())
+		{
+			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		seenIds.add(itemName);
-		return normStack;
+	}
+
+	public NSSItem(IForgeRegistryEntry e)
+	{
+		this(e.getRegistryName());
+	}
+
+	public NSSItem(ResourceLocation itemName) {
+		this.itemName = itemName;
 	}
 
 	@Override
@@ -65,11 +43,11 @@ public class NSSItem implements NormalizedSimpleStack {
 
 	@Override
 	public String json() {
-		return itemName;
+		return itemName.toString();
 	}
 
 	@Override
 	public String toString() {
-		return itemName;
+		return itemName.toString();
 	}
 }

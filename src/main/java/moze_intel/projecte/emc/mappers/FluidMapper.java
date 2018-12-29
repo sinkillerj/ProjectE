@@ -34,11 +34,11 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	private static void addMelting(Item item, String fluidName, int amount) {
-		addMelting(NSSItem.create(item), fluidName, amount);
+		addMelting(new NSSItem(item), fluidName, amount);
 	}
 
 	private static void addMelting(Block block, String fluidName, int amount) {
-		addMelting(NSSItem.create(block), fluidName, amount);
+		addMelting(new NSSItem(block), fluidName, amount);
 	}
 
 	private static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
@@ -91,12 +91,12 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		mapper.setValueBefore(NSSFluid.create(FluidRegistry.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NSSFluid.create(FluidRegistry.LAVA), Collections.singletonList(NSSItem.create(Blocks.OBSIDIAN)));
+		mapper.addConversion(1000, NSSFluid.create(FluidRegistry.LAVA), Collections.singletonList(new NSSItem(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NSSFake.create("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16L);
-		mapper.addConversion(1, NSSItem.create(Items.MILK_BUCKET), Arrays.asList(NSSItem.create(Items.BUCKET), fakeMilkFluid));
+		mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), Arrays.asList(new NSSItem(Items.BUCKET), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {
@@ -112,10 +112,10 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		}
 
 		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps
-		mapper.addConversion(1, NSSItem.create(Items.WATER_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.WATER), 1000));
-		mapper.addConversion(1, NSSItem.create(Items.LAVA_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.LAVA), 1000));
+		mapper.addConversion(1, new NSSItem(Items.WATER_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.WATER), 1000));
+		mapper.addConversion(1, new NSSItem(Items.LAVA_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.LAVA), 1000));
 		if (milkFluid != null) {
-			mapper.addConversion(1, NSSItem.create(Items.MILK_BUCKET), ImmutableMap.of(NSSItem.create(Items.BUCKET), 1, NSSFluid.create(milkFluid), 1000));
+			mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(milkFluid), 1000));
 		}
 	}
 

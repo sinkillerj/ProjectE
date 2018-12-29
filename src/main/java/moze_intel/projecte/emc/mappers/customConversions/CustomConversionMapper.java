@@ -17,9 +17,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFi
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -150,7 +148,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                     {
                         for (Item item : ((NSSTag) something).getAllElements())
                         {
-                            mapper.setValueBefore(NSSItem.create(item), entry.getValue());
+							mapper.setValueBefore(new NSSItem(item), entry.getValue());
                         }
                     }
                 }
@@ -165,7 +163,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                     {
                         for (Item item : ((NSSTag) something).getAllElements())
                         {
-                            mapper.setValueAfter(NSSItem.create(item), entry.getValue());
+							mapper.setValueAfter(new NSSItem(item), entry.getValue());
                         }
                     }
                 }
@@ -179,7 +177,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                     {
                         for (Item item : ((NSSTag) out).getAllElements())
                         {
-                            mapper.setValueFromConversion(conversion.count, NSSItem.create(item), conversion.ingredients);
+							mapper.setValueFromConversion(conversion.count, new NSSItem(item), conversion.ingredients);
                         }
                     }
                     mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);

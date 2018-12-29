@@ -106,7 +106,7 @@ public final class CustomEMCParser
 		}
 		else
 		{
-			return NSSItem.create(str);
+			return new NSSItem(new ResourceLocation(str));
 		}
 	}
 

@@ -8,6 +8,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 
+import net.minecraft.util.ResourceLocation;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -69,28 +70,28 @@ public class CustomConversionMapperTest
 		List<CustomConversion> conversions = group.conversions;
 		{
 			CustomConversion conversion = conversions.get(0);
-			assertEquals(NSSItem.create("outA", 0), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation((String) 0)), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
-			assertEquals(2, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
-			assertEquals(3, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
 		}
 		{
 			CustomConversion conversion = conversions.get(1);
-			assertEquals(NSSItem.create("outB", 1), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation((String) 1)), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
-			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
-			assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
 		}
 		{
 			CustomConversion conversion = conversions.get(2);
-			assertEquals(NSSItem.create("outC", 2), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation((String) 2)), conversion.output);
 			assertEquals(3, conversion.count);
 			assertEquals(1, conversion.ingredients.size());
-			assertEquals(3, (int) conversion.ingredients.get(NSSItem.create("ing1", 0)));
+            assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
 
 		}
 	}
@@ -110,10 +111,10 @@ public class CustomConversionMapperTest
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
-		assertEquals(1, f.values.setValueBefore.get(NSSItem.create("a", 0)).longValue());
-		assertEquals(2, f.values.setValueBefore.get(NSSItem.create("b", 0)).longValue());
-		assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(NSSItem.create("c", 0)).longValue());
-		assertEquals(3, f.values.setValueAfter.get(NSSItem.create("d", 0)).longValue());
+        assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
+        assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
+        assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
+        assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
 
 	}
 
@@ -132,12 +133,12 @@ public class CustomConversionMapperTest
 		assertNotNull(f.values.conversion);
 		assertEquals(1, f.values.conversion.size());
 		CustomConversion conversion = f.values.conversion.get(0);
-		assertEquals(NSSItem.create("outA", 0), conversion.output);
+        assertEquals(new NSSItem(new ResourceLocation((String) 0)), conversion.output);
 		assertEquals(1, conversion.count);
 		assertEquals(3, conversion.ingredients.size());
-		assertEquals(1, (int)conversion.ingredients.get(NSSItem.create("ing1", 0)));
-		assertEquals(2, (int)conversion.ingredients.get(NSSItem.create("ing2", 0)));
-		assertEquals(3, (int)conversion.ingredients.get(NSSItem.create("ing3", 0)));
+        assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+        assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+        assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
 	}
 
 	@Test
