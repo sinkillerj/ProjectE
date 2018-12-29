@@ -99,34 +99,6 @@ public final class ItemHelper
 		return result;
 	}
 
-	/**
-	 * Get a List of itemstacks from an OD name, exploding any wildcard values into their subvariants
-	 * TODO 1.13 tags
-	 */
-	public static List<ItemStack> getODItems(String oreName)
-	{
-		NonNullList<ItemStack> result = NonNullList.create();
-
-		for (ItemStack stack : OreDictionary.getOres(oreName))
-		{
-			if (stack.isEmpty())
-			{
-				continue;
-			}
-
-			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-			{
-				stack.getItem().getSubItems(CreativeTabs.SEARCH, result);
-			}
-			else
-			{
-				result.add(stack.copy());
-			}
-		}
-
-		return result;
-	}
-
 	public static String getOreDictionaryName(ItemStack stack)
 	{
 		if (stack.isEmpty())

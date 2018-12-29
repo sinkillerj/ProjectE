@@ -10,8 +10,9 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -89,7 +90,7 @@ public final class CustomEMCParser
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG))) {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> e.nss == null || e.emc < 0 || !(e.nss instanceof NSSItem || e.nss instanceof NSSOreDictionary));
+			currentEntries.entries.removeIf(e -> e.nss == null || e.emc < 0 || !(e.nss instanceof NSSItem || e.nss instanceof NSSTag));
 		} catch (IOException | JsonParseException e) {
 			PECore.LOGGER.fatal("Couldn't read custom emc file");
 			e.printStackTrace();
@@ -99,13 +100,13 @@ public final class CustomEMCParser
 
 	private static NormalizedSimpleStack getNss(String str, int meta)
 	{
-		if (str.contains(":"))
+		if (str.startsWith("#"))
 		{
-			return NSSItem.create(str, meta);
+			return NSSTag.create(str.substring(1));
 		}
 		else
 		{
-			return NSSOreDictionary.create(str);
+			return NSSItem.create(str);
 		}
 	}
 

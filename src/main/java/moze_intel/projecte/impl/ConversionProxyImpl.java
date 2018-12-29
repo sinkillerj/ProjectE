@@ -2,17 +2,17 @@ package moze_intel.projecte.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -63,8 +63,8 @@ public class ConversionProxyImpl implements IConversionProxy
 			return NSSItem.create((ItemStack) object);
 		} else if (object instanceof FluidStack) {
 			return NSSFluid.create(((FluidStack) object).getFluid());
-		} else if (object instanceof String) {
-			return NSSOreDictionary.create((String) object);
+		} else if (object instanceof ResourceLocation) {
+			return NSSTag.create(object.toString());
 		} else if (object != null && object.getClass().equals(Object.class)) {
 			if (fakes.containsKey(object)) return fakes.get(object);
 

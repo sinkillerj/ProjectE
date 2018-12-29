@@ -1,14 +1,12 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSFake;
-import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -18,6 +16,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDe
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -147,12 +146,11 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                 {
                     NormalizedSimpleStack something = entry.getKey();
                     mapper.setValueBefore(something, entry.getValue());
-                    if (something instanceof NSSOreDictionary)
+                    if (something instanceof NSSTag)
                     {
-                        String odName = ((NSSOreDictionary) something).od;
-                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        for (Item item : ((NSSTag) something).getAllElements())
                         {
-                            mapper.setValueBefore(NSSItem.create(itemStack), entry.getValue());
+                            mapper.setValueBefore(NSSItem.create(item), entry.getValue());
                         }
                     }
                 }
@@ -163,12 +161,11 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                 {
                     NormalizedSimpleStack something = entry.getKey();
                     mapper.setValueAfter(something, entry.getValue());
-                    if (something instanceof NSSOreDictionary)
+                    if (something instanceof NSSTag)
                     {
-                        String odName = ((NSSOreDictionary) something).od;
-                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        for (Item item : ((NSSTag) something).getAllElements())
                         {
-                            mapper.setValueAfter(NSSItem.create(itemStack), entry.getValue());
+                            mapper.setValueAfter(NSSItem.create(item), entry.getValue());
                         }
                     }
                 }
@@ -178,12 +175,11 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                 for (CustomConversion conversion : file.values.conversion)
                 {
                     NormalizedSimpleStack out = conversion.output;
-                    if (conversion.evalOD && out instanceof NSSOreDictionary)
+                    if (conversion.evalOD && out instanceof NSSTag)
                     {
-                        String odName = ((NSSOreDictionary) out).od;
-                        for (ItemStack itemStack : OreDictionary.getOres(odName))
+                        for (Item item : ((NSSTag) out).getAllElements())
                         {
-                            mapper.setValueFromConversion(conversion.count, NSSItem.create(itemStack), conversion.ingredients);
+                            mapper.setValueFromConversion(conversion.count, NSSItem.create(item), conversion.ingredients);
                         }
                     }
                     mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);

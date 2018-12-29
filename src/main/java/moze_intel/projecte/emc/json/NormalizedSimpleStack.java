@@ -10,7 +10,6 @@ import com.google.gson.JsonSerializer;
 import mezz.jei.util.Log;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,10 +21,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 public interface NormalizedSimpleStack {
 
@@ -35,8 +32,8 @@ public interface NormalizedSimpleStack {
 		@Override
 		public NormalizedSimpleStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			String s = json.getAsString();
-			if (s.startsWith("OD|")) {
-				return NSSOreDictionary.create(s.substring("OD|".length()));
+			if (s.startsWith("#")) {
+				return NSSTag.create(s.substring(1));
 			} else if (s.startsWith("FAKE|")) {
 				return NSSFake.create(s.substring("FAKE|".length()));
 			} else if (s.startsWith("FLUID|")) {
@@ -121,12 +118,12 @@ public interface NormalizedSimpleStack {
 			}
 		}
 
-		// Add conversions for all variants <-> NSSOreDict
-		for (Map.Entry<String, NormalizedSimpleStack> entry: NSSOreDictionary.oreDictStacks.entrySet()) {
-			NormalizedSimpleStack oreDictStack = entry.getValue();
-			for (ItemStack i : ItemHelper.getODItems(entry.getKey())) {
-				mapper.addConversion(1, oreDictStack, Collections.singletonList(NSSItem.create(i)));
-				mapper.addConversion(1, NSSItem.create(i), Collections.singletonList(oreDictStack));
+		// Add conversions for all variants <-> NSSTag
+		for (Map.Entry<String, NormalizedSimpleStack> entry: NSSTag.tagStacks.entrySet()) {
+			NormalizedSimpleStack nssTag = entry.getValue();
+			for (Item i : ((NSSTag) nssTag).getAllElements()) {
+				mapper.addConversion(1, nssTag, Collections.singletonList(NSSItem.create(i)));
+				mapper.addConversion(1, NSSItem.create(i), Collections.singletonList(nssTag));
 			}
 		}
 	}

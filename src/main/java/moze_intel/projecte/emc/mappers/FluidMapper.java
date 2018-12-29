@@ -8,12 +8,13 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSOreDictionary;
+import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -28,8 +29,8 @@ import java.util.List;
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = new ArrayList<>();
 
-	private static void addMelting(String odName, String fluidName, int amount) {
-		addMelting(NSSOreDictionary.create(odName), fluidName, amount);
+	private static void addMelting(ResourceLocation itemTagId, String fluidName, int amount) {
+		addMelting(NSSTag.create(itemTagId.toString()), fluidName, amount);
 	}
 
 	private static void addMelting(Item item, String fluidName, int amount) {

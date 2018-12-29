@@ -48,7 +48,7 @@ public interface IEMCProxy
      * You can use the following things for the {@code o}-Parameter:
      * <ul>
      *     <li>{@link ItemStack} - The Modname:unlocalizedName and Metadata will be used to identify this ItemStack (May contain a {@code Block} or {@code Item})</li>
-     *     <li>{@link String} - will be interpreted as an OreDictionary name.</li>
+     *     <li>{@link net.minecraft.util.ResourceLocation} - will be interpreted as an item tag id.</li>
      *     <li>{@link Object} - (No subclasses of {@code Object} - only {@code Object}!) can be used as a intermediate fake object for complex recipes.</li>
      * </ul>
      * @param o
