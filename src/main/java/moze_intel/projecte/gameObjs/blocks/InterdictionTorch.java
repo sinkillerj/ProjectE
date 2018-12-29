@@ -24,10 +24,6 @@ public class InterdictionTorch extends BlockTorch
 	public InterdictionTorch(Builder builder)
 	{
 		super(builder);
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_interdiction_torch");
-		this.setLightLevel(0.9F);
-		this.setTickRandomly(true);
 	}
 
 	@Override

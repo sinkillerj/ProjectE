@@ -8,8 +8,7 @@ public final class Constants
 
 	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
-	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
-	
+
 	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
 	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 	

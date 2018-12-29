@@ -23,10 +23,7 @@ public class TransmutationStone extends Block
 
 	public TransmutationStone(Builder builder)
 	{
-		super(builder/*Material.ROCK*/);
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_transmutation_stone");
-		this.setHardness(10.0f);
+		super(builder);
 	}
 
 	@Nonnull

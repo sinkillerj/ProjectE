@@ -39,10 +39,7 @@ public class Pedestal extends Block
 
     public Pedestal(Builder builder)
     {
-        super(builder /*Material.ROCK*/);
-        this.setCreativeTab(ObjHandler.cTab);
-        this.setHardness(1.0F);
-        this.setTranslationKey("pe_dmPedestal");
+        super(builder);
     }
 
     @Nonnull

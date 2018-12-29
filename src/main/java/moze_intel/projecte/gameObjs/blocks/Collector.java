@@ -30,9 +30,6 @@ public class Collector extends BlockDirection
 	public Collector(int tier, Builder builder)
 	{
 		super(builder /*Material.GLASS*/);
-		this.setTranslationKey("pe_collector_MK" + tier);
-		this.setLightLevel(Constants.COLLECTOR_LIGHT_VALS[tier - 1]);
-		this.setHardness(0.3f);
 		this.tier = tier;
 	}
 	

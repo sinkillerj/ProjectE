@@ -22,7 +22,6 @@ public class Condenser extends AlchemicalChest
 	public Condenser(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("pe_condenser");
 	}
 	
 	@Nonnull

@@ -35,11 +35,9 @@ public class MatterFurnace extends BlockDirection
 
 	public MatterFurnace(Builder builder, EnumMatterType type)
 	{
-		super(builder/*Material.ROCK*/);
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
-		this.setHardness(1000000F);
-		
+		super(builder);
+		this.matterType = type;
+
 		if (isActive) 
 		{
 			this.setCreativeTab(null);
