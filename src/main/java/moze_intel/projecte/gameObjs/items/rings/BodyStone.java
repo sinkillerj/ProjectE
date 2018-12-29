@@ -23,6 +23,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,14 +42,14 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || par4 > 8 || !(entity instanceof EntityPlayer)) 
+		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
-		super.onUpdate(stack, world, entity, par4, par5);
+		super.inventoryTick(stack, world, entity, slot, held);
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
@@ -57,13 +59,13 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.getTag().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
-					if (player.getFoodStats().needFood() && player.getCapability(InternalTimers.CAPABILITY, null).canFeed())
+					if (player.getFoodStats().needFood() && timers.canFeed())
 					{
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.getFoodStats().addStats(2, 10);
@@ -78,7 +80,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 
@@ -93,7 +95,7 @@ public class BodyStone extends RingToggle implements IBauble, IPedestalItem
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
+		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override

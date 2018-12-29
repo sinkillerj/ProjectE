@@ -28,9 +28,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -47,11 +47,11 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		super.onUpdate(stack, world, entity, par4, par5);
+		super.inventoryTick(stack, world, entity, slot, held);
 		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || par4 > 8 || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (world.isRemote || !(entity instanceof EntityPlayer) || slot > 8 || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			return;
 		}
@@ -69,7 +69,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 		if (!world.isRemote)
 		{
 			int offset = 3 + this.getCharge(stack);
-			AxisAlignedBB box = player.getEntityBoundingBox().grow(offset);
+			AxisAlignedBB box = player.getBoundingBox().grow(offset);
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
@@ -87,7 +87,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 	
@@ -102,7 +102,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player)
 	{
-		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
+		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override

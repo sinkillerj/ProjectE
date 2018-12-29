@@ -3,6 +3,7 @@ package moze_intel.projecte.events;
 import com.google.common.math.LongMath;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -97,7 +98,7 @@ public class ToolTipEvent
 
 				if (GuiScreen.isShiftKeyDown()
 						&& clientPlayer != null
-						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).hasKnowledge(current))
+						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false))
 				{
 					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.has_knowledge"));
 				}

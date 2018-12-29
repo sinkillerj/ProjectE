@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -25,6 +26,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,14 +44,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || par4 > 8 || !(entity instanceof EntityPlayer)) 
+		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 		
-		super.onUpdate(stack, world, entity, par4, par5);
+		super.inventoryTick(stack, world, entity, slot, held);
 		
 		EntityPlayer player = (EntityPlayer) entity;
 		
@@ -58,7 +61,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
-				stack.getTag().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
@@ -74,16 +77,19 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		if (world.isRemote || !player.canPlayerEdit(pos, facing, player.getHeldItem(hand)))
+		World world = ctx.getWorld();
+		EntityPlayer player = ctx.getPlayer();
+
+		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem()))
 		{
 			return EnumActionResult.FAIL;
 		}
 		
 		if (player.isSneaking())
 		{
-			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.DYE, 15, 4);
+			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.BONE_MEAL, 4);
 
 			if (obj == null) 
 			{
@@ -92,7 +98,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
 
-			if (!boneMeal.isEmpty() && useBoneMeal(world, pos))
+			if (!boneMeal.isEmpty() && useBoneMeal(world, ctx.getPos()))
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();
@@ -102,7 +108,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			return EnumActionResult.FAIL;
 		}
 		
-		return plantSeeds(world, player, pos) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return plantSeeds(world, player, ctx.getPos()) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 	
 	private boolean useBoneMeal(World world, BlockPos pos)
@@ -217,7 +223,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int meta, int minAmount)
+	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int minAmount)
 	{
 		Object[] obj = new Object[2];
 		
@@ -225,7 +231,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		{
 			ItemStack stack = inv.get(i);
 			
-			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item && stack.getItemDamage() == meta)
+			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item)
 			{
 				obj[0] = i;
 				obj[1] = stack;
@@ -240,7 +246,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 

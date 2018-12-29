@@ -6,7 +6,6 @@ import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,10 +15,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -33,19 +32,11 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isHeld)
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean isHeld)
 	{
-		super.onUpdate(stack, world, entity, slot, isHeld);
-		ObjHandler.blackHole.onUpdate(stack, world, entity, slot, isHeld);
-		if (!ItemHelper.getOrCreateCompound(stack).hasKey("teleportCooldown"))
-		{
-			stack.getTag().setByte("teleportCooldown", ((byte) 10));
-		}
-		if(stack.getTag().getByte("teleportCooldown") > 0) {
-			stack.getTag().setByte("teleportCooldown", ((byte) (stack.getTag().getByte("teleportCooldown") - 1)));
-		}
+		super.inventoryTick(stack, world, entity, slot, isHeld);
+		ObjHandler.blackHole.inventoryTick(stack, world, entity, slot, isHeld);
 	}
-
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
@@ -64,7 +55,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		if (ItemHelper.getOrCreateCompound(stack).getByte("teleportCooldown") > 0 )
+		if (player.getCooldownTracker().hasCooldown(this))
 		{
 			return false;
 		}
@@ -78,15 +69,15 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
 		if (!MinecraftForge.EVENT_BUS.post(event))
 		{
-			if (player.isRiding())
+			if (player.isPassenger())
 			{
-				player.dismountRidingEntity();
+				player.stopRiding();
 			}
 
 			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
-			stack.getTag().setByte("teleportCooldown", ((byte) 10));
+			player.getCooldownTracker().setCooldown(this, 10);
 			return true;
 		}
 

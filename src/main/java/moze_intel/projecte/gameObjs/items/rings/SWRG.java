@@ -31,6 +31,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,10 +52,10 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private void tick(ItemStack stack, EntityPlayer player)
 	{
-		if (ItemHelper.getOrCreateCompound(stack).getInteger(TAG_MODE) > 1)
+		if (ItemHelper.getOrCreateCompound(stack).getInt(TAG_MODE) > 1)
 		{
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getEntityBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
 		}
 
 		if (player.getEntityWorld().isRemote)
@@ -65,7 +67,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
-			if (stack.getTag().getInteger(TAG_MODE) > 0)
+			if (stack.getTag().getInt(TAG_MODE) > 0)
 			{
 				changeMode(stack, 0);
 			}
@@ -87,29 +89,29 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTag().getInteger(TAG_MODE) == 0 ? 1 : 3);
+				changeMode(stack, stack.getTag().getInt(TAG_MODE) == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTag().getInteger(TAG_MODE) == 1 ? 0 : 2);
+				changeMode(stack, stack.getTag().getInt(TAG_MODE) == 1 ? 0 : 2);
 			}
 		}
 
 		float toRemove = 0;
 
-		if (playerMP.capabilities.isFlying)
+		if (playerMP.abilities.isFlying)
 		{
 			toRemove = 0.32F;
 		}
 
-		if (stack.getTag().getInteger(TAG_MODE) == 2)
+		if (stack.getTag().getInt(TAG_MODE) == 2)
 		{
 			toRemove = 0.32F;
 		}
-		else if (stack.getTag().getInteger(TAG_MODE) == 3)
+		else if (stack.getTag().getInt(TAG_MODE) == 3)
 		{
 			toRemove = 0.64F;
 		}
@@ -121,11 +123,11 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private boolean isFlyingEnabled(ItemStack stack)
 	{
-		return stack.getTag().getInteger(TAG_MODE) == 1 || stack.getTag().getInteger(TAG_MODE)== 3;
+		return stack.getTag().getInt(TAG_MODE) == 1 || stack.getTag().getInt(TAG_MODE)== 3;
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem)
 	{
 		if (invSlot > 8 || !(entity instanceof EntityPlayer))
 		{
@@ -143,7 +145,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		{
 			int newMode = 0;
 			
-			switch (ItemHelper.getOrCreateCompound(stack).getInteger(TAG_MODE))
+			switch (ItemHelper.getOrCreateCompound(stack).getInt(TAG_MODE))
 			{
 				case 0:
 					newMode = 2;
@@ -173,7 +175,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	 */
 	public void changeMode(ItemStack stack, int mode)
 	{
-		ItemHelper.getOrCreateCompound(stack).setInteger(TAG_MODE, mode);
+		ItemHelper.getOrCreateCompound(stack).putInt(TAG_MODE, mode);
 	}
 
 	@Override
@@ -278,7 +280,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	@Override
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand)
 	{
-		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player.world, player, false);
+		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
 		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.world.spawnEntity(projectile);
 		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);

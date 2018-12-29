@@ -23,6 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -33,6 +34,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,18 +53,18 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int inventorySlot, boolean held)
 	{
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
 		
-		super.onUpdate(stack, world, entity, inventorySlot, par5);
+		super.inventoryTick(stack, world, entity, inventorySlot, held);
 		EntityPlayerMP player = (EntityPlayerMP)entity;
 
 		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
-				stack.getTag().setBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(TAG_ACTIVE, false);
 			}
 			else 
 			{
@@ -79,23 +82,25 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
-		tag.setBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
+		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
+		World world = ctx.getWorld();
+		BlockPos pos = ctx.getPos();
 		IBlockState state = world.getBlockState(pos);
 		if (state.getBlock() instanceof BlockTNT)
 		{
-			if (!world.isRemote && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+			if (!world.isRemote && PlayerHelper.hasBreakPermission(((EntityPlayerMP) ctx.getPlayer()), pos))
 			{
 				// Ignite TNT or derivatives
-				((BlockTNT) state.getBlock()).explode(world, pos, state.withProperty(BlockTNT.EXPLODE, true), player);
-				world.setBlockToAir(pos);
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				((BlockTNT) state.getBlock()).explode(world, pos);
+				world.removeBlock(pos);
+				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 
 			return EnumActionResult.SUCCESS;
@@ -191,7 +196,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		
 		if(world.isRemote) return false;
 		
-		EntityFireProjectile fire = new EntityFireProjectile(world, player);
+		EntityFireProjectile fire = new EntityFireProjectile(player, world);
 		fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.spawnEntity(fire);
 		

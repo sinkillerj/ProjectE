@@ -19,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -29,12 +30,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -54,20 +55,21 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemUseContext ctx)
 	{
-		BlockPos fluidPos = pos.offset(facing);
+		World world = ctx.getWorld();
+		BlockPos fluidPos = ctx.getPos().offset(ctx.getFace());
 		IBlockState state = world.getBlockState(fluidPos);
 		if (state.getBlock() instanceof BlockFluidBase
 				|| state.getBlock() instanceof BlockLiquid)
 		{
 			if (!world.isRemote)
 			{
-				world.setBlockToAir(fluidPos);
+				world.removeBlock(fluidPos);
 				Fluid f = FluidRegistry.lookupFluidForBlock(state.getBlock());
 				if (f != null)
 				{
-					world.playSound(null, pos, f.getFillSound(world, fluidPos), SoundCategory.BLOCKS, 1, 1);
+					world.playSound(null, ctx.getPos(), f.getFillSound(world, fluidPos), SoundCategory.BLOCKS, 1, 1);
 				}
 			}
 
@@ -91,7 +93,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
 		if (!ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) || !(entity instanceof EntityPlayer))
 		{
@@ -99,7 +101,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		}
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(7);
+		AxisAlignedBB bBox = player.getBoundingBox().grow(7);
 		List<EntityItem> itemList = world.getEntitiesWithinAABB(EntityItem.class, bBox);
 		
 		for (EntityItem item : itemList)
@@ -122,7 +124,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Optional.Method(modid = "baubles")
 	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
-		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
+		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
 	}
 
 	@Override
@@ -157,7 +159,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			for (EntityItem item : list)
 			{
 				WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && !item.isDead)
+				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && item.isAlive())
 				{
 					suckDumpItem(item, tile);
 				}
@@ -243,7 +245,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
-			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getEntityBoundingBox().grow(5)))
+			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getBoundingBox().grow(5)))
 			{
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

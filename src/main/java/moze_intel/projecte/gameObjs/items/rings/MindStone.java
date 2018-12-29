@@ -18,8 +18,10 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -36,14 +38,14 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || par4 > 8 || !(entity instanceof EntityPlayer))
+		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
 
-		super.onUpdate(stack, world, entity, par4, par5);
+		super.inventoryTick(stack, world, entity, slot, held);
 
 		EntityPlayer player = (EntityPlayer) entity;
 
@@ -78,10 +80,15 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flags)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flags)
 	{
 		if(stack.getTag() != null)
-			tooltip.add(String.format(TextFormatting.DARK_GREEN + I18n.format("pe.misc.storedxp_tooltip") + " " + TextFormatting.GREEN + "%,d", getStoredXP(stack)));
+		{
+			ITextComponent label = new TextComponentTranslation("pe.misc.storedxp_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_GREEN));
+			ITextComponent value = new TextComponentString(String.format("%,d", getStoredXP(stack))).setStyle(new Style().setColor(TextFormatting.GREEN));
+			tooltip.add(label.appendText(" ").appendSibling(value));
+		}
+
 	}
 
 
@@ -151,12 +158,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getInteger("StoredXP");
+		return ItemHelper.getOrCreateCompound(stack).getInt("StoredXP");
 	}
 
 	private void setStoredXP(ItemStack stack, int XP)
 	{
-		ItemHelper.getOrCreateCompound(stack).setInteger("StoredXP", XP);
+		ItemHelper.getOrCreateCompound(stack).putInt("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 
@@ -224,7 +231,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		else
 		{
 			addStoredXP(mindStone, orb.xpValue);
-			orb.setDead();
+			orb.remove();
 		}
 	}
 
