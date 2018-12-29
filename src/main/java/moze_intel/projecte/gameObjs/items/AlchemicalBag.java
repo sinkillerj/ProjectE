@@ -42,8 +42,6 @@ public class AlchemicalBag extends ItemPE
 	{
 		super(builder);
 		this.color = color;
-		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
 	}
 	
 	@Nonnull

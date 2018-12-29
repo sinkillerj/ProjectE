@@ -53,9 +53,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 {
 	public GemEternalDensity(Builder builder)
 	{
-		super(builder)
-		this.setTranslationKey("gem_density");
-		this.setMaxStackSize(1);
+		super(builder);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	

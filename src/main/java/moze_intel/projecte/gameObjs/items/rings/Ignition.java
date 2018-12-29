@@ -44,10 +44,9 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtector, IProjectileShooter
 {
-	public Ignition()
+	public Ignition(Builder builder)
 	{
-		super("ignition");
-		this.setNoRepair();
+		super(builder);
 	}
 	
 	@Override

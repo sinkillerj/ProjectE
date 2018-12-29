@@ -39,12 +39,10 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
 {
-	public Zero() 
+	public Zero(Builder builder)
 	{
-		this.setTranslationKey("zero_ring");
-		this.setMaxStackSize(1);
+		super(builder);
 		this.setContainerItem(this);
-		this.setNoRepair();
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	

@@ -21,13 +21,10 @@ import javax.annotation.Nonnull;
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor implements IRevealer, IGoggles
 {
-	public RMArmor(Builder builder, EntityEquipmentSlot armorType)
+	public RMArmor(EntityEquipmentSlot armorType, Builder builder)
 	{
 		// todo 1.13 custom matreial?
 		super(ArmorMaterial.DIAMOND, armorType, builder);
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_rm_armor_" + armorType.getIndex());
-		this.setMaxDamage(0);
 	}
 	
 	/*@Override todo 1.13

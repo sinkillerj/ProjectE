@@ -27,9 +27,9 @@ import java.util.List;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
-	public VoidRing()
+	public VoidRing(Builder builder)
 	{
-		this.setTranslationKey("void_ring");
+		super(builder);
 	}
 
 	@Override

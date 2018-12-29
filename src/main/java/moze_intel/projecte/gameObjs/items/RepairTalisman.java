@@ -44,10 +44,10 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
 {
-	public RepairTalisman()
+	public RepairTalisman(Builder builder)
 	{
+		super(builder);
 		this.setTranslationKey("repair_talisman");
-		this.setMaxStackSize(1);
 	}
 
 	@Override

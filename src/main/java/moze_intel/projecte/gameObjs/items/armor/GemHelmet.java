@@ -36,9 +36,9 @@ import java.util.List;
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
 {
-    public GemHelmet()
+    public GemHelmet(Builder builder)
     {
-        super(EntityEquipmentSlot.HEAD);
+        super(EntityEquipmentSlot.HEAD, builder);
     }
 
     public static boolean isNightVisionEnabled(ItemStack helm)

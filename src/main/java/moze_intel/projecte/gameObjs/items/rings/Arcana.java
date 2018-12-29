@@ -47,11 +47,9 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
-	public Arcana()
+	public Arcana(Builder builder)
 	{
-		setTranslationKey("arcana_ring");
-		setMaxStackSize(1);
-		setNoRepair();
+		super(builder);
 		setContainerItem(this);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}

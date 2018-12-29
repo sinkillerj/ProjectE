@@ -42,11 +42,9 @@ import java.util.List;
 
 public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger
 {
-	public ArchangelSmite()
+	public ArchangelSmite(Builder builder)
 	{
-		super("archangel_smite");
-		this.setMaxStackSize(1);
-		this.setNoRepair();
+		super(builder);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

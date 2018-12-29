@@ -34,9 +34,9 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 {
-	public SoulStone()
+	public SoulStone(Builder builder)
 	{
-		super("soul_stone");
+		super(builder);
 	}
 	
 	@Override

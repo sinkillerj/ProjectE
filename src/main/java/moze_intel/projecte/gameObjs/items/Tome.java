@@ -19,10 +19,6 @@ public class Tome extends ItemPE
 	public Tome(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("tome");
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
 	}
 
 	@Override

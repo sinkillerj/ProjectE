@@ -56,8 +56,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public VolcaniteAmulet(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("volcanite_amulet");
-		this.setMaxStackSize(1);
 		this.setContainerItem(this);
 	}
 

@@ -27,9 +27,9 @@ import java.util.Map;
 
 public class GemLegs extends GemArmorBase
 {
-    public GemLegs()
+    public GemLegs(Builder builder)
     {
-        super(EntityEquipmentSlot.LEGS);
+        super(EntityEquipmentSlot.LEGS, builder);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

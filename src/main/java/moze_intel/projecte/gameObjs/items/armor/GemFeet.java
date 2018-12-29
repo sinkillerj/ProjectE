@@ -30,9 +30,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     private static final UUID MODIFIER = UUID.randomUUID();
 
-    public GemFeet()
+    public GemFeet(Builder builder)
     {
-        super(EntityEquipmentSlot.FEET);
+        super(EntityEquipmentSlot.FEET, builder);
     }
 
     public static boolean isStepAssistEnabled(ItemStack boots)
@@ -123,7 +123,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         if (slot != EntityEquipmentSlot.FEET) return super.getAttributeModifiers(slot, stack);
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2));
+        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2).setSaved(false));
         return multimap;
     }
 

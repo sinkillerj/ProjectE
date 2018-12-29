@@ -35,7 +35,6 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		super(builder,"rm_katar", (byte)4, new String[] {
 				"pe.katar.mode1", "pe.katar.mode2",
 		});
-		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.WEB);

@@ -73,9 +73,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	public EvertideAmulet(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("evertide_amulet");
-		this.setMaxStackSize(1);
-		this.setNoRepair();
 		this.setContainerItem(this);
 	}
 

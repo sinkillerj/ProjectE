@@ -38,7 +38,6 @@ public class RedStar extends PEToolBase
 				"pe.morningstar.mode1", "pe.morningstar.mode2",
 				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});
-		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 
 		this.harvestMaterials.add(Material.GRASS);

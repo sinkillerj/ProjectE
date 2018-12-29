@@ -35,10 +35,9 @@ import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	public HarvestGoddess()
+	public HarvestGoddess(Builder builder)
 	{
-		super("harvest_god");
-		this.setNoRepair();
+		super(builder);
 	}
 	
 	@Override

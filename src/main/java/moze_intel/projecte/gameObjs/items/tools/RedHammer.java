@@ -13,7 +13,6 @@ public class RedHammer extends DarkHammer
 	public RedHammer(Builder builder)
 	{
 		super(builder, "rm_hammer", (byte)3, new String[]{});
-		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);

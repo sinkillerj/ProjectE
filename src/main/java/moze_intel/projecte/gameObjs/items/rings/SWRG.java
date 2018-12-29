@@ -43,12 +43,9 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider, IProjectileShooter
 {
-	public SWRG()
+	public SWRG(Builder builder)
 	{
-		this.setTranslationKey("swrg");
-		this.setMaxStackSize(1);
-		this.setMaxDamage(0);
-		this.setNoRepair();
+		super(builder);
 	}
 
 	private void tick(ItemStack stack, EntityPlayer player)

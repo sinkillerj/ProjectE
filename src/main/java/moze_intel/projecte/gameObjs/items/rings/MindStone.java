@@ -30,10 +30,9 @@ public class MindStone extends RingToggle implements IPedestalItem
 {
 	private static final int TRANSFER_RATE = 50;
 
-	public MindStone() 
+	public MindStone(Builder builder)
 	{
-		super("mind_stone");
-		this.setNoRepair();
+		super(builder);
 	}
 
 	@Override

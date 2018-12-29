@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -17,12 +18,10 @@ import javax.annotation.Nonnull;
 
 public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 {
-	public GemArmorBase(EntityEquipmentSlot armorType)
+	public GemArmorBase(EntityEquipmentSlot armorType, Builder builder)
 	{
-		super(ArmorMaterial.DIAMOND, 0, armorType);
-		this.setCreativeTab(ObjHandler.cTab);
-		this.setTranslationKey("pe_gem_armor_" + armorType.getIndex());
-		this.setMaxDamage(0);
+		// todo 1.13 custom material?
+		super(ArmorMaterial.DIAMOND, armorType, builder);
 	}
 
 	public static boolean hasAnyPiece(EntityPlayer player)

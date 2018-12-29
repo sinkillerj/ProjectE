@@ -17,7 +17,6 @@ public class RedSword extends DarkSword
 				"pe.redsword.mode1",
 				"pe.redsword.mode2"
 		});
-		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.toolClasses.add(ToolType.get("sword"));
 	}

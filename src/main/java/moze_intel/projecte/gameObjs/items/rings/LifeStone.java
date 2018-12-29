@@ -34,10 +34,9 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class LifeStone extends RingToggle implements IBauble, IPedestalItem
 {
-	public LifeStone()
+	public LifeStone(Builder builder)
 	{
-		super("life_stone");
-		this.setNoRepair();
+		super(builder);
 	}
 	
 

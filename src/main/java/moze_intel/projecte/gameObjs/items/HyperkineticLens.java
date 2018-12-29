@@ -21,9 +21,6 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	public HyperkineticLens(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("hyperkinetic_lens");
-		this.setMaxStackSize(1);
-		this.setNoRepair();
 	}
 	
 	@Nonnull

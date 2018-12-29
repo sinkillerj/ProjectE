@@ -46,7 +46,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
 		this.setContainerItem(this);
-		this.setNoRepair();
 	}
 
 	public RayTraceResult getHitBlock(EntityPlayer player)

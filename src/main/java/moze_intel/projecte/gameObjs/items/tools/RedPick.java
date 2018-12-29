@@ -16,7 +16,6 @@ public class RedPick extends DarkPick
 		super(builder, "rm_pick", (byte)3, new String[] {
 				"pe.redpick.mode1", "pe.redpick.mode2",
 				"pe.redpick.mode3", "pe.redpick.mode4"});
-		this.setNoRepair();
 		this.peToolMaterial = "rm_tools";
 		this.toolClasses.add(ToolType.PICKAXE);
 		this.harvestMaterials.add(Material.IRON);

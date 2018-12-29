@@ -17,13 +17,10 @@ import javax.annotation.Nonnull;
 
 public class DMArmor extends ItemArmor
 {
-	public DMArmor(Builder builder, EntityEquipmentSlot armorPiece)
+	public DMArmor(EntityEquipmentSlot armorPiece, Builder builder)
 	{
 		// TODO 1.13 custom material?
 		super(ArmorMaterial.DIAMOND, armorPiece, builder);
-		this.setItem(ObjHandler.cTab);
-		this.setTranslationKey("pe_dm_armor_" + armorPiece.getIndex());
-		this.setMaxDamage(0);
 	}
 	
 	/*@Override TODO 1.13
