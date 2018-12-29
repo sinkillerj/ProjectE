@@ -6,8 +6,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class StepHeightPKT implements IMessage
-{
+public class StepHeightPKT {
 	private final float value;
 
 	public StepHeightPKT(float value)

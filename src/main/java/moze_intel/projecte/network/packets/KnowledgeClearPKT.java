@@ -6,8 +6,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class KnowledgeClearPKT implements IMessage
-{
+public class KnowledgeClearPKT {
 	public static void encode(KnowledgeClearPKT msg, PacketBuffer buf) {}
 
 	public static KnowledgeClearPKT decode(PacketBuffer buf)

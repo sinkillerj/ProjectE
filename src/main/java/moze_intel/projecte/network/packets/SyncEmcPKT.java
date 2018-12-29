@@ -11,8 +11,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SyncEmcPKT implements IMessage
-{
+public class SyncEmcPKT {
 	private final EmcPKTInfo[] data;
 
 	public SyncEmcPKT(EmcPKTInfo[] data)

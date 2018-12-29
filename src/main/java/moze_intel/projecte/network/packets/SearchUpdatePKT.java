@@ -7,8 +7,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SearchUpdatePKT implements IMessage
-{
+public class SearchUpdatePKT {
 	public final int slot;
 	public final ItemStack itemStack;
 	public SearchUpdatePKT(int slot, ItemStack itemStack)

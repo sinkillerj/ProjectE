@@ -6,7 +6,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class CooldownResetPKT implements IMessage {
+public class CooldownResetPKT {
 
 	public static void encode(CooldownResetPKT pkt, PacketBuffer buf) {}
 

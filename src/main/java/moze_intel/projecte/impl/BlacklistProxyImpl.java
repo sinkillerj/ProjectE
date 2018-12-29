@@ -9,8 +9,8 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.ModLoadingStage;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import javax.annotation.Nonnull;
 
@@ -24,32 +24,36 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     public void blacklistInterdiction(@Nonnull Class<? extends Entity> clazz)
     {
         Preconditions.checkNotNull(clazz);
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering interdiction blacklist at incorrect time!", Loader.instance().activeModContainer().getModId());
-        doBlacklistInterdiction(clazz, Loader.instance().activeModContainer().getModId());
+        String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
+        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering interdiction blacklist at incorrect time!", modid);
+        doBlacklistInterdiction(clazz, modid);
     }
 
     @Override
     public void blacklistSwiftwolf(@Nonnull Class<? extends Entity> clazz)
     {
         Preconditions.checkNotNull(clazz);
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering SWRG repel at incorrect time!", Loader.instance().activeModContainer().getModId());
-        doBlacklistSwiftwolf(clazz, Loader.instance().activeModContainer().getModId());
+        String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
+        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering SWRG repel at incorrect time!", modid);
+        doBlacklistSwiftwolf(clazz, modid);
     }
 
     @Override
     public void blacklistTimeWatch(@Nonnull Class<? extends TileEntity> clazz)
     {
         Preconditions.checkNotNull(clazz);
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering TimeWatch blacklist at incorrect time!", Loader.instance().activeModContainer().getModId());
-        doBlacklistTimewatch(clazz, Loader.instance().activeModContainer().getModId());
+        String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
+        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering TimeWatch blacklist at incorrect time!", modid);
+        doBlacklistTimewatch(clazz, modid);
     }
 
     @Override
     public void whitelistNBT(@Nonnull ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), "Mod %s registering NBT whitelist at incorrect time!", Loader.instance().activeModContainer().getModId());
-        doWhitelistNBT(stack, Loader.instance().activeModContainer().getModId());
+        String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
+        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering NBT whitelist at incorrect time!", modid);
+        doWhitelistNBT(stack, modid);
     }
 
     /**

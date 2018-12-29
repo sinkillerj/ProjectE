@@ -8,8 +8,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 // Version of SPacketWindowProperty that does not truncate the `value` arg to a short
-public class UpdateWindowIntPKT implements IMessage
-{
+public class UpdateWindowIntPKT {
     private final short windowId;
     private final short propId;
     private final int propVal;

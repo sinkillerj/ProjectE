@@ -6,8 +6,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SyncCovalencePKT implements IMessage
-{
+public class SyncCovalencePKT {
 	private final double covalenceLoss;
 
 	public SyncCovalencePKT(double value)

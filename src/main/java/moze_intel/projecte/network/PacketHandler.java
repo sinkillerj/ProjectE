@@ -66,7 +66,7 @@ public final class PacketHandler
 		}
 	}
 
-	public static void sendNonLocal(IMessage msg, EntityPlayerMP player)
+	public static void sendNonLocal(Object msg, EntityPlayerMP player)
 	{
 		if (player.server.isDedicatedServer() || !player.getName().equals(player.server.getServerOwner()))
 		{
@@ -107,7 +107,7 @@ public final class PacketHandler
 	 * Sends a packet to the server.<br>
 	 * Must be called Client side. 
 	 */
-	public static void sendToServer(IMessage msg)
+	public static void sendToServer(Object msg)
 	{
 		HANDLER.sendToServer(msg);
 	}
@@ -116,7 +116,7 @@ public final class PacketHandler
 	 * Send a packet to a specific player.<br>
 	 * Must be called Server side. 
 	 */
-	public static void sendTo(IMessage msg, EntityPlayerMP player)
+	public static void sendTo(Object msg, EntityPlayerMP player)
 	{
 		if (!(player instanceof FakePlayer))
 		{

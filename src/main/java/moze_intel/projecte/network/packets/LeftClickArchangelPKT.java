@@ -9,8 +9,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class LeftClickArchangelPKT implements IMessage
-{
+public class LeftClickArchangelPKT {
 	public static void encode(LeftClickArchangelPKT msg, PacketBuffer buf) {}
 
 	public static LeftClickArchangelPKT decode(PacketBuffer buf)

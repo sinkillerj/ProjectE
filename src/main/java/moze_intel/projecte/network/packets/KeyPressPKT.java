@@ -23,8 +23,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class KeyPressPKT implements IMessage
-{
+public class KeyPressPKT {
 	private final PEKeybind key;
 
 	public KeyPressPKT(PEKeybind key)

@@ -1,17 +1,13 @@
 package moze_intel.projecte.network.packets;
 
-import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class KnowledgeSyncPKT implements IMessage
-{
+public class KnowledgeSyncPKT {
 	private final NBTTagCompound nbt;
 
 	public KnowledgeSyncPKT(NBTTagCompound nbt)

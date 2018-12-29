@@ -9,8 +9,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.function.Supplier;
 
-public class ShowBagPKT implements IMessage
-{
+public class ShowBagPKT {
 	private final int windowId;
 
 	public ShowBagPKT(int windowId)

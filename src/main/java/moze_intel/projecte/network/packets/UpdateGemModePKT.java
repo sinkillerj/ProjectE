@@ -8,8 +8,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class UpdateGemModePKT implements IMessage
-{
+public class UpdateGemModePKT {
 	private final boolean mode;
 
 	public UpdateGemModePKT(boolean mode)

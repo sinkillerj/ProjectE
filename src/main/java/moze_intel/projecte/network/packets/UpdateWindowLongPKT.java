@@ -9,8 +9,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 // Version of SPacketWindowProperty that supports long values
-public class UpdateWindowLongPKT implements IMessage
-{
+public class UpdateWindowLongPKT {
     private final short windowId;
     private final short propId;
     private final long propVal;

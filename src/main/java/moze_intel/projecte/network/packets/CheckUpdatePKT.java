@@ -7,8 +7,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class CheckUpdatePKT implements IMessage
-{
+public class CheckUpdatePKT {
 	public static void encode(CheckUpdatePKT pkt, PacketBuffer buf) {}
 
 	public static CheckUpdatePKT decode(PacketBuffer buf) {

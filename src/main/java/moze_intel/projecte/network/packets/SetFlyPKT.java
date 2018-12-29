@@ -6,8 +6,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SetFlyPKT implements IMessage
-{
+public class SetFlyPKT {
 	private final boolean flag;
 
 	public SetFlyPKT(boolean value)
