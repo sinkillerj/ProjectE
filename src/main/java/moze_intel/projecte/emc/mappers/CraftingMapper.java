@@ -9,15 +9,12 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -32,16 +29,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper(), new CraftTweakerRecipeMapper());
-	private final Set<Class> canNotMap = new HashSet<>();
-	private final Map<Class, Integer> recipeCount = new HashMap<>();
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final Configuration config) {
-		recipeCount.clear();
-		canNotMap.clear();
-		nextRecipe: for (IRecipe recipe : CraftingManager.REGISTRY) {
+		Map<Class, Integer> recipeCount = new HashMap<>();
+		Set<Class> canNotMap = new HashSet<>();
+
+		for (IRecipe recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput.isEmpty()) continue;
@@ -55,16 +50,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 						for (ItemStack stack : variation.fixedIngredients) {
 							if (stack.isEmpty()) continue;
-							try {
-								if (stack.getItemDamage() != OreDictionary.WILDCARD_VALUE && stack.getItem().hasContainerItem(stack)) {
-									ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
-								}
-								ingredientMap.addIngredient(NSSItem.create(stack), 1);
-							} catch (Exception e) {
-								PECore.LOGGER.fatal("Exception in CraftingMapper when parsing Recipe Ingredients: RecipeType: {}, Ingredient: {}", recipe.getClass().getName(), stack.toString());
-								e.printStackTrace();
-								continue nextRecipe;
+							if (stack.getItem().hasContainerItem(stack)) {
+								ingredientMap.addIngredient(NSSItem.create(stack.getItem().getContainerItem(stack)), -1);
 							}
+							ingredientMap.addIngredient(NSSItem.create(stack), 1);
 						}
 						for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 							NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
@@ -85,22 +74,18 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				}
 			}
 			if (!handled) {
-				if (canNotMap.add(recipe.getClass())) {
-					PECore.debugLog("Can not map Crafting Recipes with Type: {}", recipe.getClass().getName());
-				}
+				canNotMap.add(recipe.getClass());
 			} else {
-				int count = 0;
-				if (recipeCount.containsKey(recipe.getClass())) {
-					count = recipeCount.get(recipe.getClass());
-				}
-				count += 1;
-				recipeCount.put(recipe.getClass(), count);
+				recipeCount.merge(recipe.getClass(), 1, Integer::sum);
 			}
 		}
 
 		PECore.debugLog("CraftingMapper Statistics:");
 		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
 			PECore.debugLog("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
+		}
+		for (Class<?> c : canNotMap) {
+			PECore.debugLog("Could not map Crafting Recipes with Type: {}", c.getName());
 		}
 	}
 
@@ -111,7 +96,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public String getDescription() {
-		return "Add Conversions for Crafting Recipes gathered from net.minecraft.item.crafting.CraftingManager";
+		return "Add Conversions for Crafting Recipes gathered from net.minecraft.item.crafting.RecipeManager";
 	}
 
 	@Override

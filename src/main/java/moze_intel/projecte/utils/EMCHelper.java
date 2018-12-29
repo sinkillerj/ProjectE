@@ -4,6 +4,7 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IItemProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -99,11 +101,6 @@ public final class EMCHelper
 		return -1;
 	}
 
-	public static boolean doesBlockHaveEmc(Block block)
-	{
-		return block != null && doesItemHaveEmc(new ItemStack(block));
-	}
-
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
 		if (stack.isEmpty())
@@ -118,15 +115,10 @@ public final class EMCHelper
 			return false;
 		}
 
-		if (ItemHelper.isDamageable(stack))
-		{
-			iStack = iStack.withMeta(0);
-		}
-
 		return EMCMapper.mapContains(iStack);
 	}
 
-	public static boolean doesItemHaveEmc(Item item)
+	public static boolean doesItemHaveEmc(IItemProvider item)
 	{
 		return item != null && doesItemHaveEmc(new ItemStack(item));
 	}
@@ -167,73 +159,62 @@ public final class EMCHelper
 
 		SimpleStack iStack = new SimpleStack(stack);
 
-		if (!iStack.isValid())
+		if (!iStack.isValid() || !EMCMapper.mapContains(iStack))
 		{
 			return 0;
 		}
 
-		if (!EMCMapper.mapContains(iStack) && ItemHelper.isDamageable(stack))
+		if (ItemHelper.isDamageable(stack))
 		{
-			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.
-			iStack = iStack.withMeta(0);
+			long emc = EMCMapper.getEmcValue(iStack);
 
-			if (EMCMapper.mapContains(iStack))
+			// maxDmg + 1 because vanilla lets you use the tool one more time
+			// when item damage == max damage (shows as Durability: 0 / max)
+			int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
+
+			if (relDamage <= 0)
 			{
-				long emc = EMCMapper.getEmcValue(iStack);
-
-				// maxDmg + 1 because vanilla lets you use the tool one more time
-				// when item damage == max damage (shows as Durability: 0 / max)
-				int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
-
-				if (relDamage <= 0)
-				{
-					// This may happen when mods overflow their max damage or item damage.
-					// Don't use durability or enchants for emc calculation if this happens.
-					return emc;
-				}
-
-				long result = emc * relDamage;
-
-				if (result <= 0)
-				{
-					//Congratulations, big number is big.
-					return emc;
-				}
-
-				result /= stack.getMaxDamage();
-				boolean positive = result > 0;
-				result += getEnchantEmcBonus(stack);
-
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
-
-				positive = result > 0;
-				result += getStoredEMCBonus(stack);
-
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
-
-				if (result <= 0)
-				{
-					return 1;
-				}
-
-				return result;
+				// This may happen when mods overflow their max damage or item damage.
+				// Don't use durability or enchants for emc calculation if this happens.
+				return emc;
 			}
+
+			long result = emc * relDamage;
+
+			if (result <= 0)
+			{
+				//Congratulations, big number is big.
+				return emc;
+			}
+
+			result /= stack.getMaxDamage();
+			boolean positive = result > 0;
+			result += getEnchantEmcBonus(stack);
+
+			//If it was positive and then became negative that means it overflowed
+			if (positive && result < 0) {
+				return emc;
+			}
+
+			positive = result > 0;
+			result += getStoredEMCBonus(stack);
+
+			//If it was positive and then became negative that means it overflowed
+			if (positive && result < 0) {
+				return emc;
+			}
+
+			if (result <= 0)
+			{
+				return 1;
+			}
+
+			return result;
 		}
 		else
 		{
-			if (EMCMapper.mapContains(iStack))
-			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
-			}
+			return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
 		}
-
-		return 0;
 	}
 
 	private static int getEnchantEmcBonus(ItemStack stack)
@@ -292,7 +273,11 @@ public final class EMCHelper
 
 	public static int getKleinStarMaxEmc(ItemStack stack)
 	{
-		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
+		if (stack.getItem() instanceof KleinStar)
+		{
+			return Constants.MAX_KLEIN_EMC[((KleinStar) stack.getItem()).tier.ordinal()];
+		}
+		return 0;
 	}
 
 	private static double getStoredEMCBonus(ItemStack stack) {

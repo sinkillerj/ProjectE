@@ -20,21 +20,21 @@ public final class FuelMapper
 	{
 		FUEL_MAP.clear();
 
-		addToMap(new ItemStack(Items.COAL, 1, 1));
+		addToMap(new ItemStack(Items.CHARCOAL));
 		addToMap(new ItemStack(Items.REDSTONE));
 		addToMap(new ItemStack(Blocks.REDSTONE_BLOCK));
 		addToMap(new ItemStack(Items.COAL));
 		addToMap(new ItemStack(Blocks.COAL_BLOCK));
 		addToMap(new ItemStack(Items.GUNPOWDER));
 		addToMap(new ItemStack(Items.GLOWSTONE_DUST));
-		addToMap(new ItemStack(ObjHandler.fuels, 1, 0));
-		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 0));
+		addToMap(new ItemStack(ObjHandler.alchemicalCoal));
+		addToMap(new ItemStack(ObjHandler.alchemicalCoalBlock));
 		addToMap(new ItemStack(Items.BLAZE_POWDER));
 		addToMap(new ItemStack(Blocks.GLOWSTONE));
-		addToMap(new ItemStack(ObjHandler.fuels, 1, 1));
-		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
-		addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
-		addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
+		addToMap(new ItemStack(ObjHandler.mobiusFuel));
+		addToMap(new ItemStack(ObjHandler.mobiusFuelBlock));
+		addToMap(new ItemStack(ObjHandler.aeternalisFuel));
+		addToMap(new ItemStack(ObjHandler.aeternalisFuelBlock));
 		
 		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
 	}

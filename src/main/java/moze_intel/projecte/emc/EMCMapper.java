@@ -18,8 +18,6 @@ import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
-import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
-import moze_intel.projecte.emc.mappers.SmeltingMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
@@ -28,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
@@ -48,13 +45,11 @@ public final class EMCMapper
 	public static void map()
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
-				new OreDictionaryMapper(),
 				APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
-				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
@@ -135,12 +130,12 @@ public final class EMCMapper
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
+			Item obj = Item.REGISTRY.get(new ResourceLocation(normStackItem.itemName));
 			if (obj != null)
 			{
-				emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
+				emc.put(new SimpleStack(obj.getRegistryName()), entry.getValue());
 			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}|{}. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
+				PECore.LOGGER.warn("Could not add EMC value for {}. Can not get ItemID!", normStackItem.itemName);
 			}
 		}
 
@@ -152,7 +147,6 @@ public final class EMCMapper
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
 		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem)
-										|| ((NSSItem) e.getKey()).damage == OreDictionary.WILDCARD_VALUE
 										|| e.getValue() <= 0);
 	}
 

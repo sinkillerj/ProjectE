@@ -134,7 +134,9 @@ public class ObjHandler
 	public static final Block dmPedestal = new Pedestal();
 	public static final Block dmBlock = new MatterBlock();
 	public static final Block rmBlock = new MatterBlock();
-	public static final Block fuelBlock = new FuelBlock();
+	public static final Block alchemicalCoalBlock = new FuelBlock();
+	public static final Block mobiusFuelBlock = new FuelBlock();
+	public static final Block aeternalisFuelBlock = new FuelBlock();
 	public static final Block collectorMK1 = new Collector(1);
 	public static final Block collectorMK2 = new Collector(2);
 	public static final Block collectorMK3 = new Collector(3);

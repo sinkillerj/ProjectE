@@ -55,7 +55,7 @@ public class EMCProxyImpl implements IEMCProxy
     public boolean hasValue(@Nonnull Block block)
     {
         Preconditions.checkNotNull(block);
-        return EMCHelper.doesBlockHaveEmc(block);
+        return EMCHelper.doesItemHaveEmc(block);
     }
 
     @Override
