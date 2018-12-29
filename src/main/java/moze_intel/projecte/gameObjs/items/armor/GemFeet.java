@@ -5,9 +5,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -15,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +42,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         boolean value;
 
-        if (ItemHelper.getOrCreateCompound(boots).contains("StepAssist"))
+        if (boots.getOrCreateTag().contains("StepAssist"))
         {
             boots.getTag().putBoolean("StepAssist", !boots.getTag().getBoolean("StepAssist"));
             value = boots.getTag().getBoolean("StepAssist");

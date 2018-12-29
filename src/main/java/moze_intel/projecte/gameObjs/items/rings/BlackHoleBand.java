@@ -95,7 +95,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (!ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) || !(entity instanceof EntityPlayer))
+        if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE) || !(entity instanceof EntityPlayer))
 		{
 			return;
 		}
@@ -213,7 +213,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
 					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
@@ -243,7 +243,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			for (EntityItem e : player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, player.getBoundingBox().grow(5)))
 			{

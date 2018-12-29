@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -11,11 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -49,7 +46,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			if (getXP(player) > 0)
 			{
@@ -65,7 +62,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)
+        if (!world.isRemote && !stack.getOrCreateTag().getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)
 		{
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			
@@ -158,12 +155,12 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	private int getStoredXP(ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getInt("StoredXP");
+        return stack.getOrCreateTag().getInt("StoredXP");
 	}
 
 	private void setStoredXP(ItemStack stack, int XP)
 	{
-		ItemHelper.getOrCreateCompound(stack).putInt("StoredXP", XP);
+        stack.getOrCreateTag().putInt("StoredXP", XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) 

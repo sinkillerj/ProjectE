@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -10,7 +9,6 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
@@ -50,8 +48,8 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
 		super.inventoryTick(stack, world, entity, slot, held);
-		
-		if (world.isRemote || !(entity instanceof EntityPlayer) || slot > 8 || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+
+        if (world.isRemote || !(entity instanceof EntityPlayer) || slot > 8 || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			return;
 		}
@@ -80,13 +78,13 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
+        return stack.getOrCreateTag().getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+        NBTTagCompound tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}

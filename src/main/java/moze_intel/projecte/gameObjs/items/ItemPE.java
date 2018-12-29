@@ -1,17 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nonnull;
 
 public class ItemPE extends Item
 {
@@ -44,12 +39,12 @@ public class ItemPE extends Item
 
 	public static double getEmc(ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getDouble("StoredEMC");
+        return stack.getOrCreateTag().getDouble("StoredEMC");
 	}
 	
 	public static void setEmc(ItemStack stack, double amount)
 	{
-		ItemHelper.getOrCreateCompound(stack).putDouble("StoredEMC", amount);
+        stack.getOrCreateTag().putDouble("StoredEMC", amount);
 	}
 	
 	public static void addEmcToStack(ItemStack stack, double amount)

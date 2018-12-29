@@ -3,12 +3,10 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -17,7 +15,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -50,7 +47,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
     {
         boolean value;
 
-        if (ItemHelper.getOrCreateCompound(helm).contains("NightVision"))
+        if (helm.getOrCreateTag().contains("NightVision"))
         {
             helm.getTag().putBoolean("NightVision", !helm.getTag().getBoolean("NightVision"));
             value = helm.getTag().getBoolean("NightVision");

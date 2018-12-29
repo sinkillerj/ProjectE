@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -10,7 +9,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -28,7 +26,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +57,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
 		EntityPlayerMP player = (EntityPlayerMP)entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
@@ -81,7 +78,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+        NBTTagCompound tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}

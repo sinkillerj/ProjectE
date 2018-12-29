@@ -2,13 +2,11 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -52,8 +50,8 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 		super.inventoryTick(stack, world, entity, slot, held);
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false))
 			{
@@ -77,7 +75,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+        NBTTagCompound tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}

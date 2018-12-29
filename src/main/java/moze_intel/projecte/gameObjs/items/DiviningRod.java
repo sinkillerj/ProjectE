@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -173,7 +172,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte(TAG_MODE);
+        return stack.getOrCreateTag().getByte(TAG_MODE);
 	}
 
 	@Override
@@ -185,11 +184,11 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		}
 		if (getMode(stack) == modes.length - 1)
 		{
-			ItemHelper.getOrCreateCompound(stack).putByte(TAG_MODE, ((byte) 0));
+            stack.getOrCreateTag().putByte(TAG_MODE, ((byte) 0));
 		}
 		else
 		{
-			ItemHelper.getOrCreateCompound(stack).putByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
+            stack.getOrCreateTag().putByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
 		}
 
 		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));

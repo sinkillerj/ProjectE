@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -11,7 +10,6 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
@@ -23,7 +21,6 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -52,7 +49,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private void tick(ItemStack stack, EntityPlayer player)
 	{
-		if (ItemHelper.getOrCreateCompound(stack).getInt(TAG_MODE) > 1)
+        if (stack.getOrCreateTag().getInt(TAG_MODE) > 1)
 		{
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
@@ -144,8 +141,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		if (!world.isRemote)
 		{
 			int newMode = 0;
-			
-			switch (ItemHelper.getOrCreateCompound(stack).getInt(TAG_MODE))
+
+            switch (stack.getOrCreateTag().getInt(TAG_MODE))
 			{
 				case 0:
 					newMode = 2;
@@ -175,7 +172,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	 */
 	public void changeMode(ItemStack stack, int mode)
 	{
-		ItemHelper.getOrCreateCompound(stack).putInt(TAG_MODE, mode);
+        stack.getOrCreateTag().putInt(TAG_MODE, mode);
 	}
 
 	@Override

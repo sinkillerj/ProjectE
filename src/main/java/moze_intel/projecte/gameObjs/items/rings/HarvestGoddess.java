@@ -1,10 +1,8 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -54,8 +52,8 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		super.inventoryTick(stack, world, entity, slot, held);
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+
+        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			double storedEmc = getEmc(stack);
 			
@@ -245,7 +243,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+        NBTTagCompound tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}

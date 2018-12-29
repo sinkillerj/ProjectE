@@ -2,14 +2,12 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -129,7 +127,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
             }
 		}
 
-		if (world.isRemote || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+        if (world.isRemote || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
 			return;
 		}
@@ -259,12 +257,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	private byte getTimeBoost(ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getByte("TimeMode");
+        return stack.getOrCreateTag().getByte("TimeMode");
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time)
 	{
-		ItemHelper.getOrCreateCompound(stack).putByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
+        stack.getOrCreateTag().putByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge)
@@ -276,13 +274,13 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	@Override
 	public byte getMode(@Nonnull ItemStack stack)
 	{
-		return ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
+        return stack.getOrCreateTag().getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
-		NBTTagCompound tag = ItemHelper.getOrCreateCompound(stack);
+        NBTTagCompound tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}

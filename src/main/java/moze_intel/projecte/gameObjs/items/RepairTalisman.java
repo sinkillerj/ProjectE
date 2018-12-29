@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -22,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
@@ -200,7 +198,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 		AlchChestTile tile = ((AlchChestTile) te);
 
-		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
+        byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
 
 		if (coolDown > 0)
 		{
@@ -247,7 +245,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return false;
 		}
 
-		byte coolDown = ItemHelper.getOrCreateCompound(stack).getByte("Cooldown");
+        byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
 
 		if (coolDown > 0)
 		{

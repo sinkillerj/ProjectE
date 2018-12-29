@@ -127,11 +127,6 @@ public final class ItemHelper
 		return result;
 	}
 
-	public static NBTTagCompound getOrCreateCompound(ItemStack stack)
-	{
-		return stack.getOrCreateTag();
-	}
-
 	public static String getOreDictionaryName(ItemStack stack)
 	{
 		if (stack.isEmpty())

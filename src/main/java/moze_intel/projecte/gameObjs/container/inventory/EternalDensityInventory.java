@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +21,7 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	public EternalDensityInventory(ItemStack stack, EntityPlayer player)
 	{
 		this.invItem = stack;
-		readFromNBT(ItemHelper.getOrCreateCompound(stack));
+        readFromNBT(stack.getOrCreateTag());
 	}
 
 	@Override
