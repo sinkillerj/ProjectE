@@ -2,6 +2,9 @@ package moze_intel.projecte.api.item;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,9 +19,7 @@ import java.util.List;
  * @author williewillus
  */
 public interface IPedestalItem {
-
-	@OnlyIn(Dist.CLIENT)
-	String TOOLTIPDISABLED = TextFormatting.RED + I18n.format("pe.pedestal.item_disabled");
+	ITextComponent TOOLTIPDISABLED = new TextComponentTranslation("pe.pedestal.item_disabled").setStyle(new Style().setColor(TextFormatting.RED));
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside

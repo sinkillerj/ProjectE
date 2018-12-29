@@ -3,27 +3,27 @@ package moze_intel.projecte.events;
 import com.google.common.math.LongMath;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.Collector;
+import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
@@ -40,12 +40,12 @@ public class ToolTipEvent
 		}
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
-		EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
+		EntityPlayer clientPlayer = Minecraft.getInstance().player;
 
 		if (ProjectEConfig.misc.pedestalToolTips
 			&& currentItem instanceof IPedestalItem)
 		{
-			event.getToolTip().add(TextFormatting.DARK_PURPLE + I18n.format("pe.pedestal.on_pedestal") + " ");
+			event.getToolTip().add(new TextComponentTranslation("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
 			List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
 			if (description.isEmpty())
 			{
@@ -53,18 +53,18 @@ public class ToolTipEvent
 			}
 			else
 			{
-				event.getToolTip().addAll(((IPedestalItem) currentItem).getPedestalDescription());
+				((IPedestalItem) currentItem).getPedestalDescription()
+						.stream()
+						.map(TextComponentString::new)
+						.forEach(event.getToolTip()::add);
 			}
 		}
 
 		if (ProjectEConfig.misc.odToolTips)
 		{
-			for (int id : OreDictionary.getOreIDs(current))
+			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem()))
 			{
-				event.getToolTip().add("OD: " + OreDictionary.getOreName(id));
-			}
-			if (currentBlock instanceof BlockFluidBase) {
-				event.getToolTip().add("Fluid: " + ((BlockFluidBase) currentBlock).getFluid().getName());
+				event.getToolTip().add(new TextComponentString("#" + tag.toString()));
 			}
 		}
 
@@ -74,25 +74,31 @@ public class ToolTipEvent
 			{
 				long value = EMCHelper.getEmcValue(current);
 
-				event.getToolTip().add(TextFormatting.YELLOW +
-						I18n.format("pe.emc.emc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, 1));
+				ITextComponent prefix = new TextComponentTranslation("pe.emc.emc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
+				ITextComponent valueText = new TextComponentString(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.WHITE));
+				ITextComponent sell = new TextComponentString(EMCHelper.getEmcSellString(current, 1)).setStyle(new Style().setColor(TextFormatting.BLUE));
+
+				event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 
 				if (current.getCount() > 1)
 				{
+					prefix = new TextComponentTranslation("pe.emc.stackemc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
 					long total;
 					try
 					{
 						total = LongMath.checkedMultiply(value, current.getCount());
 						if (total < 0 || total <= value)
 						{
-							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
+							event.getToolTip().add(prefix.appendSibling(new TextComponentTranslation("pe.emc.too_much").setStyle(new Style().setObfuscated(true))));
 						}
 						else
 						{
-							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
+							valueText = new TextComponentString(Constants.EMC_FORMATTER.format(value * current.getCount())).setStyle(new Style().setColor(TextFormatting.WHITE));
+							sell = new TextComponentString(EMCHelper.getEmcSellString(current, current.getCount())).setStyle(new Style().setColor(TextFormatting.BLUE));
+							event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 						}
 					} catch (ArithmeticException e) {
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
+						event.getToolTip().add(prefix.appendSibling(new TextComponentTranslation("pe.emc.too_much").setStyle(new Style().setObfuscated(true))));
 					}
 				}
 
@@ -100,80 +106,80 @@ public class ToolTipEvent
 						&& clientPlayer != null
 						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false))
 				{
-					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.has_knowledge"));
+					event.getToolTip().add(new TextComponentTranslation("pe.emc.has_knowledge").setStyle(new Style().setColor(TextFormatting.YELLOW)));
 				}
 			}
 		}
 
 		if (ProjectEConfig.misc.statToolTips)
 		{
+			ITextComponent unit = new TextComponentTranslation("pe.emc.name");
+			ITextComponent rate = new TextComponentTranslation("pe.emc.rate");
 			/*
 			 * Collector ToolTips
 			 */
-			String unit = I18n.format("pe.emc.name");
-			String rate = I18n.format("pe.emc.rate");
-
+			int genRate = 0;
+			int storage = 0;
 			if (currentBlock == ObjHandler.collectorMK1)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxgenrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.COLLECTOR_MK1_GEN));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.COLLECTOR_MK1_MAX));
+				genRate = Constants.COLLECTOR_MK1_GEN;
+				storage = Constants.COLLECTOR_MK1_MAX;
 			}
 
 			if (currentBlock == ObjHandler.collectorMK2)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxgenrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.COLLECTOR_MK2_GEN));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.COLLECTOR_MK2_MAX));
+				genRate = Constants.COLLECTOR_MK2_GEN;
+				storage = Constants.COLLECTOR_MK2_MAX;
 			}
 
 			if (currentBlock == ObjHandler.collectorMK3)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxgenrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.COLLECTOR_MK3_GEN));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.COLLECTOR_MK3_MAX));
+				genRate = Constants.COLLECTOR_MK3_GEN;
+				storage = Constants.COLLECTOR_MK3_MAX;
+			}
+
+			if (currentBlock instanceof Collector)
+			{
+				ITextComponent label = new TextComponentTranslation("pe.emc.maxgenrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				ITextComponent val = new TextComponentString(Integer.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
+
+				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				val = new TextComponentString(Integer.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 
 			/*
 			 * Relay ToolTips
 			 */
+			int outRate = 0;
 			if (currentBlock == ObjHandler.relay)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxoutrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.RELAY_MK1_OUTPUT));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.RELAY_MK1_MAX));
+				outRate = Constants.RELAY_MK1_OUTPUT;
+				storage = Constants.RELAY_MK1_MAX;
 			}
 
 			if (currentBlock == ObjHandler.relayMK2)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxoutrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.RELAY_MK2_OUTPUT));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.RELAY_MK2_MAX));
+				outRate = Constants.RELAY_MK2_OUTPUT;
+				storage = Constants.RELAY_MK2_MAX;
 			}
 
 			if (currentBlock == ObjHandler.relayMK3)
 			{
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxoutrate_tooltip")
-						+ TextFormatting.BLUE + " %d " + rate, Constants.RELAY_MK3_OUTPUT));
-				event.getToolTip().add(TextFormatting.DARK_PURPLE
-						+ String.format(I18n.format("pe.emc.maxstorage_tooltip")
-						+ TextFormatting.BLUE + " %d " + unit, Constants.RELAY_MK3_MAX));
+				outRate = Constants.RELAY_MK3_OUTPUT;
+				storage = Constants.RELAY_MK3_MAX;
+			}
+
+			if (currentBlock instanceof Relay)
+			{
+				ITextComponent label = new TextComponentTranslation("pe.emc.maxoutrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				ITextComponent val = new TextComponentString(Integer.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
+
+				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				val = new TextComponentString(Integer.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 		}
 
@@ -190,7 +196,9 @@ public class ToolTipEvent
 					value = ((IItemEmc) current.getItem()).getStoredEmc(current);
 				}
 
-				event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.storedemc_tooltip") + " " + TextFormatting.RESET + Constants.EMC_FORMATTER.format(value));
+				ITextComponent label = new TextComponentTranslation("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
+				ITextComponent val = new TextComponentString(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
+				event.getToolTip().add(label.appendText(" ").appendSibling(val));
 			}
 		}
 	}

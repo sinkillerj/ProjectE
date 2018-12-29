@@ -190,9 +190,10 @@ public class TransmutationRenderingEvent
 	
 	private static void addBlockToRenderList(World world, BlockPos pos)
 	{
-		AxisAlignedBB box = world.getBlockState(pos).getSelectedBoundingBox(world, pos).grow(0.02);
-		box = box.offset(-playerX, -playerY, -playerZ);
-		renderList.add(box);
+		for (AxisAlignedBB bb : world.getBlockState(pos).getRenderShape(world, pos).toBoundingBoxList())
+		{
+			renderList.add(bb.grow(0.2).offset(-playerX, -playerY, -playerZ));
+		}
 	}
 
 	private static float getPulseProportion()

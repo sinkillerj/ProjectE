@@ -68,7 +68,7 @@ public final class ProjectEConfig
 		@Config.Comment("Enable a more verbose debug logging")
 		public boolean debugLogging = false;
 
-		@Config.Comment("Show item Ore Dictionary names in tooltips (useful for custom EMC registration)")
+		@Config.Comment("Show item tags in tooltips (useful for custom EMC registration)")
 		public boolean odToolTips = false;
 
 		@Config.Comment("Show the EMC value as a tooltip on items and blocks")

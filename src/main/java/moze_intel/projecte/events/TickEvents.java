@@ -65,8 +65,8 @@ public class TickEvents
 					provider.sync(e, (EntityPlayerMP) event.player);
 				}
 
-				event.player.getCapability(InternalAbilities.CAPABILITY, null).ifPresent(InternalAbilities::tick);
-				event.player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(InternalTimers::tick);
+				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
+				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
 			}
 		}
 	}
