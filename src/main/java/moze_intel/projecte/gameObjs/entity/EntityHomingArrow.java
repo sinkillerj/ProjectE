@@ -5,6 +5,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -32,15 +33,19 @@ public class EntityHomingArrow extends EntityTippedArrow
 	public EntityHomingArrow(World world)
 	{
 		super(world);
-		this.type = ObjHandler.HOMING_ARROW;
 	}
 
 	public EntityHomingArrow(World world, EntityLivingBase shooter, float damage)
 	{
 		super(world, shooter);
-		this.type = ObjHandler.HOMING_ARROW;
 		this.setDamage(damage);
 		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
+	}
+
+	@Override
+	public EntityType<?> getType()
+	{
+		return ObjHandler.HOMING_ARROW;
 	}
 
 	@Override
