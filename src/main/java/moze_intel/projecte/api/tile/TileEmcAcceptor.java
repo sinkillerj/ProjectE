@@ -1,5 +1,6 @@
 package moze_intel.projecte.api.tile;
 
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
@@ -11,6 +12,11 @@ import javax.annotation.Nonnull;
  */
 public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor
 {
+	public TileEmcAcceptor(TileEntityType<?> type)
+	{
+		super(type);
+	}
+
 	@Override
 	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
 	{

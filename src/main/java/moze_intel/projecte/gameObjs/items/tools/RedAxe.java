@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.state.enums.EnumMatterType;
+import moze_intel.projecte.gameObjs.EnumMatterType;
 import net.minecraft.block.material.Material;
-import net.minecraftforge.common.ToolType;
 
 public class RedAxe extends DarkAxe
 {

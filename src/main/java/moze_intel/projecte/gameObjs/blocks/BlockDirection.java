@@ -1,23 +1,21 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +30,7 @@ public abstract class BlockDirection extends Block
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder)
 	{
-		builder.add(PEStateProps.FACING);
+		builder.add((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING);
 	}
 
 	@Nonnull
@@ -41,7 +39,7 @@ public abstract class BlockDirection extends Block
 	{
 		if (ctx.getPlayer() != null)
 		{
-			return getDefaultState().with(PEStateProps.FACING, ctx.getPlayer().getHorizontalFacing().getOpposite());
+			return getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, ctx.getPlayer().getHorizontalFacing().getOpposite());
 		}
 		return getDefaultState();
 	}
@@ -78,7 +76,7 @@ public abstract class BlockDirection extends Block
 
 	private void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
 	{
-		world.setBlockState(pos, world.getBlockState(pos).with(PEStateProps.FACING, player.getHorizontalFacing().getOpposite()));
+		world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite()));
 	}
 
 }

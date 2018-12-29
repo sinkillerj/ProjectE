@@ -14,8 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import org.apache.commons.lang3.ClassUtils;
 
 import javax.annotation.Nonnull;
@@ -77,7 +77,7 @@ public class ConversionProxyImpl implements IConversionProxy
 	}
 
 	private String getActiveMod() {
-		ModContainer activeMod = Loader.instance().activeModContainer();
+		FMLModContainer activeMod = FMLModLoadingContext.get().getActiveContainer();
 		return activeMod == null ? "unknown Mod" : activeMod.getModId();
 	}
 

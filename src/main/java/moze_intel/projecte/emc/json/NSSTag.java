@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NSSTag implements NormalizedSimpleStack {
-	static final Map<String, NormalizedSimpleStack> tagStacks = new HashMap<>();
+	static final Map<String, NSSTag> tagStacks = new HashMap<>();
 
 	private final ResourceLocation tagId;
 

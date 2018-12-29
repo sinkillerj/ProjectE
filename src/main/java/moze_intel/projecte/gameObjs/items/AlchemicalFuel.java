@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.state.enums.EnumFuelType;
+import moze_intel.projecte.gameObjs.EnumFuelType;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemStack;
 

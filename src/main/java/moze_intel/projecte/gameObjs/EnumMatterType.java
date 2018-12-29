@@ -1,4 +1,4 @@
-package moze_intel.projecte.api.state.enums;
+package moze_intel.projecte.gameObjs;
 
 import net.minecraft.util.IStringSerializable;
 

@@ -1,5 +1,6 @@
 package moze_intel.projecte.api.tile;
 
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
@@ -11,6 +12,11 @@ import javax.annotation.Nonnull;
  */
 public class TileEmcProvider extends TileEmcBase implements IEmcProvider
 {
+	public TileEmcProvider(TileEntityType<?> type)
+	{
+		super(type);
+	}
+
 	@Override
 	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
 	{

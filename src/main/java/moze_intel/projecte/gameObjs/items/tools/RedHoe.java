@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.state.enums.EnumMatterType;
+import moze_intel.projecte.gameObjs.EnumMatterType;
 
 public class RedHoe extends DarkHoe
 {

@@ -1,23 +1,20 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -32,7 +29,7 @@ public class AlchemicalChest extends BlockDirection
 		super(builder/*Material.ROCK*/);
 		this.setTranslationKey("pe_alchemy_chest");
 		this.setHardness(10.0f);
-		this.setDefaultState(getStateContainer().getBaseState().with(PEStateProps.FACING, EnumFacing.NORTH));
+		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.HORIZONTAL_FACING, EnumFacing.NORTH));
 		this.setResistance(6000000.0F);
 	}
 

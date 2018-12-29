@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.state.enums.EnumFuelType;
 import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.blocks.Condenser;

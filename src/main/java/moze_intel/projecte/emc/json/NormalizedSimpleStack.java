@@ -47,14 +47,11 @@ public interface NormalizedSimpleStack {
 			} else {
 				try
 				{
-
-					return new ResourceLocation(s);
+					return new NSSItem(new ResourceLocation(s));
 				} catch (ResourceLocationException e)
 				{
 					throw new JsonParseException("Malformed item ID");
 				}
-
-				return new NSSItem(new ResourceLocation(s));
 			}
 		}
 
@@ -65,10 +62,10 @@ public interface NormalizedSimpleStack {
 	}
 
 	public static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
-		// Add conversions for all variants <-> NSSTag
-		for (Map.Entry<String, NormalizedSimpleStack> entry: NSSTag.tagStacks.entrySet()) {
-			NormalizedSimpleStack nssTag = entry.getValue();
-			for (Item i : ((NSSTag) nssTag).getAllElements()) {
+		// Add conversions for all items <-> NSSTag for tags they belong to
+		for (Map.Entry<String, NSSTag> entry: NSSTag.tagStacks.entrySet()) {
+			NSSTag nssTag = entry.getValue();
+			for (Item i : nssTag.getAllElements()) {
 				mapper.addConversion(1, nssTag, Collections.singletonList(new NSSItem(i)));
 				mapper.addConversion(1, new NSSItem(i), Collections.singletonList(nssTag));
 			}

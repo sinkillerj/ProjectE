@@ -4,9 +4,8 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.api.state.PEStateProps;
-import moze_intel.projecte.api.state.enums.EnumFuelType;
-import moze_intel.projecte.api.state.enums.EnumMatterType;
+import moze_intel.projecte.gameObjs.EnumFuelType;
+import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
 import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
@@ -47,7 +46,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -108,17 +109,17 @@ public class ClientProxy implements IProxy
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.alchChest,
-				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
+				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenser,
-				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
+				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
 		);
 
 		ModelLoader.setCustomStateMapper(
 				ObjHandler.condenserMk2,
-				(new StateMap.Builder()).ignore(PEStateProps.FACING).build()
+				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
 		);
 
 		// Items that have different properties or textures per meta value.

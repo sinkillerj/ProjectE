@@ -71,21 +71,21 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound write(NBTTagCompound tag)
 	{
-		tag = super.writeToNBT(tag);
+		tag = super.write(tag);
 		if (currentEMC > maximumEMC)
 		{
 			currentEMC = maximumEMC;
 		}
-		tag.setDouble("EMC", currentEMC);
+		tag.putDouble("EMC", currentEMC);
 		return tag;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	public void read(NBTTagCompound tag)
 	{
-		super.readFromNBT(tag);
+		super.read(tag);
 		double set = tag.getDouble("EMC");
 		if (set > maximumEMC)
 		{

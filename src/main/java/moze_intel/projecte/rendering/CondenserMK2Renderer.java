@@ -1,13 +1,13 @@
 package moze_intel.projecte.rendering;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.state.PEStateProps;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +28,7 @@ public class CondenserMK2Renderer extends TileEntityRenderer<CondenserMK2Tile>
 		if (condenser.getWorld() != null && !condenser.isRemoved())
 		{
 			IBlockState state = condenser.getWorld().getBlockState(condenser.getPos());
-			direction = state.getBlock() == ObjHandler.condenserMk2 ? state.get(PEStateProps.FACING) : null;
+			direction = state.getBlock() == ObjHandler.condenserMk2 ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null;
 		}
 
 		this.bindTexture(texture);

@@ -1,5 +1,6 @@
 package moze_intel.projecte.api.tile;
 
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
@@ -11,13 +12,15 @@ import javax.annotation.Nonnull;
  */
 public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcProvider
 {
-	public TileEmcHandler()
+	public TileEmcHandler(TileEntityType<?> type)
 	{
+		super(type);
 		this.maximumEMC = Double.MAX_VALUE;
 	}
 
-	public TileEmcHandler(double max)
+	public TileEmcHandler(TileEntityType<?> type, double max)
 	{
+		super(type);
 		this.maximumEMC = max;
 	}
 

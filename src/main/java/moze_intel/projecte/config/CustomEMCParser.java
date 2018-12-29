@@ -90,7 +90,7 @@ public final class CustomEMCParser
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG))) {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> e.nss == null || e.emc < 0 || !(e.nss instanceof NSSItem || e.nss instanceof NSSTag));
+			currentEntries.entries.removeIf(e -> !(e.nss instanceof NSSItem || e.nss instanceof NSSTag) || e.emc < 0);
 		} catch (IOException | JsonParseException e) {
 			PECore.LOGGER.fatal("Couldn't read custom emc file");
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	private static NormalizedSimpleStack getNss(String str, int meta)
+	private static NormalizedSimpleStack getNss(String str)
 	{
 		if (str.startsWith("#"))
 		{
@@ -110,9 +110,9 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static boolean addToFile(String toAdd, int meta, long emc)
+	public static boolean addToFile(String toAdd, long emc)
 	{
-		NormalizedSimpleStack nss = getNss(toAdd, meta);
+		NormalizedSimpleStack nss = getNss(toAdd);
 		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
 
 		int setAt = -1;
@@ -138,9 +138,9 @@ public final class CustomEMCParser
 		return true;
 	}
 
-	public static boolean removeFromFile(String toRemove, int meta)
+	public static boolean removeFromFile(String toRemove)
 	{
-		NormalizedSimpleStack nss = getNss(toRemove, meta);
+		NormalizedSimpleStack nss = getNss(toRemove);
 		Iterator<CustomEMCEntry> iter = currentEntries.entries.iterator();
 
 		boolean removed = false;
