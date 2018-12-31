@@ -11,19 +11,19 @@ abstract class WorldTransmuteAction implements IAction {
     final IBlockState sneakOutput;
     final IBlockState input;
 
-    private WorldTransmuteAction(IItemStack output, IItemStack sneakOutput, IItemStack input)
+    private WorldTransmuteAction(IItemStack output, IItemStack input, IItemStack sneakOutput)
     {
         this(CraftTweakerMC.getBlock(output).getStateFromMeta(output.getDamage()),
-                sneakOutput == null ? null : CraftTweakerMC.getBlock(sneakOutput).getStateFromMeta(sneakOutput.getDamage()),
-                CraftTweakerMC.getBlock(input).getStateFromMeta(input.getDamage()));
+                CraftTweakerMC.getBlock(input).getStateFromMeta(input.getDamage()),
+                sneakOutput == null ? null : CraftTweakerMC.getBlock(sneakOutput).getStateFromMeta(sneakOutput.getDamage()));
     }
 
-    private WorldTransmuteAction(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState sneakOutput, crafttweaker.api.block.IBlockState input)
+    private WorldTransmuteAction(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
     {
-        this(CraftTweakerMC.getBlockState(output), CraftTweakerMC.getBlockState(sneakOutput), CraftTweakerMC.getBlockState(input));
+        this(CraftTweakerMC.getBlockState(output), CraftTweakerMC.getBlockState(input), CraftTweakerMC.getBlockState(sneakOutput));
     }
 
-    private WorldTransmuteAction(IBlockState output, IBlockState sneakOutput, IBlockState input)
+    private WorldTransmuteAction(IBlockState output, IBlockState input, IBlockState sneakOutput)
     {
         this.output = output;
         this.sneakOutput = sneakOutput;
@@ -34,12 +34,12 @@ abstract class WorldTransmuteAction implements IAction {
     {
         Add(IItemStack output, IItemStack input, IItemStack sneakOutput)
         {
-            super(output, sneakOutput, input);
+            super(output, input, sneakOutput);
         }
 
         Add(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
         {
-            super(output, sneakOutput, input);
+            super(output, input, sneakOutput);
         }
 
         @Override
@@ -57,9 +57,14 @@ abstract class WorldTransmuteAction implements IAction {
 
     static class Remove extends WorldTransmuteAction
     {
-        Remove(IItemStack output, IItemStack sneakOutput, IItemStack input)
+        Remove(IItemStack output, IItemStack input, IItemStack sneakOutput)
         {
-            super(output, sneakOutput, input);
+            super(output, input, sneakOutput);
+        }
+
+        Remove(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
+        {
+            super(output, input, sneakOutput);
         }
 
         @Override

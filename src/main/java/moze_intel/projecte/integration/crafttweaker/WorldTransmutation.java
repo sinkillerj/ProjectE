@@ -40,6 +40,15 @@ public class WorldTransmutation
 	}
 
 	@ZenMethod
+	public static void remove(IBlockState output, IBlockState input, @Optional IBlockState sneakOutput)
+	{
+		if (checkNull(output, false) & checkNull(input, true))
+		{
+			CraftTweakerAPI.apply(new WorldTransmuteAction.Remove(output, input, sneakOutput));
+		}
+	}
+
+	@ZenMethod
 	public static void removeAll()
 	{
 		CraftTweakerAPI.apply(new WorldTransmuteAction.RemoveAll());
