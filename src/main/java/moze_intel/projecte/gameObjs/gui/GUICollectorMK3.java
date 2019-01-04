@@ -26,10 +26,10 @@ public class GUICollectorMK3 extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 	
@@ -46,8 +46,8 @@ public class GUICollectorMK3 extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
-		GlStateManager.color(1, 1, 1, 1);
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+		GlStateManager.color4f(1, 1, 1, 1);
+		Minecraft.getInstance().textureManager.bindTexture(texture);
 		
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;

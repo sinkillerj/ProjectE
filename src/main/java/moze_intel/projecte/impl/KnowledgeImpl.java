@@ -13,7 +13,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -46,7 +46,7 @@ public final class KnowledgeImpl {
             }
 
             @Override
-            public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side, NBTBase nbt) {
+            public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side, INBTBase nbt) {
                 if (nbt instanceof NBTTagCompound) {
                     instance.deserializeNBT((NBTTagCompound) nbt);
                 }
@@ -213,18 +213,18 @@ public final class KnowledgeImpl {
         public NBTTagCompound serializeNBT()
         {
             NBTTagCompound properties = new NBTTagCompound();
-            properties.setDouble("transmutationEmc", emc);
+            properties.putDouble("transmutationEmc", emc);
 
             NBTTagList knowledgeWrite = new NBTTagList();
             for (ItemStack i : knowledge)
             {
-                NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
-                knowledgeWrite.appendTag(tag);
+                NBTTagCompound tag = i.write(new NBTTagCompound());
+                knowledgeWrite.add(tag);
             }
 
-            properties.setTag("knowledge", knowledgeWrite);
-            properties.setTag("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
-            properties.setBoolean("fullknowledge", fullKnowledge);
+            properties.put("knowledge", knowledgeWrite);
+            properties.put("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
+            properties.putBoolean("fullknowledge", fullKnowledge);
             return properties;
         }
 
@@ -233,10 +233,10 @@ public final class KnowledgeImpl {
         {
             emc = properties.getDouble("transmutationEmc");
 
-            NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < list.tagCount(); i++)
+            NBTTagList list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++)
             {
-                ItemStack item = new ItemStack(list.getCompoundTagAt(i));
+                ItemStack item = ItemStack.read(list.getCompound(i));
                 if (!item.isEmpty())
                 {
                     knowledge.add(item);
@@ -251,7 +251,7 @@ public final class KnowledgeImpl {
                 inputLocks.setStackInSlot(i, ItemStack.EMPTY);
             }
 
-            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND));
+            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getList("inputlock", Constants.NBT.TAG_COMPOUND));
             fullKnowledge = properties.getBoolean("fullknowledge");
         }
 

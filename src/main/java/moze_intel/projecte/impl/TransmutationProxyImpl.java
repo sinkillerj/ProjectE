@@ -25,7 +25,6 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     {
         Preconditions.checkNotNull(origin);
         Preconditions.checkNotNull(result1);
-        Preconditions.checkState(Loader.instance().isInState(LoaderState.POSTINITIALIZATION), String.format("Mod %s tried to register world transmutation at an invalid time!", Loader.instance().activeModContainer().getModId()));
         if (WorldTransmutations.getWorldTransmutation(origin, false) != null)
         {
             return false;

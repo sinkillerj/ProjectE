@@ -29,10 +29,10 @@ public class GUIEternalDensity extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 	
@@ -41,24 +41,21 @@ public class GUIEternalDensity extends GuiContainer
 	{
 		super.initGui();
 		
-		this.buttonList.add(new GuiButton(1, (width - xSize) / 2 + 62, (height - ySize) / 2 + 4, 52, 20, inventory.isWhitelistMode() ? "Whitelist" : "Blacklist"));
+		this.buttons.add(new GuiButton(1, (width - xSize) / 2 + 62, (height - ySize) / 2 + 4, 52, 20, inventory.isWhitelistMode() ? "Whitelist" : "Blacklist") {
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				inventory.changeMode();
+				displayString = I18n.format(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist");
+			}
+		});
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException
-	{
-		super.actionPerformed(button);
-		
-		inventory.changeMode();
-		
-		button.displayString = I18n.format(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist");
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) 
 	{
-		GlStateManager.color(1, 1, 1, 1);
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+		GlStateManager.color4f(1, 1, 1, 1);
+		Minecraft.getInstance().textureManager.bindTexture(texture);
 		this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
 }

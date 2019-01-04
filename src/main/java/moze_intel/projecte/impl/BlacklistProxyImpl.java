@@ -25,7 +25,6 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     {
         Preconditions.checkNotNull(clazz);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering interdiction blacklist at incorrect time!", modid);
         doBlacklistInterdiction(clazz, modid);
     }
 
@@ -34,7 +33,6 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     {
         Preconditions.checkNotNull(clazz);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering SWRG repel at incorrect time!", modid);
         doBlacklistSwiftwolf(clazz, modid);
     }
 
@@ -43,7 +41,6 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     {
         Preconditions.checkNotNull(clazz);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering TimeWatch blacklist at incorrect time!", modid);
         doBlacklistTimewatch(clazz, modid);
     }
 
@@ -52,7 +49,6 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     {
         Preconditions.checkNotNull(stack);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        Preconditions.checkState(FMLModLoadingContext.get().getActiveContainer().getCurrentState() == ModLoadingStage.POSTINIT, "Mod %s registering NBT whitelist at incorrect time!", modid);
         doWhitelistNBT(stack, modid);
     }
 

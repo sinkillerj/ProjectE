@@ -9,6 +9,7 @@ import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -35,10 +36,10 @@ public class GUITransmutation extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 	
@@ -53,17 +54,39 @@ public class GUITransmutation extends GuiContainer
 		this.textBoxFilter = new GuiTextField(0, this.fontRenderer, xLocation + 88, yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(inv.filter);
 
-		this.buttonList.add(new GuiButton(1, xLocation + 125, yLocation + 100, 14, 14, "<"));
-		this.buttonList.add(new GuiButton(2, xLocation + 193, yLocation + 100, 14, 14, ">"));
+		this.buttons.add(new GuiButton(1, xLocation + 125, yLocation + 100, 14, 14, "<") {
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				if (inv.searchpage != 0)
+				{
+					inv.searchpage--;
+				}
+				inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
+				inv.updateClientTargets();
+			}
+		});
+		this.buttons.add(new GuiButton(2, xLocation + 193, yLocation + 100, 14, 14, ">") {
+			@Override
+			public void onClick(double mouseX, double mouseY)
+			{
+				if (!(inv.knowledge.size() <= 12))
+				{
+					inv.searchpage++;
+				}
+				inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
+				inv.updateClientTargets();
+			}
+		});
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		GlStateManager.color(1F, 1F, 1F, 1F);
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+		GlStateManager.color4f(1F, 1F, 1F, 1F);
+		Minecraft.getInstance().textureManager.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		this.textBoxFilter.drawTextBox();
+		this.textBoxFilter.drawTextField(mouseX, mouseY, partialTicks);
 	}
 	
 	@Override
@@ -105,19 +128,18 @@ public class GUITransmutation extends GuiContainer
 	}
 	
 	@Override
-	public void updateScreen() 
+	public void tick()
 	{
-		super.updateScreen();
-		this.textBoxFilter.updateCursorCounter();
+		super.tick();
+		this.textBoxFilter.tick();
 	}
 
 	@Override
-	protected void keyTyped(char par1, int par2)
+	public boolean charTyped(char par1, int par2)
 	{
+		boolean res = super.charTyped(par1, par2);
 		if (this.textBoxFilter.isFocused()) 
 		{
-			this.textBoxFilter.textboxKeyTyped(par1, par2);
-
 			String srch = this.textBoxFilter.getText().toLowerCase();
 
 			if (!inv.filter.equals(srch))
@@ -127,18 +149,12 @@ public class GUITransmutation extends GuiContainer
 				inv.updateClientTargets();
 			}
 		}
-
-		if (par2 == 1 || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() && !this.textBoxFilter.isFocused())
-		{
-			this.mc.player.closeScreen();
-		}
+		return res;
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int mouseButton) throws IOException
+	public boolean mouseClicked(double x, double y, int mouseButton)
 	{
-		super.mouseClicked(x, y, mouseButton);
-
 		int minX = textBoxFilter.x;
 		int minY = textBoxFilter.y;
 		int maxX = minX + textBoxFilter.width;
@@ -152,7 +168,7 @@ public class GUITransmutation extends GuiContainer
 			this.textBoxFilter.setText("");
 		}
 
-		this.textBoxFilter.mouseClicked(x, y, mouseButton);
+		return this.textBoxFilter.mouseClicked(x, y, mouseButton) || super.mouseClicked(x, y, mouseButton);
 	}
 
 	@Override
@@ -161,28 +177,5 @@ public class GUITransmutation extends GuiContainer
 		super.onGuiClosed();
 		inv.learnFlag = 0;
 		inv.unlearnFlag = 0;
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button)
-	{
-		String srch = this.textBoxFilter.getText().toLowerCase(Locale.ROOT);
-
-		if (button.id == 1)
-		{
-			if (inv.searchpage != 0)
-			{
-				inv.searchpage--;
-			}
-		}
-		else if (button.id == 2)
-		{
-			if (!(inv.knowledge.size() <= 12))
-			{
-				inv.searchpage++;
-			}
-		}
-		inv.filter = srch;
-		inv.updateClientTargets();
 	}
 }

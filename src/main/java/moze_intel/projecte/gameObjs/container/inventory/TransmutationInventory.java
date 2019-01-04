@@ -160,7 +160,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			if (ItemHelper.isDamageable(lockCopy))
 			{
-				lockCopy.setItemDamage(0);
+				lockCopy.setDamage(0);
 			}
 
 			long reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));

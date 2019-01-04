@@ -8,8 +8,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import javax.annotation.Nonnull;
 
@@ -20,35 +19,19 @@ public class EMCProxyImpl implements IEMCProxy
     private EMCProxyImpl() {}
 
     @Override
-    public void registerCustomEMC(@Nonnull ItemStack stack, int value)
-    {
-        registerCustomEMC(stack, (long) value);
-    }
-
-    @Override
-    public void registerCustomEMC(@Nonnull Object o, int value)
-    {
-        registerCustomEMC(o, (long) value);
-    }
-
-    @Override
     public void registerCustomEMC(@Nonnull ItemStack stack, long value)
     {
         Preconditions.checkNotNull(stack);
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
-        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(stack, value);
-        PECore.debugLog("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
+        PECore.debugLog("Mod {} registered emc value {} for itemstack {}", FMLModLoadingContext.get().getActiveContainer().getModId(), value, stack.toString());
     }
 
     @Override
     public void registerCustomEMC(@Nonnull Object o, long value)
     {
         Preconditions.checkNotNull(o);
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
-        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(o, value);
-        PECore.debugLog("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
+        PECore.debugLog("Mod {} registered emc value {} for Object {}", FMLModLoadingContext.get().getActiveContainer().getModId(), value, o);
     }
 
     @Override
