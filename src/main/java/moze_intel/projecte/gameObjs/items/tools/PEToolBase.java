@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.Particles;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,6 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -144,7 +144,7 @@ public abstract class PEToolBase extends ItemMode
 					world.removeBlock(pos);
 					if (world.rand.nextInt(5) == 0)
 					{
-						((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0, new int[0]);
+						((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
 					}
 				}
 			}
@@ -468,7 +468,12 @@ public abstract class PEToolBase extends ItemMode
 				}
 				if (Math.random() < 0.01)
 				{
-					Entity e = EntityList.createEntityByIDFromName(EntityList.getKey(ent), world);
+					Entity e = ent.getType().create(world);
+
+					if (e != null)
+					{
+						e.setPosition(ent.posX, ent.posY, ent.posZ);
+					}
 
 					if (e instanceof EntityLiving)
 					{

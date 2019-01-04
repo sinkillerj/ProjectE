@@ -78,7 +78,7 @@ public class ClientProxy implements IProxy
 	@Override
 	public IKnowledgeProvider getClientTransmutationProps()
 	{
-		return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new));
+		return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 	}
 
 	@Override

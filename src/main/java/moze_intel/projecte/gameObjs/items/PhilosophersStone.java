@@ -14,12 +14,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -86,7 +86,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result, hand);
 				if (world.rand.nextInt(8) == 0)
 				{
-					((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0, new int[0]);
+					((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
 

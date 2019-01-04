@@ -3,9 +3,10 @@ package moze_intel.projecte.gameObjs.entity;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.init.Particles;
 import net.minecraft.world.World;
 
 public class EntityNovaCatalystPrimed extends EntityTNTPrimed
@@ -13,15 +14,19 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 	public EntityNovaCatalystPrimed(World world) 
 	{
 		super(world);
-		this.type = ObjHandler.NOVA_CATALYST_PRIMED;
 		setFuse(20);
 	}
 	
 	public EntityNovaCatalystPrimed(World world, double x, double y, double z, EntityLivingBase placer)
 	{
 		super(world, x, y, z, placer);
-		this.type = ObjHandler.NOVA_CATALYST_PRIMED;
 		setFuse(20);
+	}
+
+	@Override
+	public EntityType<?> getType()
+	{
+		return ObjHandler.NOVA_CATALYST_PRIMED;
 	}
 
 	// Need exact override to do our own explosion
@@ -55,7 +60,7 @@ public class EntityNovaCatalystPrimed extends EntityTNTPrimed
 		else
 		{
 			this.handleWaterMovement();
-			this.getEntityWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.getEntityWorld().spawnParticle(Particles.SMOKE, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 	

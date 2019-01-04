@@ -9,12 +9,12 @@ import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 
 		if (world.isRemote) return EnumActionResult.SUCCESS;
 
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack stack = ctx.getItem();
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
 
@@ -80,7 +80,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 
 				if (world.rand.nextInt(8) == 0)
 				{
-					((WorldServer) world).spawnParticle(world.rand.nextBoolean() ? EnumParticleTypes.EXPLOSION_NORMAL : EnumParticleTypes.SMOKE_LARGE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+					((WorldServer) world).spawnParticle(world.rand.nextBoolean() ? Particles.POOF : Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}

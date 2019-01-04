@@ -6,9 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -102,11 +102,11 @@ public class NovaExplosion extends Explosion
 
 		if (cachedExplosionSize >= 2.0F)
 		{
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, x, y, z, 1.0D, 0.0D, 0.0D);
+			this.worldObj.spawnParticle(Particles.EXPLOSION_EMITTER, x, y, z, 1.0D, 0.0D, 0.0D);
 		}
 		else
 		{
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, x, y, z, 1.0D, 0.0D, 0.0D);
+			this.worldObj.spawnParticle(Particles.EXPLOSION, x, y, z, 1.0D, 0.0D, 0.0D);
 		}
 
 		Iterator<BlockPos> iterator;
@@ -138,8 +138,8 @@ public class NovaExplosion extends Explosion
                 d3 *= d7;
                 d4 *= d7;
                 d5 *= d7;
-                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + x * 1.0D) / 2.0D, (d1 + y * 1.0D) / 2.0D, (d2 + z * 1.0D) / 2.0D, d3, d4, d5);
-                this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
+                this.worldObj.spawnParticle(Particles.POOF, (d0 + x * 1.0D) / 2.0D, (d1 + y * 1.0D) / 2.0D, (d2 + z * 1.0D) / 2.0D, d3, d4, d5);
+                this.worldObj.spawnParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
             }
 
             if (state.getMaterial() != Material.AIR)
