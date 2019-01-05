@@ -11,7 +11,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -74,9 +73,8 @@ public class RMFurnaceContainer extends Container
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return (player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnaceOff
-				|| player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnaceOn)
-			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnaceOff
+				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	
 	@Override
@@ -155,7 +153,7 @@ public class RMFurnaceContainer extends Container
 					return ItemStack.EMPTY;
 				}
 			}
-			else if (!FurnaceRecipes.instance().getSmeltingResult(newStack).isEmpty())
+			else if (!tile.getSmeltingResult(newStack).isEmpty())
 			{
 				if (!this.mergeItemStack(stack, 1, 14, false))
 				{

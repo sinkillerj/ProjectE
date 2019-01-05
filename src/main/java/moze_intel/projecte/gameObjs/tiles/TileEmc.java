@@ -37,7 +37,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	@Override
 	public final NBTTagCompound getUpdateTag()
 	{
-		return writeToNBT(new NBTTagCompound());
+		return write(new NBTTagCompound());
 	}
 
 	protected boolean hasMaxedEmc()

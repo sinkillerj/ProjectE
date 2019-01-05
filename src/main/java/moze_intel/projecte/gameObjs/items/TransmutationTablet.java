@@ -16,8 +16,6 @@ public class TransmutationTablet extends ItemPE
 	public TransmutationTablet(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("transmutation_tablet");
-		this.setMaxStackSize(1);
 	}
 	
 	@Nonnull
@@ -26,7 +24,7 @@ public class TransmutationTablet extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			// todo 1.13 player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));

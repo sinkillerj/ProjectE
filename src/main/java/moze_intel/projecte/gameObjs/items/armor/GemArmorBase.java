@@ -10,13 +10,12 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
-public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
+public abstract class GemArmorBase extends ItemArmor
 {
 	public GemArmorBase(EntityEquipmentSlot armorType, Builder builder)
 	{
@@ -47,7 +46,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 		}
 		return true;
 	}
-
+/* todo 1.13
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
@@ -78,7 +77,7 @@ public abstract class GemArmorBase extends ItemArmor implements ISpecialArmor
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
+	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)

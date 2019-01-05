@@ -10,6 +10,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlowingFluid;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
@@ -45,8 +46,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
 	// TODO 1.13 remove
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
@@ -226,14 +227,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			{
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (block.getTickRandomly()
+				if (state.needsRandomTick()
 						&& !blacklist.contains(block.getRegistryName().toString())
-						&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
-						&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
+						&& !(block instanceof BlockFlowingFluid) // Don't speed vanilla non-source blocks - dupe issues
+						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)
 						&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					block.randomTick(state, world, pos, random);
+					state.randomTick(world, pos, random);
 				}
 			}
 		}
@@ -299,6 +300,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -333,7 +335,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
-	}
+	}*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

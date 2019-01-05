@@ -1,3 +1,4 @@
+/* todo 1.13
 package moze_intel.projecte.emc.mappers;
 
 import crafttweaker.api.recipes.ICraftingRecipe;
@@ -28,4 +29,4 @@ public class CraftTweakerRecipeMapper implements CraftingMapper.IRecipeMapper {
     public boolean canHandle(IRecipe recipe) {
         return ctCompat && (recipe instanceof ICraftingRecipe);
     }
-}
+}*/

@@ -8,7 +8,6 @@ import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
-import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGravel;
 import net.minecraft.block.BlockSand;
@@ -18,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -110,7 +110,7 @@ public class RedStar extends PEToolBase
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (block instanceof BlockGrass || block instanceof BlockDirt || block instanceof BlockSand)
+				else if (block instanceof BlockGrass || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block instanceof BlockSand) // todo 1.13 tag?
 				{
 					digAOE(stack, world, player, false, 0, hand);
 				}

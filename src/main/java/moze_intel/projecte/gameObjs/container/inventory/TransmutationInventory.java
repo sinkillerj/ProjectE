@@ -66,7 +66,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		
 		if (ItemHelper.isDamageable(stack))
 		{
-			stack.setItemDamage(0);
+			stack.setDamage(0);
 		}
 		
 		if (!provider.hasKnowledge(stack))
@@ -101,7 +101,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (ItemHelper.isDamageable(stack))
 		{
-			stack.setItemDamage(0);
+			stack.setDamage(0);
 		}
 
 		if (provider.hasKnowledge(stack))
@@ -280,7 +280,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		try
 		{
-			displayName = stack.getDisplayName().toLowerCase(Locale.ROOT);
+			displayName = stack.getDisplayName().getUnformattedComponentText().toLowerCase(Locale.ROOT);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

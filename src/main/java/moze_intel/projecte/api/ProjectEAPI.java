@@ -8,7 +8,8 @@ import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class ProjectEAPI
 {
@@ -16,6 +17,7 @@ public final class ProjectEAPI
 	private static ITransmutationProxy transProxy;
 	private static IBlacklistProxy blacklistProxy;
 	private static IConversionProxy recipeProxy;
+	private static final Logger LOGGER = LogManager.getLogger("projecteapi");
 
 	private ProjectEAPI() {}
 
@@ -23,13 +25,13 @@ public final class ProjectEAPI
 	 * The capability object for IAlchBagProvider
 	 */
 	@CapabilityInject(IAlchBagProvider.class)
-	public static final Capability<IAlchBagProvider> ALCH_BAG_CAPABILITY = null;
+	public static Capability<IAlchBagProvider> ALCH_BAG_CAPABILITY = null;
 
 	/**
 	 * The capability object for IKnowledgeProvider
 	 */
 	@CapabilityInject(IKnowledgeProvider.class)
-	public static final Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
+	public static Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
 
 	/**
 	 * Retrieves the proxy for EMC-based API queries.
@@ -45,7 +47,7 @@ public final class ProjectEAPI
 				emcProxy = (IEMCProxy) clazz.getField("instance").get(null);
 			} catch (ReflectiveOperationException ex)
 			{
-				FMLLog.warning("[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+				LOGGER.warn("Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
 			}
 		}
 		return emcProxy;
@@ -65,7 +67,7 @@ public final class ProjectEAPI
 				recipeProxy = (IConversionProxy) clazz.getField("instance").get(null);
 			} catch (ReflectiveOperationException ex)
 			{
-				FMLLog.warning("[ProjectEAPI] Error retrieving ConversionProxyImpl, ProjectE may be absent, damaged, or outdated.");
+				LOGGER.warn("Error retrieving ConversionProxyImpl, ProjectE may be absent, damaged, or outdated.");
 			}
 		}
 		return recipeProxy;
@@ -85,7 +87,7 @@ public final class ProjectEAPI
 				transProxy = (ITransmutationProxy) clazz.getField("instance").get(null);
 			} catch (ReflectiveOperationException ex)
 			{
-				FMLLog.warning("[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+				LOGGER.warn("Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
 			}
 		}
 		return transProxy;
@@ -105,7 +107,7 @@ public final class ProjectEAPI
 				blacklistProxy = (IBlacklistProxy) clazz.getField("instance").get(null);
 			} catch (ReflectiveOperationException ex)
 			{
-				FMLLog.warning("[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+				LOGGER.warn("Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
 			}
 		}
 		return blacklistProxy;

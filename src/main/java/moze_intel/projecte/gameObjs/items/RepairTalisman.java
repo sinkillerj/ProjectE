@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
-import baubles.api.IBauble;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -27,11 +24,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -39,13 +31,12 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
 	public RepairTalisman(Builder builder)
 	{
 		super(builder);
-		this.setTranslationKey("repair_talisman");
 	}
 
 	@Override
@@ -91,9 +82,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			}
 		}
 
-		if (ModList.get().isLoaded("baubles")) baubleRepair(player);
+		// if (ModList.get().isLoaded("baubles")) baubleRepair(player);
 	}
-
+/* todo 1.13
 	@Optional.Method(modid = "baubles")
 	public void baubleRepair(EntityPlayer player)
 	{
@@ -148,7 +139,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
-	}
+	}*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

@@ -3,16 +3,12 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -23,9 +19,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 	{
 		super(builder);
 		this.tier = tier;
-		this.setMaxDamage(0);
-		this.setMaxStackSize(1);
-		this.setNoRepair();
 	}
 	
 	@Override

@@ -43,13 +43,13 @@ import net.minecraftforge.fml.common.Optional;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
 	public Arcana(Builder builder)
 	{
 		super(builder);
-		setContainerItem(this);
+		// todo 1.13 setContainerItem(this);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 
@@ -127,7 +127,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		
 		tick(stack, entity.getEntityWorld(), (EntityPlayerMP)entity);
 	}
-
+/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
@@ -148,7 +148,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 	public boolean canUnequip(ItemStack stack, EntityLivingBase player)
 	{
 		return true;
-	}
+	}*/
 
 	@OnlyIn(Dist.CLIENT)
 	@Override

@@ -226,15 +226,17 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
 				{
-					ItemStack result = ItemHandlerHelper.insertItemStacked(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null), e.getItem(), false);
-					if (!result.isEmpty())
-					{
-						e.setItem(result);
-					}
-					else
-					{
-						e.remove();
-					}
+					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+						ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
+						if (!result.isEmpty())
+						{
+							e.setItem(result);
+						}
+						else
+						{
+							e.remove();
+						}
+					});
 				}
 			}
 		}

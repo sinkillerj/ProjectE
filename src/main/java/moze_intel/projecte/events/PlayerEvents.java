@@ -46,11 +46,11 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void cloneEvent(PlayerEvent.Clone evt)
 	{
-		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElse(null).serializeNBT();
-		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElse(null).deserializeNBT(bags);
+		NBTTagCompound bags = evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).serializeNBT();
+		evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 
-		NBTTagCompound knowledge = evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).orElse(null).serializeNBT();
-		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).orElse(null).deserializeNBT(knowledge);
+		NBTTagCompound knowledge = evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).orElseThrow(NullPointerException::new).serializeNBT();
+		evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(c -> c.deserializeNBT(knowledge));
 	}
 
 	// On death or return from end, sync to the client

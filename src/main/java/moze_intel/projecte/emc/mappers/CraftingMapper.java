@@ -15,8 +15,6 @@ import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper(), new CraftTweakerRecipeMapper());
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/);
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final Configuration config) {
@@ -151,7 +149,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe;
+			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe/* || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe todo 1.13*/;
 		}
 	}
 

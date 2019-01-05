@@ -48,15 +48,15 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0).setSaved(false);
 
 	public VolcaniteAmulet(Builder builder)
 	{
 		super(builder);
-		this.setContainerItem(this);
+		// todo 1.13 this.setContainerItem(this);
 	}
 
 	@Nonnull
@@ -145,7 +145,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
 	{
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-		EntityLavaProjectile ent = new EntityLavaProjectile(player.getEntityWorld(), player);
+		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().spawnEntity(ent);
 		return true;
@@ -160,7 +160,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 		list.add(new TextComponentTranslation("pe.volcanite.tooltip3"));
 		list.add(new TextComponentTranslation("pe.volcanite.tooltip4"));
 	}
-	
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -195,7 +195,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
-	}
+	}*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

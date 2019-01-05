@@ -7,9 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import mezz.jei.util.Log;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
@@ -40,7 +38,7 @@ public interface NormalizedSimpleStack {
 				return NSSFake.create(s.substring("FAKE|".length()));
 			} else if (s.startsWith("FLUID|")) {
 				String fluidName = s.substring("FLUID|".length());
-				Fluid fluid = FluidRegistry.getFluid(fluidName);
+				Fluid fluid = null; // todo 1.13 FluidRegistry.getFluid(fluidName);
 				if (fluid == null)
 					throw new JsonParseException("Tried to identify nonexistent Fluid " + fluidName);
 				return NSSFluid.create(fluid);

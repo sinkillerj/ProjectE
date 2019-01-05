@@ -53,6 +53,7 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
+				/*TODO 1.13
 				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
 				{
 					TextureAtlasSprite sprite = mc.getTextureMap().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
@@ -65,6 +66,7 @@ public class TransmutationRenderingEvent
 					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
 					Tessellator.getInstance().draw();
 				} else
+				*/
 				{
 					RenderHelper.enableStandardItemLighting();
 

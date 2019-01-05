@@ -1,13 +1,15 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -184,7 +186,7 @@ public final class ItemHelper
 
 	public static boolean isOre(IBlockState state)
 	{
-		if (Item.getItemFromBlock(state.getBlock()) == Items.AIR)
+		if (state.isAir())
 		{
 			return false;
 		}

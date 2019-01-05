@@ -7,19 +7,20 @@ import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -73,6 +74,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	});
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
+	private final TileEntityFurnace dummyFurnace = new TileEntityFurnace();
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
@@ -87,6 +89,20 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		super(type, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
+	}
+
+	@Override
+	public void setPos(BlockPos pos)
+	{
+		super.setPos(pos);
+		dummyFurnace.setPos(pos);
+	}
+
+	@Override
+	public void setWorld(World world)
+	{
+		super.setWorld(world);
+		dummyFurnace.setWorld(world);
 	}
 
 	protected int getInvSize()
@@ -151,6 +167,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		return super.getCapability(cap, side);
 	}
 
+	// todo 1.13 modernize vanillacopy
 	@Override
 	public void tick()
 	{
@@ -220,11 +237,11 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
-				Block block = world.getBlockState(pos).getBlock();
+				IBlockState state = world.getBlockState(pos);
 				
-				if (!this.getWorld().isRemote && block instanceof MatterFurnace)
+				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace)
 				{
-					((MatterFurnace) block).updateFurnaceBlockState(furnaceBurnTime > 0, world, getPos());
+					getWorld().setBlockState(pos, state.with(MatterFurnace.LIT, furnaceBurnTime > 0));
 				}
 			}
 
@@ -289,11 +306,25 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	{
 		// todo push to others
 	}
+
+	public ItemStack getSmeltingResult(ItemStack in)
+	{
+		dummyFurnace.setInventorySlotContents(0, in);
+		IRecipe recipe = getWorld().getRecipeManager().getRecipe(dummyFurnace, getWorld());
+		dummyFurnace.clear();
+
+		if (recipe != null)
+		{
+			return recipe.getRecipeOutput();
+		}
+
+		return ItemStack.EMPTY;
+	}
 	
 	private void smeltItem()
 	{
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
-		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt).copy();
+		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
 
 		if (world.rand.nextFloat() < getOreDoubleChance()
 			&& ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
@@ -315,7 +346,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			return false;
 		}
 		
-		ItemStack smeltResult = FurnaceRecipes.instance().getSmeltingResult(toSmelt);
+		ItemStack smeltResult = getSmeltingResult(toSmelt);
 		if (smeltResult.isEmpty())
 		{
 			return false;
@@ -357,9 +388,9 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
@@ -370,9 +401,9 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt = super.writeToNBT(nbt);
+		nbt = super.write(nbt);
 		nbt.putShort("BurnTime", (short) furnaceBurnTime);
 		nbt.putShort("CookTime", (short) furnaceCookTime);
 		nbt.put("Input", inputInventory.serializeNBT());

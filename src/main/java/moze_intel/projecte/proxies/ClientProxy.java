@@ -35,11 +35,8 @@ import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.renderer.entity.RenderSprite;
 import net.minecraft.client.renderer.entity.RenderTippedArrow;
 import net.minecraft.entity.Entity;
@@ -53,13 +50,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
@@ -96,32 +91,6 @@ public class ClientProxy implements IProxy
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent evt)
 	{
-		// Blocks with special needs
-		ModelLoader.setCustomStateMapper(
-				ObjHandler.novaCatalyst,
-				(new StateMap.Builder()).ignore(NovaCatalyst.EXPLODE).build()
-		);
-
-		ModelLoader.setCustomStateMapper(
-				ObjHandler.novaCataclysm,
-				(new StateMap.Builder()).ignore(NovaCataclysm.EXPLODE).build()
-		);
-
-		ModelLoader.setCustomStateMapper(
-				ObjHandler.alchChest,
-				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
-		);
-
-		ModelLoader.setCustomStateMapper(
-				ObjHandler.condenser,
-				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
-		);
-
-		ModelLoader.setCustomStateMapper(
-				ObjHandler.condenserMk2,
-				(new StateMap.Builder()).ignore((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING).build()
-		);
-
 		// Items that have different properties or textures per meta value.
 		registerCovalenceDust();
 		registerBags();

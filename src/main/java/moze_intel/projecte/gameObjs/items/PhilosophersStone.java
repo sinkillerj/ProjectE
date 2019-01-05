@@ -43,7 +43,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
-		this.setContainerItem(this);
+		// todo 1.13 this.setContainerItem(this);
 	}
 
 	public RayTraceResult getHitBlock(EntityPlayer player)
@@ -103,7 +103,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		World world = player.getEntityWorld();
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-		EntityMobRandomizer ent = new EntityMobRandomizer(world, player);
+		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.spawnEntity(ent);
 		return true;
@@ -114,7 +114,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.getEntityWorld().isRemote)
 		{
-			player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			// todo 1.13 player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		}
 
 		return true;

@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
@@ -34,9 +32,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -46,8 +41,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger
 {
 	public GemEternalDensity(Builder builder)
 	{
@@ -161,7 +156,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+				// todo 1.13 player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 			}
 		}
 		
@@ -344,6 +339,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		list.add(new TextComponentTranslation("pe.gemdensity.tooltip5"));
 	}
 	
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -378,7 +374,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
-	}
+	}*/
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
