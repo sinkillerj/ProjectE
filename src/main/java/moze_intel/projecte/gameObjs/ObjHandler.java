@@ -252,7 +252,6 @@ public class ObjHandler
 	public static final Item fireProjectile = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "fire_projectile");
 	public static final Item windProjectile = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
-	// public static final Item manual = new PEManual();
 
 	@ObjectHolder(PECore.MODID + ":fire_projectile")
 	public static EntityType<?> FIRE_PROJECTILE;

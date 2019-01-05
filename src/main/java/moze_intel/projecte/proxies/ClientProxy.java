@@ -91,169 +91,13 @@ public class ClientProxy implements IProxy
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent evt)
 	{
-		// Items that have different properties or textures per meta value.
-		registerCovalenceDust();
-		registerBags();
-		registerFuels();
-		registerMatter();
-		registerKlein();
 		registerPowerItems();
-
-		// Normal items that have no variants / meta values. The json models are named "item.pe_<name>" because we register items with unlocal name.
-		// Which was a dumb decision made by somebody way back when. Oh well.
-		registerItem(ObjHandler.bodyStone);
-		registerItem(ObjHandler.soulStone);
-		registerItem(ObjHandler.mindStone);
-		registerItem(ObjHandler.lifeStone);
-		registerItem(ObjHandler.blackHole);
-		registerItem(ObjHandler.harvestGod);
-		registerItem(ObjHandler.eternalDensity);
-		registerItem(ObjHandler.timeWatch);
-		registerItem(ObjHandler.ignition);
-		registerItem(ObjHandler.zero);
-		registerItem(ObjHandler.voidRing);
-		registerItem(ObjHandler.waterOrb);
-		registerItem(ObjHandler.lavaOrb);
-		registerItem(ObjHandler.mobRandomizer);
-		registerItem(ObjHandler.lensExplosive);
-		registerItem(ObjHandler.windProjectile);
-		registerItem(ObjHandler.fireProjectile);
-
-		registerItem(ObjHandler.philosStone);
-		registerItem(ObjHandler.repairTalisman);
-		registerItem(ObjHandler.ironBand);
-		registerItem(ObjHandler.dCatalyst);
-		registerItem(ObjHandler.hyperLens);
-		registerItem(ObjHandler.cataliticLens);
-		registerItem(ObjHandler.tome);
-		registerItem(ObjHandler.transmutationTablet);
-		registerItem(ObjHandler.everTide);
-		registerItem(ObjHandler.volcanite);
-		registerItem(ObjHandler.dRod1);
-		registerItem(ObjHandler.dRod2);
-		registerItem(ObjHandler.dRod3);
-		registerItem(ObjHandler.angelSmite);
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.angelSmite, 1, new ModelResourceLocation(ObjHandler.angelSmite.getRegistryName(), "inventory"));
-		registerItem(ObjHandler.mercEye);
-
-		registerItem(ObjHandler.dmPick);
-		registerItem(ObjHandler.dmAxe);
-		registerItem(ObjHandler.dmShovel);
-		registerItem(ObjHandler.dmSword);
-		registerItem(ObjHandler.dmHoe);
-		registerItem(ObjHandler.dmShears);
-		registerItem(ObjHandler.dmHammer);
-
-		registerItem(ObjHandler.dmHelmet);
-		registerItem(ObjHandler.dmChest);
-		registerItem(ObjHandler.dmLegs);
-		registerItem(ObjHandler.dmFeet);
-
-		registerItem(ObjHandler.rmPick);
-		registerItem(ObjHandler.rmAxe);
-		registerItem(ObjHandler.rmShovel);
-		registerItem(ObjHandler.rmSword);
-		registerItem(ObjHandler.rmHoe);
-		registerItem(ObjHandler.rmShears);
-		registerItem(ObjHandler.rmHammer);
-		registerItem(ObjHandler.rmKatar);
-		registerItem(ObjHandler.rmStar);
-
-		registerItem(ObjHandler.rmHelmet);
-		registerItem(ObjHandler.rmChest);
-		registerItem(ObjHandler.rmLegs);
-		registerItem(ObjHandler.rmFeet);
-
-		registerItem(ObjHandler.gemHelmet);
-		registerItem(ObjHandler.gemChest);
-		registerItem(ObjHandler.gemLegs);
-		registerItem(ObjHandler.gemFeet);
-
-		registerItem(ObjHandler.manual);
-
-		// Item models for blocks
-		registerBlock(ObjHandler.alchChest);
-		registerBlock(ObjHandler.collectorMK2);
-		registerBlock(ObjHandler.collectorMK3);
-		registerBlock(ObjHandler.condenser);
-		registerBlock(ObjHandler.condenserMk2);
-		registerBlock(ObjHandler.interdictionTorch);
-		registerBlock(ObjHandler.dmFurnaceOff);
-		registerBlock(ObjHandler.dmPedestal);
-		registerBlock(ObjHandler.collectorMK1);
-		registerBlock(ObjHandler.novaCatalyst);
-		registerBlock(ObjHandler.novaCataclysm);
-		registerBlock(ObjHandler.relay);
-		registerBlock(ObjHandler.relayMK2);
-		registerBlock(ObjHandler.relayMK3);
-		registerBlock(ObjHandler.rmFurnaceOff);
-		registerBlock(ObjHandler.transmuteStone);
-	}
-
-	private static void registerBlock(Block b)
-	{
-		String name = ForgeRegistries.BLOCKS.getKey(b).toString();
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation(name, "inventory"));
-	}
-
-	private static void registerItem(Item i)
-	{
-		registerItem(i, 0);
-	}
-
-	private static void registerItem(Item i, int meta)
-	{
-		String name = ForgeRegistries.ITEMS.getKey(i).toString();
-		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(name, "inventory"));
-	}
-
-	private static void registerCovalenceDust()
-	{
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 0, new ModelResourceLocation(PECore.MODID + ":" + "covalence_low", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 1, new ModelResourceLocation(PECore.MODID + ":" + "covalence_medium", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ObjHandler.covalence, 2, new ModelResourceLocation(PECore.MODID + ":" + "covalence_high", "inventory"));
-	}
-
-	private static void registerBags()
-	{
-		for (EnumDyeColor e : EnumDyeColor.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.alchBag, e.getMetadata(), new ModelResourceLocation(PECore.MODID + ":" + "bags/alchbag_" + e.getName(), "inventory"));
-		}
-	}
-
-	private static void registerFuels()
-	{
-		for (EnumFuelType e : EnumFuelType.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.fuels, e.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + e.getName(), "inventory"));
-
-			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.fuelBlock).toString();
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.fuelBlock), e.ordinal(), new ModelResourceLocation(name, "fueltype=" + e.getName()));
-		}
-	}
-
-	private static void registerMatter()
-	{
-		for (EnumMatterType m : EnumMatterType.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.matter, m.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + m.getName(), "inventory"));
-
-			String name = ForgeRegistries.BLOCKS.getKey(ObjHandler.matterBlock).toString();
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ObjHandler.matterBlock), m.ordinal(), new ModelResourceLocation(name, "tier=" + m.getName()));
-		}
-	}
-
-	private static void registerKlein()
-	{
-		for (KleinStar.EnumKleinTier e : KleinStar.EnumKleinTier.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(ObjHandler.kleinStars, e.ordinal(), new ModelResourceLocation(PECore.MODID + ":" + "stars/klein_star_" + e.name, "inventory"));
-		}
 	}
 
 	private static void registerPowerItems()
 	{
+		// todo 1.13
+		/*
 		ModelResourceLocation off = new ModelResourceLocation(PECore.MODID + ":swrg_off", "inventory");
 		ModelResourceLocation fly = new ModelResourceLocation(PECore.MODID + ":swrg_fly", "inventory");
 		ModelResourceLocation repel = new ModelResourceLocation(PECore.MODID + ":swrg_repel", "inventory");
@@ -288,7 +132,7 @@ public class ClientProxy implements IProxy
 				}
 			}
 			return zero;
-		});
+		});*/
 	}
 
 	@Override
@@ -315,7 +159,7 @@ public class ClientProxy implements IProxy
 	@Override
 	public void registerLayerRenderers()
 	{
-		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+		Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
 		render.addLayer(new LayerYue(render));
 		render = skinMap.get("slim");
