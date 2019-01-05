@@ -1,12 +1,10 @@
 {
   "result": {
-    "item": "projecte:item.pe_alchemical_bag",
-    "data": 5
+    "item": "projecte:lime_alchemical_bag"
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_alchemical_bag",
-      "data": 32767
+      "tag": "projecte:alchemical_bags"
     },
     {
       "item": "#DYELIME"

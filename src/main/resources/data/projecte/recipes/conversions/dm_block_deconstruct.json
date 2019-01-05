@@ -1,13 +1,11 @@
 {
   "result": {
-    "item": "projecte:item.pe_matter",
-    "data": 0,
+    "item": "projecte:dark_matter",
     "count": 4
   },
   "ingredients": [
     {
-      "item": "projecte:matter_block",
-      "data": 0
+      "item": "projecte:dark_matter_block"
     }
   ],
   "type": "minecraft:crafting_shapeless"

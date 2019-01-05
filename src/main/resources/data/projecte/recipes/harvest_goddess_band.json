@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:harvest_goddess_band"
+  },
+  "pattern": [
+    "SFS",
+    "DID",
+    "SFS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#TREESAPLING"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "F": {
+      "item": "minecraft:poppy"
+    },
+    "I": {
+      "item": "projecte:iron_band"
+    }
+  }
+}

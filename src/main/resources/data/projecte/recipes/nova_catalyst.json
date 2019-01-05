@@ -8,8 +8,7 @@
       "item": "minecraft:tnt"
     },
     {
-      "item": "projecte:item.pe_fuel",
-      "data": 1
+      "item": "projecte:mobius_fuel"
     }
   ],
   "type": "minecraft:crafting_shapeless"

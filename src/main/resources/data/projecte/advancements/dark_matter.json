@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     },
     "title": {
       "translate": "advancements.pe_dark_matter"
@@ -18,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_matter",
-            "data": 0
+            "item": "projecte:dark_matter"
           }
         ]
       }

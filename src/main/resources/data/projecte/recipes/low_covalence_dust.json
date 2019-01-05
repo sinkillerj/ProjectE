@@ -1,0 +1,36 @@
+{
+  "result": {
+    "item": "projecte:low_covalence_dust",
+    "count": 40
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "#COBBLESTONE"
+    },
+    {
+      "item": "minecraft:charcoal"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:white_alchemical_bag",
+    "projecte:orange_alchemical_bag",
+    "projecte:magenta_alchemical_bag",
+    "projecte:light_blue_alchemical_bag",
+    "projecte:yellow_alchemical_bag",
+    "projecte:lime_alchemical_bag",
+    "projecte:pink_alchemical_bag",
+    "projecte:gray_alchemical_bag",
+    "projecte:light_gray_alchemical_bag",
+    "projecte:cyan_alchemical_bag",
+    "projecte:purple_alchemical_bag",
+    "projecte:blue_alchemical_bag",
+    "projecte:brown_alchemical_bag",
+    "projecte:green_alchemical_bag",
+    "projecte:red_alchemical_bag",
+    "projecte:black_alchemical_bag"
+  ]
+}

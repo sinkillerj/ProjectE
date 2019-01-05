@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:gem_chestplate"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:rm_chestplate"
+    },
+    {
+      "item": "projecte:klein_star_omega"
+    },
+    {
+      "item": "projecte:volcanite_amulet"
+    },
+    {
+      "item": "projecte:body_stone"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

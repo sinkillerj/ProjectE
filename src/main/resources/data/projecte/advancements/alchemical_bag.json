@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_alchemical_bag"
+      "item": "projecte:white_alchemical_bag"
     },
     "title": {
       "translate": "advancements.pe_alch_bag"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_alchemical_bag"
+            "tag": "projecte:alchemical_bags"
           }
         ]
       }

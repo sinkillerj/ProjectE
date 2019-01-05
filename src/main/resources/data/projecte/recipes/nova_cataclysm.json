@@ -8,8 +8,7 @@
       "item": "projecte:nova_catalyst"
     },
     {
-      "item": "projecte:item.pe_fuel",
-      "data": 2
+      "item": "projecte:aeternalis_fuel"
     }
   ],
   "type": "minecraft:crafting_shapeless"

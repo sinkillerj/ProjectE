@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_philosophers_stone"
+      "item": "projecte:philosophers_stone"
     },
     "title": {
       "translate": "advancements.pe_phil_stone"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_philosophers_stone"
+            "item": "projecte:philosophers_stone"
           }
         ]
       }

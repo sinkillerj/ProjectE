@@ -4,7 +4,7 @@
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_zero_ring"
+      "item": "projecte:zero_ring"
     },
     {
       "item": "minecraft:water_bucket"

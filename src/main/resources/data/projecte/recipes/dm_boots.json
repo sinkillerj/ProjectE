@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "projecte:dm_boots"
+  },
+  "pattern": [
+    "M M",
+    "M M"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "projecte:dark_matter"
+    }
+  }
+}

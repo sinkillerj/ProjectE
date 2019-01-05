@@ -10,12 +10,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     },
     "D": {
-      "item": "projecte:matter_block",
-      "data": 0
+      "item": "projecte:dark_matter_block"
     }
   }
 }

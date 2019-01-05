@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_dm_pick"
+      "item": "projecte:dm_pick"
     },
     "title": {
       "translate": "advancements.pe_dm_pick"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_dm_pick"
+            "item": "projecte:dm_pick"
           }
         ]
       }

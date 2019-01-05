@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:red_matter"
+  },
+  "pattern": [
+    "AAA",
+    "DDD",
+    "AAA"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "group": "projecte:red_matter",
+  "key": {
+    "A": {
+      "item": "projecte:aeternalis_fuel"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    }
+  }
+}

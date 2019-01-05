@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:blue_alchemical_bag"
+  },
+  "pattern": [
+    "CCC",
+    "WAW",
+    "WWW"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "projecte:alchemical_chest"
+    },
+    "C": {
+      "item": "projecte:high_covalence_dust"
+    },
+    "W": {
+      "item": "minecraft:blue_wool"
+    }
+  }
+}

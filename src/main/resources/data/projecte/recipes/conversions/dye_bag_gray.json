@@ -1,12 +1,10 @@
 {
   "result": {
-    "item": "projecte:item.pe_alchemical_bag",
-    "data": 7
+    "item": "projecte:gray_alchemical_bag"
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_alchemical_bag",
-      "data": 32767
+      "tag": "projecte:alchemical_bags"
     },
     {
       "item": "#DYEGRAY"

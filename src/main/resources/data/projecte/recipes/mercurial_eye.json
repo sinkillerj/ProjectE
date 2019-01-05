@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_mercurial_eye"
+    "item": "projecte:mercurial_eye"
   },
   "pattern": [
     "OBO",
@@ -13,8 +13,7 @@
       "item": "minecraft:brick_block"
     },
     "R": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     },
     "D": {
       "item": "#GEMDIAMOND"

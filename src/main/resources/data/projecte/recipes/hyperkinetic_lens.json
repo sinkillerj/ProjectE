@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_hyperkinetic_lens"
+    "item": "projecte:hyperkinetic_lens"
   },
   "pattern": [
     "DDD",
@@ -13,8 +13,7 @@
       "item": "#GEMDIAMOND"
     },
     "M": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     },
     "N": {
       "item": "projecte:nova_catalyst"

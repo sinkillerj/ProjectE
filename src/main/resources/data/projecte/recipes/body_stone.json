@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:body_stone"
+  },
+  "pattern": [
+    "SSS",
+    "RLR",
+    "SSS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "item": "projecte:red_matter"
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "L": {
+      "item": "#GEMLAPIS"
+    }
+  }
+}

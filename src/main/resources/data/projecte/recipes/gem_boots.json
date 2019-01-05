@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "projecte:gem_boots"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:rm_boots"
+    },
+    {
+      "item": "projecte:klein_star_omega"
+    },
+    {
+      "item": "projecte:swiftwolf_rending_gale"
+    },
+    {
+      "item": "projecte:swiftwolf_rending_gale"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_zero_ring"
+    "item": "projecte:zero_ring"
   },
   "pattern": [
     "SBS",
@@ -16,11 +16,10 @@
       "item": "minecraft:snow"
     },
     "I": {
-      "item": "projecte:item.pe_ring_iron_band"
+      "item": "projecte:iron_band"
     },
     "M": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     }
   }
 }

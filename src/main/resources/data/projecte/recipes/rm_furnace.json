@@ -9,8 +9,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
-      "item": "projecte:matter_block",
-      "data": 1
+      "item": "projecte:red_matter_block"
     },
     "F": {
       "item": "projecte:dm_furnace"

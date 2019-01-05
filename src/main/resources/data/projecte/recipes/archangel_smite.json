@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:archangel_smite"
+  },
+  "pattern": [
+    "BFB",
+    "MIM",
+    "BFB"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bow"
+    },
+    "F": {
+      "item": "#FEATHER"
+    },
+    "I": {
+      "item": "projecte:iron_band"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    }
+  }
+}

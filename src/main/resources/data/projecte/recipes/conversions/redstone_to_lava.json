@@ -4,7 +4,7 @@
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_volcanite_amulet"
+      "item": "projecte:volcanite_amulet"
     },
     {
       "item": "minecraft:bucket"

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:swiftwolf_rending_gale"
+  },
+  "pattern": [
+    "DFD",
+    "FIF",
+    "DFD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "F": {
+      "item": "#FEATHER"
+    },
+    "I": {
+      "item": "projecte:ring_iron_band"
+    }
+  }
+}

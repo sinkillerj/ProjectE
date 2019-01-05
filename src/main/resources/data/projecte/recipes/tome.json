@@ -5,7 +5,7 @@
     }
   ],
   "result": {
-    "item": "projecte:item.pe_tome"
+    "item": "projecte:tome"
   },
   "pattern": [
     "HML",
@@ -18,20 +18,16 @@
       "item": "minecraft:book"
     },
     "H": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 2
+      "item": "projecte:high_covalence_dust"
     },
     "K": {
-      "item": "projecte:item.pe_klein_star",
-      "data": 5
+      "item": "projecte:klein_star_omega"
     },
     "L": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 0
+      "item": "projecte:low_covalence_dust"
     },
     "M": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 1
+      "item": "projecte:medium_covalence_dust"
     }
   }
 }

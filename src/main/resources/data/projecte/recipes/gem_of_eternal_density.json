@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:gem_of_eternal_density"
+  },
+  "pattern": [
+    "DOD",
+    "MDM",
+    "DOD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "#GEMDIAMOND"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    }
+  }
+}

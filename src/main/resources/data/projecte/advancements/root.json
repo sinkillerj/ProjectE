@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_philosophers_stone"
+      "item": "projecte:philosophers_stone"
     },
     "title": {
       "translate": "itemGroup.projecte"

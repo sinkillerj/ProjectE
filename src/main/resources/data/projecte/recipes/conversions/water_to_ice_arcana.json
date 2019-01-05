@@ -4,8 +4,7 @@
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_arcana_ring",
-      "data": 32767
+      "item": "projecte:arcana_ring"
     },
     {
       "item": "minecraft:water_bucket"

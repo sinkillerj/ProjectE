@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "projecte:medium_covalence_dust",
+    "count": 40
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "item": "#INGOTIRON"
+    },
+    {
+      "item": "#DUSTREDSTONE"
+    }
+  ]
+}

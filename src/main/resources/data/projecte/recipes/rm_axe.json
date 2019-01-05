@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_rm_axe"
+    "item": "projecte:rm_axe"
   },
   "pattern": [
     "RR",
@@ -10,15 +10,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "item": "projecte:item.pe_dm_axe"
+      "item": "projecte:dm_axe"
     },
     "R": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     },
     "M": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     }
   }
 }

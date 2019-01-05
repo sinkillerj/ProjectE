@@ -1,12 +1,10 @@
 {
   "result": {
-    "item": "projecte:item.pe_alchemical_bag",
-    "data": 14
+    "item": "projecte:red_alchemical_bag"
   },
   "ingredients": [
     {
-      "item": "projecte:item.pe_alchemical_bag",
-      "data": 32767
+      "tag": "projecte:alchemical_bags"
     },
     {
       "item": "#DYERED"

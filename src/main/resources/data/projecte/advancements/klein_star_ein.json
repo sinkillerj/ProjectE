@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_klein_star",
-      "data": 0
+      "item": "projecte:klein_star_ein"
     },
     "title": {
       "translate": "advancements.pe_klein"
@@ -18,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_klein_star",
-            "data": 0
+            "item": "projecte:klein_star_ein"
           }
         ]
       }

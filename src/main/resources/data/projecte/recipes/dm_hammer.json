@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_dm_hammer"
+    "item": "projecte:dm_hammer"
   },
   "pattern": [
     "MDM",
@@ -13,8 +13,7 @@
       "item": "#GEMDIAMOND"
     },
     "M": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     }
   }
 }

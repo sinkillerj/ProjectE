@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "projecte:black_hole_band"
+  },
+  "pattern": [
+    "SSS",
+    "DID",
+    "SSS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "#STRING"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "I": {
+      "item": "projecte:ring_iron_band"
+    }
+  }
+}

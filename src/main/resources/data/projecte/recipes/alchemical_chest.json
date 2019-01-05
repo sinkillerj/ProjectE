@@ -10,16 +10,13 @@
   ],
   "key": {
     "L": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 0
+      "item": "projecte:low_covalence_dust"
     },
     "M": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 1
+      "item": "projecte:medium_covalence_dust"
     },
     "H": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 2
+      "item": "projecte:high_covalence_dust"
     },
     "S": {
       "item": "#STONE"

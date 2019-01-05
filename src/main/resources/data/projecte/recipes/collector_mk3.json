@@ -16,8 +16,7 @@
       "item": "projecte:collector_mk2"
     },
     "R": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     }
   }
 }

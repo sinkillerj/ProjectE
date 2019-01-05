@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_transmutation_tablet"
+    "item": "projecte:transmutation_tablet"
   },
   "pattern": [
     "DSD",
@@ -13,8 +13,7 @@
       "item": "#STONE"
     },
     "D": {
-      "item": "projecte:matter_block",
-      "data": 0
+      "item": "projecte:dark_matter_block"
     },
     "T": {
       "item": "projecte:transmutation_table"

@@ -122,8 +122,8 @@ public class ObjHandler
 	public static final Block rmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
 	public static final Block dmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
 	public static final Block dmPedestal = new Pedestal(Block.Builder.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
-	public static final Block dmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_block");
-	public static final Block rmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_block");
+	public static final Block dmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");
+	public static final Block rmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "red_matter_block");
 	public static final Block alchemicalCoalBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
 	public static final Block mobiusFuelBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "mobius_fuel_block");
 	public static final Block aeternalisFuelBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "aeternalis_fuel_block");

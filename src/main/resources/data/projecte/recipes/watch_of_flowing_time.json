@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "projecte:watch_of_flowing_time"
+  },
+  "pattern": [
+    "DGD",
+    "OCO",
+    "DGD"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "G": {
+      "item": "#GLOWSTONE"
+    },
+    "O": {
+      "item": "#OBSIDIAN"
+    }
+  }
+}

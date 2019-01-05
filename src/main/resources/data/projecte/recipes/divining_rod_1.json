@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_divining_rod_1"
+    "item": "projecte:divining_rod_1"
   },
   "pattern": [
     "DDD",
@@ -13,8 +13,7 @@
       "item": "#STICKWOOD"
     },
     "D": {
-      "item": "projecte:item.pe_covalence_dust",
-      "data": 0
+      "item": "projecte:low_covalence_dust"
     }
   }
 }

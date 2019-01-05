@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_philosophers_stone"
+    "item": "projecte:philosophers_stone"
   },
   "type": "forge:ore_shaped",
   "group": "projecte:philosophers_stone",

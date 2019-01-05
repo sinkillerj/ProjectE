@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_rm_hammer"
+    "item": "projecte:rm_hammer"
   },
   "pattern": [
     "RMR",
@@ -10,15 +10,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     },
     "H": {
-      "item": "projecte:item.pe_dm_hammer"
+      "item": "projecte:dm_hammer"
     },
     "M": {
-      "item": "projecte:item.pe_matter",
-      "data": 0
+      "item": "projecte:dark_matter"
     }
   }
 }

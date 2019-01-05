@@ -10,8 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "D": {
-      "item": "projecte:matter_block",
-      "data": 0
+      "item": "projecte:dark_matter_block"
     },
     "F": {
       "item": "minecraft:furnace"

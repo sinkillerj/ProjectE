@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:item.pe_matter",
-      "data": 1
+      "item": "projecte:red_matter"
     },
     "title": {
       "translate": "advancements.pe_red_matter"
@@ -18,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:item.pe_matter",
-            "data": 1
+            "item": "projecte:red_matter"
           }
         ]
       }
