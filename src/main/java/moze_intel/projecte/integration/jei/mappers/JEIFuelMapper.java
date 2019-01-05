@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.mappers;
 
 import moze_intel.projecte.emc.FuelMapper;
@@ -26,4 +27,4 @@ public class JEIFuelMapper extends JEICompatMapper<FuelUpgradeRecipe>
             }
         }
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.collectors;
 
 import mezz.jei.api.ingredients.IIngredients;
@@ -58,4 +59,4 @@ public class FuelUpgradeRecipe implements IRecipeWrapper {
 
         return Collections.emptyList();
     }
-}
+}*/

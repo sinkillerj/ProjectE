@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.world_transmute;
 
 import mezz.jei.api.IGuiHelper;
@@ -124,3 +125,4 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         return Collections.emptyList();
     }
 }
+*/

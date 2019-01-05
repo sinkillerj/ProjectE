@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei;
 
 import mezz.jei.api.IJeiRuntime;
@@ -69,3 +70,4 @@ public class PEJeiPlugin implements IModPlugin
     }
 
 }
+*/

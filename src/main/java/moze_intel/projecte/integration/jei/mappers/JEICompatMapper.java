@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.mappers;
 
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -32,4 +33,4 @@ public abstract class JEICompatMapper<T extends IRecipeWrapper>
         jeiRecipes.add(recipe);
         PEJeiPlugin.RUNTIME.getRecipeRegistry().addRecipe(recipe, recipeCategory);
     }
-}
+}*/

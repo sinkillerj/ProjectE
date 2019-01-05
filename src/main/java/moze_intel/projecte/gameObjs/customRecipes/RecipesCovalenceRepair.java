@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.IInventory;
@@ -16,8 +15,13 @@ import java.util.List;
 
 public class RecipesCovalenceRepair implements IRecipe
 {
-	public static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "covalence_repair");
+	private final ResourceLocation id;
 	private ItemStack output = ItemStack.EMPTY;
+
+	public RecipesCovalenceRepair(ResourceLocation id)
+	{
+		this.id = id;
+	}
 
 	@Override
 	public boolean matches(@Nonnull IInventory inv, @Nonnull World world)
@@ -101,13 +105,12 @@ public class RecipesCovalenceRepair implements IRecipe
 	@Override
 	public ResourceLocation getId()
 	{
-		return ID;
+		return id;
 	}
 
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		// todo 1.13
-		return null;
+		return ObjHandler.COVALENCE_REPAIR_RECIPE_SERIALIZER;
 	}
 }

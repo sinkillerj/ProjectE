@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.collectors;
 
 import mezz.jei.api.IGuiHelper;
@@ -107,4 +108,4 @@ public class CollectorRecipeCategory implements IRecipeCategory
     public List<String> getTooltipStrings(int mouseX, int mouseY) {
         return Collections.emptyList();
     }
-}
+}*/
