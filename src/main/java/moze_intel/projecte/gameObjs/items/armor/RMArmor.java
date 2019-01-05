@@ -12,14 +12,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
-import thaumcraft.api.items.IGoggles;
-import thaumcraft.api.items.IRevealer;
 
 import javax.annotation.Nonnull;
 
-@Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
-public class RMArmor extends ItemArmor implements IRevealer, IGoggles
+// todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
+public class RMArmor extends ItemArmor
 {
 	public RMArmor(EntityEquipmentSlot armorType, Builder builder)
 	{
@@ -67,6 +64,7 @@ public class RMArmor extends ItemArmor implements IRevealer, IGoggles
 		return PECore.MODID + ":textures/armor/redmatter_"+index+".png";
 	}
 
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "Thaumcraft")
 	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
@@ -79,5 +77,5 @@ public class RMArmor extends ItemArmor implements IRevealer, IGoggles
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
-	}
+	}*/
 }

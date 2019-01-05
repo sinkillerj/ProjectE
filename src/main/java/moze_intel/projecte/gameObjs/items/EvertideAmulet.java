@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
@@ -32,6 +30,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -55,9 +54,6 @@ import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,15 +61,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
 
 	public EvertideAmulet(Builder builder)
 	{
 		super(builder);
-		this.setContainerItem(this);
+		// todo 1.13 this.setContainerItem(this);
 	}
 
 	@Nonnull
@@ -87,9 +83,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			TileEntity tile = world.getTileEntity(ctx.getPos());
 
-			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit))
+			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ctx.getFace()).isPresent())
 			{
-				FluidHelper.tryFillTank(tile, FluidRegistry.WATER, ctx.getFace(), Fluid.BUCKET_VOLUME);
+				// todo 1.13 FluidHelper.tryFillTank(tile, FluidRegistry.WATER, ctx.getFace(), Fluid.BUCKET_VOLUME);
 			} else
 			{
 				IBlockState state = world.getBlockState(ctx.getPos());
@@ -104,7 +100,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				else
 				{
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					placeWater(world, player, ctx.getPos().offset(ctx.getFace()), hand);
+					placeWater(world, player, ctx.getPos().offset(ctx.getFace()));
 				}
 			}
 		}
@@ -133,7 +129,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		};
 	}
 
-	private void placeWater(World world, EntityPlayer player, BlockPos pos, EnumHand hand)
+	private void placeWater(World world, EntityPlayer player, BlockPos pos)
 	{
 		Material material = world.getBlockState(pos).getMaterial();
 
@@ -153,7 +149,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.WATER.getDefaultState(), hand);
+			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.WATER.getDefaultState());
 		}
 
 	}
@@ -183,7 +179,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if ((world.getBlockState(pos.down()).getBlock() == Blocks.WATER || world.getBlockState(pos.down()).getBlock() == Blocks.FLOWING_WATER) && world.isAirBlock(pos))
+		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos))
 		{
 			if (!living.isSneaking())
 			{
@@ -219,7 +215,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		if (!world.dimension.doesWaterVaporize())
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
+			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
 			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 			world.spawnEntity(ent);
 			return true;
@@ -238,7 +234,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		list.add(new TextComponentTranslation("pe.evertide.tooltip3"));
 		list.add(new TextComponentTranslation("pe.evertide.tooltip4"));
 	}
-	
+
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -274,6 +271,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	{
 		return true;
 	}
+	*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
@@ -328,7 +326,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		}
 
 		private final FluidTankProperties props =
-				new FluidTankProperties(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME), Fluid.BUCKET_VOLUME);
+				new FluidTankProperties(null/*todo 1.13 new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME)*/, Fluid.BUCKET_VOLUME);
 
 		@Override
 		public IFluidTankProperties[] getTankProperties() {
@@ -341,10 +339,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		@Nullable
 		@Override
 		public FluidStack drain(FluidStack resource, boolean doDrain) {
-			if (resource.getFluid() == FluidRegistry.WATER)
+			/*if (resource.getFluid() == FluidRegistry.WATER)
 			{
 				return resource.copy();
-			} else
+			} else*/
 			{
 				return null;
 			}
@@ -353,7 +351,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		@Nullable
 		@Override
 		public FluidStack drain(int maxDrain, boolean doDrain) {
-			return new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
+			return null; //new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
 		}
 
 		@Nonnull

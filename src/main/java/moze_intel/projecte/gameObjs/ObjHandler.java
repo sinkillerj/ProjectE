@@ -473,7 +473,6 @@ public class ObjHandler
 
 		r.register(tome);
 		r.register(transmutationTablet);
-		// r.register(manual);
 	}
 
 	@SubscribeEvent

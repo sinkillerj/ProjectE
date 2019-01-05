@@ -11,7 +11,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -23,10 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class DiviningRod extends ItemPE implements IModeChanger
@@ -52,7 +50,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			return EnumActionResult.SUCCESS;
 		}
 
-		PlayerHelper.swingItem(player, hand);
+		// todo 1.13 PlayerHelper.swingItem(player, hand);
 		List<Long> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;
@@ -84,28 +82,22 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 			if (blockEmc == 0)
 			{
-				Map<ItemStack, ItemStack> map = FurnaceRecipes.instance().getSmeltingList();
+				PrimitiveIterator.OfLong iter = world.getRecipeManager().getRecipes().stream()
+						.filter(r -> r instanceof FurnaceRecipe && r.getIngredients().get(0).test(blockStack))
+						.mapToLong(r -> EMCHelper.getEmcValue(r.getRecipeOutput()))
+						.iterator();
 
-				for (Entry<ItemStack, ItemStack> entry : map.entrySet())
+				while (iter.hasNext())
 				{
-					if (entry == null || entry.getKey().isEmpty())
+					long currentValue = iter.nextLong();
+					if (currentValue != 0)
 					{
-						continue;
-					}
-
-					if (entry.getKey().getItem() != blockStack.getItem())
-					{
-						long currentValue = EMCHelper.getEmcValue(entry.getValue());
-
-						if (currentValue != 0)
+						if (!emcValues.contains(currentValue))
 						{
-							if (!emcValues.contains(currentValue))
-							{
-								emcValues.add(currentValue);
-							}
-
-							totalEmc += currentValue;
+							emcValues.add(currentValue);
 						}
+
+						totalEmc += currentValue;
 					}
 				}
 			}

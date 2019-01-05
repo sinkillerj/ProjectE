@@ -236,18 +236,18 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lock.deserializeNBT(nbt.getCompound("LockSlot"));
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt = super.writeToNBT(nbt);
+		nbt = super.write(nbt);
 		nbt.put("Input", inputInventory.serializeNBT());
 		nbt.put("LockSlot", lock.serializeNBT());
 		return nbt;

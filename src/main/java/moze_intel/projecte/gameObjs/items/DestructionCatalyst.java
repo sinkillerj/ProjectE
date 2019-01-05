@@ -85,7 +85,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 			}
 		}
 
-		PlayerHelper.swingItem(player, hand);
+		// todo 1.13 PlayerHelper.swingItem(player, hand);
 		if (hasAction)
 		{
 			WorldHelper.createLootDrop(drops, world, ctx.getPos());

@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 public final class InternalAbilities
 {
 	@CapabilityInject(InternalAbilities.class)
-	public static final Capability<InternalAbilities> CAPABILITY = null;
+	public static Capability<InternalAbilities> CAPABILITY = null;
 	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_abilities");
 
 	private final EntityPlayerMP player;

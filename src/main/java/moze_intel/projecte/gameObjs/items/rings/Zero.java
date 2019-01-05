@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -28,19 +26,18 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
 	public Zero(Builder builder)
 	{
 		super(builder);
-		this.setContainerItem(this);
+		// todo 1.13 this.setContainerItem(this);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	
@@ -88,7 +85,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
-	
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -124,6 +121,7 @@ public class Zero extends ItemPE implements IModeChanger, IBauble, IPedestalItem
 	{
 		return true;
 	}
+	*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

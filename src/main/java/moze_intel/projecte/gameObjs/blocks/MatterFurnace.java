@@ -36,11 +36,11 @@ public class MatterFurnace extends BlockFurnace
 		{
 			if (matterType == EnumMatterType.RED_MATTER)
 			{
-				player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+				// todo 1.13 player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 			else
 			{
-				player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+				// todo 1.13 player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 		}
 		

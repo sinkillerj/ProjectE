@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 public class InternalTimers
 {
     @CapabilityInject(InternalTimers.class)
-    public static final Capability<InternalTimers> CAPABILITY = null;
+    public static Capability<InternalTimers> CAPABILITY = null;
     public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_timers");
 
     private final Timer repair = new Timer();

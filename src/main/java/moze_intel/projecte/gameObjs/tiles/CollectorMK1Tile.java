@@ -330,9 +330,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		storedFuelEmc = nbt.getDouble("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
@@ -340,9 +340,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt = super.writeToNBT(nbt);
+		nbt = super.write(nbt);
 		nbt.putDouble("FuelEMC", storedFuelEmc);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("AuxSlots", auxSlots.serializeNBT());

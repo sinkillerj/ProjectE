@@ -187,7 +187,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                 {
                     if (kleinEmc < reqEmc)
                         break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
+                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
                     {
                         removeKleinEMC(stack, reqEmc);
                         kleinEmc -= reqEmc;
@@ -204,7 +204,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                     if (emc > reqEmc)
                     {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
+                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
                         {
                             long difference = emc - reqEmc;
                             kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
@@ -217,7 +217,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                         if (kleinEmc >= difference)
                         {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand))
+                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
                             {
                                 kleinEmc -= difference;
                                 removeKleinEMC(stack, difference);
@@ -226,7 +226,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                     }
                     else
                     {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState, hand);
+                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState);
                     }
                 }
 
@@ -265,7 +265,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+		// todo 1.13 player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
 		return true;
 	}
 

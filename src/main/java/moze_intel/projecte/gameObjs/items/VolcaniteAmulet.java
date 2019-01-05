@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
@@ -41,7 +39,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.common.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,9 +72,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit))
+			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent())
 			{
-				FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
+				// todo 1.13 FluidHelper.tryFillTank(tile, FluidRegistry.LAVA, sideHit, Fluid.BUCKET_VOLUME);
 			} else
 			{
 				placeLava(player, pos.offset(sideHit));

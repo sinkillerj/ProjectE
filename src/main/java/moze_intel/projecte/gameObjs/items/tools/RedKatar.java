@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
@@ -16,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -76,7 +76,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 			{
 				IBlockState state = world.getBlockState(mop.getBlockPos());
 				Block blockHit = state.getBlock();
-				if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt)
+				if (blockHit instanceof BlockGrass || blockHit == Blocks.DIRT)
 				{
 					// Hoe
 					tillAOE(stack, player, world, mop.getBlockPos(), mop.sideHit, 0);

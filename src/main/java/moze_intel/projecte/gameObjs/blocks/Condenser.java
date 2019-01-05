@@ -36,7 +36,7 @@ public class Condenser extends AlchemicalChest
 	{
 		if (!world.isRemote) 
 		{
-			player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+			// todo 1.13 player.openGui(PECore.instance, Constants.CONDENSER_GUI, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		
 		return true;

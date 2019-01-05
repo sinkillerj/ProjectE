@@ -14,7 +14,6 @@ import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
-import moze_intel.projecte.integration.jei.PEJeiPlugin;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.commands.ProjectECMD;
@@ -27,6 +26,7 @@ import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.command.Commands;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Config;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -90,6 +90,7 @@ public class PECore
 		DEV_ENVIRONMENT = false; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 		CONFIG_DIR = new File(/*TODO 1.13 event.getModConfigurationDirectory(), */MODNAME);
+		LOGGER.error(CONFIG_DIR.toPath().toAbsolutePath().toString());
 		
 		if (!CONFIG_DIR.exists())
 		{
@@ -120,8 +121,7 @@ public class PECore
 	private void postInit(FMLPostInitializationEvent event)
 	{
 		NBTWhitelistParser.init();
-		proxy.initializeManual();
-		
+
 		Integration.init();
 		handleImc();
 	}
@@ -163,6 +163,7 @@ public class PECore
 		InterModComms.getMessages(MODID).forEach(IMCHandler::handleIMC);
 	}
 
+	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
 		if (event.getModID().equals(MODID))
@@ -175,7 +176,7 @@ public class PECore
 	{
 		if (ModList.get().isLoaded("jei"))
 		{
-			PEJeiPlugin.refresh();
+			// todo 1.13 PEJeiPlugin.refresh();
 		}
 	}
 }

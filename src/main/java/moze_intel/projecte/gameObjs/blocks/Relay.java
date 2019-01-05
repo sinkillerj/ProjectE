@@ -41,6 +41,7 @@ public class Relay extends BlockDirection
 
 			switch (tier)
 			{
+				/* todo 1.13
 				case 1:
 					player.openGui(PECore.instance, Constants.RELAY1_GUI, world, x, y, z);
 					break;
@@ -50,6 +51,7 @@ public class Relay extends BlockDirection
 				case 3:
 					player.openGui(PECore.instance, Constants.RELAY3_GUI, world, x, y, z);
 					break;
+					*/
 			}
 		}
 		return true;

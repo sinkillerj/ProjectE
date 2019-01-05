@@ -234,18 +234,18 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		output.deserializeNBT(nbt.getCompound("Output"));
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt = super.writeToNBT(nbt);
+		nbt = super.write(nbt);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("Output", output.serializeNBT());
 		return nbt;

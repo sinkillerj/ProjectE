@@ -8,7 +8,6 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 
-// todo 1.13 split wall/ground
 public class InterdictionTorch extends BlockTorch
 {
 	public InterdictionTorch(Builder builder)

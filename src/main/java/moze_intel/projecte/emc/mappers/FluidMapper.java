@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.ImmutableMap;
@@ -89,7 +90,9 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
-		mapper.setValueBefore(NSSFluid.create(FluidRegistry.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+		mapper.setValueBefore(NSSFluid.create(FluidRegistry.WATER), Long.MIN_VALUE*/
+/*=Free. TODO: Use IntArithmetic*//*
+);
 		//1 Bucket of Lava = 1 Block of Obsidian
 		mapper.addConversion(1000, NSSFluid.create(FluidRegistry.LAVA), Collections.singletonList(new NSSItem(Blocks.OBSIDIAN)));
 
@@ -133,4 +136,4 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public boolean isAvailable() {
 		return true;
 	}
-}
+}*/

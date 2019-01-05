@@ -24,14 +24,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
-import thaumcraft.api.items.IGoggles;
-import thaumcraft.api.items.IRevealer;
 
 import java.util.List;
 
-@Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
-public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
+// todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
+public class GemHelmet extends GemArmorBase
 {
     public GemHelmet(Builder builder)
     {
@@ -105,7 +102,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         {
             player.getCapability(InternalTimers.CAPABILITY).ifPresent(handler -> {
                 handler.activateHeal();
-                if (player.getHealth() < player.getMaxHealth() && player.getCapability(InternalTimers.CAPABILITY, null).canHeal())
+                if (player.getHealth() < player.getMaxHealth() && handler.canHeal())
                 {
                     player.heal(2.0F);
                 }
@@ -127,6 +124,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
         }
     }
 
+    /* todo 1.13
     @Override
     @Optional.Method(modid = "Thaumcraft")
     public boolean showIngamePopups(ItemStack stack, EntityLivingBase player)
@@ -140,6 +138,7 @@ public class GemHelmet extends GemArmorBase implements IGoggles, IRevealer
     {
         return true;
     }
+    */
 
     public void doZap(EntityPlayer player)
     {

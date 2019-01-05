@@ -25,6 +25,7 @@ import net.minecraft.init.Particles;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.stats.StatList;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.DamageSource;
@@ -160,7 +161,8 @@ public abstract class PEToolBase extends ItemMode
 				}
 				else
 				{
-					if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(player, stack, world, newPos)))
+					ItemUseContext ctx = new ItemUseContext(player, stack, newPos, EnumFacing.UP, 0, 0, 0);
+					if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(ctx)))
 					{
 						continue;
 					}

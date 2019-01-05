@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -38,7 +36,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -111,7 +108,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		
 		tick(stack, world, (EntityPlayerMP)entity);
 	}
-
+/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public BaubleType getBaubleType(ItemStack stack)
@@ -127,7 +124,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		
 		tick(stack, entity.getEntityWorld(), (EntityPlayerMP)entity);
 	}
-/* todo 1.13
+
 	@Override
 	@Optional.Method(modid = "baubles")
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {}

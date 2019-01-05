@@ -16,7 +16,7 @@ public class SlotCondenserLock extends SlotGhost {
 	{
 		if (!stack.isEmpty() && ItemHelper.isDamageable(stack))
 		{
-			stack.setItemDamage(0);
+			stack.setDamage(0);
 		}
 
 		super.putStack(stack);

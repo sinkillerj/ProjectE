@@ -35,7 +35,7 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(IBlockReader world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
+	public boolean canHarvestBlock(IBlockState state, IBlockReader world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
 	{
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 

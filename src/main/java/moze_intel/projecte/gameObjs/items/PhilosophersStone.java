@@ -83,7 +83,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
-				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result, hand);
+				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
 				if (world.rand.nextInt(8) == 0)
 				{
 					((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
@@ -92,7 +92,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 
-			PlayerHelper.swingItem(player, hand);
+			// todo 1.13 PlayerHelper.swingItem(player, hand);
 		}
 		
 		return EnumActionResult.SUCCESS;

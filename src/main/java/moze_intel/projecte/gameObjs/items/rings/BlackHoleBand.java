@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
@@ -10,7 +8,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockFlowingFluid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -32,10 +30,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -45,8 +41,8 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IBauble, IPedestalItem
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
 	public BlackHoleBand(Builder builder)
 	{
@@ -60,17 +56,18 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		World world = ctx.getWorld();
 		BlockPos fluidPos = ctx.getPos().offset(ctx.getFace());
 		IBlockState state = world.getBlockState(fluidPos);
-		if (state.getBlock() instanceof BlockFluidBase
-				|| state.getBlock() instanceof BlockLiquid)
+		if (state.getBlock() instanceof BlockFlowingFluid) // todo 1.13 change to bucket check?
 		{
 			if (!world.isRemote)
 			{
 				world.removeBlock(fluidPos);
+				/* todo 1.13
 				Fluid f = FluidRegistry.lookupFluidForBlock(state.getBlock());
 				if (f != null)
 				{
 					world.playSound(null, ctx.getPos(), f.getFillSound(world, fluidPos), SoundCategory.BLOCKS, 1, 1);
 				}
+				*/
 			}
 
 			return EnumActionResult.SUCCESS;
@@ -112,7 +109,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 			}
 		}
 	}
-
+	/* todo 1.13
 	@Override
 	@Optional.Method(modid = "baubles")
 	public BaubleType getBaubleType(ItemStack itemstack)
@@ -148,6 +145,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	{
 		return true;
 	}
+	*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

@@ -50,7 +50,7 @@ public class RecipesCovalenceRepair implements IRecipe
 					return false;
 				}
 			}
-			else if (input.getItem() == ObjHandler.covalence)
+			else if (input.getItem() == ObjHandler.covalenceDustLow || input.getItem() == ObjHandler.covalenceDustMedium || input.getItem() == ObjHandler.covalenceDustHigh)
 			{
 				dust.add(input);
 			}

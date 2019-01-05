@@ -43,6 +43,7 @@ public class Collector extends BlockDirection
 		if (!world.isRemote)
 			switch (tier)
 			{
+				/* todo 1.13
 				case 1:
 					player.openGui(PECore.instance, Constants.COLLECTOR1_GUI, world, x, y, z);
 					break;
@@ -52,6 +53,7 @@ public class Collector extends BlockDirection
 				case 3:
 					player.openGui(PECore.instance, Constants.COLLECTOR3_GUI, world, x, y, z);
 					break;
+				*/
 			}
 		return true;
 	}

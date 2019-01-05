@@ -41,16 +41,11 @@ public final class PlayerHelper
 {
 	public final static IScoreCriteria SCOREBOARD_EMC = new IScoreCriteria(PECore.MODID + ":emc_score"); // todo 1.13 this is now writable by scoreboards since RO constructor is private
 
-	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
-	{
-		return checkedPlaceBlock(player, pos, state, EnumHand.MAIN_HAND);
-	}
-
 	/**
 	 * Tries placing a block and fires an event for it.
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
+	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
 		if (!hasEditPermission(player, pos))
 		{
@@ -75,12 +70,7 @@ public final class PlayerHelper
 
 	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
-		return checkedReplaceBlock(player, pos, state, EnumHand.MAIN_HAND);
-	}
-
-	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state, EnumHand hand)
-	{
-		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state, hand);
+		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
 	}
 
 	public static ItemStack findFirstItem(EntityPlayer player, Item consumeFrom)

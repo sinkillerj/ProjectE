@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -30,17 +28,14 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
-public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider, IProjectileShooter
+// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
+public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter
 {
 	public SWRG(Builder builder)
 	{
@@ -188,6 +183,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		return false;
 	}
 
+	/*
 	@Override
 	@Optional.Method(modid = "baubles")
 	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
@@ -228,6 +224,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 	{
 		return true;
 	}
+	*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

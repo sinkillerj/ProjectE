@@ -49,17 +49,17 @@ public class AlchChestTile extends TileEmc
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void read(NBTTagCompound nbt)
 	{
-		super.readFromNBT(nbt);
+		super.read(nbt);
 		inventory.deserializeNBT(nbt);
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt = super.writeToNBT(nbt);
+		nbt = super.write(nbt);
 		nbt.merge(inventory.serializeNBT());
 		return nbt;
 	}
