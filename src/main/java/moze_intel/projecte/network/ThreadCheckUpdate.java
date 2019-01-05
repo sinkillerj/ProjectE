@@ -7,9 +7,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 
 public class ThreadCheckUpdate extends Thread
 {
@@ -25,6 +22,7 @@ public class ThreadCheckUpdate extends Thread
 	public void run()
 	{
 		hasRun = true;
+		/* todo 1.13
 		ModContainer container = Loader.instance().getIndexedModList().get(PECore.MODID);
 		ForgeVersion.CheckResult result = null;
 
@@ -65,6 +63,7 @@ public class ThreadCheckUpdate extends Thread
 				Minecraft.getMinecraft().player.sendMessage(link);
 			});
 		}
+		*/
 	}
 
 	public static boolean hasRun()

@@ -1,6 +1,5 @@
 package moze_intel.projecte.utils;
 
-import baubles.api.BaublesApi;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.network.PacketHandler;
@@ -103,7 +102,7 @@ public final class PlayerHelper
 			return null;
 		} else
 		{
-			return BaublesApi.getBaublesHandler(player);
+			return null; // todo 1.13 BaublesApi.getBaublesHandler(player);
 		}
 	}
 

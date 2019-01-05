@@ -9,11 +9,13 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -101,22 +103,6 @@ public final class ItemHelper
 		return result;
 	}
 
-	public static String getOreDictionaryName(ItemStack stack)
-	{
-		if (stack.isEmpty())
-		{
-			return "Unknown";
-		}
-		int[] oreIds = OreDictionary.getOreIDs(stack);
-
-		if (oreIds.length == 0)
-		{
-			return "Unknown";
-		}
-
-		return OreDictionary.getOreName(oreIds[0]);
-	}
-
 	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack)
 	{
 		for (ItemStack invStack : inv)
@@ -184,14 +170,10 @@ public final class ItemHelper
 		return stack.isDamageable();
 	}
 
-	public static boolean isOre(IBlockState state)
+	public static boolean isOre(IForgeRegistryEntry<?> thing)
 	{
-		if (state.isAir())
-		{
-			return false;
-		}
-		String oreDictName = getOreDictionaryName(new ItemStack(state.getBlock(), 1));
-		return oreDictName.startsWith("ore") || oreDictName.startsWith("denseore");
+		ResourceLocation name = thing.getRegistryName();
+		return name != null && name.toString().contains("ore"); // todo 1.13 refine with regex word boundaries, or find better solution (tags?)
 	}
 
 	public static IBlockState stackToState(ItemStack stack)

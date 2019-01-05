@@ -41,14 +41,14 @@ public class RMFurnaceContainer extends Container
 		this.addSlot(new ValidatedSlot(fuel, 0, 65, 53, SlotPredicates.FURNACE_FUEL));
 
 		//Input(0)
-		this.addSlot(new ValidatedSlot(input, 0, 65, 17, SlotPredicates.SMELTABLE));
+		this.addSlot(new ValidatedSlot(input, 0, 65, 17, stack -> !tile.getSmeltingResult(stack).isEmpty()));
 
 		int counter = input.getSlots() - 1;
 
 		//Input storage
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
-				this.addSlot(new ValidatedSlot(input, counter--, 11 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
+				this.addSlot(new ValidatedSlot(input, counter--, 11 + i * 18, 8 + j * 18, stack -> !tile.getSmeltingResult(stack).isEmpty()));
 
 		counter = output.getSlots() - 1;
 

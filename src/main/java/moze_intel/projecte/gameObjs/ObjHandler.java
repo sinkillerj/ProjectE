@@ -94,7 +94,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
@@ -536,9 +535,11 @@ public class ObjHandler
 		evt.getRegistry().register(TileEntityType.Builder.create(DMPedestalTile::new).build(null).setRegistryName(PECore.MODID, "dm_pedestal"));
 	}
 
+	/* todo 1.13
 	@SubscribeEvent
 	public static void addRecipes(RegistryEvent.Register<IRecipe> evt)
 	{
+
 		//Klein Stars
 		for (int i = 1; i < 6; i++)
 		{
@@ -551,12 +552,9 @@ public class ObjHandler
 
 		evt.getRegistry().register(new RecipesCovalenceRepair().setRegistryName(PECore.MODID, "covalence_repair"));
 
-		// RecipeSorter.register("Covalence Repair Recipes", RecipesCovalenceRepair.class, Category.SHAPELESS, "before:minecraft:shaped");
-		// RecipeSorter.register("", RecipeShapedKleinStar.class, Category.SHAPED, "after:minecraft:shaped before:minecraft:shapeless");
-		// RecipeSorter.register("", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
-
 		registerPhiloStoneSmelting(evt.getRegistry());
 	}
+	*/
 
 	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)
 	{
@@ -571,6 +569,7 @@ public class ObjHandler
 		return ingr;
 	}
 
+	/*todo 1.13
 	private static void registerPhiloStoneSmelting(IForgeRegistry<IRecipe> registry)
 	{
 		for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
@@ -590,6 +589,6 @@ public class ObjHandler
 									toIngredients(new ItemStack(philosStone), input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)))
 								.setRegistryName(recipeName));
 		}
-		// RecipeSorter.register("Philosopher's Smelting Recipes", RecipeShapelessHidden.class, Category.SHAPELESS, "before:minecraft:shaped");
 	}
+	*/
 }

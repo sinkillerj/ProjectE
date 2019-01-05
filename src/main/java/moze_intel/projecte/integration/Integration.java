@@ -1,7 +1,7 @@
 package moze_intel.projecte.integration;
 
 import moze_intel.projecte.integration.minetweaker.TweakInit;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 
 public class Integration
 {
@@ -11,7 +11,7 @@ public class Integration
 
 	public static void modChecks()
 	{
-		mtweak = Loader.isModLoaded("minetweaker3");
+		mtweak = ModList.get().isLoaded("minetweaker3");
 	}
 
 	public static void init()

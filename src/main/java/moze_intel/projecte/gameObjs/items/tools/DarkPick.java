@@ -61,7 +61,7 @@ public class DarkPick extends PEToolBase
 			RayTraceResult mop = this.rayTrace(world, player, false);
 			if (mop != null && mop.type == RayTraceResult.Type.BLOCK)
 			{
-				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos())))
+				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos()).getBlock()))
 				{
 					tryVeinMine(stack, player, mop);
 				}

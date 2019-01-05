@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -44,7 +46,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
-			return SlotPredicates.SMELTABLE.test(stack)
+			return !getSmeltingResult(stack).isEmpty()
 					? super.insertItem(slot, stack, simulate)
 					: stack;
 		}
@@ -327,7 +329,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
 
 		if (world.rand.nextFloat() < getOreDoubleChance()
-			&& ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore"))
+			&& ItemHelper.isOre(toSmelt.getItem()))
 		{
 			smeltResult.grow(smeltResult.getCount());
 		}
@@ -369,7 +371,15 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	
 	private int getItemBurnTime(ItemStack stack)
 	{
-		int val = TileEntityFurnace.getItemBurnTime(stack);
+		int burnTime = 0;
+
+		if (!stack.isEmpty()) {
+			Item item = stack.getItem();
+			int ret = stack.getBurnTime();
+			burnTime = ForgeEventFactory.getItemBurnTime(stack, ret == -1 ? TileEntityFurnace.getBurnTimes().getOrDefault(item, 0) : ret);
+		}
+
+		int val = burnTime;
 		return (val * ticksBeforeSmelt) / 200 * efficiencyBonus;
 	}
 	

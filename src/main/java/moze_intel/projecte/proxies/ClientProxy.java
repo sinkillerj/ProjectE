@@ -24,7 +24,6 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.manual.ManualPageHandler;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
@@ -169,12 +168,6 @@ public class ClientProxy implements IProxy
 	private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 	{
 		return manager -> new RenderSprite<>(manager, itemToRender, Minecraft.getInstance().getItemRenderer());
-	}
-
-	@Override
-	public void initializeManual()
-	{
-		ManualPageHandler.init();
 	}
 
 	@Override

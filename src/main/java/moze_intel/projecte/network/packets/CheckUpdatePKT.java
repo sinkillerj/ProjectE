@@ -26,8 +26,10 @@ public class CheckUpdatePKT {
 
 		private static boolean updateCheckEnabled()
 		{
-			return ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, "Global", true).getBoolean()
-					&& ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, PECore.MODID, true).getBoolean();
+			// todo 1.13
+			return false;
+			/*return ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, "Global", true).getBoolean()
+					&& ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, PECore.MODID, true).getBoolean();*/
 		}
 	}
 }

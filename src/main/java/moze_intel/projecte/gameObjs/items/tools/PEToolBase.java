@@ -26,6 +26,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -89,9 +90,9 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Clears the given OD name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
+	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void clearOdAOE(World world, ItemStack stack, EntityPlayer player, String odName, int emcCost, EnumHand hand)
+	protected void clearTagAOE(World world, ItemStack stack, EntityPlayer player, Tag<Block> tag, int emcCost, EnumHand hand)
 	{
 		int charge = getCharge(stack);
 		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining)
@@ -107,33 +108,8 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
 		{
 			IBlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
 
-			if (block.isAir(state, world, pos) || Item.getItemFromBlock(block) == null)
-			{
-				continue;
-			}
-
-			ItemStack s = new ItemStack(block);
-			int[] oreIds = OreDictionary.getOreIDs(s);
-
-			String oreName;
-			if (oreIds.length == 0)
-			{
-				if (block == Blocks.BROWN_MUSHROOM_BLOCK || block == Blocks.RED_MUSHROOM_BLOCK)
-				{
-					oreName = "logWood";
-				}
-				else
-				{
-					continue;
-				}
-			}
-			else {
-				oreName = OreDictionary.getOreName(oreIds[0]);
-			}
-
-			if (odName.equals(oreName))
+			if (tag.contains(state.getBlock()))
 			{
 				List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
 
@@ -170,7 +146,7 @@ public abstract class PEToolBase extends ItemMode
 			Block block = state.getBlock();
 			Block blockAbove = stateAbove.getBlock();
 
-			if (!stateAbove.isOpaqueCube() && (block == Blocks.GRASS || block == Blocks.DIRT))
+			if (!stateAbove.isOpaqueCube(world, pos) && (block == Blocks.GRASS || block == Blocks.DIRT))
 			{
 				if (!hasSoundPlayed)
 				{
@@ -559,7 +535,7 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
 			IBlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
+			if (ItemHelper.isOre(state.getBlock()) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
 				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
 			}

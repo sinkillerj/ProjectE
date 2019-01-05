@@ -132,9 +132,9 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag)
+	public void read(NBTTagCompound tag)
 	{
-		super.readFromNBT(tag);
+		super.read(tag);
 		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
@@ -144,9 +144,9 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound write(NBTTagCompound tag)
 	{
-		tag = super.writeToNBT(tag);
+		tag = super.write(tag);
 		tag.merge(inventory.serializeNBT());
 		tag.putBoolean("isActive", getActive());
 		tag.putInt("activityCooldown", activityCooldown);
@@ -163,7 +163,7 @@ public class DMPedestalTile extends TileEmc
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet)
 	{
-		readFromNBT(packet.getNbtCompound());
+		read(packet.getNbtCompound());
 	}
 
 	public boolean getActive()

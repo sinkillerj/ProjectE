@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import invtweaks.api.container.ChestContainer;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +13,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-@ChestContainer(isLargeChest = true, rowSize = 13)
+// todo 1.13 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchChestContainer extends Container
 {
 	private final AlchChestTile tile;

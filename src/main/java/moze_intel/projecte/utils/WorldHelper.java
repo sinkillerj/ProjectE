@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -171,7 +172,8 @@ public final class WorldHelper
 	{
 		for (BlockPos pos : getPositionsFromBox(box))
 		{
-			Block b = world.getBlockState(pos).getBlock();
+			IBlockState state = world.getBlockState(pos);
+			Block b = state.getBlock();
 
 			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0))
 			{
@@ -184,7 +186,7 @@ public final class WorldHelper
 					world.setBlockState(pos, Blocks.ICE.getDefaultState());
 				}
 			}
-			else if (b.isSideSolid(world.getBlockState(pos), world, pos, EnumFacing.UP))
+			else if (state.getBlockFaceShape(world, pos, EnumFacing.UP) == BlockFaceShape.SOLID)
 			{
 				BlockPos up = pos.up();
 				IBlockState stateUp = world.getBlockState(up);

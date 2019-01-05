@@ -8,6 +8,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -37,8 +38,8 @@ public class DarkAxe extends PEToolBase
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		clearOdAOE(world, stack, player, "logWood", 0, hand);
-		clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
+		clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
+		clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
 

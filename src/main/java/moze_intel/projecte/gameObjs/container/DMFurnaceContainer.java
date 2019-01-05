@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.items.IItemHandler;
 
@@ -32,14 +31,14 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		this.addSlot(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
 
 		//Input(0)
-		this.addSlot(new ValidatedSlot(input, 0, 49, 17, SlotPredicates.SMELTABLE));
+		this.addSlot(new ValidatedSlot(input, 0, 49, 17, stack -> !tile.getSmeltingResult(stack).isEmpty()));
 
 		int counter = input.getSlots() - 1;
 
 		//Input Storage
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 4; j++) {
-				this.addSlot(new ValidatedSlot(input, counter--, 13 + i * 18, 8 + j * 18, SlotPredicates.SMELTABLE));
+				this.addSlot(new ValidatedSlot(input, counter--, 13 + i * 18, 8 + j * 18, stack -> !tile.getSmeltingResult(stack).isEmpty()));
 			}
 
 		counter = output.getSlots() - 1;
@@ -94,7 +93,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 					return ItemStack.EMPTY;
 				}
 			}
-			else if (!FurnaceRecipes.instance().getSmeltingResult(newStack).isEmpty())
+			else if (!tile.getSmeltingResult(newStack).isEmpty())
 			{
 				if (!this.mergeItemStack(stack, 1, 10, false))
 				{
@@ -122,8 +121,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer player)
 	{
-		return (player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.dmFurnaceOff
-				|| player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.dmFurnaceOn)
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.dmFurnaceOff
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

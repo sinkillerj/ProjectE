@@ -1,6 +1,6 @@
 package moze_intel.projecte.utils;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Enumeration of ProjectE keybinds and their DEFAULT key code. Use ClientKeyHelper to get runtime key code from MC Keybind.
@@ -8,11 +8,11 @@ import org.lwjgl.input.Keyboard;
  */
 public enum PEKeybind
 {
-	ARMOR_TOGGLE("pe.key.armor_toggle", Keyboard.KEY_X),
-	CHARGE("pe.key.charge", Keyboard.KEY_V),
-	EXTRA_FUNCTION("pe.key.extra_function", Keyboard.KEY_C),
-	FIRE_PROJECTILE("pe.key.fire_projectile", Keyboard.KEY_R),
-	MODE("pe.key.mode", Keyboard.KEY_G);
+	ARMOR_TOGGLE("pe.key.armor_toggle", GLFW.GLFW_KEY_X),
+	CHARGE("pe.key.charge", GLFW.GLFW_KEY_V),
+	EXTRA_FUNCTION("pe.key.extra_function", GLFW.GLFW_KEY_C),
+	FIRE_PROJECTILE("pe.key.fire_projectile", GLFW.GLFW_KEY_R),
+	MODE("pe.key.mode", GLFW.GLFW_KEY_G);
 
 
 	public final String keyName;

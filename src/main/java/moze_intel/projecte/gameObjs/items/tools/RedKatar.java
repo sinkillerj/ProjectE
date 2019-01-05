@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -80,14 +81,14 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 					// Hoe
 					tillAOE(stack, player, world, mop.getBlockPos(), mop.sideHit, 0);
 				}
-				else if (blockHit instanceof BlockLog)
+				else if (BlockTags.LOGS.contains(blockHit))
 				{
 					// Axe
-					clearOdAOE(world, stack, player, "logWood", 0, hand);
+					clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
 				}
-				else if (blockHit instanceof BlockLeaves) {
+				else if (BlockTags.LEAVES.contains(blockHit)) {
 					// Shear leaves
-					clearOdAOE(world, stack, player, "treeLeaves", 0, hand);
+					clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
 				}
 			}
 		}

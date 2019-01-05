@@ -9,7 +9,6 @@ public interface IProxy
     void registerKeyBinds();
     void registerRenderers();
     void registerLayerRenderers();
-    void initializeManual();
     void clearClientKnowledge();
     IKnowledgeProvider getClientTransmutationProps();
     IAlchBagProvider getClientBagProps();

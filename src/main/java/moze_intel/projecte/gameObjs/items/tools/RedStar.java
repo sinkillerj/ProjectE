@@ -103,7 +103,7 @@ public class RedStar extends PEToolBase
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (ItemHelper.isOre(state))
+				else if (ItemHelper.isOre(state.getBlock()))
 				{
 					if (!ProjectEConfig.items.pickaxeAoeVeinMining)
 					{

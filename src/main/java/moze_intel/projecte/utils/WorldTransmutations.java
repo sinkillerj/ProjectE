@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -118,7 +116,7 @@ public final class WorldTransmutations
 		}
 	}
 
-	public static class Entry implements IRecipeWrapper
+	public static class Entry /*implements IRecipeWrapper*/
 	{
 		public final IBlockState input;
 		public final Pair<IBlockState, IBlockState> outputs;
@@ -128,7 +126,7 @@ public final class WorldTransmutations
 			this.input = from;
 			this.outputs = results;
 		}
-		//TODO: Fix logs, remove duplicate Pumpkin -> Melon (it has one for each facing)
+		/* todo 1.13
 		@Override
 		public void getIngredients(IIngredients ingredients) {
 
@@ -269,6 +267,6 @@ public final class WorldTransmutations
 					return Collections.singletonList("Click in world, shift click for second output");
 
 			return Collections.emptyList();
-		}
+		}*/
 	}
 }
