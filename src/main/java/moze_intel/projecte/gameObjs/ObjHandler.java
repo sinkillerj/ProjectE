@@ -112,6 +112,7 @@ public class ObjHandler
 		}
 	};
 	public static final IRecipeSerializer<RecipesCovalenceRepair> COVALENCE_REPAIR_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeSerializers.SimpleSerializer<>(PECore.MODID + ":covalence_repair", RecipesCovalenceRepair::new));
+	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
 	public static final Block alchChest = new AlchemicalChest(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final Block interdictionTorch = new InterdictionTorch(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
@@ -541,17 +542,6 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void addRecipes(RegistryEvent.Register<IRecipe> evt)
 	{
-
-		//Klein Stars
-		for (int i = 1; i < 6; i++)
-		{
-			ItemStack input = new ItemStack(kleinStars, 1, i - 1);
-			ItemStack output = new ItemStack(kleinStars, 1, i);
-			RecipeShapelessKleinStar recipe = new RecipeShapelessKleinStar(PECore.MODID + ":klein", output, toIngredients(input, input, input, input));
-			recipe.setRegistryName(PECore.MODID, String.format("klein_%d_to_%d", i - 1, i));
-			evt.getRegistry().register(recipe);
-		}
-
 		registerPhiloStoneSmelting(evt.getRegistry());
 	}
 	*/

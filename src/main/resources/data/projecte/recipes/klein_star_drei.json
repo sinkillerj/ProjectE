@@ -1,0 +1,12 @@
+{
+  "result": {
+    "item": "projecte:klein_star_drei"
+  },
+  "ingredients": [
+    { "item":  "projecte:klein_star_zwei" },
+    { "item":  "projecte:klein_star_zwei" },
+    { "item":  "projecte:klein_star_zwei" },
+    { "item":  "projecte:klein_star_zwei" }
+  ],
+  "type": "projecte:crafting_shapeless_kleinstar"
+}

@@ -1,73 +1,65 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
+import com.google.gson.JsonObject;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.item.crafting.*;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 // todo 1.13 @Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
 public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
-	private final ResourceLocation id;
 	private final ShapelessRecipe compose;
 
-	public RecipeShapelessKleinStar(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients) {
-		this.id = id;
-		this.compose = new ShapelessRecipe(id, group, result, ingredients);
+	public RecipeShapelessKleinStar(ShapelessRecipe compose) {
+		this.compose = compose;
 	}
 
 	@Override
 	public ResourceLocation getId()
 	{
-		return id;
+		return compose.getId();
 	}
 
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return null; // todo 1.13
+		return ObjHandler.KLEIN_RECIPE_SERIALIZER;
 	}
 
 	@Override
 	public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
-
-		if (compose.matches(inv, worldIn)) {
-			double storedEMC = 0;
-			for (int i = 0; i < inv.getSizeInventory(); i++)
-			{
-				ItemStack stack = inv.getStackInSlot(i);
-				if(!stack.isEmpty() && stack.getItem() instanceof KleinStar)
-				{
-					storedEMC += KleinStar.getEmc(stack);
-				}
-			}
-
-			if (storedEMC != 0 && compose.getRecipeOutput().getItem() instanceof KleinStar)
-			{
-				KleinStar.setEmc(compose.getRecipeOutput(), storedEMC);
-			}
-			return true;
-		}
-
-		return false;
+		return compose.matches(inv, worldIn);
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
-		return compose.getCraftingResult(inv);
+		ItemStack result = compose.getCraftingResult(inv);
+		double storedEMC = 0;
+		for (int i = 0; i < inv.getSizeInventory(); i++)
+		{
+			ItemStack stack = inv.getStackInSlot(i);
+			if(!stack.isEmpty() && stack.getItem() instanceof KleinStar)
+			{
+				storedEMC += KleinStar.getEmc(stack);
+			}
+		}
+
+		if (storedEMC != 0 && result.getItem() instanceof KleinStar)
+		{
+			KleinStar.setEmc(result, storedEMC);
+		}
+
+		return result;
 	}
 
 	@Override
@@ -117,4 +109,33 @@ public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
 		ingredients.setOutput(ItemStack.class, this.compose.getRecipeOutput());
 	}
 	*/
+
+	public static class Serializer implements IRecipeSerializer<RecipeShapelessKleinStar>
+	{
+		private static final ResourceLocation TYPE_ID = new ResourceLocation(PECore.MODID, "crafting_shapeless_kleinstar");
+
+		@Override
+		public RecipeShapelessKleinStar read(ResourceLocation recipeId, JsonObject json)
+		{
+			return new RecipeShapelessKleinStar(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json));
+		}
+
+		@Override
+		public RecipeShapelessKleinStar read(ResourceLocation recipeId, PacketBuffer buffer)
+		{
+			return new RecipeShapelessKleinStar(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, buffer));
+		}
+
+		@Override
+		public void write(PacketBuffer buffer, RecipeShapelessKleinStar recipe)
+		{
+			RecipeSerializers.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
+		}
+
+		@Override
+		public ResourceLocation getName()
+		{
+			return TYPE_ID;
+		}
+	}
 }

@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "projecte:item.pe_klein_star",
-    "data": 0
+    "item": "projecte:klein_star_ein"
   },
   "type": "forge:ore_shaped",
   "pattern": [
@@ -11,8 +10,7 @@
   ],
   "key": {
     "M": {
-      "item": "projecte:item.pe_fuel",
-      "data": 1
+      "item": "projecte:mobius_fuel"
     },
     "D": {
       "item": "#GEMDIAMOND"
