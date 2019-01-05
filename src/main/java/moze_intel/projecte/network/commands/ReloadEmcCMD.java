@@ -1,48 +1,31 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.PacketHandler;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import javax.annotation.Nonnull;
-
-public class ReloadEmcCMD extends CommandBase
+public class ReloadEmcCMD
 {
-	@Nonnull
-	@Override
-	public String getName()
+	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return "reloadEMC";
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "/projecte reloadEMC";
-	}
+		return Commands.literal("reloadEMC")
+				.requires(cs -> cs.hasPermissionLevel(4))
+				.executes(cs -> {
+					cs.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.started"), true);
 
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
-	{
-		sender.sendMessage(new TextComponentTranslation("pe.command.reload.started"));
+					EMCMapper.clearMaps();
+					CustomEMCParser.init();
+					EMCMapper.map();
 
-		EMCMapper.clearMaps();
-		CustomEMCParser.init();
-		EMCMapper.map();
+					cs.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.success"), true);
 
-		sender.sendMessage(new TextComponentTranslation("pe.command.reload.success"));
-
-		PacketHandler.sendFragmentedEmcPacketToAll();
-	}
-
-	@Override
-	public int getRequiredPermissionLevel() 
-	{
-		return 4;
+					PacketHandler.sendFragmentedEmcPacketToAll();
+					return Command.SINGLE_SUCCESS;
+				});
 	}
 }

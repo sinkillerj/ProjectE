@@ -1,124 +1,62 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.command.*;
+import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import javax.annotation.Nonnull;
-
-public class SetEmcCMD extends CommandBase
+public class SetEmcCMD
 {
-	@Nonnull
-	@Override
-	public String getName()
+	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return "setEMC";
+		return Commands.literal("setEMC")
+				.requires(cs -> cs.hasPermissionLevel(4))
+				.then(Commands.argument("emc", IntegerArgumentType.integer(0))
+					.then(Commands.argument("item", ItemArgument.item())
+						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
+						// todo 1.13 tag arg support?
+						// todo support longs
+						.executes(ctx -> setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), ItemArgument.getItem(ctx, "item").getItem())))
+					.executes(ctx -> {
+						EntityPlayerMP player = ctx.getSource().asPlayer();
+						ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+
+						if (stack.isEmpty())
+						{
+							stack = player.getHeldItem(EnumHand.OFF_HAND);
+						}
+
+						if (stack.isEmpty())
+						{
+							throw RemoveEmcCMD.EMPTY_STACK.create();
+						}
+
+						return setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), stack.getItem());
+					}));
+
 	}
 
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
+	private static int setEmc(CommandContext<CommandSource> ctx, int emc, Item item)
 	{
-		return "pe.command.set.usage";
-	}
-	
-	@Override
-	public int getRequiredPermissionLevel() 
-	{
-		return 4;
-	}
-
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
-	{
-		if (params.length < 1)
+		if (CustomEMCParser.addToFile(item.getRegistryName().toString(), emc))
 		{
-			throw new WrongUsageException(getUsage(sender));
-		}
-
-		String name;
-		int meta;
-		long emc;
-
-		if (params.length == 1)
-		{
-			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
-			if (heldItem.isEmpty())
-			{
-				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
-			}
-
-			if (heldItem.isEmpty())
-			{
-				throw new WrongUsageException(getUsage(sender));
-			}
-
-			name = heldItem.getItem().getRegistryName().toString();
-			meta = heldItem.getItemDamage();
-			emc = Long.parseLong(params[0]);
-
-			if (emc < 0)
-			{
-				throw new NumberInvalidException("pe.command.set.invalidemc", params[0]);
-			}
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getRegistryName().toString(), emc), true);
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+			return Command.SINGLE_SUCCESS;
 		}
 		else
 		{
-			name = params[0];
-			meta = 0;
-			boolean isOD = !name.contains(":");
-
-			if (!isOD)
-			{
-				if (params.length > 2)
-				{
-					meta = MathUtils.parseInteger(params[1]);
-
-					if (meta < 0)
-					{
-						throw new CommandException("pe.command.set.invalidmeta", params[1]);
-					}
-
-					emc = MathUtils.parseInteger(params[2]);
-
-					if (emc < 0)
-					{
-						throw new CommandException("pe.command.set.invalidemc", params[2]);
-					}
-				}
-				else
-				{
-					emc = MathUtils.parseInteger(params[1]);
-
-					if (emc < 0)
-					{
-						throw new NumberInvalidException("pe.command.set.invalidemc", params[1]);
-					}
-				}
-			}
-			else
-			{
-				emc = MathUtils.parseInteger(params[1]);
-
-				if (emc < 0)
-				{
-					throw new NumberInvalidException("pe.command.set.invalidemc", params[1]);
-				}
-			}
-		}
-
-		if (CustomEMCParser.addToFile(name, meta, emc))
-		{
-			sender.sendMessage(new TextComponentTranslation("pe.command.set.success", name, emc));
-			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
-		}
-		else
-		{
-			throw new CommandException("pe.command.set.invaliditem", name);
+			// todo 1.13 will this else ever happen?
+			// throw new CommandException("pe.command.remove.invaliditem", name);
+			return 0;
 		}
 	}
 }

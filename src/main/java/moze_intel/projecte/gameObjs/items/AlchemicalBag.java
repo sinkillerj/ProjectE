@@ -47,7 +47,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
+			// todo 1.13 player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));

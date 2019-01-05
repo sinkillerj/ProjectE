@@ -6,7 +6,6 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
@@ -16,16 +15,15 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
-import moze_intel.projecte.network.commands.ProjectECMD;
+import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.proxies.ClientProxy;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.proxies.ServerProxy;
 import moze_intel.projecte.utils.DummyIStorage;
-import moze_intel.projecte.utils.GuiHandler;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.config.Config;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
@@ -60,7 +58,7 @@ public class PECore
 	public static boolean DEV_ENVIRONMENT;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-	public static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+	public static IProxy proxy;
 
 	public static final List<String> uuids = new ArrayList<>();
 
@@ -87,6 +85,7 @@ public class PECore
 
 	private void preInit(FMLPreInitializationEvent event)
 	{
+		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 		DEV_ENVIRONMENT = false; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 		CONFIG_DIR = new File(/*TODO 1.13 event.getModConfigurationDirectory(), */MODNAME);
@@ -128,8 +127,15 @@ public class PECore
 	
 	private void serverStarting(FMLServerStartingEvent event)
 	{
-		/*event.getCommandDispatcher().register(LiteralArgumentBuilder.literal("projecte")) TODO 1.13
-		event.registerServerCommand(new ProjectECMD());*/
+		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
+				.then(ClearKnowledgeCMD.register())
+				.then(ReloadEmcCMD.register())
+				.then(RemoveEmcCMD.register())
+				.then(ResetEmcCMD.register())
+				.then(SetEmcCMD.register())
+				.then(ShowBagCMD.register());
+
+		event.getCommandDispatcher().register(root);
 
 		if (!ThreadCheckUUID.hasRunServer())
 		{

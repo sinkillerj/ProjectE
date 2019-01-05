@@ -1,62 +1,46 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
-import javax.annotation.Nonnull;
+import java.util.Collection;
 
-public class ClearKnowledgeCMD extends CommandBase
+public class ClearKnowledgeCMD
 {
-	@Nonnull
-	@Override
-	public String getName()
+	public static ArgumentBuilder<CommandSource, ?> register()
 	{
-		return "clearKnowledge";
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "pe.command.clearknowledge.usage";
+		return Commands.literal("clearKnowledge")
+				.requires(cs -> cs.hasPermissionLevel(4))
+				.then(Commands.argument("target", EntityArgument.players())
+						.executes(cs -> execute(cs, EntityArgument.getPlayers(cs, "targets")))
+				);
 	}
 
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
+	private static int execute(CommandContext<CommandSource> ctx, Collection<EntityPlayerMP> targets)
 	{
-		if (params.length < 1)
-		{
-			throw new WrongUsageException(getUsage(sender));
-		}
-
-		for (EntityPlayerMP player : getPlayers(server, sender, params[0]))
+		for (EntityPlayerMP player : targets)
 		{
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-			sender.sendMessage(new TextComponentTranslation("pe.command.clearknowledge.success", player.getName()));
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.clearknowledge.success", player.getName()), true);
 
-			if (!player.getName().equals(sender.getName()))
+			if (player != ctx.getSource().getEntity())
 			{
-				player.sendMessage(new TextComponentTranslation("pe.command.clearknowledge.notify", sender.getName()).setStyle(new Style().setColor(TextFormatting.RED)));
+				player.sendMessage(new TextComponentTranslation("pe.command.clearknowledge.notify", ctx.getSource().getDisplayName()).setStyle(new Style().setColor(TextFormatting.RED)));
 			}
 		}
-	}
 
-	@Override
-	public int getRequiredPermissionLevel() 
-	{
-		return 4;
+		return targets.size();
 	}
 }

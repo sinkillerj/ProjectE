@@ -1,5 +1,12 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -7,11 +14,10 @@ import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.ShowBagPKT;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -20,6 +26,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -30,49 +37,40 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ShowBagCMD extends CommandBase {
-	@Override
-	public String getName() {
-		return "showBag";
+public class ShowBagCMD
+{
+	private static final DynamicCommandExceptionType NO_COLOR = new DynamicCommandExceptionType(c -> new TextComponentTranslation("pe.command.showbag.nocolor", c));
+	public static LiteralArgumentBuilder<CommandSource> register()
+	{
+		return Commands.literal("showBag")
+				// todo 1.13 suggest colors
+				.then(Commands.argument("color", StringArgumentType.string())
+					// todo 1.13 accept uuid for offline usage
+					.then(Commands.argument("target", EntityArgument.player()))
+						.executes(ctx -> showBag(ctx, StringArgumentType.getString(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))));
 	}
 
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return "pe.command.showbag.usage";
-	}
-
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (!(sender instanceof EntityPlayerMP))
-		{
-			throw new CommandException("pe.command.showbag.notplayer");
-		}
-		if (args.length != 2)
-		{
-			throw new WrongUsageException("pe.command.showbag.usage");
-		}
-
-		EntityPlayerMP senderPlayer = (EntityPlayerMP) sender;
+	private static int showBag(CommandContext<CommandSource> ctx, String colorStr, EntityPlayerMP player) throws CommandSyntaxException
+	{
 		EnumDyeColor color;
 		try {
-			color = EnumDyeColor.valueOf(args[0].toUpperCase(Locale.ROOT));
+			color = EnumDyeColor.valueOf(colorStr.toUpperCase(Locale.ROOT));
 		} catch (IllegalArgumentException ex) {
-			throw new CommandException("pe.command.showbag.nocolor", args[0]);
+			throw NO_COLOR.create(colorStr);
 		}
 
+		EntityPlayerMP senderPlayer = ctx.getSource().asPlayer();
 		senderPlayer.closeScreen();
 		senderPlayer.getNextWindowId();
-		senderPlayer.openContainer = createContainer(server, senderPlayer, args[1], color);
+		senderPlayer.openContainer = createContainer(senderPlayer, player, color);
 		senderPlayer.openContainer.windowId = senderPlayer.currentWindowId;
 		PacketHandler.sendTo(new ShowBagPKT(senderPlayer.openContainer.windowId), senderPlayer);
 		senderPlayer.openContainer.addListener(senderPlayer);
+		return Command.SINGLE_SUCCESS;
 	}
 
-	private static Container createContainer(MinecraftServer server, EntityPlayerMP sender, String playerArg, EnumDyeColor color) throws CommandException
+	private static Container createContainer(EntityPlayerMP sender, EntityPlayerMP target, EnumDyeColor color) throws CommandException
 	{
-		try
-		{
-			EntityPlayerMP target = getPlayer(server, sender, playerArg);
 			IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
@@ -84,9 +82,8 @@ public class ShowBagCMD extends CommandBase {
 					return target.isAlive() && !target.hasDisconnected();
 				}
 			};
-		} catch (PlayerNotFoundException ignored) {}
 
-		UUID uuid;
+	/*	UUID uuid;
 		try
 		{
 			uuid = UUID.fromString(playerArg);
@@ -95,10 +92,10 @@ public class ShowBagCMD extends CommandBase {
 			throw new CommandException("pe.command.showbag.offline.uuid");
 		}
 		IItemHandlerModifiable inv = loadOfflineBag(uuid, color);
-		return new AlchBagContainer(sender.inventory, EnumHand.OFF_HAND, inv, true);
+		return new AlchBagContainer(sender.inventory, EnumHand.OFF_HAND, inv, true);*/
 	}
 
-	private static IItemHandlerModifiable loadOfflineBag(UUID playerUUID, EnumDyeColor color) throws CommandException
+	/*private static IItemHandlerModifiable loadOfflineBag(UUID playerUUID, EnumDyeColor color) throws CommandException
 	{
 		File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
 		if (playerData.exists())
@@ -119,5 +116,5 @@ public class ShowBagCMD extends CommandBase {
 			}
 		}
 		throw new CommandException("pe.command.showbag.offline.notfound", playerUUID.toString());
-	}
+	}*/
 }

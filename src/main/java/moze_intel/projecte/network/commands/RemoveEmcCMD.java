@@ -1,85 +1,64 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import javax.annotation.Nonnull;
-
-public class RemoveEmcCMD extends CommandBase
+public class RemoveEmcCMD
 {
-	@Nonnull
-	@Override
-	public String getName()
+	// todo 1.13 localize
+	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TextComponentString("Empty stack in both hands"));
+
+	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return "removeEMC";
+		return Commands.literal("removeEMC")
+				.requires(cs -> cs.hasPermissionLevel(4))
+				.then(Commands.argument("item", ItemArgument.item())
+					// todo 1.13 dropping nbt info, use a more restrictive arg parser?
+					.executes(ctx -> removeEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
+				// todo 1.13 tag arg support?
+				.executes(ctx -> {
+					EntityPlayerMP player = ctx.getSource().asPlayer();
+					ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+
+					if (stack.isEmpty())
+					{
+						stack = player.getHeldItem(EnumHand.OFF_HAND);
+					}
+
+					if (stack.isEmpty())
+					{
+						throw EMPTY_STACK.create();
+					}
+
+					return removeEmc(ctx, stack.getItem());
+				});
 	}
 
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
+	private static int removeEmc(CommandContext<CommandSource> ctx, Item item)
 	{
-		return "pe.command.remove.usage";
-	}
-	
-	@Override
-	public int getRequiredPermissionLevel() 
-	{
-		return 4;
-	}
-
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) throws CommandException
-	{
-		String name;
-		int meta = 0;
-
-		if (params.length == 0)
+		if (CustomEMCParser.addToFile(item.getRegistryName().toString(), 0))
 		{
-			ItemStack heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.MAIN_HAND);
-			if (heldItem.isEmpty())
-			{
-				heldItem = getCommandSenderAsPlayer(sender).getHeldItem(EnumHand.OFF_HAND);
-			}
-
-			if (heldItem.isEmpty())
-			{
-				throw new WrongUsageException(getUsage(sender));
-			}
-
-			name = heldItem.getItem().getRegistryName().toString();
-			meta = heldItem.getItemDamage();
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getRegistryName().toString()), true);
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+			return Command.SINGLE_SUCCESS;
 		}
 		else
 		{
-			name = params[0];
-
-			if (params.length > 1)
-			{
-				meta = MathUtils.parseInteger(params[1]);
-
-				if (meta < 0)
-				{
-					throw new CommandException("pe.command.remove.invalidmeta", params[1]);
-				}
-			}
-		}
-
-		if (CustomEMCParser.addToFile(name, meta, 0))
-		{
-			sender.sendMessage(new TextComponentTranslation("pe.command.remove.success", name));
-			sender.sendMessage(new TextComponentTranslation("pe.command.reload.notice"));
-		}
-		else
-		{
-			throw new CommandException("pe.command.remove.invaliditem", name);
+			// todo 1.13 will this else ever happen?
+			// throw new CommandException("pe.command.remove.invaliditem", name);
+			return 0;
 		}
 	}
 }

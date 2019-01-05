@@ -52,9 +52,9 @@ public class CustomConversionMapperTest
 				"{'groups': {" +
 						"	'groupa': {" +
 						"		'conversions':[" +
-						"			{'output':'outA|0', 'ingr':{'ing1|0': 1, 'ing2|0': 2, 'ing3|0': 3}}," +
-						"			{'output':'outB|1', 'ingr':['ing1|0', 'ing2|0', 'ing3|0']}," +
-						"			{'output':'outC|2', 'count':3, 'ingr':['ing1|0', 'ing1|0', 'ing1|0']}" +
+						"			{'output':'out_a', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}," +
+						"			{'output':'out_b', 'ingr':['ing1', 'ing2', 'ing3']}," +
+						"			{'output':'out_c', 'count':3, 'ingr':['ing1', 'ing1', 'ing1']}" +
 						"		]" +
 						"	}" +
 						"}" +
@@ -70,28 +70,28 @@ public class CustomConversionMapperTest
 		List<CustomConversion> conversions = group.conversions;
 		{
 			CustomConversion conversion = conversions.get(0);
-            assertEquals(new NSSItem(new ResourceLocation((String) 0)), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-            assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-            assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+            assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+            assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(1);
-            assertEquals(new NSSItem(new ResourceLocation((String) 1)), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation("out_b")), conversion.output);
 			assertEquals(1, conversion.count);
 			assertEquals(3, conversion.ingredients.size());
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(2);
-            assertEquals(new NSSItem(new ResourceLocation((String) 2)), conversion.output);
+            assertEquals(new NSSItem(new ResourceLocation("out_c")), conversion.output);
 			assertEquals(3, conversion.count);
 			assertEquals(1, conversion.ingredients.size());
-            assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+            assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
 
 		}
 	}
@@ -102,19 +102,19 @@ public class CustomConversionMapperTest
 		String simpleFile =
 				"{'values': {" +
 						"	'before': {" +
-						"		'a|0': 1, 'b|0': 2, 'c|0': 'free'" +
+						"		'a': 1, 'b': 2, 'c': 'free'" +
 						"	}," +
 						"	'after': {" +
-						"		'd|0': 3" +
+						"		'd': 3" +
 						"	}" +
 						"}" +
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		assertNotNull(f.values);
-        assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
-        assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
-        assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
-        assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation((String) 0))).longValue());
+        assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("a"))).longValue());
+        assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("b"))).longValue());
+        assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("c"))).longValue());
+        assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation("d"))).longValue());
 
 	}
 
@@ -124,7 +124,7 @@ public class CustomConversionMapperTest
 		String simpleFile =
 				"{'values': {" +
 						"	'conversion': [" +
-						"		{'output':'outA|0', 'ingr':{'ing1|0': 1, 'ing2|0': 2, 'ing3|0': 3}}" +
+						"		{'output':'out_a', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}" +
 						"	]" +
 						"}" +
 						"}";
@@ -133,12 +133,12 @@ public class CustomConversionMapperTest
 		assertNotNull(f.values.conversion);
 		assertEquals(1, f.values.conversion.size());
 		CustomConversion conversion = f.values.conversion.get(0);
-        assertEquals(new NSSItem(new ResourceLocation((String) 0)), conversion.output);
+        assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
 		assertEquals(1, conversion.count);
 		assertEquals(3, conversion.ingredients.size());
-        assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-        assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
-        assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation((String) 0))));
+        assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+        assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+        assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 	}
 
 	@Test
