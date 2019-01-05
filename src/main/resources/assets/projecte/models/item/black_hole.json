@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "projecte:items/rings/soul_stone_off"
+    "layer0": "projecte:items/rings/black_hole_off"
   },
   "overrides": [{
     "predicate": {
       "projecte:active": 1
     },
-    "model": "projecte:item/item.pe_soul_stone_on"
+    "model": "projecte:item/black_hole_on"
   }]
 }
