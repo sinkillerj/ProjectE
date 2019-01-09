@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +21,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class Relay extends BlockDirection
+public class Relay extends BlockDirection implements ITileEntityProvider
 {
 	private final int tier;
 	
@@ -57,22 +58,16 @@ public class Relay extends BlockDirection
 		return true;
 	}
 
-	@Override
-	public boolean hasTileEntity(IBlockState state)
-	{
-		return true;
-	}
-
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
+	public TileEntity createNewTileEntity(@Nonnull IBlockReader world)
 	{
 		switch (tier)
 		{
+			default:
 			case 1: return new RelayMK1Tile();
 			case 2: return new RelayMK2Tile();
 			case 3: return new RelayMK3Tile();
-			default: return null;
 		}
 	}
 

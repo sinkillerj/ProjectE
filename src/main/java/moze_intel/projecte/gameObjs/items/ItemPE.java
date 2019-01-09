@@ -14,6 +14,7 @@ public class ItemPE extends Item
 	public static final String TAG_MODE = "Mode";
 	protected static final ResourceLocation ACTIVE_NAME = new ResourceLocation(PECore.MODID, "active");
 	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(TAG_ACTIVE) ? 1F : 0F;
+	protected static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(TAG_MODE) : 0F;
 
 	public ItemPE(Builder builder)
 	{

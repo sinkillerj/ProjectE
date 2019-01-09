@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -18,11 +19,13 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -40,6 +43,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public SWRG(Builder builder)
 	{
 		super(builder);
+		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 	}
 
 	private void tick(ItemStack stack, EntityPlayer player)

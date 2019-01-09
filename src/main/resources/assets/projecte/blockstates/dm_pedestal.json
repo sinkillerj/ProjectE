@@ -1,14 +1,5 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "projecte:pedestal",
-    "textures": {
-      "pedestal" : "projecte:blocks/dm"
-    },
-    "transform": "forge:default-block"
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": { "model":  "projecte:block/dm_pedestal" }
   }
 }

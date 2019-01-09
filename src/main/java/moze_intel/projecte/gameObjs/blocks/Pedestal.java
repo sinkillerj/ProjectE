@@ -4,6 +4,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
@@ -25,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class Pedestal extends Block
+public class Pedestal extends Block implements ITileEntityProvider
 {
     // todo 1.13 fancify
     private static final VoxelShape SHAPE = Block.makeCuboidShape(3, 0, 3, 13, 12, 13);
@@ -141,15 +142,9 @@ public class Pedestal extends Block
         return false;
     }
 
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
-        return true;
-    }
-
     @Nonnull
     @Override
-    public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world) {
+    public TileEntity createNewTileEntity(@Nonnull IBlockReader world) {
         return new DMPedestalTile();
     }
 

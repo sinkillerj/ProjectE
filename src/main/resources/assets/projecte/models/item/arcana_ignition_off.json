@@ -2,11 +2,5 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "projecte:items/rings/arcana_1"
-  },
-  "overrides": [{
-    "predicate": {
-      "projecte:active": 1
-    },
-    "model": "projecte:item/arcana_ignition_on"
-  }]
+  }
 }

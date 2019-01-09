@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -23,11 +24,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -48,6 +45,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		super(builder);
 		// todo 1.13 setContainerItem(this);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
+		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 	}
 
 	@OnlyIn(Dist.CLIENT)

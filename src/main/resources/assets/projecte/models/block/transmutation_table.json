@@ -1,11 +1,11 @@
 {
+  "parent": "block/block",
   "textures": {
     "bottom": "projecte:blocks/transmutation_stone/bottom",
     "top": "projecte:blocks/transmutation_stone/top",
     "side": "projecte:blocks/transmutation_stone/side",
     "particle": "projecte:blocks/transmutation_stone/top"
   },
-
   "elements": [
     {
       "from": [0, 0, 0],

@@ -115,7 +115,7 @@ public class ObjHandler
 	public static final Block alchChest = new AlchemicalChest(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final Block interdictionTorch = new InterdictionTorch(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
-	public static final Block transmuteStone = new TransmutationStone(Block.Builder.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_stone");
+	public static final Block transmuteStone = new TransmutationStone(Block.Builder.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
 	public static final Block condenser = new Condenser(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
 	public static final Block rmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
@@ -522,6 +522,7 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt)
 	{
+		PECore.LOGGER.error("REGISTERING TILE ENTITIES");
 		evt.getRegistry().register(TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest"));
 		evt.getRegistry().register(TileEntityType.Builder.create(InterdictionTile::new).build(null).setRegistryName(PECore.MODID, "interdiction_torch"));
 		evt.getRegistry().register(TileEntityType.Builder.create(CondenserTile::new).build(null).setRegistryName(PECore.MODID, "condenser"));
