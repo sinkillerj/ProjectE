@@ -57,7 +57,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class ClientProxy implements IProxy
 {
 	// These three following methods are here to prevent a strange crash in the dedicated server whenever packets are received

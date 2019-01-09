@@ -6,6 +6,8 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.events.*;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
@@ -21,8 +23,11 @@ import moze_intel.projecte.proxies.ClientProxy;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.proxies.ServerProxy;
 import moze_intel.projecte.utils.DummyIStorage;
+import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -75,10 +80,8 @@ public class PECore
 
 	public PECore()
 	{
-		AlchBagImpl.init();
-		KnowledgeImpl.init();
-		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
-		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+		// ObjHandler in ctor since registry events fire before preinit
+		MinecraftForge.EVENT_BUS.register(ObjHandler.class);
 
 		FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
@@ -93,9 +96,24 @@ public class PECore
 		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 		DEV_ENVIRONMENT = false; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
-		CONFIG_DIR = new File(/*TODO 1.13 event.getModConfigurationDirectory(), */MODNAME);
-		LOGGER.error(CONFIG_DIR.toPath().toAbsolutePath().toString());
-		
+		MinecraftForge.EVENT_BUS.register(PlayerEvents.class);
+		MinecraftForge.EVENT_BUS.register(TickEvents.class);
+		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			MinecraftForge.EVENT_BUS.register(KeyPressEvent.class);
+			MinecraftForge.EVENT_BUS.register(PlayerRender.class);
+			MinecraftForge.EVENT_BUS.register(ToolTipEvent.class);
+			MinecraftForge.EVENT_BUS.register(TransmutationRenderingEvent.class);
+			MinecraftForge.EVENT_BUS.register(ClientProxy.class);
+		});
+
+		AlchBagImpl.init();
+		KnowledgeImpl.init();
+		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
+		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+
+		CONFIG_DIR = new File(new File("config"), MODNAME);
+
 		if (!CONFIG_DIR.exists())
 		{
 			CONFIG_DIR.mkdirs();
@@ -104,13 +122,10 @@ public class PECore
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
 
 		PacketHandler.register();
-
-
 		
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		proxy.registerKeyBinds();
-
 		proxy.registerRenderers();
 	}
 	

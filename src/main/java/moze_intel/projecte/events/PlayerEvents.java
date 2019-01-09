@@ -39,7 +39,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class PlayerEvents
 {
 	// On death or return from end, copy the capability data

@@ -8,7 +8,6 @@ import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
 public class PlayerRender
 {
 	@SubscribeEvent

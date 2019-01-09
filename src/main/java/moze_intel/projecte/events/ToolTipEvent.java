@@ -27,8 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
-public class ToolTipEvent 
+public class ToolTipEvent
 {
 	@SubscribeEvent
 	public static void tTipEvent(ItemTooltipEvent event)

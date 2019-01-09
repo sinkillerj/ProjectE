@@ -36,8 +36,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = PECore.MODID)
-public class TransmutationRenderingEvent 
+public class TransmutationRenderingEvent
 {
 	private static final Minecraft mc = Minecraft.getInstance();
 	private static final List<AxisAlignedBB> renderList = new ArrayList<>();

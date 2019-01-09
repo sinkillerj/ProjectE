@@ -102,7 +102,6 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Map.Entry;
 
-@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class ObjHandler
 {
 	public static final ItemGroup cTab = new ItemGroup(PECore.MODID) {
