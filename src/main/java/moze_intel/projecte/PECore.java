@@ -26,6 +26,7 @@ import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -110,6 +111,9 @@ public class PECore
 			MinecraftForge.EVENT_BUS.register(ClientProxy.class);
 		});
 
+		// todo 1.13 remove
+		ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
+
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
@@ -134,6 +138,7 @@ public class PECore
 	
 	private void init(FMLInitializationEvent event)
 	{
+		LOGGER.error("{}", TileEntityType.REGISTRY.get(new ResourceLocation(MODID, "dm_pedestal")));
 		proxy.registerLayerRenderers();
 	}
 

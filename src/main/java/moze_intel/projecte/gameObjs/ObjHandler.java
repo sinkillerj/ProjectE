@@ -200,7 +200,8 @@ public class ObjHandler
 			.addToolType(ToolType.get("morning_star"), 5)
 			.addToolType(ToolType.PICKAXE, 5)
 			.addToolType(ToolType.SHOVEL, 5)
-			.addToolType(ToolType.AXE, 5)).setRegistryName(PECore.MODID, "rm_morning_star");
+			.addToolType(ToolType.AXE, 5))
+			.setRegistryName(PECore.MODID, "rm_morning_star");
 
 	public static final Item dmHelmet = new DMArmor(EntityEquipmentSlot.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "dm_helmet");
 	public static final Item dmChest = new DMArmor(EntityEquipmentSlot.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "dm_chestplate");
@@ -282,44 +283,19 @@ public class ObjHandler
 	@ObjectHolder(PECore.MODID + ":water_projectile")
 	public static EntityType<?> WATER_PROJECTILE;
 
-	@ObjectHolder(PECore.MODID + ":alchemical_chest")
-	public static TileEntityType<?> ALCH_CHEST_TILE;
-
-	@ObjectHolder(PECore.MODID + ":collector_mk1")
-	public static TileEntityType<?> COLLECTOR_MK1_TILE;
-
-	@ObjectHolder(PECore.MODID + ":collector_mk2")
-	public static TileEntityType<?> COLLECTOR_MK2_TILE;
-
-	@ObjectHolder(PECore.MODID + ":collector_mk3")
-	public static TileEntityType<?> COLLECTOR_MK3_TILE;
-
-	@ObjectHolder(PECore.MODID + ":condenser")
-	public static TileEntityType<?> CONDENSER_TILE;
-
-	@ObjectHolder(PECore.MODID + ":condenser_m2")
-	public static TileEntityType<?> CONDENSER_MK2_TILE;
-
-	@ObjectHolder(PECore.MODID + ":relay_mk1")
-	public static TileEntityType<?> RELAY_MK1_TILE;
-
-	@ObjectHolder(PECore.MODID + ":relay_mk2")
-	public static TileEntityType<?> RELAY_MK2_TILE;
-
-	@ObjectHolder(PECore.MODID + ":relay_mk3")
-	public static TileEntityType<?> RELAY_MK3_TILE;
-
-	@ObjectHolder(PECore.MODID + ":dm_furnace")
-	public static TileEntityType<?> DM_FURNACE_TILE;
-
-	@ObjectHolder(PECore.MODID + ":rm_furnace")
-	public static TileEntityType<?> RM_FURNACE_TILE;
-
-	@ObjectHolder(PECore.MODID + ":interdiction_torch")
-	public static TileEntityType<?> INTERDICTION_TORCH_TILE;
-
-	@ObjectHolder(PECore.MODID + ":dm_pedestal")
-	public static TileEntityType<?> DM_PEDESTAL_TILE;
+	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
+	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1");
+	public static final TileEntityType<?> COLLECTOR_MK2_TILE = TileEntityType.Builder.create(CollectorMK2Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk2");
+	public static final TileEntityType<?> COLLECTOR_MK3_TILE = TileEntityType.Builder.create(CollectorMK3Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk3");
+	public static final TileEntityType<?> CONDENSER_TILE = TileEntityType.Builder.create(CondenserTile::new).build(null).setRegistryName(PECore.MODID, "condenser");
+	public static final TileEntityType<?> CONDENSER_MK2_TILE = TileEntityType.Builder.create(CondenserMK2Tile::new).build(null).setRegistryName(PECore.MODID, "condenser_mk2");
+	public static final TileEntityType<?> RELAY_MK1_TILE = TileEntityType.Builder.create(RelayMK1Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk1");
+	public static final TileEntityType<?> RELAY_MK2_TILE = TileEntityType.Builder.create(RelayMK2Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk2");
+	public static final TileEntityType<?> RELAY_MK3_TILE = TileEntityType.Builder.create(RelayMK3Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk3");
+	public static final TileEntityType<?> DM_FURNACE_TILE = TileEntityType.Builder.create(DMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final TileEntityType<?> RM_FURNACE_TILE = TileEntityType.Builder.create(RMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
 
 	private static Item.Builder ib()
 	{
@@ -522,20 +498,19 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt)
 	{
-		PECore.LOGGER.error("REGISTERING TILE ENTITIES");
-		evt.getRegistry().register(TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest"));
-		evt.getRegistry().register(TileEntityType.Builder.create(InterdictionTile::new).build(null).setRegistryName(PECore.MODID, "interdiction_torch"));
-		evt.getRegistry().register(TileEntityType.Builder.create(CondenserTile::new).build(null).setRegistryName(PECore.MODID, "condenser"));
-		evt.getRegistry().register(TileEntityType.Builder.create(CondenserMK2Tile::new).build(null).setRegistryName(PECore.MODID, "condenser_mk2"));
-		evt.getRegistry().register(TileEntityType.Builder.create(RMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "rm_furnace"));
-		evt.getRegistry().register(TileEntityType.Builder.create(DMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "dm_furnace"));
-		evt.getRegistry().register(TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1"));
-		evt.getRegistry().register(TileEntityType.Builder.create(CollectorMK2Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk2"));
-		evt.getRegistry().register(TileEntityType.Builder.create(CollectorMK3Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk3"));
-		evt.getRegistry().register(TileEntityType.Builder.create(RelayMK1Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk1"));
-		evt.getRegistry().register(TileEntityType.Builder.create(RelayMK2Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk2"));
-		evt.getRegistry().register(TileEntityType.Builder.create(RelayMK3Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk3"));
-		evt.getRegistry().register(TileEntityType.Builder.create(DMPedestalTile::new).build(null).setRegistryName(PECore.MODID, "dm_pedestal"));
+		evt.getRegistry().register(ALCH_CHEST_TILE);
+		evt.getRegistry().register(INTERDICTION_TORCH_TILE);
+		evt.getRegistry().register(CONDENSER_TILE);
+		evt.getRegistry().register(CONDENSER_MK2_TILE);
+		evt.getRegistry().register(RM_FURNACE_TILE);
+		evt.getRegistry().register(DM_FURNACE_TILE);
+		evt.getRegistry().register(COLLECTOR_MK1_TILE);
+		evt.getRegistry().register(COLLECTOR_MK2_TILE);
+		evt.getRegistry().register(COLLECTOR_MK3_TILE);
+		evt.getRegistry().register(RELAY_MK1_TILE);
+		evt.getRegistry().register(RELAY_MK2_TILE);
+		evt.getRegistry().register(RELAY_MK3_TILE);
+		evt.getRegistry().register(DM_PEDESTAL_TILE);
 	}
 
 	/* todo 1.13
