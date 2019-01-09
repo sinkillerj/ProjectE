@@ -7,17 +7,17 @@
       "item": "projecte:philosophers_stone"
     },
     {
-      "item": "#INGOTGOLD"
+      "tag": "forge:ingots/gold"
     },
     {
-      "item": "#INGOTGOLD"
+      "tag": "forge:ingots/gold"
     },
     {
-      "item": "#INGOTGOLD"
+      "tag": "forge:ingots/gold"
     },
     {
-      "item": "#INGOTGOLD"
+      "tag": "forge:ingots/gold"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

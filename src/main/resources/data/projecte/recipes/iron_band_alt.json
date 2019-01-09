@@ -7,10 +7,10 @@
     "ILI",
     "III"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     "L": {
       "item": "minecraft:lava_bucket"

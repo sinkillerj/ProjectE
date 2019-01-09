@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:relay_mk2"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "ODO",
     "OAO",

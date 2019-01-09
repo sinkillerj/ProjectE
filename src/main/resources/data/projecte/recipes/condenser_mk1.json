@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:condenser_mk1"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "ODO",
     "DCD",
@@ -16,7 +16,7 @@
       "item": "#OBSIDIAN"
     },
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     }
   }
 }

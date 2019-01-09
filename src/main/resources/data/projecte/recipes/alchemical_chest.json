@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:alchemical_chest"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "LMH",
     "SDS",
@@ -22,13 +22,13 @@
       "item": "#STONE"
     },
     "I": {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     "C": {
-      "item": "#CHESTWOOD"
+      "tag": "forge:chests/wooden"
     },
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     }
   }
 }

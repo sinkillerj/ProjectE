@@ -7,8 +7,8 @@
       "tag": "projecte:alchemical_bags"
     },
     {
-      "item": "#DYEGREEN"
+      "tag": "forge:dyes/green"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

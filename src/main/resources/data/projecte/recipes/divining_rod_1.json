@@ -7,10 +7,10 @@
     "DSD",
     "DDD"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "item": "#STICKWOOD"
+      "tag": "forge:rods/wooden"
     },
     "D": {
       "item": "projecte:low_covalence_dust"

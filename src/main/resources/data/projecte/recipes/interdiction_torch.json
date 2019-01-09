@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:interdiction_torch"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "RDR",
     "DPD",
@@ -13,10 +13,10 @@
       "item": "minecraft:redstone_torch"
     },
     "G": {
-      "item": "#DUSTGLOWSTONE"
+      "tag": "forge:dusts/glowstone"
     },
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     },
     "P": {
       "item": "projecte:philosophers_stone"

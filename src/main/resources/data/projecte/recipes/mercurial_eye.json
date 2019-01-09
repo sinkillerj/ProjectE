@@ -7,7 +7,7 @@
     "BRB",
     "BDB"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
       "item": "minecraft:brick_block"
@@ -16,7 +16,7 @@
       "item": "projecte:red_matter"
     },
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     },
     "O": {
       "item": "#OBSIDIAN"

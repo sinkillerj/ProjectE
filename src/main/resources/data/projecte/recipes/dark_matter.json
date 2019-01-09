@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:dark_matter"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "AAA",
     "ADA",
@@ -13,7 +13,7 @@
       "item": "projecte:aeternalis_fuel"
     },
     "D": {
-      "item": "#BLOCKDIAMOND"
+      "tag": "forge:storage_blocks/diamond"
     }
   }
 }

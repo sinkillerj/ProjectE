@@ -7,10 +7,10 @@
     "D",
     "D"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     },
     "M": {
       "item": "projecte:dark_matter"

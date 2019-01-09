@@ -8,8 +8,8 @@
       "item": "projecte:philosophers_stone"
     },
     {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

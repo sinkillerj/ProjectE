@@ -7,8 +7,8 @@
       "item": "projecte:arcana_ring"
     },
     {
-      "item": "#DIRT"
+      "tag": "#DIRT"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

@@ -6,28 +6,28 @@
   "type": "forge:ore_shapeless",
   "ingredients": [
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
-      "item": "#COBBLESTONE"
+      "tag": "forge:cobblestone"
     },
     {
       "item": "minecraft:charcoal"

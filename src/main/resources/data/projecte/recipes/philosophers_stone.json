@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:philosophers_stone"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "group": "projecte:philosophers_stone",
   "pattern": [
     "RGR",
@@ -11,13 +11,13 @@
   ],
   "key": {
     "R": {
-      "item": "#DUSTREDSTONE"
+      "tag": "forge:dusts/redstone"
     },
     "G": {
-      "item": "#DUSTGLOWSTONE"
+      "tag": "forge:dusts/glowstone"
     },
     "D": {
-      "item": "#GEMDIAMOND"
+      "tag": "forge:gems/diamond"
     }
   }
 }

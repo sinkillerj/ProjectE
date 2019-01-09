@@ -7,29 +7,29 @@
       "item": "projecte:philosophers_stone"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "#INGOTIRON"
+      "tag": "forge:ingots/iron"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

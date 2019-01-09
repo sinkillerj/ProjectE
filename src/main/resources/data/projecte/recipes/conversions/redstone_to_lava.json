@@ -10,8 +10,8 @@
       "item": "minecraft:bucket"
     },
     {
-      "item": "#DUSTREDSTONE"
+      "tag": "forge:dusts/redstone"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

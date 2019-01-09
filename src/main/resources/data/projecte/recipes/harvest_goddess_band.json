@@ -7,10 +7,10 @@
     "DID",
     "SFS"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "item": "#TREESAPLING"
+      "tag": "minecraft:saplings"
     },
     "D": {
       "item": "projecte:dark_matter"

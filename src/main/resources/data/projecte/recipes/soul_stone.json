@@ -7,16 +7,16 @@
     "RLR",
     "GGG"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
       "item": "projecte:red_matter"
     },
     "G": {
-      "item": "#DUSTGLOWSTONE"
+      "tag": "forge:dusts/glowstone"
     },
     "L": {
-      "item": "#GEMLAPIS"
+      "tag": "forge:gems/lapis"
     }
   }
 }

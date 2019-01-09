@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:repair_talisman"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "LMH",
     "SPS",

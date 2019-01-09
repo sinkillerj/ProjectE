@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:collector_mk1"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "GTG",
     "GDG",
@@ -16,7 +16,7 @@
       "item": "minecraft:furnace"
     },
     "D": {
-      "item": "#BLOCKDIAMOND"
+      "tag": "forge:storage_blocks/diamond"
     },
     "T": {
       "item": "#BLOCKGLASSCOLORLESS"

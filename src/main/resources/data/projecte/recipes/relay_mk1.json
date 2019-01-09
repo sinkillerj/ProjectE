@@ -2,7 +2,7 @@
   "result": {
     "item": "projecte:relay_mk1"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "OSO",
     "ODO",
@@ -16,7 +16,7 @@
       "item": "#OBSIDIAN"
     },
     "D": {
-      "item": "#BLOCKDIAMOND"
+      "tag": "forge:storage_blocks/diamond"
     }
   }
 }
