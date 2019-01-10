@@ -10,7 +10,7 @@
   ],
   "key": {
     "G": {
-      "item": "#GLOWSTONE"
+      "item": "minecraft:glowstone"
     },
     "C": {
       "item": "projecte:collector_mk2"

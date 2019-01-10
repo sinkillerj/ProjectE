@@ -1,0 +1,60 @@
+{
+  "overrides": [
+    {
+      "predicate": {
+        "projecte:active": 0,
+        "projecte:mode": 0
+      },
+      "model": "projecte:item/arcana_zero_off"
+    },
+    {
+      "predicate": {
+        "projecte:active": 1,
+        "projecte:mode": 0
+      },
+      "model": "projecte:item/arcana_zero_on"
+    },
+    {
+      "predicate": {
+        "projecte:active": 0,
+        "projecte:mode": 1
+      },
+      "model": "projecte:item/arcana_ignition_off"
+    },
+    {
+      "predicate": {
+        "projecte:active": 1,
+        "projecte:mode": 1
+      },
+      "model": "projecte:item/arcana_ignition_on"
+    },
+    {
+      "predicate": {
+        "projecte:active": 0,
+        "projecte:mode": 2
+      },
+      "model": "projecte:item/arcana_harv_off"
+    },
+    {
+      "predicate": {
+        "projecte:active": 1,
+        "projecte:mode": 2
+      },
+      "model": "projecte:item/arcana_harv_on"
+    },
+    {
+      "predicate": {
+        "projecte:active": 0,
+        "projecte:mode": 3
+      },
+      "model": "projecte:item/arcana_swrg_off"
+    },
+    {
+      "predicate": {
+        "projecte:active": 1,
+        "projecte:mode": 3
+      },
+      "model": "projecte:item/arcana_swrg_on"
+    }
+  ]
+}

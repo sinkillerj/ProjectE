@@ -21,18 +21,6 @@ import javax.annotation.Nonnull;
 
 public class AlchemicalBag extends ItemPE
 {
-	// MC Lang files have these unlocalized names mapped to raw color names
-	private final String[] unlocalizedColors = {
-			"item.fireworksCharge.white", "item.fireworksCharge.orange",
-			"item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
-			"item.fireworksCharge.yellow", "item.fireworksCharge.lime",
-			"item.fireworksCharge.pink", "item.fireworksCharge.gray",
-			"item.fireworksCharge.silver", "item.fireworksCharge.cyan",
-			"item.fireworksCharge.purple", "item.fireworksCharge.blue",
-			"item.fireworksCharge.brown", "item.fireworksCharge.green",
-			"item.fireworksCharge.red", "item.fireworksCharge.black"
-	};
-
 	public final EnumDyeColor color;
 	
 	public AlchemicalBag(Builder builder, EnumDyeColor color)
@@ -51,16 +39,6 @@ public class AlchemicalBag extends ItemPE
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-	}
-
-	@Nonnull
-	@Override
-	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
-	{
-		return super.getDisplayName(stack)
-				.appendText(" (")
-				.appendSibling(new TextComponentTranslation(unlocalizedColors[color.getId()]))
-				.appendText(")");
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)

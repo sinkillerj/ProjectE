@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "projecte:matter_block",
-      "data": 1
+      "item": "projecte:red_matter_block"
     },
     "title": {
       "translate": "advancements.pe_rm_block"
@@ -18,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:matter_block",
-            "data": 1
+            "item": "projecte:red_matter_block"
           }
         ]
       }

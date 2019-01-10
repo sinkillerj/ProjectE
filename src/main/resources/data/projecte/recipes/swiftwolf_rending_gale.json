@@ -13,10 +13,10 @@
       "item": "projecte:dark_matter"
     },
     "F": {
-      "item": "#FEATHER"
+      "item": "minecraft:feather"
     },
     "I": {
-      "item": "projecte:ring_iron_band"
+      "item": "projecte:iron_band"
     }
   }
 }

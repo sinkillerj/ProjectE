@@ -19,7 +19,7 @@
       "item": "projecte:high_covalence_dust"
     },
     "S": {
-      "item": "#STONE"
+      "tag": "forge:stone"
     },
     "I": {
       "tag": "forge:ingots/iron"

@@ -10,10 +10,10 @@
   ],
   "key": {
     "S": {
-      "item": "#STONE"
+      "tag": "forge:stone"
     },
     "O": {
-      "item": "#OBSIDIAN"
+      "item": "minecraft:obsidian"
     },
     "P": {
       "item": "projecte:philosophers_stone"

@@ -10,7 +10,7 @@
   ],
   "key": {
     "G": {
-      "item": "#GLOWSTONE"
+      "item": "minecraft:glowstone"
     },
     "F": {
       "item": "minecraft:furnace"
@@ -19,7 +19,7 @@
       "tag": "forge:storage_blocks/diamond"
     },
     "T": {
-      "item": "#BLOCKGLASSCOLORLESS"
+      "item": "minecraft:glass"
     }
   }
 }

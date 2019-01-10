@@ -10,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "item": "#STONE"
+      "tag": "forge:stone"
     },
     "D": {
       "item": "projecte:dark_matter_block"

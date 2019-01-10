@@ -10,10 +10,10 @@
   ],
   "key": {
     "S": {
-      "item": "#BLOCKGLASSCOLORLESS"
+      "item": "minecraft:glass"
     },
     "O": {
-      "item": "#OBSIDIAN"
+      "item": "minecraft:obsidian"
     },
     "D": {
       "tag": "forge:storage_blocks/diamond"

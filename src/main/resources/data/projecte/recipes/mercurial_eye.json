@@ -10,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "item": "minecraft:brick_block"
+      "item": "minecraft:bricks"
     },
     "R": {
       "item": "projecte:red_matter"
@@ -19,7 +19,7 @@
       "tag": "forge:gems/diamond"
     },
     "O": {
-      "item": "#OBSIDIAN"
+      "item": "minecraft:obsidian"
     }
   }
 }

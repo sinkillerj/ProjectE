@@ -7,7 +7,7 @@
       "item": "projecte:arcana_ring"
     },
     {
-      "tag": "#DIRT"
+      "item": "minecraft:dirt"
     }
   ],
   "type": "minecraft:crafting_shapeless"

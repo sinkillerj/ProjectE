@@ -10,10 +10,10 @@
   ],
   "key": {
     "P": {
-      "item": "#PAPER"
+      "item": "minecraft:paper"
     },
     "S": {
-      "item": "#STRING"
+      "item": "minecraft:string"
     },
     "L": {
       "item": "projecte:low_covalence_dust"

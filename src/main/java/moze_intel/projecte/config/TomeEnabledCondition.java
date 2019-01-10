@@ -5,7 +5,7 @@ import net.minecraftforge.common.crafting.IConditionSerializer;
 
 import java.util.function.BooleanSupplier;
 
-public class TomeEnabledFactory implements IConditionSerializer {
+public class TomeEnabledCondition implements IConditionSerializer {
     @Override
     public BooleanSupplier parse(JsonObject json) {
         return () -> ProjectEConfig.difficulty.craftableTome;

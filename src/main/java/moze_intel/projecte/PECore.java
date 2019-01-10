@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.events.*;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -26,11 +27,11 @@ import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -138,7 +139,7 @@ public class PECore
 	
 	private void init(FMLInitializationEvent event)
 	{
-		LOGGER.error("{}", TileEntityType.REGISTRY.get(new ResourceLocation(MODID, "dm_pedestal")));
+		CraftingHelper.register(new ResourceLocation(PECore.MODID, "tome_enabled"), new TomeEnabledCondition());
 		proxy.registerLayerRenderers();
 	}
 

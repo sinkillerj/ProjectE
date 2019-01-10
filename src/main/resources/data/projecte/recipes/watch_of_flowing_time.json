@@ -16,10 +16,10 @@
       "item": "projecte:dark_matter"
     },
     "G": {
-      "item": "#GLOWSTONE"
+      "item": "minecraft:glowstone"
     },
     "O": {
-      "item": "#OBSIDIAN"
+      "item": "minecraft:obsidian"
     }
   }
 }

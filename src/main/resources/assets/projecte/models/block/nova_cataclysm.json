@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "bottom": "projecte:blocks/explosives/bottom",
+    "top": "projecte:blocks/explosives/top",
+    "side": "projecte:blocks/explosives/nova1_side"
+  }
+}

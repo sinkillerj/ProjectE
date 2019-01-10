@@ -3,7 +3,7 @@
     "item": "projecte:high_covalence_dust",
     "count": 40
   },
-  "type": "forge:ore_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "tag": "forge:gems/diamond"

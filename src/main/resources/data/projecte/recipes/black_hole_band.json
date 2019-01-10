@@ -10,13 +10,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "item": "#STRING"
+      "item": "minecraft:string"
     },
     "D": {
       "item": "projecte:dark_matter"
     },
     "I": {
-      "item": "projecte:ring_iron_band"
+      "item": "projecte:iron_band"
     }
   }
 }
