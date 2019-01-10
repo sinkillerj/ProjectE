@@ -43,9 +43,20 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	public Arcana(Builder builder)
 	{
 		super(builder);
-		// todo 1.13 setContainerItem(this);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
+	}
+
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.copy();
 	}
 
 	@OnlyIn(Dist.CLIENT)

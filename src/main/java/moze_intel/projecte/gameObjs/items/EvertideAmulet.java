@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
@@ -69,7 +70,18 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public EvertideAmulet(Builder builder)
 	{
 		super(builder);
-		// todo 1.13 this.setContainerItem(this);
+	}
+
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.copy();
 	}
 
 	@Nonnull

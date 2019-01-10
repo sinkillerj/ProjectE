@@ -43,7 +43,18 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
-		// todo 1.13 this.setContainerItem(this);
+	}
+
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.copy();
 	}
 
 	public RayTraceResult getHitBlock(EntityPlayer player)

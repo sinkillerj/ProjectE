@@ -53,7 +53,18 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	public VolcaniteAmulet(Builder builder)
 	{
 		super(builder);
-		// todo 1.13 this.setContainerItem(this);
+	}
+
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.copy();
 	}
 
 	@Nonnull

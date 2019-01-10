@@ -37,8 +37,19 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	public Zero(Builder builder)
 	{
 		super(builder);
-		// todo 1.13 this.setContainerItem(this);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
+	}
+
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.copy();
 	}
 	
 	@Override
