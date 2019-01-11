@@ -8,7 +8,9 @@ import net.minecraftforge.common.config.ForgeConfigSpec;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Config(modid = PECore.MODID, name = PECore.MODNAME + "/" + PECore.MODNAME)
 public final class ProjectEConfig 
@@ -166,12 +168,7 @@ public final class ProjectEConfig
 	public static class Effects {
 		public final int timePedBonus = config.get("effects.timePedBonus");
 		public final double timePedMobSlowness = config.get("effects.timePedMobSlowness");
-
-		// TODO 1.13 move to tags
-		@Config.Comment("Block ID's that the Watch of Flowing Time should not give extra random ticks to")
-		public final String[] timeWatchBlockBlacklist = {};
-
-		public final List<String> timeWatchTEBlacklist = config.get("effects.timeWatchTEBlacklist");
+		public final Set<String> timeWatchTEBlacklist = new HashSet<>(config.<List<String>>get("effects.timeWatchTEBlacklist"));
 		public final boolean interdictionMode = config.get("effects.interdictionMode");
 	}
 

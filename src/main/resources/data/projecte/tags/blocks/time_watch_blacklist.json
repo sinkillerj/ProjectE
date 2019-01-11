@@ -1,0 +1,5 @@
+{
+  "__comment": "Blocks added will not receive extra random ticks from the Watch of Flowing Time",
+  "replace": false,
+  "values": []
+}

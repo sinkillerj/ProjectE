@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Sets;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
@@ -15,15 +15,13 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -36,21 +34,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
-	// TODO 1.13 remove
-	private static final Set<String> internalBlacklist = Sets.newHashSet(
-			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
-			"com.sci.torcherino.tile.TileTorcherino",
-			"com.sci.torcherino.tile.TileCompressedTorcherino",
-			"thaumcraft.common.tiles.crafting.TileSmelter"
-	);
+	private static final Set<Class> internalBlacklist = new HashSet<>();
+	private static final ResourceLocation BLOCK_BLACKLIST_TAG = new ResourceLocation(PECore.MODID, "time_watch_blacklist");
 
 	public TimeWatch(Builder builder)
 	{
@@ -192,15 +182,15 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		List<String> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
+		Set<String> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++)
 		{
 			for (TileEntity tile : list)
 			{
 				if (!tile.isRemoved() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getClass().toString())
-						)// todo 1.13&& !blacklist.contains(TileEntity.getKey(tile.getClass()).toString()))
+						&& !internalBlacklist.contains(tile.getClass())
+						&& !blacklist.contains(tile.getType().getRegistryName().toString()))
 				{
 					((ITickable) tile).tick();
 				}
@@ -215,7 +205,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchBlockBlacklist);
+		Tag<Block> blacklist = BlockTags.getCollection().getOrCreate(BLOCK_BLACKLIST_TAG);
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
 		{
 			for (int i = 0; i < bonusTicks; i++)
@@ -223,7 +213,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.needsRandomTick()
-						&& !blacklist.contains(block.getRegistryName().toString())
+						&& !blacklist.contains(block)
 						&& !(block instanceof BlockFlowingFluid) // Don't speed vanilla non-source blocks - dupe issues
 						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)
@@ -373,7 +363,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 
 	public static void blacklist(Class<? extends TileEntity> clazz)
 	{
-		internalBlacklist.add(clazz.getName());
+		internalBlacklist.add(clazz);
 	}
 
 	@Override
