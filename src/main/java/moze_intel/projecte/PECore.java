@@ -35,6 +35,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -84,6 +85,8 @@ public class PECore
 
 	public PECore()
 	{
+		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+
 		// In ctor since registry events fire before preinit
 		MinecraftForge.EVENT_BUS.register(ObjHandler.class);
 		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
@@ -92,22 +95,15 @@ public class PECore
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-		MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
 
 	private void preInit(FMLPreInitializationEvent event)
 	{
-		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-		DEV_ENVIRONMENT = false; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+		DEV_ENVIRONMENT = true; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
 		// todo 1.13 remove
 		ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
-
-		AlchBagImpl.init();
-		KnowledgeImpl.init();
-		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
-		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
 
 		CONFIG_DIR = new File(new File("config"), MODNAME);
 
@@ -118,23 +114,34 @@ public class PECore
 
 		ProjectEConfig.load();
 
-		PacketHandler.register();
-		
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		proxy.registerKeyBinds();
+		// Thread unsafe stuff in here
+		DeferredWorkQueue.enqueueWork(() -> {
+			// Caps internals unsafe
+			AlchBagImpl.init();
+			KnowledgeImpl.init();
+			CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
+			CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+
+			PacketHandler.register(); // NetworkRegistry.createInstance
+			proxy.registerKeyBinds(); // vanilla keybind array unsafe
+			return null;
+		});
 	}
 	
 	private void init(FMLInitializationEvent event)
 	{
-		CraftingHelper.register(new ResourceLocation(PECore.MODID, "tome_enabled"), new TomeEnabledCondition());
-		proxy.registerLayerRenderers();
+		DeferredWorkQueue.enqueueWork(() -> {
+			CraftingHelper.register(new ResourceLocation(PECore.MODID, "tome_enabled"), new TomeEnabledCondition());
+			proxy.registerLayerRenderers();
+			return null;
+		});
 	}
 
 	private void postInit(FMLPostInitializationEvent event)
 	{
 		NBTWhitelistParser.init();
-
 		Integration.init();
 		handleImc();
 	}
@@ -171,13 +178,9 @@ public class PECore
 		});
 	}
 
-	private void serverStopping (FMLServerStoppingEvent event)
-	{
-		TransmutationOffline.cleanAll();
-	}
-	
 	private void serverQuit(FMLServerStoppedEvent event)
 	{
+		TransmutationOffline.cleanAll();
 		Transmutation.clearCache();
 		EMCMapper.clearMaps();
 	}
