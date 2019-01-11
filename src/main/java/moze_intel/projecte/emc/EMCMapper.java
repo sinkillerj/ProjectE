@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -29,6 +30,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -38,8 +40,19 @@ import java.util.Map;
 public final class EMCMapper 
 {
 	public static final Map<SimpleStack, Long> emc = new LinkedHashMap<>();
-
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
+
+	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
+	{
+		T val = config.get(key);
+		if (val == null)
+		{
+			val = defaultValue;
+			config.set(key, val);
+			config.setComment(key, comment);
+		}
+		return val;
+	}
 
 	public static void map()
 	{
@@ -55,15 +68,19 @@ public final class EMCMapper
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 
-		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
+		CommentedFileConfig config = CommentedFileConfig.builder(Paths.get("config", PECore.MODID, "mapping.toml")).build();
 		config.load();
 
-		if (config.getBoolean("dumpEverythingToFile", "general", false,"Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
+		boolean dumpToFile = getOrSetDefault(config, "general.dumpEverythingToFile", "Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json", false);
+		boolean shouldUsePregenerated = getOrSetDefault(config, "general.pregenerate", "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
+				" when that file does not exist, this setting is set to false, or an error occurred parsing that file.", false);
+		boolean logFoundExploits = getOrSetDefault(config, "general.logEMCExploits", "Log known EMC Exploits. This can not and will not find all possible exploits. " +
+				"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
+				"Exploits that derive from conversions that are unknown to ProjectE will not be found.", true);
+
+		if (dumpToFile) {
 			mappingCollector = new DumpToFileCollector<>(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
 		}
-
-		boolean shouldUsePregenerated = config.getBoolean("pregenerate", "general", false, "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
-						" when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
 		Map<NormalizedSimpleStack, Long> graphMapperValues;
 		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = new HashMap<>()))
@@ -72,23 +89,17 @@ public final class EMCMapper
 		}
 		else
 		{
-
-
-			SimpleGraphMapper.setLogFoundExploits(config.getBoolean("logEMCExploits", "general", true,
-					"Log known EMC Exploits. This can not and will not find all possible exploits. " +
-							"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
-							"Exploits that derive from conversions that are unknown to ProjectE will not be found."
-			));
+			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
 			PECore.debugLog("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers)
 			{
 				try
 				{
-					if (config.getBoolean(emcMapper.getName(), "enabledMappers", emcMapper.isAvailable(), emcMapper.getDescription()) && emcMapper.isAvailable())
+					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable()))
 					{
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
-						emcMapper.addMappings(mappingCollector, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+						emcMapper.addMappings(mappingCollector, config);
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e)
@@ -106,6 +117,7 @@ public final class EMCMapper
 			PECore.debugLog("Starting to generate Values:");
 
 			config.save();
+			config.close();
 
 			graphMapperValues = valueGenerator.generateValues();
 			PECore.debugLog("Generated Values...");

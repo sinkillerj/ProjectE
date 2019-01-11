@@ -1,14 +1,14 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import net.minecraftforge.common.config.Configuration;
 
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
 			PECore.debugLog("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
 			mapper.setValueBefore(entry.nss, entry.emc);

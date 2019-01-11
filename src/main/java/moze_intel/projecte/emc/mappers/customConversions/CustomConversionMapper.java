@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,7 +18,6 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFi
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -64,7 +64,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config)
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config)
 	{
 		File customConversionFolder = getCustomConversionFolder();
 		if (customConversionFolder.isDirectory() || customConversionFolder.mkdir()) {
@@ -72,7 +72,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			for (String defaultFile : defaultFilenames)
 			{
-				readFile(new File(customConversionFolder, defaultFile + ".json"), config, mapper, true);
+				readFile(new File(customConversionFolder, defaultFile + ".json"), mapper, true);
 			}
 
 			List<File> sortedFiles = Arrays.asList(customConversionFolder.listFiles());
@@ -80,7 +80,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			for (File f : sortedFiles)
 			{
-				readFile(f, config, mapper, false);
+				readFile(f, mapper, false);
 			}
 
 			NSSFake.resetNamespace();
@@ -89,14 +89,13 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		}
 	}
 
-	private static void readFile(File f, Configuration config, IMappingCollector<NormalizedSimpleStack, Long> mapper, boolean allowDefaults)
+	private static void readFile(File f, IMappingCollector<NormalizedSimpleStack, Long> mapper, boolean allowDefaults)
 	{
 		if (f.isFile() && f.canRead() && f.getName().toLowerCase().endsWith(".json")) {
 			String name = f.getName().substring(0, f.getName().length() - ".json".length());
 
 			if (!EXAMPLE_FILENAME.equals(name)
-					&& (allowDefaults || !defaultFilenames.contains(name))
-					&& config.getBoolean(name, "", true, String.format("Read file: %s?", f.getName()))) {
+					&& (allowDefaults || !defaultFilenames.contains(name))) {
 				try
 				{
 					NSSFake.setCurrentNamespace(name);

@@ -91,9 +91,9 @@ public class PECore
 		FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::serverStopping);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::serverQuit);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
+		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
 
 	private void preInit(FMLPreInitializationEvent event)
@@ -176,7 +176,13 @@ public class PECore
 
 		LOGGER.info("Starting server-side EMC mapping.");
 
-		EMCMapper.map();
+		try {
+			EMCMapper.map();
+		} catch (Throwable t)
+		{
+			LOGGER.error("thingy", t);
+		}
+
 
 		LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 	}

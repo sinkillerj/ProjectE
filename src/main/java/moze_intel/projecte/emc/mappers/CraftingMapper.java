@@ -1,6 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSItem;
@@ -30,7 +32,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/);
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config) {
 		Map<Class, Integer> recipeCount = new HashMap<>();
 		Set<Class> canNotMap = new HashSet<>();
 
@@ -40,7 +42,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			if (recipeOutput.isEmpty()) continue;
 			NormalizedSimpleStack recipeOutputNorm = new NSSItem(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
-				if (!config.getBoolean("enable" + recipeMapper.getName(), "IRecipeImplementations", true, recipeMapper.getDescription()))
+				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
+				if (!EMCMapper.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true))
 					continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
@@ -149,7 +152,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe/* || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe todo 1.13*/;
+			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe;
 		}
 	}
 

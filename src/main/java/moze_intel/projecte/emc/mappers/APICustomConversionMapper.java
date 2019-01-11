@@ -1,5 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
@@ -29,12 +31,13 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config)
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config)
 	{
 		for (Map.Entry<String, List<ConversionProxyImpl.APIConversion>> entry : ConversionProxyImpl.instance.storedConversions.entrySet())
 		{
-			if (config.getBoolean(entry.getKey(), "allow", true,
-					String.format("Allow Mod %s to add its %d Recipes to the EMC Calculation", entry.getKey(), entry.getValue().size()))) {
+			String modid = entry.getKey();
+			String configKey = getName() + ".allow." + modid;
+			if (EMCMapper.getOrSetDefault(config, configKey, "Allow this mod to add conversions to the EMC Calculation", true)) {
 				for (ConversionProxyImpl.APIConversion apiConversion: entry.getValue()) {
 					mapper.addConversion(apiConversion.amount, apiConversion.output, apiConversion.ingredients);
 				}

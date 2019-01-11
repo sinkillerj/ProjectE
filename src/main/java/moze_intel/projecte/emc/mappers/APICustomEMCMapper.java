@@ -1,12 +1,13 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
@@ -25,7 +26,6 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private static final int PRIORITY_DEFAULT_VALUE = 1;
 	private APICustomEMCMapper() {}
 
-	//Need a special Map for Items and Blocks because the ItemID-mapping might change, so we need to store modid:unlocalizedName instead of the NormalizedSimpleStack which only holds itemid and metadata
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customNonItemEMCforMod = new HashMap<>();
 
@@ -34,14 +34,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		if (emcValue < 0) emcValue = 0;
 		FMLModContainer activeMod = FMLModLoadingContext.get().getActiveContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<NormalizedSimpleStack, Long> modMap;
-		if (customEMCforMod.containsKey(modId)) {
-			modMap = customEMCforMod.get(modId);
-		} else {
-			modMap = new HashMap<>();
-			customEMCforMod.put(modId, modMap);
-		}
-		modMap.put(new NSSItem(stack), emcValue);
+		customEMCforMod.computeIfAbsent(modId, k -> new HashMap<>()).put(new NSSItem(stack), emcValue);
 	}
 
 	public void registerCustomEMC(Object o, long emcValue) {
@@ -50,14 +43,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		if (emcValue < 0) emcValue = 0;
 		FMLModContainer activeMod = FMLModLoadingContext.get().getActiveContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<NormalizedSimpleStack, Long> modMap;
-		if (customNonItemEMCforMod.containsKey(modId)) {
-			modMap = customNonItemEMCforMod.get(modId);
-		} else {
-			modMap = new HashMap<>();
-			customNonItemEMCforMod.put(modId, modMap);
-		}
-		modMap.put(stack, emcValue);
+		customNonItemEMCforMod.computeIfAbsent(modId, k -> new HashMap<>()).put(stack, emcValue);
 	}
 
 	@Override
@@ -76,37 +62,16 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config) {
 		Map<String, Integer> priorityMap = new HashMap<>();
 		Set<String> modIdSet = new HashSet<>();
 		modIdSet.addAll(customEMCforMod.keySet());
 		modIdSet.addAll(customNonItemEMCforMod.keySet());
 
 		for (String modId: modIdSet) {
-			if (modId == null) continue;
-			int valueCount = 0;
-			if (customEMCforMod.containsKey(modId))
-			{
-				valueCount += customEMCforMod.get(modId).size();
-			}
-			if (customNonItemEMCforMod.containsKey(modId))
-			{
-				valueCount += customNonItemEMCforMod.get(modId).size();
-			}
-			priorityMap.put(modId, config.getInt(modId + "priority", "customEMCPriorities", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for Mod with ModId = " + modId + ". Values: " + valueCount));
-		}
-		if (modIdSet.contains(null))
-		{
-			int valueCount = 0;
-			if (customEMCforMod.containsKey(null))
-			{
-				valueCount += customEMCforMod.get(null).size();
-			}
-			if (customNonItemEMCforMod.containsKey(null))
-			{
-				valueCount += customNonItemEMCforMod.get(null).size();
-			}
-			priorityMap.put(null, config.getInt("modlessCustomEMCPriority", "", PRIORITY_DEFAULT_VALUE, PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE, "Priority for custom EMC values for which the ModId could not be determined. 0 to disable. Values: " + valueCount));
+			String configKey = getName() + ".priority." + (modId == null ? "__no_modid" : modId);
+			int priority = EMCMapper.getOrSetDefault(config, configKey, "Priority for this mod", PRIORITY_DEFAULT_VALUE);
+			priorityMap.put(modId, priority);
 		}
 
 		List<String> modIds = new ArrayList<>(modIdSet);
@@ -148,7 +113,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		}
 	}
 
-	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, Configuration config) {
+	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, CommentedFileConfig config) {
 		String itemName;
 		if (stack instanceof NSSItem)
 		{
@@ -158,7 +123,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}
 		String modForItem = itemName.substring(0, itemName.indexOf(':'));
-		String permission = config.getString(modForItem,"permissions."+modId,"both", String.format("Allow '%s' to set and or remove values for '%s'. Options: [both, set, remove, none]", modId, modForItem), new String[]{"both", "set", "remove", "none"});
+		String permission = "none"; // todo 1.13 get rid of this system? config.getString(modForItem,"permissions."+modId,"both", String.format("Allow '%s' to set and or remove values for '%s'. Options: [both, set, remove, none]", modId, modForItem), new String[]{"both", "set", "remove", "none"});
 		if (permission.equals("both"))
 		{
 			return true;

@@ -135,6 +135,8 @@ public final class ProjectEConfig
 			config.save();
 		}
 
+		config.close();
+
 		difficulty = new Difficulty();
 		items = new Items();
 		effects = new Effects();

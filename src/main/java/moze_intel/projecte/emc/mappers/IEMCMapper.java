@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraftforge.common.config.Configuration;
 
@@ -34,10 +35,10 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * <br/>
 	 * Use the config object to generate a useful Configuration for your IEMCMapper.
 	 * <br/>
-	 * The Configuration Object will be a {@link moze_intel.projecte.utils.PrefixConfiguration},
-	 * so you can use {@code ""} (Empty String) as a Category to write into the root-Category that is created for your IEMCMapper.
+	 * The Configuration Object will be a {@link com.electronwill.nightconfig.core.file.CommentedFileConfig} representing the top-level mapping.cfg file.
+	 * Please use properly prefixed config keys and do not clobber those not belonging to your mapper
 	 * @param mapper
 	 * @param config
 	 */
-	void addMappings(IMappingCollector<T, V> mapper, Configuration config);
+	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config);
 }
