@@ -39,7 +39,7 @@ import java.util.*;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
-	private static final Set<Class> internalBlacklist = new HashSet<>();
+	private static final Set<ResourceLocation> internalBlacklist = new HashSet<>();
 	private static final ResourceLocation BLOCK_BLACKLIST_TAG = new ResourceLocation(PECore.MODID, "time_watch_blacklist");
 
 	public TimeWatch(Builder builder)
@@ -189,7 +189,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			for (TileEntity tile : list)
 			{
 				if (!tile.isRemoved() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getClass())
+						&& !internalBlacklist.contains(tile.getType().getRegistryName())
 						&& !blacklist.contains(tile.getType().getRegistryName().toString()))
 				{
 					((ITickable) tile).tick();
@@ -361,9 +361,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		return list;
 	}
 
-	public static void blacklist(Class<? extends TileEntity> clazz)
+	public static void blacklist(ResourceLocation id)
 	{
-		internalBlacklist.add(clazz);
+		internalBlacklist.add(id);
 	}
 
 	@Override

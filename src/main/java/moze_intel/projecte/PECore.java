@@ -143,7 +143,7 @@ public class PECore
 	{
 		NBTWhitelistParser.init();
 		Integration.init();
-		handleImc();
+		IMCHandler.handleMessages();
 	}
 	
 	private void serverStarting(FMLServerStartingEvent event)
@@ -183,11 +183,6 @@ public class PECore
 		TransmutationOffline.cleanAll();
 		Transmutation.clearCache();
 		EMCMapper.clearMaps();
-	}
-
-	private void handleImc()
-	{
-		InterModComms.getMessages(MODID).forEach(IMCHandler::handleIMC);
 	}
 
 	public static void refreshJEI()

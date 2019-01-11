@@ -40,6 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -85,28 +86,18 @@ public final class WorldHelper
 			EntityEvoker.class, EntityVex.class, EntityVindicator.class, EntityShulker.class
 	);
 
-	private static final Set<Class<? extends Entity>> interdictionBlacklist = new HashSet<>();
+	private static final Set<ResourceLocation> interdictionBlacklist = new HashSet<>();
 
-	private static final Set<Class<? extends Entity>> swrgBlacklist = new HashSet<>();
+	private static final Set<ResourceLocation> swrgBlacklist = new HashSet<>();
 
-	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
+	public static boolean blacklistInterdiction(ResourceLocation id)
 	{
-		if (!interdictionBlacklist.contains(clazz))
-		{
-			interdictionBlacklist.add(clazz);
-			return true;
-		}
-		return false;
+		return interdictionBlacklist.add(id);
 	}
 
-	public static boolean blacklistSwrg(Class<? extends Entity> clazz)
+	public static boolean blacklistSwrg(ResourceLocation id)
 	{
-		if (!interdictionBlacklist.contains(clazz))
-		{
-			interdictionBlacklist.add(clazz);
-			return true;
-		}
-		return false;
+		return swrgBlacklist.add(id);
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
@@ -533,8 +524,8 @@ public final class WorldHelper
 
 		for (Entity ent : list)
 		{
-			if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
-					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
+			if ((isSWRG && !swrgBlacklist.contains(ent.getType().getRegistryName()))
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getType().getRegistryName()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
 					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))

@@ -7,8 +7,11 @@ import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
@@ -21,27 +24,27 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     private BlacklistProxyImpl() {}
 
     @Override
-    public void blacklistInterdiction(@Nonnull Class<? extends Entity> clazz)
+    public void blacklistInterdiction(@Nonnull EntityType<?> type)
     {
-        Preconditions.checkNotNull(clazz);
+        Preconditions.checkNotNull(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        doBlacklistInterdiction(clazz, modid);
+        doBlacklistInterdiction(type.getRegistryName(), modid);
     }
 
     @Override
-    public void blacklistSwiftwolf(@Nonnull Class<? extends Entity> clazz)
+    public void blacklistSwiftwolf(@Nonnull EntityType<?> type)
     {
-        Preconditions.checkNotNull(clazz);
+        Preconditions.checkNotNull(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        doBlacklistSwiftwolf(clazz, modid);
+        doBlacklistSwiftwolf(type.getRegistryName(), modid);
     }
 
     @Override
-    public void blacklistTimeWatch(@Nonnull Class<? extends TileEntity> clazz)
+    public void blacklistTimeWatch(@Nonnull TileEntityType<?> type)
     {
-        Preconditions.checkNotNull(clazz);
+        Preconditions.checkNotNull(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
-        doBlacklistTimewatch(clazz, modid);
+        doBlacklistTimewatch(type.getRegistryName(), modid);
     }
 
     @Override
@@ -56,22 +59,22 @@ public class BlacklistProxyImpl implements IBlacklistProxy
      * Split actual doing of whitelisting/blacklisting apart in order to log it properly from IMC
      */
 
-    protected void doBlacklistInterdiction(Class<? extends Entity> clazz, String modName)
+    protected void doBlacklistInterdiction(ResourceLocation id, String modName)
     {
-        WorldHelper.blacklistInterdiction(clazz);
-        PECore.debugLog("Mod {} blacklisted {} for interdiction torch", modName, clazz.getCanonicalName());
+        WorldHelper.blacklistInterdiction(id);
+        PECore.debugLog("Mod {} blacklisted {} for interdiction torch", modName, id);
     }
 
-    protected void doBlacklistSwiftwolf(Class<? extends Entity> clazz, String modName)
+    protected void doBlacklistSwiftwolf(ResourceLocation id, String modName)
     {
-        WorldHelper.blacklistSwrg(clazz);
-        PECore.debugLog("Mod {} blacklisted {} for SWRG repel", modName, clazz.getCanonicalName());
+        WorldHelper.blacklistSwrg(id);
+        PECore.debugLog("Mod {} blacklisted {} for SWRG repel", modName, id);
     }
 
-    protected void doBlacklistTimewatch(Class<? extends TileEntity> clazz, String modName)
+    protected void doBlacklistTimewatch(ResourceLocation id, String modName)
     {
-        TimeWatch.blacklist(clazz);
-        PECore.debugLog("Mod {} blacklisted {} for Time Watch acceleration", modName, clazz.getCanonicalName());
+        TimeWatch.blacklist(id);
+        PECore.debugLog("Mod {} blacklisted {} for Time Watch acceleration", modName, id);
     }
 
     protected void doWhitelistNBT(ItemStack s, String modName)
