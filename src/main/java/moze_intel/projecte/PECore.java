@@ -187,15 +187,6 @@ public class PECore
 		InterModComms.getMessages(MODID).forEach(IMCHandler::handleIMC);
 	}
 
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
-	{
-		if (event.getModID().equals(MODID))
-		{
-			// TODO 1.13 ConfigManager.sync(MODID, Config.Type.INSTANCE);
-		}
-	}
-
 	public static void refreshJEI()
 	{
 		if (ModList.get().isLoaded("jei"))

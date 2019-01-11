@@ -1,0 +1,262 @@
+{
+  "comment": "Default values for non-OreDictionary vanilla items",
+  "groups": {
+    "default": {
+      "comment": "Default conversion group",
+      "conversions": [
+        {
+          "output": "minecraft:grass_block",
+          "ingredients": {
+            "minecraft:dirt": 2
+          }
+        },
+        {
+          "output": "minecraft:podzol",
+          "ingredients": {
+            "minecraft:dirt": 2
+          }
+        },
+        {
+          "output": "minecraft:mycelium",
+          "ingredients": {
+            "minecraft:dirt": 2
+          }
+        },
+        {
+          "output": "minecraft:grass_path",
+          "ingredients": [ "minecraft:grass" ]
+        },
+        {
+          "output": "minecraft:iron_horse_armor",
+          "ingredients": {
+            "minecraft:iron_ingot": 8
+          }
+        },
+        {
+          "output": "minecraft:golden_horse_armor",
+          "ingredients": {
+            "minecraft:gold_ingot": 8
+          }
+        },
+        {
+          "output": "minecraft:diamond_horse_armor",
+          "ingredients": {
+            "minecraft:diamond": 8
+          }
+        },
+        {
+          "output": "minecraft:carved_pumpkin",
+          "ingredients": [ "minecraft:pumpkin" ]
+        }
+      ]
+    },
+    "concrete_powder_to_block": {
+      "comment": "Propagate concrete powder values to concrete blocks",
+      "conversions": [
+        {
+          "output": "minecraft:white_concrete",
+          "ingredients": [ "minecraft:white_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:orange_concrete",
+          "ingredients": [ "minecraft:orange_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:magenta_concrete",
+          "ingredients": [ "minecraft:magenta_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:light_blue_concrete",
+          "ingredients": [ "minecraft:light_blue_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:yellow_concrete",
+          "ingredients": [ "minecraft:yellow_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:lime_concrete",
+          "ingredients": [ "minecraft:lime_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:pink_concrete",
+          "ingredients": [ "minecraft:pink_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:gray_concrete",
+          "ingredients": [ "minecraft:gray_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:light_gray_concrete",
+          "ingredients": [ "minecraft:light_gray_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:cyan_concrete",
+          "ingredients": [ "minecraft:cyan_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:purple_concrete",
+          "ingredients": [ "minecraft:purple_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:blue_concrete",
+          "ingredients": [ "minecraft:blue_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:brown_concrete",
+          "ingredients": [ "minecraft:brown_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:green_concrete",
+          "ingredients": [ "minecraft:green_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:red_concrete",
+          "ingredients": [ "minecraft:red_concrete_powder" ]
+        },
+        {
+          "output": "minecraft:black_concrete",
+          "ingredients": [ "minecraft:black_concrete_powder" ]
+        }
+      ]
+    },
+    "notch_apple": {
+      "comment": "Give Notch apple a value based on its old recipe",
+      "conversions": [
+        {
+          "output": "minecraft:enchanted_golden_apple",
+          "ingredients": {
+            "minecraft:apple": 1,
+            "minecraft:gold_block": 8
+          }
+        }
+      ]
+    }
+  },
+  "values": {
+    "before": {
+      "minecraft:cobblestone": 1,
+      "minecraft:stone": 1,
+      "minecraft:granite": 16,
+      "minecraft:diorite": 16,
+      "minecraft:andesite": 16,
+      "minecraft:cracked_stone_bricks": 1,
+      "minecraft:chiseled_stone_bricks": 1,
+      "minecraft:end_stone": 1,
+      "minecraft:netherrack": 1,
+      "minecraft:dirt": 1,
+      "minecraft:sand": 1,
+      "minecraft:red_sand": 1,
+      "minecraft:snow": 1,
+      "minecraft:ice": 1,
+      "minecraft:dead_bush": 1,
+      "minecraft:gravel": 4,
+      "minecraft:cactus": 8,
+      "minecraft:vine": 8,
+      "minecraft:cobweb": 12,
+      "minecraft:lily_pad": 16,
+      "minecraft:poppy": 16,
+      "minecraft:blue_orchid": 16,
+      "minecraft:allium": 16,
+      "minecraft:azure_bluet": 16,
+      "minecraft:red_tulip": 16,
+      "minecraft:orange_tulip": 16,
+      "minecraft:white_tulip": 16,
+      "minecraft:pink_tulip": 16,
+      "minecraft:oxeye_daisy": 16,
+      "minecraft:sunflower": 32,
+      "minecraft:lilac": 32,
+      "minecraft:rose_bush": 32,
+      "minecraft:peony": 32,
+      "minecraft:dandelion": 16,
+      "minecraft:red_mushroom": 32,
+      "minecraft:brown_mushroom": 32,
+      "minecraft:sugar_cane": 32,
+      "minecraft:soul_sand": 49,
+      "minecraft:obsidian": 64,
+      "minecraft:white_terracotta": 64,
+      "minecraft:orange_terracotta": 64,
+      "minecraft:magenta_terracotta": 64,
+      "minecraft:light_blue_terracotta": 64,
+      "minecraft:yellow_terracotta": 64,
+      "minecraft:lime_terracotta": 64,
+      "minecraft:pink_terracotta": 64,
+      "minecraft:gray_terracotta": 64,
+      "minecraft:light_gray_terracotta": 64,
+      "minecraft:cyan_terracotta": 64,
+      "minecraft:purple_terracotta": 64,
+      "minecraft:blue_terracotta": 64,
+      "minecraft:brown_terracotta": 64,
+      "minecraft:green_terracotta": 64,
+      "minecraft:red_terracotta": 64,
+      "minecraft:black_terracotta": 64,
+      "minecraft:sponge": 128,
+      "minecraft:wet_sponge": 128,
+      "minecraft:grass": 1,
+      "minecraft:tall_grass": 1,
+      "minecraft:fern": 1,
+      "minecraft:large_fern": 1,
+      "minecraft:packed_ice": 4,
+      "minecraft:magma_block": 128,
+
+      "minecraft:chorus_plant": 64,
+      "minecraft:chorus_flower": 96,
+      "minecraft:wheat_seeds": 16,
+      "minecraft:beetroot_seeds": 16,
+      "minecraft:melon": 16,
+      "minecraft:wheat": 24,
+      "minecraft:nether_wart": 24,
+      "minecraft:apple": 128,
+      "minecraft:pumpkin": 144,
+      "minecraft:porkchop": 64,
+      "minecraft:beef": 64,
+      "minecraft:chicken": 64,
+      "minecraft:rabbit": 64,
+      "minecraft:mutton": 64,
+      "minecraft:cod": 64,
+      "minecraft:salmon": 64,
+      "minecraft:tropical_fish": 64,
+      "minecraft:pufferfish": 64,
+      "minecraft:carrot": 64,
+      "minecraft:beetroot": 64,
+      "minecraft:potato": 64,
+      "minecraft:poisonous_potato": 64,
+      "minecraft:chorus_fruit": 192,
+
+      "minecraft:string": 12,
+      "minecraft:rotten_flesh": 32,
+      "minecraft:slime_ball": 32,
+      "minecraft:egg": 32,
+      "minecraft:feather": 48,
+      "minecraft:rabbit_hide": 16,
+      "minecraft:rabbit_foot": 128,
+      "minecraft:spider_eye": 128,
+      "minecraft:gunpowder": 192,
+      "minecraft:ender_pearl": 1024,
+      "minecraft:blaze_rod": 1536,
+      "minecraft:shulker_shell": 2048,
+      "minecraft:ghast_tear": 4096,
+      "minecraft:dragon_egg": 262144,
+      "minecraft:potion": 0,
+
+      "minecraft:saddle": 192,
+      "minecraft:name_tag": 192,
+      "#forge:music_discs": 2048,
+
+      "minecraft:flint": 4,
+      "minecraft:coal": 128,
+      "minecraft:quartz": 256,
+      "minecraft:prismarine_shard": 256,
+      "minecraft:prismarine_crystals": 512,
+      "minecraft:ink_sac": 16,
+      "minecraft:cocoa_beans": 128,
+      "minecraft:lapis_lazuli": 864,
+      "minecraft:enchanted_book": 2048,
+      "minecraft:emerald": 16384,
+      "minecraft:nether_star": 139264,
+      "minecraft:clay_ball": 16,
+      "minecraft:bone": 144,
+      "minecraft:snowball": 1,
+      "minecraft:filled_map": 1472
+    }
+  }
+}

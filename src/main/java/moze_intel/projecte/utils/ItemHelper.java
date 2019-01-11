@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.crafting.IRecipe;
@@ -7,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -170,10 +172,15 @@ public final class ItemHelper
 		return stack.isDamageable();
 	}
 
-	public static boolean isOre(IForgeRegistryEntry<?> thing)
+	private static final ResourceLocation FORGE_ORE_TAG = new ResourceLocation("forge", "ores");
+	public static boolean isOre(Block b)
 	{
-		ResourceLocation name = thing.getRegistryName();
-		return name != null && name.toString().contains("ore"); // todo 1.13 refine with regex word boundaries, or find better solution (tags?)
+		return BlockTags.getCollection().getOrCreate(FORGE_ORE_TAG).contains(b);
+	}
+
+	public static boolean isOre(Item i)
+	{
+		return isOre(Block.getBlockFromItem(i));
 	}
 
 	public static IBlockState stackToState(ItemStack stack)

@@ -1,0 +1,18 @@
+{
+  "comment": "Various default values for OreDictionary names, from vanilla and other mods",
+  "values": {
+    "before": {
+      "#minecraft:logs": 32,
+      "#minecraft:planks": 8,
+      "#minecraft:saplings": 32,
+      "#forge:rods/wooden": 4,
+      "#minecraft:leaves": 1,
+
+      "#minecraft:wool": 48,
+
+      "#forge:gems/diamond": 8192,
+      "#forge:dusts/redstone": 64,
+      "#forge:dusts/glowstone": 384
+    }
+  }
+}
