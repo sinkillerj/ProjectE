@@ -267,9 +267,10 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		TileEntity tile = this.getWorld().getTileEntity(pos.up());
 		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
 			return;
-		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN).orElse(null);
+		OptionalCapabilityInstance<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		IItemHandler handler;
 
-		if (handler == null)
+		if (!handlerOpt.isPresent())
 		{
 			if (tile instanceof ISidedInventory)
 			{
@@ -281,6 +282,9 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			{
 				return;
 			}
+		} else
+		{
+			handler = handlerOpt.orElseThrow(NullPointerException::new);
 		}
 
 		for (int i = 0; i < handler.getSlots(); i++)

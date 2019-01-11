@@ -20,9 +20,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -110,7 +112,9 @@ public class RedStar extends PEToolBase
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (block instanceof BlockGrass || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block instanceof BlockSand) // todo 1.13 tag?
+				else if (block instanceof BlockGrass
+						|| BlockTags.SAND.contains(block)
+						|| BlockTags.getCollection().getOrCreate(new ResourceLocation("forge", "dirt")).contains(block))
 				{
 					digAOE(stack, world, player, false, 0, hand);
 				}

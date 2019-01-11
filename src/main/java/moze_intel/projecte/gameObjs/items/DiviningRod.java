@@ -50,7 +50,6 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			return EnumActionResult.SUCCESS;
 		}
 
-		// todo 1.13 PlayerHelper.swingItem(player, hand);
 		List<Long> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;

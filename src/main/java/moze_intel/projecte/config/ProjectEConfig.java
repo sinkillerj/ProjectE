@@ -12,8 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Config(modid = PECore.MODID, name = PECore.MODNAME + "/" + PECore.MODNAME)
-public final class ProjectEConfig 
+public final class ProjectEConfig
 {
 	private static final ForgeConfigSpec SPEC = new ForgeConfigSpec.Builder()
 			.push("difficulty")
