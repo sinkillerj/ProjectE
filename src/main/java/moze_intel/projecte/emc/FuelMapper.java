@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public final class FuelMapper
 {
-	private static final List<SimpleStack> FUEL_MAP = new ArrayList<>();
+	private static final List<Item> FUEL_MAP = new ArrayList<>();
 	
 	public static void loadMap()
 	{
@@ -41,27 +42,25 @@ public final class FuelMapper
 	
 	private static void addToMap(ItemStack stack)
 	{
-		if (EMCHelper.doesItemHaveEmc(stack))
+		if (EMCHelper.doesItemHaveEmc(stack) && !FUEL_MAP.contains(stack.getItem()))
 		{
-			addToMap(new SimpleStack(stack));
+			FUEL_MAP.add(stack.getItem());
 		}
 	}
 	
 	public static boolean isStackFuel(ItemStack stack)
 	{
-		return mapContains(new SimpleStack(stack));
+		return FUEL_MAP.contains(stack.getItem());
 	}
 	
 	public static boolean isStackMaxFuel(ItemStack stack)
 	{
-		return FUEL_MAP.indexOf(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
+		return FUEL_MAP.indexOf(stack.getItem()) == FUEL_MAP.size() - 1;
 	}
 	
 	public static ItemStack getFuelUpgrade(ItemStack stack)
 	{
-		SimpleStack fuel = new SimpleStack(stack);
-
-		int index = FUEL_MAP.indexOf(fuel);
+		int index = FUEL_MAP.indexOf(stack.getItem());
 		
 		if (index == -1)
 		{
@@ -71,29 +70,13 @@ public final class FuelMapper
 		
 		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
 		
-		return FUEL_MAP.get(nextIndex).toItemStack();
-	}
-
-	private static void addToMap(SimpleStack stack)
-	{
-		if (stack.isValid())
-		{
-			if (!FUEL_MAP.contains(stack))
-			{
-				FUEL_MAP.add(stack);
-			}
-		}
-	}
-
-	private static boolean mapContains(SimpleStack stack)
-	{
-		return stack.isValid() && FUEL_MAP.contains(stack);
+		return new ItemStack(FUEL_MAP.get(nextIndex));
 	}
 
 	/**
 	 * @return An immutable version of the Fuel Map
 	 */
-	public static List<SimpleStack> getFuelMap()
+	public static List<Item> getFuelMap()
 	{
 		return Collections.unmodifiableList(FUEL_MAP);
 	}

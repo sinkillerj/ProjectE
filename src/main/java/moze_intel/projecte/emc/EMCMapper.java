@@ -23,6 +23,8 @@ import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.math3.fraction.BigFraction;
 
@@ -37,7 +39,7 @@ import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static final Map<SimpleStack, Long> emc = new LinkedHashMap<>();
+	public static final Map<Item, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
 
 	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
@@ -142,9 +144,9 @@ public final class EMCMapper
 			Item obj = Item.REGISTRY.get(normStackItem.itemName);
 			if (obj != null)
 			{
-				emc.put(new SimpleStack(obj.getRegistryName()), entry.getValue());
+				emc.put(obj, entry.getValue());
 			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}. Can not get ItemID!", normStackItem.itemName);
+				PECore.LOGGER.warn("Could not add EMC value for {}, item does not exist!", normStackItem.itemName);
 			}
 		}
 
@@ -159,14 +161,14 @@ public final class EMCMapper
 										|| e.getValue() <= 0);
 	}
 
-	public static boolean mapContains(SimpleStack key)
+	public static boolean mapContains(IItemProvider item)
 	{
-		return emc.containsKey(key);
+		return emc.containsKey(item.asItem());
 	}
 
-	public static long getEmcValue(SimpleStack stack)
+	public static long getEmcValue(IItemProvider item)
 	{
-		return emc.get(stack);
+		return emc.get(item.asItem());
 	}
 
 	public static void clearMaps() {

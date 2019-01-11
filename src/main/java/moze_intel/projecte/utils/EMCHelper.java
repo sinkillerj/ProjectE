@@ -3,13 +3,10 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.gameObjs.items.KleinStar;
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IItemProvider;
@@ -103,19 +100,7 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
-		if (stack.isEmpty())
-		{
-			return false;
-		}
-
-		SimpleStack iStack = new SimpleStack(stack);
-
-		if (!iStack.isValid())
-		{
-			return false;
-		}
-
-		return EMCMapper.mapContains(iStack);
+		return !stack.isEmpty() && EMCMapper.mapContains(stack.getItem());
 	}
 
 	public static boolean doesItemHaveEmc(IItemProvider item)
@@ -123,25 +108,11 @@ public final class EMCHelper
 		return item != null && doesItemHaveEmc(new ItemStack(item));
 	}
 
-	public static long getEmcValue(Block block)
+	public static long getEmcValue(IItemProvider item)
 	{
-		SimpleStack stack = new SimpleStack(new ItemStack(block));
-
-		if (stack.isValid() && EMCMapper.mapContains(stack))
+		if (EMCMapper.mapContains(item))
 		{
-			return EMCMapper.getEmcValue(stack);
-		}
-
-		return 0;
-	}
-
-	public static long getEmcValue(Item item)
-	{
-		SimpleStack stack = new SimpleStack(new ItemStack(item));
-
-		if (stack.isValid() && EMCMapper.mapContains(stack))
-		{
-			return EMCMapper.getEmcValue(stack);
+			return EMCMapper.getEmcValue(item);
 		}
 
 		return 0;
@@ -152,21 +123,14 @@ public final class EMCHelper
 	 */
 	public static long getEmcValue(ItemStack stack)
 	{
-		if (stack.isEmpty())
-		{
-			return 0;
-		}
-
-		SimpleStack iStack = new SimpleStack(stack);
-
-		if (!iStack.isValid() || !EMCMapper.mapContains(iStack))
+		if (stack.isEmpty() || !EMCMapper.mapContains(stack.getItem()))
 		{
 			return 0;
 		}
 
 		if (ItemHelper.isDamageable(stack))
 		{
-			long emc = EMCMapper.getEmcValue(iStack);
+			long emc = EMCMapper.getEmcValue(stack.getItem());
 
 			// maxDmg + 1 because vanilla lets you use the tool one more time
 			// when item damage == max damage (shows as Durability: 0 / max)
@@ -213,7 +177,7 @@ public final class EMCHelper
 		}
 		else
 		{
-			return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
+			return EMCMapper.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
 		}
 	}
 

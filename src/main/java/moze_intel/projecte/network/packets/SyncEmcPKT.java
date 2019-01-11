@@ -3,7 +3,6 @@ package moze_intel.projecte.network.packets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
@@ -54,13 +53,7 @@ public class SyncEmcPKT {
 				for (EmcPKTInfo info : pkt.data)
 				{
 					Item i = Item.REGISTRY.get(info.getId());
-
-					SimpleStack stack = new SimpleStack(i.getRegistryName());
-
-					if (stack.isValid())
-					{
-						EMCMapper.emc.put(stack, info.getEmc());
-					}
+					EMCMapper.emc.put(i, info.getEmc());
 				}
 
 				Transmutation.cacheFullKnowledge();

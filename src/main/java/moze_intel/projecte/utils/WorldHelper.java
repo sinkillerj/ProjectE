@@ -65,7 +65,6 @@ import java.util.Set;
  */
 public final class WorldHelper
 {
-	@SuppressWarnings("unchecked")
 	private static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
@@ -75,7 +74,6 @@ public final class WorldHelper
 			EntityLlama.class, EntityParrot.class
 	);
 
-	@SuppressWarnings("unchecked")
 	private static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.of(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
@@ -412,7 +410,7 @@ public final class WorldHelper
 				{
 					for (int i = 0; i < (harvest ? 8 : 4); i++)
 					{
-						crop.randomTick(state, world, currentPos, world.rand);
+						state.randomTick(world, currentPos, world.rand);
 					}
 				}
 
@@ -457,7 +455,7 @@ public final class WorldHelper
 						int age = state.get(BlockNetherWart.AGE);
 						if (age == 3)
 						{
-							if (player == null || player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
+							if (player == null || PlayerHelper.hasBreakPermission((EntityPlayerMP) player, currentPos))
 							{
 								world.destroyBlock(currentPos, true);
 							}
