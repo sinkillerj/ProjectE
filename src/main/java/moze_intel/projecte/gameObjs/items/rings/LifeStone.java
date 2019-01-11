@@ -8,7 +8,6 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -124,7 +123,7 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.lifePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.life != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -150,7 +149,7 @@ public class LifeStone extends RingToggle implements IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.lifePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.life);
 			}
 			else
 			{
@@ -165,10 +164,10 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.lifePedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.life != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.lifePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life)));
 		}
 		return list;
 	}

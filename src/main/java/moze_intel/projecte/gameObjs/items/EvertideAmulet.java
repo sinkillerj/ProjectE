@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -8,8 +7,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -27,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,11 +44,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
@@ -60,7 +54,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem
@@ -288,7 +281,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertidePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertide != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile))
@@ -305,7 +298,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				world.getWorldInfo().setThunderTime(i);
 				world.getWorldInfo().setRaining(true);
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertidePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide);
 			}
 			else
 			{
@@ -320,11 +313,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.evertidePedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.evertide != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.evertide.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertidePedCooldown)));
+					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide)));
 		}
 		return list;
 	}

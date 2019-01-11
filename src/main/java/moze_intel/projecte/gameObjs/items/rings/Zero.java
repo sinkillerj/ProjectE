@@ -11,7 +11,6 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -137,7 +136,7 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zeroPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zero != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -156,7 +155,7 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 						ent.extinguish();
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.zeroPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.zero);
 			}
 			else
 			{
@@ -171,10 +170,10 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.zeroPedCooldown != -1) {
+		if (ProjectEConfig.pedestalCooldown.zero != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal2"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zeroPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zero)));
 		}
 		return list;
 	}

@@ -13,7 +13,6 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -144,14 +143,14 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repairPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repair != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
 				world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds()).forEach(this::repairAllItems);
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repairPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repair);
 			}
 			else
 			{
@@ -166,10 +165,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.repairPedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.repair != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repairPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repair)));
 		}
 		return list;
 	}

@@ -14,12 +14,10 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
@@ -233,7 +231,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.swrgPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.swrg != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -252,7 +250,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					}
 					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ, false));
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.swrgPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.swrg);
 			}
 			else
 			{
@@ -267,10 +265,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.swrgPedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.swrg != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.swrgPedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.swrg)));
 		}
 		return list;
 	}

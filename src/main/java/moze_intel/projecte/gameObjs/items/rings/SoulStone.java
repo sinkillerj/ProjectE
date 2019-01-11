@@ -8,7 +8,6 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -116,7 +115,7 @@ public class SoulStone extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.soulPedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.soul != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -137,7 +136,7 @@ public class SoulStone extends RingToggle implements IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.soulPedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.soul);
 			}
 			else
 			{
@@ -152,11 +151,11 @@ public class SoulStone extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.soulPedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.soul != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.soul.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.soulPedCooldown)));
+					I18n.format("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.soul)));
 		}
 		return list;
 	}

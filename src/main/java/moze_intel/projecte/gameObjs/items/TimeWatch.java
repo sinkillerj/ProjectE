@@ -163,7 +163,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		slowMobs(world, bBox, mobSlowdown);
 	}
 
-	private void slowMobs(World world, AxisAlignedBB bBox, float mobSlowdown)
+	private void slowMobs(World world, AxisAlignedBB bBox, double mobSlowdown)
 	{
 		if (bBox == null) // Sanity check for chunk unload weirdness
 		{
@@ -192,7 +192,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist);
+		List<String> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++)
 		{

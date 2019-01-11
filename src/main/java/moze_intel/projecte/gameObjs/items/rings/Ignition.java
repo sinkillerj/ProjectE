@@ -15,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -141,7 +140,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignitePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -158,7 +157,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 					living.setFire(8);
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignitePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition);
 			}
 			else
 			{
@@ -173,11 +172,11 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.ignitePedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.ignition != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.ignition.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignitePedCooldown)));
+					I18n.format("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition)));
 		}
 		return list;
 	}

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -8,8 +7,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -36,8 +33,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -208,7 +203,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanite != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -224,7 +219,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanitePedCooldown);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanite);
 			}
 			else
 			{
@@ -239,10 +234,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.volcanitePedCooldown != -1)
+		if (ProjectEConfig.pedestalCooldown.volcanite != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanitePedCooldown)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite)));
 		}
 		return list;
 	}

@@ -127,6 +127,8 @@ public class PECore
 			CONFIG_DIR.mkdirs();
 		}
 
+		ProjectEConfig.load();
+
 		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
 
 		PacketHandler.register();
