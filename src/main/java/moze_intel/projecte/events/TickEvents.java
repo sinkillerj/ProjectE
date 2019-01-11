@@ -23,6 +23,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.EnumSet;
 import java.util.Set;
 
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents
 {
 	@SubscribeEvent

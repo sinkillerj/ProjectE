@@ -84,8 +84,9 @@ public class PECore
 
 	public PECore()
 	{
-		// ObjHandler in ctor since registry events fire before preinit
+		// In ctor since registry events fire before preinit
 		MinecraftForge.EVENT_BUS.register(ObjHandler.class);
+		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
 
 		FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
@@ -99,17 +100,6 @@ public class PECore
 	{
 		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 		DEV_ENVIRONMENT = false; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
-
-		MinecraftForge.EVENT_BUS.register(PlayerEvents.class);
-		MinecraftForge.EVENT_BUS.register(TickEvents.class);
-		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			MinecraftForge.EVENT_BUS.register(KeyPressEvent.class);
-			MinecraftForge.EVENT_BUS.register(PlayerRender.class);
-			MinecraftForge.EVENT_BUS.register(ToolTipEvent.class);
-			MinecraftForge.EVENT_BUS.register(TransmutationRenderingEvent.class);
-			MinecraftForge.EVENT_BUS.register(ClientProxy.class);
-		});
 
 		// todo 1.13 remove
 		ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
@@ -133,7 +123,6 @@ public class PECore
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		proxy.registerKeyBinds();
-		proxy.registerRenderers();
 	}
 	
 	private void init(FMLInitializationEvent event)

@@ -36,6 +36,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class TransmutationRenderingEvent
 {
 	private static final Minecraft mc = Minecraft.getInstance();

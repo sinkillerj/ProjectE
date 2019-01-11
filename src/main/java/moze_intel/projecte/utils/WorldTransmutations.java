@@ -23,11 +23,11 @@ public final class WorldTransmutations
 
 	static
 	{
-		registerDefault(Blocks.STONE, Blocks.COBBLESTONE, Blocks.GRASS);
-		registerDefault(Blocks.COBBLESTONE, Blocks.STONE, Blocks.GRASS);
-		registerDefault(Blocks.GRASS, Blocks.SAND, Blocks.COBBLESTONE);
+		registerDefault(Blocks.STONE, Blocks.COBBLESTONE, Blocks.GRASS_BLOCK);
+		registerDefault(Blocks.COBBLESTONE, Blocks.STONE, Blocks.GRASS_BLOCK);
+		registerDefault(Blocks.GRASS_BLOCK, Blocks.SAND, Blocks.COBBLESTONE);
 		registerDefault(Blocks.DIRT, Blocks.SAND, Blocks.COBBLESTONE);
-		registerDefault(Blocks.SAND, Blocks.GRASS, Blocks.COBBLESTONE);
+		registerDefault(Blocks.SAND, Blocks.GRASS_BLOCK, Blocks.COBBLESTONE);
 		registerDefault(Blocks.GRAVEL, Blocks.SANDSTONE, null);
 		registerDefault(Blocks.SANDSTONE, Blocks.GRAVEL, null);
 		registerDefault(Blocks.WATER, Blocks.ICE, null);

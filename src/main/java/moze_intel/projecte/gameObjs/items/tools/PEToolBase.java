@@ -147,7 +147,7 @@ public abstract class PEToolBase extends ItemMode
 			Block block = state.getBlock();
 			Block blockAbove = stateAbove.getBlock();
 
-			if (!stateAbove.isOpaqueCube(world, pos) && (block == Blocks.GRASS || block == Blocks.DIRT))
+			if (!stateAbove.isOpaqueCube(world, pos) && (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT))
 			{
 				if (!hasSoundPlayed)
 				{

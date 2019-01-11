@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
+@Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class KeyPressEvent
 {
 	@SubscribeEvent
