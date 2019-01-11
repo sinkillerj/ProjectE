@@ -171,8 +171,6 @@
     "pe.body.pedestal1": "恢复附近玩家的饥饿值",
     "pe.body.pedestal2": "每%s恢复半格饥饿值",
 
-    "_comment": "pe.command.main.usage=/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "当前使用的ProjectE为最新版本.",
     "pe.command.clearknowledge.error": "无法清空玩家 %s 的转化知识.",
     "pe.command.clearknowledge.notify": "你的转化知识已被 %s 全部清空!",
@@ -180,9 +178,7 @@
     "pe.command.clearknowledge.success": "成功清空玩家 %s 的转化知识.",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [玩家名] (不加参数则对自己有效)",
 
-    "pe.command.reload.started": "正在刷新EMC值...",
-    "pe.command.reload.success": "刷新完成！更新数据已发送至客户端。",
-    "pe.command.reload.notice": "刷新完成后，请重启游戏或使用\"/projecte reloadEMC\"指令。",
+    "pe.command.reload.notice": "刷新完成后，请重启游戏或使用\"/reload\"指令。",
 
     "pe.command.remove.invaliditem": "错误：未找到物品\"%s\"！",
     "pe.command.remove.invalidmeta": "错误：meta数据\"%s\"无效.",

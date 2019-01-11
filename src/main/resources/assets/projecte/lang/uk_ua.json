@@ -168,8 +168,6 @@
     "pe.body.pedestal1": "Відновлює голод найближчим гравцям",
     "pe.body.pedestal2": "Відновлює половину голоду кожні %s",
 
-    "pe.command.main.usage": "/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "ProjectE не потребує оновлень.",
     "pe.command.clearknowledge.error": "Не вдалося видалити знання гравця %s",
     "pe.command.clearknowledge.notify": "Ваші знання про трансмутації були видалені адміністратором %s!",
@@ -177,9 +175,7 @@
     "pe.command.clearknowledge.success": "Знання гравця %s очищенні",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [ім'я гравця] (залиште пустим, аби використати на собі)",
 
-    "pe.command.reload.started": "Перезавантаження значень ЕМС, можливі лаги.",
-    "pe.command.reload.success": "Перезавантаження ЕМС завершено. Відправка значень на клієнти.",
-    "pe.command.reload.notice": "Перезавантажтесь або використайте \"/projecte reloadEMC\", аби зміни вступили в силу.",
+    "pe.command.reload.notice": "Перезавантажтесь або використайте \"/reload\", аби зміни вступили в силу.",
 
     "pe.command.remove.invaliditem": "Помилка : предмету з ім'ям \"%s\" не знайдено!",
     "pe.command.remove.invalidmeta": "Помилка : значення метаданих \"%s\" неправильне!",

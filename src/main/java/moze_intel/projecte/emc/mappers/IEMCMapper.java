@@ -2,7 +2,7 @@ package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.resources.IResourceManager;
 
 /**
  * Interface for Classes that want to make Contributions to the EMC Mapping.
@@ -39,6 +39,7 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * Please use properly prefixed config keys and do not clobber those not belonging to your mapper
 	 * @param mapper
 	 * @param config
+	 * @param resourceManager
 	 */
-	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config);
+	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config, IResourceManager resourceManager);
 }

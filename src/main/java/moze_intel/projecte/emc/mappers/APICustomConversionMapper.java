@@ -5,7 +5,7 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.resources.IResourceManager;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config)
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager)
 	{
 		for (Map.Entry<String, List<ConversionProxyImpl.APIConversion>> entry : ConversionProxyImpl.instance.storedConversions.entrySet())
 		{

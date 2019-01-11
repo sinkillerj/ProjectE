@@ -1,7 +1,5 @@
 /*
-  NOTE: This file is an example. It will be regenerated each time mapping occurs, and is not actually parsed.
-  Files in this folder can be used to add Conversions and values to the EMC Calculation.
-  All files in this folder that end with .json will be loaded and can be enabled/disabled in the mapping.cfg.
+  Add a file like this to data/<domain>/pe_custom_conversions/foo.json to have ProjectE load it
   A grammar is available at: https://gist.github.com/williewillus/9ebb0d04329526e31564
 */
 
@@ -14,10 +12,10 @@
         // These work like AE2 autocrafting: You specify what goes in, and what comes out. PE does the rest.
 
         {
-          "output": "minecraft:furnace|0",
+          "output": "minecraft:furnace",
           "count": 1, // Can be omitted if it's 1
           "ingredients": {
-            "minecraft:cobblestone|0": 8
+            "minecraft:cobblestone": 8
           }
         },
 
@@ -29,32 +27,25 @@
 
         // These make a "item group" that you can use in other conversions
         // to represent the whole group at once (see the next conversion down)
-        { "o": "FAKE|AllSeeds", "i": [ "minecraft:pumpkin_seeds" ] },
-        { "o": "FAKE|AllSeeds", "i": [ "minecraft:wheat_seeds" ] },
-        { "o": "FAKE|AllSeeds", "i": [ "minecraft:melon_seeds" ] },
-        { "o": "FAKE|AllSeeds", "i": [ "minecraft:wheat_seeds" ] },
+        // It's recommended to declare a tag and use that instead
+        { "output": "FAKE|AllSeeds", "ingredients": [ "minecraft:pumpkin_seeds" ] },
+        { "output": "FAKE|AllSeeds", "ingredients": [ "minecraft:wheat_seeds" ] },
+        { "output": "FAKE|AllSeeds", "ingredients": [ "minecraft:melon_seeds" ] },
+        { "output": "FAKE|AllSeeds", "ingredients": [ "minecraft:wheat_seeds" ] },
 
         {
-          "o": "minecraft:grass|0",
-          "i": [ "FAKE|AllSeeds", "minecraft:dirt|0" ]
+          "output": "minecraft:grass_block",
+          "ingredients": [ "FAKE|AllSeeds", "minecraft:dirt" ]
         },
 
         {
-          "o": "minecraft:bed|0",
-          "i": {
-            "minecraft:planks|*": 3, // * means all metas
-            "minecraft:wool|*": 3
-          }
+          "output": "#forge:gems/diamond",
+          "ingredients": [ "#forge:stone" ] // Tags
         },
 
         {
-          "o": "OD|gemDiamond",
-          "i": [ "OD|stone" ] // Ore Dictionary
-        },
-
-        {
-          "o": "FLUID|fluidDiamond",
-          "i": [ "minecraft:diamond|0" ] // Fluids too
+          "output": "FLUID|fluidDiamond",
+          "ingredients": [ "minecraft:diamond" ] // Fluids too
         }
       ]
     }
@@ -65,7 +56,7 @@
       // "FREE" means the item will not contribute anything to the value of any other item it crafts into
       // All the various item forms (normal, fake, OD, fluid) supported here
       "minecraft:sponge": 1,
-      "OD|gemDiamond": "FREE"
+      "#forge:gems/diamond": "FREE"
     },
     "after": {
       // Just like before, but happens after main calculation and won't be used to derive other values
@@ -77,8 +68,8 @@
       // Used to "peg" an item at a certain value relative to another item
 
       {
-        "o": "OD|ingotGold",
-        "i": [ "minecraft:steak|0" ],
+        "output": "#forge:ingots/gold",
+        "ingredients": [ "minecraft:steak" ],
         "evalOD": true // Peg this value for ALL ingotGold's
       }
     ]

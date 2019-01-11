@@ -171,8 +171,6 @@
     "pe.body.pedestal1": "Restaura a fome dos jogadores próximos",
     "pe.body.pedestal2": "Meio pernil cada %s",
 
-    "pe.command.main.usage": "/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "ProjectE está atualizado.",
     "pe.command.clearknowledge.error": "Não pôde limpar o conhecimento para: %s",
     "pe.command.clearknowledge.notify": "Seu conhecimento sobre transmutação foi limpado por %s!",
@@ -180,9 +178,7 @@
     "pe.command.clearknowledge.success": "Limpado o conhecimento para: %s",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [usuário] (sem parâmetros para atingir a si mesmo)",
 
-    "pe.command.reload.started": "Recarregando valores de EMC, espere lag.",
-    "pe.command.reload.success": "Recarga de EMC completa. Mandando dados atualizados para clientes.",
-    "pe.command.reload.notice": "Reinicie ou use \"/projecte reloadEMC\" quando todas as mudanças estiverem completas.",
+    "pe.command.reload.notice": "Reinicie ou use \"/reload\" quando todas as mudanças estiverem completas.",
 
     "pe.command.remove.invaliditem": "Erro: O item \"%s\" não foi encontrado!",
     "pe.command.remove.invalidmeta": "Erro: O valor meta \"%s\" não é válido!",

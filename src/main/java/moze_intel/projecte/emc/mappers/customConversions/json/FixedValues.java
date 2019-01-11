@@ -1,7 +1,5 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.annotations.SerializedName;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 
@@ -17,4 +15,11 @@ public class FixedValues
 	@SerializedName("after")
 	public Map<NormalizedSimpleStack, Long> setValueAfter = new HashMap<>();
 	public List<CustomConversion> conversion = new ArrayList<>();
+
+	public void merge(FixedValues other)
+	{
+		setValueBefore.putAll(other.setValueBefore);
+		setValueAfter.putAll(other.setValueAfter);
+		conversion.addAll(other.conversion);
+	}
 }

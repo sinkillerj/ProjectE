@@ -11,11 +11,9 @@ import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.item.crafting.*;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
@@ -32,8 +30,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/);
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config) {
-		Map<Class, Integer> recipeCount = new HashMap<>();
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
+		Map<ResourceLocation, Integer> recipeCount = new HashMap<>();
 		Set<Class> canNotMap = new HashSet<>();
 
 		for (IRecipe recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes()) {
@@ -77,12 +75,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			if (!handled) {
 				canNotMap.add(recipe.getClass());
 			} else {
-				recipeCount.merge(recipe.getClass(), 1, Integer::sum);
+				recipeCount.merge(recipe.getSerializer().getName(), 1, Integer::sum);
 			}
 		}
 
 		PECore.debugLog("CraftingMapper Statistics:");
-		for (Map.Entry<Class, Integer> entry: recipeCount.entrySet()) {
+		for (Map.Entry<ResourceLocation, Integer> entry: recipeCount.entrySet()) {
 			PECore.debugLog("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
 		}
 		for (Class<?> c : canNotMap) {
@@ -147,12 +145,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public String getDescription() {
-			return "Maps `IRecipe` crafting recipes that extend `ShapedRecipes` or `ShapelessRecipes`, and their oredict equivalents";
+			return "Maps vanilla crafting table and furnace recipes";
 		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe;
+			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof FurnaceRecipe;
 		}
 	}
 

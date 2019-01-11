@@ -172,8 +172,6 @@
     "pe.body.pedestal1": "Restores nearby players' hunger",
     "pe.body.pedestal2": "Half a shank every %s",
 
-    "pe.command.main.usage": "/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "ProjectE is up to date.",
     "pe.command.clearknowledge.error": "Couldn't clear knowledge for: %s",
     "pe.command.clearknowledge.notify": "Your transmutation knowledge was cleared by %s!",
@@ -181,9 +179,7 @@
     "pe.command.clearknowledge.success": "Cleared knowledge for: %s",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [player selector]",
 
-    "pe.command.reload.started": "Reloading EMC values, expect lag.",
-    "pe.command.reload.success": "EMC reload complete. Sending updated data to clients.",
-    "pe.command.reload.notice": "Restart or use \"/projecte reloadEMC\" when all changes are complete.",
+    "pe.command.reload.notice": "Restart or use \"/reload\" when all changes are complete.",
 
     "pe.command.remove.invaliditem": "Error: The item \"%s\" was not found!",
     "pe.command.remove.invalidmeta": "Error: The meta value \"%s\" is not valid!",

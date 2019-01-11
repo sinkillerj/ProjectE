@@ -144,7 +144,7 @@ public final class ProjectEConfig
 		pedestalCooldown = new PedestalCooldown();
 	}
 
-	public static final CommentedFileConfig config = CommentedFileConfig.builder(Paths.get("config", "projecte.toml"))
+	public static final CommentedFileConfig config = CommentedFileConfig.builder(Paths.get("config", PECore.MODNAME, PECore.MODID + ".toml"))
 			.writingMode(WritingMode.REPLACE)
 			.build();
 

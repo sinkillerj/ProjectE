@@ -48,7 +48,7 @@ public interface NormalizedSimpleStack {
 					return new NSSItem(new ResourceLocation(s));
 				} catch (ResourceLocationException e)
 				{
-					throw new JsonParseException("Malformed item ID");
+					throw new JsonParseException("Malformed item ID", e);
 				}
 			}
 		}

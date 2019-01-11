@@ -28,6 +28,7 @@ import moze_intel.projecte.utils.SoundHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -61,10 +62,8 @@ public class PECore
 {
 	public static final String MODID = "projecte";
 	public static final String MODNAME = "ProjectE";
-	public static final String VERSION = "@VERSION@";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
 	public static File CONFIG_DIR;
-	public static File PREGENERATED_EMC_FILE;
 	public static boolean DEV_ENVIRONMENT;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
@@ -129,8 +128,6 @@ public class PECore
 
 		ProjectEConfig.load();
 
-		PREGENERATED_EMC_FILE = new File(CONFIG_DIR, "pregenerated_emc.json");
-
 		PacketHandler.register();
 		
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
@@ -157,7 +154,6 @@ public class PECore
 	{
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
-				.then(ReloadEmcCMD.register())
 				.then(RemoveEmcCMD.register())
 				.then(ResetEmcCMD.register())
 				.then(SetEmcCMD.register())
@@ -170,21 +166,20 @@ public class PECore
 			new ThreadCheckUUID(true).start();
 		}
 
-		long start = System.currentTimeMillis();
+		event.getServer().getResourceManager().addReloadListener(resourceManager -> {
+			long start = System.currentTimeMillis();
 
-		CustomEMCParser.init();
+			CustomEMCParser.init();
 
-		LOGGER.info("Starting server-side EMC mapping.");
-
-		try {
-			EMCMapper.map();
-		} catch (Throwable t)
-		{
-			LOGGER.error("thingy", t);
-		}
-
-
-		LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+			try {
+				EMCMapper.map(resourceManager);
+				LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+				PacketHandler.sendFragmentedEmcPacketToAll();
+			} catch (Throwable t)
+			{
+				LOGGER.error("Error calculating EMC values", t);
+			}
+		});
 	}
 
 	private void serverStopping (FMLServerStoppingEvent event)

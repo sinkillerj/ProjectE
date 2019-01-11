@@ -210,8 +210,6 @@
     "pe.body.pedestal1": "Восстанавливает голод ближайших игроков",
     "pe.body.pedestal2": "Восстанавливает половинку голода каждые %s",
 
-    "pe.command.main.usage": "/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "Обновление ProjectE не требуется.",
     "pe.command.clearknowledge.error": "Не удалось очистить знания игрока %s",
     "pe.command.clearknowledge.notify": "Ваши знания трансмутаций были очищены администратором %s!",
@@ -219,9 +217,7 @@
     "pe.command.clearknowledge.success": "Знания игрока %s очищены",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [имя игрока] (оставьте пустым, чтобы применить на себя)",
 
-    "pe.command.reload.started": "Перезагрузка значений EMC, возможны лаги.",
-    "pe.command.reload.success": "Перезагрузка EMC завершена. Обновлённые данные отправляются на клиенты.",
-    "pe.command.reload.notice": "Перезагрузитесь или используйте \"/projecte reloadEMC\", когда изменения завершены.",
+    "pe.command.reload.notice": "Перезагрузитесь или используйте \"/reload\", когда изменения завершены.",
 
     "pe.command.remove.invaliditem": "Ошибка: Предмет с именем \"%s\" не найден!",
     "pe.command.remove.invalidmeta": "Ошибка: Значение метаданных \"%s\" неверно!",

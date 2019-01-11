@@ -172,8 +172,6 @@
     "pe.body.pedestal1": "回復附近玩家的飽食度",
     "pe.body.pedestal2": "每 %s半格飽食度",
 
-    "_comment": "",
-
     "pe.command.changelog.uptodate": "ProjectE已過舊。",
     "pe.command.clearknowledge.error": "無法清除知識： %s",
     "pe.command.clearknowledge.notify": "你的轉換知識已被 %s清除！",
@@ -181,9 +179,7 @@
     "pe.command.clearknowledge.success": "清除知識： %s",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [用戶名] (無參數至目標本身)",
 
-    "pe.command.reload.started": "重新讀取EMC值， 有Lag的可能。",
-    "pe.command.reload.success": "EMC讀取完成。 傳送更新資料至客戶端。",
-    "pe.command.reload.notice": "當所有變更完成時， 重啟遊戲或使用 \"/projecte reloadEMC\" 。",
+    "pe.command.reload.notice": "當所有變更完成時， 重啟遊戲或使用 \"/reload\" 。",
 
     "pe.command.remove.invaliditem": "錯誤： 物品 \"%s\" 沒有被找到！",
     "pe.command.remove.invalidmeta": "錯誤： meta值 \"%s\" 無效！",

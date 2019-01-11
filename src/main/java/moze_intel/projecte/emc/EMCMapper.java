@@ -21,11 +21,9 @@ import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.utils.PrefixConfiguration;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
@@ -54,7 +52,7 @@ public final class EMCMapper
 		return val;
 	}
 
-	public static void map()
+	public static void map(IResourceManager resourceManager)
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
 				APICustomEMCMapper.instance,
@@ -82,8 +80,9 @@ public final class EMCMapper
 			mappingCollector = new DumpToFileCollector<>(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
 		}
 
+		File pregeneratedEmcFile = Paths.get("config", PECore.MODNAME, "pregenerated_emc.json").toFile();
 		Map<NormalizedSimpleStack, Long> graphMapperValues;
-		if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead() && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = new HashMap<>()))
+		if (shouldUsePregenerated && pregeneratedEmcFile.canRead() && PregeneratedEMC.tryRead(pregeneratedEmcFile, graphMapperValues = new HashMap<>()))
 		{
 			PECore.LOGGER.info(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
 		}
@@ -99,7 +98,7 @@ public final class EMCMapper
 					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable()))
 					{
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
-						emcMapper.addMappings(mappingCollector, config);
+						emcMapper.addMappings(mappingCollector, config, resourceManager);
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e)
@@ -128,7 +127,7 @@ public final class EMCMapper
 				//Should have used pregenerated, but the file was not read => regenerate.
 				try
 				{
-					PregeneratedEMC.write(PECore.PREGENERATED_EMC_FILE, graphMapperValues);
+					PregeneratedEMC.write(pregeneratedEmcFile, graphMapperValues);
 					PECore.debugLog("Wrote Pregen-file!");
 				} catch (IOException e)
 				{

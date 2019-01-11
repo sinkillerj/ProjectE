@@ -5,10 +5,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
+import net.minecraft.resources.IResourceManager;
 
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
 			PECore.debugLog("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
 			mapper.setValueBefore(entry.nss, entry.emc);

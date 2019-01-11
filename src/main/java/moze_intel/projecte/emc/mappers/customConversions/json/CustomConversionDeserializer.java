@@ -1,8 +1,5 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -26,33 +23,27 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 		CustomConversion out = new CustomConversion();
 		JsonObject o = json.getAsJsonObject();
 		boolean foundOutput = false, foundIngredients = false;
-		for (Map.Entry<String, JsonElement> entry:o.entrySet()) {
+		for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
 			JsonElement element = entry.getValue();
-			if (isInList(entry.getKey(), "count", "c")) {
+			if ("count".equalsIgnoreCase(entry.getKey())) {
 				out.count = element.getAsInt();
 			}
-			else if (isInList(entry.getKey(),  "output", "out", "o")) {
+			else if ("output".equals(entry.getKey())) {
 				if (foundOutput) {
 					throw new JsonParseException("Multiple values for output field");
 				}
 				foundOutput = true;
 				out.output = context.deserialize(new JsonPrimitive(element.getAsString()), NormalizedSimpleStack.class);
-			} else if (isInList(entry.getKey(), "ingredients", "ingr", "i")) {
+			} else if ("ingredients".equals(entry.getKey())) {
 				if (foundIngredients) {
 					throw new JsonParseException("Multiple values for ingredient field");
 				}
 				foundIngredients = true;
 				if (element.isJsonArray()) {
 					Map<NormalizedSimpleStack, Integer> outMap = new HashMap<>();
-					JsonArray array = element.getAsJsonArray();
-					for (JsonElement e: array) {
+					for (JsonElement e : element.getAsJsonArray()) {
 						NormalizedSimpleStack v = context.deserialize(new JsonPrimitive(e.getAsString()), NormalizedSimpleStack.class);
-						int count = 0;
-						if (outMap.containsKey(v)) {
-							count = outMap.get(v);
-						}
-						count += 1;
-						outMap.put(v, count);
+						outMap.merge(v, 1, Integer::sum);
 					}
 					out.ingredients = outMap;
 				} else if (element.isJsonObject()) {
@@ -67,12 +58,5 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 			}
 		}
 		return out;
-	}
-
-	private static boolean isInList(String s, String ... names) {
-		for (String n: names) {
-			if (n.equalsIgnoreCase(s)) return true;
-		}
-		return false;
 	}
 }

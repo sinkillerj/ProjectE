@@ -52,9 +52,9 @@ public class CustomConversionMapperTest
 				"{'groups': {" +
 						"	'groupa': {" +
 						"		'conversions':[" +
-						"			{'output':'out_a', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}," +
-						"			{'output':'out_b', 'ingr':['ing1', 'ing2', 'ing3']}," +
-						"			{'output':'out_c', 'count':3, 'ingr':['ing1', 'ing1', 'ing1']}" +
+						"			{'output':'out_a', 'ingredients':{'ing1': 1, 'ing2': 2, 'ing3': 3}}," +
+						"			{'output':'out_b', 'ingredients':['ing1', 'ing2', 'ing3']}," +
+						"			{'output':'out_c', 'count':3, 'ingredients':['ing1', 'ing1', 'ing1']}" +
 						"		]" +
 						"	}" +
 						"}" +
@@ -124,7 +124,7 @@ public class CustomConversionMapperTest
 		String simpleFile =
 				"{'values': {" +
 						"	'conversion': [" +
-						"		{'output':'out_a', 'ingr':{'ing1': 1, 'ing2': 2, 'ing3': 3}}" +
+						"		{'output':'out_a', 'ingredients':{'ing1': 1, 'ing2': 2, 'ing3': 3}}" +
 						"	]" +
 						"}" +
 						"}";
@@ -143,7 +143,7 @@ public class CustomConversionMapperTest
 
 	@Test
 	public void testNonInteferingFakes() {
-		String file1 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingr': ['FAKE|BAR'] }] }  }";
+		String file1 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingredients': ['FAKE|BAR'] }] }  }";
 
 		NSSFake.setCurrentNamespace("file1");
 		CustomConversionFile f1 = CustomConversionMapper.parseJson(new StringReader(file1));

@@ -1,9 +1,6 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 import java.io.File;
@@ -18,9 +15,26 @@ import java.util.Map;
  */
 public class CustomConversionFile
 {
+	public boolean replace = false;
 	public String comment;
 	public final Map<String, ConversionGroup> groups = new HashMap<>();
 	public final FixedValues values = new FixedValues();
+
+	public static CustomConversionFile merge(CustomConversionFile left, CustomConversionFile right)
+	{
+		if (right.replace)
+		{
+			return right;
+		}
+
+		for (Map.Entry<String, ConversionGroup> e : right.groups.entrySet())
+		{
+			left.groups.merge(e.getKey(), e.getValue(), ConversionGroup::merge);
+		}
+
+		left.values.merge(right.values);
+		return left;
+	}
 
 	public void write(File file) throws IOException
 	{

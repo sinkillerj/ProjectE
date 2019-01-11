@@ -168,8 +168,6 @@
     "pe.body.pedestal1": "Ripristina la fame dei giocatori vicini",
     "pe.body.pedestal2": "Un punto fame ogni %s",
 
-    "pe.command.main.usage": "/projecte <changelog, clearKnowledge, setEMC, reloadEMC, removeEMC, resetEMC>",
-
     "pe.command.changelog.uptodate": "La mod ProjectE è aggiornata.",
     "pe.command.clearknowledge.error": "Impossibile cancellare la conoscenza per: %s",
     "pe.command.clearknowledge.notify": "Le vostre conoscenze della trasmutazione vengono cancellate da %s!",
@@ -177,9 +175,7 @@
     "pe.command.clearknowledge.success": "Cancellata la conoscenza per: %s",
     "pe.command.clearknowledge.usage": "/projecte clearKnowledge [username] (no params to target self)",
 
-    "pe.command.reload.started": "Ricaricando le registrazioni di EMC...",
-    "pe.command.reload.success": "Fatto! Invio dei dati aggiornati al client.",
-    "pe.command.reload.notice": "Riavvia o usa \"/projecte reloadEMC\" quando tutte le modifiche sono complete.",
+    "pe.command.reload.notice": "Riavvia o usa \"/reload\" quando tutte le modifiche sono complete.",
 
     "pe.command.remove.invaliditem": "Errore: L'oggetto \"%s\" non è stato trovato!",
     "pe.command.remove.invalidmeta": "Errore: Il valore meta \"%s\" non è valido!",
