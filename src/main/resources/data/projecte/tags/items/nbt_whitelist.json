@@ -1,0 +1,7 @@
+{
+  "__comment": "Items in this tag can have their NBT tags duped by condensers and transmutation tables",
+  "replace": false,
+  "values": [
+    "botania:specialflower"
+  ]
+}

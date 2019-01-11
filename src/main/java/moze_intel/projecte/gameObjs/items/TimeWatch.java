@@ -40,7 +40,7 @@ import java.util.*;
 public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
 	private static final Set<ResourceLocation> internalBlacklist = new HashSet<>();
-	private static final ResourceLocation BLOCK_BLACKLIST_TAG = new ResourceLocation(PECore.MODID, "time_watch_blacklist");
+	private static final Tag<Block> BLOCK_BLACKLIST_TAG = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "time_watch_blacklist"));
 
 	public TimeWatch(Builder builder)
 	{
@@ -205,7 +205,6 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		Tag<Block> blacklist = BlockTags.getCollection().getOrCreate(BLOCK_BLACKLIST_TAG);
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
 		{
 			for (int i = 0; i < bonusTicks; i++)
@@ -213,7 +212,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.needsRandomTick()
-						&& !blacklist.contains(block)
+						&& !BLOCK_BLACKLIST_TAG.contains(block)
 						&& !(block instanceof BlockFlowingFluid) // Don't speed vanilla non-source blocks - dupe issues
 						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)

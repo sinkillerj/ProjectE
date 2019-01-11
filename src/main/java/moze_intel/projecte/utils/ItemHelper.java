@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.SimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -9,6 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -172,10 +176,10 @@ public final class ItemHelper
 		return stack.isDamageable();
 	}
 
-	private static final ResourceLocation FORGE_ORE_TAG = new ResourceLocation("forge", "ores");
+	private static final Tag<Block> FORGE_ORE_TAG = new BlockTags.Wrapper(new ResourceLocation("forge", "ores"));
 	public static boolean isOre(Block b)
 	{
-		return BlockTags.getCollection().getOrCreate(FORGE_ORE_TAG).contains(b);
+		return FORGE_ORE_TAG.contains(b);
 	}
 
 	public static boolean isOre(Item i)
@@ -194,4 +198,10 @@ public final class ItemHelper
 			return null;
 		}
 	}
+
+	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
+    public static boolean shouldDupeWithNBT(ItemStack stack)
+    {
+    	return NBT_WHITELIST_TAG.contains(stack.getItem());
+    }
 }

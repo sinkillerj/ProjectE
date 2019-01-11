@@ -5,7 +5,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.NBTWhitelist;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -192,7 +191,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 	{
 		ItemStack lockCopy = lock.getStackInSlot(0).copy();
 
-		if (lockCopy.hasTag() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+		if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy))
 		{
 			lockCopy.setTag(new NBTTagCompound());
 		}
@@ -227,7 +226,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 			return false;
 		}
 
-		if (NBTWhitelist.shouldDupeWithNBT(lock.getStackInSlot(0)))
+		if (ItemHelper.shouldDupeWithNBT(lock.getStackInSlot(0)))
 		{
 			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
 		}

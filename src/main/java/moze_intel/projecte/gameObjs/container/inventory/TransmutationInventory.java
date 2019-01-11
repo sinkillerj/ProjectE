@@ -7,7 +7,6 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -71,7 +70,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		
 		if (!provider.hasKnowledge(stack))
 		{
-			if (stack.hasTag() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack))
 			{
 				stack.setTag(null);
 			}
@@ -109,7 +108,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			unlearnFlag = 300;
 			learnFlag = 0;
 
-			if (stack.hasTag() && !NBTWhitelist.shouldDupeWithNBT(stack))
+			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack))
 			{
 				stack.setTag(null);
 			}
@@ -170,7 +169,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 				return;
 			}
 
-			if (lockCopy.hasTag() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
+			if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy))
 			{
 				lockCopy.setTag(new NBTTagCompound());
 			}

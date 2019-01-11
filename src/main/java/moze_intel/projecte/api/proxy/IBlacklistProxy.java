@@ -31,11 +31,4 @@ public interface IBlacklistProxy
      * @param type The TileEntity type to blacklist
      */
     void blacklistTimeWatch(@Nonnull TileEntityType<?> type);
-
-    /**
-     * Whitelist an ItemStack, allowing stacks of its kind to dupe NBT during Transmutation and Condensation
-     * Call this during the postinit phase
-     * @param stack The stack to whitelist
-     */
-    void whitelistNBT(@Nonnull ItemStack stack);
 }
