@@ -44,7 +44,8 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	public ArchangelSmite(Builder builder)
 	{
 		super(builder);
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
+		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
 	}
 
 	public void fireVolley(ItemStack stack, EntityPlayer player)
@@ -55,14 +56,12 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		}
 	}
 
-	@SubscribeEvent
-	public void emptyLeftClick(PlayerInteractEvent.LeftClickEmpty evt)
+	private void emptyLeftClick(PlayerInteractEvent.LeftClickEmpty evt)
 	{
 		PacketHandler.sendToServer(new LeftClickArchangelPKT());
 	}
 
-	@SubscribeEvent
-	public void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
+	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
 	{
 		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY
 				&& !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this)

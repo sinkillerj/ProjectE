@@ -30,7 +30,7 @@ public class GemLegs extends GemArmorBase
     public GemLegs(Builder builder)
     {
         super(EntityEquipmentSlot.LEGS, builder);
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::onJump);
     }
 
     @Override
@@ -42,8 +42,7 @@ public class GemLegs extends GemArmorBase
 
     private final Map<Integer, Long> lastJumpTracker = new HashMap<>();
 
-    @SubscribeEvent
-    public void onJump(LivingEvent.LivingJumpEvent evt)
+    private void onJump(LivingEvent.LivingJumpEvent evt)
     {
         if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntityLiving().getEntityWorld().isRemote)
         {
