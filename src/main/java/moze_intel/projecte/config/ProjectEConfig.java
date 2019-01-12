@@ -7,10 +7,7 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ForgeConfigSpec;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class ProjectEConfig
 {
@@ -51,7 +48,7 @@ public final class ProjectEConfig
 			.defineInRange("timePedMobSlowness", 0.10, 0, 1)
 
 			.comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
-			.define("timeWatchTEBlacklist", Arrays.asList("projecte:dm_pedestal"))
+			.define("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"))
 
 			.comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 			.define("interdictionMode", true)

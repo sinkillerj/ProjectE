@@ -100,17 +100,17 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
-		return !stack.isEmpty() && EMCMapper.mapContains(stack.getItem());
+		return !stack.isEmpty() && doesItemHaveEmc(stack.getItem());
 	}
 
 	public static boolean doesItemHaveEmc(IItemProvider item)
 	{
-		return item != null && doesItemHaveEmc(new ItemStack(item));
+		return item != null && EMCMapper.emc.containsKey(item.asItem());
 	}
 
 	public static long getEmcValue(IItemProvider item)
 	{
-		if (EMCMapper.mapContains(item))
+		if (EMCMapper.emc.containsKey(item.asItem()))
 		{
 			return EMCMapper.getEmcValue(item);
 		}
@@ -123,7 +123,7 @@ public final class EMCHelper
 	 */
 	public static long getEmcValue(ItemStack stack)
 	{
-		if (stack.isEmpty() || !EMCMapper.mapContains(stack.getItem()))
+		if (stack.isEmpty() || !EMCMapper.emc.containsKey(stack.getItem()))
 		{
 			return 0;
 		}

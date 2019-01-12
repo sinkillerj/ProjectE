@@ -7,6 +7,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IItemProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,30 +22,30 @@ public final class FuelMapper
 	{
 		FUEL_MAP.clear();
 
-		addToMap(new ItemStack(Items.CHARCOAL));
-		addToMap(new ItemStack(Items.REDSTONE));
-		addToMap(new ItemStack(Blocks.REDSTONE_BLOCK));
-		addToMap(new ItemStack(Items.COAL));
-		addToMap(new ItemStack(Blocks.COAL_BLOCK));
-		addToMap(new ItemStack(Items.GUNPOWDER));
-		addToMap(new ItemStack(Items.GLOWSTONE_DUST));
-		addToMap(new ItemStack(ObjHandler.alchemicalCoal));
-		addToMap(new ItemStack(ObjHandler.alchemicalCoalBlock));
-		addToMap(new ItemStack(Items.BLAZE_POWDER));
-		addToMap(new ItemStack(Blocks.GLOWSTONE));
-		addToMap(new ItemStack(ObjHandler.mobiusFuel));
-		addToMap(new ItemStack(ObjHandler.mobiusFuelBlock));
-		addToMap(new ItemStack(ObjHandler.aeternalisFuel));
-		addToMap(new ItemStack(ObjHandler.aeternalisFuelBlock));
+		addToMap(Items.CHARCOAL);
+		addToMap(Items.REDSTONE);
+		addToMap(Blocks.REDSTONE_BLOCK);
+		addToMap(Items.COAL);
+		addToMap(Blocks.COAL_BLOCK);
+		addToMap(Items.GUNPOWDER);
+		addToMap(Items.GLOWSTONE_DUST);
+		addToMap(ObjHandler.alchemicalCoal);
+		addToMap(ObjHandler.alchemicalCoalBlock);
+		addToMap(Items.BLAZE_POWDER);
+		addToMap(Blocks.GLOWSTONE);
+		addToMap(ObjHandler.mobiusFuel);
+		addToMap(ObjHandler.mobiusFuelBlock);
+		addToMap(ObjHandler.aeternalisFuel);
+		addToMap(ObjHandler.aeternalisFuelBlock);
 		
 		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
 	}
 	
-	private static void addToMap(ItemStack stack)
+	private static void addToMap(IItemProvider item)
 	{
-		if (EMCHelper.doesItemHaveEmc(stack) && !FUEL_MAP.contains(stack.getItem()))
+		if (EMCHelper.doesItemHaveEmc(item) && !FUEL_MAP.contains(item.asItem()))
 		{
-			FUEL_MAP.add(stack.getItem());
+			FUEL_MAP.add(item.asItem());
 		}
 	}
 	

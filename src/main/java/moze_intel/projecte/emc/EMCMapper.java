@@ -161,11 +161,6 @@ public final class EMCMapper
 										|| e.getValue() <= 0);
 	}
 
-	public static boolean mapContains(IItemProvider item)
-	{
-		return emc.containsKey(item.asItem());
-	}
-
 	public static long getEmcValue(IItemProvider item)
 	{
 		return emc.get(item.asItem());
