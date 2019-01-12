@@ -6,15 +6,18 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
 
 /**
  * Clientside key helper - because PEKeybind cannot touch client classes or it will crash dedicated servers
  */
-@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ClientKeyHelper
 {
     public static ImmutableBiMap<KeyBinding, PEKeybind> mcToPe;
     private static ImmutableBiMap<PEKeybind, KeyBinding> peToMc;
+
+
 
     public static void registerMCBindings()
     {

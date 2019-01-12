@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public final class SoundHandler
 {
 

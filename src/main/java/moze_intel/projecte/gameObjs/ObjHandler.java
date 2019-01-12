@@ -102,9 +102,10 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.Map.Entry;
 
+@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class ObjHandler
 {
-	public static final ItemGroup cTab = new ItemGroup(PECore.MODID) {
+	private static final ItemGroup cTab = new ItemGroup(PECore.MODID) {
 		@Override
 		public ItemStack createIcon() {
 			return new ItemStack(philosStone);
@@ -256,32 +257,33 @@ public class ObjHandler
 	public static final Item windProjectile = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 
-	@ObjectHolder(PECore.MODID + ":fire_projectile")
-	public static EntityType<?> FIRE_PROJECTILE;
-
-	@ObjectHolder(PECore.MODID + ":homing_arrow")
-	public static EntityType<?> HOMING_ARROW;
-
-	@ObjectHolder(PECore.MODID + ":lava_projectile")
-	public static EntityType<?> LAVA_PROJECTILE;
-
-	@ObjectHolder(PECore.MODID + ":lens_projectile")
-	public static EntityType<?> LENS_PROJECTILE;
-
-	@ObjectHolder(PECore.MODID + ":mob_randomizer")
-	public static EntityType<?> MOB_RANDOMIZER;
-
-	@ObjectHolder(PECore.MODID + ":nova_catalyst_primed")
-	public static EntityType<?> NOVA_CATALYST_PRIMED;
-
-	@ObjectHolder(PECore.MODID + ":nova_cataclysm_primed")
-	public static EntityType<?> NOVA_CATACLYSM_PRIMED;
-
-	@ObjectHolder(PECore.MODID + ":swrg_projectile")
-	public static EntityType<?> SWRG_PROJECTILE;
-
-	@ObjectHolder(PECore.MODID + ":water_projectile")
-	public static EntityType<?> WATER_PROJECTILE;
+	public static final EntityType<?> FIRE_PROJECTILE = EntityType.Builder
+			.create(EntityFireProjectile.class, EntityFireProjectile::new).build("")
+			.setRegistryName(PECore.MODID, "fire_projectile");
+	public static final EntityType<?> HOMING_ARROW = EntityType.Builder
+			.create(EntityHomingArrow.class, EntityHomingArrow::new).build("")
+			.setRegistryName(PECore.MODID, "homing_arrow");
+	public static final EntityType<?> LAVA_PROJECTILE = EntityType.Builder
+			.create(EntityLavaProjectile.class, EntityLavaProjectile::new).build("")
+			.setRegistryName(PECore.MODID, "lava_projectile");
+	public static final EntityType<?> LENS_PROJECTILE = EntityType.Builder
+			.create(EntityLensProjectile.class, EntityLensProjectile::new).build("")
+			.setRegistryName(PECore.MODID, "lens_projectile");
+	public static final EntityType<?> MOB_RANDOMIZER = EntityType.Builder
+			.create(EntityMobRandomizer.class, EntityMobRandomizer::new).build("")
+			.setRegistryName(PECore.MODID, "mob_randomizer");
+	public static final EntityType<?> NOVA_CATALYST_PRIMED = EntityType.Builder
+			.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new).build("")
+			.setRegistryName(PECore.MODID, "nova_catalyst_primed");
+	public static final EntityType<?> NOVA_CATACLYSM_PRIMED = EntityType.Builder
+			.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new).build("")
+			.setRegistryName(PECore.MODID, "nova_cataclysm_primed");
+	public static final EntityType<?> SWRG_PROJECTILE = EntityType.Builder
+			.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new).build("")
+			.setRegistryName(PECore.MODID, "swrg_projectile");
+	public static final EntityType<?> WATER_PROJECTILE = EntityType.Builder
+			.create(EntityWaterProjectile.class, EntityWaterProjectile::new).build("")
+			.setRegistryName(PECore.MODID, "water_projectile");
 
 	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1");
@@ -457,42 +459,15 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt)
 	{
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityWaterProjectile.class, EntityWaterProjectile::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "water_projectile"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityLavaProjectile.class, EntityLavaProjectile::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "lava_projectile"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityMobRandomizer.class, EntityMobRandomizer::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "mob_randomizer"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityLensProjectile.class, EntityLensProjectile::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "lens_projectile"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "nova_catalyst_primed"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "nova_cataclysm_primed"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityHomingArrow.class, EntityHomingArrow::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "homing_arrow"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntityFireProjectile.class, EntityFireProjectile::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "fire_projectile"));
-		evt.getRegistry().register(EntityType.Builder
-				.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new)
-				.build("")
-				.setRegistryName(PECore.MODID, "swrg_projectile"));
+		evt.getRegistry().register(WATER_PROJECTILE);
+		evt.getRegistry().register(LAVA_PROJECTILE);
+		evt.getRegistry().register(MOB_RANDOMIZER);
+		evt.getRegistry().register(LENS_PROJECTILE);
+		evt.getRegistry().register(NOVA_CATALYST_PRIMED);
+		evt.getRegistry().register(NOVA_CATACLYSM_PRIMED);
+		evt.getRegistry().register(HOMING_ARROW);
+		evt.getRegistry().register(FIRE_PROJECTILE);
+		evt.getRegistry().register(SWRG_PROJECTILE);
 	}
 
 	@SubscribeEvent

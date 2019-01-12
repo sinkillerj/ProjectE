@@ -79,10 +79,6 @@ public class PECore
 	{
 		proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-		// In ctor since registry events fire before preinit
-		MinecraftForge.EVENT_BUS.register(ObjHandler.class);
-		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
-
 		FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
@@ -93,9 +89,6 @@ public class PECore
 	private void preInit(FMLPreInitializationEvent event)
 	{
 		DEV_ENVIRONMENT = true; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
-
-		// todo 1.13 remove
-		ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
 
 		CONFIG_DIR = new File(new File("config"), MODNAME);
 
@@ -110,6 +103,10 @@ public class PECore
 
 		// Thread unsafe stuff in here
 		DeferredWorkQueue.enqueueWork(() -> {
+			// todo 1.13 remove
+			ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
+			ObjHandler.registerEntities(new RegistryEvent.Register<>(new ResourceLocation("entities"), ForgeRegistries.ENTITIES));
+
 			// Caps internals unsafe
 			AlchBagImpl.init();
 			KnowledgeImpl.init();
