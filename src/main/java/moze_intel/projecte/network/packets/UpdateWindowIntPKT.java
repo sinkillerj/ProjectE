@@ -43,6 +43,7 @@ public class UpdateWindowIntPKT {
                     player.openContainer.updateProgressBar(msg.propId, msg.propVal);
                 }
             });
+            ctx.get().setPacketHandled(true);
         }
     }
 }

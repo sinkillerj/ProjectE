@@ -35,6 +35,7 @@ public class ShowBagPKT {
 				Minecraft.getInstance().displayGuiScreen(new GUIAlchChest(Minecraft.getInstance().player.inventory, EnumHand.OFF_HAND, new ItemStackHandler(104)));
 				Minecraft.getInstance().player.openContainer.windowId = message.windowId;
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

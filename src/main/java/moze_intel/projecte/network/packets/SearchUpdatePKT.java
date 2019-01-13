@@ -38,6 +38,7 @@ public class SearchUpdatePKT {
 					container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
 				}
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

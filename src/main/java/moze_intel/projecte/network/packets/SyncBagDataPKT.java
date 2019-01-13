@@ -33,6 +33,7 @@ public class SyncBagDataPKT {
 				PECore.proxy.getClientBagProps().deserializeNBT(message.nbt);
 				PECore.debugLog("** RECEIVED BAGS CLIENTSIDE **");
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

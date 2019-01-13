@@ -147,6 +147,7 @@ public class KeyPressPKT {
                 }
 
             });
+            ctx.get().setPacketHandled(true);
 		}
 	}
 }

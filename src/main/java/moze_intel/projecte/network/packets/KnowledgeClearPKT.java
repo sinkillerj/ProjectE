@@ -19,6 +19,7 @@ public class KnowledgeClearPKT {
 		public static void handle(KnowledgeClearPKT pkt, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> PECore.proxy.clearClientKnowledge());
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

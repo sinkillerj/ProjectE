@@ -36,6 +36,7 @@ public class SetFlyPKT {
 					Minecraft.getInstance().player.abilities.isFlying = false;
 				}
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

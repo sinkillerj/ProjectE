@@ -40,6 +40,7 @@ public class UpdateGemModePKT {
 					stack.getTag().putBoolean("Whitelist", pkt.mode);
 				}
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

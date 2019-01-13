@@ -51,6 +51,7 @@ public class UpdateWindowLongPKT {
                     }
                 }
             });
+            ctx.get().setPacketHandled(true);
         }
     }
 }

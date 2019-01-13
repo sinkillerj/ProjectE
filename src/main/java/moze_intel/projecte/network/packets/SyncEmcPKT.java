@@ -60,6 +60,7 @@ public class SyncEmcPKT {
 				FuelMapper.loadMap();
 				PECore.refreshJEI();
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 

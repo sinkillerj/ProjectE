@@ -29,6 +29,7 @@ public class LeftClickArchangelPKT {
 					((ArchangelSmite) ObjHandler.angelSmite).fireVolley(main, player);
 				}
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

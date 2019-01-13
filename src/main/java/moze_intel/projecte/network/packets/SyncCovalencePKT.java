@@ -29,6 +29,7 @@ public class SyncCovalencePKT {
 		public static void handle(final SyncCovalencePKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> EMCMapper.covalenceLoss = message.covalenceLoss);
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

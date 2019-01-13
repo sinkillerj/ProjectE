@@ -29,6 +29,7 @@ public class StepHeightPKT {
 		public static void handle(final StepHeightPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> Minecraft.getInstance().player.stepHeight = message.value);
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }

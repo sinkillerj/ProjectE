@@ -22,6 +22,7 @@ public class CheckUpdatePKT {
 			{
 				new ThreadCheckUpdate().start();
 			}
+			ctx.get().setPacketHandled(true);
 		}
 
 		private static boolean updateCheckEnabled()

@@ -19,6 +19,7 @@ public class CooldownResetPKT {
 		public static void handle(CooldownResetPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> Minecraft.getInstance().player.resetCooldown());
+			ctx.get().setPacketHandled(true);
 		}
 	}
 

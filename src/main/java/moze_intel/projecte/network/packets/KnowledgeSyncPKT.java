@@ -33,6 +33,7 @@ public class KnowledgeSyncPKT {
 				PECore.proxy.getClientTransmutationProps().deserializeNBT(message.nbt);
 				PECore.debugLog("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 			});
+			ctx.get().setPacketHandled(true);
 		}
 	}
 }
