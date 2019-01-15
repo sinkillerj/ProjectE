@@ -1,0 +1,37 @@
+package moze_intel.projecte.api.imc;
+
+import net.minecraft.block.state.IBlockState;
+
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
+
+public class WorldTransmutationEntry
+{
+    private final Predicate<IBlockState> origin;
+    private final IBlockState result;
+    private final IBlockState altResult;
+
+    /**
+     * @param origin defines what will match this transmutation.
+     * @param result defines what the normal right-click result of the transmutation will be.
+     * @param altResult defines what the shift right-click result will be, and can be null, in which {@code result} will
+     *                  be used instead
+     */
+    public WorldTransmutationEntry(Predicate<IBlockState> origin, IBlockState result, @Nullable IBlockState altResult) {
+        this.origin = origin;
+        this.result = result;
+        this.altResult = altResult == null ? this.result : altResult;
+    }
+
+    public Predicate<IBlockState> getOrigin() {
+        return origin;
+    }
+
+    public IBlockState getResult() {
+        return result;
+    }
+
+    public IBlockState getAltResult() {
+        return altResult;
+    }
+}

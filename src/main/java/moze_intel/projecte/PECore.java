@@ -183,10 +183,6 @@ public class PECore
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
 		DeferredWorkQueue.enqueueWork(() -> {
-			// todo 1.13 remove
-			//ObjHandler.registerTileEntities(new RegistryEvent.Register<>(new ResourceLocation("tileentities"), ForgeRegistries.TILE_ENTITIES));
-			//ObjHandler.registerEntities(new RegistryEvent.Register<>(new ResourceLocation("entities"), ForgeRegistries.ENTITIES));
-
 			// Caps internals unsafe
 			AlchBagImpl.init();
 			KnowledgeImpl.init();
