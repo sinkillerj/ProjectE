@@ -39,6 +39,7 @@ public final class ProjectEAPI
 	 */
 	public static IEMCProxy getEMCProxy()
 	{
+		// Harmless race
 		if (emcProxy == null)
 		{
 			try
@@ -59,6 +60,7 @@ public final class ProjectEAPI
 	 */
 	public static IConversionProxy getConversionProxy()
 	{
+		// Harmless race
 		if (recipeProxy == null)
 		{
 			try
@@ -79,6 +81,7 @@ public final class ProjectEAPI
 	 */
 	public static ITransmutationProxy getTransmutationProxy()
 	{
+		// Harmless race
 		if (transProxy == null)
 		{
 			try
@@ -99,6 +102,7 @@ public final class ProjectEAPI
 	 */
 	public static IBlacklistProxy getBlacklistProxy()
 	{
+		// Harmless race
 		if (blacklistProxy == null)
 		{
 			try

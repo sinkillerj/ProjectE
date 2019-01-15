@@ -11,10 +11,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BlacklistProxyImpl implements IBlacklistProxy
 {
-    public static final IBlacklistProxy instance = new BlacklistProxyImpl();
+    public static final BlacklistProxyImpl instance = new BlacklistProxyImpl();
+    private final Set<EntityType<?>> interdictionBlacklistStaging = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<EntityType<?>> swrgBlacklistStaging = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<TileEntityType<?>> timeWatchBlacklistStaging = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private BlacklistProxyImpl() {}
 
@@ -22,9 +28,9 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     public void blacklistInterdiction(@Nonnull EntityType<?> type)
     {
         Preconditions.checkNotNull(type);
+        interdictionBlacklistStaging.add(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
         ResourceLocation id = type.getRegistryName();
-        WorldHelper.blacklistInterdiction(id);
         PECore.debugLog("Mod {} blacklisted {} for interdiction torch", modid, id);
     }
 
@@ -32,9 +38,9 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     public void blacklistSwiftwolf(@Nonnull EntityType<?> type)
     {
         Preconditions.checkNotNull(type);
+        swrgBlacklistStaging.add(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
         ResourceLocation id = type.getRegistryName();
-        WorldHelper.blacklistSwrg(id);
         PECore.debugLog("Mod {} blacklisted {} for SWRG repel", modid, id);
     }
 
@@ -42,10 +48,25 @@ public class BlacklistProxyImpl implements IBlacklistProxy
     public void blacklistTimeWatch(@Nonnull TileEntityType<?> type)
     {
         Preconditions.checkNotNull(type);
+        timeWatchBlacklistStaging.add(type);
         String modid = FMLModLoadingContext.get().getActiveContainer().getModId();
         ResourceLocation id = type.getRegistryName();
-        TimeWatch.blacklist(id);
         PECore.debugLog("Mod {} blacklisted {} for Time Watch acceleration", modid, id);
+    }
+
+    public Set<EntityType<?>> getInterdictionBlacklist()
+    {
+        return interdictionBlacklistStaging;
+    }
+
+    public Set<EntityType<?>> getSwrgBlacklist()
+    {
+        return swrgBlacklistStaging;
+    }
+
+    public Set<TileEntityType<?>> getTimeWatchBlacklist()
+    {
+        return timeWatchBlacklistStaging;
     }
 
 }

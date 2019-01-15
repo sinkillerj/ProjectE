@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -10,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
@@ -52,12 +54,13 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * Helper class for anything that touches a World.
@@ -84,18 +87,18 @@ public final class WorldHelper
 			EntityEvoker.class, EntityVex.class, EntityVindicator.class, EntityShulker.class
 	);
 
-	private static final Set<ResourceLocation> interdictionBlacklist = new HashSet<>();
+	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 
-	private static final Set<ResourceLocation> swrgBlacklist = new HashSet<>();
+	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
 
-	public static boolean blacklistInterdiction(ResourceLocation id)
+	public static void setInterdictionBlacklist(Set<EntityType<?>> types)
 	{
-		return interdictionBlacklist.add(id);
+		interdictionBlacklist = ImmutableSet.copyOf(types);
 	}
 
-	public static boolean blacklistSwrg(ResourceLocation id)
+	public static void setSwrgBlacklist(Set<EntityType<?>> types)
 	{
-		return swrgBlacklist.add(id);
+		swrgBlacklist = ImmutableSet.copyOf(types);
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
@@ -522,8 +525,8 @@ public final class WorldHelper
 
 		for (Entity ent : list)
 		{
-			if ((isSWRG && !swrgBlacklist.contains(ent.getType().getRegistryName()))
-					|| (!isSWRG && !interdictionBlacklist.contains(ent.getType().getRegistryName()))) {
+			if ((isSWRG && !swrgBlacklist.contains(ent.getType()))
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
 					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))

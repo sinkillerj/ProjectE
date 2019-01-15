@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import com.google.common.collect.ImmutableSet;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -21,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -39,7 +41,7 @@ import java.util.*;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
-	private static final Set<ResourceLocation> internalBlacklist = new HashSet<>();
+	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
 	private static final Tag<Block> BLOCK_BLACKLIST_TAG = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "time_watch_blacklist"));
 
 	public TimeWatch(Builder builder)
@@ -182,15 +184,15 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		Set<String> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
+		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++)
 		{
 			for (TileEntity tile : list)
 			{
 				if (!tile.isRemoved() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getType().getRegistryName())
-						&& !blacklist.contains(tile.getType().getRegistryName().toString()))
+						&& !internalBlacklist.contains(tile.getType())
+						&& !blacklist.contains(tile.getType().getRegistryName()))
 				{
 					((ITickable) tile).tick();
 				}
@@ -360,9 +362,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		return list;
 	}
 
-	public static void blacklist(ResourceLocation id)
+	public static void setInternalBlacklist(Set<TileEntityType<?>> types)
 	{
-		internalBlacklist.add(id);
+		internalBlacklist = ImmutableSet.copyOf(types);
 	}
 
 	@Override

@@ -3,11 +3,13 @@ package moze_intel.projecte.config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import moze_intel.projecte.PECore;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ForgeConfigSpec;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ProjectEConfig
 {
@@ -166,7 +168,10 @@ public final class ProjectEConfig
 	public static class Effects {
 		public final int timePedBonus = config.get("effects.timePedBonus");
 		public final double timePedMobSlowness = config.get("effects.timePedMobSlowness");
-		public final Set<String> timeWatchTEBlacklist = new HashSet<>(config.<List<String>>get("effects.timeWatchTEBlacklist"));
+		public final Set<ResourceLocation> timeWatchTEBlacklist = config.<List<String>>get("effects.timeWatchTEBlacklist")
+				.stream()
+				.map(ResourceLocation::new)
+				.collect(Collectors.toSet());
 		public final boolean interdictionMode = config.get("effects.interdictionMode");
 	}
 

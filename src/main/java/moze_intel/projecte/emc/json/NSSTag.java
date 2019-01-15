@@ -7,11 +7,11 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NSSTag implements NormalizedSimpleStack {
-	static final Map<String, NSSTag> tagStacks = new HashMap<>();
+	static final Map<String, NSSTag> tagStacks = new ConcurrentHashMap<>();
 
 	private final ResourceLocation tagId;
 

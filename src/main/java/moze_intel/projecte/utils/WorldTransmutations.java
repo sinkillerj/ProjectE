@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.ImmutableList;
+import moze_intel.projecte.impl.TransmutationProxyImpl;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -19,9 +21,9 @@ import java.util.List;
 
 public final class WorldTransmutations
 {
-	private static final List<Entry> ENTRIES = new ArrayList<>();
+	private static List<Entry> ENTRIES = Collections.emptyList();
 
-	static
+	public static void init()
 	{
 		registerDefault(Blocks.STONE, Blocks.COBBLESTONE, Blocks.GRASS_BLOCK);
 		registerDefault(Blocks.COBBLESTONE, Blocks.STONE, Blocks.GRASS_BLOCK);
@@ -95,14 +97,14 @@ public final class WorldTransmutations
 		return ENTRIES;
 	}
 
-	public static void register(IBlockState from, IBlockState result, IBlockState altResult)
+	public static void setWorldTransmutation(List<Entry> entries)
 	{
-		ENTRIES.add(new Entry(from, ImmutablePair.of(result, altResult)));
+		ENTRIES = ImmutableList.copyOf(entries);
 	}
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		register(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
+		TransmutationProxyImpl.instance.registerWorldTransmutation(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
 	}
 
 	private static void registerConsecutivePairs(Block[] blocks)

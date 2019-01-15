@@ -1,7 +1,6 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.json.NSSFake;
@@ -19,16 +18,17 @@ import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import org.apache.commons.lang3.ClassUtils;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConversionProxyImpl implements IConversionProxy
 {
-
 	public static final ConversionProxyImpl instance = new ConversionProxyImpl();
 
-	final Map<Object, NormalizedSimpleStack> fakes = new HashMap<>();
+	private final Map<Object, NormalizedSimpleStack> fakes = new ConcurrentHashMap<>();
 
 	@Override
 	public void addConversion(int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients) {
@@ -38,18 +38,12 @@ public class ConversionProxyImpl implements IConversionProxy
 			NormalizedSimpleStack nss = objectToNSS(entry.getKey());
 			ingredientMap.addIngredient(nss, entry.getValue());
 		}
-		List<APIConversion> conversionsFromMod;
 		String modId = getActiveMod();
-		if (storedConversions.containsKey(modId)) {
-			conversionsFromMod = storedConversions.get(modId);
-		} else {
-			conversionsFromMod = Lists.newLinkedList();
-			storedConversions.put(modId, conversionsFromMod);
-		}
+		List<APIConversion> conversionsFromMod = storedConversions.computeIfAbsent(modId, s -> Collections.synchronizedList(new ArrayList<>()));
 		conversionsFromMod.add(new APIConversion(amount, nssOut, ImmutableMap.copyOf(ingredientMap.getMap())));
 	}
 
-	public final Map<String, List<APIConversion>> storedConversions = new HashMap<>();
+	public final Map<String, List<APIConversion>> storedConversions = new ConcurrentHashMap<>();
 
 	public NormalizedSimpleStack objectToNSS(Object object)
 	{
@@ -66,11 +60,7 @@ public class ConversionProxyImpl implements IConversionProxy
 		} else if (object instanceof ResourceLocation) {
 			return NSSTag.create(object.toString());
 		} else if (object != null && object.getClass().equals(Object.class)) {
-			if (fakes.containsKey(object)) return fakes.get(object);
-
-			NormalizedSimpleStack nss = NSSFake.create("" + fakes.size() + " by " + getActiveMod());
-			fakes.put(object, nss);
-			return nss;
+			return fakes.computeIfAbsent(object, o -> NSSFake.create("" + object + " by " + getActiveMod()));
 		} else {
 			throw new IllegalArgumentException("Can not turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. need ItemStack, FluidStack, String or 'Object'");
 		}

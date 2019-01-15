@@ -11,13 +11,13 @@ public interface ITransmutationProxy
 {
     /**
      * Register a world transmutation with the Philosopher's Stone
-     * Calls this during the postinit phase
+     * Call this during any of the main loading phases
+     * This method can be called during parallel mod loading
      * @param origin Original blockstate when targeting world transmutation
      * @param result1 First result blockstate
      * @param result2 Alternate result blockstate (when sneaking). You may pass null, in which there will be no alternate transmutation
-     * @return Whether the registration succeeded. It may fail if transmutations already exist for block origin
      */
-    boolean registerWorldTransmutation(@Nonnull IBlockState origin, @Nonnull IBlockState result1, @Nullable IBlockState result2);
+    void registerWorldTransmutation(@Nonnull IBlockState origin, @Nonnull IBlockState result1, @Nullable IBlockState result2);
 
     /**
      * Gets an {@link IKnowledgeProvider} representing the UUID provided.

@@ -12,6 +12,7 @@ public interface IEMCProxy
     /**
      * Registers a custom EMC value for this ItemStack
      * Call this during any of the main loading phases (Preinit, Init, Postinit)
+     * This method can be called during parallel mod loading
      * @param stack The stack we want to define EMC for
      * @param value The value to define. Values below 0 are changed to 0
      */
@@ -19,9 +20,11 @@ public interface IEMCProxy
 
     /**
      * Register a custom EMC value for emc calculation that is used in Recipes.
+     * Call this during any of the main loading phases
+     * This method can be called during parallel mod loading
      * You can use the following things for the {@code o}-Parameter:
      * <ul>
-     *     <li>{@link ItemStack} - The Modname:unlocalizedName and Metadata will be used to identify this ItemStack (May contain a {@code Block} or {@code Item})</li>
+     *     <li>{@link ItemStack} - The registry name will be used to identify this ItemStack (May contain a {@code Block} or {@code Item})</li>
      *     <li>{@link net.minecraft.util.ResourceLocation} - will be interpreted as an item tag id.</li>
      *     <li>{@link Object} - (No subclasses of {@code Object} - only {@code Object}!) can be used as a intermediate fake object for complex recipes.</li>
      * </ul>
