@@ -47,6 +47,17 @@
         {
           "output": "minecraft:carved_pumpkin",
           "ingredients": [ "minecraft:pumpkin" ]
+        },
+        {
+          "output": "minecraft:enchanted_golden_apple",
+          "ingredients": {
+            "minecraft:apple": 1,
+            "minecraft:gold_block": 8
+          }
+        },
+        {
+          "output": "minecraft:wet_sponge",
+          "ingredients": [ "minecraft:sponge" ]
         }
       ]
     },
@@ -118,18 +129,6 @@
           "ingredients": [ "minecraft:black_concrete_powder" ]
         }
       ]
-    },
-    "notch_apple": {
-      "comment": "Give Notch apple a value based on its old recipe",
-      "conversions": [
-        {
-          "output": "minecraft:enchanted_golden_apple",
-          "ingredients": {
-            "minecraft:apple": 1,
-            "minecraft:gold_block": 8
-          }
-        }
-      ]
     }
   },
   "values": {
@@ -190,13 +189,42 @@
       "minecraft:red_terracotta": 64,
       "minecraft:black_terracotta": 64,
       "minecraft:sponge": 128,
-      "minecraft:wet_sponge": 128,
       "minecraft:grass": 1,
+      "minecraft:seagrass": 1,
+      "minecraft:kelp": 1,
+      "minecraft:sea_pickle": 16,
       "minecraft:tall_grass": 1,
       "minecraft:fern": 1,
       "minecraft:large_fern": 1,
       "minecraft:packed_ice": 4,
       "minecraft:magma_block": 128,
+
+      "minecraft:tube_coral_block": 64,
+      "minecraft:brain_coral_block": 64,
+      "minecraft:bubble_coral_block": 64,
+      "minecraft:fire_coral_block": 64,
+      "minecraft:horn_coral_block": 64,
+      "minecraft:dead_tube_coral_block": 1,
+      "minecraft:dead_brain_coral_block": 1,
+      "minecraft:dead_bubble_coral_block": 1,
+      "minecraft:dead_fire_coral_block": 1,
+      "minecraft:dead_horn_coral_block": 1,
+      "minecraft:tube_coral": 16,
+      "minecraft:brain_coral": 16,
+      "minecraft:bubble_coral": 16,
+      "minecraft:fire_coral": 16,
+      "minecraft:horn_coral": 16,
+      "minecraft:tube_coral_fan": 16,
+      "minecraft:brain_coral_fan": 16,
+      "minecraft:bubble_coral_fan": 16,
+      "minecraft:fire_coral_fan": 16,
+      "minecraft:horn_coral_fan": 16,
+      "minecraft:dead_tube_coral_fan": 1,
+      "minecraft:dead_brain_coral_fan": 1,
+      "minecraft:dead_bubble_coral_fan": 1,
+      "minecraft:dead_fire_coral_fan": 1,
+      "minecraft:dead_horn_coral_fan": 1,
+
 
       "minecraft:chorus_plant": 64,
       "minecraft:chorus_flower": 96,
@@ -226,12 +254,15 @@
       "minecraft:rotten_flesh": 32,
       "minecraft:slime_ball": 32,
       "minecraft:egg": 32,
+      "minecraft:scute": 96,
       "minecraft:feather": 48,
       "minecraft:rabbit_hide": 16,
       "minecraft:rabbit_foot": 128,
       "minecraft:spider_eye": 128,
+      "minecraft:phantom_membrane": 192,
       "minecraft:gunpowder": 192,
       "minecraft:ender_pearl": 1024,
+      "minecraft:nautilus_shell": 1024,
       "minecraft:blaze_rod": 1536,
       "minecraft:shulker_shell": 2048,
       "minecraft:ghast_tear": 4096,
