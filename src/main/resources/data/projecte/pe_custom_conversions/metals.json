@@ -6,7 +6,7 @@
       "#forge:ingots/iron": 256
     },
     "conversion": [
-      { "evalOD": true, "output": "#forge:ingots/gold", "count": 1, "ingredients": { "#forge:ingots/iron": 8 } }
+      { "propagateTags": true, "output": "#forge:ingots/gold", "count": 1, "ingredients": { "#forge:ingots/iron": 8 } }
     ]
   }
 }
