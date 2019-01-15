@@ -5,7 +5,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -24,8 +26,10 @@ public class TransmutationProxyImpl implements ITransmutationProxy
     {
         if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER)
         {
-            Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
-            return PECore.proxy.getClientTransmutationProps();
+            return DistExecutor.runForDist(() -> () -> {
+                Preconditions.checkState(Minecraft.getInstance().player != null, "Client player doesn't exist!");
+                return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+            }, () -> () -> { throw new RuntimeException("unreachable"); });
         }
         else
         {

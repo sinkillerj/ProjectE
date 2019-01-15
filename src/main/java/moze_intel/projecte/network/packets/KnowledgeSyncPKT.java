@@ -1,6 +1,8 @@
 package moze_intel.projecte.network.packets;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ProjectEAPI;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -30,7 +32,8 @@ public class KnowledgeSyncPKT {
 		public static void handle(final KnowledgeSyncPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> {
-				PECore.proxy.getClientTransmutationProps().deserializeNBT(message.nbt);
+				Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY)
+						.ifPresent(cap -> cap.deserializeNBT(message.nbt));
 				PECore.debugLog("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 			});
 			ctx.get().setPacketHandled(true);

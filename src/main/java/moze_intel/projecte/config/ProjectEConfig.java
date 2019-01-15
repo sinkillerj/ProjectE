@@ -4,8 +4,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.nio.file.Paths;
 import java.util.*;

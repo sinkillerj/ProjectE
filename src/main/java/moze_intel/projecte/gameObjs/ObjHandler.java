@@ -473,6 +473,7 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt)
 	{
+		System.out.println("Registering TE's");
 		evt.getRegistry().register(ALCH_CHEST_TILE);
 		evt.getRegistry().register(INTERDICTION_TORCH_TILE);
 		evt.getRegistry().register(CONDENSER_TILE);

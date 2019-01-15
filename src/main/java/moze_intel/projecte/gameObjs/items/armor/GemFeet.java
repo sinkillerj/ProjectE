@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -17,6 +18,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,6 +61,12 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
                 .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
     }
 
+    private static boolean isJumpPressed()
+    {
+        return DistExecutor.runForDist(() -> () -> Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown(),
+                () -> () -> false);
+    }
+
     @Override
     public void onArmorTick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -69,7 +77,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         }
         else
         {
-            if (!player.abilities.isFlying && PECore.proxy.isJumpPressed())
+            if (!player.abilities.isFlying && isJumpPressed())
             {
                 player.motionY += 0.1;
             }

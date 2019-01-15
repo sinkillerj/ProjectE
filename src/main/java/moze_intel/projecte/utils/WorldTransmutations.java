@@ -1,12 +1,14 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.fml.InterModComms;
 
 import java.util.Collections;
 import java.util.List;
@@ -95,7 +97,7 @@ public final class WorldTransmutations
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		// todo 1.13 TransmutationProxyImpl.instance.registerWorldTransmutation(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
+		InterModComms.sendTo(PECore.MODID, "register_world_transmutation", () -> new WorldTransmutationEntry(s -> s == from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 
 	private static void registerConsecutivePairs(Block[] blocks)
