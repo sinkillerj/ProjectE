@@ -12,7 +12,6 @@ import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
-import moze_intel.projecte.impl.BlacklistProxyImpl;
 import moze_intel.projecte.impl.EMCProxyImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
@@ -147,9 +146,6 @@ public class PECore
 	private void loadComplete(FMLLoadCompleteEvent event)
 	{
 		// Transfer all thread-safe staging data to their single-threaded home for the life of the game
-		WorldHelper.setInterdictionBlacklist(BlacklistProxyImpl.instance.getInterdictionBlacklist());
-		WorldHelper.setSwrgBlacklist(BlacklistProxyImpl.instance.getSwrgBlacklist());
-		TimeWatch.setInternalBlacklist(BlacklistProxyImpl.instance.getTimeWatchBlacklist());
 		WorldTransmutations.setWorldTransmutation(TransmutationProxyImpl.instance.getWorldTransmutations());
 		for (Triple<String, Object, Long> t : EMCProxyImpl.instance.getCustomEmcStaging())
 		{

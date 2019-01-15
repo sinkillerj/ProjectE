@@ -2,7 +2,6 @@ package moze_intel.projecte.api;
 
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
@@ -15,7 +14,6 @@ public final class ProjectEAPI
 {
 	private static IEMCProxy emcProxy;
 	private static ITransmutationProxy transProxy;
-	private static IBlacklistProxy blacklistProxy;
 	private static IConversionProxy recipeProxy;
 	private static final Logger LOGGER = LogManager.getLogger("projecteapi");
 
@@ -94,26 +92,5 @@ public final class ProjectEAPI
 			}
 		}
 		return transProxy;
-	}
-
-	/**
-	 * Retrieves the proxy for black/whitelist-based API queries.
-	 * @return The proxy for black/whitelist-based API queries
-	 */
-	public static IBlacklistProxy getBlacklistProxy()
-	{
-		// Harmless race
-		if (blacklistProxy == null)
-		{
-			try
-			{
-				Class<?> clazz = Class.forName("moze_intel.projecte.impl.BlacklistProxyImpl");
-				blacklistProxy = (IBlacklistProxy) clazz.getField("instance").get(null);
-			} catch (ReflectiveOperationException ex)
-			{
-				LOGGER.warn("Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
-			}
-		}
-		return blacklistProxy;
 	}
 }
