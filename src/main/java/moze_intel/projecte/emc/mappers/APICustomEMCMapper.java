@@ -6,19 +6,13 @@ import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.impl.ConversionProxyImpl;
-import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public static final APICustomEMCMapper instance = new APICustomEMCMapper();
@@ -30,7 +24,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 
 	public void registerCustomEMC(String modid, Object o, long emcValue) {
-		NormalizedSimpleStack stack = ConversionProxyImpl.instance.objectToNSS(o);
+		NormalizedSimpleStack stack = APICustomConversionMapper.instance.objectToNSS(modid, o);
 		if (stack == null) return;
 		if (emcValue < 0) emcValue = 0;
 		customEMCforMod.computeIfAbsent(modid, k -> new HashMap<>()).put(stack, emcValue);

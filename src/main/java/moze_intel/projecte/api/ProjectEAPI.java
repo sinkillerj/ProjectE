@@ -2,7 +2,6 @@ package moze_intel.projecte.api;
 
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraftforge.common.capabilities.Capability;
@@ -14,7 +13,6 @@ public final class ProjectEAPI
 {
 	private static IEMCProxy emcProxy;
 	private static ITransmutationProxy transProxy;
-	private static IConversionProxy recipeProxy;
 	private static final Logger LOGGER = LogManager.getLogger("projecteapi");
 
 	private ProjectEAPI() {}
@@ -50,27 +48,6 @@ public final class ProjectEAPI
 			}
 		}
 		return emcProxy;
-	}
-
-	/**
-	 * Retrieves the proxy for EMC-Recipe-Calculation-based API queries.
-	 * @return The proxy for EMC-Recipe-Calculation-based API queries
-	 */
-	public static IConversionProxy getConversionProxy()
-	{
-		// Harmless race
-		if (recipeProxy == null)
-		{
-			try
-			{
-				Class<?> clazz = Class.forName("moze_intel.projecte.impl.ConversionProxyImpl");
-				recipeProxy = (IConversionProxy) clazz.getField("instance").get(null);
-			} catch (ReflectiveOperationException ex)
-			{
-				LOGGER.warn("Error retrieving ConversionProxyImpl, ProjectE may be absent, damaged, or outdated.");
-			}
-		}
-		return recipeProxy;
 	}
 
 	/**

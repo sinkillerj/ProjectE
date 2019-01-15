@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -141,7 +140,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		for (CustomConversion conversion : file.values.conversion)
 		{
 			NormalizedSimpleStack out = conversion.output;
-			if (conversion.evalOD && out instanceof NSSTag)
+			if (conversion.propagateTags && out instanceof NSSTag)
 			{
 				for (Item item : ((NSSTag) out).getAllElements())
 				{

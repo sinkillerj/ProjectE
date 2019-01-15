@@ -10,16 +10,6 @@ import java.util.UUID;
 public interface ITransmutationProxy
 {
     /**
-     * Register a world transmutation with the Philosopher's Stone
-     * Call this during any of the main loading phases
-     * This method can be called during parallel mod loading
-     * @param origin Original blockstate when targeting world transmutation
-     * @param result1 First result blockstate
-     * @param result2 Alternate result blockstate (when sneaking). You may pass null, in which there will be no alternate transmutation
-     */
-    void registerWorldTransmutation(@Nonnull IBlockState origin, @Nonnull IBlockState result1, @Nullable IBlockState result2);
-
-    /**
      * Gets an {@link IKnowledgeProvider} representing the UUID provided.
      *
      * If the provided UUID is offline, note that the returned {@link IKnowledgeProvider} is immutable!

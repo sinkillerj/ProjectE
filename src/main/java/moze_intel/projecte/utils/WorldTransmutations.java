@@ -1,27 +1,19 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
-import moze_intel.projecte.impl.TransmutationProxyImpl;
+import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.IBlockReader;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public final class WorldTransmutations
 {
-	private static List<Entry> ENTRIES = Collections.emptyList();
+	private static List<WorldTransmutationEntry> ENTRIES = Collections.emptyList();
 
 	public static void init()
 	{
@@ -73,38 +65,37 @@ public final class WorldTransmutations
 		registerConsecutivePairs(carpets);
 	}
 
-	public static IBlockState getWorldTransmutation(World world, BlockPos pos, boolean isSneaking)
+	public static IBlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking)
 	{
 		return getWorldTransmutation(world.getBlockState(pos), isSneaking);
 	}
 
 	public static IBlockState getWorldTransmutation(IBlockState current, boolean isSneaking)
 	{
-		for (Entry e : ENTRIES)
+		for (WorldTransmutationEntry e : ENTRIES)
 		{
-			if (e.input == current)
+			if (e.getOrigin().test(current))
 			{
-				Pair<IBlockState, IBlockState> result = e.outputs;
-				return isSneaking ? (result.getRight() == null ? result.getLeft() : result.getRight()) : result.getLeft();
+				return isSneaking ? e.getAltResult() : e.getResult();
 			}
 		}
 
 		return null;
 	}
 
-	public static List<Entry> getWorldTransmutations()
+	public static List<WorldTransmutationEntry> getWorldTransmutations()
 	{
 		return ENTRIES;
 	}
 
-	public static void setWorldTransmutation(List<Entry> entries)
+	public static void setWorldTransmutation(List<WorldTransmutationEntry> entries)
 	{
 		ENTRIES = ImmutableList.copyOf(entries);
 	}
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		TransmutationProxyImpl.instance.registerWorldTransmutation(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
+		// todo 1.13 TransmutationProxyImpl.instance.registerWorldTransmutation(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
 	}
 
 	private static void registerConsecutivePairs(Block[] blocks)
@@ -118,7 +109,8 @@ public final class WorldTransmutations
 		}
 	}
 
-	public static class Entry /*implements IRecipeWrapper*/
+	/* todo 1.13
+	public static class Entry implements IRecipeWrapper
 	{
 		public final IBlockState input;
 		public final Pair<IBlockState, IBlockState> outputs;
@@ -128,7 +120,7 @@ public final class WorldTransmutations
 			this.input = from;
 			this.outputs = results;
 		}
-		/* todo 1.13
+
 		@Override
 		public void getIngredients(IIngredients ingredients) {
 
@@ -269,6 +261,6 @@ public final class WorldTransmutations
 					return Collections.singletonList("Click in world, shift click for second output");
 
 			return Collections.emptyList();
-		}*/
-	}
+		}
+	}*/
 }

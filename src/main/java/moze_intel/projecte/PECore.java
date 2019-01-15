@@ -6,17 +6,13 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.AlchBagImpl;
-import moze_intel.projecte.impl.EMCProxyImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
-import moze_intel.projecte.impl.TransmutationProxyImpl;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -26,7 +22,6 @@ import moze_intel.projecte.proxies.ClientProxy;
 import moze_intel.projecte.proxies.IProxy;
 import moze_intel.projecte.proxies.ServerProxy;
 import moze_intel.projecte.utils.DummyIStorage;
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -40,14 +35,12 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,7 +82,6 @@ public class PECore
 		FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
@@ -141,16 +133,6 @@ public class PECore
 	{
 		Integration.init();
 		IMCHandler.handleMessages();
-	}
-
-	private void loadComplete(FMLLoadCompleteEvent event)
-	{
-		// Transfer all thread-safe staging data to their single-threaded home for the life of the game
-		WorldTransmutations.setWorldTransmutation(TransmutationProxyImpl.instance.getWorldTransmutations());
-		for (Triple<String, Object, Long> t : EMCProxyImpl.instance.getCustomEmcStaging())
-		{
-			APICustomEMCMapper.instance.registerCustomEMC(t.getLeft(), t.getMiddle(), t.getRight());
-		}
 	}
 	
 	private void serverStarting(FMLServerStartingEvent event)

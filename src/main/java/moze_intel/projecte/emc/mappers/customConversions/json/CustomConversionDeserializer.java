@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -51,8 +50,8 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 				} else {
 					throw new JsonParseException("Could not parse ingredients!");
 				}
-			} else if (entry.getKey().equalsIgnoreCase("evalOD")) {
-				out.evalOD = element.getAsBoolean();
+			} else if (entry.getKey().equalsIgnoreCase("propagateTags")) {
+				out.propagateTags = element.getAsBoolean();
 			} else {
 				throw new JsonParseException(String.format("Unknown Key: %s in Conversion with value %s", entry.getKey(), element));
 			}

@@ -62,7 +62,7 @@ public final class EMCMapper
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				// todo 1.13 new moze_intel.projecte.emc.mappers.FluidMapper(),
-				new APICustomConversionMapper()
+				APICustomConversionMapper.instance
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
