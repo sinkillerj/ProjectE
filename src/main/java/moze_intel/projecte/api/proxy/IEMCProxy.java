@@ -112,4 +112,13 @@ public interface IEMCProxy
      * @return The stack's EMC value, or 0 if there is none
      */
     long getValue(@Nonnull ItemStack stack);
+
+    /**
+     * Queries the EMC sell-value for the provided stack
+     * Can be called at any time, but will only return valid results if a world is loaded
+     * Can be called on both sides
+     * @param stack The stack we want to query
+     * @return EMC the stack should yield when burned by transmutation, condensers, or relays
+     */
+    long getSellValue(@Nonnull ItemStack stack);
 }

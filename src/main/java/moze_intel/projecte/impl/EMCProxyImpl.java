@@ -92,4 +92,11 @@ public class EMCProxyImpl implements IEMCProxy
         Preconditions.checkNotNull(stack);
         return EMCHelper.getEmcValue(stack);
     }
+
+    @Override
+    public long getSellValue(@Nonnull ItemStack stack)
+    {
+        Preconditions.checkNotNull(stack);
+        return EMCHelper.getEmcSellValue(stack);
+    }
 }

@@ -265,7 +265,7 @@ public final class EMCHelper
 
 	public static long getEmcSellValue(ItemStack stack)
 	{
-		double originalValue = EMCHelper.getEmcValue(stack);
+		long originalValue = EMCHelper.getEmcValue(stack);
 
 		if (originalValue == 0)
 		{
