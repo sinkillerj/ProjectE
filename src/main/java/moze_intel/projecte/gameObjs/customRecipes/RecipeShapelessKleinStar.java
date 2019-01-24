@@ -29,32 +29,25 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
-
-		if (compose.matches(inv, worldIn)) {
-			double storedEMC = 0;
-			for (int i = 0; i < inv.getSizeInventory(); i++)
-			{
-				ItemStack stack = inv.getStackInSlot(i);
-				if(!stack.isEmpty() && stack.getItem() == ObjHandler.kleinStars)
-				{
-					storedEMC += KleinStar.getEmc(stack);
-				}
-			}
-
-			if (storedEMC != 0 && compose.getRecipeOutput().getItem() == ObjHandler.kleinStars)
-			{
-				KleinStar.setEmc(compose.getRecipeOutput(), storedEMC);
-			}
-			return true;
-		}
-
-		return false;
+		return compose.matches(inv, worldIn);
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
-		return compose.getCraftingResult(inv);
+		ItemStack result = compose.getCraftingResult(inv);
+		double storedEMC = 0;
+		for (int i = 0; i < inv.getSizeInventory(); i++) {
+			ItemStack stack = inv.getStackInSlot(i);
+			if (!stack.isEmpty() && stack.getItem() == ObjHandler.kleinStars) {
+				storedEMC += KleinStar.getEmc(stack);
+			}
+		}
+
+		if (storedEMC != 0 && result.getItem() == ObjHandler.kleinStars) {
+			KleinStar.setEmc(result, storedEMC);
+		}
+		return result;
 	}
 
 	@Override
