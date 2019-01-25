@@ -8,6 +8,6 @@ import java.util.function.BooleanSupplier;
 public class TomeEnabledCondition implements IConditionSerializer {
     @Override
     public BooleanSupplier parse(JsonObject json) {
-        return () -> ProjectEConfig.difficulty.craftableTome;
+        return () -> ProjectEConfig.difficulty.craftableTome.get();
     }
 }

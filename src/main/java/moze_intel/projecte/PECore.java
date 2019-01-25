@@ -94,7 +94,7 @@ public class PECore
 
 	public static void debugLog(String msg, Object... args)
 	{
-		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging)
+		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging.get())
 		{
 			LOGGER.info(msg, args);
 		} else
@@ -122,22 +122,20 @@ public class PECore
 	{
 		static void clientSetup(FMLClientSetupEvent evt)
 		{
-			DeferredWorkQueue.enqueueWork(() -> {
+			DeferredWorkQueue.runLater(() -> {
 				ClientKeyHelper.registerMCBindings();
-				return null;
 			});
 		}
 
 		static void loadComplete(FMLLoadCompleteEvent evt)
 		{
 			// ClientSetup is too early to do this
-			DeferredWorkQueue.enqueueWork(() -> {
+			DeferredWorkQueue.runLater(() -> {
 				Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 				RenderPlayer render = skinMap.get("default");
 				render.addLayer(new LayerYue(render));
 				render = skinMap.get("slim");
 				render.addLayer(new LayerYue(render));
-				return null;
 			});
 		}
 
@@ -182,7 +180,7 @@ public class PECore
 
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 
-		DeferredWorkQueue.enqueueWork(() -> {
+		DeferredWorkQueue.runLater(() -> {
 			// Caps internals unsafe
 			AlchBagImpl.init();
 			KnowledgeImpl.init();
@@ -193,7 +191,6 @@ public class PECore
 
 			// internals unsafe
 			CraftingHelper.register(new ResourceLocation(PECore.MODID, "tome_enabled"), new TomeEnabledCondition());
-			return null;
 		});
 	}
 	

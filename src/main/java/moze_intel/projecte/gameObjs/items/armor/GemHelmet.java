@@ -142,7 +142,7 @@ public class GemHelmet extends GemArmorBase
 
     public void doZap(EntityPlayer player)
     {
-        if (ProjectEConfig.difficulty.offensiveAbilities)
+        if (ProjectEConfig.difficulty.offensiveAbilities.get())
         {
             BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)

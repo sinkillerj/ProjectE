@@ -37,6 +37,7 @@ import net.minecraftforge.common.IPlantable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
@@ -57,7 +58,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
-			if (!ProjectEConfig.items.enableTimeWatch)
+			if (!ProjectEConfig.items.enableTimeWatch.get())
 			{
 				player.sendMessage(new TextComponentTranslation("pe.timewatch.disabled"));
 				return ActionResult.newResult(EnumActionResult.FAIL, stack);
@@ -83,7 +84,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		if (!ProjectEConfig.items.enableTimeWatch)
+		if (!ProjectEConfig.items.enableTimeWatch.get())
 		{
 			return;
 		}
@@ -184,7 +185,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
+		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist.get().stream()
+				.map(ResourceLocation::new)
+				.collect(Collectors.toSet());
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++)
 		{
@@ -328,19 +331,19 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	{
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 
-		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch)
+		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch.get())
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof DMPedestalTile)
 			{
 				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
-				if (ProjectEConfig.effects.timePedBonus > 0) {
-					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
-					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
+				if (ProjectEConfig.effects.timePedBonus.get() > 0) {
+					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
+					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
 				}
 
-				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
-					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
+				if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F) {
+					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness.get());
 				}
 			}
 		}
@@ -352,12 +355,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.effects.timePedBonus > 0) {
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus));
+		if (ProjectEConfig.effects.timePedBonus.get() > 0) {
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()));
 		}
-		if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)
+		if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness));
+			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()));
 		}
 		return list;
 	}

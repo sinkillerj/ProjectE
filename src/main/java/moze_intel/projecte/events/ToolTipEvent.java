@@ -42,7 +42,7 @@ public class ToolTipEvent
 		Block currentBlock = Block.getBlockFromItem(currentItem);
 		EntityPlayer clientPlayer = Minecraft.getInstance().player;
 
-		if (ProjectEConfig.misc.pedestalToolTips
+		if (ProjectEConfig.misc.pedestalToolTips.get()
 			&& currentItem instanceof IPedestalItem)
 		{
 			event.getToolTip().add(new TextComponentTranslation("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
@@ -60,7 +60,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.misc.tagToolTips)
+		if (ProjectEConfig.misc.tagToolTips.get())
 		{
 			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem()))
 			{
@@ -68,7 +68,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.misc.emcToolTips)
+		if (ProjectEConfig.misc.emcToolTips.get())
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
@@ -111,7 +111,7 @@ public class ToolTipEvent
 			}
 		}
 
-		if (ProjectEConfig.misc.statToolTips)
+		if (ProjectEConfig.misc.statToolTips.get())
 		{
 			ITextComponent unit = new TextComponentTranslation("pe.emc.name");
 			ITextComponent rate = new TextComponentTranslation("pe.emc.rate");

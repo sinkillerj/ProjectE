@@ -281,7 +281,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertide != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertide.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile))
@@ -298,7 +298,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				world.getWorldInfo().setThunderTime(i);
 				world.getWorldInfo().setRaining(true);
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide.get());
 			}
 			else
 			{
@@ -313,11 +313,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.evertide != -1)
+		if (ProjectEConfig.pedestalCooldown.evertide.get() != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.evertide.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide)));
+					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())));
 		}
 		return list;
 	}

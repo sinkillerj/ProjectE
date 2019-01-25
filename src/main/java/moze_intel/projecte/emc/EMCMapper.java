@@ -40,7 +40,7 @@ import java.util.Map;
 public final class EMCMapper 
 {
 	public static final Map<Item, Long> emc = new LinkedHashMap<>();
-	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
+	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 
 	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
 	{

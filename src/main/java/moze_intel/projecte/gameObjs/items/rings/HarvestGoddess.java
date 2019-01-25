@@ -249,7 +249,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvest != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvest.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -261,7 +261,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			if (tile.getActivityCooldown() == 0)
 			{
 				WorldHelper.growNearbyRandomly(true, world, pos, null);
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.harvest);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.harvest.get());
 			}
 			else
 			{
@@ -276,12 +276,12 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.harvest != -1)
+		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal2"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest)));
+					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())));
 		}
 		return list;
 	}

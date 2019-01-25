@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.78', changing: true
     }
 }
 
@@ -81,7 +81,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge.test:forge:1.13-24.0.81-1.13-pre'
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.100-1.13-pre'
 
     testCompile group: 'junit', name: 'junit', version:'4.11'
 

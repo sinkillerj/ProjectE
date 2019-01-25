@@ -123,7 +123,7 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.life != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.life.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -149,7 +149,7 @@ public class LifeStone extends RingToggle implements IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.life);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.life.get());
 			}
 			else
 			{
@@ -164,10 +164,10 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.life != -1)
+		if (ProjectEConfig.pedestalCooldown.life.get() != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life.get())));
 		}
 		return list;
 	}

@@ -83,7 +83,7 @@ public class KeyPressPKT {
                                     && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
                             {
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
+                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (GemArmorBase.hasAnyPiece(player))
                                 {
@@ -99,7 +99,7 @@ public class KeyPressPKT {
                                     && ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player, hand))
                             {
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
+                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (internalAbilities.getGemState()
                                         && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()
@@ -123,7 +123,7 @@ public class KeyPressPKT {
                                 PlayerHelper.swingItem(player, hand);
                                 internalAbilities.resetProjectileCooldown();
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
+                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (internalAbilities.getGemState()
                                         && !player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()

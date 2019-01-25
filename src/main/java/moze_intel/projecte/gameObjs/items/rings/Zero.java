@@ -136,7 +136,7 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zero != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zero.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -155,7 +155,7 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 						ent.extinguish();
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.zero);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.zero.get());
 			}
 			else
 			{
@@ -170,10 +170,10 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.zero != -1) {
+		if (ProjectEConfig.pedestalCooldown.zero.get() != -1) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal1"));
 			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal2"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zero)));
+			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zero.get())));
 		}
 		return list;
 	}

@@ -140,7 +140,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -157,7 +157,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 					living.setFire(8);
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition.get());
 			}
 			else
 			{
@@ -172,11 +172,11 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.ignition != -1)
+		if (ProjectEConfig.pedestalCooldown.ignition.get() != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.ignition.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition)));
+					I18n.format("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition.get())));
 		}
 		return list;
 	}

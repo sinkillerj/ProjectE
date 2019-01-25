@@ -116,7 +116,7 @@ public class BodyStone extends RingToggle implements IPedestalItem
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.body != -1)
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.body.get() != -1)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(!(te instanceof DMPedestalTile))
@@ -138,7 +138,7 @@ public class BodyStone extends RingToggle implements IPedestalItem
 					}
 				}
 
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.body);
+				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.body.get());
 			}
 			else
 			{
@@ -153,11 +153,11 @@ public class BodyStone extends RingToggle implements IPedestalItem
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.body != -1)
+		if (ProjectEConfig.pedestalCooldown.body.get() != -1)
 		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.body.pedestal1"));
 			list.add(TextFormatting.BLUE +
-					I18n.format("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.body)));
+					I18n.format("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.body.get())));
 		}
 		return list;
 	}
