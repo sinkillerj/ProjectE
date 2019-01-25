@@ -2,7 +2,7 @@
 
 Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions. Transmutation tables, collectors, condensers, flying rings, and all the other trinkets you love are here.
 
-Discover powerful alchemical tools, items, and devices. Break down unwanted items into EMC (Energy-Matter Currency) and use that it to create new items.
+Discover powerful alchemical tools, items, and devices. Break down unwanted items into EMC (Energy-Matter Currency) and use it to create new items.
 
 
 # Can I include it in a modpack?
