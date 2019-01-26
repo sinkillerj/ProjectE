@@ -42,11 +42,12 @@ public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction>
         try
         {
             if (this.isFree(a)) return getFree();
-            if (a.getNumerator().compareTo(MAX_LONG) > 0 || a.getDenominator().compareTo(MAX_LONG) > 0) {
+            BigFraction result = a.divide(b);
+            if (result.getNumerator().compareTo(MAX_LONG) > 0 || result.getDenominator().compareTo(MAX_LONG) > 0) {
                 //Overflowed a long as BigFraction can go past Long.MAX_VALUE
                 return BigFraction.ZERO;
             }
-            return a.divide(b);
+            return result;
         } catch (ArithmeticException e) {
             return BigFraction.ZERO;
         }
