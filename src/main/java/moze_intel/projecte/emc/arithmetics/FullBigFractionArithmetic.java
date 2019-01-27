@@ -6,7 +6,7 @@ import java.math.BigInteger;
 
 public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction>
 {
-    protected final BigInteger MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
+    private final BigInteger MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
 
     @Override
     public boolean isZero(BigFraction value)
@@ -39,18 +39,14 @@ public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction>
     @Override
     public BigFraction div(BigFraction a, long b)
     {
-        try
-        {
-            if (this.isFree(a)) return getFree();
-            BigFraction result = a.divide(b);
-            if (result.getNumerator().compareTo(MAX_LONG) > 0 || result.getDenominator().compareTo(MAX_LONG) > 0) {
-                //Overflowed a long as BigFraction can go past Long.MAX_VALUE
-                return BigFraction.ZERO;
-            }
-            return result;
-        } catch (ArithmeticException e) {
+        if (this.isFree(a)) return getFree();
+        if (b == 0) return BigFraction.ZERO;
+        BigFraction result = a.divide(b);
+        if (result.getNumerator().compareTo(MAX_LONG) > 0 || result.getDenominator().compareTo(MAX_LONG) > 0) {
+            //Overflowed a long as BigFraction can go past Long.MAX_VALUE
             return BigFraction.ZERO;
         }
+        return result;
     }
 
     @Override
