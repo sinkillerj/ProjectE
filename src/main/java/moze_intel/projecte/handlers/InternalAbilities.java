@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -312,20 +312,20 @@ public final class InternalAbilities
 
 	public static class Provider implements ICapabilityProvider
 	{
-		private final OptionalCapabilityInstance<InternalAbilities> capInstance;
+		private final LazyOptional<InternalAbilities> capInstance;
 
 		public Provider(EntityPlayerMP player)
 		{
-			capInstance = OptionalCapabilityInstance.of(() -> new InternalAbilities(player));
+			capInstance = LazyOptional.of(() -> new InternalAbilities(player));
 		}
 
 		@Nonnull
 		@Override
-		public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
 		{
 			if (capability == CAPABILITY)
 				return capInstance.cast();
-			else return OptionalCapabilityInstance.empty();
+			else return LazyOptional.empty();
 		}
 	}
 }

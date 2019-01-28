@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -40,7 +40,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
-	private final OptionalCapabilityInstance<IItemHandler> automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN)
+	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -51,7 +51,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 					: stack;
 		}
 	});
-	private final OptionalCapabilityInstance<IItemHandler> automationFuel = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
+	private final LazyOptional<IItemHandler> automationFuel = LazyOptional.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -62,13 +62,13 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 					: stack;
 		}
 	});
-	private final OptionalCapabilityInstance<IItemHandler> automationOutput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
-	private final OptionalCapabilityInstance<IItemHandler> automationSides = OptionalCapabilityInstance.of(() -> {
+	private final LazyOptional<IItemHandler> automationOutput = LazyOptional.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
+	private final LazyOptional<IItemHandler> automationSides = LazyOptional.of(() -> {
 		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
 		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
 		return new CombinedInvWrapper(fuel, out);
 	});
-	private final OptionalCapabilityInstance<IItemHandler> joined = OptionalCapabilityInstance.of(() -> {
+	private final LazyOptional<IItemHandler> joined = LazyOptional.of(() -> {
 		IItemHandlerModifiable in = (IItemHandlerModifiable) automationInput.orElseThrow(NullPointerException::new);
 		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
 		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
@@ -147,7 +147,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	}
 
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -267,7 +267,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		TileEntity tile = this.getWorld().getTileEntity(pos.up());
 		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
 			return;
-		OptionalCapabilityInstance<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		LazyOptional<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
 		IItemHandler handler;
 
 		if (!handlerOpt.isPresent())

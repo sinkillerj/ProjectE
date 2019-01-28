@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -31,7 +31,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
-	private final OptionalCapabilityInstance<IItemHandler> automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
+	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
 	{
 		@Nonnull
 		@Override
@@ -42,7 +42,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 					: stack;
 		}
 	});
-	private final OptionalCapabilityInstance<IItemHandler> automationAuxSlots = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+	private final LazyOptional<IItemHandler> automationAuxSlots = LazyOptional.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int count, boolean simulate)
@@ -93,7 +93,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side != null && side.getAxis().isVertical())

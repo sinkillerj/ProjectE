@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -24,7 +24,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 {
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
-	private final OptionalCapabilityInstance<IItemHandler> automationInventory = OptionalCapabilityInstance.of(this::createAutomationInventory);
+	private final LazyOptional<IItemHandler> automationInventory = LazyOptional.of(this::createAutomationInventory);
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
 	private int ticksSinceSync;
@@ -105,7 +105,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

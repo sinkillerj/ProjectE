@@ -22,7 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -279,22 +279,22 @@ public final class KnowledgeImpl {
         public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
         private final DefaultImpl impl;
-        private final OptionalCapabilityInstance<IKnowledgeProvider> cap;
+        private final LazyOptional<IKnowledgeProvider> cap;
 
         public Provider(EntityPlayer player)
         {
             impl = new DefaultImpl(player);
-            cap = OptionalCapabilityInstance.of(() -> impl);
+            cap = LazyOptional.of(() -> impl);
         }
 
         @Nonnull
         @Override
-        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
             if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
             {
                 return cap.cast();
             }
-            return OptionalCapabilityInstance.empty();
+            return LazyOptional.empty();
         }
 
         @Override

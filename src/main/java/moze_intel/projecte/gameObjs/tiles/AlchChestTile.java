@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 public class AlchChestTile extends TileEmc
 {
 	private final ItemStackHandler inventory = new StackHandler(104);
-	private final OptionalCapabilityInstance<IItemHandler> inventoryCap = OptionalCapabilityInstance.of(() -> inventory);
+	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
@@ -39,7 +39,7 @@ public class AlchChestTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

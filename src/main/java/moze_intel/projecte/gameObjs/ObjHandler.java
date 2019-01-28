@@ -258,32 +258,32 @@ public class ObjHandler
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 
 	public static final EntityType<?> FIRE_PROJECTILE = EntityType.Builder
-			.create(EntityFireProjectile.class, EntityFireProjectile::new).build("")
-			.setRegistryName(PECore.MODID, "fire_projectile");
+			.create(EntityFireProjectile.class, EntityFireProjectile::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "fire_projectile");
 	public static final EntityType<?> HOMING_ARROW = EntityType.Builder
-			.create(EntityHomingArrow.class, EntityHomingArrow::new).build("")
-			.setRegistryName(PECore.MODID, "homing_arrow");
+			.create(EntityHomingArrow.class, EntityHomingArrow::new) // use vanilla entitytracker settings
+			.build("") .setRegistryName(PECore.MODID, "homing_arrow");
 	public static final EntityType<?> LAVA_PROJECTILE = EntityType.Builder
-			.create(EntityLavaProjectile.class, EntityLavaProjectile::new).build("")
-			.setRegistryName(PECore.MODID, "lava_projectile");
+			.create(EntityLavaProjectile.class, EntityLavaProjectile::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "lava_projectile");
 	public static final EntityType<?> LENS_PROJECTILE = EntityType.Builder
-			.create(EntityLensProjectile.class, EntityLensProjectile::new).build("")
-			.setRegistryName(PECore.MODID, "lens_projectile");
+			.create(EntityLensProjectile.class, EntityLensProjectile::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "lens_projectile");
 	public static final EntityType<?> MOB_RANDOMIZER = EntityType.Builder
-			.create(EntityMobRandomizer.class, EntityMobRandomizer::new).build("")
-			.setRegistryName(PECore.MODID, "mob_randomizer");
+			.create(EntityMobRandomizer.class, EntityMobRandomizer::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "mob_randomizer");
 	public static final EntityType<?> NOVA_CATALYST_PRIMED = EntityType.Builder
-			.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new).build("")
-			.setRegistryName(PECore.MODID, "nova_catalyst_primed");
+			.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new) // use vanilla tracking
+			.build("") .setRegistryName(PECore.MODID, "nova_catalyst_primed");
 	public static final EntityType<?> NOVA_CATACLYSM_PRIMED = EntityType.Builder
-			.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new).build("")
-			.setRegistryName(PECore.MODID, "nova_cataclysm_primed");
+			.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new) // use vanilla tracking
+			.build("") .setRegistryName(PECore.MODID, "nova_cataclysm_primed");
 	public static final EntityType<?> SWRG_PROJECTILE = EntityType.Builder
-			.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new).build("")
-			.setRegistryName(PECore.MODID, "swrg_projectile");
+			.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "swrg_projectile");
 	public static final EntityType<?> WATER_PROJECTILE = EntityType.Builder
-			.create(EntityWaterProjectile.class, EntityWaterProjectile::new).build("")
-			.setRegistryName(PECore.MODID, "water_projectile");
+			.create(EntityWaterProjectile.class, EntityWaterProjectile::new).tracker(256, 10, false)
+			.build("") .setRegistryName(PECore.MODID, "water_projectile");
 
 	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1");

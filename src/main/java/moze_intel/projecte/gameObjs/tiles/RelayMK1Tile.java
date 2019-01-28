@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -24,8 +24,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 {
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
-	private final OptionalCapabilityInstance<IItemHandler> automationInput;
-	private final OptionalCapabilityInstance<IItemHandler> automationOutput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
+	private final LazyOptional<IItemHandler> automationInput;
+	private final LazyOptional<IItemHandler> automationOutput = LazyOptional.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT)
 	{
 		@Nonnull
 		@Override
@@ -78,7 +78,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 						: stack;
 			}
 		};
-		automationInput = OptionalCapabilityInstance.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
+		automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -54,7 +54,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	{
 		return new ICapabilitySerializable<NBTTagCompound>() {
 			private final IItemHandler inv = new ItemStackHandler(2);
-			private final OptionalCapabilityInstance<IItemHandler> invInst = OptionalCapabilityInstance.of(() -> inv);
+			private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
 
 			@Override
 			public NBTTagCompound serializeNBT()
@@ -72,13 +72,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			@Nonnull
 			@Override
-			public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
 					return invInst.cast();
 				} else
 				{
-					return OptionalCapabilityInstance.empty();
+					return LazyOptional.empty();
 				}
 			}
 		};

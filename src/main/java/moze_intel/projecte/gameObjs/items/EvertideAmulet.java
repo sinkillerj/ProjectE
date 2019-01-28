@@ -42,7 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -118,17 +118,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
 	{
 		return new ICapabilityProvider() {
-			private final OptionalCapabilityInstance<IFluidHandlerItem> handler = OptionalCapabilityInstance.of(() -> new InfiniteFluidHandler(stack));
+			private final LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> new InfiniteFluidHandler(stack));
 
 			@Nonnull
 			@Override
-			public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 				{
 					return handler.cast();
 				} else
 				{
-					return OptionalCapabilityInstance.empty();
+					return LazyOptional.empty();
 				}
 			}
 		};
