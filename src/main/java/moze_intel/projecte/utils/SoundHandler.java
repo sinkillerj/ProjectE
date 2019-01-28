@@ -8,21 +8,21 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@Mod.EventBusSubscriber(modid = PECore.MODID)
+@Mod.EventBusSubscriber(modid = PECore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SoundHandler
 {
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> evt)
     {
-        registerSound(evt.getRegistry(), "item.pewindmagic");
-        registerSound(evt.getRegistry(), "item.pewatermagic");
-        registerSound(evt.getRegistry(), "item.pepower");
-        registerSound(evt.getRegistry(), "item.peheal");
-        registerSound(evt.getRegistry(), "item.pedestruct");
-        registerSound(evt.getRegistry(), "item.pecharge");
-        registerSound(evt.getRegistry(), "item.peuncharge");
-        registerSound(evt.getRegistry(), "item.petransmute");
+        registerSound(evt.getRegistry(), "windmagic");
+        registerSound(evt.getRegistry(), "watermagic");
+        registerSound(evt.getRegistry(), "power");
+        registerSound(evt.getRegistry(), "heal");
+        registerSound(evt.getRegistry(), "destruct");
+        registerSound(evt.getRegistry(), "charge");
+        registerSound(evt.getRegistry(), "uncharge");
+        registerSound(evt.getRegistry(), "transmute");
     }
 
     private static void registerSound(IForgeRegistry<SoundEvent> registry, String soundName)

@@ -1,21 +1,30 @@
 package moze_intel.projecte.api;
 
+import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ObjectHolder;
 
+@ObjectHolder(PECore.MODID)
 public final class PESounds
 {
-
-    public static final SoundEvent WIND = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.pewindmagic"));
-    public static final SoundEvent WATER = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.pewatermagic"));
-    public static final SoundEvent POWER = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.pepower"));
-    public static final SoundEvent HEAL = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.peheal"));
-    public static final SoundEvent DESTRUCT = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.pedestruct"));
-    public static final SoundEvent CHARGE = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.pecharge"));
-    public static final SoundEvent UNCHARGE = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.peuncharge"));
-    public static final SoundEvent TRANSMUTE = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("projecte", "item.petransmute"));
+    @ObjectHolder("windmagic")
+    public static SoundEvent WIND = null;
+    @ObjectHolder("watermagic")
+    public static SoundEvent WATER = null;
+    @ObjectHolder("power")
+    public static SoundEvent POWER = null;
+    @ObjectHolder("heal")
+    public static SoundEvent HEAL = null;
+    @ObjectHolder("destruct")
+    public static SoundEvent DESTRUCT = null;
+    @ObjectHolder("charge")
+    public static SoundEvent CHARGE = null;
+    @ObjectHolder("uncharge")
+    public static SoundEvent UNCHARGE = null;
+    @ObjectHolder("transmute")
+    public static SoundEvent TRANSMUTE = null;
 
     private PESounds() {}
-
 }
