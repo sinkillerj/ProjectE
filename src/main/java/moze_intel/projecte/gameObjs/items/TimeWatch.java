@@ -52,10 +52,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	// TODO 1.13 remove
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
 			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile", // Never let the the pedestal update another pedestal
-			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator", // same goes for other tickrate increasing tiles
-			"com.sci.torcherino.tile.TileTorcherino",
-			"com.sci.torcherino.tile.TileCompressedTorcherino",
-			"thaumcraft.common.tiles.crafting.TileSmelter"
+			"com.sci.torcherino.blocks.tiles.TileTorcherino", // same goes for other tickrate increasing tiles
+			"com.sci.torcherino.blocks.tiles.TileCompressedTorcherino",
+			"com.sci.torcherino.blocks.tiles.TileDoubleCompressedTorcherino"
 	);
 
 	public TimeWatch()
@@ -204,7 +203,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		{
 			for (T tile : list)
 			{
-				if (!internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass()))))
+				if (!tile.isInvalid() && !internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass()))))
 				{
 					tile.update();
 				}
