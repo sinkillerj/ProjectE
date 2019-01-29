@@ -2,14 +2,20 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -18,11 +24,22 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public class DMPedestalTile extends TileEmc
+public class DMPedestalTile extends TileEntity implements ITickable
 {
 	private static final int RANGE = 4;
+
+	private BlockPos lastPos;
+	private AxisAlignedBB effectBounds;
+
 	private boolean isActive = false;
-	private ItemStackHandler inventory = new StackHandler(1);
+	private ItemStackHandler inventory = new ItemStackHandler(1)
+	{
+		@Override
+		public void onContentsChanged(int slot)
+		{
+			DMPedestalTile.this.markDirty();
+		}
+	};
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
@@ -37,21 +54,25 @@ public class DMPedestalTile extends TileEmc
 
 		if (getActive())
 		{
-			if (!inventory.getStackInSlot(0).isEmpty())
+			ItemStack stack = inventory.getStackInSlot(0);
+			if (!stack.isEmpty())
 			{
-				Item item = inventory.getStackInSlot(0).getItem();
+				Item item = stack.getItem();
 				if (item instanceof IPedestalItem)
 				{
 					((IPedestalItem) item).updateInPedestal(world, getPos());
 				}
-				if (particleCooldown <= 0)
+				if (world.isRemote)
 				{
-					spawnParticles();
-					particleCooldown = 10;
-				}
-				else
-				{
-					particleCooldown--;
+					if (particleCooldown <= 0)
+					{
+						spawnParticles();
+						particleCooldown = 10;
+					}
+					else
+					{
+						particleCooldown--;
+					}
 				}
 			}
 			else
@@ -81,12 +102,12 @@ public class DMPedestalTile extends TileEmc
 		{
 			int j = rand.nextInt(2) * 2 - 1;
 			int k = rand.nextInt(2) * 2 - 1;
-			double d0 = (double)pos.getX() + 0.5D + 0.25D * (double)j;
-			double d1 = (double)((float)pos.getY() + rand.nextFloat());
-			double d2 = (double)pos.getZ() + 0.5D + 0.25D * (double)k;
-			double d3 = (double)(rand.nextFloat() * (float)j);
-			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
-			double d5 = (double)(rand.nextFloat() * (float)k);
+			double d0 = (double) pos.getX() + 0.5D + 0.25D * (double) j;
+			double d1 = (double) ((float) pos.getY() + rand.nextFloat());
+			double d2 = (double) pos.getZ() + 0.5D + 0.25D * (double) k;
+			double d3 = (double) (rand.nextFloat() * (float) j);
+			double d4 = ((double) rand.nextFloat() - 0.5D) * 0.125D;
+			double d5 = (double) (rand.nextFloat() * (float) k);
 			world.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
@@ -111,7 +132,13 @@ public class DMPedestalTile extends TileEmc
 	 */
 	public AxisAlignedBB getEffectBounds()
 	{
-		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE, RANGE, RANGE));
+		BlockPos pos = getPos();
+		if (pos != lastPos)
+		{
+			effectBounds = new AxisAlignedBB(pos.add(-RANGE, -RANGE, -RANGE), pos.add(RANGE, RANGE, RANGE));
+			lastPos = pos;
+		}
+		return effectBounds;
 	}
 
 	@Override
@@ -135,6 +162,18 @@ public class DMPedestalTile extends TileEmc
 		tag.setInteger("activityCooldown", activityCooldown);
 		tag.setBoolean("powered", previousRedstoneState);
 		return tag;
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState state, @Nonnull IBlockState newState)
+	{
+		return state.getBlock() != newState.getBlock();
 	}
 
 	@Override
@@ -200,7 +239,8 @@ public class DMPedestalTile extends TileEmc
 		return super.getCapability(cap, side);
 	}
 
-	public IItemHandlerModifiable getInventory() {
+	public IItemHandlerModifiable getInventory()
+	{
 		return inventory;
 	}
 

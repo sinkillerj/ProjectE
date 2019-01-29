@@ -2,13 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.CollectionHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -42,8 +42,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
@@ -51,13 +51,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 {
 	// TODO 1.13 remove
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
-			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
+			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile", // Never let the the pedestal update another pedestal
+			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator", // same goes for other tickrate increasing tiles
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino",
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
 
-	public TimeWatch() 
+	public TimeWatch()
 	{
 		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
@@ -89,10 +90,10 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
 	{
 		super.onUpdate(stack, world, entity, invSlot, isHeld);
-		
+
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
@@ -105,29 +106,30 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (world.getGameRules().getBoolean("doDaylightCycle")) {
+		if (world.getGameRules().getBoolean("doDaylightCycle"))
+		{
 			if (timeControl == 1)
-            {
-                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-                {
-                    world.setWorldTime(Long.MAX_VALUE);
-                }
-                else
-                {
-                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
-                }
-            }
-            else if (timeControl == 2)
-            {
-                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
-                {
-                    world.setWorldTime(0);
-                }
-                else
-                {
-                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
-                }
-            }
+			{
+				if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+				{
+					world.setWorldTime(Long.MAX_VALUE);
+				}
+				else
+				{
+					world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+				}
+			}
+			else if (timeControl == 2)
+			{
+				if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+				{
+					world.setWorldTime(0);
+				}
+				else
+				{
+					world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+				}
+			}
 		}
 
 		if (world.isRemote || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
@@ -137,16 +139,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		EntityPlayer player = (EntityPlayer) entity;
 		double reqEmc = getEmcPerTick(this.getCharge(stack));
-		
+
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
 		}
-		
+
 		int charge = this.getCharge(stack);
 		int bonusTicks;
 		float mobSlowdown;
-		
+
 		if (charge == 0)
 		{
 			bonusTicks = 8;
@@ -162,7 +164,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-			
+
 		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(8);
 
 		speedUpTileEntities(world, bonusTicks, bBox);
@@ -170,13 +172,13 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		slowMobs(world, bBox, mobSlowdown);
 	}
 
-	private void slowMobs(World world, AxisAlignedBB bBox, float mobSlowdown)
+	private static void slowMobs(World world, AxisAlignedBB aabb, float mobSlowdown)
 	{
-		if (bBox == null) // Sanity check for chunk unload weirdness
+		if (world == null || aabb == null || mobSlowdown < 0 || mobSlowdown >= 1) // Sanity check for chunk unload weirdness
 		{
 			return;
 		}
-		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
+		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, aabb))
 		{
 			Entity ent = (Entity) obj;
 
@@ -192,49 +194,45 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
-	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox)
+	private static <T extends TileEntity & ITickable> void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB aabb)
 	{
-		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
+		if (world == null || aabb == null || bonusTicks <= 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
 
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist);
-		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
+		List<T> list = WorldHelper.getTickingTileEntitiesWithinAABB(world, aabb);
 		for (int i = 0; i < bonusTicks; i++)
 		{
-			for (TileEntity tile : list)
+			for (T tile : list)
 			{
-				if (!tile.isInvalid() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getClass().toString())
-						&& !blacklist.contains(TileEntity.getKey(tile.getClass()).toString()))
+				if (!internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass()))))
 				{
-					((ITickable) tile).update();
+					tile.update();
 				}
 			}
 		}
 	}
 
-	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
+	private static void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB aabb)
 	{
-		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
+		if (world == null || aabb == null || bonusTicks <= 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
 
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchBlockBlacklist);
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
 			for (int i = 0; i < bonusTicks; i++)
 			{
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 				if (block.getTickRandomly()
-						&& !blacklist.contains(block.getRegistryName().toString())
 						&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
 						&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)
-						&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
+						&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
+						&& !CollectionHelper.contains(ProjectEConfig.effects.timeWatchBlockBlacklist, Objects.toString(block.getRegistryName())))
 				{
 					block.updateTick(world, pos, state, itemRand);
 				}
@@ -242,7 +240,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
-	private String getTimeName(ItemStack stack)
+	private static String getTimeName(ItemStack stack)
 	{
 		byte mode = getTimeBoost(stack);
 		switch (mode)
@@ -258,17 +256,17 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
-	private byte getTimeBoost(ItemStack stack)
+	private static byte getTimeBoost(ItemStack stack)
 	{
 		return ItemHelper.getOrCreateCompound(stack).getByte("TimeMode");
 	}
 
-	private void setTimeBoost(ItemStack stack, byte time)
+	private static void setTimeBoost(ItemStack stack, byte time)
 	{
 		ItemHelper.getOrCreateCompound(stack).setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
-	public double getEmcPerTick(int charge)
+	private static double getEmcPerTick(int charge)
 	{
 		int actualCharge = charge + 1;
 		return (10.0D * actualCharge) / 20.0D;
@@ -312,7 +310,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
+	public void onWornTick(ItemStack stack, EntityLivingBase player)
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
@@ -327,14 +325,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
+	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}
@@ -350,12 +348,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			if (te instanceof DMPedestalTile)
 			{
 				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
-				if (ProjectEConfig.effects.timePedBonus > 0) {
+				if (ProjectEConfig.effects.timePedBonus > 0)
+				{
 					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
 					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
 				}
 
-				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
+				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)
+				{
 					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
 				}
 			}
@@ -368,7 +368,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.effects.timePedBonus > 0) {
+		if (ProjectEConfig.effects.timePedBonus > 0)
+		{
 			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus));
 		}
 		if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)

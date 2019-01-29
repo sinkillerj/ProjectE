@@ -12,24 +12,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -38,23 +21,19 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper class for anything that touches a World.
@@ -89,22 +68,12 @@ public final class WorldHelper
 
 	public static boolean blacklistInterdiction(Class<? extends Entity> clazz)
 	{
-		if (!interdictionBlacklist.contains(clazz))
-		{
-			interdictionBlacklist.add(clazz);
-			return true;
-		}
-		return false;
+		return interdictionBlacklist.add(clazz);
 	}
 
 	public static boolean blacklistSwrg(Class<? extends Entity> clazz)
 	{
-		if (!interdictionBlacklist.contains(clazz))
-		{
-			interdictionBlacklist.add(clazz);
-			return true;
-		}
-		return false;
+		return swrgBlacklist.add(clazz);
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
@@ -165,7 +134,7 @@ public final class WorldHelper
 			}
 		}
 	}
-	
+
 	public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random)
 	{
 		for (BlockPos pos : getPositionsFromBox(box))
@@ -192,8 +161,9 @@ public final class WorldHelper
 				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0))
 				{
 					newState = Blocks.SNOW_LAYER.getDefaultState();
-				} else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
-							&& world.rand.nextInt(512) == 0)
+				}
+				else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
+						&& world.rand.nextInt(512) == 0)
 				{
 					newState = stateUp.withProperty(BlockSnow.LAYERS, stateUp.getValue(BlockSnow.LAYERS) + 1);
 				}
@@ -212,14 +182,16 @@ public final class WorldHelper
 			}
 		}
 	}
-	
+
 	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
 
-		for (EnumFacing dir : EnumFacing.VALUES) {
+		for (EnumFacing dir : EnumFacing.VALUES)
+		{
 			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
-			if (candidate != null) {
+			if (candidate != null)
+			{
 				ret.put(dir, candidate);
 			}
 		}
@@ -244,13 +216,20 @@ public final class WorldHelper
 	{
 		switch (direction)
 		{
-			case EAST: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
-			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case UP: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
-			case DOWN: return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case SOUTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
-			case NORTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+			case EAST:
+				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
+			case WEST:
+				return new AxisAlignedBB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case UP:
+				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
+			case DOWN:
+				return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case SOUTH:
+				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
+			case NORTH:
+				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			default:
+				return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
 	}
 
@@ -261,13 +240,20 @@ public final class WorldHelper
 	{
 		switch (direction)
 		{
-			case EAST: return new AxisAlignedBB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
-			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
-			case UP: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
-			case DOWN: return new AxisAlignedBB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
-			case SOUTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
-			case NORTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
-			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+			case EAST:
+				return new AxisAlignedBB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
+			case WEST:
+				return new AxisAlignedBB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
+			case UP:
+				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
+			case DOWN:
+				return new AxisAlignedBB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
+			case SOUTH:
+				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
+			case NORTH:
+				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
+			default:
+				return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
 	}
 
@@ -331,16 +317,25 @@ public final class WorldHelper
 		}
 	}
 
-	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)
+	@SuppressWarnings("unchecked")
+	public static <T extends TileEntity & ITickable> List<T> getTickingTileEntitiesWithinAABB(World world, AxisAlignedBB aabb)
 	{
-		List<TileEntity> list = new ArrayList<>();
-
-		for (BlockPos pos : getPositionsFromBox(bBox))
+		List<T> list = new ArrayList<>();
+		Chunk chunk = null;
+		for (BlockPos pos : getPositionsFromBox(aabb))
 		{
-			TileEntity tile = world.getTileEntity(pos);
-			if (tile != null)
+			if (world.isBlockLoaded(pos))
 			{
-				list.add(tile);
+				if (chunk == null || (pos.getX() << 4 != chunk.x && pos.getZ() << 4 != chunk.z))
+				{
+					chunk = world.getChunk(pos);
+				}
+
+				TileEntity tile = chunk.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+				if (tile instanceof ITickable && !tile.isInvalid())
+				{
+					list.add((T) tile);
+				}
 			}
 		}
 
@@ -448,7 +443,8 @@ public final class WorldHelper
 								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
 								{
 									world.destroyBlock(currentPos.up(i), true);
-								} else if (player == null)
+								}
+								else if (player == null)
 								{
 									world.destroyBlock(currentPos.up(i), true);
 								}
@@ -497,7 +493,8 @@ public final class WorldHelper
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
 					world.setBlockToAir(currentPos);
 					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
-					if (numMined >= Constants.MAX_VEIN_SIZE) {
+					if (numMined >= Constants.MAX_VEIN_SIZE)
+					{
 						break;
 					}
 				}
@@ -505,7 +502,7 @@ public final class WorldHelper
 		}
 		return numMined;
 	}
-	
+
 	public static void igniteNearby(World world, EntityPlayer player)
 	{
 		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
@@ -527,7 +524,8 @@ public final class WorldHelper
 		for (Entity ent : list)
 		{
 			if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
-					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass())))
+			{
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
 					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))

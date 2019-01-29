@@ -55,9 +55,7 @@ public final class ProjectEConfig
 		public String[] timeWatchBlockBlacklist = {};
 
 		@Config.Comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
-		public String[] timeWatchTEBlacklist = {
-			"projecte:dm_pedestal"
-		};
+		public String[] timeWatchTEBlacklist = {};
 
 		@Config.Comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 		public boolean interdictionMode = true;

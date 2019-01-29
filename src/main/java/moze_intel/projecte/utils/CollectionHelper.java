@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Helper class for Collections of any kind.
@@ -8,6 +9,21 @@ import java.util.List;
  */
 public final class CollectionHelper
 {
+	public static <T> boolean contains(Object[] array, Object object)
+	{
+		if (array != null)
+		{
+			for (Object o : array)
+			{
+				if (Objects.equals(o, object))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static <T> T getRandomListEntry(List<T> list, T toExclude)
 	{
 		T obj;
@@ -17,7 +33,7 @@ public final class CollectionHelper
 			int random = MathUtils.randomIntInRange(0, list.size() - 1);
 			obj = list.get(random);
 		}
-		while(obj.equals(toExclude));
+		while (obj.equals(toExclude));
 
 		return obj;
 	}
