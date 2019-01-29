@@ -10,6 +10,10 @@ public final class CollectionHelper
 {
 	public static <T> T getRandomListEntry(List<T> list, T toExclude)
 	{
+		if (list.size() == 1 && list.contains(toExclude))
+		{
+			return toExclude;
+		}
 		T obj;
 
 		do
