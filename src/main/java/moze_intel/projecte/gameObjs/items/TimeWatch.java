@@ -35,7 +35,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -179,15 +179,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		{
 			return;
 		}
+
 		for (EntityLiving e : world.getEntitiesWithinAABB(EntityLiving.class, aabb))
 		{
-			if (e.motionX != 0)
+			if (!e.isDead)
 			{
 				e.motionX *= mobSlowdown;
-			}
-
-			if (e.motionZ != 0)
-			{
 				e.motionZ *= mobSlowdown;
 			}
 		}
@@ -222,18 +219,21 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
-			for (int i = 0; i < bonusTicks; i++)
+			if (world.isBlockLoaded(pos))
 			{
-				IBlockState state = world.getBlockState(pos);
-				Block block = state.getBlock();
-				if (block.getTickRandomly()
-						&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
-						&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
-						&& !(block instanceof IGrowable)
-						&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
-						&& !CollectionHelper.contains(ProjectEConfig.effects.timeWatchBlockBlacklist, Objects.toString(block.getRegistryName())))
+				for (int i = 0; i < bonusTicks; i++)
 				{
-					block.updateTick(world, pos, state, itemRand);
+					IBlockState state = world.getBlockState(pos);
+					Block block = state.getBlock();
+					if (block.getTickRandomly()
+							&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
+							&& !(block instanceof IFluidBlock) // Don't speed Forge fluids - just in case of dupes as well
+							&& !(block instanceof IGrowable)
+							&& !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
+							&& !CollectionHelper.contains(ProjectEConfig.effects.timeWatchBlockBlacklist, Objects.toString(block.getRegistryName())))
+					{
+						block.updateTick(world, pos, state, itemRand);
+					}
 				}
 			}
 		}

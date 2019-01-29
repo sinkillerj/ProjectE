@@ -318,7 +318,6 @@ public final class WorldHelper
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB aabb, Predicate<? super TileEntity> filter)
 	{
 		List<TileEntity> list = new ArrayList<>();
