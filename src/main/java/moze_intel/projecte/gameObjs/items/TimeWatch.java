@@ -162,12 +162,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
+			
+		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(8);
 
-		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(8);
-
-		speedUpTileEntities(world, bonusTicks, aabb);
-		speedUpRandomTicks(world, bonusTicks, aabb);
-		slowMobs(world, aabb, mobSlowdown);
+		speedUpTileEntities(world, bonusTicks, bBox);
+		speedUpRandomTicks(world, bonusTicks, bBox);
+		slowMobs(world, bBox, mobSlowdown);
 	}
 
 	private static void slowMobs(World world, AxisAlignedBB aabb, float mobSlowdown)
