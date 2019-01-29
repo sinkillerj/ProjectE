@@ -43,6 +43,19 @@ public final class EMCHelper
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 
+		ItemStack offhand = player.getHeldItemOffhand();
+
+		if (!offhand.isEmpty() && offhand.getItem() instanceof IItemEmc)
+		{
+			IItemEmc itemEmc = ((IItemEmc) offhand.getItem());
+			if (itemEmc.getStoredEmc(offhand) >= minFuel)
+			{
+				itemEmc.extractEmc(offhand, minFuel);
+				player.inventoryContainer.detectAndSendChanges();
+				return minFuel;
+			}
+		}
+
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
