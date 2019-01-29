@@ -34,6 +34,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Helper class for anything that touches a World.
@@ -318,9 +319,9 @@ public final class WorldHelper
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends TileEntity & ITickable> List<T> getTickingTileEntitiesWithinAABB(World world, AxisAlignedBB aabb)
+	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB aabb, Predicate<? super TileEntity> filter)
 	{
-		List<T> list = new ArrayList<>();
+		List<TileEntity> list = new ArrayList<>();
 		Chunk chunk = null;
 		for (BlockPos pos : getPositionsFromBox(aabb))
 		{
@@ -332,9 +333,9 @@ public final class WorldHelper
 				}
 
 				TileEntity tile = chunk.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
-				if (tile instanceof ITickable && !tile.isInvalid())
+				if (tile instanceof ITickable && !tile.isInvalid() && (filter == null || filter.test(tile)))
 				{
-					list.add((T) tile);
+					list.add(tile);
 				}
 			}
 		}

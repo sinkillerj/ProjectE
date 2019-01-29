@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
@@ -56,6 +57,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"com.sci.torcherino.blocks.tiles.TileCompressedTorcherino",
 			"com.sci.torcherino.blocks.tiles.TileDoubleCompressedTorcherino"
 	);
+	private static final Predicate<TileEntity> TILE_FILTER = tile -> tile instanceof ITickable && !internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass())));
 
 	public TimeWatch()
 	{
@@ -191,21 +193,21 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
-	private static <T extends TileEntity & ITickable> void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB aabb)
+	private static void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB aabb)
 	{
 		if (world == null || aabb == null || bonusTicks <= 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
 
-		List<T> list = WorldHelper.getTickingTileEntitiesWithinAABB(world, aabb);
+		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, aabb, TILE_FILTER);
 		for (int i = 0; i < bonusTicks; i++)
 		{
-			for (T tile : list)
+			for (TileEntity tile : list)
 			{
-				if (!tile.isInvalid() && !internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass()))))
+				if (!tile.isInvalid())
 				{
-					tile.update();
+					((ITickable) tile).update();
 				}
 			}
 		}
