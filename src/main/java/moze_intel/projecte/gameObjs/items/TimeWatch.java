@@ -165,11 +165,11 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			mobSlowdown = 0.12F;
 		}
 
-		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(8);
+		AxisAlignedBB aabb = player.getEntityBoundingBox().grow(8);
 
-		speedUpTileEntities(world, bonusTicks, bBox);
-		speedUpRandomTicks(world, bonusTicks, bBox);
-		slowMobs(world, bBox, mobSlowdown);
+		speedUpTileEntities(world, bonusTicks, aabb);
+		speedUpRandomTicks(world, bonusTicks, aabb);
+		slowMobs(world, aabb, mobSlowdown);
 	}
 
 	private static void slowMobs(World world, AxisAlignedBB aabb, float mobSlowdown)
@@ -178,18 +178,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		{
 			return;
 		}
-		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, aabb))
+		for (EntityLiving e : world.getEntitiesWithinAABB(EntityLiving.class, aabb))
 		{
-			Entity ent = (Entity) obj;
-
-			if (ent.motionX != 0)
+			if (e.motionX != 0)
 			{
-				ent.motionX *= mobSlowdown;
+				e.motionX *= mobSlowdown;
 			}
 
-			if (ent.motionZ != 0)
+			if (e.motionZ != 0)
 			{
-				ent.motionZ *= mobSlowdown;
+				e.motionZ *= mobSlowdown;
 			}
 		}
 	}
