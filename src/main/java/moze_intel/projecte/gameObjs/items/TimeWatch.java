@@ -347,14 +347,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			if (te instanceof DMPedestalTile)
 			{
 				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
-				if (ProjectEConfig.effects.timePedBonus > 0)
-				{
+				if (ProjectEConfig.effects.timePedBonus > 0) {
 					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus, bBox);
 					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus, bBox);
 				}
 
-				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)
-				{
+				if (ProjectEConfig.effects.timePedMobSlowness < 1.0F) {
 					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness);
 				}
 			}
@@ -367,8 +365,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	public List<String> getPedestalDescription()
 	{
 		List<String> list = new ArrayList<>();
-		if (ProjectEConfig.effects.timePedBonus > 0)
-		{
+		if (ProjectEConfig.effects.timePedBonus > 0) {
 			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus));
 		}
 		if (ProjectEConfig.effects.timePedMobSlowness < 1.0F)

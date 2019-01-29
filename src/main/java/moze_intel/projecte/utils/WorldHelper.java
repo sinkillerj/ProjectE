@@ -162,8 +162,7 @@ public final class WorldHelper
 				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0))
 				{
 					newState = Blocks.SNOW_LAYER.getDefaultState();
-				}
-				else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
+				} else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
 						&& world.rand.nextInt(512) == 0)
 				{
 					newState = stateUp.withProperty(BlockSnow.LAYERS, stateUp.getValue(BlockSnow.LAYERS) + 1);
@@ -188,11 +187,9 @@ public final class WorldHelper
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
 
-		for (EnumFacing dir : EnumFacing.VALUES)
-		{
+		for (EnumFacing dir : EnumFacing.VALUES) {
 			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
-			if (candidate != null)
-			{
+			if (candidate != null) {
 				ret.put(dir, candidate);
 			}
 		}
@@ -217,20 +214,13 @@ public final class WorldHelper
 	{
 		switch (direction)
 		{
-			case EAST:
-				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
-			case WEST:
-				return new AxisAlignedBB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case UP:
-				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
-			case DOWN:
-				return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case SOUTH:
-				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
-			case NORTH:
-				return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			default:
-				return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+			case EAST: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
+			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case UP: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
+			case DOWN: return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case SOUTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
+			case NORTH: return new AxisAlignedBB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
 	}
 
@@ -241,20 +231,13 @@ public final class WorldHelper
 	{
 		switch (direction)
 		{
-			case EAST:
-				return new AxisAlignedBB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
-			case WEST:
-				return new AxisAlignedBB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
-			case UP:
-				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
-			case DOWN:
-				return new AxisAlignedBB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
-			case SOUTH:
-				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
-			case NORTH:
-				return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
-			default:
-				return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+			case EAST: return new AxisAlignedBB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
+			case WEST: return new AxisAlignedBB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
+			case UP: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
+			case DOWN: return new AxisAlignedBB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
+			case SOUTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
+			case NORTH: return new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
+			default: return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 		}
 	}
 
@@ -443,8 +426,7 @@ public final class WorldHelper
 								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
 								{
 									world.destroyBlock(currentPos.up(i), true);
-								}
-								else if (player == null)
+								} else if (player == null)
 								{
 									world.destroyBlock(currentPos.up(i), true);
 								}
@@ -493,8 +475,7 @@ public final class WorldHelper
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
 					world.setBlockToAir(currentPos);
 					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
-					if (numMined >= Constants.MAX_VEIN_SIZE)
-					{
+					if (numMined >= Constants.MAX_VEIN_SIZE) {
 						break;
 					}
 				}
@@ -524,8 +505,7 @@ public final class WorldHelper
 		for (Entity ent : list)
 		{
 			if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
-					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass())))
-			{
+					|| (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
 				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
 				{
 					if (!isSWRG && ProjectEConfig.effects.interdictionMode && !(ent instanceof IMob || ent instanceof IProjectile))
