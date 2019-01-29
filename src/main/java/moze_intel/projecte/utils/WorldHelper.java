@@ -135,7 +135,7 @@ public final class WorldHelper
 			}
 		}
 	}
-
+	
 	public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random)
 	{
 		for (BlockPos pos : getPositionsFromBox(box))
@@ -163,7 +163,7 @@ public final class WorldHelper
 				{
 					newState = Blocks.SNOW_LAYER.getDefaultState();
 				} else if (stateUp.getBlock() == Blocks.SNOW_LAYER && stateUp.getValue(BlockSnow.LAYERS) < 8
-						&& world.rand.nextInt(512) == 0)
+							&& world.rand.nextInt(512) == 0)
 				{
 					newState = stateUp.withProperty(BlockSnow.LAYERS, stateUp.getValue(BlockSnow.LAYERS) + 1);
 				}
@@ -182,7 +182,7 @@ public final class WorldHelper
 			}
 		}
 	}
-
+	
 	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
@@ -483,7 +483,7 @@ public final class WorldHelper
 		}
 		return numMined;
 	}
-
+	
 	public static void igniteNearby(World world, EntityPlayer player)
 	{
 		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))

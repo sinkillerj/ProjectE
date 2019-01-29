@@ -46,25 +46,14 @@ public class PedestalRenderer extends TileEntitySpecialRenderer<DMPedestalTile>
             ItemStack stack = te.getInventory().getStackInSlot(0);
             if (!stack.isEmpty())
             {
-                GlStateManager.pushAttrib();
                 GlStateManager.pushMatrix();
-
-                RenderHelper.enableStandardItemLighting();
-
-                GlStateManager.translate(x + 0.5, y + 0.75, z + 0.5);
-
                 float bob = MathHelper.sin(8 * (float) Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL) * 0.1F + 0.1F;
-                GlStateManager.translate(0, bob, 0);
-
+                GlStateManager.translate(x + 0.5, y + 0.75 + bob, z + 0.5);
                 GlStateManager.scale(0.75, 0.75, 0.75);
-
                 float angle = 2 * 360.0F * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL;
                 GlStateManager.rotate(angle, 0, 1, 0);
-
                 Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.GROUND);
-
                 GlStateManager.popMatrix();
-                GlStateManager.popAttrib();
             }
         }
     }

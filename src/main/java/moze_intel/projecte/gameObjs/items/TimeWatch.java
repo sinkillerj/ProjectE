@@ -59,7 +59,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	);
 	private static final Predicate<TileEntity> TILE_FILTER = tile -> tile instanceof ITickable && !internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass())));
 
-	public TimeWatch()
+	public TimeWatch() 
 	{
 		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
@@ -93,8 +93,6 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
 	{
-		super.onUpdate(stack, world, entity, invSlot, isHeld);
-
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
@@ -107,30 +105,29 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (world.getGameRules().getBoolean("doDaylightCycle"))
-		{
+		if (world.getGameRules().getBoolean("doDaylightCycle")) {
 			if (timeControl == 1)
-			{
-				if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-				{
-					world.setWorldTime(Long.MAX_VALUE);
-				}
-				else
-				{
-					world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
-				}
-			}
-			else if (timeControl == 2)
-			{
-				if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
-				{
-					world.setWorldTime(0);
-				}
-				else
-				{
-					world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
-				}
-			}
+            {
+                if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
+                {
+                    world.setWorldTime(Long.MAX_VALUE);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() + ((getCharge(stack) + 1) * 4)));
+                }
+            }
+            else if (timeControl == 2)
+            {
+                if (world.getWorldTime() - ((getCharge(stack) + 1) * 4) < 0)
+                {
+                    world.setWorldTime(0);
+                }
+                else
+                {
+                    world.setWorldTime((world.getWorldTime() - ((getCharge(stack) + 1) * 4)));
+                }
+            }
 		}
 
 		if (world.isRemote || !ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
@@ -140,16 +137,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		EntityPlayer player = (EntityPlayer) entity;
 		double reqEmc = getEmcPerTick(this.getCharge(stack));
-
+		
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
 		}
-
+		
 		int charge = this.getCharge(stack);
 		int bonusTicks;
 		float mobSlowdown;
-
+		
 		if (charge == 0)
 		{
 			bonusTicks = 8;
@@ -309,7 +306,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player)
+	public void onWornTick(ItemStack stack, EntityLivingBase player) 
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
@@ -324,14 +321,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
+	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
 	{
 		return true;
 	}
