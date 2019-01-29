@@ -21,7 +21,6 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -315,7 +314,7 @@ public final class WorldHelper
 				}
 
 				TileEntity tile = chunk.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
-				if (tile instanceof ITickable && !tile.isInvalid() && (filter == null || filter.test(tile)))
+				if (tile != null && !tile.isInvalid() && (filter == null || filter.test(tile)))
 				{
 					list.add(tile);
 				}

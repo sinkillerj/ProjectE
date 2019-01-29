@@ -91,7 +91,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
 	{
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
