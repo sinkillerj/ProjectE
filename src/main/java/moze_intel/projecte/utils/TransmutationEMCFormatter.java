@@ -5,8 +5,8 @@ public class TransmutationEMCFormatter {
 		String postFix = "";
 		double magnitude = 1;
 
-		String formats[] = {"Quadrillion", "Trillion"};
-		Double magnitudes[] = {1e15, 1e12};
+		String formats[] = {"Quintillion", "Quadrillion", "Trillion"};
+		Double magnitudes[] = {1e18, 1e15, 1e12};
 
 		for (int i=0; i <formats.length; i++) {
 			double testMag = magnitudes[i];
