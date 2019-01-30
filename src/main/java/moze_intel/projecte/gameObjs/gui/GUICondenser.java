@@ -74,7 +74,7 @@ public class GUICondenser extends GuiContainer
 
 		String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(toDisplay);
 
-		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom && toDisplay >= 1e12) {
+		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);

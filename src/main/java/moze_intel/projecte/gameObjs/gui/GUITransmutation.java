@@ -205,7 +205,7 @@ public class GUITransmutation extends GuiContainer
 
 		String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
 
-		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom && emcAmount >= 1e12) {
+		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);
