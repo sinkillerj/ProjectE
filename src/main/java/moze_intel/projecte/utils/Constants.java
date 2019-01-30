@@ -4,7 +4,8 @@ import java.text.DecimalFormat;
 
 public final class Constants 
 {
-	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.####");
+	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
+	public static final DecimalFormat FULL_EMC_FORMATTER = new DecimalFormat("#,###");
 
 	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};

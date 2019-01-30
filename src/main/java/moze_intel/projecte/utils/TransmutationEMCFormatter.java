@@ -5,7 +5,7 @@ public class TransmutationEMCFormatter {
 		String postFix = "";
 		double magnitude = 1;
 
-		String formats[] = {"Q", "T","B"};
+		String formats[] = {"Quadrillion", "Trillion", "Billion"};
 		Double magnitudes[] = {1e15, 1e12, 1e9};
 
 		for (int i=0; i <formats.length; i++) {
@@ -17,6 +17,6 @@ public class TransmutationEMCFormatter {
 			}
 		}
 
-		return Constants.EMC_FORMATTER.format(EMC / magnitude) + postFix;
+		return Constants.EMC_FORMATTER.format(EMC / magnitude) + " " + postFix;
 	}
 }

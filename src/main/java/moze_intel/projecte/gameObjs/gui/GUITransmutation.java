@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Arrays;
 
 public class GUITransmutation extends GuiContainer
 {
@@ -71,8 +72,9 @@ public class GUITransmutation extends GuiContainer
 	{
 		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
-		String emcFormatted = TransmutationEMCFormatter.EMCFormat(emcAmount);
-		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + emcFormatted;
+		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
+		this.fontRenderer.drawString(emcLabel, 6, this.ySize - 104, 4210752);
+		String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);
 		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
@@ -185,5 +187,28 @@ public class GUITransmutation extends GuiContainer
 		}
 		inv.filter = srch;
 		inv.updateClientTargets();
+	}
+
+	@Override
+	protected void renderHoveredToolTip(int mouseX, int mouseY) {
+		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
+
+		if (emcAmount < 1e9) {
+			return;
+		}
+
+
+		int emcLeft = (this.width - this.xSize) / 2;
+		int emcRight = emcLeft + 82;
+		int emcTop = 95 + (this.height - this.ySize) / 2;
+		int emcBottom = emcTop + 15;
+
+		String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.FULL_EMC_FORMATTER.format(emcAmount);
+
+		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
+			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
+		} else {
+			super.renderHoveredToolTip(mouseX, mouseY);
+		}
 	}
 }
