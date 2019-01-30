@@ -62,12 +62,15 @@ public class GUICondenser extends GuiContainer
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
 		long toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
 
+		if (toDisplay < 1e12) {
+			super.renderHoveredToolTip(mouseX, mouseY);
+			return;
+		}
+
 		int emcLeft = 140 + (this.width - this.xSize) / 2;
 		int emcRight = emcLeft + 110;
 		int emcTop = 6 + (this.height - this.ySize) / 2;
 		int emcBottom = emcTop + 15;
-
-		PECore.debugLog(mouseX + " " + mouseY);
 
 		String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(toDisplay);
 

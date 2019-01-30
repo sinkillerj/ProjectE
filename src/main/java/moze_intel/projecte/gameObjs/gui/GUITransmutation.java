@@ -193,6 +193,11 @@ public class GUITransmutation extends GuiContainer
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
 
+		if (emcAmount < 1e12) {
+			super.renderHoveredToolTip(mouseX, mouseY);
+			return;
+		}
+
 		int emcLeft = (this.width - this.xSize) / 2;
 		int emcRight = emcLeft + 82;
 		int emcTop = 95 + (this.height - this.ySize) / 2;
