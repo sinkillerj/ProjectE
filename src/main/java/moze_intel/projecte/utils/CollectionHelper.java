@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public final class CollectionHelper
 {
-	public static <T> boolean contains(Object[] array, Object object)
+	public static boolean contains(Object[] array, Object object)
 	{
 		if (array != null)
 		{
