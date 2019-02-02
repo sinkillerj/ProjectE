@@ -10,12 +10,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,7 +27,6 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 
@@ -41,10 +37,6 @@ import java.util.List;
 public class TransmutationRenderingEvent
 {
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static final List<AxisAlignedBB> renderList = new ArrayList<>();
-	private static double playerX;
-	private static double playerY;
-	private static double playerZ;
 	private static IBlockState transmutationResult;
 
 	@SubscribeEvent
@@ -96,9 +88,9 @@ public class TransmutationRenderingEvent
 			return;
 		}
 		
-		playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.getPartialTicks();
-		playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
-		playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
+		double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.getPartialTicks();
+		double playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
+		double playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
 		
 		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		
@@ -109,16 +101,19 @@ public class TransmutationRenderingEvent
 
 			if (transmutationResult != null)
 			{
+				List<AxisAlignedBB> renderList = new ArrayList<>(1);
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
 				{
-					addBlockToRenderList(world, pos);
+					for (AxisAlignedBB bb : world.getBlockState(pos).getShape(world, pos).toBoundingBoxList())
+					{
+						renderList.add(bb.grow(0.01).offset(pos.getX() - playerX, pos.getY() - playerY, pos.getZ() - playerZ));
+					}
 				}
 				
-				drawAll();
-				renderList.clear();
+				drawAll(renderList);
 			}
 		}
 		else
@@ -127,7 +122,7 @@ public class TransmutationRenderingEvent
 		}
 	}
 	
-	private static void drawAll()
+	private static void drawAll(List<AxisAlignedBB> renderList)
 	{
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -189,14 +184,6 @@ public class TransmutationRenderingEvent
 		GlStateManager.enableLighting();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
-	}
-	
-	private static void addBlockToRenderList(World world, BlockPos pos)
-	{
-		for (AxisAlignedBB bb : world.getBlockState(pos).getShape(world, pos).toBoundingBoxList())
-		{
-			renderList.add(bb.grow(0.01).offset(pos.getX() - playerX, pos.getY() - playerY, pos.getZ() - playerZ));
-		}
 	}
 
 	private static float getPulseProportion()
