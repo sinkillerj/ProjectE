@@ -16,15 +16,21 @@ import java.util.Arrays;
 
 public class GUICondenser extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png");
-	private final CondenserContainer container;
-	
-	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)
+	protected final ResourceLocation texture;
+	protected final CondenserContainer container;
+
+	public GUICondenser(CondenserContainer condenser, ResourceLocation texture)
 	{
-		super(new CondenserContainer(invPlayer, tile));
-		this.container = ((CondenserContainer) inventorySlots);
+		super(condenser);
+		this.container = condenser;
+		this.texture = texture;
 		this.xSize = 255;
 		this.ySize = 233;
+	}
+
+	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)
+	{
+		this(new CondenserContainer(invPlayer, tile), new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png"));
 	}
 
 	@Override
