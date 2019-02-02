@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -192,9 +193,9 @@ public class TransmutationRenderingEvent
 	
 	private static void addBlockToRenderList(World world, BlockPos pos)
 	{
-		for (AxisAlignedBB bb : world.getBlockState(pos).getRaytraceShape(world, pos).toBoundingBoxList())
+		for (AxisAlignedBB bb : world.getBlockState(pos).getShape(world, pos).toBoundingBoxList())
 		{
-			renderList.add(bb.grow(0.2).offset(-playerX, -playerY, -playerZ));
+			renderList.add(bb.grow(0.01).offset(pos.getX() - playerX, pos.getY() - playerY, pos.getZ() - playerZ));
 		}
 	}
 
