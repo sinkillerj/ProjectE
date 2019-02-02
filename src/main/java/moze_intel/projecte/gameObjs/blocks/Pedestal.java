@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public class Pedestal extends Block
 {
@@ -133,7 +135,7 @@ public class Pedestal extends Block
                         && ped.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
                 {
                     ped.setActive(!ped.getActive());
-                    world.notifyBlockUpdate(pos, state, state, 11);
+                    world.notifyBlockUpdate(pos, state, state, 6);
                 }
 
                 ped.previousRedstoneState = flag;
@@ -141,7 +143,43 @@ public class Pedestal extends Block
         }
     }
 
-	@Override
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand)
+    {
+        TileEntity tile = world.getTileEntity(pos);
+        if (!(tile instanceof DMPedestalTile) || !((DMPedestalTile) tile).getActive()) {
+            return;
+        }
+
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
+        world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
+
+        for (int i = 0; i < 3; ++i)
+        {
+            int j = rand.nextInt(2) * 2 - 1;
+            int k = rand.nextInt(2) * 2 - 1;
+            double d0 = (double)pos.getX() + 0.5D + 0.25D * (double)j;
+            double d1 = (double)((float)pos.getY() + rand.nextFloat());
+            double d2 = (double)pos.getZ() + 0.5D + 0.25D * (double)k;
+            double d3 = (double)(rand.nextFloat() * (float)j);
+            double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
+            double d5 = (double)(rand.nextFloat() * (float)k);
+            world.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
+        }
+    }
+
+    @Override
     public boolean isFullCube(IBlockState state)
     {
         return false;

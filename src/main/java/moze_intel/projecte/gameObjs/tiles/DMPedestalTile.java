@@ -30,8 +30,8 @@ public class DMPedestalTile extends TileEntity implements ITickable
 
 	private BlockPos lastPos;
 	private AxisAlignedBB effectBounds;
+	public double centeredX, centeredY, centeredZ;
 
-	private boolean isActive = false;
 	private ItemStackHandler inventory = new ItemStackHandler(1)
 	{
 		@Override
@@ -40,10 +40,9 @@ public class DMPedestalTile extends TileEntity implements ITickable
 			DMPedestalTile.this.markDirty();
 		}
 	};
-	private int particleCooldown = 10;
+	private boolean isActive = false;
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
-	public double centeredX, centeredY, centeredZ;
 
 	@Override
 	public void update()
@@ -62,53 +61,11 @@ public class DMPedestalTile extends TileEntity implements ITickable
 				{
 					((IPedestalItem) item).updateInPedestal(world, getPos());
 				}
-				if (world.isRemote)
-				{
-					if (particleCooldown <= 0)
-					{
-						spawnParticles();
-						particleCooldown = 10;
-					}
-					else
-					{
-						particleCooldown--;
-					}
-				}
 			}
 			else
 			{
 				setActive(false);
 			}
-		}
-	}
-
-	private void spawnParticles()
-	{
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
-
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
-		world.spawnParticle(EnumParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
-
-		Random rand = world.rand;
-		for (int i = 0; i < 3; ++i)
-		{
-			int j = rand.nextInt(2) * 2 - 1;
-			int k = rand.nextInt(2) * 2 - 1;
-			double d0 = (double)pos.getX() + 0.5D + 0.25D * (double)j;
-			double d1 = (double)((float)pos.getY() + rand.nextFloat());
-			double d2 = (double)pos.getZ() + 0.5D + 0.25D * (double)k;
-			double d3 = (double)(rand.nextFloat() * (float)j);
-			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
-			double d5 = (double)(rand.nextFloat() * (float)k);
-			world.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
