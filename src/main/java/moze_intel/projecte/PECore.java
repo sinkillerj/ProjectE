@@ -179,14 +179,12 @@ public class PECore
 		ProjectEConfig.load();
 
 		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
+		AlchBagImpl.init();
+		KnowledgeImpl.init();
+		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
+		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
 
 		DeferredWorkQueue.runLater(() -> {
-			// Caps internals unsafe
-			AlchBagImpl.init();
-			KnowledgeImpl.init();
-			CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
-			CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
-
 			PacketHandler.register(); // NetworkRegistry.createInstance
 
 			// internals unsafe
