@@ -55,7 +55,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile", // Never let the the pedestal update another pedestal
 			"com.sci.torcherino.blocks.tiles.TileTorcherino", // same goes for other tickrate increasing tiles
 			"com.sci.torcherino.blocks.tiles.TileCompressedTorcherino",
-			"com.sci.torcherino.blocks.tiles.TileDoubleCompressedTorcherino"
+			"com.sci.torcherino.blocks.tiles.TileDoubleCompressedTorcherino",
+			"burn447.dartcraftReloaded.tileEntity.TileEntityTimeTorch"
 	);
 	private static final Predicate<TileEntity> TILE_FILTER = tile -> tile instanceof ITickable && !internalBlacklist.contains(tile.getClass().getName()) && !CollectionHelper.contains(ProjectEConfig.effects.timeWatchTEBlacklist, Objects.toString(TileEntity.getKey(tile.getClass())));
 
@@ -230,6 +231,10 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 							&& !CollectionHelper.contains(ProjectEConfig.effects.timeWatchBlockBlacklist, Objects.toString(block.getRegistryName())))
 					{
 						block.updateTick(world, pos, state, itemRand);
+					}
+					else
+					{
+						break;
 					}
 				}
 			}
