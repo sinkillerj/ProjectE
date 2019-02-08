@@ -1,5 +1,7 @@
 package moze_intel.projecte.config;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.file.CommentedFileConfigBuilder;
 import moze_intel.projecte.PECore;
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -11,7 +13,9 @@ public final class ProjectEConfig
 {
 	public static void load()
 	{
-		SPEC.setConfigFile(Paths.get("config", PECore.MODNAME, PECore.MODID + ".toml"));
+		SPEC.setConfig(CommentedFileConfig
+				.builder(Paths.get("config", PECore.MODNAME, PECore.MODID + ".toml"))
+				.build());
 	}
 
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();

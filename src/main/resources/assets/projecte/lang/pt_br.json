@@ -264,11 +264,11 @@
     "pe.katar.mode1": "Matar Hostis",
     "pe.katar.mode2": "Matar Todos",
 
-    "pe.key.armor_toggle": "Efeitos da Armadura",
-    "pe.key.charge": "Carregar",
-    "pe.key.extra_function": "Função Extra",
-    "pe.key.fire_projectile": "Atirar Projétil",
-    "pe.key.mode": "Mudar Modo",
+    "key.projecte.armor_toggle": "Efeitos da Armadura",
+    "key.projecte.charge": "Carregar",
+    "key.projecte.extra_function": "Função Extra",
+    "key.projecte.fire_projectile": "Atirar Projétil",
+    "key.projecte.mode": "Mudar Modo",
 
     "pe.life.pedestal1": "Restaura ambos fome e corações",
     "pe.life.pedestal2": "Meio coração e pernil cada %s",

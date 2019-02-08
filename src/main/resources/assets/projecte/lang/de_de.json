@@ -264,11 +264,11 @@
     "pe.katar.mode1": "Feindliche töten",
     "pe.katar.mode2": "Alle töten",
 
-    "pe.key.armor_toggle": "Rüstungseffekte",
-    "pe.key.charge": "Aufladen",
-    "pe.key.extra_function": "Zusatzfunktion",
-    "pe.key.fire_projectile": "Projektil feuern",
-    "pe.key.mode": "Modus ändern",
+    "key.projecte.armor_toggle": "Rüstungseffekte",
+    "key.projecte.charge": "Aufladen",
+    "key.projecte.extra_function": "Zusatzfunktion",
+    "key.projecte.fire_projectile": "Projektil feuern",
+    "key.projecte.mode": "Modus ändern",
 
     "pe.life.pedestal1": "Stellt Hunger und Lebensenergie wieder her.",
     "pe.life.pedestal2": "Ein halbes Herz und eine halbe Hungerkeule jede %s.",

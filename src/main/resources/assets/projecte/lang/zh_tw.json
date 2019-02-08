@@ -265,11 +265,11 @@
     "pe.katar.mode1": "殺死敵對生物",
     "pe.katar.mode2": "殺死所有生物",
 
-    "pe.key.armor_toggle": "護甲效果",
-    "pe.key.charge": "充能",
-    "pe.key.extra_function": "額外功能",
-    "pe.key.fire_projectile": "發射",
-    "pe.key.mode": "更換模式",
+    "key.projecte.armor_toggle": "護甲效果",
+    "key.projecte.charge": "充能",
+    "key.projecte.extra_function": "額外功能",
+    "key.projecte.fire_projectile": "發射",
+    "key.projecte.mode": "更換模式",
 
     "pe.life.pedestal1": "回復飽食度及血量",
     "pe.life.pedestal2": "每 %s半顆心以及飽食度",

@@ -123,7 +123,7 @@ public class PECore
 		static void clientSetup(FMLClientSetupEvent evt)
 		{
 			DeferredWorkQueue.runLater(() -> {
-				ClientKeyHelper.registerMCBindings();
+				ClientKeyHelper.registerKeyBindings();
 			});
 		}
 

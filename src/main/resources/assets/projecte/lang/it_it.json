@@ -261,11 +261,11 @@
     "pe.katar.mode1": "Elimina Ostili",
     "pe.katar.mode2": "Elimina Tutti",
 
-    "pe.key.armor_toggle": "Effetti dell'Armatura",
-    "pe.key.charge": "Carica",
-    "pe.key.extra_function": "Funzioni Extra",
-    "pe.key.fire_projectile": "Proiettile di Fuoco",
-    "pe.key.mode": "Modalità Carica",
+    "key.projecte.armor_toggle": "Effetti dell'Armatura",
+    "key.projecte.charge": "Carica",
+    "key.projecte.extra_function": "Funzioni Extra",
+    "key.projecte.fire_projectile": "Proiettile di Fuoco",
+    "key.projecte.mode": "Modalità Carica",
 
     "pe.life.pedestal1": "Ripristina sia la fame e sia i cuori",
     "pe.life.pedestal2": "Mezzo cuore e un punto fame ogni %s",

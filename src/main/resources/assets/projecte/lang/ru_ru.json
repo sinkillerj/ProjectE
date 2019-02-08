@@ -303,11 +303,11 @@
     "pe.katar.mode1": "Убивать враждебных",
     "pe.katar.mode2": "Убивать всех",
 
-    "pe.key.armor_toggle": "Эффекты брони",
-    "pe.key.charge": "Разбег",
-    "pe.key.extra_function": "Доп. функция",
-    "pe.key.fire_projectile": "Огненный снаряд",
-    "pe.key.mode": "Сменить режим",
+    "key.projecte.armor_toggle": "Эффекты брони",
+    "key.projecte.charge": "Разбег",
+    "key.projecte.extra_function": "Доп. функция",
+    "key.projecte.fire_projectile": "Огненный снаряд",
+    "key.projecte.mode": "Сменить режим",
 
     "pe.life.pedestal1": "Восстанавливает голод и здоровье",
     "pe.life.pedestal2": "По половинке сердца и голода каждые %s",

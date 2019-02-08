@@ -266,11 +266,11 @@
     "pe.katar.mode1": "Tuez les hostiles",
     "pe.katar.mode2": "Tuez tout",
 
-    "pe.key.armor_toggle": "Effets de l'armure",
-    "pe.key.charge": "Charge",
-    "pe.key.extra_function": "Extra Fonction",
-    "pe.key.fire_projectile": "Projectiles enflammés",
-    "pe.key.mode": "Changer de mode",
+    "key.projecte.armor_toggle": "Effets de l'armure",
+    "key.projecte.charge": "Charge",
+    "key.projecte.extra_function": "Extra Fonction",
+    "key.projecte.fire_projectile": "Projectiles enflammés",
+    "key.projecte.mode": "Changer de mode",
 
     "pe.life.pedestal1": "Restaure la faim et la vie",
     "pe.life.pedestal2": "La moitié d'un cœur et d'un gigot chaque %s",

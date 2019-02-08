@@ -261,11 +261,11 @@
     "pe.katar.mode1": "Вбивати ворожих",
     "pe.katar.mode2": "вбивати всіх",
 
-    "pe.key.armor_toggle": "Ефекти броні",
-    "pe.key.charge": "Розбіг",
-    "pe.key.extra_function": "Додаткова функція",
-    "pe.key.fire_projectile": "Вогняний заряд",
-    "pe.key.mode": "Змінити режим",
+    "key.projecte.armor_toggle": "Ефекти броні",
+    "key.projecte.charge": "Розбіг",
+    "key.projecte.extra_function": "Додаткова функція",
+    "key.projecte.fire_projectile": "Вогняний заряд",
+    "key.projecte.mode": "Змінити режим",
 
     "pe.life.pedestal1": "Відновлює голод та здоров'я",
     "pe.life.pedestal2": "По половинці серця та голоду кожні %s",
