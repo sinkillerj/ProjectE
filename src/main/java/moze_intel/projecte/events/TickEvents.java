@@ -31,26 +31,22 @@ public class TickEvents
 	{
 		if (event.phase == TickEvent.Phase.END)
 		{
-			IAlchBagProvider provider = event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new);
+			event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
+				Set<EnumDyeColor> colorsChanged = EnumSet.noneOf(EnumDyeColor.class);
 
-			Set<EnumDyeColor> colorsChanged = EnumSet.noneOf(EnumDyeColor.class);
-
-			for (EnumDyeColor color : getBagColorsPresent(event.player))
-			{
-				IItemHandler inv = provider.getBag(color);
-				for (int i = 0; i < inv.getSlots(); i++)
+				for (EnumDyeColor color : getBagColorsPresent(event.player))
 				{
-					ItemStack current = inv.getStackInSlot(i);
-					if (!current.isEmpty() && current.getItem() instanceof IAlchBagItem
-							&& ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, event.player, current))
+					IItemHandler inv = provider.getBag(color);
+					for (int i = 0; i < inv.getSlots(); i++)
 					{
-						colorsChanged.add(color);
+						ItemStack current = inv.getStackInSlot(i);
+						if (!current.isEmpty() && current.getItem() instanceof IAlchBagItem
+								&& ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, event.player, current)) {
+							colorsChanged.add(color);
+						}
 					}
 				}
-			}
 
-			if (!event.player.getEntityWorld().isRemote)
-			{
 				for (EnumDyeColor e : colorsChanged)
 				{
 					if (event.player.openContainer instanceof AlchBagContainer)
@@ -64,7 +60,10 @@ public class TickEvents
 
 					provider.sync(e, (EntityPlayerMP) event.player);
 				}
+			});
 
+			if (!event.player.getEntityWorld().isRemote)
+			{
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
 			}
