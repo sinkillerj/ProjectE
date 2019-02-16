@@ -34,9 +34,9 @@ import javax.annotation.Nonnull;
 
 public class RedStar extends PEToolBase
 {
-	public RedStar(Builder builder)
+	public RedStar(Properties props)
 	{
-		super(builder, (byte) 4, new String[]{
+		super(props, (byte) 4, new String[]{
 				"pe.morningstar.mode1", "pe.morningstar.mode2",
 				"pe.morningstar.mode3", "pe.morningstar.mode4",
 		});

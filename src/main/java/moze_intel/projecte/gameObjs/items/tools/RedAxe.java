@@ -5,9 +5,9 @@ import net.minecraft.block.material.Material;
 
 public class RedAxe extends DarkAxe
 {
-	public RedAxe(Builder builder)
+	public RedAxe(Properties props)
 	{
-		super(builder, (byte)3, new String[]{});
+		super(props, (byte)3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);

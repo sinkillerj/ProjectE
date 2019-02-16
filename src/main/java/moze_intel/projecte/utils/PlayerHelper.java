@@ -13,8 +13,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketAnimation;
-import net.minecraft.scoreboard.IScoreCriteria;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -39,7 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
-	public final static IScoreCriteria SCOREBOARD_EMC = new IScoreCriteria(PECore.MODID + ":emc_score"); // todo 1.13 this is now writable by scoreboards since RO constructor is private
+	public final static ScoreCriteria SCOREBOARD_EMC = new ScoreCriteria(PECore.MODID + ":emc_score"); // todo 1.13 this is now writable by scoreboards since RO constructor is private
 
 	/**
 	 * Tries placing a block and fires an event for it.
@@ -175,7 +175,7 @@ public final class PlayerHelper
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 
-	public static void updateScore(EntityPlayerMP player, IScoreCriteria objective, int value)
+	public static void updateScore(EntityPlayerMP player, ScoreCriteria objective, int value)
 	{
 		// [VanillaCopy] EntityPlayerMP.updateScorePoints
 		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), obj -> obj.setScorePoints(value));

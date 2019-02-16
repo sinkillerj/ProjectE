@@ -40,9 +40,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
-	public Arcana(Builder builder)
+	public Arcana(Properties props)
 	{
-		super(builder);
+		super(props);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 	}

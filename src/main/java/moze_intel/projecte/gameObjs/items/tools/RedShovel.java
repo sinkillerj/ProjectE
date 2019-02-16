@@ -5,9 +5,9 @@ import net.minecraft.block.material.Material;
 
 public class RedShovel extends DarkShovel
 {
-	public RedShovel(Builder builder)
+	public RedShovel(Properties props)
 	{
-		super(builder, (byte)3, new String[]{});
+		super(props, (byte)3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);

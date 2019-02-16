@@ -19,9 +19,9 @@ import javax.annotation.Nonnull;
 
 public class Condenser extends AlchemicalChest
 {
-	public Condenser(Builder builder)
+	public Condenser(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Nonnull

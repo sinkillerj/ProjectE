@@ -19,9 +19,9 @@ import javax.annotation.Nonnull;
 
 public class DarkShovel extends PEToolBase
 {
-	public DarkShovel(Builder builder)
+	public DarkShovel(Properties props)
 	{
-		super(builder, (byte)1, new String[]{});
+		super(props, (byte)1, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.GRASS);
 		this.harvestMaterials.add(Material.GROUND);
@@ -31,9 +31,9 @@ public class DarkShovel extends PEToolBase
 	}
 
 	// Only for RedShovel
-	protected DarkShovel(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkShovel(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 
 	@Nonnull

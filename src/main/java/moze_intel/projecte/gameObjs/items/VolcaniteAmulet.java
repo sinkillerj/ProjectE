@@ -45,9 +45,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0).setSaved(false);
 
-	public VolcaniteAmulet(Builder builder)
+	public VolcaniteAmulet(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override

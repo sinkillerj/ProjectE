@@ -48,6 +48,8 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntity;
@@ -55,11 +57,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Set;
 
-public class GuiHandler implements IGuiHandler
+public class GuiHandler
 {
 
 	private static final Set<Integer> ITEM_IDS = ImmutableSet.of(
@@ -70,7 +74,17 @@ public class GuiHandler implements IGuiHandler
 			Constants.ETERNAL_DENSITY_GUI
 	);
 
-	@Override
+	public static GuiScreen openGui(FMLPlayMessages.OpenContainer msg) {
+		EntityPlayer player = Minecraft.getInstance().player;
+		switch (msg.getId().getPath()) {
+			case "alch_chest": {
+				return new GUIAlchChest(player.inventory, EnumHand.OFF_HAND, new ItemStackHandler(104));
+			}
+		}
+
+		return null;
+	}
+
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tile = !ITEM_IDS.contains(ID) ? world.getTileEntity(new BlockPos(x, y, z)) : null;
@@ -142,8 +156,7 @@ public class GuiHandler implements IGuiHandler
 		return null;
 	}
 
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tile = !ITEM_IDS.contains(ID) ? world.getTileEntity(new BlockPos(x, y, z)) : null;
 

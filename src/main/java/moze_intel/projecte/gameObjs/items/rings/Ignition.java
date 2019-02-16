@@ -38,9 +38,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Ignition extends RingToggle implements IPedestalItem, IFireProtector, IProjectileShooter
 {
-	public Ignition(Builder builder)
+	public Ignition(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Override

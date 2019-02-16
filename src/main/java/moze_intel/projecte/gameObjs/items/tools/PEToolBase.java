@@ -59,9 +59,9 @@ public abstract class PEToolBase extends ItemMode
 	protected EnumMatterType peToolMaterial;
 	protected final Set<Material> harvestMaterials = new HashSet<>();
 
-	public PEToolBase(Builder builder, byte numCharge, String[] modeDescrp)
+	public PEToolBase(Properties props, byte numCharge, String[] modeDescrp)
 	{
-		super(builder, numCharge, modeDescrp);
+		super(props, numCharge, modeDescrp);
 	}
 
 	@Override

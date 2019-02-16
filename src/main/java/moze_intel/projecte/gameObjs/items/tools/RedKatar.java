@@ -31,9 +31,9 @@ import javax.annotation.Nonnull;
 
 public class RedKatar extends PEToolBase implements IExtraFunction
 {
-	public RedKatar(Builder builder)
+	public RedKatar(Properties props)
 	{
-		super(builder, (byte)4, new String[] {
+		super(props, (byte)4, new String[] {
 				"pe.katar.mode1", "pe.katar.mode2",
 		});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;

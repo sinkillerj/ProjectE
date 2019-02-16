@@ -23,9 +23,9 @@ public class MatterFurnace extends BlockFurnace
 {
 	private final EnumMatterType matterType;
 
-	public MatterFurnace(Builder builder, EnumMatterType type)
+	public MatterFurnace(Properties props, EnumMatterType type)
 	{
-		super(builder);
+		super(props);
 		this.matterType = type;
 	}
 

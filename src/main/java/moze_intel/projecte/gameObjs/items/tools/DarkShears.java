@@ -19,9 +19,9 @@ import javax.annotation.Nonnull;
 
 public class DarkShears extends PEToolBase
 {
-	public DarkShears(Builder builder)
+	public DarkShears(Properties props)
 	{
-		super(builder, (byte)2, new String[]{});
+		super(props, (byte)2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.CLOTH);
@@ -31,9 +31,9 @@ public class DarkShears extends PEToolBase
 	}
 
 	// Only for RedShears
-	protected DarkShears(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkShears(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 
 	@Override

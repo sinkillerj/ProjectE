@@ -44,9 +44,9 @@ import java.util.Map;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
-	public BlackHoleBand(Builder builder)
+	public BlackHoleBand(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Nonnull

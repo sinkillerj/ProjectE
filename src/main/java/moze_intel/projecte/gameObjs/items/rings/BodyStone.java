@@ -28,9 +28,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class BodyStone extends RingToggle implements IPedestalItem
 {
-	public BodyStone(Builder builder)
+	public BodyStone(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Override

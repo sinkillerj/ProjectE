@@ -12,9 +12,9 @@ public class ItemFuelBlock extends ItemBlock
 {
 	private final EnumFuelType type;
 
-	public ItemFuelBlock(Block block, Builder builder, EnumFuelType type)
+	public ItemFuelBlock(Block block, Properties props, EnumFuelType type)
 	{
-		super(block, builder);
+		super(block, props);
 		this.type = type;
 	}
 	

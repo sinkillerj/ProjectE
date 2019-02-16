@@ -29,9 +29,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     private static final UUID MODIFIER = UUID.randomUUID();
 
-    public GemFeet(Builder builder)
+    public GemFeet(Properties props)
     {
-        super(EntityEquipmentSlot.FEET, builder);
+        super(EntityEquipmentSlot.FEET, props);
     }
 
     public static boolean isStepAssistEnabled(ItemStack boots)

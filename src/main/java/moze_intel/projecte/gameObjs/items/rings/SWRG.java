@@ -38,9 +38,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter
 {
-	public SWRG(Builder builder)
+	public SWRG(Properties props)
 	{
-		super(builder);
+		super(props);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 	}
 

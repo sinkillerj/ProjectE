@@ -13,9 +13,9 @@ import javax.annotation.Nonnull;
 
 public class TransmutationTablet extends ItemPE
 {
-	public TransmutationTablet(Builder builder)
+	public TransmutationTablet(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Nonnull

@@ -41,9 +41,9 @@ import java.util.List;
 
 public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger
 {
-	public ArchangelSmite(Builder builder)
+	public ArchangelSmite(Properties props)
 	{
-		super(builder);
+		super(props);
 		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
 		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
 	}

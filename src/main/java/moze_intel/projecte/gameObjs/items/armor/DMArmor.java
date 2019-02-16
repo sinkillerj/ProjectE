@@ -17,10 +17,10 @@ import javax.annotation.Nonnull;
 
 public class DMArmor extends ItemArmor
 {
-	public DMArmor(EntityEquipmentSlot armorPiece, Builder builder)
+	public DMArmor(EntityEquipmentSlot armorPiece, Properties props)
 	{
 		// TODO 1.13 custom material?
-		super(ArmorMaterial.DIAMOND, armorPiece, builder);
+		super(ArmorMaterial.DIAMOND, armorPiece, props);
 	}
 	
 	/*@Override TODO 1.13

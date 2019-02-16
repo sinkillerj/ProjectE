@@ -27,9 +27,9 @@ public class MindStone extends RingToggle implements IPedestalItem
 {
 	private static final int TRANSFER_RATE = 50;
 
-	public MindStone(Builder builder)
+	public MindStone(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override

@@ -23,9 +23,9 @@ public class AlchemicalBag extends ItemPE
 {
 	public final EnumDyeColor color;
 	
-	public AlchemicalBag(Builder builder, EnumDyeColor color)
+	public AlchemicalBag(Properties props, EnumDyeColor color)
 	{
-		super(builder);
+		super(props);
 		this.color = color;
 	}
 	

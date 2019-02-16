@@ -10,9 +10,9 @@ import javax.annotation.Nonnull;
 
 public class CataliticLens extends DestructionCatalyst implements IProjectileShooter
 {
-	public CataliticLens(Builder builder)
+	public CataliticLens(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Override

@@ -16,7 +16,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

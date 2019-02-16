@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class DarkAxe extends PEToolBase
 {
-	public DarkAxe(Builder builder)
+	public DarkAxe(Properties props)
 	{
-		super(builder, (byte)2, new String[]{});
+		super(props, (byte)2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
@@ -28,9 +28,9 @@ public class DarkAxe extends PEToolBase
 	}
 
 	// Only for RedAxe
-	protected DarkAxe(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkAxe(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 	
 	@Nonnull

@@ -16,9 +16,9 @@ import java.util.List;
 
 public class Tome extends ItemPE
 {
-	public Tome(Builder builder)
+	public Tome(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override

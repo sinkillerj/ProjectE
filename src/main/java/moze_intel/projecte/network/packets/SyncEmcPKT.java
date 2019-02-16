@@ -7,6 +7,7 @@ import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
@@ -52,7 +53,7 @@ public class SyncEmcPKT {
 
 				for (EmcPKTInfo info : pkt.data)
 				{
-					Item i = Item.REGISTRY.get(info.getId());
+					Item i = Item.getItemById(info.getId());
 					EMCMapper.emc.put(i, info.getEmc());
 				}
 

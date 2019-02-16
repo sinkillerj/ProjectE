@@ -25,9 +25,9 @@ public class Relay extends BlockDirection implements ITileEntityProvider
 {
 	private final int tier;
 	
-	public Relay(int tier, Builder builder)
+	public Relay(int tier, Properties props)
 	{
-		super(builder);
+		super(props);
 		this.tier = tier;
 	}
 	

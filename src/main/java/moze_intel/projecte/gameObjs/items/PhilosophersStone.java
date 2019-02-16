@@ -37,9 +37,9 @@ import java.util.Set;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
-	public PhilosophersStone(Builder builder)
+	public PhilosophersStone(Properties props)
 	{
-		super(builder, (byte)4, new String[] {
+		super(props, (byte)4, new String[] {
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});

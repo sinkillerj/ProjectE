@@ -14,9 +14,9 @@ import javax.annotation.Nonnull;
 
 public class NovaCatalyst extends BlockTNT
 {
-	public NovaCatalyst(Builder builder)
+	public NovaCatalyst(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Override

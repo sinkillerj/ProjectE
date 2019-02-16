@@ -24,9 +24,9 @@ import java.util.List;
 
 public class GemChest extends GemArmorBase implements IFireProtector
 {
-    public GemChest(Builder builder)
+    public GemChest(Properties props)
     {
-        super(EntityEquipmentSlot.CHEST, builder);
+        super(EntityEquipmentSlot.CHEST, props);
     }
 
     @Override

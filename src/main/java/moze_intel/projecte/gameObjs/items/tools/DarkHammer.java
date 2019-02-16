@@ -21,9 +21,9 @@ import javax.annotation.Nonnull;
 
 public class DarkHammer extends PEToolBase
 {
-	public DarkHammer(Builder builder)
+	public DarkHammer(Properties props)
 	{
-		super(builder, (byte)2, new String[] {});
+		super(props, (byte)2, new String[] {});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
@@ -31,9 +31,9 @@ public class DarkHammer extends PEToolBase
 	}
 
 	// Only for RedHammer
-	protected DarkHammer(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkHammer(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 
 	@Override

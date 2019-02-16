@@ -60,9 +60,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
 
-	public EvertideAmulet(Builder builder)
+	public EvertideAmulet(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 			for (int l = 0; l < 8; ++l)
 			{
-				world.spawnParticle(Particles.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+				world.addParticle(Particles.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 		else

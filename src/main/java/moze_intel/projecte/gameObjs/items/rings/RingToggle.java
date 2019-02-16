@@ -12,9 +12,9 @@ import javax.annotation.Nonnull;
 
 public abstract class RingToggle extends ItemPE implements IModeChanger
 {
-	public RingToggle(Builder builder)
+	public RingToggle(Properties props)
 	{
-		super(builder);
+		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 

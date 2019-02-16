@@ -3,8 +3,8 @@ package moze_intel.projecte.rendering;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -29,7 +29,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile>
                 GlStateManager.disableCull();
                 GlStateManager.disableBlend();
                 AxisAlignedBB aabb = te.getEffectBounds().offset(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
-                RenderGlobal.drawBoundingBox(
+                WorldRenderer.drawBoundingBox(
                         aabb.minX, aabb.minY, aabb.minZ,
                         aabb.maxX + 1, aabb.maxY + 1, aabb.maxZ + 1,
                         1F, 0F, 1F, 1F);

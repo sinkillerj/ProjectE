@@ -38,9 +38,9 @@ import javax.annotation.Nonnull;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
-	public MercurialEye(Builder builder)
+	public MercurialEye(Properties props)
 	{
-		super(builder, (byte)4, new String[] {"Normal", "Transmutation"});
+		super(props, (byte)4, new String[] {"Normal", "Transmutation"});
 	}
 	
 	private static final int NORMAL_MODE = 0;

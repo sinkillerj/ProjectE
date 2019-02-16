@@ -50,7 +50,7 @@ public class EntityMobRandomizer extends EntityThrowable
 		{
 			for (int i = 0; i < 4; ++i)
 			{
-				this.getEntityWorld().spawnParticle(Particles.PORTAL, this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+				this.getEntityWorld().addParticle(Particles.PORTAL, this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
 			}
 			return;
 		}

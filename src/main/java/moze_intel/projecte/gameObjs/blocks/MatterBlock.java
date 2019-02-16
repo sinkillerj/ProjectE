@@ -15,9 +15,9 @@ import javax.annotation.Nonnull;
 public class MatterBlock extends Block
 {
 	public final EnumMatterType matterType;
-	public MatterBlock(Builder builder, EnumMatterType type)
+	public MatterBlock(Properties props, EnumMatterType type)
 	{
-		super(builder);
+		super(props);
 		this.matterType = type;
 	}
 

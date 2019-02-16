@@ -19,9 +19,9 @@ import java.util.Random;
 
 public class CondenserMK2 extends Condenser
 {
-	public CondenserMK2(Builder builder)
+	public CondenserMK2(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Nonnull

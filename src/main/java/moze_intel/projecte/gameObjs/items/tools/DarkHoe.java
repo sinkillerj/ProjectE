@@ -8,16 +8,16 @@ import javax.annotation.Nonnull;
 
 public class DarkHoe extends PEToolBase
 {
-	public DarkHoe(Builder builder)
+	public DarkHoe(Properties props)
 	{
-		super(builder, (byte)2, new String[]{});
+		super(props, (byte)2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 	}
 
 	// Only for RedHoe
-	protected DarkHoe(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkHoe(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 
 	@Nonnull

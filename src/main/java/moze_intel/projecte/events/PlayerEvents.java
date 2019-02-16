@@ -61,18 +61,18 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void respawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent evt)
 	{
-		evt.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) evt.player));
-		evt.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (EntityPlayerMP) evt.player));
+		evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) evt.getPlayer()));
+		evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (EntityPlayerMP) evt.getPlayer()));
 	}
 
 	@SubscribeEvent
 	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-		event.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) event.player));
-		event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (EntityPlayerMP) event.player));
+		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) event.getPlayer()));
+		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (EntityPlayerMP) event.getPlayer()));
 
-		event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
+		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
 
 	@SubscribeEvent
@@ -94,7 +94,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
-		EntityPlayerMP player = (EntityPlayerMP) event.player;
+		EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
 		PacketHandler.sendFragmentedEmcPacket(player);
 
 		PacketHandler.sendTo(new CheckUpdatePKT(), player);
@@ -125,10 +125,10 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
 	{
-		if (PECore.uuids.contains((evt.player.getUniqueID().toString())))
+		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString())))
 		{
 			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
-			ITextComponent playername = new TextComponentString(" " + evt.player.getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
+			ITextComponent playername = new TextComponentString(" " + evt.getPlayer().getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
 			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
 			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
 		}

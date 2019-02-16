@@ -26,6 +26,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
@@ -141,7 +142,7 @@ public final class EMCMapper
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = Item.REGISTRY.get(normStackItem.itemName);
+			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.itemName);
 			if (obj != null)
 			{
 				emc.put(obj, entry.getValue());

@@ -33,9 +33,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
-	public RepairTalisman(Builder builder)
+	public RepairTalisman(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override

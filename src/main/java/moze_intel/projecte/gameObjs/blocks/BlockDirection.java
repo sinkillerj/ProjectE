@@ -22,15 +22,15 @@ import javax.annotation.Nonnull;
 public abstract class BlockDirection extends Block
 {
 
-	public BlockDirection(Builder builder)
+	public BlockDirection(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder)
+	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> props)
 	{
-		builder.add((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING);
+		props.add((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING);
 	}
 
 	@Nonnull

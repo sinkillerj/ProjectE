@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
 
 public class InterdictionTorchWall extends BlockTorchWall implements ITileEntityProvider
 {
-    public InterdictionTorchWall(Builder builder)
+    public InterdictionTorchWall(Properties props)
     {
-        super(builder);
+        super(props);
     }
 
     @Nonnull

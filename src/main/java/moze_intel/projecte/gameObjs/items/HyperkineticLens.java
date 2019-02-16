@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge
 {
-	public HyperkineticLens(Builder builder)
+	public HyperkineticLens(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Nonnull

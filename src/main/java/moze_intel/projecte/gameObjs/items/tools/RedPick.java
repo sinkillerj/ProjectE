@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class RedPick extends DarkPick
 {
-	public RedPick(Builder builder)
+	public RedPick(Properties props)
 	{
-		super(builder, (byte)3, new String[] {
+		super(props, (byte)3, new String[] {
 				"pe.redpick.mode1", "pe.redpick.mode2",
 				"pe.redpick.mode3", "pe.redpick.mode4"});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;

@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
 
 public class RedSword extends DarkSword
 {
-	public RedSword(Builder builder)
+	public RedSword(Properties props)
 	{
-		super(builder, (byte)3, new String[]{
+		super(props, (byte)3, new String[]{
 				"pe.redsword.mode1",
 				"pe.redsword.mode2"
 		});

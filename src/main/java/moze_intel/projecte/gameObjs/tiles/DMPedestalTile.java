@@ -84,14 +84,14 @@ public class DMPedestalTile extends TileEmc
 		int y = pos.getY();
 		int z = pos.getZ();
 
-		world.spawnParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
-		world.spawnParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
+		world.addParticle(Particles.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
 
 		Random rand = world.rand;
 		for (int i = 0; i < 3; ++i)
@@ -104,7 +104,7 @@ public class DMPedestalTile extends TileEmc
 			double d3 = (double)(rand.nextFloat() * (float)j);
 			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
 			double d5 = (double)(rand.nextFloat() * (float)k);
-			world.spawnParticle(Particles.PORTAL, d0, d1, d2, d3, d4, d5);
+			world.addParticle(Particles.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -180,7 +180,7 @@ public class DMPedestalTile extends TileEmc
 				world.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
 				{
-					this.getWorld().spawnParticle(Particles.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().addParticle(Particles.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
@@ -191,7 +191,7 @@ public class DMPedestalTile extends TileEmc
 				world.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
 				{
-					this.getWorld().spawnParticle(Particles.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+					this.getWorld().addParticle(Particles.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);

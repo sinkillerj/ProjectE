@@ -10,8 +10,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -54,7 +56,8 @@ public class TransmutationOffline
 
     private static boolean cacheOfflineData(UUID playerUUID) {
         Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
-        File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        File playerData = server.getActiveAnvilConverter().getFile(server.getFolderName(), "playerdata");
         if (playerData.exists())
         {
             File player = new File(playerData, playerUUID.toString() + ".dat");

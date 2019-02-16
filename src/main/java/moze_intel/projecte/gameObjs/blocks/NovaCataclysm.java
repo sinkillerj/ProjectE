@@ -14,9 +14,9 @@ import javax.annotation.Nonnull;
 
 public class NovaCataclysm extends BlockTNT
 {
-	public NovaCataclysm(Builder builder)
+	public NovaCataclysm(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 	
 	@Override

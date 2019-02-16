@@ -44,9 +44,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger
 {
-	public GemEternalDensity(Builder builder)
+	public GemEternalDensity(Properties props)
 	{
-		super(builder);
+		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 	

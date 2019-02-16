@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class RedHammer extends DarkHammer
 {
-	public RedHammer(Builder builder)
+	public RedHammer(Properties props)
 	{
-		super(builder, (byte)3, new String[]{});
+		super(props, (byte)3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);

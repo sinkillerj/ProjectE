@@ -93,7 +93,7 @@ public final class PacketHandler
 		int i = 0;
 		for (Map.Entry<Item, Long> entry : EMCMapper.emc.entrySet())
 		{
-			int id = Item.REGISTRY.getId(entry.getKey());
+			int id = Item.getIdFromItem(entry.getKey());
 			ret[i] = new EmcPKTInfo(id, entry.getValue());
 			i++;
 		}

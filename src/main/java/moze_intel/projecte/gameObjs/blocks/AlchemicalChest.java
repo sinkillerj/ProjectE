@@ -1,12 +1,19 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -15,20 +22,25 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class AlchemicalChest extends BlockDirection implements ITileEntityProvider
 {
 	private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
-	public AlchemicalChest(Builder builder)
+	public AlchemicalChest(Properties props)
 	{
-		super(builder);
+		super(props);
 		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.HORIZONTAL_FACING, EnumFacing.NORTH));
 	}
 
@@ -63,7 +75,12 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	{
 		if (!world.isRemote)
 		{
-			// todo 1.13 player.openGui(PECore.instance, Constants.ALCH_CHEST_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof AlchChestTile) {
+				PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
+				extraData.writeVarInt(0);
+				NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider((AlchChestTile) te), extraData);
+			}
 		}
 		
 		return true;
@@ -94,5 +111,42 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		}
 
 		return 0;
+	}
+
+	public static class ContainerProvider implements IInteractionObject {
+	    private final AlchChestTile tile;
+
+		public ContainerProvider(AlchChestTile tile) {
+			this.tile = tile;
+		}
+
+		@Nonnull
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+			return new AlchChestContainer(playerInventory, tile);
+		}
+
+		@Nonnull
+		@Override
+		public String getGuiID() {
+			return PECore.MODID + ":alch_chest";
+		}
+
+		@Nonnull
+		@Override
+		public ITextComponent getName() {
+			return new TextComponentTranslation(ObjHandler.alchChest.getTranslationKey());
+		}
+
+		@Override
+		public boolean hasCustomName() {
+			return false;
+		}
+
+		@Nullable
+		@Override
+		public ITextComponent getCustomName() {
+			return null;
+		}
 	}
 }

@@ -19,16 +19,16 @@ import javax.annotation.Nonnull;
 
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
-	public DarkSword(Builder builder)
+	public DarkSword(Properties props)
 	{
-		super(builder, (byte)2, new String[] {});
+		super(props, (byte)2, new String[] {});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 	}
 
 	// Only for RedSword to use
-	protected DarkSword(Builder builder, byte numcharges, String[] modeDesc)
+	protected DarkSword(Properties props, byte numcharges, String[] modeDesc)
 	{
-		super(builder, numcharges, modeDesc);
+		super(props, numcharges, modeDesc);
 	}
 
 	@Override

@@ -30,9 +30,9 @@ import java.util.List;
 // todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class GemHelmet extends GemArmorBase
 {
-    public GemHelmet(Builder builder)
+    public GemHelmet(Properties props)
     {
-        super(EntityEquipmentSlot.HEAD, builder);
+        super(EntityEquipmentSlot.HEAD, props);
     }
 
     public static boolean isNightVisionEnabled(ItemStack helm)

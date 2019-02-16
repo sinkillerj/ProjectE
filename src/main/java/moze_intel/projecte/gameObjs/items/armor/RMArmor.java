@@ -18,10 +18,10 @@ import javax.annotation.Nonnull;
 // todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ItemArmor
 {
-	public RMArmor(EntityEquipmentSlot armorType, Builder builder)
+	public RMArmor(EntityEquipmentSlot armorType, Properties props)
 	{
 		// todo 1.13 custom matreial?
-		super(ArmorMaterial.DIAMOND, armorType, builder);
+		super(ArmorMaterial.DIAMOND, armorType, props);
 	}
 	
 	/*@Override todo 1.13

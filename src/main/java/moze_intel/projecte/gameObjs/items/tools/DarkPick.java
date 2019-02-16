@@ -25,9 +25,9 @@ import javax.annotation.Nonnull;
 
 public class DarkPick extends PEToolBase
 {
-	public DarkPick(Builder builder)
+	public DarkPick(Properties props)
 	{
-		super(builder, (byte)2, new String[] {
+		super(props, (byte)2, new String[] {
 				"pe.darkpick.mode1", "pe.darkpick.mode2",
 				"pe.darkpick.mode3", "pe.darkpick.mode4"});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
@@ -37,9 +37,9 @@ public class DarkPick extends PEToolBase
 	}
 
 	// Only for RedPick
-	protected DarkPick(Builder builder, byte numCharges, String[] modeDesc)
+	protected DarkPick(Properties props, byte numCharges, String[] modeDesc)
 	{
-		super(builder, numCharges, modeDesc);
+		super(props, numCharges, modeDesc);
 	}
 
 	@Nonnull

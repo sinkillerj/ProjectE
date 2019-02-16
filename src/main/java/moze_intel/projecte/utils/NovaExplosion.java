@@ -45,9 +45,9 @@ public class NovaExplosion extends Explosion
 	{
 		this.world.playSound(null, this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
 		if (!(this.size < 2.0F) && this.damagesTerrain) {
-			this.world.spawnParticle(Particles.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+			this.world.addParticle(Particles.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 		} else {
-			this.world.spawnParticle(Particles.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+			this.world.addParticle(Particles.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 		}
 
 		NonNullList<ItemStack> allDrops = NonNullList.create();
@@ -72,8 +72,8 @@ public class NovaExplosion extends Explosion
 					d3 = d3 * d7;
 					d4 = d4 * d7;
 					d5 = d5 * d7;
-					this.world.spawnParticle(Particles.POOF, (d0 + this.x) / 2.0D, (d1 + this.y) / 2.0D, (d2 + this.z) / 2.0D, d3, d4, d5);
-					this.world.spawnParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
+					this.world.addParticle(Particles.POOF, (d0 + this.x) / 2.0D, (d1 + this.y) / 2.0D, (d2 + this.z) / 2.0D, d3, d4, d5);
+					this.world.addParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
 				}
 
 				if (!iblockstate.isAir(world, blockpos)) {

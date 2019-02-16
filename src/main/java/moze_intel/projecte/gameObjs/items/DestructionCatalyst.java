@@ -27,9 +27,9 @@ import java.util.List;
 
 public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
-	public DestructionCatalyst(Builder builder)
+	public DestructionCatalyst(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Nonnull

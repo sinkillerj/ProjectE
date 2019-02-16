@@ -4,9 +4,9 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 
 public class RedHoe extends DarkHoe
 {
-	public RedHoe(Builder builder)
+	public RedHoe(Properties props)
 	{
-		super(builder, (byte)3, new String[]{});
+		super(props, (byte)3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 	}
 }

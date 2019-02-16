@@ -113,28 +113,28 @@ public class ObjHandler
 	};
 	public static final IRecipeSerializer<RecipesCovalenceRepair> COVALENCE_REPAIR_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeSerializers.SimpleSerializer<>(PECore.MODID + ":covalence_repair", RecipesCovalenceRepair::new));
 	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
-	public static final Block alchChest = new AlchemicalChest(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
-	public static final Block interdictionTorch = new InterdictionTorch(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
-	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Builder.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
-	public static final Block transmuteStone = new TransmutationStone(Block.Builder.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
-	public static final Block condenser = new Condenser(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
-	public static final Block condenserMk2 = new CondenserMK2(Block.Builder.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
-	public static final Block rmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final Block dmFurnaceOff = new MatterFurnace(Block.Builder.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
-	public static final Block dmPedestal = new Pedestal(Block.Builder.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
-	public static final Block dmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");
-	public static final Block rmBlock = new MatterBlock(Block.Builder.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "red_matter_block");
-	public static final Block alchemicalCoalBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
-	public static final Block mobiusFuelBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "mobius_fuel_block");
-	public static final Block aeternalisFuelBlock = new Block(Block.Builder.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "aeternalis_fuel_block");
-	public static final Block collectorMK1 = new Collector(1, Block.Builder.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(7)).setRegistryName(PECore.MODID, "collector_mk1");
-	public static final Block collectorMK2 = new Collector(2, Block.Builder.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(11)).setRegistryName(PECore.MODID, "collector_mk2");
-	public static final Block collectorMK3 = new Collector(3, Block.Builder.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(15)).setRegistryName(PECore.MODID, "collector_mk3");
-	public static final Block relay = new Relay(1, Block.Builder.create(Material.ROCK).hardnessAndResistance(10).lightValue(7)).setRegistryName(PECore.MODID, "relay_mk1");
-	public static final Block relayMK2 = new Relay(2, Block.Builder.create(Material.ROCK).hardnessAndResistance(10).lightValue(11)).setRegistryName(PECore.MODID, "relay_mk2");
-	public static final Block relayMK3 = new Relay(3, Block.Builder.create(Material.ROCK).hardnessAndResistance(10).lightValue(15)).setRegistryName(PECore.MODID, "relay_mk3");
-	public static final Block novaCatalyst = new NovaCatalyst(Block.Builder.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_catalyst");
-	public static final Block novaCataclysm = new NovaCataclysm(Block.Builder.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_cataclysm");
+	public static final Block alchChest = new AlchemicalChest(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
+	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
+	public static final Block transmuteStone = new TransmutationStone(Block.Properties.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
+	public static final Block condenser = new Condenser(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
+	public static final Block condenserMk2 = new CondenserMK2(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
+	public static final Block rmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final Block dmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final Block dmPedestal = new Pedestal(Block.Properties.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
+	public static final Block dmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");
+	public static final Block rmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "red_matter_block");
+	public static final Block alchemicalCoalBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
+	public static final Block mobiusFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "mobius_fuel_block");
+	public static final Block aeternalisFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "aeternalis_fuel_block");
+	public static final Block collectorMK1 = new Collector(1, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(7)).setRegistryName(PECore.MODID, "collector_mk1");
+	public static final Block collectorMK2 = new Collector(2, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(11)).setRegistryName(PECore.MODID, "collector_mk2");
+	public static final Block collectorMK3 = new Collector(3, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).lightValue(15)).setRegistryName(PECore.MODID, "collector_mk3");
+	public static final Block relay = new Relay(1, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(7)).setRegistryName(PECore.MODID, "relay_mk1");
+	public static final Block relayMK2 = new Relay(2, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(11)).setRegistryName(PECore.MODID, "relay_mk2");
+	public static final Block relayMK3 = new Relay(3, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(15)).setRegistryName(PECore.MODID, "relay_mk3");
+	public static final Block novaCatalyst = new NovaCatalyst(Block.Properties.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_catalyst");
+	public static final Block novaCataclysm = new NovaCataclysm(Block.Properties.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_cataclysm");
 
 	public static final Item philosStone = new PhilosophersStone(ibNoStack()).setRegistryName(PECore.MODID, "philosophers_stone");
 	public static final Item alchBagWhite = new AlchemicalBag(ibNoStack(), EnumDyeColor.WHITE).setRegistryName(PECore.MODID, "white_alchemical_bag");
@@ -249,12 +249,12 @@ public class ObjHandler
 	public static final Item tome = new Tome(ibNoStack().rarity(EnumRarity.EPIC)).setRegistryName(PECore.MODID, "tome");
 
 	// TODO 1.13 get rid of these
-	public static final Item waterOrb = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "water_orb");
-	public static final Item lavaOrb = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "lava_orb");
-	public static final Item mobRandomizer = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "randomizer");
-	public static final Item lensExplosive = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "lens_explosive");
-	public static final Item fireProjectile = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "fire_projectile");
-	public static final Item windProjectile = new Item(new Item.Builder()).setRegistryName(PECore.MODID, "wind_projectile");
+	public static final Item waterOrb = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "water_orb");
+	public static final Item lavaOrb = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "lava_orb");
+	public static final Item mobRandomizer = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "randomizer");
+	public static final Item lensExplosive = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "lens_explosive");
+	public static final Item fireProjectile = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "fire_projectile");
+	public static final Item windProjectile = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 
 	public static final EntityType<?> FIRE_PROJECTILE = EntityType.Builder
@@ -299,12 +299,12 @@ public class ObjHandler
 	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
 
-	private static Item.Builder ib()
+	private static Item.Properties ib()
 	{
-		return new Item.Builder().group(cTab);
+		return new Item.Properties().group(cTab);
 	}
 	
-	private static Item.Builder ibNoStack()
+	private static Item.Properties ibNoStack()
 	{
 		return ib().maxStackSize(1);
 	}

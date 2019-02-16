@@ -8,9 +8,9 @@ public class AlchemicalFuel extends ItemPE
 {
 	private final EnumFuelType fuelType;
 	
-	public AlchemicalFuel(Builder builder, EnumFuelType type)
+	public AlchemicalFuel(Properties props, EnumFuelType type)
 	{
-		super(builder);
+		super(props);
 		this.fuelType = type;
 	}
 	

@@ -45,9 +45,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
 	private static final Tag<Block> BLOCK_BLACKLIST_TAG = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "time_watch_blacklist"));
 
-	public TimeWatch(Builder builder)
+	public TimeWatch(Properties props)
 	{
-		super(builder);
+		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 

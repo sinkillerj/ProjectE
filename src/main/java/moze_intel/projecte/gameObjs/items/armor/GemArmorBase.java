@@ -17,10 +17,10 @@ import javax.annotation.Nonnull;
 
 public abstract class GemArmorBase extends ItemArmor
 {
-	public GemArmorBase(EntityEquipmentSlot armorType, Builder builder)
+	public GemArmorBase(EntityEquipmentSlot armorType, Properties props)
 	{
 		// todo 1.13 custom material?
-		super(ArmorMaterial.DIAMOND, armorType, builder);
+		super(ArmorMaterial.DIAMOND, armorType, props);
 	}
 
 	public static boolean hasAnyPiece(EntityPlayer player)

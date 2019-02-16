@@ -33,9 +33,9 @@ import java.util.List;
 // todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
 {
-	public Zero(Builder builder)
+	public Zero(Properties props)
 	{
-		super(builder);
+		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 

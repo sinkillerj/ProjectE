@@ -83,8 +83,8 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 		if (ticksExisted > 3 && hasTarget() && !this.inGround)
 		{
-			this.getEntityWorld().spawnParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
-			this.getEntityWorld().spawnParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
+			this.getEntityWorld().addParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
+			this.getEntityWorld().addParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
 			Entity target = getTarget();
 
 

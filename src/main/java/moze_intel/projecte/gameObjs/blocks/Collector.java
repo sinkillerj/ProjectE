@@ -28,9 +28,9 @@ public class Collector extends BlockDirection implements ITileEntityProvider
 {
 	private final int tier;
 	
-	public Collector(int tier, Builder builder)
+	public Collector(int tier, Properties props)
 	{
-		super(builder);
+		super(props);
 		this.tier = tier;
 	}
 	

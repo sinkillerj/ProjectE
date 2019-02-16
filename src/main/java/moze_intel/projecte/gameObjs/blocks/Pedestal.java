@@ -31,9 +31,9 @@ public class Pedestal extends Block implements ITileEntityProvider
     // todo 1.13 fancify
     private static final VoxelShape SHAPE = Block.makeCuboidShape(3, 0, 3, 13, 12, 13);
 
-    public Pedestal(Builder builder)
+    public Pedestal(Properties props)
     {
-        super(builder);
+        super(props);
     }
 
     @Nonnull

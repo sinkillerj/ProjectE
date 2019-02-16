@@ -40,6 +40,7 @@ import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
+import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -57,7 +58,9 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -69,7 +72,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -106,14 +109,15 @@ public class PECore
 	public PECore()
 	{
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			FMLModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
-			FMLModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::openGui);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
 			MinecraftForge.EVENT_BUS.addListener(ClientHandler::registerRenders);
 		});
 
-		FMLModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
-		FMLModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
@@ -178,7 +182,6 @@ public class PECore
 
 		ProjectEConfig.load();
 
-		// TODO 1.13 NetworkRegistry.INSTANCE.registerGuiHandler(PECore.instance, new GuiHandler());
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);

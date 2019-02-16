@@ -15,9 +15,9 @@ import javax.annotation.Nonnull;
 public class KleinStar extends ItemPE implements IItemEmc
 {
 	public final EnumKleinTier tier;
-	public KleinStar(Builder builder, EnumKleinTier tier)
+	public KleinStar(Properties props, EnumKleinTier tier)
 	{
-		super(builder);
+		super(props);
 		this.tier = tier;
 	}
 	

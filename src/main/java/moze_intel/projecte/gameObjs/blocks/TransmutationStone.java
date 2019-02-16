@@ -23,9 +23,9 @@ public class TransmutationStone extends Block
 {
 	private static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 4, 16);
 
-	public TransmutationStone(Builder builder)
+	public TransmutationStone(Properties props)
 	{
-		super(builder);
+		super(props);
 	}
 
 	@Nonnull

@@ -32,9 +32,9 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	// Modes should be in the format depthx3x3
 	private final String[] modes;
 
-	public DiviningRod(Builder builder, String[] modeDesc)
+	public DiviningRod(Properties props, String[] modeDesc)
 	{
-		super(builder);
+		super(props);
 		modes = modeDesc;
 	}
 	
