@@ -4,10 +4,14 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
@@ -17,6 +21,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,8 +40,9 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
+public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteractionObject
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
@@ -437,5 +445,36 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			return accept;
 		}
 		return 0;
+	}
+
+	@Nonnull
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	{
+		return new RMFurnaceContainer(playerInventory, this);
+	}
+
+	@Nonnull
+	@Override
+	public String getGuiID() {
+		return getType().getRegistryName().toString();
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getName()
+	{
+		return new TextComponentString(getGuiID());
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName() {
+		return null;
 	}
 }

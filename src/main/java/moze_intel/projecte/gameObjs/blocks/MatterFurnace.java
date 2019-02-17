@@ -1,19 +1,24 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -34,13 +39,17 @@ public class MatterFurnace extends BlockFurnace
 	{
 		if (!world.isRemote)
 		{
-			if (matterType == EnumMatterType.RED_MATTER)
+			PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+			buf.writeBlockPos(pos);
+			TileEntity te = world.getTileEntity(pos);
+
+			if (te != null && te.getType() == ObjHandler.DM_FURNACE_TILE)
 			{
-				// todo 1.13 player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+				NetworkHooks.openGui((EntityPlayerMP) player, (DMFurnaceTile) te, buf);
 			}
-			else
+			else if (te != null && te.getType() == ObjHandler.RM_FURNACE_TILE)
 			{
-				// todo 1.13 player.openGui(PECore.instance, Constants.DM_FURNACE_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+				NetworkHooks.openGui((EntityPlayerMP) player, (RMFurnaceTile) te, buf);
 			}
 		}
 		

@@ -1,23 +1,32 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class AlchemicalBag extends ItemPE
 {
@@ -35,7 +44,9 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			// todo 1.13 player.openGui(PECore.instance, Constants.ALCH_BAG_GUI, world, hand.ordinal(), -1, -1);
+			PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
+			extraData.writeBoolean(hand == EnumHand.MAIN_HAND);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(hand), extraData);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
@@ -68,5 +79,27 @@ public class AlchemicalBag extends ItemPE
 		}
 
 		return ItemStack.EMPTY;
+	}
+
+	private class ContainerProvider extends BaseContainerProvider
+	{
+		private final EnumHand hand;
+
+		private ContainerProvider(EnumHand hand) {
+			this.hand = hand;
+		}
+
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+			IItemHandlerModifiable inv = (IItemHandlerModifiable) playerIn.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+					.orElseThrow(NullPointerException::new)
+					.getBag(color);
+			return new AlchBagContainer(playerInventory, hand, inv);
+		}
+
+		@Override
+		public String getGuiID() {
+			return "projecte:alch_bag";
+		}
 	}
 }

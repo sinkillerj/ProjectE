@@ -4,6 +4,8 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
+import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
@@ -14,7 +16,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Particles;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
@@ -25,12 +29,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -125,7 +132,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.getEntityWorld().isRemote)
 		{
-			// todo 1.13 player.openGui(PECore.instance, Constants.PHILOS_STONE_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(), null);
 		}
 
 		return true;
@@ -188,5 +195,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		}
 
 		return ret;
+	}
+
+	private static class ContainerProvider extends BaseContainerProvider
+	{
+		@Nonnull
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+			return new PhilosStoneContainer(playerInventory);
+		}
+
+		@Nonnull
+		@Override
+		public String getGuiID()
+		{
+			return "projecte:philosophers_stone";
+		}
 	}
 }

@@ -1,6 +1,13 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
+import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+
+import javax.annotation.Nonnull;
 
 public class DMFurnaceTile extends RMFurnaceTile
 {
@@ -24,5 +31,12 @@ public class DMFurnaceTile extends RMFurnaceTile
 	public int getCookProgressScaled(int value)
 	{
 		return furnaceCookTime * value / ticksBeforeSmelt;
+	}
+
+	@Nonnull
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	{
+		return new DMFurnaceContainer(playerInventory, this);
 	}
 }

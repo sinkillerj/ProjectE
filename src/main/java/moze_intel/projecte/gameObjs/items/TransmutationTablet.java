@@ -1,15 +1,25 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.Constants;
+import io.netty.buffer.Unpooled;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TransmutationTablet extends ItemPE
 {
@@ -24,9 +34,47 @@ public class TransmutationTablet extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			// todo 1.13 player.openGui(PECore.instance, Constants.TRANSMUTATION_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+			PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+			buf.writeBoolean(hand == EnumHand.MAIN_HAND);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(hand), buf);
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+	}
+
+	private static class ContainerProvider implements IInteractionObject
+	{
+		private final EnumHand hand;
+
+		private ContainerProvider(EnumHand hand) {
+			this.hand = hand;
+		}
+
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+			return new TransmutationContainer(playerInventory, new TransmutationInventory(playerIn), hand);
+		}
+
+		@Override
+		public String getGuiID() {
+			return "projecte:transmutation_tablet";
+		}
+
+		@Override
+		public ITextComponent getName() {
+			return new TextComponentString(getGuiID());
+		}
+
+		// todo 1.13 stack name?
+		@Override
+		public boolean hasCustomName() {
+			return false;
+		}
+
+		@Nullable
+		@Override
+		public ITextComponent getCustomName() {
+			return null;
+		}
 	}
 }

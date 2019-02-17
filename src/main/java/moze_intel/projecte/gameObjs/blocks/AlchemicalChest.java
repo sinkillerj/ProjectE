@@ -57,12 +57,6 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		return false;
 	}
 
-	/*@Override todo 1.13 recheck
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}*/
-	
 	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
@@ -78,8 +72,8 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
 				PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-				extraData.writeVarInt(0);
-				NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider((AlchChestTile) te), extraData);
+				extraData.writeBlockPos(pos);
+				NetworkHooks.openGui((EntityPlayerMP) player, (AlchChestTile) te, extraData);
 			}
 		}
 		
@@ -111,42 +105,5 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		}
 
 		return 0;
-	}
-
-	public static class ContainerProvider implements IInteractionObject {
-	    private final AlchChestTile tile;
-
-		public ContainerProvider(AlchChestTile tile) {
-			this.tile = tile;
-		}
-
-		@Nonnull
-		@Override
-		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-			return new AlchChestContainer(playerInventory, tile);
-		}
-
-		@Nonnull
-		@Override
-		public String getGuiID() {
-			return PECore.MODID + ":alch_chest";
-		}
-
-		@Nonnull
-		@Override
-		public ITextComponent getName() {
-			return new TextComponentTranslation(ObjHandler.alchChest.getTranslationKey());
-		}
-
-		@Override
-		public boolean hasCustomName() {
-			return false;
-		}
-
-		@Nullable
-		@Override
-		public ITextComponent getCustomName() {
-			return null;
-		}
 	}
 }

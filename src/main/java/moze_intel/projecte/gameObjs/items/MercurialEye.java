@@ -1,10 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
+import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -13,7 +14,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +33,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -265,8 +269,32 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
 	{
-		// todo 1.13 player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+		NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(player.getHeldItem(hand)), null);
 		return true;
+	}
+
+	private static class ContainerProvider extends BaseContainerProvider
+	{
+		private final ItemStack stack;
+
+		private ContainerProvider(ItemStack stack)
+		{
+			this.stack = stack;
+		}
+
+		@Nonnull
+		@Override
+		public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn)
+		{
+			return new MercurialEyeContainer(playerInventory, new MercurialEyeInventory(stack));
+		}
+
+		@Nonnull
+		@Override
+		public String getGuiID()
+		{
+			return "projecte:mercurial_eye";
+		}
 	}
 
 }

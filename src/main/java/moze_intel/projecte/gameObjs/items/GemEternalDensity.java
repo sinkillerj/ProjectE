@@ -1,10 +1,14 @@
 package moze_intel.projecte.gameObjs.items;
 
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
+import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
+import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
@@ -14,12 +18,15 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -32,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -156,7 +164,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				// todo 1.13 player.openGui(PECore.instance, Constants.ETERNAL_DENSITY_GUI, world, hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+				buf.writeBoolean(hand == EnumHand.MAIN_HAND);
+				NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(stack), buf);
 			}
 		}
 		
@@ -396,5 +406,25 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
 	{
 		return !player.getEntityWorld().isRemote && condense(stack, inv);
+	}
+
+	private static class ContainerProvider extends BaseContainerProvider
+	{
+		private final ItemStack stack;
+
+		private ContainerProvider(ItemStack stack) {
+			this.stack = stack;
+		}
+
+		@Nonnull
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+			return new EternalDensityContainer(playerInventory, new EternalDensityInventory(stack, playerIn));
+		}
+
+		@Override
+		public String getGuiID() {
+			return "projecte:eternal_density";
+		}
 	}
 }

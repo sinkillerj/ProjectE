@@ -2,12 +2,19 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -15,8 +22,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class AlchChestTile extends TileEmc
+public class AlchChestTile extends TileEmc implements IInteractionObject
 {
 	private final ItemStackHandler inventory = new StackHandler(104);
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
@@ -130,4 +138,29 @@ public class AlchChestTile extends TileEmc
 		else return super.receiveClientEvent(number, arg);
 	}
 
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		return new AlchChestContainer(playerInventory, this);
+	}
+
+	@Override
+	public String getGuiID() {
+		return getType().getRegistryName().toString();
+	}
+
+	@Override
+	public ITextComponent getName() {
+		return new TextComponentString(getGuiID());
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName() {
+		return null;
+	}
 }

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
@@ -11,12 +12,15 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -36,23 +40,12 @@ public class Relay extends BlockDirection implements ITileEntityProvider
 	{
 		if (!world.isRemote)
 		{
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
-
-			switch (tier)
+			PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+			buf.writeBlockPos(pos);
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof RelayMK1Tile)
 			{
-				/* todo 1.13
-				case 1:
-					player.openGui(PECore.instance, Constants.RELAY1_GUI, world, x, y, z);
-					break;
-				case 2:
-					player.openGui(PECore.instance, Constants.RELAY2_GUI, world, x, y, z);
-					break;
-				case 3:
-					player.openGui(PECore.instance, Constants.RELAY3_GUI, world, x, y, z);
-					break;
-					*/
+				NetworkHooks.openGui((EntityPlayerMP) player, (RelayMK1Tile) te, buf);
 			}
 		}
 		return true;

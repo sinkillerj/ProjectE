@@ -1,8 +1,12 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -91,5 +95,11 @@ public class CondenserMK2Tile extends CondenserTile
 		nbt = super.write(nbt);
 		nbt.put("Output", getOutput().serializeNBT());
 		return nbt;
+	}
+
+	@Override
+	public Container createContainer(InventoryPlayer playerInv, EntityPlayer player)
+	{
+		return new CondenserMK2Container(playerInv, this);
 	}
 }

@@ -30,15 +30,4 @@ public class CondenserMK2 extends Condenser
 	{
 		return new CondenserMK2Tile();
 	}
-
-	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		if (!world.isRemote)
-		{
-			// todo 1.13 player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, pos.getX(), pos.getY(), pos.getZ());
-		}
-
-		return true;
-	}
 }

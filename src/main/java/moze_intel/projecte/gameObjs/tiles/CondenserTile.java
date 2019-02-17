@@ -2,15 +2,22 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -19,8 +26,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class CondenserTile extends TileEmc implements IEmcAcceptor
+public class CondenserTile extends TileEmc implements IEmcAcceptor, IInteractionObject
 {
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
@@ -322,5 +330,36 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 		{
 			return 0;
 		}
+	}
+
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	{
+		return new CondenserContainer(playerInventory, this);
+	}
+
+	@Override
+	public String getGuiID()
+	{
+		return getType().getRegistryName().toString();
+	}
+
+	@Override
+	public ITextComponent getName()
+	{
+		return new TextComponentString(getGuiID());
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName()
+	{
+		return null;
 	}
 }

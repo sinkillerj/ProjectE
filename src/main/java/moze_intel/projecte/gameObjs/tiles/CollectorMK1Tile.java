@@ -4,16 +4,23 @@ import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -24,9 +31,10 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IEmcProvider
+public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteractionObject
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
@@ -377,5 +385,39 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);
 		return toRemove;
+	}
+
+	@Nonnull
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	{
+		return new CollectorMK1Container(playerInventory, this);
+	}
+
+	@Nonnull
+	@Override
+	public String getGuiID()
+	{
+		return getType().getRegistryName().toString();
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getName()
+	{
+		return new TextComponentString(getGuiID());
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public ITextComponent getCustomName()
+	{
+		return null;
 	}
 }
