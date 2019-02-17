@@ -31,6 +31,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,7 +70,14 @@ public final class EMCMapper
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 
-		CommentedFileConfig config = CommentedFileConfig.builder(Paths.get("config", PECore.MODID, "mapping.toml")).build();
+		Path path = Paths.get("config", PECore.MODNAME, "mapping.toml");
+		try {
+			path.toFile().createNewFile();
+		} catch (IOException ex) {
+			PECore.LOGGER.error("Couldn't create mapping.toml", ex);
+		}
+
+		CommentedFileConfig config = CommentedFileConfig.builder(path).build();
 		config.load();
 
 		boolean dumpToFile = getOrSetDefault(config, "general.dumpEverythingToFile", "Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json", false);
