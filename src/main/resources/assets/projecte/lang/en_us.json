@@ -177,30 +177,23 @@
     "pe.command.clearknowledge.notify": "Your transmutation knowledge was cleared by %s!",
     "pe.command.clearknowledge.playernotfound": "Couldn't find player named: %s",
     "pe.command.clearknowledge.success": "Cleared knowledge for: %s",
-    "pe.command.clearknowledge.usage": "/projecte clearKnowledge [player selector]",
 
     "pe.command.reload.notice": "Restart or use \"/reload\" when all changes are complete.",
 
+    "pe.command.remove.noitem": "Please give an item to change",
     "pe.command.remove.invaliditem": "Error: The item \"%s\" was not found!",
-    "pe.command.remove.invalidmeta": "Error: The meta value \"%s\" is not valid!",
     "pe.command.remove.success": "Removed EMC value for %s.",
-    "pe.command.remove.usage": "/projecte removeEMC <unlocalized | oredict name> [meta] (no params for held item)",
 
-    "pe.command.reset.invalidmeta": "Error: The meta value \"%s\" is not valid!",
     "pe.command.reset.nochange": "The EMC value for %s:%s has not been modified!",
     "pe.command.reset.success": "Reset EMC value for %s.",
-    "pe.command.reset.usage": "/projecte resetEMC <unlocalized | oredict name> [meta] (no params for held item)",
 
     "pe.command.set.invalidemc": "Error: The EMC value \"%s\" is not valid!",
     "pe.command.set.invaliditem": "Error: The item \"%s\" was not found!",
-    "pe.command.set.invalidmeta": "Error: The meta value \"%s\" is not valid!",
     "pe.command.set.success": "Set EMC value for %s to %s!",
-    "pe.command.set.usage": "/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)",
 
     "pe.command.showbag.notplayer": "Cannot show bag contents to a non-player",
     "pe.command.showbag.offline.uuid": "Malformed UUID",
     "pe.command.showbag.offline.notfound": "UUID %s not found in playerdata/",
-    "pe.command.showbag.usage": "/projecte showBag <color> <player selector>",
 
     "pe.darkpick.mode1": "Standard",
     "pe.darkpick.mode2": "3x Tallshot",

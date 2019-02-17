@@ -17,8 +17,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public class RemoveEmcCMD
 {
-	// todo 1.13 localize
-	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TextComponentString("Empty stack in both hands"));
+	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TextComponentTranslation("pe.command.remove.noitem"));
 
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
