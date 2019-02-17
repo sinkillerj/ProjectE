@@ -113,6 +113,7 @@ public class ObjHandler
 	};
 	public static final IRecipeSerializer<RecipesCovalenceRepair> COVALENCE_REPAIR_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeSerializers.SimpleSerializer<>(PECore.MODID + ":covalence_repair", RecipesCovalenceRepair::new));
 	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
+	public static final IRecipeSerializer<RecipeShapelessHidden> SHAPELESS_HIDDEN_SERIALIZER = RecipeSerializers.register(new RecipeShapelessHidden.Serializer());
 	public static final Block alchChest = new AlchemicalChest(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
@@ -488,47 +489,8 @@ public class ObjHandler
 		evt.getRegistry().register(DM_PEDESTAL_TILE);
 	}
 
-	/* todo 1.13
-	@SubscribeEvent
-	public static void addRecipes(RegistryEvent.Register<IRecipe> evt)
-	{
-		registerPhiloStoneSmelting(evt.getRegistry());
-	}
-	*/
-
 	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)
 	{
 		registry.register(o.setRegistryName(name));
 	}
-
-	private static NonNullList<Ingredient> toIngredients(ItemStack... stacks) {
-		NonNullList<Ingredient> ingr = NonNullList.create();
-		for (ItemStack stack : stacks) {
-			ingr.add(Ingredient.fromStacks(stack));
-		}
-		return ingr;
-	}
-
-	/*todo 1.13
-	private static void registerPhiloStoneSmelting(IForgeRegistry<IRecipe> registry)
-	{
-		for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
-		{
-			if (entry.getKey().isEmpty() || entry.getValue().isEmpty())
-			{
-				continue;
-			}
-
-			ItemStack input = entry.getKey();
-			ItemStack output = entry.getValue().copy();
-			output.setCount(output.getCount() * 7);
-
-			String inputName = input.getItem().getRegistryName().toString().replace(':', '_')+ "_" + input.getItemDamage();
-			ResourceLocation recipeName = new ResourceLocation(PECore.MODID, "philstone_smelt_" + inputName);
-			registry.register(new RecipeShapelessHidden("", output,
-									toIngredients(new ItemStack(philosStone), input, input, input, input, input, input, input, new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE)))
-								.setRegistryName(recipeName));
-		}
-	}
-	*/
 }
