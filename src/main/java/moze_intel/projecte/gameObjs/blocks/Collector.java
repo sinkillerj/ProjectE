@@ -99,11 +99,6 @@ public class Collector extends BlockDirection implements ITileEntityProvider
 		}
 	}
 
-	/*@Override todo 1.13 reexamine (should reallow torch placing)
-	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-		return true;
-	}*/
-
 	@Override
 	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
