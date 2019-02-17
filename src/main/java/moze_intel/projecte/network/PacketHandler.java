@@ -36,7 +36,6 @@ public final class PacketHandler
 		HANDLER.registerMessage(disc++, StepHeightPKT.class, StepHeightPKT::encode, StepHeightPKT::decode, StepHeightPKT.Handler::handle);
 		HANDLER.registerMessage(disc++, SetFlyPKT.class, SetFlyPKT::encode, SetFlyPKT::decode, SetFlyPKT.Handler::handle);
 		HANDLER.registerMessage(disc++, KnowledgeSyncPKT.class, KnowledgeSyncPKT::encode, KnowledgeSyncPKT::decode, KnowledgeSyncPKT.Handler::handle);
-		HANDLER.registerMessage(disc++, CheckUpdatePKT.class, CheckUpdatePKT::encode, CheckUpdatePKT::decode, CheckUpdatePKT.Handler::handle);
 		HANDLER.registerMessage(disc++, SyncBagDataPKT.class, SyncBagDataPKT::encode, SyncBagDataPKT::decode, SyncBagDataPKT.Handler::handle);
 		HANDLER.registerMessage(disc++, SearchUpdatePKT.class, SearchUpdatePKT::encode, SearchUpdatePKT::decode, SearchUpdatePKT.Handler::handle);
 		HANDLER.registerMessage(disc++, KnowledgeClearPKT.class, KnowledgeClearPKT::encode, KnowledgeClearPKT::decode, KnowledgeClearPKT.Handler::handle);
@@ -67,7 +66,7 @@ public final class PacketHandler
 
 	public static void sendNonLocal(Object msg, EntityPlayerMP player)
 	{
-		if (player.server.isDedicatedServer() || !player.getName().equals(player.server.getServerOwner()))
+		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner()))
 		{
 			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}

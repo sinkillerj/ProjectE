@@ -11,7 +11,6 @@ import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CheckUpdatePKT;
 import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
@@ -97,8 +96,6 @@ public class PlayerEvents
 		EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
 		PacketHandler.sendFragmentedEmcPacket(player);
 
-		PacketHandler.sendTo(new CheckUpdatePKT(), player);
-
 		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
 			knowledge.sync(player);
 			PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(knowledge.getEmc()));
@@ -128,9 +125,13 @@ public class PlayerEvents
 		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString())))
 		{
 			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
-			ITextComponent playername = new TextComponentString(" " + evt.getPlayer().getName() + " ").setStyle(new Style().setColor(TextFormatting.GOLD));
+			ITextComponent playername = evt.getPlayer().getDisplayName().setStyle(new Style().setColor(TextFormatting.GOLD));
 			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(prior.appendSibling(playername).appendSibling(latter));
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(
+					prior.appendText(" ")
+							.appendSibling(playername)
+							.appendText(" ")
+							.appendSibling(latter));
 		}
 	}
 

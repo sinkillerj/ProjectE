@@ -30,6 +30,7 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.integration.Integration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
+import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.rendering.ChestRenderer;
@@ -188,6 +189,8 @@ public class PECore
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+
+		new ThreadCheckUpdate().start();
 
 		DeferredWorkQueue.runLater(() -> {
 			PacketHandler.register(); // NetworkRegistry.createInstance
