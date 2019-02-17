@@ -110,7 +110,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static boolean addToFile(String toAdd, long emc)
+	public static void addToFile(String toAdd, long emc)
 	{
 		NormalizedSimpleStack nss = getNss(toAdd);
 		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
@@ -135,7 +135,6 @@ public final class CustomEMCParser
 		}
 
 		dirty = true;
-		return true;
 	}
 
 	public static boolean removeFromFile(String toRemove)

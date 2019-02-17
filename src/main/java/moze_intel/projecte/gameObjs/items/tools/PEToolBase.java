@@ -476,15 +476,6 @@ public abstract class PEToolBase extends ItemMode
 		}
 	}
 
-	private static boolean isSameOre(IBlockState target, IBlockState world)
-	{
-		if (target.getBlock() instanceof BlockRedstoneOre)
-		{
-			return world.getBlock() instanceof BlockRedstoneOre;
-		}
-		return target == world;
-	}
-
 	/**
 	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
 	 */
@@ -507,9 +498,9 @@ public abstract class PEToolBase extends ItemMode
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
 			IBlockState state = player.getEntityWorld().getBlockState(pos);
-			if (isSameOre(target, state))
+			if (target.getBlock() == state.getBlock())
 			{
-				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state, drops, 0);
+				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state.getBlock(), drops, 0);
 			}
 		}
 
@@ -539,7 +530,7 @@ public abstract class PEToolBase extends ItemMode
 			IBlockState state = world.getBlockState(pos);
 			if (ItemHelper.isOre(state.getBlock()) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
-				WorldHelper.harvestVein(world, player, stack, pos, state, drops, 0);
+				WorldHelper.harvestVein(world, player, stack, pos, state.getBlock(), drops, 0);
 			}
 		}
 

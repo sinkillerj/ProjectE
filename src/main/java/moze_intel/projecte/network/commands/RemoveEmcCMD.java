@@ -22,7 +22,7 @@ public class RemoveEmcCMD
 
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return Commands.literal("removeEMC")
+		return Commands.literal("removeemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
 					// todo 1.13 dropping nbt info, use a more restrictive arg parser?
@@ -48,17 +48,9 @@ public class RemoveEmcCMD
 
 	private static int removeEmc(CommandContext<CommandSource> ctx, Item item)
 	{
-		if (CustomEMCParser.addToFile(item.getRegistryName().toString(), 0))
-		{
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getRegistryName().toString()), true);
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
-			return Command.SINGLE_SUCCESS;
-		}
-		else
-		{
-			// todo 1.13 will this else ever happen?
-			// throw new CommandException("pe.command.remove.invaliditem", name);
-			return 0;
-		}
+		CustomEMCParser.addToFile(item.getRegistryName().toString(), 0);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getRegistryName().toString()), true);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+		return Command.SINGLE_SUCCESS;
 	}
 }

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.config.CustomEMCParser;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ItemArgument;
@@ -17,7 +18,7 @@ public class ResetEmcCMD
 {
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return Commands.literal("resetEMC")
+		return Commands.literal("resetemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
 						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
@@ -51,9 +52,7 @@ public class ResetEmcCMD
 		}
 		else
 		{
-			// todo 1.13 will this else ever happen?
-			// throw new CommandException("pe.command.remove.invaliditem", name);
-			return 0;
+			throw new CommandException(new TextComponentTranslation("pe.command.remove.invaliditem", item.getRegistryName()));
 		}
 	}
 }

@@ -7,6 +7,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.VersionChecker;
+import net.minecraftforge.forgespi.language.IModInfo;
 
 public class ThreadCheckUpdate extends Thread
 {
@@ -22,14 +25,14 @@ public class ThreadCheckUpdate extends Thread
 	public void run()
 	{
 		hasRun = true;
-		/* todo 1.13
-		ModContainer container = Loader.instance().getIndexedModList().get(PECore.MODID);
-		ForgeVersion.CheckResult result = null;
+
+		IModInfo info = ModList.get().getModContainerById(PECore.MODID).get().getModInfo();
+		VersionChecker.CheckResult result = null;
 
 		int tries = 0;
 		do {
-			ForgeVersion.CheckResult res = ForgeVersion.getResult(container);
-			if (res.status != ForgeVersion.Status.PENDING)
+			VersionChecker.CheckResult res = VersionChecker.getResult(info);
+			if (res.status != VersionChecker.Status.PENDING)
 			{
 				result = res;
 			}
@@ -46,24 +49,26 @@ public class ThreadCheckUpdate extends Thread
 			return;
 		}
 
-		if (result.status == ForgeVersion.Status.UP_TO_DATE)
+		if (result.status == VersionChecker.Status.UP_TO_DATE)
 		{
 			PECore.LOGGER.info("Mod is updated.");
-		} else if (result.status == ForgeVersion.Status.OUTDATED)
+		} else if (result.status == VersionChecker.Status.OUTDATED)
 		{
 			PECore.LOGGER.info("Mod is outdated! Check {} to get the latest version ({}).", curseURL, result.target);
-			final ForgeVersion.CheckResult res = result;
+			final VersionChecker.CheckResult res = result;
 
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation("pe.update.available", res.target));
-				Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation("pe.update.getit"));
+			Minecraft.getInstance().addScheduledTask(() -> {
+				if (Minecraft.getInstance().player != null)
+				{
+					Minecraft.getInstance().player.sendMessage(new TextComponentTranslation("pe.update.available", res.target));
+					Minecraft.getInstance().player.sendMessage(new TextComponentTranslation("pe.update.getit"));
 
-				ITextComponent link = new TextComponentString(curseURL);
-				link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-				Minecraft.getMinecraft().player.sendMessage(link);
+					ITextComponent link = new TextComponentString(curseURL);
+					link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+					Minecraft.getInstance().player.sendMessage(link);
+				}
 			});
 		}
-		*/
 	}
 
 	public static boolean hasRun()

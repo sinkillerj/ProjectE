@@ -39,26 +39,17 @@ import java.util.UUID;
 
 public class ShowBagCMD
 {
-	private static final DynamicCommandExceptionType NO_COLOR = new DynamicCommandExceptionType(c -> new TextComponentTranslation("pe.command.showbag.nocolor", c));
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return Commands.literal("showBag")
-				// todo 1.13 suggest colors
-				.then(Commands.argument("color", StringArgumentType.string())
+		return Commands.literal("showbag")
+				.then(Commands.argument("color", new ColorArgument())
 					// todo 1.13 accept uuid for offline usage
-					.then(Commands.argument("target", EntityArgument.player()))
-						.executes(ctx -> showBag(ctx, StringArgumentType.getString(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))));
+					.then(Commands.argument("target", EntityArgument.player())
+							.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target")))));
 	}
 
-	private static int showBag(CommandContext<CommandSource> ctx, String colorStr, EntityPlayerMP player) throws CommandSyntaxException
+	private static int showBag(CommandContext<CommandSource> ctx, EnumDyeColor color, EntityPlayerMP player) throws CommandSyntaxException
 	{
-		EnumDyeColor color;
-		try {
-			color = EnumDyeColor.valueOf(colorStr.toUpperCase(Locale.ROOT));
-		} catch (IllegalArgumentException ex) {
-			throw NO_COLOR.create(colorStr);
-		}
-
 		EntityPlayerMP senderPlayer = ctx.getSource().asPlayer();
 		senderPlayer.closeScreen();
 		senderPlayer.getNextWindowId();

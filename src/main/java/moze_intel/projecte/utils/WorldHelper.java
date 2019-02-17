@@ -226,7 +226,6 @@ public final class WorldHelper
 	{
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.canSilkHarvest(world, pos, player))
 		{
-			// todo 1.13 reflect getSilkTouchDrop?
 			return Lists.newArrayList(new ItemStack(state.getBlock()));
 		}
 
@@ -473,7 +472,7 @@ public final class WorldHelper
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
-	public static int harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, IBlockState target, List<ItemStack> currentDrops, int numMined)
+	public static int harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined)
 	{
 		if (numMined >= Constants.MAX_VEIN_SIZE)
 		{
@@ -485,10 +484,8 @@ public final class WorldHelper
 		for (BlockPos currentPos : getPositionsFromBox(b))
 		{
 			IBlockState currentState = world.getBlockState(currentPos);
-			Block block = currentState.getBlock();
 
-			// todo 1.13 should probably turn into a block check not state check
-			if (currentState == target)
+			if (currentState.getBlock() == target)
 			{
 				numMined++;
 				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))

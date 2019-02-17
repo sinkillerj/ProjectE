@@ -17,7 +17,7 @@ public class SetEmcCMD
 {
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
-		return Commands.literal("setEMC")
+		return Commands.literal("setemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("emc", IntegerArgumentType.integer(0))
 					.then(Commands.argument("item", ItemArgument.item())
@@ -46,17 +46,9 @@ public class SetEmcCMD
 
 	private static int setEmc(CommandContext<CommandSource> ctx, int emc, Item item)
 	{
-		if (CustomEMCParser.addToFile(item.getRegistryName().toString(), emc))
-		{
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getRegistryName().toString(), emc), true);
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
-			return Command.SINGLE_SUCCESS;
-		}
-		else
-		{
-			// todo 1.13 will this else ever happen?
-			// throw new CommandException("pe.command.remove.invaliditem", name);
-			return 0;
-		}
+		CustomEMCParser.addToFile(item.getRegistryName().toString(), emc);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getRegistryName().toString(), emc), true);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+		return Command.SINGLE_SUCCESS;
 	}
 }

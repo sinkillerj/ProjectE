@@ -3,6 +3,7 @@ package moze_intel.projecte.network.packets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -27,10 +28,7 @@ public class CheckUpdatePKT {
 
 		private static boolean updateCheckEnabled()
 		{
-			// todo 1.13
-			return false;
-			/*return ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, "Global", true).getBoolean()
-					&& ForgeModContainer.getConfig().get(ForgeModContainer.VERSION_CHECK_CAT, PECore.MODID, true).getBoolean();*/
+			return FMLConfig.runVersionCheck();
 		}
 	}
 }
