@@ -22,6 +22,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -271,17 +273,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.harvestgod.pedestal2"));
-			list.add(TextFormatting.BLUE +
-					I18n.format("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())));
+			list.add(new TextComponentTranslation("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

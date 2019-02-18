@@ -350,17 +350,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.effects.timePedBonus.get() > 0) {
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()));
+			list.add(new TextComponentTranslation("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
 		}
 		if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()));
+			list.add(new TextComponentTranslation("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

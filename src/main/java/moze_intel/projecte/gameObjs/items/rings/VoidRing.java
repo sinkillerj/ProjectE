@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,9 +46,8 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
 		return ((IPedestalItem) ObjHandler.blackHole).getPedestalDescription();
 	}

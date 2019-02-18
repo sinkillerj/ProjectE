@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.annotations.SerializedName;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSTag;
@@ -39,13 +38,12 @@ public final class CustomEMCParser
 
 	public static class CustomEMCEntry
 	{
-		@SerializedName("item")
-		public final NormalizedSimpleStack nss;
+		public final NormalizedSimpleStack item;
 		public final long emc;
 
-		private CustomEMCEntry(NormalizedSimpleStack nss, long emc)
+		private CustomEMCEntry(NormalizedSimpleStack item, long emc)
 		{
-			this.nss = nss;
+			this.item = item;
 			this.emc = emc;
 		}
 
@@ -54,13 +52,13 @@ public final class CustomEMCParser
 		{
 			return o == this ||
 					o instanceof CustomEMCEntry
-							&& nss.equals(((CustomEMCEntry) o).nss)
+							&& item.equals(((CustomEMCEntry) o).item)
 							&& emc == ((CustomEMCEntry) o).emc;
 		}
 
 		@Override
 		public int hashCode() {
-			int result = nss != null ? nss.hashCode() : 0;
+			int result = item != null ? item.hashCode() : 0;
 			result = 31 * result + (int) (emc ^ (emc >>> 32));
 			return result;
 		}
@@ -90,7 +88,7 @@ public final class CustomEMCParser
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG))) {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> !(e.nss instanceof NSSItem || e.nss instanceof NSSTag) || e.emc < 0);
+			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem || e.item instanceof NSSTag) || e.emc < 0);
 		} catch (IOException | JsonParseException e) {
 			PECore.LOGGER.fatal("Couldn't read custom emc file");
 			e.printStackTrace();
@@ -119,7 +117,7 @@ public final class CustomEMCParser
 
 		for (int i = 0; i < currentEntries.entries.size(); i++)
 		{
-			if (currentEntries.entries.get(i).nss.equals(nss))
+			if (currentEntries.entries.get(i).item.equals(nss))
 			{
 				setAt = i;
 				break;
@@ -145,7 +143,7 @@ public final class CustomEMCParser
 		boolean removed = false;
 		while (iter.hasNext())
 		{
-			if (iter.next().nss.equals(nss))
+			if (iter.next().item.equals(nss))
 			{
 				iter.remove();
 				dirty = true;

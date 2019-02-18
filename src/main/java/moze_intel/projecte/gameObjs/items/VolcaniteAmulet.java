@@ -229,15 +229,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.volcanite.get() != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())));
+			list.add(new TextComponentTranslation("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

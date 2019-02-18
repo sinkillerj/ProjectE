@@ -308,16 +308,14 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.evertide.get() != -1)
 		{
-			list.add(TextFormatting.BLUE + I18n.format("pe.evertide.pedestal1"));
-			list.add(TextFormatting.BLUE +
-					I18n.format("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())));
+			list.add(new TextComponentTranslation("pe.evertide.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

@@ -24,6 +24,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -151,14 +153,13 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.archangel.get() != -1) {
-			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangel.get())));
+			list.add(new TextComponentTranslation("pe.archangel.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangel.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

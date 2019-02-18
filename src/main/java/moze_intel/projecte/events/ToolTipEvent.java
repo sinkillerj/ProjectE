@@ -46,17 +46,14 @@ public class ToolTipEvent
 			&& currentItem instanceof IPedestalItem)
 		{
 			event.getToolTip().add(new TextComponentTranslation("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
-			List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
+			List<ITextComponent> description = ((IPedestalItem) currentItem).getPedestalDescription();
 			if (description.isEmpty())
 			{
 				event.getToolTip().add(IPedestalItem.TOOLTIPDISABLED);
 			}
 			else
 			{
-				((IPedestalItem) currentItem).getPedestalDescription()
-						.stream()
-						.map(TextComponentString::new)
-						.forEach(event.getToolTip()::add);
+				event.getToolTip().addAll(description);
 			}
 		}
 

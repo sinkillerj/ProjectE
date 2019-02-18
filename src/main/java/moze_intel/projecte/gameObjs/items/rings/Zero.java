@@ -21,6 +21,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -167,13 +169,13 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	@Nonnull
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		List<String> list = new ArrayList<>();
+		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.zero.get() != -1) {
-			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal1"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal2"));
-			list.add(TextFormatting.BLUE + I18n.format("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zero.get())));
+			list.add(new TextComponentTranslation("pe.zero.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.zero.pedestal2").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TextComponentTranslation("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.zero.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

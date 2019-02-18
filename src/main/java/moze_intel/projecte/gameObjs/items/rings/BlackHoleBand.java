@@ -26,6 +26,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -192,13 +194,12 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
 		return Lists.newArrayList(
-				TextFormatting.BLUE + I18n.format("pe.bhb.pedestal1"),
-				TextFormatting.BLUE + I18n.format("pe.bhb.pedestal2")
+				new TextComponentTranslation("pe.bhb.pedestal1").applyTextStyle(TextFormatting.BLUE),
+				new TextComponentTranslation("pe.bhb.pedestal2").applyTextStyle(TextFormatting.BLUE)
 		);
 	}
 

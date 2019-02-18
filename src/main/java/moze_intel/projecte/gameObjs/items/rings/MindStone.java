@@ -231,10 +231,9 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<String> getPedestalDescription()
+	public List<ITextComponent> getPedestalDescription()
 	{
-		return Lists.newArrayList(I18n.format("pe.mind.pedestal1"));
+		return Lists.newArrayList(new TextComponentTranslation("pe.mind.pedestal1"));
 	}
 }
