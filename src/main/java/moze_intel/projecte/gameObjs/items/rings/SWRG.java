@@ -105,13 +105,17 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
 			long toRemove = 0;
 
-			if (playerMP.capabilities.isFlying) {
+			if (playerMP.capabilities.isFlying)
+			{
 				toRemove = 1;
 			}
 
-			if (stack.getTagCompound().getInteger(TAG_MODE) == 2) {
+			if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
+			{
 				toRemove = 1;
-			} else if (stack.getTagCompound().getInteger(TAG_MODE) == 3) {
+			}
+			else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
+			{
 				toRemove = 2;
 			}
 

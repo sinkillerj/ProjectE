@@ -64,17 +64,20 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 
 		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
+		if (tiles.isEmpty()) {
+			return;
+		}
 
-		if (!tiles.isEmpty()) {
-			long emcPer = emc / tiles.size();
-			for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet()) {
-				if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile) {
-					continue;
-				}
-				long provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
-				long remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
-				this.addEMC(remain);
+		long emcPer = emc / tiles.size();
+		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())
+		{
+			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
+			{
+				continue;
 			}
+			long provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+			long remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+			this.addEMC(remain);
 		}
 	}
 

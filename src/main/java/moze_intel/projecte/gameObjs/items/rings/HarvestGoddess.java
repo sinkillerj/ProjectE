@@ -59,13 +59,18 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			{
 				long storedEmc = getEmc(stack);
 
-				if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
+				if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
+				{
 					stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
-				} else {
+				}
+				else
+				{
 					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 					removeEmc(stack, 1);
 				}
-			} else {
+			}
+			else
+			{
 				WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 			}
 		}

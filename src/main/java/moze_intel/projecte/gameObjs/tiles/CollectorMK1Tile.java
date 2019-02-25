@@ -173,33 +173,42 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	}
 	
-	private void updateEmc() {
+	private void updateEmc()
+	{
 		if (emcTimer > 0) {
 			emcTimer--;
 		} else {
-			if (!this.hasMaxedEmc()) {
+			if (!this.hasMaxedEmc())
+			{
 				this.addEMC(getSunRelativeEmc(emcGen) / 4);
 			}
 			emcTimer = 5;
 		}
 
-		if (this.getStoredEmc() == 0) {
+		if (this.getStoredEmc() == 0)
+		{
 			return;
-		} else if (hasChargeableItem) {
+		}
+		else if (hasChargeableItem)
+		{
 			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			IItemEmc item = (IItemEmc) getUpgrading().getItem();
 
 			long itemEmc = item.getStoredEmc(getUpgrading());
 			long maxItemEmc = item.getMaximumEmc(getUpgrading());
 
-			if ((itemEmc + toSend) > maxItemEmc) {
+			if ((itemEmc + toSend) > maxItemEmc)
+			{
 				toSend = maxItemEmc - itemEmc;
 			}
 
 			item.addEmc(getUpgrading(), toSend);
 			this.removeEMC(toSend);
-		} else if (hasFuel) {
-			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
+		}
+		else if (hasFuel)
+		{
+			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty())
+			{
 				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 			}
 
@@ -207,14 +216,18 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 
 			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 
-			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost) {
+			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
+			{
 				ItemStack upgrade = getUpgraded();
 
-				if (getUpgraded().isEmpty()) {
+				if (getUpgraded().isEmpty())
+				{
 					this.removeEMC(upgradeCost);
 					auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 					getUpgrading().shrink(1);
-				} else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize()) {
+				}
+				else if (ItemHelper.basicAreStacksEqual(result, upgrade) && upgrade.getCount() < upgrade.getMaxStackSize())
+				{
 					this.removeEMC(upgradeCost);
 					getUpgraded().grow(1);
 					getUpgrading().shrink(1);

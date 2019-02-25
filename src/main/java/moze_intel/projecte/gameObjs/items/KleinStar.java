@@ -40,10 +40,10 @@ public class KleinStar extends ItemPE implements IItemEmc
 		
 		if (starEmc == 0)
 		{
-			return 1;
+			return 1.0D;
 		}
 		
-		return 1 - starEmc / EMCHelper.getKleinStarMaxEmc(stack);
+		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
 
 	

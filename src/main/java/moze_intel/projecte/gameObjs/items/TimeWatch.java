@@ -271,7 +271,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	public long getEmcPerTick(int charge)
 	{
 		int actualCharge = charge + 1;
-		return (10 * actualCharge) / 20;
+		return actualCharge / 2;
 	}
 
 	@Override
