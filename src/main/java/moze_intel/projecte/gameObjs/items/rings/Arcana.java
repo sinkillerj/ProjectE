@@ -49,7 +49,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 {
 	public Arcana()
 	{
-		setUnlocalizedName("arcana_ring");
+		setTranslationKey("arcana_ring");
 		setMaxStackSize(1);
 		setNoRepair();
 		setContainerItem(this);
@@ -244,13 +244,13 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(world, player);
-				fire.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+				fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(fire);
 				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player, true);
-				lightning.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+				lightning.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(lightning);
 				// lightning.playSound(PESounds.WIND, 1.0F, 1.0F);
 				break;

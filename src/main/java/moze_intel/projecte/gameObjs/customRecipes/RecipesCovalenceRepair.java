@@ -7,77 +7,88 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
-	private ItemStack output = ItemStack.EMPTY;
-
-	@Override
-	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
-	{
+    private Tuple<ItemStack, List<ItemStack>> findIngredients(InventoryCrafting inv) {
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
-		int dustEmc = 0;
-		long emcPerDurability = 0;
-		
+
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack input = inv.getStackInSlot(i);
-			
+
 			if (input.isEmpty())
 			{
 				continue;
 			}
-			
+
 			if (ItemHelper.isItemRepairable(input))
 			{
 				if (!foundItem)
 				{
 					tool = input;
 					foundItem = true;
-					emcPerDurability = EMCHelper.getEMCPerDurability(tool);
 				}
 				else
 				{
-					return false;
+				    // Duplicate item
+				    return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
 				}
 			}
 			else if (input.getItem() == ObjHandler.covalence)
 			{
 				dust.add(input);
 			}
-		}
-		
-		if (tool.isEmpty() || !foundItem || dust.size() == 0)
-		{
-			return false;
+			else
+			{
+				// Non-dust non-tool
+				return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
+			}
 		}
 
-		for (ItemStack stack : dust) {
+		return new Tuple<>(tool, dust);
+	}
+
+	@Override
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
+	{
+		Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
+		if (ingredients.getFirst().isEmpty() || ingredients.getSecond().isEmpty())
+			return false;
+
+		long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getFirst());
+		long dustEmc = 0;
+		for (ItemStack stack : ingredients.getSecond()) {
 			dustEmc += EMCHelper.getEmcValue(stack);
 		}
-		if(dustEmc < emcPerDurability){
-			return false;
-		}
-		
-		output = tool.copy();
-		output.setItemDamage((int)Math.max(tool.getItemDamage() - dustEmc / emcPerDurability, 0));
-		return true;
+		return dustEmc >= emcPerDurability;
 	}
 	
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1)
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
 	{
-		return output.copy();
+	    Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
+	    long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getFirst());
+		long dustEmc = 0;
+		for (ItemStack stack : ingredients.getSecond()) {
+			dustEmc += EMCHelper.getEmcValue(stack);
+		}
+
+	    ItemStack output = ingredients.getFirst().copy();
+		output.setItemDamage((int)Math.max(output.getItemDamage() - (dustEmc / emcPerDurability), 0));
+		return output;
 	}
 
 	@Override
@@ -89,13 +100,11 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 	@Override
 	public ItemStack getRecipeOutput() 
 	{
-		return output;
+		return ItemStack.EMPTY;
 	}
 
-	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv)
-	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+	public boolean isDynamic() {
+		return true;
 	}
 }

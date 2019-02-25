@@ -36,7 +36,7 @@ public class UpdateGemModePKT implements IMessage
 		@Override
 		public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx)
 		{
-			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
 					ItemStack stack = ctx.getServerHandler().player.getHeldItem(EnumHand.MAIN_HAND);

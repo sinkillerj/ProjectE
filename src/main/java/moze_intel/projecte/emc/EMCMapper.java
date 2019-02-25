@@ -87,7 +87,7 @@ public final class EMCMapper
 							"Exploits that derive from conversions that are unknown to ProjectE will not be found."
 			));
 
-			PECore.LOGGER.info("Starting to collect Mappings...");
+			PECore.debugLog("Starting to collect Mappings...");
 			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers)
 			{
 				try
@@ -96,7 +96,7 @@ public final class EMCMapper
 					{
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
 						emcMapper.addMappings(mappingCollector, new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
-						PECore.LOGGER.info("Collected Mappings from " + emcMapper.getClass().getName());
+						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e)
 				{
@@ -107,15 +107,15 @@ public final class EMCMapper
 			DumpToFileCollector.currentGroupName = "NSSHelper";
 			NormalizedSimpleStack.addMappings(mappingCollector);
 
-			PECore.LOGGER.info("Mapping Collection finished");
+			PECore.debugLog("Mapping Collection finished");
 			mappingCollector.finishCollection();
 
-			PECore.LOGGER.info("Starting to generate Values:");
+			PECore.debugLog("Starting to generate Values:");
 
 			config.save();
 
 			graphMapperValues = valueGenerator.generateValues();
-			PECore.LOGGER.info("Generated Values...");
+			PECore.debugLog("Generated Values...");
 
 			filterEMCMap(graphMapperValues);
 
@@ -124,7 +124,7 @@ public final class EMCMapper
 				try
 				{
 					PregeneratedEMC.write(PECore.PREGENERATED_EMC_FILE, graphMapperValues);
-					PECore.LOGGER.info("Wrote Pregen-file!");
+					PECore.debugLog("Wrote Pregen-file!");
 				} catch (IOException e)
 				{
 					e.printStackTrace();
@@ -147,6 +147,7 @@ public final class EMCMapper
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
 		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
+		PECore.refreshJEI();
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {

@@ -17,6 +17,7 @@ public class ProjectECMD extends CommandTreeBase
 		addSubcommand(new RemoveEmcCMD());
 		addSubcommand(new ResetEmcCMD());
 		addSubcommand(new SetEmcCMD());
+		addSubcommand(new ShowBagCMD());
 	}
 
 	@Nonnull

@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneOre;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -82,7 +83,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, IBlockState state)
 	{
 		if ("dm_tools".equals(this.peToolMaterial))
 		{
@@ -295,7 +296,9 @@ public abstract class PEToolBase extends ItemMode
 					&& (canHarvestBlock(state, stack) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
 					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos))
 			{
-				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
+				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
+				if (!(b instanceof BlockShulkerBox))
+					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
 				world.setBlockToAir(digPos);
 			}
 		}
@@ -336,7 +339,9 @@ public abstract class PEToolBase extends ItemMode
 					&& consumeFuel(player, stack, emcCost, true)
 					)
 			{
-				drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
+				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
+				if (!(b instanceof BlockShulkerBox))
+					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
 				world.setBlockToAir(pos);
 			}
 		}

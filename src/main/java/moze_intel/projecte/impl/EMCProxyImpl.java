@@ -22,21 +22,33 @@ public class EMCProxyImpl implements IEMCProxy
     @Override
     public void registerCustomEMC(@Nonnull ItemStack stack, int value)
     {
-        Preconditions.checkNotNull(stack);
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
-        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
-        APICustomEMCMapper.instance.registerCustomEMC(stack, value);
-        PECore.LOGGER.info("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
+        registerCustomEMC(stack, (long) value);
     }
 
     @Override
     public void registerCustomEMC(@Nonnull Object o, int value)
     {
+        registerCustomEMC(o, (long) value);
+    }
+
+    @Override
+    public void registerCustomEMC(@Nonnull ItemStack stack, long value)
+    {
+        Preconditions.checkNotNull(stack);
+        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
+        Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
+        APICustomEMCMapper.instance.registerCustomEMC(stack, value);
+        PECore.debugLog("Mod {} registered emc value {} for itemstack {}", Loader.instance().activeModContainer().getModId(), value, stack.toString());
+    }
+
+    @Override
+    public void registerCustomEMC(@Nonnull Object o, long value)
+    {
         Preconditions.checkNotNull(o);
         boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION) || Loader.instance().isInState(LoaderState.INITIALIZATION) || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(flag, String.format("Mod %s tried to register EMC at an invalid time!", Loader.instance().activeModContainer().getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(o, value);
-        PECore.LOGGER.info("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
+        PECore.debugLog("Mod {} registered emc value {} for Object {}", Loader.instance().activeModContainer().getModId(), value, o);
     }
 
     @Override
@@ -79,5 +91,12 @@ public class EMCProxyImpl implements IEMCProxy
     {
         Preconditions.checkNotNull(stack);
         return EMCHelper.getEmcValue(stack);
+    }
+
+    @Override
+    public long getSellValue(@Nonnull ItemStack stack)
+    {
+        Preconditions.checkNotNull(stack);
+        return EMCHelper.getEmcSellValue(stack);
     }
 }

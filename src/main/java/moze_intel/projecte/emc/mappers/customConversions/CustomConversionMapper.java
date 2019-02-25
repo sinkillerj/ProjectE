@@ -104,7 +104,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				{
 					NSSFake.setCurrentNamespace(name);
 					addMappingsFromFile(new FileReader(f), mapper);
-					PECore.LOGGER.info("Collected Mappings from {}", f.getName());
+					PECore.debugLog("Collected Mappings from {}", f.getName());
 				} catch (Exception e) {
 					PECore.LOGGER.fatal("Exception when reading file: {}", f);
 					e.printStackTrace();
@@ -127,7 +127,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
-			PECore.LOGGER.info("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);
+			PECore.debugLog("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);
 			try
 			{
 				for (CustomConversion conversion : entry.getValue().conversions)

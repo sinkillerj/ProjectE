@@ -51,7 +51,7 @@ public class KeyPressPKT implements IMessage
 		@Override
 		public IMessage onMessage(final KeyPressPKT message, final MessageContext ctx)
 		{
-			ctx.getServerHandler().player.mcServer.addScheduledTask(new Runnable() {
+			ctx.getServerHandler().player.server.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().player;
@@ -109,7 +109,9 @@ public class KeyPressPKT implements IMessage
                                     return;
                                 } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds || stack.isEmpty()))
                                 {
-                                    if (internalAbilities.getGemState() && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty() && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemChest)
+                                    if (internalAbilities.getGemState()
+                                            && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()
+                                            && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == ObjHandler.gemChest)
                                     {
                                         if (internalAbilities.getGemCooldown() <= 0)
                                         {

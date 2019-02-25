@@ -23,12 +23,14 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     public static final String UID = "pe.worldtransmute";
     private final IDrawable background;
     private final IDrawable arrow;
+    private final IDrawable icon;
     private final String localizedName;
 
     public WorldTransmuteRecipeCategory(IGuiHelper guiHelper)
     {
         background = guiHelper.createBlankDrawable(175, 48);
-        arrow = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 32, 32);
+        arrow = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15, 32, 32);
+        icon = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/items/philosophers_stone.png"), 0, 0, 16, 16, 16, 16);
         localizedName = I18n.format("pe.nei.worldtransmute");
     }
 
@@ -63,13 +65,13 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     @Override
     public IDrawable getIcon()
     {
-        return null;
+        return icon;
     }
 
     @Override
     public void drawExtras(@Nonnull Minecraft minecraft)
     {
-        arrow.draw(minecraft, -30, 0);
+        arrow.draw(minecraft, 75, 18);
     }
 
     @Override

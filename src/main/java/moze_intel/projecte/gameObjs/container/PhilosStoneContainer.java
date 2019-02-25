@@ -59,15 +59,7 @@ public class PhilosStoneContainer extends Container
 
 		if (!this.worldObj.isRemote)
 		{
-			for (int i = 0; i < 9; ++i)
-			{
-				ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
-
-				if (!itemstack.isEmpty())
-				{
-					player.dropItem(itemstack, false);
-				}
-			}
+			this.clearContainer(player, this.worldObj, this.craftMatrix);
 		}
 	}
 	

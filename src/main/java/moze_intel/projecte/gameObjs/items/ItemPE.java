@@ -27,9 +27,9 @@ public class ItemPE extends Item
 
 	@Nonnull
 	@Override
-	public Item setUnlocalizedName(@Nonnull String message)
+	public Item setTranslationKey(@Nonnull String message)
 	{
-		return super.setUnlocalizedName("pe_" + message);
+		return super.setTranslationKey("pe_" + message);
 	}
 
 	@Override

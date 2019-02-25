@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
@@ -9,10 +8,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public final class FuelMapper 
+public final class FuelMapper
 {
 	private static final List<SimpleStack> FUEL_MAP = new ArrayList<>();
 	
@@ -90,4 +90,11 @@ public final class FuelMapper
 		return stack.isValid() && FUEL_MAP.contains(stack);
 	}
 
+	/**
+	 * @return An immutable version of the Fuel Map
+	 */
+	public static List<SimpleStack> getFuelMap()
+	{
+		return Collections.unmodifiableList(FUEL_MAP);
+	}
 }

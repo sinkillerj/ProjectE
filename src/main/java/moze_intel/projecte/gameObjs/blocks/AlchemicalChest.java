@@ -29,7 +29,7 @@ public class AlchemicalChest extends BlockDirection
 	public AlchemicalChest() 
 	{
 		super(Material.ROCK);
-		this.setUnlocalizedName("pe_alchemy_chest");
+		this.setTranslationKey("pe_alchemy_chest");
 		this.setHardness(10.0f);
 		this.setDefaultState(blockState.getBaseState().withProperty(PEStateProps.FACING, EnumFacing.NORTH));
 		this.setResistance(6000000.0F);

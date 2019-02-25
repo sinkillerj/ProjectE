@@ -41,7 +41,7 @@ public final class AlchBagImpl
                 if (nbt instanceof NBTTagCompound)
                     instance.deserializeNBT(((NBTTagCompound) nbt));
             }
-        }, DefaultImpl.class);
+        }, DefaultImpl::new);
     }
 
     private static class DefaultImpl implements IAlchBagProvider

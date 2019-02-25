@@ -22,7 +22,7 @@ public class CondenserMK2Container extends CondenserContainer
 	}
 
 	@Override
-	void initSlots(InventoryPlayer invPlayer)
+	protected void initSlots(InventoryPlayer invPlayer)
 	{
 		this.addSlotToContainer(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.itemBlocks;
 
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ public class ItemFuelBlock extends ItemBlock
 	
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		switch (stack.getItemDamage())
 		{
@@ -36,5 +37,20 @@ public class ItemFuelBlock extends ItemBlock
 	public int getMetadata(int meta)
 	{
 		return meta;
+	}
+
+	@Override
+	public int getItemBurnTime(ItemStack stack)
+	{
+		switch (stack.getItemDamage())
+		{
+			case 0:
+				return Constants.ALCH_BURN_TIME * 9;
+			case 1:
+				return Constants.MOBIUS_BURN_TIME * 9;
+			case 2:
+				return Constants.AETERNALIS_BURN_TIME * 9;
+			default: return -1;
+		}
 	}
 }

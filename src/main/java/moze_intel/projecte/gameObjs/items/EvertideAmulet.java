@@ -62,11 +62,11 @@ import java.util.UUID;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem
 {
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
 
 	public EvertideAmulet()
 	{
-		this.setUnlocalizedName("evertide_amulet");
+		this.setTranslationKey("evertide_amulet");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 		this.setContainerItem(this);
@@ -156,6 +156,16 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 	}
 
 	@Override
+	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+	{
+		if (player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
+		{
+			player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		}
+		return true;
+	}
+
+	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
@@ -207,7 +217,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(world, player);
-			ent.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 			world.spawnEntity(ent);
 			return true;
 		}

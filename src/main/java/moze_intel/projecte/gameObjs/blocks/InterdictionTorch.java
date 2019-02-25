@@ -20,7 +20,7 @@ public class InterdictionTorch extends BlockTorch
 	public InterdictionTorch()
 	{
 		this.setCreativeTab(ObjHandler.cTab);
-		this.setUnlocalizedName("pe_interdiction_torch");
+		this.setTranslationKey("pe_interdiction_torch");
 		this.setLightLevel(0.9F);
 		this.setTickRandomly(true);
 	}
@@ -52,7 +52,7 @@ public class InterdictionTorch extends BlockTorch
 		if (enumfacing.getAxis().isHorizontal())
 		{
 			EnumFacing enumfacing1 = enumfacing.getOpposite();
-			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4 * (double)enumfacing1.getFrontOffsetX(), d1 + d3, d2 + d4 * (double)enumfacing1.getFrontOffsetZ(), 0.0D, 0.0D, 0.0D);
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4 * (double)enumfacing1.getXOffset(), d1 + d3, d2 + d4 * (double)enumfacing1.getZOffset(), 0.0D, 0.0D, 0.0D);
 		}
 		else
 		{

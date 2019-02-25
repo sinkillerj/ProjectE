@@ -12,7 +12,7 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 {
 	public CataliticLens() 
 	{
-		this.setUnlocalizedName("catalitic_lens");
+		this.setTranslationKey("catalitic_lens");
 	}
 	
 	@Override

@@ -42,23 +42,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
 {
+	// TODO 1.13 remove
 	private static final Set<String> internalBlacklist = Sets.newHashSet(
-			"moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
 			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino",
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
-	
+
 	public TimeWatch() 
 	{
-		this.setUnlocalizedName("time_watch");
+		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
@@ -197,12 +198,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		{
 			return;
 		}
+
+		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist);
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++)
 		{
 			for (TileEntity tile : list)
 			{
-				if (!tile.isInvalid() && tile instanceof ITickable && !internalBlacklist.contains(tile.getClass().getName()))
+				if (!tile.isInvalid() && tile instanceof ITickable
+						&& !internalBlacklist.contains(tile.getClass().toString())
+						&& !blacklist.contains(TileEntity.getKey(tile.getClass()).toString()))
 				{
 					((ITickable) tile).update();
 				}
@@ -217,6 +222,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			return;
 		}
 
+		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchBlockBlacklist);
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
 		{
 			for (int i = 0; i < bonusTicks; i++)
@@ -224,6 +230,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 				if (block.getTickRandomly()
+						&& !blacklist.contains(block.getRegistryName().toString())
 						&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
 						&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)

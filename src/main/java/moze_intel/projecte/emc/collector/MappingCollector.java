@@ -60,7 +60,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
-			PECore.LOGGER.warn("Ignoring Recipe because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, output);
+			PECore.debugLog("Ignoring Recipe because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, output);
 			return;
 		}
 		if (outnumber <= 0)
@@ -77,7 +77,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueBefore(T something, V value) {
 		if (something == null) return;
 		if (fixValueBeforeInherit.containsKey(something))
-			PECore.LOGGER.warn("Overwriting fixValueBeforeInherit for {}:{} to {}", something, fixValueBeforeInherit.get(something), value);
+			PECore.debugLog("Overwriting fixValueBeforeInherit for {}:{} to {}", something, fixValueBeforeInherit.get(something), value);
 		fixValueBeforeInherit.put(something, value);
 		fixValueAfterInherit.remove(something);
 	}
@@ -86,7 +86,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueAfter(T something, V value) {
 		if (something == null) return;
 		if (fixValueAfterInherit.containsKey(something))
-			PECore.LOGGER.warn("Overwriting fixValueAfterInherit for {}:{} to {}", something, fixValueAfterInherit.get(something), value);
+			PECore.debugLog("Overwriting fixValueAfterInherit for {}:{} to {}", something, fixValueAfterInherit.get(something), value);
 		fixValueAfterInherit.put(something, value);
 	}
 
@@ -96,7 +96,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
 	{
 		if (something == null || ingredientsWithAmount.containsKey(null)) {
-			PECore.LOGGER.warn("Ignoring setValueFromConversion because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, something);
+			PECore.debugLog("Ignoring setValueFromConversion because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, something);
 			return;
 		}
 		if (outnumber <= 0)
@@ -104,7 +104,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount, this.arithmetic);
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
-			PECore.LOGGER.warn("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
+			PECore.debugLog("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
 			for (T ingredient: ingredientsWithAmount.keySet()) {
 				getUsesFor(ingredient).remove(oldConversion);
 			}

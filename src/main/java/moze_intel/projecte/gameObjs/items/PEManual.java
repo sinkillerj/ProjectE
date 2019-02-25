@@ -21,7 +21,7 @@ public class PEManual extends ItemPE
 {
     public PEManual()
     {
-        this.setUnlocalizedName("manual");
+        this.setTranslationKey("manual");
         this.setMaxStackSize(1);
     }
 

@@ -43,6 +43,19 @@ public final class EMCHelper
 		boolean metRequirement = false;
 		int emcConsumed = 0;
 
+		ItemStack offhand = player.getHeldItemOffhand();
+
+		if (!offhand.isEmpty() && offhand.getItem() instanceof IItemEmc)
+		{
+			IItemEmc itemEmc = ((IItemEmc) offhand.getItem());
+			if (itemEmc.getStoredEmc(offhand) >= minFuel)
+			{
+				itemEmc.extractEmc(offhand, minFuel);
+				player.inventoryContainer.detectAndSendChanges();
+				return minFuel;
+			}
+		}
+
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
@@ -265,7 +278,7 @@ public final class EMCHelper
 
 	public static long getEmcSellValue(ItemStack stack)
 	{
-		double originalValue = EMCHelper.getEmcValue(stack);
+		long originalValue = EMCHelper.getEmcValue(stack);
 
 		if (originalValue == 0)
 		{
@@ -308,18 +321,14 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static long getEMCPerDurability(ItemStack stack){
-
-		long emc;
-
-		if(stack == null)
+	public static long getEMCPerDurability(ItemStack stack) {
+		if(stack.isEmpty())
 			return 0;
 
-		ItemStack stackCopy = stack.copy();
-		stackCopy.setItemDamage(0);
-
 		if(ItemHelper.isItemRepairable(stack)){
-			emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+			ItemStack stackCopy = stack.copy();
+			stackCopy.setItemDamage(0);
+            long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

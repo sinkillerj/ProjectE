@@ -185,6 +185,12 @@ pe.command.set.invalidmeta=Error: The meta value "%s" is not valid!
 pe.command.set.success=Set EMC value for %s to %s!
 pe.command.set.usage=/projecte setEMC [unlocalized | oredict name] [meta] [EMC value], /projecte setEMC [EMC value] (for held item)
 
+pe.command.showbag.nocolor=No such color %s
+pe.command.showbag.notplayer=Cannot show bag contents to a non-player
+pe.command.showbag.offline.uuid=Malformed UUID
+pe.command.showbag.offline.notfound=UUID %s not found in playerdata/
+pe.command.showbag.usage=/projecte showBag <color> <player selector>
+
 pe.darkpick.mode1=Standard
 pe.darkpick.mode2=3x Tallshot
 pe.darkpick.mode3=3x Wideshot
@@ -362,6 +368,7 @@ pe.debug.metainvalid.name=Invalid metadata set
 
 pe.nei.worldtransmute=World Transmutation
 pe.nei.philo=Philosopher's Stone Smelting
+pe.nei.collector=Collector Fuel Upgrades
 
 pe.manual.index=Index
 pe.manual.index_button=ToC

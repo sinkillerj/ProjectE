@@ -14,16 +14,16 @@ public class Matter extends ItemPE
 	
 	public Matter()
 	{
-		this.setUnlocalizedName("matter");
+		this.setTranslationKey("matter");
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}
 	
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{	
-		return super.getUnlocalizedName() + "_" + names[stack.getItemDamage()];
+		return super.getTranslationKey() + "_" + names[stack.getItemDamage()];
 	}
 	
 	@Override

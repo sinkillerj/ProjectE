@@ -684,6 +684,28 @@ public class GraphMapperTest {
 	}
 
 	@org.junit.Test
+	public void testLargeOverflow() throws Exception
+	{
+		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
+		mappingCollector.addConversion(1, "b", Arrays.asList("a", "a", "a", "a", "a", "a", "a", "a", "a"));
+
+		Map<String, Long> values = valueGenerator.generateValues();
+		assertEquals(0, getValue(values, "b"));
+	}
+
+	@org.junit.Test
+	public void testHiddenOverflow() throws Exception
+	{
+		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
+		mappingCollector.addConversion(2, "b", Arrays.asList("a", "a"));
+		mappingCollector.addConversion(5, "c", Arrays.asList("a", "a", "a", "a", "a"));
+
+		Map<String, Long> values = valueGenerator.generateValues();
+		assertEquals(Long.MAX_VALUE, getValue(values, "b"));
+		assertEquals(Long.MAX_VALUE, getValue(values, "c"));
+	}
+
+	@org.junit.Test
 	public void testOverwriteConversions()
 	{
 		mappingCollector.setValueBefore("a", 1L);

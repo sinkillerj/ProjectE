@@ -1,18 +1,27 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class WorldTransmutations
@@ -44,14 +53,14 @@ public final class WorldTransmutations
 			if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.OAK)
 			{
 				// Oak must loop backward to dark oak
-				register(s, s.cycleProperty(BlockOldLog.VARIANT), 
+				register(s, s.cycleProperty(BlockOldLog.VARIANT),
 						Blocks.LOG2.getDefaultState()
 								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.DARK_OAK)
 								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)));
 			} else if (s.getValue(BlockOldLog.VARIANT) == BlockPlanks.EnumType.JUNGLE)
 			{
 				// Jungle must loop forward to acacia
-				register(s, 
+				register(s,
 						Blocks.LOG2.getDefaultState()
 								.withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA)
 								.withProperty(BlockNewLog.LOG_AXIS, s.getValue(BlockOldLog.LOG_AXIS)),
@@ -206,7 +215,7 @@ public final class WorldTransmutations
 		register(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
 	}
 
-	public static class Entry
+	public static class Entry implements IRecipeWrapper
 	{
 		public final IBlockState input;
 		public final Pair<IBlockState, IBlockState> outputs;
@@ -215,6 +224,148 @@ public final class WorldTransmutations
 		{
 			this.input = from;
 			this.outputs = results;
+		}
+		//TODO: Fix logs, remove duplicate Pumpkin -> Melon (it has one for each facing)
+		@Override
+		public void getIngredients(IIngredients ingredients) {
+
+
+			if((this.input.getProperties().containsKey(BlockHorizontal.FACING) && this.input.getValue(BlockHorizontal.FACING) != EnumFacing.NORTH) ||
+                    this.input.getProperties().containsKey(BlockLog.LOG_AXIS) && this.input.getValue(BlockLog.LOG_AXIS) != BlockLog.EnumAxis.NONE)
+				return;
+
+			List<ItemStack> outputList = new ArrayList<>();
+
+			if(this.input.getBlock() instanceof BlockStaticLiquid || this.outputs.getLeft().getBlock() instanceof BlockStaticLiquid){
+				if(this.input.getBlock() == Blocks.WATER)
+					ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
+				else if (this.input.getBlock() == Blocks.LAVA)
+					ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.LAVA, 1000));
+				else
+					ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock()));
+
+				if(this.outputs.getLeft().getBlock() == Blocks.WATER)
+					ingredients.setOutput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
+				else if (this.outputs.getLeft().getBlock() == Blocks.LAVA)
+					ingredients.setOutput(FluidStack.class, new FluidStack(FluidRegistry.LAVA, 1000));
+				else
+					ingredients.setOutput(ItemStack.class, new ItemStack(this.outputs.getLeft().getBlock()));
+			}
+
+
+			if(this.input.getProperties().containsKey(BlockColored.COLOR)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockColored.COLOR).getMetadata()));
+				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockColored.COLOR).getMetadata()));
+
+				if(this.outputs.getRight() != null)
+					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockColored.COLOR).getMetadata()));
+			}
+			else if(this.input.getProperties().containsKey(BlockStone.VARIANT)){
+
+
+					ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockStone.VARIANT).getMetadata()));
+
+					if(this.outputs.getLeft().getBlock() == Blocks.COBBLESTONE || this.outputs.getLeft().getBlock() == Blocks.GRASS)
+						outputList.add(new ItemStack(this.outputs.getLeft().getBlock()));
+					else
+						outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockStone.VARIANT).getMetadata()));
+
+					if(this.outputs.getRight() != null){
+						if(this.outputs.getRight().getBlock() == Blocks.COBBLESTONE || this.outputs.getRight().getBlock() == Blocks.GRASS)
+							outputList.add(new ItemStack(this.outputs.getRight().getBlock()));
+						else
+							outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockStone.VARIANT).getMetadata()));
+					}
+
+
+
+			}
+			else if(this.input.getProperties().containsKey(BlockOldLog.VARIANT)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockOldLog.VARIANT).getMetadata()));
+
+				if(this.outputs.getLeft().getProperties().containsKey(BlockOldLog.VARIANT))
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLog.VARIANT).getMetadata()));
+				else
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+
+				if(this.outputs.getRight() != null){
+					if(this.outputs.getRight().getProperties().containsKey(BlockOldLog.VARIANT))
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLog.VARIANT).getMetadata()));
+					else
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+				}
+
+			}
+			else if(this.input.getProperties().containsKey(BlockNewLog.VARIANT)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+
+				if(this.outputs.getLeft().getProperties().containsKey(BlockNewLog.VARIANT))
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+				else
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLog.VARIANT).getMetadata()));
+
+				if(this.outputs.getRight() != null){
+					if(this.outputs.getRight().getProperties().containsKey(BlockNewLog.VARIANT))
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLog.VARIANT).getMetadata() - 4));
+					else
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLog.VARIANT).getMetadata()));
+				}
+
+			}
+			else if(this.input.getProperties().containsKey(BlockOldLeaf.VARIANT)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockOldLeaf.VARIANT).getMetadata()));
+
+				if(this.outputs.getLeft().getProperties().containsKey(BlockOldLeaf.VARIANT))
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+				else
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+				if(this.outputs.getRight() != null)
+					if(this.outputs.getRight().getProperties().containsKey(BlockOldLeaf.VARIANT))
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+					else
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+			}
+			else if(this.input.getProperties().containsKey(BlockNewLeaf.VARIANT)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockNewLeaf.VARIANT).getMetadata()));
+
+				if(this.outputs.getLeft().getProperties().containsKey(BlockNewLeaf.VARIANT))
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+				else
+					outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockOldLeaf.VARIANT).getMetadata()));
+				if(this.outputs.getRight() != null){
+					if(this.outputs.getRight().getProperties().containsKey(BlockNewLeaf.VARIANT))
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+					else
+						outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockNewLeaf.VARIANT).getMetadata()));
+				}
+
+			}
+			else if(this.input.getProperties().containsKey(BlockSapling.TYPE)){
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock(),1, this.input.getValue(BlockSapling.TYPE).getMetadata()));
+				outputList.add(new ItemStack(this.outputs.getLeft().getBlock(), 1, this.outputs.getLeft().getValue(BlockSapling.TYPE).getMetadata()));
+
+				if(this.outputs.getRight() != null)
+					outputList.add(new ItemStack(this.outputs.getRight().getBlock(), 1, this.outputs.getRight().getValue(BlockSapling.TYPE).getMetadata()));
+			}
+			else{
+				ingredients.setInput(ItemStack.class, new ItemStack(this.input.getBlock()));
+				outputList.add(new ItemStack(this.outputs.getLeft().getBlock()));
+
+				if(this.outputs.getRight() != null)
+					outputList.add(new ItemStack(this.outputs.getRight().getBlock()));
+			}
+
+			ingredients.setOutputs(ItemStack.class, outputList);
+		}
+
+		@Override
+		public java.util.List<String> getTooltipStrings(int mouseX, int mouseY) {
+
+			if(mouseX > 67 && mouseX < 107)
+				if(mouseY > 18 && mouseY < 38)
+					return Collections.singletonList("Click in world, shift click for second output");
+
+			return Collections.emptyList();
 		}
 	}
 }

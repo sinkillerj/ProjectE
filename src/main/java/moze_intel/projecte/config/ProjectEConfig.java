@@ -50,6 +50,15 @@ public final class ProjectEConfig
 		@Config.Comment("Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.")
 		public float timePedMobSlowness = 0.10F;
 
+		// TODO 1.13 move to tags
+		@Config.Comment("Block ID's that the Watch of Flowing Time should not give extra random ticks to")
+		public String[] timeWatchBlockBlacklist = {};
+
+		@Config.Comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
+		public String[] timeWatchTEBlacklist = {
+			"projecte:dm_pedestal"
+		};
+
 		@Config.Comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 		public boolean interdictionMode = true;
 	}

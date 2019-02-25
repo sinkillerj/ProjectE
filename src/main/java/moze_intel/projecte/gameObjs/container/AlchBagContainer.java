@@ -18,10 +18,17 @@ public class AlchBagContainer extends Container
 {
 	public final EnumHand hand;
 	private final int blocked;
-	
+	private final boolean immutable;
+
 	public AlchBagContainer(InventoryPlayer invPlayer, EnumHand hand, IItemHandlerModifiable invBag)
 	{
+		this(invPlayer, hand, invBag, false);
+	}
+	
+	public AlchBagContainer(InventoryPlayer invPlayer, EnumHand hand, IItemHandlerModifiable invBag, boolean immutable)
+	{
 		this.hand = hand;
+		this.immutable = immutable;
 
 		//Bag Inventory
 		for (int i = 0; i < 8; i++)
@@ -50,6 +57,11 @@ public class AlchBagContainer extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{
+		if (immutable)
+		{
+			return ItemStack.EMPTY;
+		}
+
 		Slot slot = this.getSlot(slotIndex);
 		
 		if (slot == null || !slot.getHasStack()) 
@@ -86,7 +98,7 @@ public class AlchBagContainer extends Container
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
 	{
-		if (slot == blocked)
+		if (slot == blocked || immutable)
 		{
 			return ItemStack.EMPTY;
 		}

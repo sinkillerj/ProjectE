@@ -20,7 +20,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 {
 	public KleinStar()
 	{
-		this.setUnlocalizedName("klein_star");
+		this.setTranslationKey("klein_star");
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 		this.setMaxStackSize(1);
@@ -63,14 +63,14 @@ public class KleinStar extends ItemPE implements IItemEmc
 	
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		if (stack.getItemDamage() > 5)
 		{
 			return "pe.debug.metainvalid";
 		}
 
-		return super.getUnlocalizedName()+ "_" + (stack.getItemDamage() + 1);
+		return super.getTranslationKey()+ "_" + (stack.getItemDamage() + 1);
 	}
 
 	@Override

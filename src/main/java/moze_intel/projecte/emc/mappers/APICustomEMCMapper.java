@@ -124,11 +124,11 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
 						mapper.setValueBefore(normStack, entry.getValue());
-						PECore.LOGGER.info("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 					else
 					{
-						PECore.LOGGER.info("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 				}
 			}
@@ -139,11 +139,11 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
 						mapper.setValueBefore(normStack, entry.getValue());
-						PECore.LOGGER.info("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 					else
 					{
-						PECore.LOGGER.info("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 				}
 			}

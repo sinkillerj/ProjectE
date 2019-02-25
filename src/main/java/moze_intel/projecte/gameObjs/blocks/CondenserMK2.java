@@ -20,7 +20,7 @@ public class CondenserMK2 extends Condenser
 {
 	public CondenserMK2()
 	{
-		this.setUnlocalizedName("pe_condenser_mk2");
+		this.setTranslationKey("pe_condenser_mk2");
 	}
 
 	@Nonnull

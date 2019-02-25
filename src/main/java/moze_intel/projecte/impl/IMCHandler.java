@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import java.util.Locale;
 
+// TODO 1.13 change to use te/entity ids instead of class names
 public class IMCHandler
 {
     public static void handleIMC(FMLInterModComms.IMCMessage msg)

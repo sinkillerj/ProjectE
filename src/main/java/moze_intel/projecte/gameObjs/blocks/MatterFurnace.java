@@ -40,7 +40,7 @@ public class MatterFurnace extends BlockDirection
 		this.setCreativeTab(ObjHandler.cTab);
 		isActive = active;
 		isHighTier = isRM;
-		this.setUnlocalizedName("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
+		this.setTranslationKey("pe_" + (isHighTier ? "rm" : "dm") + "_furnace");
 		this.setHardness(1000000F);
 		
 		if (isActive) 

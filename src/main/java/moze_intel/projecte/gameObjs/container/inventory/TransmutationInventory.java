@@ -7,7 +7,6 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,11 +19,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class TransmutationInventory extends CombinedInvWrapper
 {
@@ -157,7 +152,6 @@ public class TransmutationInventory extends CombinedInvWrapper
 		ItemStack lockCopy = ItemStack.EMPTY;
 
 		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
-		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty())
 		{
 			lockCopy = ItemHelper.getNormalizedStack(inputLocks.getStackInSlot(LOCK_INDEX));
@@ -198,7 +192,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 					continue;
 				}
 
-				if (!searchHelper.doesItemMatchFilter(stack)) {
+				if (!doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
@@ -225,7 +219,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 					continue;
 				}
 
-				if (!searchHelper.doesItemMatchFilter(stack)) {
+				if (!doesItemMatchFilter(stack)) {
 					iter.remove();
 					continue;
 				}
@@ -276,6 +270,31 @@ public class TransmutationInventory extends CombinedInvWrapper
  				}
 			}
 		}
+	}
+
+	private boolean doesItemMatchFilter(ItemStack stack)
+	{
+		String displayName;
+
+		try
+		{
+			displayName = stack.getDisplayName().toLowerCase(Locale.ROOT);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			//From old code... Not sure if intended to not remove items that crash on getDisplayName
+			return true;
+		}
+
+		if (displayName == null)
+		{
+			return false;
+		}
+		else if (filter.length() > 0 && !displayName.contains(filter))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public void writeIntoOutputSlot(int slot, ItemStack item)

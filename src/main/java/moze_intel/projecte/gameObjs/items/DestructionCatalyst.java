@@ -5,6 +5,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,7 +28,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
 	public DestructionCatalyst() 
 	{
-		this.setUnlocalizedName("destruction_catalyst");
+		this.setTranslationKey("destruction_catalyst");
 		this.setMaxStackSize(1);
 		this.setNoRepair();
 	}
@@ -65,8 +66,10 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 
 			if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
 			{
-				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, world.getBlockState(pos), stack, pos);
-				if (list != null && list.size() > 0)
+				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, state, stack, pos);
+				if (list != null && list.size() > 0
+					// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
+					&& !(state.getBlock() instanceof BlockShulkerBox))
 				{
 					drops.addAll(list);
 				}

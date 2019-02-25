@@ -29,7 +29,7 @@ public class MatterBlock extends Block
 		super(Material.IRON);
 		this.setCreativeTab(ObjHandler.cTab);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(PEStateProps.TIER_PROP, EnumMatterType.DARK_MATTER));
-		this.setUnlocalizedName("pe_matter_block");
+		this.setTranslationKey("pe_matter_block");
 		this.setHardness(1000000F);
 	}
 
