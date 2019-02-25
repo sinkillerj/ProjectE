@@ -69,7 +69,7 @@ public class GUITransmutation extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
-		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
+		long emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).getEmc();
 		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
 		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
 
