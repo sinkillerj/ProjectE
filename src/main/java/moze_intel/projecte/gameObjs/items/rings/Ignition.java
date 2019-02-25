@@ -54,7 +54,7 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5)
+	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5) 
 	{
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
 		
@@ -72,12 +72,12 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 				WorldHelper.igniteNearby(world, player);
 				excessCost += 0.32F;
 				if (excessCost > 1) {
-                    removeEmc(stack, 1);
-                    excessCost--;
+					removeEmc(stack, 1);
+					excessCost--;
 				}
 			}
 		}
-		else
+		else 
 		{
 			WorldHelper.extinguishNearby(world, player);
 		}

@@ -64,7 +64,8 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 
 		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
-		if (tiles.isEmpty()) {
+		if (tiles.isEmpty())
+		{
 			return;
 		}
 
@@ -81,7 +82,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		}
 	}
 
-	public class StackHandler extends ItemStackHandler
+	class StackHandler extends ItemStackHandler
 	{
 		StackHandler(int size)
 		{

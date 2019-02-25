@@ -32,7 +32,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	{
 		return stack.hasTagCompound();
 	}
-
+	
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{

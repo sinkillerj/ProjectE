@@ -175,9 +175,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	private void updateEmc()
 	{
-		if (emcTimer > 0) {
+		if (emcTimer > 0)
+		{
 			emcTimer--;
-		} else {
+		}
+		else
+		{
 			if (!this.hasMaxedEmc())
 			{
 				this.addEMC(getSunRelativeEmc(emcGen) / 4);
@@ -193,15 +196,15 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			IItemEmc item = (IItemEmc) getUpgrading().getItem();
-
+			
 			long itemEmc = item.getStoredEmc(getUpgrading());
 			long maxItemEmc = item.getMaximumEmc(getUpgrading());
-
+			
 			if ((itemEmc + toSend) > maxItemEmc)
 			{
 				toSend = maxItemEmc - itemEmc;
 			}
-
+			
 			item.addEmc(getUpgrading(), toSend);
 			this.removeEMC(toSend);
 		}
@@ -213,9 +216,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			}
 
 			ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(getUpgrading()) : getLock().copy();
-
+			
 			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
-
+			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
 				ItemStack upgrade = getUpgraded();
@@ -233,7 +236,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 					getUpgrading().shrink(1);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
 		}
@@ -242,7 +247,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			relayBonusTimer--;
 		}
-		else {
+		else
+		{
 			this.sendRelayBonus();
 			relayBonusTimer = 20;
 		}
