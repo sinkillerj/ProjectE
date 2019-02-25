@@ -41,7 +41,7 @@ public class InternalTimers
             feed.shouldUpdate = false;
         }
 
-        if (ringUpdate.tickCount >= 20)
+        if (ringUpdate.tickCount >= 3)
         {
             ringUpdate.tickCount = 0;
 
@@ -105,7 +105,7 @@ public class InternalTimers
 
     public boolean canRingUpdate()
     {
-        return ringUpdate.tickCount == 20;
+        return ringUpdate.tickCount == 3;
     }
 
     public static class Provider implements ICapabilityProvider

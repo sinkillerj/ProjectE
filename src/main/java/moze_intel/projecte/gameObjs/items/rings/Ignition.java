@@ -57,12 +57,16 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
 		EntityPlayerMP player = (EntityPlayerMP) entity;
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
-			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate())
+		{
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate())
+			{
 				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
-			} else {
+			}
+			else
+				{
 				WorldHelper.igniteNearby(world, player);
-				removeEmc(stack, 6);
+				removeEmc(stack, 1);
 			}
 		} else {
 			WorldHelper.extinguishNearby(world, player);

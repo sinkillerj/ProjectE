@@ -106,13 +106,13 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			long toRemove = 0;
 
 			if (playerMP.capabilities.isFlying) {
-				toRemove = 6;
+				toRemove = 1;
 			}
 
 			if (stack.getTagCompound().getInteger(TAG_MODE) == 2) {
-				toRemove = 6;
+				toRemove = 1;
 			} else if (stack.getTagCompound().getInteger(TAG_MODE) == 3) {
-				toRemove = 12;
+				toRemove = 2;
 			}
 
 			removeEmc(stack, toRemove);

@@ -55,14 +55,15 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		EntityPlayer player = (EntityPlayer) entity;
 		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
 
-			if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE)) {
+			if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+			{
 				long storedEmc = getEmc(stack);
 
 				if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
 					stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 				} else {
 					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
-					removeEmc(stack, 6);
+					removeEmc(stack, 1);
 				}
 			} else {
 				WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
