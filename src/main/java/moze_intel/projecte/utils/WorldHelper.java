@@ -547,7 +547,7 @@ public final class WorldHelper
 	{
 		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
 		{
-			if (world.rand.nextInt(32) == 0 && world.isAirBlock(pos))
+			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{
 				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 			}

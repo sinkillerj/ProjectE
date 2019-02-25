@@ -328,7 +328,7 @@ public final class EMCHelper
 		if(ItemHelper.isItemRepairable(stack)){
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setItemDamage(0);
-            long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+			long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;
