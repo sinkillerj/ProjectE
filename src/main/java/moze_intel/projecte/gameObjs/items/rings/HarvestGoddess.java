@@ -36,6 +36,8 @@ import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
+	private double excessCost = 0;
+
 	public HarvestGoddess()
 	{
 		super("harvest_god");
@@ -53,26 +55,28 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		super.onUpdate(stack, world, entity, par4, par5);
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
 
-			if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
+		{
+			long storedEmc = getEmc(stack);
+
+			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
 			{
-				long storedEmc = getEmc(stack);
-
-				if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
-				{
-					stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
-				}
-				else
-				{
-					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
-					removeEmc(stack, 1);
-				}
+				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 			}
 			else
 			{
-				WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
+				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
+				excessCost += 0.32F;
+				if (excessCost > 1) {
+					removeEmc(stack, 1);
+					excessCost--;
+				}
 			}
+		}
+		else
+		{
+			WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 		}
 	}
 

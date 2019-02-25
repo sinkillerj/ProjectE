@@ -19,7 +19,6 @@ public class InternalTimers
     private final Timer repair = new Timer();
     private final Timer heal = new Timer();
     private final Timer feed = new Timer();
-    private final Timer ringUpdate = new Timer();
 
     public void tick()
     {
@@ -39,16 +38,6 @@ public class InternalTimers
         {
             feed.tickCount++;
             feed.shouldUpdate = false;
-        }
-
-        if (ringUpdate.tickCount >= 3)
-        {
-            ringUpdate.tickCount = 0;
-
-        }
-        else
-        {
-            ringUpdate.tickCount++;
         }
     }
 
@@ -101,11 +90,6 @@ public class InternalTimers
         }
 
         return false;
-    }
-
-    public boolean canRingUpdate()
-    {
-        return ringUpdate.tickCount == 3;
     }
 
     public static class Provider implements ICapabilityProvider

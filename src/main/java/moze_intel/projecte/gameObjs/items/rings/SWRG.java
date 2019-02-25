@@ -44,6 +44,8 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider, IProjectileShooter
 {
+	private double excessCost = 0;
+
 	public SWRG()
 	{
 		this.setTranslationKey("swrg");
@@ -102,24 +104,26 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			}
 		}
 
-		if (player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate()) {
-			long toRemove = 0;
+		float toRemove = 0;
 
-			if (playerMP.capabilities.isFlying)
-			{
-				toRemove = 1;
-			}
+		if (playerMP.capabilities.isFlying)
+		{
+			toRemove = 0.32F;
+		}
 
-			if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
-			{
-				toRemove = 1;
-			}
-			else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
-			{
-				toRemove = 2;
-			}
+		if (stack.getTagCompound().getInteger(TAG_MODE) == 2)
+		{
+			toRemove = 0.32F;
+		}
+		else if (stack.getTagCompound().getInteger(TAG_MODE) == 3)
+		{
+			toRemove = 0.64F;
+		}
 
-			removeEmc(stack, toRemove);
+		excessCost += toRemove;
+		if (excessCost > 1) {
+			removeEmc(stack, 1);
+			excessCost--;
 		}
 
 		playerMP.fallDistance = 0;

@@ -45,6 +45,8 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtector, IProjectileShooter
 {
+	private double excessCost = 0;
+
 	public Ignition()
 	{
 		super("ignition");
@@ -55,20 +57,24 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 	public void onUpdate(ItemStack stack, World world, Entity entity, int inventorySlot, boolean par5)
 	{
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
-
+		
 		super.onUpdate(stack, world, entity, inventorySlot, par5);
-		EntityPlayerMP player = (EntityPlayerMP) entity;
+		EntityPlayerMP player = (EntityPlayerMP)entity;
 
-		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate())
+		if (ItemHelper.getOrCreateCompound(stack).getBoolean(TAG_ACTIVE))
 		{
-			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false) && player.getCapability(InternalTimers.CAPABILITY, null).canRingUpdate())
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 			{
 				stack.getTagCompound().setBoolean(TAG_ACTIVE, false);
 			}
-			else
+			else 
 			{
 				WorldHelper.igniteNearby(world, player);
-				removeEmc(stack, 1);
+				excessCost += 0.32F;
+				if (excessCost > 1) {
+                    removeEmc(stack, 1);
+                    excessCost--;
+				}
 			}
 		}
 		else
