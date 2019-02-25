@@ -38,9 +38,9 @@ public final class MathUtils
 	/**
 	 * Scales this proportion into redstone, where 0 means none, 15 means full, and the rest are an appropriate scaling.
 	 */
-	public static int scaleToRedstone(double currentAmount, double max)
+	public static int scaleToRedstone(long currentAmount, long max)
 	{
-		double proportion = currentAmount / max;
+		double proportion = (double) currentAmount / max;
 		if (currentAmount <= 0)
 		{
 			return 0;
