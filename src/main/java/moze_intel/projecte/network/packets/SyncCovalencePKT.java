@@ -9,11 +9,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class SyncCovalencePKT implements IMessage
 {
-	private long covalenceLoss;
+	private double covalenceLoss;
 
 	public SyncCovalencePKT() {}
 
-	public SyncCovalencePKT(long value)
+	public SyncCovalencePKT(double value)
 	{
 		covalenceLoss = value;
 	}
@@ -21,13 +21,13 @@ public class SyncCovalencePKT implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		covalenceLoss = buf.readLong();
+		covalenceLoss = buf.readDouble();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeLong(covalenceLoss);
+		buf.writeDouble(covalenceLoss);
 	}
 
 	public static class Handler implements IMessageHandler<SyncCovalencePKT, IMessage>
