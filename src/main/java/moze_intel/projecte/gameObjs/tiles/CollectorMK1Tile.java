@@ -57,7 +57,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private long storedFuelEmc;
-    private double unprocessedEMC = 0;
+	private double unprocessedEMC = 0;
 
 	public CollectorMK1Tile()
 	{
@@ -174,15 +174,15 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	private void updateEmc()
 	{
-        if (!this.hasMaxedEmc())
-        {
-            unprocessedEMC += getSunRelativeEmc(emcGen) / 20.0f;
-            if (unprocessedEMC >= 1) {
-                long emcToAdd = (long) unprocessedEMC;
-                this.addEMC(emcToAdd);
-                unprocessedEMC -= emcToAdd;
-            }
-        }
+		if (!this.hasMaxedEmc())
+		{
+			unprocessedEMC += getSunRelativeEmc(emcGen) / 20.0f;
+			if (unprocessedEMC >= 1) {
+				long emcToAdd = (long) unprocessedEMC;
+				this.addEMC(emcToAdd);
+				unprocessedEMC -= emcToAdd;
+			}
+		}
 
 		if (this.getStoredEmc() == 0)
 		{
@@ -237,7 +237,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
-            this.sendRelayBonus();
+			this.sendRelayBonus();
 		}
 	}
 	

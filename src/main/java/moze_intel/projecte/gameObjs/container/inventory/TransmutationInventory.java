@@ -327,7 +327,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 	}
 	
-	public void removeEmc(long value)
+	public void removeEmc(long value) 
 	{
 		provider.setEmc(provider.getEmc() - value);
 		
