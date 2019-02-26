@@ -14,10 +14,12 @@ public interface IEMCProxy
      * Call this during any of the main loading phases (Preinit, Init, Postinit)
      * @param stack The stack we want to define EMC for
      * @param value The value to define. Values below 0 are changed to 0
-     * @deprecated since ProjectE 1.3.1B
+     * @deprecated Since ProjectE API version 1.1.0
      */
     @Deprecated
-    void registerCustomEMC(@Nonnull ItemStack stack, int value);
+    default void registerCustomEMC(@Nonnull ItemStack stack, int value) {
+        registerCustomEMC(stack, (long) value);
+    }
 
     /**
      * Register a custom EMC value for emc calculation that is used in Recipes.
@@ -30,10 +32,12 @@ public interface IEMCProxy
      * @param o
      * @param value
      * @see IConversionProxy#addConversion(int, Object, Map)
-     * @deprecated since ProjectE 1.3.1B
+     * @deprecated Since ProjectE API version 1.1.0
      */
     @Deprecated
-    void registerCustomEMC(@Nonnull Object o, int value);
+    default void registerCustomEMC(@Nonnull Object o, int value) {
+        registerCustomEMC(o, (long) value);
+    }
 
     /**
      * Registers a custom EMC value for this ItemStack

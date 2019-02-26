@@ -21,4 +21,16 @@ public interface IEmcAcceptor extends IEmcStorage
 	 * @return The amount actually accepted
 	 */
 	long acceptEMC(@Nonnull EnumFacing side, long toAccept);
+
+	/**
+	 * Accept, at most, the given amount of EMC from the given side
+	 * @param side The side to accept EMC from
+	 * @param toAccept The maximum amount to accept
+	 * @return The amount actually accepted
+	 * @deprecated Since ProjectE API version 1.2.0
+	 */
+	@Deprecated
+	default double acceptEMC(@Nonnull EnumFacing side, double toAccept) {
+		return acceptEMC(side, (long) toAccept);
+	}
 }
