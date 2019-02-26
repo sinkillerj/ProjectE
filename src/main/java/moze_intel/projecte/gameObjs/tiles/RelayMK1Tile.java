@@ -235,7 +235,6 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		super.readFromNBT(nbt);
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		output.deserializeNBT(nbt.getCompoundTag("Output"));
-		bonusEMC = nbt.getDouble("BonusEMC");
 	}
 	
 	@Nonnull
@@ -245,7 +244,6 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("Output", output.serializeNBT());
-		nbt.setDouble("BonusEMC", bonusEMC);
 		return nbt;
 	}
 
