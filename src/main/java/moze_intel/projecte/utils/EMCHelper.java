@@ -333,4 +333,22 @@ public final class EMCHelper
 		}
 		return 1;
 	}
+
+	/**
+	 * Adds the given amount to the amount of unprocessed EMC the stack has.
+	 * The amount returned should be used for figuring out how much EMC actually gets removed.
+	 * While the remaining fractional EMC will be stored in UnprocessedEMC.
+	 * @param stack The stack to set the UnprocessedEMC tag to.
+	 * @param amount The partial amount of EMC to add with the current UnprocessedEMC
+	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
+	 */
+	public static long removeFractionalEMC(ItemStack stack, double amount)
+	{
+		double unprocessedEMC = ItemHelper.getOrCreateCompound(stack).getDouble("UnprocessedEMC");
+		unprocessedEMC += amount;
+		long toRemove = (long) unprocessedEMC;
+		unprocessedEMC -= toRemove;
+		stack.getTagCompound().setDouble("UnprocessedEMC", unprocessedEMC);
+		return toRemove;
+	}
 }

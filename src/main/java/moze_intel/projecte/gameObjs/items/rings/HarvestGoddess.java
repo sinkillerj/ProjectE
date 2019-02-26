@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -35,8 +36,6 @@ import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	private double unprocessedEMC = 0;
-
 	public HarvestGoddess()
 	{
 		super("harvest_god");
@@ -66,11 +65,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			else
 			{
 				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
-				unprocessedEMC += 0.32F;
-				if (unprocessedEMC > 1) {
-					removeEmc(stack, 1);
-					unprocessedEMC--;
-				}
+				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		}
 		else

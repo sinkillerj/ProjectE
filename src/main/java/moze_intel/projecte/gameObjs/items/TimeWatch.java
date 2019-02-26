@@ -9,6 +9,7 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -56,8 +57,6 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"com.sci.torcherino.tile.TileCompressedTorcherino",
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
-
-	private double unprocessedEMC = 0;
 
 	public TimeWatch() 
 	{
@@ -138,9 +137,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 
 		EntityPlayer player = (EntityPlayer) entity;
-		unprocessedEMC += getEmcPerTick(this.getCharge(stack));
-		long reqEmc = (long) unprocessedEMC;
-		unprocessedEMC -= reqEmc;
+		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
 		
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{

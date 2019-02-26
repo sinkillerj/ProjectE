@@ -342,6 +342,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
+		unprocessedEMC = nbt.getDouble("UnprocessedEMC");
 	}
 	
 	@Nonnull
@@ -352,6 +353,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		nbt.setLong("FuelEMC", storedFuelEmc);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
+		nbt.setDouble("UnprocessedEMC", unprocessedEMC);
 		return nbt;
 	}
 
