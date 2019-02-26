@@ -168,7 +168,7 @@ public final class KnowledgeImpl {
 
             while (iter.hasNext())
             {
-                if (ItemStack.areItemStacksEqual(stack, iter.next()))
+                if (ItemHelper.basicAreStacksEqual(stack, iter.next()))
                 {
                     iter.remove();
                     removed = true;
@@ -256,6 +256,7 @@ public final class KnowledgeImpl {
 
         private void pruneDuplicateKnowledge()
         {
+            ItemHelper.removeEmptyTags(knowledge);
             ItemHelper.compactItemListNoStacksize(knowledge);
             for (ItemStack s : knowledge)
             {
