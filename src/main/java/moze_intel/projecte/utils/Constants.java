@@ -6,7 +6,7 @@ public final class Constants
 {
 	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
 
-	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
+	public static final long[] MAX_KLEIN_EMC = new long[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
 	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
 	

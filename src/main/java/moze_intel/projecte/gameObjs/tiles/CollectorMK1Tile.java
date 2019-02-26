@@ -282,7 +282,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return -1;
 	}
 
-	public long getItemChargeProportion()
+	public double getItemChargeProportion()
 	{
 		long charge = getItemCharge();
 
@@ -291,7 +291,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			return -1;
 		}
 
-		return charge / ((IItemEmc) getUpgrading().getItem()).getMaximumEmc(getUpgrading());
+		long max = ((IItemEmc) getUpgrading().getItem()).getMaximumEmc(getUpgrading());
+		if (charge > max)
+		{
+			return 1;
+		}
+
+		return (double) charge / max;
 	}
 	
 	public int getSunLevel()
@@ -303,7 +309,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		return world.getLight(getPos().up()) + 1;
 	}
 
-	public long getFuelProgress()
+	public double getFuelProgress()
 	{
 		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading()))
 		{
@@ -340,7 +346,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			return 1;
 		}
 
-		return getStoredEmc() / reqEmc;
+		return getStoredEmc() / (double) reqEmc;
 	}
 	
 	@Override
