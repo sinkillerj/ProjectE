@@ -53,7 +53,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			return super.extractItem(slot, amount, simulate);
 		}
 	};
-	private final int chargeRate;
+	private final long chargeRate;
 
 	private double bonusEMC;
 
@@ -62,7 +62,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		this(7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
 	}
 	
-	RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate)
+	RelayMK1Tile(int sizeInv, long maxEmc, long chargeRate)
 	{
 		super(maxEmc);
 		this.chargeRate = chargeRate;

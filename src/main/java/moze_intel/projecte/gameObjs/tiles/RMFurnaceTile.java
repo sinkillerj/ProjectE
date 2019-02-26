@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 {
-	private static final int EMC_CONSUMPTION = 2;
+	private static final long EMC_CONSUMPTION = 2;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);

@@ -65,7 +65,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 	}
 	
-	public CollectorMK1Tile(int maxEmc, int emcGen)
+	public CollectorMK1Tile(long maxEmc, long emcGen)
 	{
 		super(maxEmc);
 		this.emcGen = emcGen;
