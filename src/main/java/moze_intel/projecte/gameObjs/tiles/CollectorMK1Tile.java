@@ -57,7 +57,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private long storedFuelEmc;
-	private double unprocessedEMC = 0;
+	private double unprocessedEMC;
 
 	public CollectorMK1Tile()
 	{
