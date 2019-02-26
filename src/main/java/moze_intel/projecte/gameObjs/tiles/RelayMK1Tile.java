@@ -55,6 +55,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	};
 	private final int chargeRate;
 
+	private double bonusEMC;
+
 	public RelayMK1Tile()
 	{
 		this(7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
@@ -233,6 +235,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		super.readFromNBT(nbt);
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		output.deserializeNBT(nbt.getCompoundTag("Output"));
+		bonusEMC = nbt.getDouble("BonusEMC");
 	}
 	
 	@Nonnull
@@ -242,6 +245,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("Output", output.serializeNBT());
+		nbt.setDouble("BonusEMC", bonusEMC);
 		return nbt;
 	}
 
@@ -257,6 +261,19 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 			currentEMC += toAdd;
 			return toAdd;
+		}
+	}
+
+	public void addBonus(@Nonnull EnumFacing side, double bonus) {
+		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
+		{
+			return; // Do not accept from other relays - avoid infinite loop / thrashing
+		}
+		bonusEMC += bonus;
+		if (bonusEMC >= 1) {
+			long extraEMC = (long) bonusEMC;
+			bonusEMC -= extraEMC;
+			currentEMC += Math.min(maximumEMC - currentEMC, extraEMC);
 		}
 	}
 
