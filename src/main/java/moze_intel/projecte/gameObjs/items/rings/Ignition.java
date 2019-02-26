@@ -44,7 +44,7 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtector, IProjectileShooter
 {
-	private double excessCost = 0;
+	private double unprocessedEMC = 0;
 
 	public Ignition()
 	{
@@ -69,10 +69,10 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
 			else 
 			{
 				WorldHelper.igniteNearby(world, player);
-				excessCost += 0.32F;
-				if (excessCost > 1) {
+				unprocessedEMC += 0.32F;
+				if (unprocessedEMC > 1) {
 					removeEmc(stack, 1);
-					excessCost--;
+					unprocessedEMC--;
 				}
 			}
 		}

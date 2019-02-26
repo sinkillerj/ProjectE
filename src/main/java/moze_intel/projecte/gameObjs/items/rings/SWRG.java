@@ -43,7 +43,7 @@ import java.util.List;
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider, IProjectileShooter
 {
-	private double excessCost = 0;
+	private double unprocessedEMC = 0;
 
 	public SWRG()
 	{
@@ -119,10 +119,10 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			toRemove = 0.64F;
 		}
 
-		excessCost += toRemove;
-		if (excessCost > 1) {
+		unprocessedEMC += toRemove;
+		if (unprocessedEMC > 1) {
 			removeEmc(stack, 1);
-			excessCost--;
+			unprocessedEMC--;
 		}
 
 		playerMP.fallDistance = 0;

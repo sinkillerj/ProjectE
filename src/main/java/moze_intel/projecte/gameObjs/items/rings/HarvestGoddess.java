@@ -35,7 +35,7 @@ import java.util.List;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem
 {
-	private double excessCost = 0;
+	private double unprocessedEMC = 0;
 
 	public HarvestGoddess()
 	{
@@ -66,10 +66,10 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			else
 			{
 				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
-				excessCost += 0.32F;
-				if (excessCost > 1) {
+				unprocessedEMC += 0.32F;
+				if (unprocessedEMC > 1) {
 					removeEmc(stack, 1);
-					excessCost--;
+					unprocessedEMC--;
 				}
 			}
 		}

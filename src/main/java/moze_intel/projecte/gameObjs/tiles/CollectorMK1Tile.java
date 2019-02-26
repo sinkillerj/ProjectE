@@ -57,8 +57,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private long storedFuelEmc;
-	private int emcTimer = 0;
-	private int relayBonusTimer = 0;
+    private double unprocessedEMC = 0;
 
 	public CollectorMK1Tile()
 	{
@@ -175,18 +174,15 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	
 	private void updateEmc()
 	{
-		if (emcTimer > 0)
-		{
-			emcTimer--;
-		}
-		else
-		{
-			if (!this.hasMaxedEmc())
-			{
-				this.addEMC(getSunRelativeEmc(emcGen) / 4);
-			}
-			emcTimer = 5;
-		}
+        if (!this.hasMaxedEmc())
+        {
+            unprocessedEMC += getSunRelativeEmc(emcGen) / 20.0f;
+            if (unprocessedEMC >= 1) {
+                long emcToAdd = (long) unprocessedEMC;
+                this.addEMC(emcToAdd);
+                unprocessedEMC -= emcToAdd;
+            }
+        }
 
 		if (this.getStoredEmc() == 0)
 		{
@@ -241,18 +237,8 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		{
 			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
+            this.sendRelayBonus();
 		}
-
-		if (relayBonusTimer > 0)
-		{
-			relayBonusTimer--;
-		}
-		else
-		{
-			this.sendRelayBonus();
-			relayBonusTimer = 20;
-		}
-
 	}
 	
 	private long getSunRelativeEmc(long emc)
@@ -292,7 +278,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 
 		long max = ((IItemEmc) getUpgrading().getItem()).getMaximumEmc(getUpgrading());
-		if (charge > max)
+		if (charge >= max)
 		{
 			return 1;
 		}
@@ -346,7 +332,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			return 1;
 		}
 
-		return getStoredEmc() / (double) reqEmc;
+		return (double) getStoredEmc() / reqEmc;
 	}
 	
 	@Override
@@ -356,8 +342,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		auxSlots.deserializeNBT(nbt.getCompoundTag("AuxSlots"));
-		emcTimer = nbt.getInteger("EMCTimer");
-		relayBonusTimer = nbt.getInteger("RelayBonusTimer");
+		unprocessedEMC = nbt.getDouble("UnprocessedEMC");
 	}
 	
 	@Nonnull
@@ -368,8 +353,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		nbt.setLong("FuelEMC", storedFuelEmc);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("AuxSlots", auxSlots.serializeNBT());
-		nbt.setInteger("EMCTimer", emcTimer);
-		nbt.setInteger("RelayBonusTimer", relayBonusTimer);
+		nbt.setDouble("UnprocessedEMC", unprocessedEMC);
 		return nbt;
 	}
 
