@@ -41,7 +41,7 @@ public final class EMCHelper
 		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
-		int emcConsumed = 0;
+		long emcConsumed = 0;
 
 		ItemStack offhand = player.getHeldItemOffhand();
 
@@ -79,7 +79,7 @@ public final class EMCHelper
 				if(FuelMapper.isStackFuel(stack))
 				{
 					long emc = getEmcValue(stack);
-					int toRemove = (int)Math.ceil((minFuel - emcConsumed) / emc);
+					int toRemove = (int)Math.ceil((double) (minFuel - emcConsumed) / emc);
 
 					if (stack.getCount() >= toRemove)
 					{
@@ -246,16 +246,16 @@ public final class EMCHelper
 		{
 			if (EMCMapper.mapContains(iStack))
 			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
+				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
 			}
 		}
 
 		return 0;
 	}
 
-	private static int getEnchantEmcBonus(ItemStack stack)
+	private static long getEnchantEmcBonus(ItemStack stack)
 	{
-		int result = 0;
+		long result = 0;
 
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
