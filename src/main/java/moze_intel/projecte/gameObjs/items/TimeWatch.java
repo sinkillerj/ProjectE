@@ -57,6 +57,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
 
+	private double unprocessedEMC = 0;
+
 	public TimeWatch() 
 	{
 		this.setTranslationKey("time_watch");
@@ -136,7 +138,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 
 		EntityPlayer player = (EntityPlayer) entity;
-		long reqEmc = getEmcPerTick(this.getCharge(stack));
+		unprocessedEMC += getEmcPerTick(this.getCharge(stack));
+		long reqEmc = (long) unprocessedEMC;
+		unprocessedEMC -= reqEmc;
 		
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
@@ -268,10 +272,10 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		ItemHelper.getOrCreateCompound(stack).setByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
 	}
 
-	public long getEmcPerTick(int charge)
+	public double getEmcPerTick(int charge)
 	{
-		int actualCharge = charge + 1;
-		return actualCharge / 2;
+		int actualCharge = charge + 2;
+		return (10.0D * actualCharge) / 20.0D;
 	}
 
 	@Override
