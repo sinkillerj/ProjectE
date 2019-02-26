@@ -204,17 +204,17 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		}
 	}
 
-	public long getItemChargeProportion()
+	public double getItemChargeProportion()
 	{
 		if (!getCharging().isEmpty() && getCharging().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
+			return (double) ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
 		}
 
 		return 0;
 	}
 
-	public long getInputBurnProportion()
+	public double getInputBurnProportion()
 	{
 		if (getBurn().isEmpty())
 		{
@@ -223,10 +223,10 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 		if (getBurn().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
+			return (double) ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
 		}
 
-		return getBurn().getCount() / getBurn().getMaxStackSize();
+		return getBurn().getCount() / (double) getBurn().getMaxStackSize();
 	}
 	
 	@Override
