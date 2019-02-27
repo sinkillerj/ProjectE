@@ -245,6 +245,9 @@ pe.emc.rate=EMC/сек
 pe.emc.stackemc_tooltip_prefix=EMC в стеке:
 pe.emc.storedemc_tooltip=Накоплено EMC:
 pe.emc.too_much=СЛИШКОМ МНОГО
+pe.emc.postfix.0=нониллион
+pe.emc.postfix.1=квадрильон
+pe.emc.postfix.2=триллион
 
 pe.evertide.tooltip1=Нажмите %s, чтобы выпустить водный снаряд
 pe.evertide.tooltip2=Работает как бесконечное ведро воды

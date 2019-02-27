@@ -1,18 +1,19 @@
 package moze_intel.projecte.utils;
 
+import net.minecraft.client.resources.I18n;
+
 public class TransmutationEMCFormatter {
 	public static String EMCFormat(double EMC) {
 		String postFix = "";
 		double magnitude = 1;
 
-		String formats[] = {"Quintillion", "Quadrillion", "Trillion"};
 		Double magnitudes[] = {1e18, 1e15, 1e12};
 
-		for (int i=0; i <formats.length; i++) {
+		for (int i=0; i < magnitudes.length; i++) {
 			double testMag = magnitudes[i];
 			if (EMC >= testMag) {
 				magnitude = testMag;
-				postFix = formats[i];
+				postFix =  I18n.format("pe.emc.postfix." + i);
 				break;
 			}
 		}
