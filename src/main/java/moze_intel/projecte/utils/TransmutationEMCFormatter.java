@@ -7,9 +7,9 @@ public class TransmutationEMCFormatter {
 		String postFix = "";
 		double magnitude = 1;
 
-		Double magnitudes[] = {1e18, 1e15, 1e12};
+		Double magnitudes[] = {1e12, 1e15, 1e18};
 
-		for (int i=0; i < magnitudes.length; i++) {
+		for (int i=magnitudes.length - 1; i >= 0; i--) {
 			double testMag = magnitudes[i];
 			if (EMC >= testMag) {
 				magnitude = testMag;

@@ -206,9 +206,9 @@ pe.emc.rate=EMC/s
 pe.emc.stackemc_tooltip_prefix=EMC da Stack:
 pe.emc.storedemc_tooltip=EMC Armazenado:
 pe.emc.too_much=MUITO MESMO
-pe.emc.postfix.0=Quintilhão
+pe.emc.postfix.0=Trilhão
 pe.emc.postfix.1=Quadrilhão
-pe.emc.postfix.2=Trilhão
+pe.emc.postfix.2=Quintilhão
 
 pe.evertide.tooltip1=Pressione %s para atirar um projétil de água
 pe.evertide.tooltip2=Age como um balde d'água infinito
