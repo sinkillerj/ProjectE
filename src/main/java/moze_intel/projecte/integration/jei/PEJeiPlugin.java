@@ -14,7 +14,6 @@ import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.mappers.JEICompatMapper;
 import moze_intel.projecte.integration.jei.mappers.JEIFuelMapper;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
-import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -45,14 +44,14 @@ public class PEJeiPlugin implements IModPlugin
     public void register(@Nonnull IModRegistry registry)
     {
         // todo finish this, add alchbag
-        registry.addRecipes(WorldTransmutations.getWorldTransmutations(), WorldTransmuteRecipeCategory.UID);
+        registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(PhilosStoneContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
 
-        registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone, 1), VanillaRecipeCategoryUid.CRAFTING);
-        registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone, 1), WorldTransmuteRecipeCategory.UID);
-        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK1, 1), CollectorRecipeCategory.UID);
-        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK2, 1), CollectorRecipeCategory.UID);
-        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK3, 1), CollectorRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone), WorldTransmuteRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK1), CollectorRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK2), CollectorRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK3), CollectorRecipeCategory.UID);
 
         mappers.add(new JEIFuelMapper());
     }

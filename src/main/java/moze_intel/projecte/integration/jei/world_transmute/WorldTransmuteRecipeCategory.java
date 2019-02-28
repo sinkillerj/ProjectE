@@ -7,6 +7,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -122,5 +124,21 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     @Override
     public List<String> getTooltipStrings(int mouseX, int mouseY) {
         return Collections.emptyList();
+    }
+
+    public static List<WorldTransmuteEntry> getAllTransmutations()
+    {
+        List<WorldTransmutations.Entry> allWorldTransmutations = WorldTransmutations.getWorldTransmutations();
+        //All the ones that have a block state that can be rendered in JEI.
+        //For example only render one pumpkin to melon transmutation
+        List<WorldTransmuteEntry> visible = new ArrayList<>();
+        allWorldTransmutations.forEach(entry -> {
+            WorldTransmuteEntry e = new WorldTransmuteEntry(entry);
+            if (e.isRenderable())
+            {
+                visible.add(e);
+            }
+        });
+        return visible;
     }
 }
