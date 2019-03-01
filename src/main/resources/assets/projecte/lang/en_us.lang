@@ -370,6 +370,7 @@ pe.zero.pedestal3=Activates every %s
 pe.debug.metainvalid.name=Invalid metadata set
 
 pe.nei.worldtransmute=World Transmutation
+pe.nei.worldtransmute.description=Click in world, shift click for second output
 pe.nei.philo=Philosopher's Stone Smelting
 pe.nei.collector=Collector Fuel Upgrades
 

@@ -4,8 +4,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -56,17 +56,14 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 
 	private FluidStack fluidFromBlock(Block block)
 	{
-		if (block instanceof BlockStaticLiquid)
-		{
-			if (block == Blocks.WATER)
-			{
-				return new FluidStack(FluidRegistry.WATER, 1000);
-			}
-			else if (block == Blocks.LAVA)
-			{
-				return new FluidStack(FluidRegistry.LAVA, 1000);
-			}
-		}
+        if (block == Blocks.WATER)
+        {
+            return new FluidStack(FluidRegistry.WATER, 1000);
+        }
+        else if (block == Blocks.LAVA)
+        {
+            return new FluidStack(FluidRegistry.LAVA, 1000);
+        }
 		return null;
 	}
 
@@ -141,7 +138,7 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 	{
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
 		{
-			return Collections.singletonList("Click in world, shift click for second output");
+			return Collections.singletonList(I18n.format("pe.nei.worldtransmute.description"));
 		}
 		return Collections.emptyList();
 	}
