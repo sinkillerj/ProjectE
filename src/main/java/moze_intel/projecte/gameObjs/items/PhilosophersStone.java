@@ -132,7 +132,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.getEntityWorld().isRemote)
 		{
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(), null);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider());
 		}
 
 		return true;

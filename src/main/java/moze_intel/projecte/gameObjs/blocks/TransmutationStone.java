@@ -49,7 +49,7 @@ public class TransmutationStone extends Block
 	{
 		if (!world.isRemote)
 		{
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(), null);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider());
 		}
 		return true;
 	}

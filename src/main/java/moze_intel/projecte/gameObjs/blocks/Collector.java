@@ -43,12 +43,10 @@ public class Collector extends BlockDirection implements ITileEntityProvider
 	{
 		if (!world.isRemote)
 		{
-			PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-			buf.writeBlockPos(pos);
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof CollectorMK1Tile)
 			{
-				NetworkHooks.openGui((EntityPlayerMP) player, (CollectorMK1Tile) te, buf);
+				NetworkHooks.openGui((EntityPlayerMP) player, (CollectorMK1Tile) te, pos);
 			}
 		}
 		return true;

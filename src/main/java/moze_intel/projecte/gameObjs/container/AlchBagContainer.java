@@ -63,7 +63,7 @@ public class AlchBagContainer extends Container
 
 		Slot slot = this.getSlot(slotIndex);
 		
-		if (slot == null || !slot.getHasStack()) 
+		if (!slot.getHasStack())
 		{
 			return ItemStack.EMPTY;
 		}

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import io.netty.buffer.Unpooled;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
@@ -12,7 +11,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -44,9 +42,7 @@ public class AlchemicalBag extends ItemPE
 	{
 		if (!world.isRemote)
 		{
-			PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-			extraData.writeBoolean(hand == EnumHand.MAIN_HAND);
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(hand), extraData);
+			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(hand), buf -> buf.writeBoolean(hand == EnumHand.MAIN_HAND));
 		}
 		
 		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
@@ -89,14 +85,16 @@ public class AlchemicalBag extends ItemPE
 			this.hand = hand;
 		}
 
+		@Nonnull
 		@Override
-		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn) {
 			IItemHandlerModifiable inv = (IItemHandlerModifiable) playerIn.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
 			return new AlchBagContainer(playerInventory, hand, inv);
 		}
 
+		@Nonnull
 		@Override
 		public String getGuiID() {
 			return "projecte:alch_bag";

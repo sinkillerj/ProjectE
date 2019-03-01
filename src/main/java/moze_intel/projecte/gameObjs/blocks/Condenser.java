@@ -43,9 +43,7 @@ public class Condenser extends AlchemicalChest
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof CondenserTile)
 			{
-				PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-				extraData.writeBlockPos(pos);
-				NetworkHooks.openGui((EntityPlayerMP) player, (CondenserTile) te, extraData);
+				NetworkHooks.openGui((EntityPlayerMP) player, (CondenserTile) te, pos);
 			}
 		}
 		

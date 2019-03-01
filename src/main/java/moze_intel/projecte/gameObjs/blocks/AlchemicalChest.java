@@ -71,9 +71,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
-				PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-				extraData.writeBlockPos(pos);
-				NetworkHooks.openGui((EntityPlayerMP) player, (AlchChestTile) te, extraData);
+				NetworkHooks.openGui((EntityPlayerMP) player, (AlchChestTile) te, pos);
 			}
 		}
 		

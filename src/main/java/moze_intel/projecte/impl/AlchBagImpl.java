@@ -112,6 +112,7 @@ public final class AlchBagImpl
         private final IAlchBagProvider impl = new DefaultImpl();
         private final LazyOptional<IAlchBagProvider> cap = LazyOptional.of(() -> impl);
 
+        @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
         {

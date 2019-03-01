@@ -133,7 +133,7 @@ public final class PlayerHelper
 			return false;
 		}
 
-		for (EnumFacing e : EnumFacing.BY_INDEX)
+		for (EnumFacing e : EnumFacing.values())
 		{
 			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
 			{

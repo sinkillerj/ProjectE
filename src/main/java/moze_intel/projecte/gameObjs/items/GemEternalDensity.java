@@ -164,9 +164,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 			else
 			{
-				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-				buf.writeBoolean(hand == EnumHand.MAIN_HAND);
-				NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(stack), buf);
+				NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(stack), buf -> buf.writeBoolean(hand == EnumHand.MAIN_HAND));
 			}
 		}
 		

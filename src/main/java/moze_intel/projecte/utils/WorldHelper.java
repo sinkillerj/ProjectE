@@ -212,7 +212,7 @@ public final class WorldHelper
 	{
 		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
 
-		for (EnumFacing dir : EnumFacing.BY_INDEX) {
+		for (EnumFacing dir : EnumFacing.values()) {
 			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
 			if (candidate != null) {
 				ret.put(dir, candidate);

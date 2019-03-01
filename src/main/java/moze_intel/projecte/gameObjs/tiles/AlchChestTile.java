@@ -138,16 +138,19 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 		else return super.receiveClientEvent(number, arg);
 	}
 
+	@Nonnull
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+	public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn) {
 		return new AlchChestContainer(playerInventory, this);
 	}
 
+	@Nonnull
 	@Override
 	public String getGuiID() {
 		return getType().getRegistryName().toString();
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getName() {
 		return new TextComponentString(getGuiID());

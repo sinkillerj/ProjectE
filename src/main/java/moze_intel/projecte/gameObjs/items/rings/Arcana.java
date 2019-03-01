@@ -61,7 +61,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list)
+	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> list)
 	{
 		if (isInGroup(group))
 		{

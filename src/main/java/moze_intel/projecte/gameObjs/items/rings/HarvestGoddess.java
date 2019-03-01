@@ -211,7 +211,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				
 				Block block = Block.getBlockFromItem(stack.getItem());
 				
-				if (block != null && block instanceof IPlantable)
+				if (block instanceof IPlantable)
 				{
 					result.add(new StackWithSlot(stack, i));
 				}
