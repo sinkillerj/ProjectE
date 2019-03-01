@@ -24,7 +24,6 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 	private FluidStack inputFluid;
 	private FluidStack leftOutputFluid;
 	private FluidStack rightOutputFluid;
-	private boolean isValid = true;
 
 	public WorldTransmuteEntry(WorldTransmutations.Entry transmutationEntry)
 	{
@@ -73,27 +72,23 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 
 	private ItemStack itemFromBlock(Block block, IBlockState state)
 	{
-		ItemStack item = new ItemStack(block);
-		int dropped = block.damageDropped(state);
-		int meta = block.getMetaFromState(state);
-		if (item.getItem().getHasSubtypes() && meta <= dropped)
-		{
-			item = new ItemStack(block, 1, meta);
+		try {
+			//We don't have a world or position, but try pick block anyways
+			return block.getPickBlock(state, null, null, null, null);
+		} catch (Exception e) {
+			//It failed, probably because of the null world and pos
+			ItemStack item = new ItemStack(block);
+			int dropped = block.damageDropped(state);
+			if (item.getItem().getHasSubtypes() && dropped > 0)
+			{
+				return new ItemStack(block, 1, dropped);
+			}
+			return item;
 		}
-		else if (dropped != 0 || meta != 0)
-		{
-			item = ItemStack.EMPTY;
-			isValid = false;
-		}
-		return item;
 	}
 
 	public boolean isRenderable()
 	{
-		if (!isValid)
-		{
-			return false;
-		}
 		boolean hasInput = inputFluid != null || !inputItem.isEmpty();
 		boolean hasLeftOutput = leftOutputFluid != null || !leftOutputItem.isEmpty();
 		boolean hasRightOutput = rightOutputFluid != null || !rightOutputItem.isEmpty();
@@ -106,7 +101,7 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		{
 			ingredients.setInput(FluidStack.class, inputFluid);
 		}
-		if (!inputItem.isEmpty())
+		else if (!inputItem.isEmpty())
 		{
 			ingredients.setInput(ItemStack.class, inputItem);
 		}
@@ -149,5 +144,15 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 			return Collections.singletonList("Click in world, shift click for second output");
 		}
 		return Collections.emptyList();
+	}
+
+	public ItemStack getInputItem()
+	{
+		return inputItem;
+	}
+
+	public FluidStack getInputFluid()
+	{
+		return inputFluid;
 	}
 }

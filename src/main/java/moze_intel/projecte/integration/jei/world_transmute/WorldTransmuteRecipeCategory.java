@@ -7,11 +7,13 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -136,7 +138,23 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
             WorldTransmuteEntry e = new WorldTransmuteEntry(entry);
             if (e.isRenderable())
             {
-                visible.add(e);
+                boolean alreadyHas;
+                FluidStack inputFluid = e.getInputFluid();
+                if (inputFluid != null)
+                {
+                    Fluid fluid = inputFluid.getFluid();
+                    alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> otherInputFluid != null && fluid == otherInputFluid.getFluid());
+                }
+                else
+                {
+                    ItemStack inputItem = e.getInputItem();
+                    alreadyHas = visible.stream().anyMatch(otherEntry -> ItemHelper.basicAreStacksEqual(inputItem, otherEntry.getInputItem()));
+                }
+                if (!alreadyHas)
+                {
+                    //Only add items that we haven't already had.
+                    visible.add(e);
+                }
             }
         });
         return visible;
