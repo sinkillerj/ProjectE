@@ -322,14 +322,14 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEMCPerDurability(ItemStack stack) {
+	public static long getEMCPerDurability(ItemStack stack) {
 		if(stack.isEmpty())
 			return 0;
 
 		if(ItemHelper.isItemRepairable(stack)){
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setItemDamage(0);
-			int emc = (int)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+			long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;
