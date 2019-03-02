@@ -212,14 +212,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
 			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
 			{
-				AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
-				if (bb == null || world.checkNoEntityCollision(bb))
+				IBlockState placedState = world.getBlockState(pos);
+				if (placedState == startingState && doBlockPlace(player, placedState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops))
 				{
-					IBlockState placeState = world.getBlockState(pos);
-					if (startingState == placeState && doBlockPlace(player, placeState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops))
-					{
-						hitTargets++;
-					}
+					hitTargets++;
 				}
 			}
 		}
@@ -229,15 +225,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			{
 				return EnumActionResult.FAIL;
 			}
-			Set<BlockPos> visited = new HashSet<>();
-			visited.add(startingPos);
 			LinkedList<BlockPos> possibleBlocks = new LinkedList<>();
+			Set<BlockPos> visited = new HashSet<>();
 			possibleBlocks.add(startingPos);
+			visited.add(startingPos);
 
 			int side = 2 * charge + 1;
 			int size = side * side;
 			int totalTries = size * 4;
-			for (int attemptedTargets = 0; !possibleBlocks.isEmpty() && attemptedTargets < totalTries; attemptedTargets++)
+			for (int attemptedTargets = 0; attemptedTargets < totalTries && !possibleBlocks.isEmpty(); attemptedTargets++)
 			{
 				BlockPos pos = possibleBlocks.poll();
 				IBlockState checkState = world.getBlockState(pos);
@@ -247,9 +243,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				}
 				BlockPos offsetPos = pos.offset(facing);
 				IBlockState offsetState = world.getBlockState(offsetPos);
-				boolean hit = false;
 				if (!offsetState.isSideSolid(world, offsetPos, facing))
 				{
+					boolean hit = false;
 					if (mode == EXTENSION_MODE)
 					{
 						AxisAlignedBB cbBox = startingState.getCollisionBoundingBox(world, offsetPos);
@@ -263,25 +259,29 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					{
 						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops);
 					}
-				}
 
-				if (hit)
-				{
-					hitTargets++;
-					if (hitTargets >= size)
+					if (hit)
 					{
-						break;
-					}
-					for (EnumFacing e : EnumFacing.VALUES)
-					{
-						if (facing.getAxis() != e.getAxis())
+						hitTargets++;
+						if (hitTargets >= size)
 						{
-							BlockPos offset = pos.offset(e);
-							BlockPos offsetOpposite = pos.offset(e.getOpposite());
-							if (visited.add(offset))
-								possibleBlocks.offer(offset);
-							if (visited.add(offsetOpposite))
-								possibleBlocks.offer(offsetOpposite);
+							break;
+						}
+						for (EnumFacing e : EnumFacing.VALUES)
+						{
+							if (facing.getAxis() != e.getAxis())
+							{
+								BlockPos offset = pos.offset(e);
+								if (visited.add(offset))
+								{
+									possibleBlocks.offer(offset);
+								}
+								BlockPos offsetOpposite = pos.offset(e.getOpposite());
+								if (visited.add(offsetOpposite))
+								{
+									possibleBlocks.offer(offsetOpposite);
+								}
+							}
 						}
 					}
 				}
