@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = PECore.MODID)
@@ -78,21 +79,9 @@ public class ToolTipEvent
 
 				if (current.getCount() > 1)
 				{
-					long total;
-					try
-					{
-						total = LongMath.checkedMultiply(value, current.getCount());
-						if (total < 0 || total <= value)
-						{
-							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
-						}
-						else
-						{
-							event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.getCount()) + TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
-						}
-					} catch (ArithmeticException e) {
-						event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + TextFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
-					}
+					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " +
+							TextFormatting.WHITE + Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount()))) +
+							TextFormatting.BLUE + EMCHelper.getEmcSellStringBig(current, current.getCount()));
 				}
 
 				if (GuiScreen.isShiftKeyDown()
