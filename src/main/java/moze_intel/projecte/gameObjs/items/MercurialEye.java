@@ -290,7 +290,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		if (hitTargets > 0)
 		{
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / getNumCharges(eye)) * charge));
+			if (PESounds.POWER != null)
+			{
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / getNumCharges(eye)) * charge));
+			}
 			if (!drops.isEmpty())
 			{
 				//Make all the drops fall together
