@@ -81,7 +81,7 @@ public class ToolTipEvent
 				{
 					event.getToolTip().add(TextFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " +
 							TextFormatting.WHITE + Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount()))) +
-							TextFormatting.BLUE + EMCHelper.getEmcSellStringBig(current, current.getCount()));
+							TextFormatting.BLUE + EMCHelper.getEmcSellString(current, current.getCount()));
 				}
 
 				if (GuiScreen.isShiftKeyDown()

@@ -303,18 +303,6 @@ public final class EMCHelper
 			return " ";
 		}
 
-		long emc = EMCHelper.getEmcSellValue(stack);
-
-		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
-	}
-
-	public static String getEmcSellStringBig(ItemStack stack, int stackSize)
-	{
-		if (EMCMapper.covalenceLoss == 1.0)
-		{
-			return " ";
-		}
-
 		BigInteger emc = BigInteger.valueOf(EMCHelper.getEmcSellValue(stack));
 
 		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
