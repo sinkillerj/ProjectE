@@ -26,6 +26,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -188,70 +190,41 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 			else if (doBlockPlace(player, startingState, startingPos, newState, eye, startingBlockEmc, newBlockEmc))
 			{
-				//Otherwise replace it (it may have been air)
+				//Otherwise replace it (it may have been air), or it may have been something like tall grass
 				hitTargets++;
 			}
 		}
-		else if (mode == PILLAR_MODE)
+		else if (mode == EXTENSION_MODE_CLASSIC)
 		{
-			BlockPos start = startingPos;
-			BlockPos end = startingPos;
-
-			int magnitude = (charge + 1) * PILLAR_STEP_RANGE;
-
-			if (magnitude > 0)
-			{
-				magnitude--;
-				if (facing != null)
-				{
-					switch (facing)
-					{
-						case UP:
-							start = start.add(-1, -magnitude, -1);
-							end = end.add(1, 0, 1);
-							break;
-						case DOWN:
-							start = start.add(-1, 0, -1);
-							end = end.add(1, magnitude, 1);
-							break;
-						case SOUTH:
-							start = start.add(-1, -1, -magnitude);
-							end = end.add(1, 1, 0);
-							break;
-						case NORTH:
-							start = start.add(-1, -1, 0);
-							end = end.add(1, 1, magnitude);
-							break;
-						case EAST:
-							start = start.add(-magnitude, -1, -1);
-							end = end.add(0, 1, 1);
-							break;
-						case WEST:
-							start = start.add(0, -1, -1);
-							end = end.add(magnitude, 1, 1);
-							break;
-					}
-				}
-			}
-
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(start, end)))
+			//if it is replaceable fill in the gaps in up to a 9x9x1 area
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0));
+		}
+		else if (mode == TRANSMUTATION_MODE_CLASSIC)
+		{
+			//if state is same as the start state replace it in an up to 9x9x1 area
+			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
 			{
 				AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
 				if (bb == null || world.checkNoEntityCollision(bb))
 				{
 					IBlockState placeState = world.getBlockState(pos);
-					if (!placeState.getBlock().isReplaceable(world, pos))
-					{
-						//Don't replace blocks that are already there unless they are replaceable
-						continue;
-					}
-					long placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
-					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc))
+					if (startingState == placeState && doBlockPlace(player, placeState, pos, newState, eye, startingBlockEmc, newBlockEmc))
 					{
 						hitTargets++;
 					}
 				}
 			}
+		}
+		else if (mode == PILLAR_MODE)
+		{
+			int magnitude = (charge + 1) * PILLAR_STEP_RANGE;
+			if (magnitude > 0)
+			{
+				magnitude--;
+			}
+
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, magnitude));
 		}
 		else
 		{
@@ -321,6 +294,66 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 
 		return EnumActionResult.SUCCESS;
+	}
+
+	private int fillGaps(ItemStack eye, EntityPlayer player, World world, IBlockState startingState, IBlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners)
+	{
+		int hitTargets = 0;
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
+		{
+			AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
+			if (bb == null || world.checkNoEntityCollision(bb))
+			{
+				IBlockState placeState = world.getBlockState(pos);
+				if (placeState.getBlock().isReplaceable(world, pos))
+				{
+					//Only replace replaceable blocks
+					long placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
+					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc))
+					{
+						hitTargets++;
+					}
+				}
+			}
+		}
+		return hitTargets;
+	}
+
+	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int magnitude)
+	{
+		BlockPos start = startingPos;
+		BlockPos end = startingPos;
+		if (facing != null)
+		{
+			switch (facing)
+			{
+				case UP:
+					start = start.add(-strength, -magnitude, -strength);
+					end = end.add(strength, 0, strength);
+					break;
+				case DOWN:
+					start = start.add(-strength, 0, -strength);
+					end = end.add(strength, magnitude, strength);
+					break;
+				case SOUTH:
+					start = start.add(-strength, -strength, -magnitude);
+					end = end.add(strength, strength, 0);
+					break;
+				case NORTH:
+					start = start.add(-strength, -strength, 0);
+					end = end.add(strength, strength, magnitude);
+					break;
+				case EAST:
+					start = start.add(-magnitude, -strength, -strength);
+					end = end.add(0, strength, strength);
+					break;
+				case WEST:
+					start = start.add(0, -strength, -strength);
+					end = end.add(magnitude, strength, strength);
+					break;
+			}
+		}
+		return new ImmutablePair<>(start, end);
 	}
 
 	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, long oldEMC, long newEMC)
