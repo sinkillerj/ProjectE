@@ -176,7 +176,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	{
 		if (!this.hasMaxedEmc())
 		{
-			unprocessedEMC += getSunRelativeEmc(emcGen) / 20.0f;
+			unprocessedEMC += emcGen * (getSunLevel() / 320.0f);
 			if (unprocessedEMC >= 1) {
 				long emcToAdd = (long) unprocessedEMC;
 				this.addEMC(emcToAdd);
@@ -239,11 +239,6 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 			this.sendToAllAcceptors(toSend);
 			this.sendRelayBonus();
 		}
-	}
-	
-	private long getSunRelativeEmc(long emc)
-	{
-		return getSunLevel() * emc / 16;
 	}
 
 	public long getEmcToNextGoal()
