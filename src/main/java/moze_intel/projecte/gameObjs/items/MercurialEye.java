@@ -148,12 +148,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		{
 			newState = ItemHelper.stackToState(target);
 			newBlockEmc = EMCHelper.getEmcValue(target);
-		} else if (mode == EXTENSION_MODE && startingBlockEmc != 0)
+		}
+		else if (mode == EXTENSION_MODE && startingBlockEmc != 0)
 		{
 			//If there is no item key, attempt to determine it for extension mode
 			newState = startingState;
 			newBlockEmc = startingBlockEmc;
-		} else
+		}
+		else
 		{
 			return EnumActionResult.FAIL;
 		}
@@ -183,12 +185,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				{
 					hitTargets++;
 				}
-			} else if (doBlockPlace(player, startingState, startingPos, newState, eye, startingBlockEmc, newBlockEmc))
+			}
+			else if (doBlockPlace(player, startingState, startingPos, newState, eye, startingBlockEmc, newBlockEmc))
 			{
 				//Otherwise replace it (it may have been air)
 				hitTargets++;
 			}
-		} else if (mode == PILLAR_MODE)
+		}
+		else if (mode == PILLAR_MODE)
 		{
 			BlockPos start = startingPos;
 			BlockPos end = startingPos;
@@ -248,7 +252,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					}
 				}
 			}
-		} else
+		}
+		else
 		{
 			if (startingState.getBlock().isAir(startingState, world, startingPos) || facing == null)
 			{
@@ -280,7 +285,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 							long offsetBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(offsetState, 1));
 							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc);
 						}
-					} else if (mode == TRANSMUTATION_MODE)
+					}
+					else if (mode == TRANSMUTATION_MODE)
 					{
 						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc);
 					}
@@ -346,10 +352,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				oldState.getBlock().getDrops(drops, player.getEntityWorld(), placePos, oldState, 0);
 				drops.forEach(d -> Block.spawnAsEntity(player.getEntityWorld(), placePos, d));
 				itemEMC.extractEmc(klein, newEMC);
-			} else if (oldEMC > newEMC)
+			}
+			else if (oldEMC > newEMC)
 			{
 				itemEMC.addEmc(klein, oldEMC - newEMC);
-			} else if (oldEMC < newEMC)
+			}
+			else if (oldEMC < newEMC)
 			{
 				itemEMC.extractEmc(klein, newEMC - oldEMC);
 			}
