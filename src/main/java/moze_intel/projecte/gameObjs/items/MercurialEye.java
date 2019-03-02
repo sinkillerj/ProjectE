@@ -154,7 +154,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			newState = ItemHelper.stackToState(target);
 			newBlockEmc = EMCHelper.getEmcValue(target);
 		}
-		else if (mode == EXTENSION_MODE && startingBlockEmc != 0)
+		else if (startingBlockEmc != 0 && (mode == EXTENSION_MODE || mode == EXTENSION_MODE_CLASSIC))
 		{
 			//If there is no item key, attempt to determine it for extension mode
 			newState = startingState;
@@ -170,6 +170,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			return EnumActionResult.FAIL;
 		}
 
+		NonNullList<ItemStack> drops = NonNullList.create();
 		int charge = getCharge(eye);
 		int hitTargets = 0;
 		if (mode == CREATION_MODE)
@@ -186,12 +187,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				}
 				long offsetBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(offsetState, 1));
 				//Just in case it is not air but is a replaceable block like tall grass, get the proper EMC instead of just using 0
-				if (doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc))
+				if (doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc, drops))
 				{
 					hitTargets++;
 				}
 			}
-			else if (doBlockPlace(player, startingState, startingPos, newState, eye, startingBlockEmc, newBlockEmc))
+			else if (doBlockPlace(player, startingState, startingPos, newState, eye, startingBlockEmc, newBlockEmc, drops))
 			{
 				//Otherwise replace it (it may have been air), or it may have been something like tall grass
 				hitTargets++;
@@ -200,7 +201,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		else if (mode == EXTENSION_MODE_CLASSIC)
 		{
 			//if it is replaceable fill in the gaps in up to a 9x9x1 area
-			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0));
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0), drops);
 		}
 		else if (mode == TRANSMUTATION_MODE_CLASSIC)
 		{
@@ -212,7 +213,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				if (bb == null || world.checkNoEntityCollision(bb))
 				{
 					IBlockState placeState = world.getBlockState(pos);
-					if (startingState == placeState && doBlockPlace(player, placeState, pos, newState, eye, startingBlockEmc, newBlockEmc))
+					if (startingState == placeState && doBlockPlace(player, placeState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops))
 					{
 						hitTargets++;
 					}
@@ -222,7 +223,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		else if (mode == PILLAR_MODE)
 		{
 			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
-			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2));
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
 		}
 		else
 		{
@@ -235,8 +236,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			LinkedList<BlockPos> possibleBlocks = new LinkedList<>();
 			possibleBlocks.add(startingPos);
 
-			int actualCharge = charge + 1;
-			int magnitude = actualCharge * actualCharge * actualCharge;
+			int side = 2 * charge + 1;
+			int magnitude = side * side;
 			for (int attemptedTargets = 0; !possibleBlocks.isEmpty() && attemptedTargets < magnitude * 4; attemptedTargets++)
 			{
 				BlockPos pos = possibleBlocks.poll();
@@ -254,12 +255,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 						if (cbBox == null || world.checkNoEntityCollision(cbBox))
 						{
 							long offsetBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(offsetState, 1));
-							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc);
+							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc, drops);
 						}
 					}
 					else if (mode == TRANSMUTATION_MODE)
 					{
-						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc);
+						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops);
 					}
 				}
 
@@ -289,12 +290,17 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		if (hitTargets > 0)
 		{
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / getNumCharges(eye)) * charge));
+			if (!drops.isEmpty())
+			{
+				//Make all the drops fall together
+				WorldHelper.createLootDrop(drops, player.getEntityWorld(), startingPos);
+			}
 		}
 
 		return EnumActionResult.SUCCESS;
 	}
 
-	private int fillGaps(ItemStack eye, EntityPlayer player, World world, IBlockState startingState, IBlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners)
+	private int fillGaps(ItemStack eye, EntityPlayer player, World world, IBlockState startingState, IBlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops)
 	{
 		int hitTargets = 0;
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
@@ -307,7 +313,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				{
 					//Only replace replaceable blocks
 					long placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
-					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc))
+					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc, drops))
 					{
 						hitTargets++;
 					}
@@ -317,7 +323,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return hitTargets;
 	}
 
-	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, long oldEMC, long newEMC)
+	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops)
 	{
 		IItemHandler capability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		if (capability == null)
@@ -343,9 +349,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			if (oldEMC == 0)
 			{
 				//Drop the block because it doesn't have an emc value
-				NonNullList<ItemStack> drops = NonNullList.create();
 				oldState.getBlock().getDrops(drops, player.getEntityWorld(), placePos, oldState, 0);
-				drops.forEach(d -> Block.spawnAsEntity(player.getEntityWorld(), placePos, d));
 				itemEMC.extractEmc(klein, newEMC);
 			}
 			else if (oldEMC > newEMC)
