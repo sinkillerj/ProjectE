@@ -18,7 +18,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -37,19 +36,18 @@ import java.util.Set;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
-	public MercurialEye()
-	{
-		super("mercurial_eye", (byte) 4, new String[]{"Creation", "Extension", "Extension-Classic", "Transmutation", "Transmutation-Classic", "Pillar"});
-		this.setNoRepair();
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
 	private static final int CREATION_MODE = 0;
 	private static final int EXTENSION_MODE = 1;
 	private static final int EXTENSION_MODE_CLASSIC = 2;
 	private static final int TRANSMUTATION_MODE = 3;
 	private static final int TRANSMUTATION_MODE_CLASSIC = 4;
 	private static final int PILLAR_MODE = 5;
+
+	public MercurialEye()
+	{
+		super("mercurial_eye", (byte) 4, new String[]{"Creation", "Extension", "Extension-Classic", "Transmutation", "Transmutation-Classic", "Pillar"});
+		this.setNoRepair();
+	}
 
 	@Nonnull
 	@Override
@@ -93,6 +91,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return null;
 			}
 		};
+	}
+
+	@Override
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	{
+		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
+		return true;
 	}
 
 	@Nonnull
@@ -312,43 +317,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return hitTargets;
 	}
 
-	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int magnitude)
-	{
-		BlockPos start = startingPos;
-		BlockPos end = startingPos;
-		if (facing != null)
-		{
-			switch (facing)
-			{
-				case UP:
-					start = start.add(-strength, -magnitude, -strength);
-					end = end.add(strength, 0, strength);
-					break;
-				case DOWN:
-					start = start.add(-strength, 0, -strength);
-					end = end.add(strength, magnitude, strength);
-					break;
-				case SOUTH:
-					start = start.add(-strength, -strength, -magnitude);
-					end = end.add(strength, strength, 0);
-					break;
-				case NORTH:
-					start = start.add(-strength, -strength, 0);
-					end = end.add(strength, strength, magnitude);
-					break;
-				case EAST:
-					start = start.add(-magnitude, -strength, -strength);
-					end = end.add(0, strength, strength);
-					break;
-				case WEST:
-					start = start.add(0, -strength, -strength);
-					end = end.add(magnitude, strength, strength);
-					break;
-			}
-		}
-		return new ImmutablePair<>(start, end);
-	}
-
 	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, long oldEMC, long newEMC)
 	{
 		IItemHandler capability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -374,6 +342,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			IItemEmc itemEMC = (IItemEmc) klein.getItem();
 			if (oldEMC == 0)
 			{
+				//Drop the block because it doesn't have an emc value
 				NonNullList<ItemStack> drops = NonNullList.create();
 				oldState.getBlock().getDrops(drops, player.getEntityWorld(), placePos, oldState, 0);
 				drops.forEach(d -> Block.spawnAsEntity(player.getEntityWorld(), placePos, d));
@@ -389,14 +358,44 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			}
 			return true;
 		}
-
 		return false;
 	}
 
-	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int magnitude)
 	{
-		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.getEntityWorld(), hand == EnumHand.MAIN_HAND ? 0 : 1, -1, -1);
-		return true;
+		if (facing == null)
+		{
+			return new ImmutablePair<>(startingPos, startingPos);
+		}
+		BlockPos start = startingPos;
+		BlockPos end = startingPos;
+		switch (facing)
+		{
+			case UP:
+				start = start.add(-strength, -magnitude, -strength);
+				end = end.add(strength, 0, strength);
+				break;
+			case DOWN:
+				start = start.add(-strength, 0, -strength);
+				end = end.add(strength, magnitude, strength);
+				break;
+			case SOUTH:
+				start = start.add(-strength, -strength, -magnitude);
+				end = end.add(strength, strength, 0);
+				break;
+			case NORTH:
+				start = start.add(-strength, -strength, 0);
+				end = end.add(strength, strength, magnitude);
+				break;
+			case EAST:
+				start = start.add(-magnitude, -strength, -strength);
+				end = end.add(0, strength, strength);
+				break;
+			case WEST:
+				start = start.add(0, -strength, -strength);
+				end = end.add(magnitude, strength, strength);
+				break;
+		}
+		return new ImmutablePair<>(start, end);
 	}
 }
