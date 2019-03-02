@@ -44,7 +44,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	public MercurialEye()
 	{
-		super("mercurial_eye", (byte) 4, new String[]{"Creation", "Extension", "Extension-Classic", "Transmutation", "Transmutation-Classic", "Pillar"});
+		super("mercurial_eye", (byte) 4, new String[]{
+				"pe.pe_mercurial_eye.mode1",
+				"pe.pe_mercurial_eye.mode2",
+				"pe.pe_mercurial_eye.mode3",
+				"pe.pe_mercurial_eye.mode4",
+				"pe.pe_mercurial_eye.mode5",
+				"pe.pe_mercurial_eye.mode6"});
 		this.setNoRepair();
 	}
 

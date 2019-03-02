@@ -295,6 +295,13 @@ pe.philstone.mode2=Panel
 pe.philstone.mode3=Line
 pe.philstone.tooltip1=Press %s to open a crafting grid
 
+pe.pe_mercurial_eye.mode1=Creation
+pe.pe_mercurial_eye.mode2=Extension
+pe.pe_mercurial_eye.mode3=Extension-Classic
+pe.pe_mercurial_eye.mode4=Transmutation
+pe.pe_mercurial_eye.mode5=Transmutation-Classic
+pe.pe_mercurial_eye.mode6=Pillar
+
 pe.redpick.mode1=Standard
 pe.redpick.mode2=3x Tallshot
 pe.redpick.mode3=3x Wideshot
