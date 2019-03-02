@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -180,8 +179,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			{
 				BlockPos offsetPos = startingPos.offset(facing);
 				IBlockState offsetState = world.getBlockState(offsetPos);
-				Block offsetBlock = offsetState.getBlock();
-				if (!offsetBlock.isReplaceable(world, offsetPos))
+				if (!offsetState.getBlock().isReplaceable(world, offsetPos))
 				{
 					return EnumActionResult.FAIL;
 				}
@@ -197,6 +195,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				//Otherwise replace it (it may have been air), or it may have been something like tall grass
 				hitTargets++;
 			}
+		}
+		else if (mode == PILLAR_MODE)
+		{
+			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
 		}
 		else if (mode == EXTENSION_MODE_CLASSIC)
 		{
@@ -219,11 +222,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 					}
 				}
 			}
-		}
-		else if (mode == PILLAR_MODE)
-		{
-			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
-			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
 		}
 		else
 		{
@@ -303,29 +301,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return EnumActionResult.SUCCESS;
 	}
 
-	private int fillGaps(ItemStack eye, EntityPlayer player, World world, IBlockState startingState, IBlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops)
-	{
-		int hitTargets = 0;
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
-		{
-			AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
-			if (bb == null || world.checkNoEntityCollision(bb))
-			{
-				IBlockState placeState = world.getBlockState(pos);
-				if (placeState.getBlock().isReplaceable(world, pos))
-				{
-					//Only replace replaceable blocks
-					long placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
-					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc, drops))
-					{
-						hitTargets++;
-					}
-				}
-			}
-		}
-		return hitTargets;
-	}
-
 	private boolean doBlockPlace(EntityPlayer player, IBlockState oldState, BlockPos placePos, IBlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops)
 	{
 		IItemHandler capability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -366,6 +341,29 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			return true;
 		}
 		return false;
+	}
+
+	private int fillGaps(ItemStack eye, EntityPlayer player, World world, IBlockState startingState, IBlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops)
+	{
+		int hitTargets = 0;
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight())))
+		{
+			AxisAlignedBB bb = startingState.getCollisionBoundingBox(world, pos);
+			if (bb == null || world.checkNoEntityCollision(bb))
+			{
+				IBlockState placeState = world.getBlockState(pos);
+				if (placeState.getBlock().isReplaceable(world, pos))
+				{
+					//Only replace replaceable blocks
+					long placeBlockEmc = EMCHelper.getEmcValue(ItemHelper.stateToStack(placeState, 1));
+					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc, drops))
+					{
+						hitTargets++;
+					}
+				}
+			}
+		}
+		return hitTargets;
 	}
 
 	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int depth)
