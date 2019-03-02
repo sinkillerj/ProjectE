@@ -18,6 +18,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -302,9 +303,9 @@ public final class EMCHelper
 			return " ";
 		}
 
-		long emc = EMCHelper.getEmcSellValue(stack);
+		BigInteger emc = BigInteger.valueOf(EMCHelper.getEmcSellValue(stack));
 
-		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
+		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
 	public static int getKleinStarMaxEmc(ItemStack stack)
