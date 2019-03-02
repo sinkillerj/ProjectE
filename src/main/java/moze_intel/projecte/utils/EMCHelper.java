@@ -254,9 +254,9 @@ public final class EMCHelper
 		return 0;
 	}
 
-	private static int getEnchantEmcBonus(ItemStack stack)
+	private static long getEnchantEmcBonus(ItemStack stack)
 	{
-		int result = 0;
+		long result = 0;
 
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
@@ -308,7 +308,7 @@ public final class EMCHelper
 		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
-	public static int getKleinStarMaxEmc(ItemStack stack)
+	public static long getKleinStarMaxEmc(ItemStack stack)
 	{
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}

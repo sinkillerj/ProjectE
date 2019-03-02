@@ -53,7 +53,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
-	private final int emcGen;
+	private final long emcGen;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private double storedFuelEmc;
@@ -64,7 +64,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 	}
 	
-	public CollectorMK1Tile(int maxEmc, int emcGen)
+	public CollectorMK1Tile(long maxEmc, long emcGen)
 	{
 		super(maxEmc);
 		this.emcGen = emcGen;
@@ -235,7 +235,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider
 		}
 	}
 	
-	private float getSunRelativeEmc(int emc)
+	private float getSunRelativeEmc(long emc)
 	{
 		return (float) getSunLevel() * emc / 16;
 	}

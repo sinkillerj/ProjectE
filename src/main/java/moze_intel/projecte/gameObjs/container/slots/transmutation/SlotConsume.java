@@ -28,7 +28,7 @@ public class SlotConsume extends SlotItemHandler
 		
 		ItemStack cache = stack.copy();
 		
-		double toAdd = 0;
+		long toAdd = 0;
 		
 		while (!inv.hasMaxedEmc() && stack.getCount() > 0)
 		{
