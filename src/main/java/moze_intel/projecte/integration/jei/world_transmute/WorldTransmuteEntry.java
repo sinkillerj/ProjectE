@@ -2,6 +2,7 @@ package moze_intel.projecte.integration.jei.world_transmute;
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -76,13 +77,7 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		} catch (Exception e)
 		{
 			//It failed, probably because of the null world and pos
-			ItemStack item = new ItemStack(block);
-			int dropped = block.damageDropped(state);
-			if (item.getItem().getHasSubtypes() && dropped > 0)
-			{
-				return new ItemStack(block, 1, dropped);
-			}
-			return item;
+			return ItemHelper.stateToStack(state, 1);
 		}
 	}
 
