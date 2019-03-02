@@ -163,7 +163,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		{
 			return EnumActionResult.FAIL;
 		}
-
 		if (newState == null || newState.getBlock().isAir(newState, null, null))
 		{
 			return EnumActionResult.FAIL;
@@ -300,7 +299,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), startingPos);
 			}
 		}
-
 		return EnumActionResult.SUCCESS;
 	}
 
