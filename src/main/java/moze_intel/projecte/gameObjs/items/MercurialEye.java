@@ -51,8 +51,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	private static final int TRANSMUTATION_MODE_CLASSIC = 4;
 	private static final int PILLAR_MODE = 5;
 
-	private static final int PILLAR_STEP_RANGE = 3;
-
 	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound prevCapNBT)
@@ -218,13 +216,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 		else if (mode == PILLAR_MODE)
 		{
-			int magnitude = (charge + 1) * PILLAR_STEP_RANGE;
-			if (magnitude > 0)
-			{
-				magnitude--;
-			}
-
-			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, magnitude));
+			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
+			hitTargets += fillGaps(eye, player, world, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2));
 		}
 		else
 		{
