@@ -237,13 +237,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			possibleBlocks.add(startingPos);
 
 			int side = 2 * charge + 1;
-			int magnitude = side * side;
-			for (int attemptedTargets = 0; !possibleBlocks.isEmpty() && attemptedTargets < magnitude * 4; attemptedTargets++)
+			int size = side * side;
+			int totalTries = size * 4;
+			for (int attemptedTargets = 0; !possibleBlocks.isEmpty() && attemptedTargets < totalTries; attemptedTargets++)
 			{
 				BlockPos pos = possibleBlocks.poll();
 				IBlockState checkState = world.getBlockState(pos);
 				if (startingState != checkState)
+				{
 					continue;
+				}
 				BlockPos offsetPos = pos.offset(facing);
 				IBlockState offsetState = world.getBlockState(offsetPos);
 				boolean hit = false;
@@ -267,7 +270,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				if (hit)
 				{
 					hitTargets++;
-					if (hitTargets >= magnitude)
+					if (hitTargets >= size)
 					{
 						break;
 					}
@@ -332,14 +335,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 		ItemStack klein = capability.getStackInSlot(0);
 
-		if (klein.isEmpty() || oldState == newState || ItemPE.getEmc(klein) - (newEMC - oldEMC) < 0 || player.getEntityWorld().getTileEntity(placePos) != null)
+		if (klein.isEmpty() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null)
 		{
 			return false;
 		}
 
-		if (oldEMC == 0 && (oldState.getBlock() == Blocks.BEDROCK || oldState.getBlock() == Blocks.BARRIER))
+		if (oldEMC == 0 && oldState.getBlock().blockHardness == -1.0F)
 		{
-			//Don't allow replacing bedrock/barriers (unless they have an EMC value)
+			//Don't allow replacing unbreakable blocks (unless they have an EMC value)
 			return false;
 		}
 
@@ -365,7 +368,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return false;
 	}
 
-	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int magnitude)
+	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, EnumFacing facing, int strength, int depth)
 	{
 		if (facing == null)
 		{
@@ -376,28 +379,28 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		switch (facing)
 		{
 			case UP:
-				start = start.add(-strength, -magnitude, -strength);
+				start = start.add(-strength, -depth, -strength);
 				end = end.add(strength, 0, strength);
 				break;
 			case DOWN:
 				start = start.add(-strength, 0, -strength);
-				end = end.add(strength, magnitude, strength);
+				end = end.add(strength, depth, strength);
 				break;
 			case SOUTH:
-				start = start.add(-strength, -strength, -magnitude);
+				start = start.add(-strength, -strength, -depth);
 				end = end.add(strength, strength, 0);
 				break;
 			case NORTH:
 				start = start.add(-strength, -strength, 0);
-				end = end.add(strength, strength, magnitude);
+				end = end.add(strength, strength, depth);
 				break;
 			case EAST:
-				start = start.add(-magnitude, -strength, -strength);
+				start = start.add(-depth, -strength, -strength);
 				end = end.add(0, strength, strength);
 				break;
 			case WEST:
 				start = start.add(0, -strength, -strength);
-				end = end.add(magnitude, strength, strength);
+				end = end.add(depth, strength, strength);
 				break;
 		}
 		return new ImmutablePair<>(start, end);
