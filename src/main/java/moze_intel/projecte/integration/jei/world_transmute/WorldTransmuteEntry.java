@@ -56,23 +56,25 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 
 	private FluidStack fluidFromBlock(Block block)
 	{
-        if (block == Blocks.WATER)
-        {
-            return new FluidStack(FluidRegistry.WATER, 1000);
-        }
-        else if (block == Blocks.LAVA)
-        {
-            return new FluidStack(FluidRegistry.LAVA, 1000);
-        }
+		if (block == Blocks.WATER)
+		{
+			return new FluidStack(FluidRegistry.WATER, 1000);
+		}
+		else if (block == Blocks.LAVA)
+		{
+			return new FluidStack(FluidRegistry.LAVA, 1000);
+		}
 		return null;
 	}
 
 	private ItemStack itemFromBlock(Block block, IBlockState state)
 	{
-		try {
+		try
+		{
 			//We don't have a world or position, but try pick block anyways
 			return block.getPickBlock(state, null, null, null, null);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			//It failed, probably because of the null world and pos
 			ItemStack item = new ItemStack(block);
 			int dropped = block.damageDropped(state);
@@ -93,7 +95,8 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 	}
 
 	@Override
-	public void getIngredients(@Nonnull IIngredients ingredients) {
+	public void getIngredients(@Nonnull IIngredients ingredients)
+	{
 		if (inputFluid != null)
 		{
 			ingredients.setInput(FluidStack.class, inputFluid);
