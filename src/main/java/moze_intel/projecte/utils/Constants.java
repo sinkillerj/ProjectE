@@ -7,29 +7,29 @@ public final class Constants
 	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
 	public static final DecimalFormat SINGLE_DP_EMC_FORMATTER = new DecimalFormat("#,###.#");
 
-	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
-	public static final int[] RELAY_KLEIN_CHARGE_RATE = new int[] {16, 48, 160};
+	public static final long[] MAX_KLEIN_EMC = new long[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
+	public static final long[] RELAY_KLEIN_CHARGE_RATE = new long[] {16, 48, 160};
 	public static final float[] COLLECTOR_LIGHT_VALS = new float[] {0.4375F, 0.6875F, 1.0F};
 	
 	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
-	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
+	public static final long[] EXPLOSIVE_LENS_COST = new long[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 	
 	public static final long TILE_MAX_EMC = Long.MAX_VALUE;
 	
-	public static final int COLLECTOR_MK1_MAX = 10000;
-	public static final int COLLECTOR_MK2_MAX = 30000;
-	public static final int COLLECTOR_MK3_MAX = 60000;
-	public static final int COLLECTOR_MK1_GEN = 4;
-	public static final int COLLECTOR_MK2_GEN = 12;
-	public static final int COLLECTOR_MK3_GEN = 40;
+	public static final long COLLECTOR_MK1_MAX = 10000;
+	public static final long COLLECTOR_MK2_MAX = 30000;
+	public static final long COLLECTOR_MK3_MAX = 60000;
+	public static final long COLLECTOR_MK1_GEN = 4;
+	public static final long COLLECTOR_MK2_GEN = 12;
+	public static final long COLLECTOR_MK3_GEN = 40;
 	
-	public static final int RELAY_MK1_OUTPUT = 64;
-	public static final int RELAY_MK2_OUTPUT = 192;
-	public static final int RELAY_MK3_OUTPUT = 640;
+	public static final long RELAY_MK1_OUTPUT = 64;
+	public static final long RELAY_MK2_OUTPUT = 192;
+	public static final long RELAY_MK3_OUTPUT = 640;
 	
-	public static final int RELAY_MK1_MAX = 100000;
-	public static final int RELAY_MK2_MAX = 1000000;
-	public static final int RELAY_MK3_MAX = 10000000;
+	public static final long RELAY_MK1_MAX = 100000;
+	public static final long RELAY_MK2_MAX = 1000000;
+	public static final long RELAY_MK3_MAX = 10000000;
 	
 	public static final int COAL_BURN_TIME = 1600;
 	public static final int ALCH_BURN_TIME = COAL_BURN_TIME * 4;
@@ -58,5 +58,5 @@ public final class Constants
 
 	public static final int MAX_VEIN_SIZE = 250;
 	
-	public static final int ENCH_EMC_BONUS = 5000;
+	public static final long ENCH_EMC_BONUS = 5000;
 }
