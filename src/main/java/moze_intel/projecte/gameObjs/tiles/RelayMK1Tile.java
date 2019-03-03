@@ -54,7 +54,6 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		}
 	};
 	private final long chargeRate;
-
 	private double bonusEMC;
 
 	public RelayMK1Tile()
