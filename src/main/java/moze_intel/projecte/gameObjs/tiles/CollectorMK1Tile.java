@@ -385,12 +385,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public long acceptEMC(@Nonnull EnumFacing side, long toAccept)
 	{
 		if (hasFuel || hasChargeableItem)
 		{
 			//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise it sends it to providers
-			double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 			currentEMC += toAdd;
 			return toAdd;
 		}
