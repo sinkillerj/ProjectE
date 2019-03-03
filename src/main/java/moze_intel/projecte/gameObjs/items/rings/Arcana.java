@@ -239,6 +239,7 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 		{
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
+				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(snowball);
 				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
