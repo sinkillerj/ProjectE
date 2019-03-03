@@ -297,7 +297,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		{
 			if (PESounds.POWER != null)
 			{
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.5F + ((0.5F / getNumCharges(eye)) * charge));
+				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			}
 			if (!drops.isEmpty())
 			{
