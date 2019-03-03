@@ -46,7 +46,7 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.getTagCompound().setByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
+		ItemHelper.getOrCreateCompound(stack).setByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override
