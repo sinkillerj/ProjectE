@@ -378,7 +378,7 @@ public class ClientProxy implements IProxy
 	@SubscribeEvent
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{
-		if (event.getEntity() instanceof EntitySWRGProjectile)
+		if (event.getEntity() instanceof EntitySWRGProjectile && FMLClientHandler.instance().getClient().inGameHasFocus)
 		{
 			FMLClientHandler.instance().getClient().getSoundHandler().playSound(new MovingSoundSWRG((EntitySWRGProjectile) event.getEntity()));
 		}
