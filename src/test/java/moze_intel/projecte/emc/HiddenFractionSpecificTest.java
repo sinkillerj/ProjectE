@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import moze_intel.projecte.emc.arithmetics.*;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
+import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.Before;

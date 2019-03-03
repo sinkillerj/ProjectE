@@ -18,6 +18,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -253,9 +254,9 @@ public final class EMCHelper
 		return 0;
 	}
 
-	private static int getEnchantEmcBonus(ItemStack stack)
+	private static long getEnchantEmcBonus(ItemStack stack)
 	{
-		int result = 0;
+		long result = 0;
 
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
@@ -302,12 +303,12 @@ public final class EMCHelper
 			return " ";
 		}
 
-		long emc = EMCHelper.getEmcSellValue(stack);
+		BigInteger emc = BigInteger.valueOf(EMCHelper.getEmcSellValue(stack));
 
-		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
+		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
-	public static int getKleinStarMaxEmc(ItemStack stack)
+	public static long getKleinStarMaxEmc(ItemStack stack)
 	{
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
@@ -321,14 +322,14 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEMCPerDurability(ItemStack stack) {
+	public static long getEMCPerDurability(ItemStack stack) {
 		if(stack.isEmpty())
 			return 0;
 
 		if(ItemHelper.isItemRepairable(stack)){
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setItemDamage(0);
-			int emc = (int)Math.ceil(EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+			long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

@@ -20,18 +20,6 @@ public class EMCProxyImpl implements IEMCProxy
     private EMCProxyImpl() {}
 
     @Override
-    public void registerCustomEMC(@Nonnull ItemStack stack, int value)
-    {
-        registerCustomEMC(stack, (long) value);
-    }
-
-    @Override
-    public void registerCustomEMC(@Nonnull Object o, int value)
-    {
-        registerCustomEMC(o, (long) value);
-    }
-
-    @Override
     public void registerCustomEMC(@Nonnull ItemStack stack, long value)
     {
         Preconditions.checkNotNull(stack);
