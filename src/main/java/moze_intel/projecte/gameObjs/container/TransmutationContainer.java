@@ -47,22 +47,22 @@ public class TransmutationContainer extends Container
 		this.addSlotToContainer(new SlotLock(transmutationInventory, 8, 158, 50));
 		this.addSlotToContainer(new SlotConsume(transmutationInventory, 9, 107, 97));
 		this.addSlotToContainer(new SlotUnlearn(transmutationInventory, 10, 89, 97));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 11, 123, 30));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 12, 140, 13));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 13, 158, 9));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 14, 176, 13));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 15, 193, 30));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 16, 199, 50));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 17, 193, 70));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 18, 176, 87));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 19, 158, 91));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 20, 140, 87));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 21, 123, 70));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 22, 116, 50));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 11, 158, 9));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 12, 176, 13));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 13, 193, 30));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 14, 199, 50));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 15, 193, 70));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 16, 176, 87));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 17, 158, 91));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 18, 140, 87));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 19, 123, 70));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 20, 116, 50));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 21, 123, 30));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 22, 140, 13));
 		this.addSlotToContainer(new SlotOutput(transmutationInventory, 23, 158, 31));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 24, 139, 50));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 25, 177, 50));
-		this.addSlotToContainer(new SlotOutput(transmutationInventory, 26, 158, 69));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 24, 177, 50));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 25, 158, 69));
+		this.addSlotToContainer(new SlotOutput(transmutationInventory, 26, 139, 50));
 
 		//Player Inventory
 		for(int i = 0; i < 3; i++)
