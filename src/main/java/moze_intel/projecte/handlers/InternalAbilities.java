@@ -93,7 +93,7 @@ public final class InternalAbilities
 			wasFlyingGamemode = false;
 			wasFlying = false;
 		}
-		else //if (shouldPlayerFly())
+		else
 		{
 			if (!hadFlightItem)
 			{
