@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//From MovingSoundMinecart
+// [VanillaCopy] MovingSoundMinecart
 @SideOnly(Side.CLIENT)
 public class MovingSoundSWRG extends MovingSound
 {
@@ -22,9 +22,7 @@ public class MovingSoundSWRG extends MovingSound
 		this.volume = 0.6F;
 	}
 
-	/**
-	 * Like the old updateEntity(), except more generic.
-	 */
+	@Override
 	public void update()
 	{
 		if (this.swrgProjectile.isDead)
