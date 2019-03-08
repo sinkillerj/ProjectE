@@ -35,7 +35,7 @@ public class NovaCatalyst extends BlockTNT
 	}
 	
 	@Override
-	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
+	public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if (!world.isRemote)
 		{
