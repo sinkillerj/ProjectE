@@ -1,6 +1,5 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -41,8 +40,7 @@ import java.util.function.Predicate;
  */
 public final class WorldHelper
 {
-	@SuppressWarnings("unchecked")
-	private static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList.of(
+	private static final List<Class<? extends EntityLiving>> peacefuls = Lists.newArrayList(
 			EntitySheep.class, EntityPig.class, EntityCow.class,
 			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
 			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
@@ -51,8 +49,7 @@ public final class WorldHelper
 			EntityLlama.class, EntityParrot.class
 	);
 
-	@SuppressWarnings("unchecked")
-	private static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList.of(
+	private static final List<Class<? extends EntityLiving>> mobs = Lists.newArrayList(
 			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
 			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
 			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
@@ -74,6 +71,46 @@ public final class WorldHelper
 	public static boolean blacklistSwrg(Class<? extends Entity> clazz)
 	{
 		return swrgBlacklist.add(clazz);
+	}
+
+	public static boolean addPeaceful(Class<? extends EntityLiving> clazz)
+	{
+		if (!peacefuls.contains(clazz))
+		{
+			peacefuls.add(clazz);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean removePeaceful(Class<? extends EntityLiving> clazz)
+	{
+		return peacefuls.remove(clazz);
+	}
+
+	public static void clearPeacefuls()
+	{
+		peacefuls.clear();
+	}
+
+	public static boolean addMob(Class<? extends EntityLiving> clazz)
+	{
+		if (!mobs.contains(clazz))
+		{
+			mobs.add(clazz);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean removeMob(Class<? extends EntityLiving> clazz)
+	{
+		return mobs.remove(clazz);
+	}
+
+	public static void clearMobs()
+	{
+		mobs.clear();
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)

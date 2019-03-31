@@ -87,7 +87,7 @@ public class RecipesCovalenceRepair extends IForgeRegistryEntry.Impl<IRecipe> im
 		}
 
 	    ItemStack output = ingredients.getFirst().copy();
-		output.setItemDamage(Math.max(output.getItemDamage() - (int) (dustEmc / emcPerDurability), 0));
+		output.setItemDamage((int) Math.max(output.getItemDamage() - (dustEmc / emcPerDurability), 0));
 		return output;
 	}
 

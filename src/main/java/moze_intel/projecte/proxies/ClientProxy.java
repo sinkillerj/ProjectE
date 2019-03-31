@@ -21,6 +21,7 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.gameObjs.sound.MovingSoundSWRG;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -49,6 +50,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -371,6 +373,15 @@ public class ClientProxy implements IProxy
 	public boolean isJumpPressed()
 	{
 		return FMLClientHandler.instance().getClient().gameSettings.keyBindJump.isKeyDown();
+	}
+
+	@SubscribeEvent
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
+	{
+		if (event.getEntity() instanceof EntitySWRGProjectile && FMLClientHandler.instance().getClient().inGameHasFocus)
+		{
+			FMLClientHandler.instance().getClient().getSoundHandler().playSound(new MovingSoundSWRG((EntitySWRGProjectile) event.getEntity()));
+		}
 	}
 }
 
