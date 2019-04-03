@@ -226,10 +226,15 @@ public final class EMCMapper
 	}
 
 	public static boolean mapContainsWithNBT(SimpleStack withNBT) {
+		return mapContainsWithNBT(withNBT, true);
+	}
+	
+	public static boolean mapContainsWithNBT(SimpleStack withNBT, boolean partialResults) {
 		if(nssWithNBTCache.containsKey(withNBT.id.toString())){
 			for(NSSItemWithNBT itm: nssWithNBTCache.get(withNBT.id.toString())){
 				if(itm.ignoreDamage || itm.damage == withNBT.damage){
-					if(NSSItemWithNBT.isNBTContained(itm.nbt,withNBT.tag)){
+					if((partialResults && NSSItemWithNBT.isNBTContained(itm.nbt,withNBT.tag))||
+							itm.nbt.equals(withNBT.tag)){
 						return true;	
 					}
 				}
@@ -256,5 +261,7 @@ public final class EMCMapper
 		}
 		return mostSimilar;
 	}
+
+	
 	
 }

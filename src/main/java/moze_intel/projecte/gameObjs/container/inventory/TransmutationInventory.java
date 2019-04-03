@@ -80,8 +80,8 @@ public class TransmutationInventory extends CombinedInvWrapper
 				SimpleStack simStack = new SimpleStack(stack, ItemHelper.isDamageable(stack)?
 						NSSItemWithNBT.JUST_IGNORE_DAMAGE:
 						NSSItemWithNBT.NO_IGNORES);
-				if(!EMCMapper.mapContainsWithNBT(simStack)
-						){
+				if(!EMCMapper.mapContainsWithNBT(simStack, false)){
+					
 					if(stack.getItem().equals(Items.ENCHANTED_BOOK)){
 						if(ProjectEConfig.misc.learnEnchantBooks){
 							long emcVal = EMCHelper.getEmcValue(stack);
@@ -104,7 +104,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 							if(!NBTWhitelist.shouldDupeWithNBT(stack))
 								stack.setTagCompound(null);
 						}
-					}else if(!NBTWhitelist.shouldDupeWithNBT(stack)){
+					}else if (!EMCMapper.mapContainsWithNBT(simStack, true) && NBTWhitelist.shouldDupeWithNBT(stack)){
 						stack.setTagCompound(null);
 					}
 				}
