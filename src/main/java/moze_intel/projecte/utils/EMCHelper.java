@@ -140,6 +140,10 @@ public final class EMCHelper
 		{
 			iStack = iStack.withMeta(0);
 		}
+		boolean hasWithNBT = EMCMapper.mapContainsWithNBT(iStack.withNBT(stack.getTagCompound()));
+		if(hasWithNBT){
+			return true;
+		}		
 
 		return EMCMapper.mapContains(iStack);
 	}
@@ -189,7 +193,43 @@ public final class EMCHelper
 		{
 			return 0;
 		}
+		if(stack.getTagCompound() != null && !stack.getTagCompound().isEmpty()){
+			SimpleStack iStack2 = iStack.withDamageAndNBT(ItemHelper.isDamageable(stack)? 0: iStack.damage, stack.getTagCompound());
+			if(EMCMapper.mapContainsWithNBT(iStack2)){
+				long emc = EMCMapper.getEmcValueWithNBT(iStack2);
+				long result = emc;
+				boolean positive = true;
+				if(ItemHelper.isDamageable(stack)){
+					int relDamage = (stack.getMaxDamage() + 1 - stack.getItemDamage());
+					if (relDamage <= 0){
+						return emc;
+					}
+					result = emc * relDamage;
+					if (result <= 0){
+						return emc;
+					}
 
+					result /= stack.getMaxDamage();
+					positive = result > 0;
+				}
+				// no enchantment bonus. Enchantments are NBT included, after all
+				
+				result += getStoredEMCBonus(stack);
+
+				//If it was positive and then became negative that means it overflowed
+				if (positive && result < 0) {
+					return emc;
+				}
+
+				if (result <= 0)
+				{
+					return 1;
+				}
+
+				return result;
+			}
+		}
+		
 		if (!EMCMapper.mapContains(iStack) && ItemHelper.isDamageable(stack))
 		{
 			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.

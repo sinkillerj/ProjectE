@@ -8,6 +8,7 @@ import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -32,7 +33,7 @@ public class SyncEmcPKT implements IMessage
 
 		for (int i = 0; i < size; i++)
 		{
-			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), ByteBufUtils.readVarInt(buf, 5), buf.readLong());
+			data[i] = new EmcPKTInfo(ByteBufUtils.readVarInt(buf, 5), ByteBufUtils.readVarInt(buf, 5), buf.readLong(),(buf.readByte() == 0? null:ByteBufUtils.readTag(buf)));
 		}
 	}
 
@@ -46,6 +47,10 @@ public class SyncEmcPKT implements IMessage
 			ByteBufUtils.writeVarInt(buf, info.getId(), 5);
 			ByteBufUtils.writeVarInt(buf, info.getDamage(), 5);
 			buf.writeLong(info.getEmc());
+			buf.writeBoolean(info.hasNBT);
+			if(info.hasNBT){
+				ByteBufUtils.writeTag(buf, info.nbt);
+			}
 		}
 	}
 
@@ -85,11 +90,22 @@ public class SyncEmcPKT implements IMessage
 	public static class EmcPKTInfo {
 		private int id, damage;
 		private long emc;
+		private boolean hasNBT;
+		private NBTTagCompound nbt;
 
 		public EmcPKTInfo(int id, int damage, long emc) {
 			this.id = id;
 			this.damage = damage;
 			this.emc = emc;
+		}
+		public EmcPKTInfo(int id, int damage, long emc, NBTTagCompound nbt) {
+			this.id = id;
+			this.damage = damage;
+			this.emc = emc;
+			if(nbt != null){
+				hasNBT = true;
+				this.nbt = nbt;
+			}
 		}
 
 		public int getDamage() {
@@ -102,6 +118,12 @@ public class SyncEmcPKT implements IMessage
 
 		public long getEmc() {
 			return emc;
+		}
+		
+		public NBTTagCompound getNBT(){
+			if(hasNBT)
+				return nbt;
+			return null;
 		}
 	}
 }

@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 
@@ -80,7 +81,11 @@ public class SetEmcCMD extends CommandBase
 
 					if (meta < 0)
 					{
-						throw new CommandException("pe.command.set.invalidmeta", params[1]);
+						if(params[1].equals("*")){
+							meta = OreDictionary.WILDCARD_VALUE;
+						}else{
+							throw new CommandException("pe.command.set.invalidmeta", params[1]);
+						}
 					}
 
 					emc = MathUtils.parseInteger(params[2]);

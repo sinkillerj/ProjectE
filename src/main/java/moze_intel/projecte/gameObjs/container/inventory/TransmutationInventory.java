@@ -3,7 +3,13 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
+import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.emc.json.NSSItemWithNBT;
+import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -11,6 +17,7 @@ import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
@@ -69,9 +76,38 @@ public class TransmutationInventory extends CombinedInvWrapper
 		
 		if (!provider.hasKnowledge(stack))
 		{
-			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
-			{
-				stack.setTagCompound(null);
+			if (stack.hasTagCompound()){
+				SimpleStack simStack = new SimpleStack(stack, ItemHelper.isDamageable(stack)?
+						NSSItemWithNBT.JUST_IGNORE_DAMAGE:
+						NSSItemWithNBT.NO_IGNORES);
+				if(!EMCMapper.mapContainsWithNBT(simStack)
+						){
+					if(stack.getItem().equals(Items.ENCHANTED_BOOK)){
+						if(ProjectEConfig.misc.learnEnchantBooks){
+							long emcVal = EMCHelper.getEmcValue(stack);
+							CustomEMCParser.addWithNBTToFile(stack, NSSItemWithNBT.NO_IGNORES, emcVal);
+							EMCMapper.insertSimpleStackWithNBTintoEMCMap(simStack, emcVal);
+						}else{
+							if(!NBTWhitelist.shouldDupeWithNBT(stack))
+								stack.setTagCompound(null);
+						}
+					}else if (stack.getEnchantmentTagList() != null && !stack.getEnchantmentTagList().isEmpty()){
+						if(ProjectEConfig.misc.learnEnchantedItems){
+							ItemStack toExamine = stack.copy();
+							if(ItemHelper.isDamageable(toExamine)){
+								toExamine.setItemDamage(0);
+							}
+							long emcVal = EMCHelper.getEmcValue(toExamine);
+							CustomEMCParser.addWithNBTToFile(toExamine, NSSItemWithNBT.NO_IGNORES, emcVal);
+							EMCMapper.insertSimpleStackWithNBTintoEMCMap(simStack, emcVal);
+						}else{
+							if(!NBTWhitelist.shouldDupeWithNBT(stack))
+								stack.setTagCompound(null);
+						}
+					}else if(!NBTWhitelist.shouldDupeWithNBT(stack)){
+						stack.setTagCompound(null);
+					}
+				}
 			}
 
 			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, stack))) //Only show the "learned" text if the knowledge was added
@@ -107,9 +143,14 @@ public class TransmutationInventory extends CombinedInvWrapper
 			unlearnFlag = 300;
 			learnFlag = 0;
 
-			if (stack.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(stack))
-			{
+			if (stack.hasTagCompound()){
+				if(!EMCMapper.mapContainsWithNBT(
+						new SimpleStack(stack, ItemHelper.isDamageable(stack)?
+												NSSItemWithNBT.JUST_IGNORE_DAMAGE:
+												NSSItemWithNBT.NO_IGNORES))&&
+						!NBTWhitelist.shouldDupeWithNBT(stack)){
 				stack.setTagCompound(null);
+			}
 			}
 
 			provider.removeKnowledge(stack);

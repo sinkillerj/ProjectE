@@ -2,8 +2,10 @@ package moze_intel.projecte.emc.mappers;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSItemWithNBT;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
@@ -46,6 +48,26 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		modMap.put(NSSItem.create(stack), emcValue);
 	}
 
+	public void registerCustomEMCWithNBT(ItemStack stack, long emcValue) {
+		registerCustomEMCWithNBT(stack, NSSItemWithNBT.NO_IGNORES, emcValue);
+	}
+	
+	public void registerCustomEMCWithNBT(ItemStack stack,String[] ignores, long emcValue) {
+		if (stack.isEmpty()) return;
+		if (emcValue < 0) emcValue = 0;
+		ModContainer activeMod = Loader.instance().activeModContainer();
+		String modId = activeMod == null ? null : activeMod.getModId();
+		Map<NormalizedSimpleStack, Long> modMap;
+		if (customEMCforMod.containsKey(modId)) {
+			modMap = customEMCforMod.get(modId);
+		} else {
+			modMap = new HashMap<>();
+			customEMCforMod.put(modId, modMap);
+		}
+		modMap.put(NSSItemWithNBT.create(stack, ignores), emcValue);
+	}
+
+	
 	public void registerCustomEMC(Object o, long emcValue) {
 		NormalizedSimpleStack stack = ConversionProxyImpl.instance.objectToNSS(o);
 		if (stack == null) return;
@@ -156,7 +178,10 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		{
 			NSSItem item = (NSSItem)stack;
 			itemName = item.itemName;
-		} else {
+		} else if (stack instanceof NSSItemWithNBT){
+			NSSItemWithNBT item = (NSSItemWithNBT)stack;
+			itemName = item.itemName;
+		}else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}
 		String modForItem = itemName.substring(0, itemName.indexOf(':'));

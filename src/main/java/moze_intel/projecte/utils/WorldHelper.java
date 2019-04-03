@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Lists;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
@@ -317,7 +318,7 @@ public final class WorldHelper
 		return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
 	}
 
-	public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world)
+	public static <T extends EntityLiving> T getNewEntityInstance(Class<T> c, World world)
 	{
 		try
 		{
@@ -347,11 +348,11 @@ public final class WorldHelper
 
 		if (peacefuls.contains(entClass))
 		{
-			return getNewEntityInstance(CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
+			return getNewEntityInstance((Class<EntityLiving>)CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
 		}
 		else if (mobs.contains(entClass))
 		{
-			EntityLiving ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			EntityLiving ent = getNewEntityInstance((Class<EntityLiving>) CollectionHelper.getRandomListEntry(mobs, entClass), world);
 			if (ent instanceof EntityRabbit)
 			{
 				((EntityRabbit) ent).setRabbitType(99);

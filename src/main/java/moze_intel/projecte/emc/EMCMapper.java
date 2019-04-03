@@ -12,6 +12,7 @@ import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.WildcardSetValueFixCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSItemWithNBT;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
@@ -29,10 +30,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
+
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,6 +45,7 @@ import java.util.Map;
 public final class EMCMapper 
 {
 	public static final Map<SimpleStack, Long> emc = new LinkedHashMap<>();
+	public static final Map<String, List<NSSItemWithNBT>> nssWithNBTCache = new LinkedHashMap<>();
 
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
 
@@ -134,13 +138,19 @@ public final class EMCMapper
 
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
-			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = Item.REGISTRY.getObject(new ResourceLocation(normStackItem.itemName));
+			NormalizedSimpleStack normStackItem = entry.getKey();
+			String name = (normStackItem instanceof NSSItem) ? ((NSSItem)normStackItem).itemName: 
+						  (normStackItem instanceof NSSItemWithNBT) ? ((NSSItemWithNBT)normStackItem).itemName: null;
+			Item obj = Item.REGISTRY.getObject(new ResourceLocation(name));
 			if (obj != null)
 			{
-				emc.put(new SimpleStack(obj.getRegistryName(), normStackItem.damage), entry.getValue());
+				if (normStackItem instanceof NSSItemWithNBT){
+					insertNSSWithNBTintoEMCMap((NSSItemWithNBT) normStackItem, entry.getValue());
+				} else if(normStackItem instanceof NSSItem){
+					emc.put(new SimpleStack(obj.getRegistryName(), ((NSSItem)normStackItem).damage), entry.getValue());
+				}
 			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}|{}. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
+				PECore.LOGGER.warn("Could not add EMC value for {}|{}. Can not get ItemID!", name);
 			}
 		}
 
@@ -150,23 +160,101 @@ public final class EMCMapper
 		PECore.refreshJEI();
 	}
 
+	public static void insertNSSWithNBTintoEMCMap(NSSItemWithNBT normStackItem, long value) {
+		SimpleStack itm = new SimpleStack(new ResourceLocation(normStackItem.itemName), normStackItem.damage, normStackItem.nbt);
+		putInNSSNBTCache((NSSItemWithNBT) normStackItem);
+		emc.put(itm, value);
+	}
+
+	public static void insertSimpleStackWithNBTintoEMCMap(SimpleStack itm, long value) {
+		putInNSSNBTCache(new NSSItemWithNBT(itm.id.toString(), itm.damage, itm.tag, NSSItemWithNBT.NO_IGNORES));
+		emc.put(itm, value);
+	}
+	
+	private static void putInNSSNBTCache(NSSItemWithNBT normStackItem) {
+		if(normStackItem.nbt == null || normStackItem.nbt.isEmpty()){
+			return;
+		}
+		String key = normStackItem.itemName;
+		if(!nssWithNBTCache.containsKey(key)){
+			nssWithNBTCache.put(key, new ArrayList<>());
+		}
+		for(NSSItemWithNBT itm: nssWithNBTCache.get(key)){
+			if(itm.damage == normStackItem.damage && normStackItem.nbt.equals(itm.nbt)){
+				return;
+			}
+		}
+		nssWithNBTCache.get(key).add(normStackItem);		
+	}
+
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
-		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem)
-										|| ((NSSItem) e.getKey()).damage == OreDictionary.WILDCARD_VALUE
+		map.entrySet().removeIf(e -> !((e.getKey() instanceof NSSItem)||(e.getKey() instanceof NSSItemWithNBT))
+										|| ((e.getKey() instanceof NSSItem) && ((NSSItem) e.getKey()).damage == OreDictionary.WILDCARD_VALUE)
 										|| e.getValue() <= 0);
 	}
 
 	public static boolean mapContains(SimpleStack key)
 	{
+		if(key.tag != null){
+			return mapContainsWithNBT(key) || emc.containsKey(key); 
+		}
 		return emc.containsKey(key);
 	}
 
 	public static long getEmcValue(SimpleStack stack)
 	{
+		if(stack.tag != null){
+			return getEmcValueWithNBT(stack);
+		}
 		return emc.get(stack);
+	}
+	
+	public static long getEmcValueWithNBT(SimpleStack stack){
+		SimpleStack stack2 = stack;
+		if(stack.tag != null && !stack.tag.isEmpty()){
+			NSSItemWithNBT represent = getRepresentativeTag(stack);
+			if(represent != null){
+				stack2 = represent.toSimpleStack();
+			}
+		}
+		return emc.get(stack2);
 	}
 
 	public static void clearMaps() {
 		emc.clear();
+		nssWithNBTCache.clear();
 	}
+
+	public static boolean mapContainsWithNBT(SimpleStack withNBT) {
+		if(nssWithNBTCache.containsKey(withNBT.id.toString())){
+			for(NSSItemWithNBT itm: nssWithNBTCache.get(withNBT.id.toString())){
+				if(itm.ignoreDamage || itm.damage == withNBT.damage){
+					if(NSSItemWithNBT.isNBTContained(itm.nbt,withNBT.tag)){
+						return true;	
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static NSSItemWithNBT getRepresentativeTag(SimpleStack withNBT){
+		NSSItemWithNBT mostSimilar = null;
+		int maxSimilarity = 0;
+		if(nssWithNBTCache.containsKey(withNBT.id.toString())){
+			for(NSSItemWithNBT itm: nssWithNBTCache.get(withNBT.id.toString())){
+				if(itm.ignoreDamage || itm.damage == withNBT.damage){
+					if(NSSItemWithNBT.isNBTContained(itm.nbt,withNBT.tag)){
+						int newSim = NSSItemWithNBT.NBTSimilarity(itm.nbt,withNBT.tag);
+						if(maxSimilarity < newSim) {
+							maxSimilarity = newSim;
+							mostSimilar = itm;
+						}
+					}
+				}
+			}
+		}
+		return mostSimilar;
+	}
+	
 }

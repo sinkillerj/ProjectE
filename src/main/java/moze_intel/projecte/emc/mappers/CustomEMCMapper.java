@@ -9,9 +9,12 @@ import net.minecraftforge.common.config.Configuration;
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
-		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
-			PECore.debugLog("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
-			mapper.setValueBefore(entry.nss, entry.emc);
+		for(String key: CustomEMCParser.customEMCEntries.keySet()){
+			PECore.debugLog("Adding custom EMC value from mod " + key);
+			for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.customEMCEntries.get(key)) {
+				PECore.debugLog("Adding custom EMC value for {}: {}", entry.nss, entry.emc);
+				mapper.setValueBefore(entry.nss, entry.emc);
+			}
 		}
 	}
 

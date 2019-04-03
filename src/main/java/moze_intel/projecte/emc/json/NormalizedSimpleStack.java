@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
 import mezz.jei.util.Log;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.collector.IMappingCollector;
@@ -14,6 +15,9 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -46,13 +50,23 @@ public interface NormalizedSimpleStack {
 					throw new JsonParseException("Tried to identify nonexistent Fluid " + fluidName);
 				return NSSFluid.create(fluid);
 			} else {
-				int pipeIndex = s.lastIndexOf('|');
+				int pipeIndex = s.indexOf('|');
 				if (pipeIndex < 0)
 				{
 					throw new JsonParseException(String.format("Cannot parse '%s' as itemstack. Missing | to separate metadata.", s));
 				}
 				String itemName = s.substring(0, pipeIndex);
 				String itemDamageString = s.substring(pipeIndex + 1);
+				NBTTagCompound nbt = null;
+				int nbtStart = itemDamageString.indexOf('|');
+				if(nbtStart > 0){
+					try {
+						nbt = JsonToNBT.getTagFromJson(itemDamageString.substring(nbtStart+1));
+					} catch (NBTException e) {
+						PECore.LOGGER.error("Could not parse nbt of a "+ itemName + " item:"+ e.getMessage());
+					}
+					itemDamageString = itemDamageString.substring(0, nbtStart);
+				}
 				int itemDamage;
 				if (itemDamageString.equals("*")) {
 					itemDamage = OreDictionary.WILDCARD_VALUE;
@@ -64,8 +78,12 @@ public interface NormalizedSimpleStack {
 						throw new JsonParseException(String.format("Could not parse '%s' to metadata-integer", itemDamageString), e);
 					}
 				}
-
-				return NSSItem.create(itemName, itemDamage);
+				if(nbt == null){
+					return NSSItem.create(itemName, itemDamage);
+				}else{
+					NSSItemWithNBT ans = new NSSItemWithNBT(itemName, itemDamage,nbt);
+					return ans;
+				}
 			}
 		}
 

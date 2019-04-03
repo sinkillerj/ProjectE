@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.collector;
 
 import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NSSItemWithNBT;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import net.minecraftforge.oredict.OreDictionary;
@@ -20,7 +21,7 @@ public class WildcardSetValueFixCollector<V extends Comparable<V>, A extends IVa
 	}
 
 	private boolean isWildCard(NormalizedSimpleStack nss) {
-		return nss instanceof NSSItem && ((NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE;
+		return (nss instanceof NSSItem && ((NSSItem) nss).damage == OreDictionary.WILDCARD_VALUE);
 	}
 
 	@Override
