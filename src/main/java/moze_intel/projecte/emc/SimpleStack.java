@@ -1,6 +1,8 @@
 package moze_intel.projecte.emc;
 
+import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSItemWithNBT;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,17 +36,7 @@ public class SimpleStack
 	
 	public SimpleStack(ItemStack stack)
 	{
-		if (stack.isEmpty())
-		{
-			id = new ResourceLocation("minecraft", "air");
-			damage = 0;
-		}
-		else
-		{
-			id = stack.getItem().getRegistryName();
-			damage = stack.getItemDamage();
-		}
-		tag = null;
+		this(stack, NSSItemWithNBT.NO_IGNORES);
 	}
 	
 	public SimpleStack(ItemStack stack, String[] ignores)
@@ -56,10 +48,18 @@ public class SimpleStack
 			tag = null;
 			return;
 		}
-		NSSItemWithNBT itm = (NSSItemWithNBT) NSSItemWithNBT.create(stack, ignores);
-		id = new ResourceLocation(itm.itemName);
-		damage = itm.damage;
-		tag = itm.nbt;
+		NormalizedSimpleStack itm2 = NSSItemWithNBT.create(stack, ignores);
+		if(itm2 instanceof NSSItem){
+			NSSItem itm = (NSSItem) itm2;
+			id = new ResourceLocation(itm.itemName);
+			damage = itm.damage;
+			tag = null;
+		}else {
+			NSSItemWithNBT itm = (NSSItemWithNBT) itm2;
+			id = new ResourceLocation(itm.itemName);
+			damage = itm.damage;
+			tag = itm.nbt;
+		}
 	}
 
 	public SimpleStack withMeta(int meta)

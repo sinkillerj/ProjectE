@@ -81,8 +81,8 @@ public class NSSItemWithNBT implements NormalizedSimpleStack {
 	public static NormalizedSimpleStack create(String itemName, int damage, NBTTagCompound tag, String[] NBTtoIgnore) {
 		NormalizedSimpleStack normStack;
 		try {
-			if(tag == null)
-				normStack = new NSSItemWithNBT(itemName, damage);
+			if(tag == null || tag.isEmpty())
+				normStack = new NSSItem(itemName, damage);
 			else
 				normStack = new NSSItemWithNBT(itemName, damage, tag, NBTtoIgnore);
 		} catch (Exception e) {
@@ -94,7 +94,7 @@ public class NSSItemWithNBT implements NormalizedSimpleStack {
 
 	@Override
 	public int hashCode() {
-		return itemName.hashCode() ^ damage;
+		return itemName.hashCode() ^ damage ^nbt.toString().hashCode();
 	}
 	
 	@Override
@@ -109,6 +109,10 @@ public class NSSItemWithNBT implements NormalizedSimpleStack {
 				return this.nbt.toString().equalsIgnoreCase(other.nbt.toString());
 			}
 			return false;
+		}else if(obj instanceof NSSItem){
+			NSSItem other = (NSSItem) obj;
+			return this.itemName.equals(other.itemName) && this.damage == other.damage &&
+				((this.nbt == null || this.nbt.isEmpty()));
 		}
 
 		return false;
@@ -129,7 +133,7 @@ public class NSSItemWithNBT implements NormalizedSimpleStack {
 	
 	@Override
 	public String toString() {
-		return String.format("%s:%s", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+		return String.format("%s:%s", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage) + "|" +nbt.toString();
 	}
 
 	public boolean equalsEvenPartially(Object obj) {

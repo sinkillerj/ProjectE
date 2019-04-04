@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
@@ -29,6 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,6 +64,8 @@ public final class KnowledgeImpl {
         private double emc = 0;
         private boolean fullKnowledge = false;
 
+        private boolean dirty = false;
+        
         private DefaultImpl(EntityPlayer player) {
             this.player = player;
         }
@@ -101,6 +105,7 @@ public final class KnowledgeImpl {
 
         @Override
         public boolean hasKnowledge(@Nonnull ItemStack stack) {
+        	
             if (stack.isEmpty())
             {
                 return false;
@@ -110,10 +115,23 @@ public final class KnowledgeImpl {
             {
                 return true;
             }
-
+            ItemStack filtered = stack;
+            if(filtered.getTagCompound() != null){
+            	filtered = ItemStackNBTManager.clean(stack);
+            	if(filtered.getTagCompound() != null && filtered.getTagCompound().isEmpty()){
+            		filtered.setTagCompound(null);
+            	}
+            }
+            
+            if(dirty){
+            	pruneDuplicateKnowledge();
+            	dirty = false;
+            }
+            
             for (ItemStack s : knowledge)
             {
-                if (ItemHelper.areItemStacksEqual(s, stack))
+            	
+                if (ItemHelper.areItemStacksEqual(s, filtered))
                 {
                     return true;
                 }
@@ -128,20 +146,31 @@ public final class KnowledgeImpl {
                 return false;
             }
 
-            if (stack.getItem() == ObjHandler.tome)
+            ItemStack filtered = stack;
+            
+            if(filtered.getTagCompound() != null){
+            	filtered = ItemStackNBTManager.clean(stack);
+            	if(filtered.getTagCompound() != null && filtered.getTagCompound().isEmpty()){
+            		filtered.setTagCompound(null);
+            	}
+            }
+            
+            if (filtered.getItem() == ObjHandler.tome)
             {
-                if (!hasKnowledge(stack))
+                if (!hasKnowledge(filtered))
                 {
-                    knowledge.add(stack);
+                    knowledge.add(filtered);
                 }
                 fullKnowledge = true;
                 fireChangedEvent();
                 return true;
             }
 
-            if (!hasKnowledge(stack))
+            if (!hasKnowledge(filtered))
             {
-                knowledge.add(stack);
+                knowledge.add(filtered);
+                pruneDuplicateKnowledge();
+                dirty= true;
                 fireChangedEvent();
                 return true;
             }
@@ -164,11 +193,24 @@ public final class KnowledgeImpl {
                 return false;
             }
 
+            if(dirty){
+            	pruneDuplicateKnowledge();
+            	dirty = false;
+            }
+            
             Iterator<ItemStack> iter = knowledge.iterator();
-
+            ItemStack filtered = stack;
+            
+            if(filtered.getTagCompound() != null){
+            	filtered = ItemStackNBTManager.clean(stack);
+            	if(filtered.getTagCompound() != null && filtered.getTagCompound().isEmpty()){
+            		filtered.setTagCompound(null);
+            	}
+            }
+            
             while (iter.hasNext())
             {
-                if (ItemStack.areItemStacksEqual(stack, iter.next()))
+                if (ItemStack.areItemStacksEqual(filtered, iter.next()))
                 {
                     iter.remove();
                     removed = true;
@@ -177,12 +219,15 @@ public final class KnowledgeImpl {
 
             if (removed)
             {
+            	pruneDuplicateKnowledge();
+            	dirty = true;
                 fireChangedEvent();
             }
             return removed;
         }
 
-        @Override
+        
+		@Override
         public @Nonnull List<ItemStack> getKnowledge() {
             return fullKnowledge ? Transmutation.getCachedTomeKnowledge() : Collections.unmodifiableList(knowledge);
         }

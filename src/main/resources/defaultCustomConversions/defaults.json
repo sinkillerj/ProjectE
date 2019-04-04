@@ -220,6 +220,7 @@
       "minecraft:shulker_shell|0": 2048,
       "minecraft:ghast_tear|0": 4096,
       "minecraft:dragon_egg|0": 262144,
+      "minecraft:dragon_breath|0": 512,
       "minecraft:potion|0": 0,
 
       "minecraft:saddle|0": 192,

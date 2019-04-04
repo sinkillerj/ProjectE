@@ -85,11 +85,15 @@ public final class ItemHelper
 		for (int i = 0; i < list.size(); i++)
 		{
 			ItemStack s = list.get(i);
+			if(s.getTagCompound() != null && s.getTagCompound().isEmpty())
+				s.setTagCompound(null);
 			if (!s.isEmpty())
 			{
 				for (int j = i + 1; j < list.size(); j++)
 				{
 					ItemStack s1 = list.get(j);
+					if(s1.getTagCompound() != null && s1.getTagCompound().isEmpty())
+						s1.setTagCompound(null);
 					if (ItemHandlerHelper.canItemStacksStack(s, s1))
 					{
 						s.grow(s1.getCount());

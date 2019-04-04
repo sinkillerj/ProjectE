@@ -16,6 +16,7 @@ import moze_intel.projecte.emc.json.NSSItemWithNBT;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.BrewingMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -59,6 +60,7 @@ public final class EMCMapper
 				new CraftingMapper(),
 				new moze_intel.projecte.emc.mappers.FluidMapper(),
 				new SmeltingMapper(),
+				new BrewingMapper(),
 				new APICustomConversionMapper()
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());

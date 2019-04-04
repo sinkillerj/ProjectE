@@ -70,9 +70,6 @@ public final class ProjectEConfig
 
 		@Config.Comment("Separate custom EMC into one file per mod")
 		public boolean separateCustomEMC = false;
-
-		@Config.Comment("If Enchantment books destroyed at the transmutation table should be learned with enchantments")
-		public boolean learnEnchantBooks = true;
 		
 		@Config.Comment("If Enchanted items destroyed at the transmutation table should be learned with enchantments")
 		public boolean learnEnchantedItems = true;

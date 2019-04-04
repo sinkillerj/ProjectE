@@ -1,11 +1,13 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.Maps;
+
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -129,23 +131,26 @@ public final class EMCHelper
 			return false;
 		}
 
-		SimpleStack iStack = new SimpleStack(stack);
+		ItemStack filtered = ItemStackNBTManager.clean(stack);
+		
+		SimpleStack iStack = new SimpleStack(filtered);
 
 		if (!iStack.isValid())
 		{
 			return false;
 		}
 
-		if (ItemHelper.isDamageable(stack))
+		if (ItemHelper.isDamageable(filtered))
 		{
 			iStack = iStack.withMeta(0);
 		}
-		boolean hasWithNBT = EMCMapper.mapContainsWithNBT(iStack.withNBT(stack.getTagCompound()));
+		boolean hasWithNBT = EMCMapper.mapContainsWithNBT(iStack.withNBT(filtered.getTagCompound()));
 		if(hasWithNBT){
 			return true;
 		}		
-
-		return EMCMapper.mapContains(iStack);
+		if(EMCMapper.mapContains(iStack.withDamageAndNBT(iStack.damage, null)))
+			return true;
+		return ItemStackNBTManager.getEMCValue(stack) > 0;
 	}
 
 	public static boolean doesItemHaveEmc(Item item)
@@ -187,114 +192,27 @@ public final class EMCHelper
 			return 0;
 		}
 
-		SimpleStack iStack = new SimpleStack(stack);
+		ItemStack filtered = ItemStackNBTManager.clean(stack);
+		
+		SimpleStack iStack = new SimpleStack(filtered);
+		if(ItemHelper.isDamageable(stack)){
+			iStack = iStack.withDamageAndNBT(0, iStack.tag);
+		}
 
 		if (!iStack.isValid())
 		{
 			return 0;
 		}
-		if(stack.getTagCompound() != null && !stack.getTagCompound().isEmpty()){
-			SimpleStack iStack2 = iStack.withDamageAndNBT(ItemHelper.isDamageable(stack)? 0: iStack.damage, stack.getTagCompound());
-			if(EMCMapper.mapContainsWithNBT(iStack2)){
-				long emc = EMCMapper.getEmcValueWithNBT(iStack2);
-				long result = emc;
-				boolean positive = true;
-				if(ItemHelper.isDamageable(stack)){
-					int relDamage = (stack.getMaxDamage() + 1 - stack.getItemDamage());
-					if (relDamage <= 0){
-						return emc;
-					}
-					result = emc * relDamage;
-					if (result <= 0){
-						return emc;
-					}
-
-					result /= stack.getMaxDamage();
-					positive = result > 0;
-				}
-				// no enchantment bonus. Enchantments are NBT included, after all
-				
-				result += getStoredEMCBonus(stack);
-
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
-
-				if (result <= 0)
-				{
-					return 1;
-				}
-
-				return result;
-			}
+		long emc = 0;
+		if(EMCMapper.mapContainsWithNBT(iStack)){
+			emc = EMCMapper.getEmcValue(iStack);
+		}else if (EMCMapper.mapContains(iStack.withDamageAndNBT(iStack.damage, null))){
+			emc = EMCMapper.getEmcValue(iStack.withDamageAndNBT(iStack.damage, null));
 		}
-		
-		if (!EMCMapper.mapContains(iStack) && ItemHelper.isDamageable(stack))
-		{
-			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.
-			iStack = iStack.withMeta(0);
-
-			if (EMCMapper.mapContains(iStack))
-			{
-				long emc = EMCMapper.getEmcValue(iStack);
-
-				// maxDmg + 1 because vanilla lets you use the tool one more time
-				// when item damage == max damage (shows as Durability: 0 / max)
-				int relDamage = (stack.getMaxDamage() + 1 - stack.getItemDamage());
-
-				if (relDamage <= 0)
-				{
-					// This may happen when mods overflow their max damage or item damage.
-					// Don't use durability or enchants for emc calculation if this happens.
-					return emc;
-				}
-
-				long result = emc * relDamage;
-
-				if (result <= 0)
-				{
-					//Congratulations, big number is big.
-					return emc;
-				}
-
-				result /= stack.getMaxDamage();
-				boolean positive = result > 0;
-				result += getEnchantEmcBonus(stack);
-
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
-
-				positive = result > 0;
-				result += getStoredEMCBonus(stack);
-
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
-
-				if (result <= 0)
-				{
-					return 1;
-				}
-
-				return result;
-			}
-		}
-		else
-		{
-			if (EMCMapper.mapContains(iStack))
-			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
-			}
-		}
-
-		return 0;
+		return ItemStackNBTManager.getEMCValue(stack, emc);
 	}
 
-	private static long getEnchantEmcBonus(ItemStack stack)
+	public static long getEnchantEmcBonus(ItemStack stack)
 	{
 		long result = 0;
 

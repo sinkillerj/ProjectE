@@ -10,6 +10,7 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.emc.json.NSSItemWithNBT;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -64,57 +65,78 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void handleKnowledge(ItemStack stack)
 	{
-		if (stack.getCount() > 1)
+		ItemStack filtered = stack.copy();
+		ItemStack stack2 = stack.copy();
+        if(filtered.getTagCompound() != null){
+        	if(filtered.getTagCompound().isEmpty()){
+        		filtered.setTagCompound(null);
+        	}else{
+        		filtered = ItemStackNBTManager.clean(stack);
+        	}
+        }
+		
+		if (filtered.getCount() > 1)
 		{
-			stack.setCount(1);
+			filtered.setCount(1);
 		}
 		
-		if (ItemHelper.isDamageable(stack))
+		if (ItemHelper.isDamageable(filtered))
 		{
-			stack.setItemDamage(0);
+			filtered.setItemDamage(0);
 		}
 		
-		if (!provider.hasKnowledge(stack))
+		
+		
+		if (!provider.hasKnowledge(filtered))
 		{
 			if (stack.hasTagCompound()){
-				SimpleStack simStack = new SimpleStack(stack, ItemHelper.isDamageable(stack)?
+				if(!ProjectEConfig.misc.learnEnchantedItems){
+					stack2 = ItemStackNBTManager.enchantmentRemover.getFilteredItemStack(stack2);
+				}
+				
+				SimpleStack simStack = new SimpleStack(filtered, ItemHelper.isDamageable(stack)?
 						NSSItemWithNBT.JUST_IGNORE_DAMAGE:
 						NSSItemWithNBT.NO_IGNORES);
-				if(!EMCMapper.mapContainsWithNBT(simStack, false)){
-					
-					if(stack.getItem().equals(Items.ENCHANTED_BOOK)){
-						if(ProjectEConfig.misc.learnEnchantBooks){
-							long emcVal = EMCHelper.getEmcValue(stack);
-							CustomEMCParser.addWithNBTToFile(stack, NSSItemWithNBT.NO_IGNORES, emcVal);
-							EMCMapper.insertSimpleStackWithNBTintoEMCMap(simStack, emcVal);
-						}else{
-							if(!NBTWhitelist.shouldDupeWithNBT(stack))
-								stack.setTagCompound(null);
+				
+				if(!EMCMapper.mapContainsWithNBT(simStack, false)){ //no emc mapping found for the filtered nbt
+					//try with no NBT
+					SimpleStack simStack2 = simStack.withDamageAndNBT(simStack.damage, null);
+					if(!EMCMapper.mapContains(simStack2)){ //no EMC found for the no-nbt item either.
+						
+						if(ItemStackNBTManager.getEMCValue(stack2) <= 0){//no dynamic emc found for the stack itself
+							return;
 						}
-					}else if (stack.getEnchantmentTagList() != null && !stack.getEnchantmentTagList().isEmpty()){
-						if(ProjectEConfig.misc.learnEnchantedItems){
-							ItemStack toExamine = stack.copy();
-							if(ItemHelper.isDamageable(toExamine)){
-								toExamine.setItemDamage(0);
-							}
-							long emcVal = EMCHelper.getEmcValue(toExamine);
-							CustomEMCParser.addWithNBTToFile(toExamine, NSSItemWithNBT.NO_IGNORES, emcVal);
-							EMCMapper.insertSimpleStackWithNBTintoEMCMap(simStack, emcVal);
-						}else{
-							if(!NBTWhitelist.shouldDupeWithNBT(stack))
-								stack.setTagCompound(null);
+						filtered = stack2;
+					}else{
+						long orgEMC = EMCMapper.getEmcValue(simStack2);
+						long totalEMC = ItemStackNBTManager.getEMCValue(stack2, orgEMC);
+						if(totalEMC <= 0){//EMC mapping canceled by plugin
+							return;
 						}
-					}else if (!EMCMapper.mapContainsWithNBT(simStack, true) && NBTWhitelist.shouldDupeWithNBT(stack)){
-						stack.setTagCompound(null);
+						if(orgEMC == totalEMC && !NBTWhitelist.shouldDupeWithNBT(filtered)){
+							filtered.setTagCompound(null);
+						}
 					}
+				}
+			}else{
+				SimpleStack simStack = new SimpleStack(filtered.getItem().getRegistryName(), 
+						ItemHelper.isDamageable(stack)?0:filtered.getMetadata());
+				if(!EMCMapper.mapContains(simStack)){ //no EMC found for the no-nbt item.
+					
+					if(ItemStackNBTManager.getEMCValue(stack2) <= 0){//no dynamic emc found for the stack itself
+						return;
+					}
+					filtered = stack2;
+				}else{
+					filtered.setTagCompound(null);
 				}
 			}
 
-			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, stack))) //Only show the "learned" text if the knowledge was added
+			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, filtered))) //Only show the "learned" text if the knowledge was added
 			{
 				learnFlag = 300;
 				unlearnFlag = 0;
-				provider.addKnowledge(stack);
+				provider.addKnowledge(filtered);
 			}
 
 			if (!player.getEntityWorld().isRemote)
@@ -128,32 +150,41 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void handleUnlearn(ItemStack stack)
 	{
-		if (stack.getCount() > 1)
+		ItemStack filtered = stack.copy();
+		ItemStack stack2 = stack.copy();
+		if(filtered.getTagCompound() != null){
+        	filtered = ItemStackNBTManager.clean(stack);
+        	if(filtered.getTagCompound() != null && filtered.getTagCompound().isEmpty()){
+        		filtered.setTagCompound(null);
+        	}
+        }
+		
+		if (filtered.getCount() > 1)
 		{
-			stack.setCount(1);
+			filtered.setCount(1);
+			stack2.setCount(1);
 		}
 
-		if (ItemHelper.isDamageable(stack))
+		if (ItemHelper.isDamageable(filtered))
 		{
-			stack.setItemDamage(0);
+			filtered.setItemDamage(0);
+			stack2.setItemDamage(0);
 		}
-
-		if (provider.hasKnowledge(stack))
+		
+		if(provider.hasKnowledge(filtered)){
+			unlearnFlag = 300;
+			learnFlag = 0;
+			
+			provider.removeKnowledge(filtered);
+			if (!player.getEntityWorld().isRemote)
+			{
+				provider.sync(((EntityPlayerMP) player));
+			}
+		}else if (provider.hasKnowledge(stack2))
 		{
 			unlearnFlag = 300;
 			learnFlag = 0;
-
-			if (stack.hasTagCompound()){
-				if(!EMCMapper.mapContainsWithNBT(
-						new SimpleStack(stack, ItemHelper.isDamageable(stack)?
-												NSSItemWithNBT.JUST_IGNORE_DAMAGE:
-												NSSItemWithNBT.NO_IGNORES))&&
-						!NBTWhitelist.shouldDupeWithNBT(stack)){
-				stack.setTagCompound(null);
-			}
-			}
-
-			provider.removeKnowledge(stack);
+			provider.removeKnowledge(stack2);
 			
 			if (!player.getEntityWorld().isRemote)
 			{

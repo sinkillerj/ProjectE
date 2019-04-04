@@ -71,6 +71,10 @@ public class NSSItem implements NormalizedSimpleStack {
 			NSSItem other = (NSSItem) obj;
 
 			return this.itemName.equals(other.itemName) && this.damage == other.damage;
+		}if(obj instanceof NSSItemWithNBT){
+			NSSItemWithNBT other = (NSSItemWithNBT) obj;
+			return this.itemName.equals(other.itemName) && this.damage == other.damage &&
+					(other.nbt == null || other.nbt.isEmpty());
 		}
 
 		return false;
