@@ -96,6 +96,7 @@ public final class CustomEMCParser
 
 	public static void init()
 	{
+		customEMCEntries.clear();
 		if(ProjectEConfig.misc.separateCustomEMC){
 			if(!CONFIG_DIR.exists()){
 				cloneAndDumpEMCMappings();
