@@ -79,7 +79,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	    	 try{
 	    	 Field input = ReflectionHelper.findField(obj.getClass(), "input", "field_185198_a");
 	    	 Field reagent =ReflectionHelper.findField(obj.getClass(), "reagent", "field_185199_b");
-	    	 Field output =ReflectionHelper.findField(obj.getClass(), "output", "field_185198_c");
+	    	 Field output =ReflectionHelper.findField(obj.getClass(), "output", "field_185200_c");
 	    	 
 	    	 net.minecraftforge.registries.IRegistryDelegate<Item> in = (net.minecraftforge.registries.IRegistryDelegate<Item>)input.get(obj);
 	    	 Ingredient reag = (Ingredient)reagent.get(obj);

@@ -409,5 +409,25 @@ public final class CustomEMCParser
 		}
 	}
 
+	public static boolean containsItem(NormalizedSimpleStack stack) {
+		String path = null;
+		if(stack instanceof NSSOreDictionary){
+			path = "$OreDict";
+		}else if (stack instanceof NSSItem){
+			path = ((NSSItem)stack).itemName.split(":")[0];
+		}else if (stack instanceof NSSItemWithNBT){
+			path = ((NSSItemWithNBT)stack).itemName.split(":")[0];
+		}
+		if(customEMCEntries.containsKey(path)){
+			for(CustomEMCEntry entry: customEMCEntries.get(path)){
+				if(entry.nss.equals(stack)){
+					return true;
+				}
+			}
+		}
+		return false;
+		
+	}
+
 	
 }
