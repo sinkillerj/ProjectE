@@ -142,6 +142,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
+		super.addInformation(stack, world, list, flags);
 		list.add(new TextComponentTranslation("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 

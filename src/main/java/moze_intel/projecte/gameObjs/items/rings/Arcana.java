@@ -243,6 +243,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		{
 			case 0: // zero
 				EntitySnowball snowball = new EntitySnowball(world, player);
+				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(snowball);
 				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
@@ -256,7 +257,6 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);
 				lightning.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(lightning);
-				// lightning.playSound(PESounds.WIND, 1.0F, 1.0F);
 				break;
 		}
 		

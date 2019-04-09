@@ -28,7 +28,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		setMaximumEMC(Constants.TILE_MAX_EMC);
 	}
 	
-	public TileEmc(TileEntityType<?> type, int maxAmount)
+	public TileEmc(TileEntityType<?> type, long maxAmount)
 	{
 		super(type);
 		setMaximumEMC(maxAmount);

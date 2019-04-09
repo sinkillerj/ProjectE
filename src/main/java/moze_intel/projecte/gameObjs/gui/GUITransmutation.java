@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -20,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Arrays;
 
 public class GUITransmutation extends GuiContainer
 {
@@ -94,7 +96,9 @@ public class GUITransmutation extends GuiContainer
 	{
 		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
-		String emc = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
+		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
+		this.fontRenderer.drawString(emcLabel, 6, this.ySize - 104, 4210752);
+		String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);
 		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
@@ -177,5 +181,27 @@ public class GUITransmutation extends GuiContainer
 		super.onGuiClosed();
 		inv.learnFlag = 0;
 		inv.unlearnFlag = 0;
+	}
+
+	@Override
+	protected void renderHoveredToolTip(int mouseX, int mouseY) {
+		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
+
+		if (emcAmount < 1e12) {
+			super.renderHoveredToolTip(mouseX, mouseY);
+			return;
+		}
+
+		int emcLeft = (this.width - this.xSize) / 2;
+		int emcRight = emcLeft + 82;
+		int emcTop = 95 + (this.height - this.ySize) / 2;
+		int emcBottom = emcTop + 15;
+
+		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
+			String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
+			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
+		} else {
+			super.renderHoveredToolTip(mouseX, mouseY);
+		}
 	}
 }

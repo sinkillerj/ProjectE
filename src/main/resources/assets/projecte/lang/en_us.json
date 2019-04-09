@@ -217,6 +217,9 @@
     "pe.emc.stackemc_tooltip_prefix": "Stack EMC:",
     "pe.emc.storedemc_tooltip": "Stored EMC:",
     "pe.emc.too_much": "WAY TOO MUCH",
+    "pe.emc.postfix.0": "Trillion",
+    "pe.emc.postfix.1": "Quadrillion",
+    "pe.emc.postfix.2": "Quintillion",
     "pe.emc.has_knowledge": "Transmutable",
 
     "pe.evertide.tooltip1": "Press %s to fire a water projectile",

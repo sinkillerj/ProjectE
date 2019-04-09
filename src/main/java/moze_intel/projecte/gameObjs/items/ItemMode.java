@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +48,7 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	protected void changeMode(ItemStack stack)
 	{
 		byte newMode = (byte) (getMode(stack) + 1);
-		stack.getTag().putByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
+		stack.getOrCreateTag().putByte(TAG_MODE, (newMode > numModes - 1 ? 0 : newMode));
 	}
 	
 	@Override

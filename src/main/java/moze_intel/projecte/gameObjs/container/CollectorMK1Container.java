@@ -73,7 +73,7 @@ public class CollectorMK1Container extends LongContainer
 		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, (long) tile.getStoredEmc());
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) (tile.getItemCharge() * 8000));
+		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) tile.getItemCharge());
 	}
 
 	@Nonnull

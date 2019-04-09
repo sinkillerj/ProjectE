@@ -7,10 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RecipesCovalenceRepair implements IRecipe
@@ -23,65 +25,77 @@ public class RecipesCovalenceRepair implements IRecipe
 		this.id = id;
 	}
 
-	@Override
-	public boolean matches(@Nonnull IInventory inv, @Nonnull World world)
-	{
+    private Tuple<ItemStack, List<ItemStack>> findIngredients(IInventory inv) {
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
-		int dustEmc = 0;
-		int emcPerDurability = 0;
-		
+
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack input = inv.getStackInSlot(i);
-			
+
 			if (input.isEmpty())
 			{
 				continue;
 			}
 
-			if (input.isDamageable() && input.getDamage() != 0)
+			if (input.isDamageable())
 			{
 				if (!foundItem)
 				{
 					tool = input;
 					foundItem = true;
-					emcPerDurability = EMCHelper.getEMCPerDurability(tool);
 				}
 				else
 				{
-					return false;
+				    // Duplicate item
+				    return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
 				}
 			}
 			else if (input.getItem() == ObjHandler.covalenceDustLow || input.getItem() == ObjHandler.covalenceDustMedium || input.getItem() == ObjHandler.covalenceDustHigh)
 			{
 				dust.add(input);
 			}
-		}
-		
-		if (tool.isEmpty() || !foundItem || dust.size() == 0)
-		{
-			return false;
+			else
+			{
+				// Non-dust non-tool
+				return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
+			}
 		}
 
-		for (ItemStack stack : dust) {
+		return new Tuple<>(tool, dust);
+	}
+
+	@Override
+	public boolean matches(@Nonnull IInventory inv, @Nonnull World world)
+	{
+		Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
+		if (ingredients.getA().isEmpty() || ingredients.getB().isEmpty())
+			return false;
+
+		long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getA());
+		long dustEmc = 0;
+		for (ItemStack stack : ingredients.getB()) {
 			dustEmc += EMCHelper.getEmcValue(stack);
 		}
-		if(dustEmc < emcPerDurability){
-			return false;
-		}
-		
-		output = tool.copy();
-		output.setDamage(Math.max(tool.getDamage() - dustEmc / emcPerDurability, 0));
-		return true;
+
+		return dustEmc >= emcPerDurability;
 	}
 	
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull IInventory var1)
+	public ItemStack getCraftingResult(@Nonnull IInventory inv)
 	{
-		return output.copy();
+	    Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
+	    long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getA());
+		long dustEmc = 0;
+		for (ItemStack stack : ingredients.getB()) {
+			dustEmc += EMCHelper.getEmcValue(stack);
+		}
+
+	    ItemStack output = ingredients.getA().copy();
+		output.setDamage((int) Math.max(output.getDamage() - (dustEmc / emcPerDurability), 0));
+		return output;
 	}
 
 	@Override

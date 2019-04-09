@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetics.BigFractionToLongGenerator;
+import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
@@ -681,6 +681,28 @@ public class GraphMapperTest {
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		assertEquals(Long.MAX_VALUE/2, getValue(values, "a"));
+	}
+
+	@org.junit.Test
+	public void testLargeOverflow() throws Exception
+	{
+		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
+		mappingCollector.addConversion(1, "b", Arrays.asList("a", "a", "a", "a", "a", "a", "a", "a", "a"));
+
+		Map<String, Long> values = valueGenerator.generateValues();
+		assertEquals(0, getValue(values, "b"));
+	}
+
+	@org.junit.Test
+	public void testHiddenOverflow() throws Exception
+	{
+		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
+		mappingCollector.addConversion(2, "b", Arrays.asList("a", "a"));
+		mappingCollector.addConversion(5, "c", Arrays.asList("a", "a", "a", "a", "a"));
+
+		Map<String, Long> values = valueGenerator.generateValues();
+		assertEquals(Long.MAX_VALUE, getValue(values, "b"));
+		assertEquals(Long.MAX_VALUE, getValue(values, "c"));
 	}
 
 	@org.junit.Test

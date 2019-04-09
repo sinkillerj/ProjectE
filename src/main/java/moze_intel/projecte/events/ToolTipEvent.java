@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
@@ -79,24 +80,10 @@ public class ToolTipEvent
 
 				if (current.getCount() > 1)
 				{
-					prefix = new TextComponentTranslation("pe.emc.stackemc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
-					long total;
-					try
-					{
-						total = LongMath.checkedMultiply(value, current.getCount());
-						if (total < 0 || total <= value)
-						{
-							event.getToolTip().add(prefix.appendSibling(new TextComponentTranslation("pe.emc.too_much").setStyle(new Style().setObfuscated(true))));
-						}
-						else
-						{
-							valueText = new TextComponentString(Constants.EMC_FORMATTER.format(value * current.getCount())).setStyle(new Style().setColor(TextFormatting.WHITE));
-							sell = new TextComponentString(EMCHelper.getEmcSellString(current, current.getCount())).setStyle(new Style().setColor(TextFormatting.BLUE));
-							event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
-						}
-					} catch (ArithmeticException e) {
-						event.getToolTip().add(prefix.appendSibling(new TextComponentTranslation("pe.emc.too_much").setStyle(new Style().setObfuscated(true))));
-					}
+					prefix = new TextComponentTranslation("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW);
+					valueText= new TextComponentString(Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount())))).applyTextStyle(TextFormatting.WHITE);
+					sell = new TextComponentString(EMCHelper.getEmcSellString(current, current.getCount())).applyTextStyle(TextFormatting.BLUE);
+					event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 				}
 
 				if (GuiScreen.isShiftKeyDown()
@@ -115,8 +102,8 @@ public class ToolTipEvent
 			/*
 			 * Collector ToolTips
 			 */
-			int genRate = 0;
-			int storage = 0;
+			long genRate = 0;
+			long storage = 0;
 			if (currentBlock == ObjHandler.collectorMK1)
 			{
 				genRate = Constants.COLLECTOR_MK1_GEN;
@@ -138,18 +125,18 @@ public class ToolTipEvent
 			if (currentBlock instanceof Collector)
 			{
 				ITextComponent label = new TextComponentTranslation("pe.emc.maxgenrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new TextComponentString(Integer.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent val = new TextComponentString(Long.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
 
 				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new TextComponentString(Integer.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				val = new TextComponentString(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 
 			/*
 			 * Relay ToolTips
 			 */
-			int outRate = 0;
+			long outRate = 0;
 			if (currentBlock == ObjHandler.relay)
 			{
 				outRate = Constants.RELAY_MK1_OUTPUT;
@@ -171,11 +158,11 @@ public class ToolTipEvent
 			if (currentBlock instanceof Relay)
 			{
 				ITextComponent label = new TextComponentTranslation("pe.emc.maxoutrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new TextComponentString(Integer.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent val = new TextComponentString(Long.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
 
 				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new TextComponentString(Integer.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				val = new TextComponentString(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 		}

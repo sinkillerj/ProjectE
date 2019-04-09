@@ -215,6 +215,8 @@
     "pe.emc.stackemc_tooltip_prefix": "Stack EMC:",
     "pe.emc.storedemc_tooltip": "Накопичено EMC:",
     "pe.emc.too_much": "ЗАНАДТО БАГАТО",
+    "pe.emc.postfix.0": "Трильйон",
+    "pe.emc.postfix.1": "квадрильйон",
 
     "pe.evertide.tooltip1": "Натисніть %s, аби вистрілити водним снарядом",
     "pe.evertide.tooltip2": "Працює як нескінченне відро води",
