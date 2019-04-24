@@ -12,9 +12,9 @@ import javax.annotation.Nonnull;
 public class TileEmcProvider extends TileEmcBase implements IEmcProvider
 {
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public long provideEMC(@Nonnull EnumFacing side, long toExtract)
 	{
-		double toRemove = Math.min(currentEMC, toExtract);
+		long toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);
 		return toRemove;
 	}

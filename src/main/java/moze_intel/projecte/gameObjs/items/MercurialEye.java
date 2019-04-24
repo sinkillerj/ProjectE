@@ -113,7 +113,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				return EnumActionResult.FAIL;
 			}
 
-			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
+			long kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
 			long reqEmc = EMCHelper.getEmcValue(inventory.getStackInSlot(1));
 
 			int charge = getCharge(stack);

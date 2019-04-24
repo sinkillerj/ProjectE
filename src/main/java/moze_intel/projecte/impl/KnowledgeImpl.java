@@ -59,7 +59,7 @@ public final class KnowledgeImpl {
         private final EntityPlayer player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
-        private double emc = 0;
+        private long emc = 0;
         private boolean fullKnowledge = false;
 
         private DefaultImpl(EntityPlayer player) {
@@ -193,12 +193,12 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public double getEmc() {
+        public long getEmc() {
             return emc;
         }
 
         @Override
-        public void setEmc(double emc) {
+        public void setEmc(long emc) {
             this.emc = emc;
         }
 
@@ -212,7 +212,7 @@ public final class KnowledgeImpl {
         public NBTTagCompound serializeNBT()
         {
             NBTTagCompound properties = new NBTTagCompound();
-            properties.setDouble("transmutationEmc", emc);
+            properties.setLong("transmutationEmc", emc);
 
             NBTTagList knowledgeWrite = new NBTTagList();
             for (ItemStack i : knowledge)
@@ -230,7 +230,7 @@ public final class KnowledgeImpl {
         @Override
         public void deserializeNBT(NBTTagCompound properties)
         {
-            emc = properties.getDouble("transmutationEmc");
+            emc = properties.getLong("transmutationEmc");
 
             NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.tagCount(); i++)
