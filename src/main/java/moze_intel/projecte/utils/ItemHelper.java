@@ -103,6 +103,20 @@ public final class ItemHelper
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
 	}
 
+	/**
+	 * Removes all empty tags from any items in the list.
+	 */
+	public static void removeEmptyTags(List<ItemStack> list)
+	{
+		for (ItemStack s : list)
+		{
+			if (!s.isEmpty() && s.hasTagCompound() && s.getTagCompound().isEmpty())
+			{
+				s.setTagCompound(null);
+			}
+		}
+	}
+
 	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
 	{
 		for (ItemStack stack : list) {

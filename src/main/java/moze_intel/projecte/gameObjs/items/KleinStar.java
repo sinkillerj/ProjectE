@@ -36,7 +36,7 @@ public class KleinStar extends ItemPE implements IItemEmc
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		double starEmc = getEmc(stack);
+		long starEmc = getEmc(stack);
 		
 		if (starEmc == 0)
 		{
@@ -105,29 +105,29 @@ public class KleinStar extends ItemPE implements IItemEmc
 	// -- IItemEmc -- //
 
 	@Override
-	public double addEmc(@Nonnull ItemStack stack, double toAdd)
+	public long addEmc(@Nonnull ItemStack stack, long toAdd)
 	{
-		double add = Math.min(getMaximumEmc(stack) - getStoredEmc(stack), toAdd);
+		long add = Math.min(getMaximumEmc(stack) - getStoredEmc(stack), toAdd);
 		ItemPE.addEmcToStack(stack, add);
 		return add;
 	}
 
 	@Override
-	public double extractEmc(@Nonnull ItemStack stack, double toRemove)
+	public long extractEmc(@Nonnull ItemStack stack, long toRemove)
 	{
-		double sub = Math.min(getStoredEmc(stack), toRemove);
+		long sub = Math.min(getStoredEmc(stack), toRemove);
 		ItemPE.removeEmc(stack, sub);
 		return sub;
 	}
 
 	@Override
-	public double getStoredEmc(@Nonnull ItemStack stack)
+	public long getStoredEmc(@Nonnull ItemStack stack)
 	{
 		return ItemPE.getEmc(stack);
 	}
 
 	@Override
-	public double getMaximumEmc(@Nonnull ItemStack stack)
+	public long getMaximumEmc(@Nonnull ItemStack stack)
 	{
 		return EMCHelper.getKleinStarMaxEmc(stack);
 	}

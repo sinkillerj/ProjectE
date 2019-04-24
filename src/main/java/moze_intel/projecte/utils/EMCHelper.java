@@ -32,7 +32,7 @@ public final class EMCHelper
 	 * Consumes EMC from fuel items or Klein Stars
 	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
 	 */
-	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
+	public static long consumePlayerFuel(EntityPlayer player, long minFuel)
 	{
 		if (player.capabilities.isCreativeMode)
 		{
@@ -42,7 +42,7 @@ public final class EMCHelper
 		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
-		int emcConsumed = 0;
+		long emcConsumed = 0;
 
 		ItemStack offhand = player.getHeldItemOffhand();
 
@@ -80,7 +80,7 @@ public final class EMCHelper
 				if(FuelMapper.isStackFuel(stack))
 				{
 					long emc = getEmcValue(stack);
-					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (double) emc));
+					int toRemove = (int)Math.ceil((double) (minFuel - emcConsumed) / emc);
 
 					if (stack.getCount() >= toRemove)
 					{
@@ -247,7 +247,7 @@ public final class EMCHelper
 		{
 			if (EMCMapper.mapContains(iStack))
 			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
+				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
 			}
 		}
 
@@ -290,7 +290,14 @@ public final class EMCHelper
 
 		if (emc < 1)
 		{
-			emc = 1;
+			if (EMCMapper.covalenceLossRounding)
+			{
+				emc = 1;
+			}
+			else
+			{
+				emc = 0;
+			}
 		}
 
 		return emc;
@@ -313,9 +320,9 @@ public final class EMCHelper
 		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
 	}
 
-	private static double getStoredEMCBonus(ItemStack stack) {
+	private static long getStoredEMCBonus(ItemStack stack) {
 		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("StoredEMC")) {
-			return stack.getTagCompound().getDouble("StoredEMC");
+			return stack.getTagCompound().getLong("StoredEMC");
 		} else if (stack.getItem() instanceof IItemEmc) {
 			return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
 		}
@@ -333,5 +340,23 @@ public final class EMCHelper
 			return emc > 1 ? emc : 1;
 		}
 		return 1;
+	}
+
+	/**
+	 * Adds the given amount to the amount of unprocessed EMC the stack has.
+	 * The amount returned should be used for figuring out how much EMC actually gets removed.
+	 * While the remaining fractional EMC will be stored in UnprocessedEMC.
+	 * @param stack The stack to set the UnprocessedEMC tag to.
+	 * @param amount The partial amount of EMC to add with the current UnprocessedEMC
+	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
+	 */
+	public static long removeFractionalEMC(ItemStack stack, double amount)
+	{
+		double unprocessedEMC = ItemHelper.getOrCreateCompound(stack).getDouble("UnprocessedEMC");
+		unprocessedEMC += amount;
+		long toRemove = (long) unprocessedEMC;
+		unprocessedEMC -= toRemove;
+		stack.getTagCompound().setDouble("UnprocessedEMC", unprocessedEMC);
+		return toRemove;
 	}
 }

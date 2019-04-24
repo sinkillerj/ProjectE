@@ -61,7 +61,7 @@ public class RelayMK1Container extends LongContainer
 	public void addListener(IContainerListener listener)
 	{
 		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, (long) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.getStoredEmc());
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) (tile.getItemChargeProportion() * 8000));
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getInputBurnProportion() * 8000));
 	}
@@ -71,14 +71,14 @@ public class RelayMK1Container extends LongContainer
 	{
 		super.detectAndSendChanges();
 
-		if (emc != ((long) tile.getStoredEmc()))
+		if (emc != tile.getStoredEmc())
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 0, ((long) tile.getStoredEmc()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 0, tile.getStoredEmc());
 			}
 
-			emc = ((long) tile.getStoredEmc());
+			emc = tile.getStoredEmc();
 		}
 
 		if (kleinChargeProgress != tile.getItemChargeProportion())

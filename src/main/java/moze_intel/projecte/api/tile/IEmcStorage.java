@@ -13,11 +13,11 @@ public interface IEmcStorage
 	 * Gets the current amount of EMC in this IEMCStorage
 	 * @return The current EMC stored
 	 */
-	double getStoredEmc();
+	long getStoredEmc();
 
 	/**
 	 * Gets the maximum amount of EMC this IEMCStorage is allowed to contain
 	 * @return The maximum EMC allowed
 	 */
-	double getMaximumEmc();
+	long getMaximumEmc();
 }

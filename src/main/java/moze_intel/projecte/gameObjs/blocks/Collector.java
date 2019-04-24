@@ -95,13 +95,13 @@ public class Collector extends BlockDirection
 			if (charging.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) charging.getItem());
-				double max = itemEmc.getMaximumEmc(charging);
-				double current = itemEmc.getStoredEmc(charging);
+				long max = itemEmc.getMaximumEmc(charging);
+				long current = itemEmc.getStoredEmc(charging);
 				return MathUtils.scaleToRedstone(current, max);
 			} else
 			{
-				double needed = tile.getEmcToNextGoal();
-				double current = tile.getStoredEmc();
+				long needed = tile.getEmcToNextGoal();
+				long current = tile.getStoredEmc();
 				return MathUtils.scaleToRedstone(current, needed);
 			}
 		} else

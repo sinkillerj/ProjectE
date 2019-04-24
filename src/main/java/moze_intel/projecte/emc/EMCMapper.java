@@ -44,6 +44,7 @@ public final class EMCMapper
 	public static final Map<SimpleStack, Long> emc = new LinkedHashMap<>();
 
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
+	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding;
 
 	public static void map()
 	{

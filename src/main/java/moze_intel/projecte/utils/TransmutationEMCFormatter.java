@@ -3,7 +3,7 @@ package moze_intel.projecte.utils;
 import net.minecraft.client.resources.I18n;
 
 public class TransmutationEMCFormatter {
-	public static String EMCFormat(double EMC) {
+	public static String EMCFormat(long EMC) {
 		String postFix = "";
 		double magnitude = 1;
 

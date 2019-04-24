@@ -12,6 +12,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -119,7 +120,7 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 			toRemove = 0.64F;
 		}
 
-		removeEmc(stack, toRemove);
+		removeEmc(stack, EMCHelper.removeFractionalEMC(stack, toRemove));
 
 		playerMP.fallDistance = 0;
 	}

@@ -54,6 +54,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		}
 	};
 	private final long chargeRate;
+	private double bonusEMC;
 
 	public RelayMK1Tile()
 	{
@@ -135,7 +136,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 			if(stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				double emcVal = itemEmc.getStoredEmc(stack);
+				long emcVal = itemEmc.getStoredEmc(stack);
 				
 				if (emcVal > chargeRate)
 				{
@@ -185,9 +186,9 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	private void chargeItem(ItemStack chargeable)
 	{
 		IItemEmc itemEmc = ((IItemEmc) chargeable.getItem());
-		double starEmc = itemEmc.getStoredEmc(chargeable);
-		double maxStarEmc = itemEmc.getMaximumEmc(chargeable);
-		double toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
+		long starEmc = itemEmc.getStoredEmc(chargeable);
+		long maxStarEmc = itemEmc.getMaximumEmc(chargeable);
+		long toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
 			
 		if ((starEmc + toSend) <= maxStarEmc)
 		{
@@ -206,7 +207,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 	{
 		if (!getCharging().isEmpty() && getCharging().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
+			return (double) ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
 		}
 
 		return 0;
@@ -221,7 +222,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 
 		if (getBurn().getItem() instanceof IItemEmc)
 		{
-			return ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
+			return (double) ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
 		}
 
 		return getBurn().getCount() / (double) getBurn().getMaxStackSize();
@@ -233,6 +234,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		super.readFromNBT(nbt);
 		input.deserializeNBT(nbt.getCompoundTag("Input"));
 		output.deserializeNBT(nbt.getCompoundTag("Output"));
+		bonusEMC = nbt.getDouble("BonusEMC");
 	}
 	
 	@Nonnull
@@ -242,11 +244,12 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		nbt = super.writeToNBT(nbt);
 		nbt.setTag("Input", input.serializeNBT());
 		nbt.setTag("Output", output.serializeNBT());
+		nbt.setDouble("BonusEMC", bonusEMC);
 		return nbt;
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public long acceptEMC(@Nonnull EnumFacing side, long toAccept)
 	{
 		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
@@ -254,16 +257,29 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider
 		}
 		else
 		{
-			double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 			currentEMC += toAdd;
 			return toAdd;
 		}
 	}
 
+	public void addBonus(@Nonnull EnumFacing side, double bonus) {
+		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
+		{
+			return; // Do not accept from other relays - avoid infinite loop / thrashing
+		}
+		bonusEMC += bonus;
+		if (bonusEMC >= 1) {
+			long extraEMC = (long) bonusEMC;
+			bonusEMC -= extraEMC;
+			currentEMC += Math.min(maximumEMC - currentEMC, extraEMC);
+		}
+	}
+
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public long provideEMC(@Nonnull EnumFacing side, long toExtract)
 	{
-		double toRemove = Math.min(currentEMC, toExtract);
+		long toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;
 		return toRemove;
 	}

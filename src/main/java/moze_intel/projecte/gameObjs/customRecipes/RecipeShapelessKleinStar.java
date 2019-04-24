@@ -36,7 +36,7 @@ public class RecipeShapelessKleinStar extends net.minecraftforge.registries.IFor
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
 		ItemStack result = compose.getCraftingResult(inv);
-		double storedEMC = 0;
+		long storedEMC = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 			if (!stack.isEmpty() && stack.getItem() == ObjHandler.kleinStars) {

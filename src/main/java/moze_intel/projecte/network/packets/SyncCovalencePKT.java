@@ -10,24 +10,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class SyncCovalencePKT implements IMessage
 {
 	private double covalenceLoss;
+	private boolean covalenceLossRounding;
 
 	public SyncCovalencePKT() {}
 
-	public SyncCovalencePKT(double value)
+	public SyncCovalencePKT(double value, boolean rounding)
 	{
 		covalenceLoss = value;
+		covalenceLossRounding = rounding;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
 		covalenceLoss = buf.readDouble();
+		covalenceLossRounding = buf.readBoolean();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeDouble(covalenceLoss);
+		buf.writeBoolean(covalenceLossRounding);
 	}
 
 	public static class Handler implements IMessageHandler<SyncCovalencePKT, IMessage>
@@ -39,6 +43,7 @@ public class SyncCovalencePKT implements IMessage
 				@Override
 				public void run() {
 					EMCMapper.covalenceLoss = message.covalenceLoss;
+					EMCMapper.covalenceLossRounding = message.covalenceLossRounding;
 				}
 			});
 
