@@ -54,7 +54,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	 *
 	 * @param emc The maximum combined emc to send to others
 	 */
-	protected void sendToAllAcceptors(double emc)
+	protected void sendToAllAcceptors(long emc)
 	{
 		if (!(this instanceof IEmcProvider))
 		{
@@ -64,16 +64,20 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 
 
 		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
+		if (tiles.isEmpty())
+		{
+			return;
+		}
 
-		double emcPer = emc / tiles.size();
+		long emcPer = emc / tiles.size();
 		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())
 		{
 			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
 			{
 				continue;
 			}
-			double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
-			double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+			long provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+			long remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
 			this.addEMC(remain);
 		}
 	}

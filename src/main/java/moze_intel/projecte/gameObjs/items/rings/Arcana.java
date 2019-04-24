@@ -253,7 +253,6 @@ public class Arcana extends ItemPE implements IBauble, IModeChanger, IFlightProv
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player, true);
 				lightning.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.spawnEntity(lightning);
-				// lightning.playSound(PESounds.WIND, 1.0F, 1.0F);
 				break;
 		}
 		

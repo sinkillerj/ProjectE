@@ -8,25 +8,29 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class SetFlyPKT implements IMessage
 {
-	private boolean flag;
+	private boolean allowFlying;
+	private boolean isFlying;
 
 	public SetFlyPKT() {}
 
-	public SetFlyPKT(boolean value)
+	public SetFlyPKT(boolean allowFlying, boolean isFlying)
 	{
-		flag = value;
+		this.allowFlying = allowFlying;
+		this.isFlying = isFlying;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		flag = buf.readBoolean();
+		allowFlying = buf.readBoolean();
+		isFlying = buf.readBoolean();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeBoolean(flag);
+		buf.writeBoolean(allowFlying);
+		buf.writeBoolean(isFlying);
 	}
 
 	public static class Handler implements IMessageHandler<SetFlyPKT, IMessage>
@@ -34,16 +38,9 @@ public class SetFlyPKT implements IMessage
 		@Override
 		public IMessage onMessage(final SetFlyPKT message, MessageContext ctx)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getMinecraft().player.capabilities.allowFlying = message.flag;
-
-					if (!message.flag)
-					{
-						Minecraft.getMinecraft().player.capabilities.isFlying = false;
-					}
-				}
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				Minecraft.getMinecraft().player.capabilities.allowFlying = message.allowFlying;
+				Minecraft.getMinecraft().player.capabilities.isFlying = message.isFlying;
 			});
 
 			return null;

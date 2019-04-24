@@ -171,7 +171,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
-				lockCopy.setTagCompound(new NBTTagCompound());
+				lockCopy.setTagCompound(null);
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
@@ -313,7 +313,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 	}
 
-	public void addEmc(double value)
+	public void addEmc(long value)
 	{
 		if (value == 0)
 		{
@@ -336,7 +336,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				double neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
 				if (value <= neededEmc)
 				{
 					//This item can store all of the amount being added
@@ -348,10 +348,10 @@ public class TransmutationInventory extends CombinedInvWrapper
 				value -= neededEmc;
 			}
 		}
-		double emcToMax = Constants.TILE_MAX_EMC - provider.getEmc();
+		long emcToMax = Constants.TILE_MAX_EMC - provider.getEmc();
 		if (value > emcToMax)
 		{
-			double excessEMC = value - emcToMax;
+			long excessEMC = value - emcToMax;
 			value = emcToMax;
 			//Will finish filling provider
 			//Now with excess EMC we can check against the lock slot as that is the last spot that has its EMC used.
@@ -359,7 +359,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				double neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
 				if (excessEMC > neededEmc)
 				{
 					itemEmc.addEmc(stack, neededEmc);
@@ -384,7 +384,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 	}
 	
-	public void removeEmc(double value) 
+	public void removeEmc(long value) 
 	{
 		if (value == 0)
 		{
@@ -404,7 +404,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				double storedEmc = itemEmc.getStoredEmc(stack);
+				long storedEmc = itemEmc.getStoredEmc(stack);
 				if (storedEmc >= value)
 				{
 					//All of it can be removed from the lock item
@@ -420,7 +420,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			//Remove from provider first
 			//This code runs first to simplify the logic
 			//But it simulates removal first by extracting the amount from value and then removing that excess from items
-			double toRemove = value - provider.getEmc();
+			long toRemove = value - provider.getEmc();
 			value = provider.getEmc();
 			for (int i = 0; i < inputLocks.getSlots(); i++)
 			{
@@ -432,7 +432,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 				if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 				{
 					IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-					double storedEmc = itemEmc.getStoredEmc(stack);
+					long storedEmc = itemEmc.getStoredEmc(stack);
 					if (toRemove <= storedEmc)
 					{
 						//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
@@ -485,7 +485,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 	/**
 	 * @return EMC available from the Provider + any klein stars in the input slots.
 	 */
-	public double getAvailableEMC()
+	public long getAvailableEMC()
 	{
 		//TODO: Cache this value somehow, or at least cache which slots have IItemEMC in them?
 		if (hasMaxedEmc())
@@ -493,8 +493,8 @@ public class TransmutationInventory extends CombinedInvWrapper
 			return Constants.TILE_MAX_EMC;
 		}
 
-		double emc = provider.getEmc();
-		double emcToMax = Constants.TILE_MAX_EMC - emc;
+		long emc = provider.getEmc();
+		long emcToMax = Constants.TILE_MAX_EMC - emc;
 		for (int i = 0; i < inputLocks.getSlots(); i++)
 		{
 			if (i == LOCK_INDEX)
@@ -507,7 +507,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				double storedEmc = itemEmc.getStoredEmc(stack);
+				long storedEmc = itemEmc.getStoredEmc(stack);
 				if (storedEmc >= emcToMax)
 				{
 					return Constants.TILE_MAX_EMC;

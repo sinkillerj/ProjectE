@@ -38,7 +38,7 @@ public class GUICollectorMK3 extends GuiContainer
 	{
 		this.fontRenderer.drawString(Long.toString(container.emc), 91, 32, 4210752);
 		
-		double kleinCharge = container.kleinEmc;
+		long kleinCharge = container.kleinEmc;
 		if (kleinCharge > 0)
 			this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 91, 44, 4210752);
 	}

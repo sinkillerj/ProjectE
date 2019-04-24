@@ -38,8 +38,8 @@ public class SlotInput extends SlotItemHandler
 		if (stack.getItem() instanceof IItemEmc)
 		{
 			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-			double remainingEmc = itemEmc.getMaximumEmc(stack) - (int) Math.ceil(itemEmc.getStoredEmc(stack));
-			double availableEMC = inv.getAvailableEMC();
+			long remainingEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+			long availableEMC = inv.getAvailableEMC();
 
 			if (availableEMC >= remainingEmc)
 			{

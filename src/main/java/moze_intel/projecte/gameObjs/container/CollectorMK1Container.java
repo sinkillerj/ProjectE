@@ -27,7 +27,7 @@ public class CollectorMK1Container extends LongContainer
 	public long emc = 0;
 	public double kleinChargeProgress = 0;
 	public double fuelProgress = 0;
-	public int kleinEmc = 0;
+	public long kleinEmc = 0;
 
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
 	{
@@ -70,10 +70,10 @@ public class CollectorMK1Container extends LongContainer
 	{
 		super.addListener(listener);
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.getSunLevel());
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, (long) tile.getStoredEmc());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, tile.getStoredEmc());
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
 		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) tile.getItemCharge());
+		PacketHandler.sendProgressBarUpdateLong(listener, this, 4, tile.getItemCharge());
 	}
 
 	@Nonnull
@@ -105,14 +105,14 @@ public class CollectorMK1Container extends LongContainer
 			sunLevel = tile.getSunLevel();
 		}
 
-		if (emc != ((long) tile.getStoredEmc()))
+		if (emc != tile.getStoredEmc())
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 1, ((long) tile.getStoredEmc()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 1, tile.getStoredEmc());
 			}
 
-			emc = ((long) tile.getStoredEmc());
+			emc = tile.getStoredEmc();
 		}
 
 		if (kleinChargeProgress != tile.getItemChargeProportion())
@@ -135,14 +135,14 @@ public class CollectorMK1Container extends LongContainer
 			fuelProgress = tile.getFuelProgress();
 		}
 
-		if (kleinEmc != ((int) tile.getItemCharge()))
+		if (kleinEmc != tile.getItemCharge())
 		{
 			for (IContainerListener icrafting : this.listeners)
 			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 4, (int) (tile.getItemCharge()));
+				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 4, tile.getItemCharge());
 			}
 
-			kleinEmc = ((int) tile.getItemCharge());
+			kleinEmc = tile.getItemCharge();
 		}
 
 	}
@@ -168,6 +168,7 @@ public class CollectorMK1Container extends LongContainer
 		switch (id)
 		{
 			case 1: emc = data; break;
+			case 4: kleinEmc = data; break;
 			default: updateProgressBar(id, (int) data);
 		}
 	}
