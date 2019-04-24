@@ -170,7 +170,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy))
 			{
-				lockCopy.setTagCompound(new NBTTagCompound());
+				lockCopy.setTagCompound(null);
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
