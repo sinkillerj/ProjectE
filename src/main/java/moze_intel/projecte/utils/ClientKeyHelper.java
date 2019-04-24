@@ -35,12 +35,7 @@ public class ClientKeyHelper
      */
     public static String getKeyName(PEKeybind k)
     {
-        int keyCode = peToMc.get(k).getKeyCode();
-        if (keyCode > Keyboard.getKeyCount() || keyCode < 0)
-        {
-            return "INVALID KEY";
-        }
-        return Keyboard.getKeyName(keyCode);
+        return getKeyName(peToMc.get(k));
     }
 
     public static String getKeyName(KeyBinding k)
@@ -48,7 +43,7 @@ public class ClientKeyHelper
         int keyCode = k.getKeyCode();
         if (keyCode > Keyboard.getKeyCount() || keyCode < 0)
         {
-            return "INVALID KEY";
+            return k.getDisplayName();
         }
         return Keyboard.getKeyName(keyCode);
     }

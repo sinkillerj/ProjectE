@@ -29,6 +29,9 @@ public final class InternalAbilities
 	private boolean swrgOverride = false;
 	private boolean gemArmorReady = false;
 	private boolean hadFlightItem = false;
+	private boolean wasFlyingGamemode = false;
+	private boolean isFlyingGamemode = false;
+	private boolean wasFlying = false;
 	private int projectileCooldown = 0;
 	private int gemChestCooldown = 0;
 
@@ -76,23 +79,40 @@ public final class InternalAbilities
 			gemChestCooldown--;
 		}
 
-		if (!shouldPlayerFly() && hadFlightItem)
+		if (!shouldPlayerFly())
 		{
-			if (player.capabilities.allowFlying)
+			if (hadFlightItem)
 			{
-				PlayerHelper.updateClientServerFlight(player, false);
+				if (player.capabilities.allowFlying)
+				{
+					PlayerHelper.updateClientServerFlight(player, false);
+				}
+
+				hadFlightItem = false;
 			}
-			
-			hadFlightItem = false;
+			wasFlyingGamemode = false;
+			wasFlying = false;
 		}
-		else if(shouldPlayerFly() && !hadFlightItem)
+		else
 		{
-			if (!player.capabilities.allowFlying)
+			if (!hadFlightItem)
 			{
-				PlayerHelper.updateClientServerFlight(player, true);
+				if (!player.capabilities.allowFlying)
+				{
+					PlayerHelper.updateClientServerFlight(player, true);
+				}
+
+				hadFlightItem = true;
 			}
-			
-			hadFlightItem = true;
+			else if (wasFlyingGamemode && !isFlyingGamemode)
+			{
+				//Player was in a gamemode that allowed flight, but no longer is but they still should be allowed to fly
+				//Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
+				//and are still allowed to the gamemode change doesn't force them out of it
+				PlayerHelper.updateClientServerFlight(player, true, wasFlying);
+			}
+			wasFlyingGamemode = isFlyingGamemode;
+			wasFlying = player.capabilities.isFlying;
 		}
 
 		if (!shouldPlayerResistFire())
@@ -140,7 +160,8 @@ public final class InternalAbilities
 			disableSwrgFlightOverride();
 		}
 
-		if (player.capabilities.isCreativeMode || player.isSpectator() || swrgOverride)
+		isFlyingGamemode = player.capabilities.isCreativeMode || player.isSpectator();
+		if (isFlyingGamemode || swrgOverride)
 		{
 			return true;
 		}

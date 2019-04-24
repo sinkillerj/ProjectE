@@ -20,5 +20,17 @@ public interface IEmcProvider extends IEmcStorage
 	 * @param toExtract The maximum amount to extract
 	 * @return The amount actually extracted
 	 */
-	double provideEMC(@Nonnull EnumFacing side, double toExtract);
+	long provideEMC(@Nonnull EnumFacing side, long toExtract);
+
+	/**
+	 * Extract, at most, the given amount of EMC from the given side
+	 * @param side The side to extract EMC from
+	 * @param toExtract The maximum amount to extract
+	 * @return The amount actually extracted
+	 * @deprecated Since ProjectE API version 1.2.0
+	 */
+	@Deprecated
+	default double provideEMC(@Nonnull EnumFacing side, double toExtract) {
+		return provideEMC(side, (long) toExtract);
+	}
 }

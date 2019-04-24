@@ -31,7 +31,7 @@ import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper(), new CraftTweakerRecipeMapper());
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper(), new CraftTweakerRecipeMapper(), new RecipeStagesRecipeMapper());
 	private final Set<Class> canNotMap = new HashSet<>();
 	private final Map<Class, Integer> recipeCount = new HashMap<>();
 
