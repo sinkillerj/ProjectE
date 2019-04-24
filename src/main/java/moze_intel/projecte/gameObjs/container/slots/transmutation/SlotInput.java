@@ -24,6 +24,21 @@ public class SlotInput extends SlotItemHandler
 	{
 		return SlotPredicates.RELAY_INV.test(stack);
 	}
+
+	@Nonnull
+	@Override
+	public ItemStack decrStackSize(int amount)
+	{
+		ItemStack stack = super.decrStackSize(amount);
+		//Decrease the size of the stack
+		if (stack.getItem() instanceof IItemEmc)
+		{
+			//If it was an EMC storing item then check for updates,
+			// so that the right hand side shows the proper items
+			inv.checkForUpdates();
+		}
+		return stack;
+	}
 	
 	@Override
 	public void putStack(@Nonnull ItemStack stack)
