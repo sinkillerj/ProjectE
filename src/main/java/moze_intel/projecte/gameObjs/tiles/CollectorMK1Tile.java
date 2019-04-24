@@ -210,7 +210,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 			
 			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(getUpgrading());
 			
-			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
+			if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost)
 			{
 				ItemStack upgrade = getUpgraded();
 
