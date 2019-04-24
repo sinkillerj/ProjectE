@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -128,7 +129,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 		long matterEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(0));
 		long fuelEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(FUEL_START));
 		
-		if (Math.max(matterEmc, fuelEmc) > provider.getEmc())
+		if (Math.max(matterEmc, fuelEmc) > getAvailableEMC())
 		{
 			updateClientTargets();
 		}
@@ -163,7 +164,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			long reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
 			
-			if (provider.getEmc() < reqEmc)
+			if (getAvailableEMC() < reqEmc)
 			{
 				return;
 			}
@@ -213,7 +214,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			{
 				ItemStack stack = iter.next();
 				
-				if (provider.getEmc() < EMCHelper.getEmcValue(stack))
+				if (getAvailableEMC() < EMCHelper.getEmcValue(stack))
 				{
 					iter.remove();
 					continue;
@@ -301,7 +302,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 	{
 
 		if (EMCHelper.doesItemHaveEmc(item)
-				&& EMCHelper.getEmcValue(item) <= provider.getEmc()
+				&& EMCHelper.getEmcValue(item) <= getAvailableEMC()
 				&& provider.hasKnowledge(item))
 		{
 			outputs.setStackInSlot(slot, item);
@@ -314,6 +315,62 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void addEmc(long value)
 	{
+		if (value == 0)
+		{
+			//Optimization to not look at the items if nothing will happen anyways
+			return;
+		}
+		if (value < 0)
+		{
+			//Make sure it is using the correct method so that it handles the klein stars properly
+			removeEmc(-value);
+		}
+		//Start by trying to add it to the EMC items on the left
+		for (int i = 0; i < inputLocks.getSlots(); i++)
+		{
+			if (i == LOCK_INDEX)
+			{
+				continue;
+			}
+			ItemStack stack = inputLocks.getStackInSlot(i);
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+				if (value <= neededEmc)
+				{
+					//This item can store all of the amount being added
+					itemEmc.addEmc(stack, value);
+					return;
+				}
+				//else more than this item can fit, so fill the item and then continue going
+				itemEmc.addEmc(stack, neededEmc);
+				value -= neededEmc;
+			}
+		}
+		long emcToMax = Constants.TILE_MAX_EMC - provider.getEmc();
+		if (value > emcToMax)
+		{
+			long excessEMC = value - emcToMax;
+			value = emcToMax;
+			//Will finish filling provider
+			//Now with excess EMC we can check against the lock slot as that is the last spot that has its EMC used.
+			ItemStack stack = inputLocks.getStackInSlot(LOCK_INDEX);
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+				if (excessEMC > neededEmc)
+				{
+					itemEmc.addEmc(stack, neededEmc);
+				}
+				else
+				{
+					itemEmc.addEmc(stack, excessEMC);
+				}
+			}
+		}
+
 		provider.setEmc(provider.getEmc() + value);
 		
 		if (provider.getEmc() >= Constants.TILE_MAX_EMC || provider.getEmc() < 0)
@@ -329,6 +386,66 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void removeEmc(long value) 
 	{
+		if (value == 0)
+		{
+			//Optimization to not look at the items if nothing will happen anyways
+			return;
+		}
+		if (value < 0)
+		{
+			//Make sure it is using the correct method so that it handles the klein stars properly
+			addEmc(-value);
+		}
+		if (hasMaxedEmc())
+		{
+			//If the EMC is maxed, check and try to remove from the lock slot if it is IItemEMC
+			//This is the only case if the provider is full when the IItemEMC was put in the lock slot
+			ItemStack stack = inputLocks.getStackInSlot(LOCK_INDEX);
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+				long storedEmc = itemEmc.getStoredEmc(stack);
+				if (storedEmc >= value)
+				{
+					//All of it can be removed from the lock item
+					itemEmc.extractEmc(stack, value);
+					return;
+				}
+				itemEmc.extractEmc(stack, storedEmc);
+				value -= storedEmc;
+			}
+		}
+		if (value > provider.getEmc())
+		{
+			//Remove from provider first
+			//This code runs first to simplify the logic
+			//But it simulates removal first by extracting the amount from value and then removing that excess from items
+			long toRemove = value - provider.getEmc();
+			value = provider.getEmc();
+			for (int i = 0; i < inputLocks.getSlots(); i++)
+			{
+				if (i == LOCK_INDEX)
+				{
+					continue;
+				}
+				ItemStack stack = inputLocks.getStackInSlot(i);
+				if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+				{
+					IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+					long storedEmc = itemEmc.getStoredEmc(stack);
+					if (toRemove <= storedEmc)
+					{
+						//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
+						//Remove it and then
+						itemEmc.extractEmc(stack, toRemove);
+						break;
+					}
+					//Removes all the emc from this item
+					itemEmc.extractEmc(stack, storedEmc);
+					toRemove -= storedEmc;
+				}
+			}
+		}
 		provider.setEmc(provider.getEmc() - value);
 		
 		if (provider.getEmc() < 0)
@@ -363,6 +480,43 @@ public class TransmutationInventory extends CombinedInvWrapper
 		}
 
 		return slot;
+	}
+
+	/**
+	 * @return EMC available from the Provider + any klein stars in the input slots.
+	 */
+	public long getAvailableEMC()
+	{
+		//TODO: Cache this value somehow, or at least cache which slots have IItemEMC in them?
+		if (hasMaxedEmc())
+		{
+			return Constants.TILE_MAX_EMC;
+		}
+
+		long emc = provider.getEmc();
+		long emcToMax = Constants.TILE_MAX_EMC - emc;
+		for (int i = 0; i < inputLocks.getSlots(); i++)
+		{
+			if (i == LOCK_INDEX)
+			{
+				//Skip it even though this technically could add to available EMC.
+				//This is because this case can only happen if the provider is already at max EMC
+				continue;
+			}
+			ItemStack stack = inputLocks.getStackInSlot(i);
+			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			{
+				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+				long storedEmc = itemEmc.getStoredEmc(stack);
+				if (storedEmc >= emcToMax)
+				{
+					return Constants.TILE_MAX_EMC;
+				}
+				emc += storedEmc;
+				emcToMax -= storedEmc;
+			}
+		}
+		return emc;
 	}
 
 }

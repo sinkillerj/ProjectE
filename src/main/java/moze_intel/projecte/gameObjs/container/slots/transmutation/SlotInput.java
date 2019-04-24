@@ -24,6 +24,21 @@ public class SlotInput extends SlotItemHandler
 	{
 		return SlotPredicates.RELAY_INV.test(stack);
 	}
+
+	@Nonnull
+	@Override
+	public ItemStack decrStackSize(int amount)
+	{
+		ItemStack stack = super.decrStackSize(amount);
+		//Decrease the size of the stack
+		if (stack.getItem() instanceof IItemEmc)
+		{
+			//If it was an EMC storing item then check for updates,
+			// so that the right hand side shows the proper items
+			inv.checkForUpdates();
+		}
+		return stack;
+	}
 	
 	@Override
 	public void putStack(@Nonnull ItemStack stack)
@@ -39,16 +54,17 @@ public class SlotInput extends SlotItemHandler
 		{
 			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
 			long remainingEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
-			
-			if (inv.provider.getEmc() >= remainingEmc)
+			long availableEMC = inv.getAvailableEMC();
+
+			if (availableEMC >= remainingEmc)
 			{
 				itemEmc.addEmc(stack, remainingEmc);
 				inv.removeEmc(remainingEmc);
 			}
 			else
 			{
-				itemEmc.addEmc(stack, inv.provider.getEmc());
-				inv.removeEmc(inv.provider.getEmc());
+				itemEmc.addEmc(stack, availableEMC);
+				inv.removeEmc(availableEMC);
 			}
 		}
 
