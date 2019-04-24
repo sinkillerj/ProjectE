@@ -290,7 +290,14 @@ public final class EMCHelper
 
 		if (emc < 1)
 		{
-			emc = 1;
+			if (EMCMapper.covalenceLossRounding)
+			{
+				emc = 1;
+			}
+			else
+			{
+				emc = 0;
+			}
 		}
 
 		return emc;

@@ -22,6 +22,9 @@ public final class ProjectEConfig
 		@Config.RangeDouble(min = 0.1, max = 1.0)
 		@Config.Comment("Adjusting this ratio changes how much EMC is received when burning a item. For example setting this to 0.5 will return half of the EMC cost.")
 		public double covalenceLoss = 1.0;
+
+		@Config.Comment("How rounding occurs when Covalence Loss results in a burn value less than 1 EMC. If true the value will be rounded up to 1. If false the value will be rounded down to 0.")
+		public boolean covalenceLossRounding = true;
 	}
 
 	public static Items items = new Items();
