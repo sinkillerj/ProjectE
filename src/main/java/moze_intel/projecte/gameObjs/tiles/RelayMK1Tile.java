@@ -64,14 +64,14 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 			return super.extractItem(slot, amount, simulate);
 		}
 	});
-	private final int chargeRate;
+	private final long chargeRate;
 
 	public RelayMK1Tile()
 	{
 		this(ObjHandler.RELAY_MK1_TILE, 7, Constants.RELAY_MK1_MAX, Constants.RELAY_MK1_OUTPUT);
 	}
 	
-	RelayMK1Tile(TileEntityType<?> type, int sizeInv, int maxEmc, int chargeRate)
+	RelayMK1Tile(TileEntityType<?> type, int sizeInv, long maxEmc, long chargeRate)
 	{
 		super(type, maxEmc);
 		this.chargeRate = chargeRate;

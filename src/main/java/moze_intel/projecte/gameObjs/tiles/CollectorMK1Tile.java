@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteractionObject
+public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAcceptor, IInteractionObject
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
@@ -64,7 +65,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteract
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
-	private final int emcGen;
+	private final long emcGen;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private double storedFuelEmc;
@@ -75,7 +76,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteract
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 	}
 	
-	public CollectorMK1Tile(TileEntityType<?> type, int maxEmc, int emcGen)
+	public CollectorMK1Tile(TileEntityType<?> type, long maxEmc, long emcGen)
 	{
 		super(type, maxEmc);
 		this.emcGen = emcGen;
@@ -243,13 +244,14 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteract
 		}
 		else
 		{
+			//Only send EMC when we are not upgrading fuel or charging an item
 			double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 			this.sendToAllAcceptors(toSend);
 			this.sendRelayBonus();
 		}
 	}
 	
-	private float getSunRelativeEmc(int emc)
+	private float getSunRelativeEmc(long emc)
 	{
 		return (float) getSunLevel() * emc / 16;
 	}
@@ -419,5 +421,18 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IInteract
 	public ITextComponent getCustomName()
 	{
 		return null;
+	}
+
+	@Override
+	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	{
+		if (hasFuel || hasChargeableItem)
+		{
+			//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise it sends it to providers
+			double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+			currentEMC += toAdd;
+			return toAdd;
+		}
+		return 0;
 	}
 }

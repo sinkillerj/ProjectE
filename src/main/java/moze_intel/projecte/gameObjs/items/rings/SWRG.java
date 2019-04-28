@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -24,6 +25,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -65,7 +67,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		{
 			if (stack.getTag().getInt(TAG_MODE) > 0)
 			{
-				changeMode(stack, 0);
+				changeMode(player, stack, 0);
 			}
 
 			if (playerMP.abilities.allowFlying)
@@ -85,14 +87,14 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		{
 			if (!isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTag().getInt(TAG_MODE) == 0 ? 1 : 3);
+				changeMode(player, stack, stack.getTag().getInt(TAG_MODE) == 0 ? 1 : 3);
 			}
 		}
 		else
 		{
 			if (isFlyingEnabled(stack))
 			{
-				changeMode(stack, stack.getTag().getInt(TAG_MODE) == 1 ? 0 : 2);
+				changeMode(player, stack, stack.getTag().getInt(TAG_MODE) == 1 ? 0 : 2);
 			}
 		}
 
@@ -157,7 +159,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					break;
 			}
 			
-			changeMode(stack, newMode);
+			changeMode(player, stack, newMode);
 		}
 		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 	}
@@ -169,9 +171,30 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	 * 2 = Shield<p>
 	 * 3 = Flight + Shield<p>
 	 */
-	public void changeMode(ItemStack stack, int mode)
+	public void changeMode(EntityPlayer player, ItemStack stack, int mode)
 	{
-        stack.getOrCreateTag().putInt(TAG_MODE, mode);
+		int oldMode = stack.getOrCreateTag().getInt(TAG_MODE);
+		if (mode == oldMode)
+		{
+			return;
+		}
+		stack.getTag().putInt(TAG_MODE, mode);
+		if (player == null)
+		{
+			//Don't do sounds if the player is null
+			return;
+		}
+		if (mode == 0 || oldMode == 3)
+		{
+			//At least one mode deactivated
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 0.8F, 1.0F);
+		}
+		else if (oldMode == 0 || mode == 3)
+		{
+			//At least one mode activated
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+		}
+		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
 
 	@Override
@@ -280,7 +303,6 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
 		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.world.spawnEntity(projectile);
-		// projectile.playSound(PESounds.WIND, 1.0F, 1.0F);
 		return true;
 	}
 }

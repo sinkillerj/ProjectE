@@ -13,6 +13,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,6 +38,19 @@ public final class EMCHelper
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int emcConsumed = 0;
+
+		ItemStack offhand = player.getHeldItemOffhand();
+
+		if (!offhand.isEmpty() && offhand.getItem() instanceof IItemEmc)
+		{
+			IItemEmc itemEmc = ((IItemEmc) offhand.getItem());
+			if (itemEmc.getStoredEmc(offhand) >= minFuel)
+			{
+				itemEmc.extractEmc(offhand, minFuel);
+				player.inventoryContainer.detectAndSendChanges();
+				return minFuel;
+			}
+		}
 
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
@@ -181,9 +195,9 @@ public final class EMCHelper
 		}
 	}
 
-	private static int getEnchantEmcBonus(ItemStack stack)
+	private static long getEnchantEmcBonus(ItemStack stack)
 	{
-		int result = 0;
+		long result = 0;
 
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
@@ -206,7 +220,7 @@ public final class EMCHelper
 
 	public static long getEmcSellValue(ItemStack stack)
 	{
-		double originalValue = EMCHelper.getEmcValue(stack);
+		long originalValue = EMCHelper.getEmcValue(stack);
 
 		if (originalValue == 0)
 		{
@@ -230,12 +244,12 @@ public final class EMCHelper
 			return " ";
 		}
 
-		long emc = EMCHelper.getEmcSellValue(stack);
+		BigInteger emc = BigInteger.valueOf(EMCHelper.getEmcSellValue(stack));
 
-		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
+		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
-	public static int getKleinStarMaxEmc(ItemStack stack)
+	public static long getKleinStarMaxEmc(ItemStack stack)
 	{
 		if (stack.getItem() instanceof KleinStar)
 		{
@@ -253,18 +267,14 @@ public final class EMCHelper
 		return 0;
 	}
 
-	public static int getEMCPerDurability(ItemStack stack){
-
-		int emc;
-
-		if(stack == null)
+	public static long getEMCPerDurability(ItemStack stack) {
+		if(stack.isEmpty())
 			return 0;
 
-		ItemStack stackCopy = stack.copy();
-		stackCopy.setDamage(0);
-
-		if(stack.isDamageable() && stack.getDamage() != 0){
-			emc = (int)Math.ceil((float) EMCHelper.getEmcValue(stackCopy) / stack.getMaxDamage());
+		if(stack.isDamageable()){
+			ItemStack stackCopy = stack.copy();
+			stackCopy.setDamage(0);
+			long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

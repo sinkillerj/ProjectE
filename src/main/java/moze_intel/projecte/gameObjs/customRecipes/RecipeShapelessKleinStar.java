@@ -5,6 +5,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.network.PacketBuffer;
@@ -45,20 +46,16 @@ public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
 	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
 		ItemStack result = compose.getCraftingResult(inv);
 		double storedEMC = 0;
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
+		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
-			if(!stack.isEmpty() && stack.getItem() instanceof KleinStar)
-			{
+			if (!stack.isEmpty() && stack.getItem() instanceof KleinStar) {
 				storedEMC += KleinStar.getEmc(stack);
 			}
 		}
 
-		if (storedEMC != 0 && result.getItem() instanceof KleinStar)
-		{
+		if (storedEMC != 0 && result.getItem() instanceof KleinStar) {
 			KleinStar.setEmc(result, storedEMC);
 		}
-
 		return result;
 	}
 
