@@ -27,9 +27,11 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -54,7 +56,7 @@ public final class PlayerHelper
 		World world = player.getEntityWorld();
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
+		PlaceEvent evt = new PlaceEvent(before, Blocks.AIR.getDefaultState(), player, EnumHand.MAIN_HAND);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{
