@@ -52,4 +52,10 @@ public class MercurialEyeInventory implements IItemHandlerModifiable
 	{
 		return compose.getSlotLimit(slot);
 	}
+	
+	//TODO: check real item slot validity
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack) {
+		return true;
+	}
 }

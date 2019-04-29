@@ -100,6 +100,7 @@ public final class ProjectEConfig
 	public static final Misc misc = new Misc();
 	public static class Misc {
 		public final ForgeConfigSpec.BooleanValue debugLogging;
+		public final ForgeConfigSpec.BooleanValue separateCustomEMC;
 		public final ForgeConfigSpec.BooleanValue tagToolTips;
 		public final ForgeConfigSpec.BooleanValue emcToolTips;
 		public final ForgeConfigSpec.BooleanValue statToolTips;
@@ -114,6 +115,9 @@ public final class ProjectEConfig
 			debugLogging = BUILDER
 				.comment("Enable a more verbose debug logging")
 				.define("debugLogging", false);
+			separateCustomEMC = BUILDER
+					.comment("Separates custom EMC.json into several mod-based files")
+					.define("separateCustomEMC", false);
 			tagToolTips = BUILDER
 				.comment("Show item tags in tooltips (useful for custom EMC registration)")
 				.define("tagToolTips", false);

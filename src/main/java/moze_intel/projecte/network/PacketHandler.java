@@ -2,6 +2,7 @@ package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -90,10 +91,9 @@ public final class PacketHandler
 	{
 		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMapper.emc.size()];
 		int i = 0;
-		for (Map.Entry<Item, Long> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<NormalizedSimpleStack, Long> entry : EMCMapper.emc.entrySet())
 		{
-			int id = Item.getIdFromItem(entry.getKey());
-			ret[i] = new EmcPKTInfo(id, entry.getValue());
+			ret[i] = new EmcPKTInfo(entry.getKey(), entry.getValue());
 			i++;
 		}
 		PECore.debugLog("EMC data size: {} bytes", ret.length * (4 + 8));

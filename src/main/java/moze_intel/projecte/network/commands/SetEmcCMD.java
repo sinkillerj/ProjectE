@@ -24,7 +24,7 @@ public class SetEmcCMD
 						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
 						// todo 1.13 tag arg support?
 						// todo support longs
-						.executes(ctx -> setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), ItemArgument.getItem(ctx, "item").getItem())))
+						.executes(ctx -> setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), new ItemStack(ItemArgument.getItem(ctx, "item").getItem()))))
 					.executes(ctx -> {
 						EntityPlayerMP player = ctx.getSource().asPlayer();
 						ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
@@ -39,15 +39,15 @@ public class SetEmcCMD
 							throw RemoveEmcCMD.EMPTY_STACK.create();
 						}
 
-						return setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), stack.getItem());
+						return setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), stack);
 					}));
 
 	}
 
-	private static int setEmc(CommandContext<CommandSource> ctx, int emc, Item item)
+	private static int setEmc(CommandContext<CommandSource> ctx, int emc, ItemStack item)
 	{
-		CustomEMCParser.addToFile(item.getRegistryName().toString(), emc);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getRegistryName().toString(), emc), true);
+		CustomEMCParser.addToFile(item, emc);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getItem().getRegistryName().toString(), emc), true);
 		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
 		return Command.SINGLE_SUCCESS;
 	}

@@ -2,6 +2,8 @@ package moze_intel.projecte.playerData;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.Item;
@@ -22,11 +24,11 @@ public final class Transmutation
 	public static void cacheFullKnowledge()
 	{
 		clearCache();
-		for (Item item : EMCMapper.emc.keySet())
+		for (NormalizedSimpleStack item : EMCMapper.emc.keySet())
 		{
 			try
 			{
-				ItemStack s = new ItemStack(item);
+				ItemStack s = ((NSSItem)item).getItemStack();
 
 				//Apparently items can still not have EMC if they are in the EMC map.
 				if (EMCHelper.doesItemHaveEmc(s) && EMCHelper.getEmcValue(s) > 0 && !ItemHelper.containsItemStack(CACHED_TOME_KNOWLEDGE, s))

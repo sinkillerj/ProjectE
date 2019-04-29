@@ -1,8 +1,13 @@
 package moze_intel.projecte.utils;
 
 import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.emc.mappers.CustomEMCMapper;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -114,22 +119,17 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(ItemStack stack)
 	{
-		return !stack.isEmpty() && doesItemHaveEmc(stack.getItem());
+		return !stack.isEmpty() && getEmcValue(stack) != 0;
 	}
 
 	public static boolean doesItemHaveEmc(IItemProvider item)
 	{
-		return item != null && EMCMapper.emc.containsKey(item.asItem());
+		return doesItemHaveEmc(new ItemStack(item.asItem()));
 	}
 
 	public static long getEmcValue(IItemProvider item)
 	{
-		if (EMCMapper.emc.containsKey(item.asItem()))
-		{
-			return EMCMapper.getEmcValue(item);
-		}
-
-		return 0;
+		return getEmcValue(new ItemStack(item.asItem()));
 	}
 
 	/**
@@ -137,65 +137,49 @@ public final class EMCHelper
 	 */
 	public static long getEmcValue(ItemStack stack)
 	{
-		if (stack.isEmpty() || !EMCMapper.emc.containsKey(stack.getItem()))
+		if (stack.isEmpty())
 		{
 			return 0;
 		}
 
-		if (ItemHelper.isDamageable(stack))
-		{
-			long emc = EMCMapper.getEmcValue(stack.getItem());
-
-			// maxDmg + 1 because vanilla lets you use the tool one more time
-			// when item damage == max damage (shows as Durability: 0 / max)
-			int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
-
-			if (relDamage <= 0)
-			{
-				// This may happen when mods overflow their max damage or item damage.
-				// Don't use durability or enchants for emc calculation if this happens.
-				return emc;
+		ItemStack filtered = stack.copy();
+		filtered.setCount(1);
+		filtered = ItemStackNBTManager.clean(filtered);
+		
+		NormalizedSimpleStack item = new NSSItem(filtered);
+		
+		if(!EMCMapper.emc.containsKey(item)){
+			//check if the filtered item could contain EMC, but was not calculated yet
+			long value = ItemStackNBTManager.getEMCValue(filtered);
+			if(value == 0){
+				
+				ItemStack otherFiltered = filtered.copy();
+				otherFiltered.setTag(null);//try and check if a non-tag version of the item exists
+				NormalizedSimpleStack item2 = new NSSItem(otherFiltered);
+				if(!EMCMapper.emc.containsKey(item2)){
+					return 0;
+				}
+				value = EMCMapper.emc.get(item2);
+				value = ItemStackNBTManager.getEMCValue(filtered,value);
+				EMCMapper.emc.put(item, value);
+				CustomEMCParser.addToFile(filtered, value);
 			}
-
-			long result = emc * relDamage;
-
-			if (result <= 0)
-			{
-				//Congratulations, big number is big.
-				return emc;
+			else{
+				//If it does have a value, save it for later in the map and the CustomEMC files
+				EMCMapper.emc.put(item, value);
+				CustomEMCParser.addToFile(filtered, value);
 			}
-
-			result /= stack.getMaxDamage();
-			boolean positive = result > 0;
-			result += getEnchantEmcBonus(stack);
-
-			//If it was positive and then became negative that means it overflowed
-			if (positive && result < 0) {
-				return emc;
-			}
-
-			positive = result > 0;
-			result += getStoredEMCBonus(stack);
-
-			//If it was positive and then became negative that means it overflowed
-			if (positive && result < 0) {
-				return emc;
-			}
-
-			if (result <= 0)
-			{
-				return 1;
-			}
-
-			return result;
 		}
-		else
-		{
-			return EMCMapper.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
-		}
+		//Now we retreive the saved value from the EMC mapper and add to it the calculations' values
+		long value = EMCMapper.emc.get(item);
+		ItemStack normalizedStack = stack.copy();
+		normalizedStack.setCount(1);
+		value = ItemStackNBTManager.getEMCValue(normalizedStack, value);
+		
+		return value;
 	}
 
-	private static long getEnchantEmcBonus(ItemStack stack)
+	public static long getEnchantEmcBonus(ItemStack stack)
 	{
 		long result = 0;
 

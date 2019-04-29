@@ -25,7 +25,7 @@ public class RemoveEmcCMD
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
 					// todo 1.13 dropping nbt info, use a more restrictive arg parser?
-					.executes(ctx -> removeEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
+					.executes(ctx -> removeEmc(ctx, new ItemStack(ItemArgument.getItem(ctx, "item").getItem()))))
 				// todo 1.13 tag arg support?
 				.executes(ctx -> {
 					EntityPlayerMP player = ctx.getSource().asPlayer();
@@ -41,14 +41,14 @@ public class RemoveEmcCMD
 						throw EMPTY_STACK.create();
 					}
 
-					return removeEmc(ctx, stack.getItem());
+					return removeEmc(ctx, stack);
 				});
 	}
 
-	private static int removeEmc(CommandContext<CommandSource> ctx, Item item)
+	private static int removeEmc(CommandContext<CommandSource> ctx, ItemStack item)
 	{
-		CustomEMCParser.addToFile(item.getRegistryName().toString(), 0);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getRegistryName().toString()), true);
+		CustomEMCParser.addToFile(item, 0);
+		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getItem().getRegistryName().toString()), true);
 		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
 		return Command.SINGLE_SUCCESS;
 	}

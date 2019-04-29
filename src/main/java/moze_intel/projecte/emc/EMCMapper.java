@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -15,6 +16,7 @@ import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.BrewingMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
@@ -27,6 +29,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.io.File;
@@ -41,7 +44,7 @@ import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static final Map<Item, Long> emc = new LinkedHashMap<>();
+	public static final Map<NormalizedSimpleStack, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 
 	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
@@ -63,6 +66,7 @@ public final class EMCMapper
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
+				new BrewingMapper(),
 				// todo 1.13 new moze_intel.projecte.emc.mappers.FluidMapper(),
 				APICustomConversionMapper.instance
 		);
@@ -150,13 +154,7 @@ public final class EMCMapper
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.itemName);
-			if (obj != null)
-			{
-				emc.put(obj, entry.getValue());
-			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}, item does not exist!", normStackItem.itemName);
-			}
+			emc.put(normStackItem, entry.getValue());
 		}
 
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
@@ -170,9 +168,14 @@ public final class EMCMapper
 										|| e.getValue() <= 0);
 	}
 
-	public static long getEmcValue(IItemProvider item)
+	public static long getEmcValueFromItem(IItemProvider item)
 	{
-		return emc.get(item.asItem());
+		return emc.get(new NSSItem(item.asItem()));
+	}
+	
+	public static long getEmcValue(NormalizedSimpleStack nss)
+	{
+		return emc.get(nss);
 	}
 
 	public static void clearMaps() {

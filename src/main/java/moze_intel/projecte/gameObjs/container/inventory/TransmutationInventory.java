@@ -4,6 +4,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -58,28 +59,36 @@ public class TransmutationInventory extends CombinedInvWrapper
 	
 	public void handleKnowledge(ItemStack stack)
 	{
-		if (stack.getCount() > 1)
+		ItemStack filtered = stack.copy();
+		
+		if (filtered.getCount() > 1)
 		{
-			stack.setCount(1);
+			filtered.setCount(1);
 		}
 		
-		if (ItemHelper.isDamageable(stack))
+		if (ItemHelper.isDamageable(filtered))
 		{
-			stack.setDamage(0);
+			filtered.setDamage(0);
 		}
 		
-		if (!provider.hasKnowledge(stack))
+		filtered = ItemStackNBTManager.clean(filtered);
+		
+		
+		
+		if (!provider.hasKnowledge(filtered))
 		{
-			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack))
+			/*if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack))
 			{
 				stack.setTag(null);
-			}
+			}*/ // all items handle with NBT now. Empty tags get transformed into nulls by the ItemNBTFilter
 
-			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, stack))) //Only show the "learned" text if the knowledge was added
+			
+			
+			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, filtered))) //Only show the "learned" text if the knowledge was added
 			{
 				learnFlag = 300;
 				unlearnFlag = 0;
-				provider.addKnowledge(stack);
+				provider.addKnowledge(filtered);
 			}
 
 			if (!player.getEntityWorld().isRemote)
@@ -93,27 +102,26 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 	public void handleUnlearn(ItemStack stack)
 	{
-		if (stack.getCount() > 1)
+ItemStack filtered = stack.copy();
+		
+		if (filtered.getCount() > 1)
 		{
-			stack.setCount(1);
+			filtered.setCount(1);
 		}
-
-		if (ItemHelper.isDamageable(stack))
+		
+		if (ItemHelper.isDamageable(filtered))
 		{
-			stack.setDamage(0);
+			filtered.setDamage(0);
 		}
+		
+		filtered = ItemStackNBTManager.clean(filtered);
 
-		if (provider.hasKnowledge(stack))
+		if (provider.hasKnowledge(filtered))
 		{
 			unlearnFlag = 300;
 			learnFlag = 0;
 
-			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack))
-			{
-				stack.setTag(null);
-			}
-
-			provider.removeKnowledge(stack);
+			provider.removeKnowledge(filtered);
 			
 			if (!player.getEntityWorld().isRemote)
 			{
@@ -161,17 +169,13 @@ public class TransmutationInventory extends CombinedInvWrapper
 			{
 				lockCopy.setDamage(0);
 			}
-
-			long reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
+			lockCopy = ItemStackNBTManager.clean(lockCopy);
+			
+			long reqEmc = EMCHelper.getEmcValue(lockCopy);
 			
 			if (provider.getEmc() < reqEmc)
 			{
 				return;
-			}
-
-			if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy))
-			{
-				lockCopy.setTag(new NBTTagCompound());
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();

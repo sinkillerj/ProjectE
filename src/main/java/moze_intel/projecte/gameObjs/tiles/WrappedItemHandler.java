@@ -71,4 +71,10 @@ public class WrappedItemHandler implements IItemHandlerModifiable
         IN_OUT,
         NONE
     }
+    
+  //TODO: check real item slot validity
+  	@Override
+  	public boolean isItemValid(int slot, ItemStack stack) {
+  		return true;
+  	}
 }

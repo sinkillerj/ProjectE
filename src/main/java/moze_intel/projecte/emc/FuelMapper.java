@@ -38,7 +38,7 @@ public final class FuelMapper
 		addToMap(ObjHandler.aeternalisFuel);
 		addToMap(ObjHandler.aeternalisFuelBlock);
 		
-		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValue));
+		FUEL_MAP.sort(Comparator.comparing(EMCMapper::getEmcValueFromItem));
 	}
 	
 	private static void addToMap(IItemProvider item)

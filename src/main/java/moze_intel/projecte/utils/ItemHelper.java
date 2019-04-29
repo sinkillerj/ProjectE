@@ -49,6 +49,8 @@ public final class ItemHelper
 		{
 			ItemHandlerHelper.insertItemStacked(inventory, s, false);
 		}
+		
+		
 	}
 
 	/**
@@ -159,6 +161,11 @@ public final class ItemHelper
 			public int getSlotLimit(int slot)
 			{
 				return getStackInSlot(slot).getMaxStackSize();
+			}
+
+			@Override
+			public boolean isItemValid(int slot, ItemStack stack) {
+				return true;
 			}
 		};
 	}

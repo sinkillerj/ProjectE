@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
+import moze_intel.projecte.emc.nbt.ItemStackNBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
@@ -30,6 +31,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -112,9 +114,15 @@ public final class KnowledgeImpl {
                 return true;
             }
 
+            ItemStack filtered = stack.copy();
+            filtered = ItemStackNBTManager.clean(filtered);
+            
             for (ItemStack s : knowledge)
             {
-                if (s.getItem() == stack.getItem())
+            	if(s.getTag() != null && s.getTag().isEmpty())
+            		s.setTag(null);
+            	
+                if (ItemHelper.areItemStacksEqual(s,filtered))
                 {
                     return true;
                 }
@@ -139,10 +147,11 @@ public final class KnowledgeImpl {
                 fireChangedEvent();
                 return true;
             }
-
-            if (!hasKnowledge(stack))
+            ItemStack filtered = stack.copy();
+            filtered = ItemStackNBTManager.clean(filtered);
+            if (!hasKnowledge(filtered))
             {
-                knowledge.add(stack);
+                knowledge.add(filtered);
                 fireChangedEvent();
                 return true;
             }
@@ -167,9 +176,12 @@ public final class KnowledgeImpl {
 
             Iterator<ItemStack> iter = knowledge.iterator();
 
+            ItemStack filtered = stack.copy();
+            filtered = ItemStackNBTManager.clean(filtered);
+            
             while (iter.hasNext())
             {
-                if (ItemStack.areItemStacksEqual(stack, iter.next()))
+                if (ItemStack.areItemStacksEqual(filtered, iter.next()))
                 {
                     iter.remove();
                     removed = true;

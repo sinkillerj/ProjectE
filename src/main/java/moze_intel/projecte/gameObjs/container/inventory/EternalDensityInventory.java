@@ -105,4 +105,10 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	{
 		return isInWhitelist;
 	}
+
+	//TODO: check real item slot validity
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack) {
+		return true;
+	}
 }

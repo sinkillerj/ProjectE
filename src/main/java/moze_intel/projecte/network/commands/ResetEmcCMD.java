@@ -21,8 +21,7 @@ public class ResetEmcCMD
 		return Commands.literal("resetemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
-						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
-						.executes(ctx -> resetEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
+						.executes(ctx -> resetEmc(ctx, new ItemStack(ItemArgument.getItem(ctx, "item").getItem()))))
 				// todo 1.13 tag arg support?
 				.executes(ctx -> {
 					EntityPlayerMP player = ctx.getSource().asPlayer();
@@ -38,21 +37,21 @@ public class ResetEmcCMD
 						throw RemoveEmcCMD.EMPTY_STACK.create();
 					}
 
-					return resetEmc(ctx, stack.getItem());
+					return resetEmc(ctx, stack);
 				});
 	}
 
-	private static int resetEmc(CommandContext<CommandSource> ctx, Item item)
+	private static int resetEmc(CommandContext<CommandSource> ctx, ItemStack item)
 	{
-		if (CustomEMCParser.removeFromFile(item.getRegistryName().toString()))
+		if (CustomEMCParser.removeFromFile(item))
 		{
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reset.success", item.getRegistryName().toString()), true);
+			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reset.success", item.getItem().getRegistryName().toString()), true);
 			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		else
 		{
-			throw new CommandException(new TextComponentTranslation("pe.command.remove.invaliditem", item.getRegistryName()));
+			throw new CommandException(new TextComponentTranslation("pe.command.remove.invaliditem", item.getItem().getRegistryName()));
 		}
 	}
 }
