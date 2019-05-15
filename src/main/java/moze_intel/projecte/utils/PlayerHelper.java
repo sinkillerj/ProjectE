@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
@@ -32,6 +33,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
 
 /**
  * Helper class for player-related methods.
@@ -85,14 +88,15 @@ public final class PlayerHelper
 		return ItemStack.EMPTY;
 	}
 
-	public static IItemHandler getBaubles(EntityPlayer player)
+	@Nullable
+	public static IItemHandler getCurios(EntityPlayer player)
 	{
-		if (!ModList.get().isLoaded("baubles"))
+		if (!ModList.get().isLoaded("curios"))
 		{
 			return null;
 		} else
 		{
-			return null; // todo 1.13 BaublesApi.getBaublesHandler(player);
+			return CuriosIntegration.getAll(player);
 		}
 	}
 

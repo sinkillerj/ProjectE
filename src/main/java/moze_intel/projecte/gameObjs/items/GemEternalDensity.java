@@ -49,7 +49,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger
 {
 	public GemEternalDensity(Properties props)
@@ -346,43 +345,6 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		list.add(new TextComponentTranslation("pe.gemdensity.tooltip4"));
 		list.add(new TextComponentTranslation("pe.gemdensity.tooltip5"));
 	}
-	
-	/* todo 1.13
-	@Override
-	@Optional.Method(modid = "baubles")
-	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
-	{
-		return BaubleType.RING;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
-	{
-		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}*/
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)

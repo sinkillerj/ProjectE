@@ -27,6 +27,7 @@ import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
+import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -187,6 +188,12 @@ public class PECore
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+
+		if (ModList.get().isLoaded("curios"))
+		{
+			FMLJavaModLoadingContext.get().getModEventBus().register(CuriosIntegration.class);
+			MinecraftForge.EVENT_BUS.register(CuriosIntegration.class);
+		}
 
 		new ThreadCheckUpdate().start();
 

@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.items.rings.RingToggle;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
@@ -25,6 +26,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -32,7 +35,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
 	public RepairTalisman(Properties props)
@@ -60,8 +62,24 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	private void repairAllItems(EntityPlayer player)
 	{
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+		LazyOptional<IItemHandler> inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		if (inv.isPresent())
+		{
+			repairInv(inv.orElseThrow(NullPointerException::new), player);
+		}
 
+		if(ModList.get().isLoaded("curios"))
+		{
+			IItemHandler curios = CuriosIntegration.getAll(player);
+			if (curios != null)
+			{
+				repairInv(curios, player);
+			}
+		}
+	}
+
+	private void repairInv(IItemHandler inv, EntityPlayer player)
+	{
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
@@ -82,65 +100,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				invStack.setDamage(invStack.getDamage() - 1);
 			}
 		}
-
-		// if (ModList.get().isLoaded("baubles")) baubleRepair(player);
 	}
-/* todo 1.13
-	@Optional.Method(modid = "baubles")
-	public void baubleRepair(EntityPlayer player)
-	{
-		IItemHandler bInv = BaublesApi.getBaublesHandler(player);
-
-		for (int i = 0; i < bInv.getSlots(); i++)
-		{
-			ItemStack bInvStack = bInv.getStackInSlot(i);
-			if (bInvStack.isEmpty() || bInvStack.getItem() instanceof IModeChanger || !bInvStack.getItem().isRepairable())
-			{
-				continue;
-			}
-
-			if (ItemHelper.isDamageable(bInvStack) && bInvStack.getDamage() > 0)
-			{
-				bInvStack.setDamage(bInvStack.getDamage() - 1);
-			}
-		}
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
-	{
-		return BaubleType.BELT;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
-	{
-		this.inventoryTick(stack, player.getEntityWorld(), player, 0, false);
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

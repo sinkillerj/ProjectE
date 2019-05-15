@@ -37,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
 	public Arcana(Properties props)
@@ -117,44 +116,6 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		
 		tick(stack, world, (EntityPlayerMP)entity);
 	}
-/* todo 1.13
-	@Override
-	@Optional.Method(modid = "baubles")
-	public BaubleType getBaubleType(ItemStack stack)
-	{
-		return BaubleType.RING;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase entity)
-	{
-		if(entity.getEntityWorld().isRemote || !(entity instanceof EntityPlayerMP)) return;
-		
-		tick(stack, entity.getEntityWorld(), (EntityPlayerMP)entity);
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onEquipped(ItemStack stack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onUnequipped(ItemStack stack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack stack, EntityLivingBase player)
-	{
-		return true;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack stack, EntityLivingBase player)
-	{
-		return true;
-	}*/
 
 	@OnlyIn(Dist.CLIENT)
 	@Override

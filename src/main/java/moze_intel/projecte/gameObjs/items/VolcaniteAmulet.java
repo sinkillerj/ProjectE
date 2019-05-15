@@ -40,7 +40,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-// todo 1.13 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector
 {
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0).setSaved(false);
@@ -163,42 +162,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		list.add(new TextComponentTranslation("pe.volcanite.tooltip3"));
 		list.add(new TextComponentTranslation("pe.volcanite.tooltip4"));
 	}
-	/* todo 1.13
-	@Override
-	@Optional.Method(modid = "baubles")
-	public baubles.api.BaubleType getBaubleType(ItemStack itemstack)
-	{
-		return BaubleType.AMULET;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase ent)
-	{
-		this.inventoryTick(stack, ent.getEntityWorld(), ent, 0, false);
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}
-
-	@Override
-	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return true;
-	}*/
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)

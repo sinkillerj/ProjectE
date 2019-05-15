@@ -74,15 +74,16 @@ public class TickEvents
 	{
 		Set<EnumDyeColor> bagsPresent = EnumSet.noneOf(EnumDyeColor.class);
 
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).orElseThrow(NullPointerException::new);
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag)
+		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).ifPresent(inv -> {
+			for (int i = 0; i < inv.getSlots(); i++)
 			{
-				bagsPresent.add(((AlchemicalBag) stack.getItem()).color);
+				ItemStack stack = inv.getStackInSlot(i);
+				if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag)
+				{
+					bagsPresent.add(((AlchemicalBag) stack.getItem()).color);
+				}
 			}
-		}
+		});
 
 		return bagsPresent;
 	}

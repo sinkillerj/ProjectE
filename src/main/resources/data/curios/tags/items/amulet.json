@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:body_stone",
+    "projecte:evertide_amulet",
+    "projecte:life_stone",
+    "projecte:soul_stone",
+    "projecte:volcanite_amulet"
+  ]
+}

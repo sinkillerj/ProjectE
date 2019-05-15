@@ -168,12 +168,12 @@ public final class InternalAbilities
 			}
 		}
 
-		IItemHandler baubles = PlayerHelper.getBaubles(player);
-		if (baubles != null)
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null)
 		{
-			for (int i = 0; i < baubles.getSlots(); i++)
+			for (int i = 0; i < curios.getSlots(); i++)
 			{
-				ItemStack stack = baubles.getStackInSlot(i);
+				ItemStack stack = curios.getStackInSlot(i);
 				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFlightProvider
 						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
@@ -216,12 +216,12 @@ public final class InternalAbilities
 			}
 		}
 
-		IItemHandler baubles = PlayerHelper.getBaubles(player);
-		if (baubles != null)
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null)
 		{
-			for (int i = 0; i < baubles.getSlots(); i++)
+			for (int i = 0; i < curios.getSlots(); i++)
 			{
-				ItemStack stack = baubles.getStackInSlot(i);
+				ItemStack stack = curios.getStackInSlot(i);
 				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFireProtector
 						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
@@ -258,12 +258,12 @@ public final class InternalAbilities
 			}
 		}
 
-		IItemHandler baubles = PlayerHelper.getBaubles(player);
-		if (baubles != null)
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null)
 		{
-			for (int i = 0; i < baubles.getSlots(); i++)
+			for (int i = 0; i < curios.getSlots(); i++)
 			{
-				ItemStack stack = baubles.getStackInSlot(i);
+				ItemStack stack = curios.getStackInSlot(i);
 				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IStepAssister
 						&& ((IStepAssister) stack.getItem()).canAssistStep(stack, player))
@@ -286,12 +286,12 @@ public final class InternalAbilities
 			}
 		}
 
-		IItemHandler baubles = PlayerHelper.getBaubles(player);
-		if (baubles != null)
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null)
 		{
-			for (int i = 0; i < baubles.getSlots(); i++)
+			for (int i = 0; i < curios.getSlots(); i++)
 			{
-				if (!baubles.getStackInSlot(i).isEmpty() && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg)
+				if (!curios.getStackInSlot(i).isEmpty() && curios.getStackInSlot(i).getItem() == ObjHandler.swrg)
 				{
 					return true;
 				}
