@@ -96,6 +96,11 @@ repositories {
         name 'jared'
         url "http://maven.blamejared.com"
     }
+
+    maven {
+        name 'curios'
+        url "https://maven.theillusivec4.top/"
+    }
 }
  
 dependencies {
@@ -108,7 +113,9 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20")
-    //deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+
+    compileOnly fg.deobf("top.theillusivec4.curios:curios:1.13.2-0.11:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:1.13.2-0.11")
     //deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
     //deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
     //deobfCompile "CraftTweaker2:ZenScript:1.12-${crafttweaker_version}"

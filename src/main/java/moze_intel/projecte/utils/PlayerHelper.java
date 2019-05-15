@@ -39,7 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
-	public final static ScoreCriteria SCOREBOARD_EMC = new ReadOnlyScoreCriteria(PECore.MODID + ":emc_score", ScoreCriteria.RenderType.INTEGER);
+	public final static ScoreCriteria SCOREBOARD_EMC = new ReadOnlyScoreCriteria(PECore.MODID + ":emc_score");
 
 	/**
 	 * Tries placing a block and fires an event for it.
