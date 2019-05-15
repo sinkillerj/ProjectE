@@ -1,13 +1,14 @@
-/*
 package moze_intel.projecte.integration.jei.world_transmute;
 
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.imc.WorldTransmutationEntry;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WorldTransmuteRecipeCategory implements IRecipeCategory
+public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry>
 {
-    public static final String UID = "pe.worldtransmute";
+    public static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "world_transmutation");
     private final IDrawable background;
     private final IDrawable arrow;
     private final IDrawable icon;
@@ -33,17 +34,25 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
 
     public WorldTransmuteRecipeCategory(IGuiHelper guiHelper)
     {
-        background = guiHelper.createBlankDrawable(175, 48);
-        arrow = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15, 32, 32);
-        icon = guiHelper.createDrawable(new ResourceLocation(PECore.MODID, "textures/items/philosophers_stone.png"), 0, 0, 16, 16, 16, 16);
+        background = guiHelper.createBlankDrawable(135, 48);
+        arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
+                .setTextureSize(32, 32).build();
+        icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
         localizedName = I18n.format("pe.nei.worldtransmute");
     }
 
     @Nonnull
     @Override
-    public String getUid()
+    public ResourceLocation getUid()
     {
         return UID;
+    }
+
+    @Nonnull
+    @Override
+    public Class<WorldTransmuteEntry> getRecipeClass()
+    {
+        return WorldTransmuteEntry.class;
     }
 
     @Nonnull
@@ -55,18 +64,12 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
 
     @Nonnull
     @Override
-    public String getModName() {
-        return PECore.MODNAME;
-    }
-
-    @Nonnull
-    @Override
     public IDrawable getBackground()
     {
         return background;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public IDrawable getIcon()
     {
@@ -74,19 +77,24 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void drawExtras(@Nonnull Minecraft minecraft)
+    public void draw(WorldTransmuteEntry recipe, double mouseX, double mouseY)
     {
-        arrow.draw(minecraft, 75, 18);
+        arrow.draw(55, 18);
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients)
+    public void setIngredients(WorldTransmuteEntry recipe, IIngredients ingredients) {
+        recipe.setIngredients(ingredients);
+    }
+
+    @Override
+    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull WorldTransmuteEntry recipeWrapper, @Nonnull IIngredients ingredients)
     {
         int itemSlots = 0;
         int fluidSlots = 0;
 
         int xPos = 16;
-        for (List<FluidStack> s : ingredients.getInputs(FluidStack.class))
+        for (List<FluidStack> s : ingredients.getInputs(VanillaTypes.FLUID))
         {
             recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, 1000, false, null);
             recipeLayout.getFluidStacks().set(fluidSlots, s);
@@ -95,7 +103,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         }
 
         xPos = 16;
-        for (List<ItemStack> s : ingredients.getInputs(ItemStack.class))
+        for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM))
         {
             recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
             recipeLayout.getItemStacks().set(itemSlots, s);
@@ -103,8 +111,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
             xPos += 16;
         }
 
-        xPos = 128;
-        for (List<ItemStack> stacks : ingredients.getOutputs(ItemStack.class))
+        xPos = 96;
+        for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM))
         {
             recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
             recipeLayout.getItemStacks().set(itemSlots, stacks);
@@ -112,8 +120,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
             xPos += 16;
         }
 
-        xPos = 128;
-        for (List<FluidStack> stacks : ingredients.getOutputs(FluidStack.class))
+        xPos = 96;
+        for (List<FluidStack> stacks : ingredients.getOutputs(VanillaTypes.FLUID))
         {
             recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, 1000, false, null);
             recipeLayout.getFluidStacks().set(fluidSlots, stacks);
@@ -125,13 +133,17 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
 
     @Nonnull
     @Override
-    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+    public List<String> getTooltipStrings(WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+        if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
+        {
+            return Collections.singletonList(I18n.format("pe.nei.worldtransmute.description"));
+        }
         return Collections.emptyList();
     }
 
     public static List<WorldTransmuteEntry> getAllTransmutations()
     {
-        List<WorldTransmutations.Entry> allWorldTransmutations = WorldTransmutations.getWorldTransmutations();
+        List<WorldTransmutationEntry> allWorldTransmutations = WorldTransmutations.getWorldTransmutations();
         //All the ones that have a block state that can be rendered in JEI.
         //For example only render one pumpkin to melon transmutation
         List<WorldTransmuteEntry> visible = new ArrayList<>();
@@ -149,7 +161,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
                 else
                 {
                     ItemStack inputItem = e.getInputItem();
-                    alreadyHas = visible.stream().anyMatch(otherEntry -> ItemHelper.basicAreStacksEqual(inputItem, otherEntry.getInputItem()));
+                    alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.isItemEqual(otherEntry.getInputItem()));
                 }
                 if (!alreadyHas)
                 {
@@ -161,4 +173,3 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory
         return visible;
     }
 }
-*/

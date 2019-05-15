@@ -54,7 +54,7 @@ public final class PlayerHelper
 		World world = player.getEntityWorld();
 		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
 		world.setBlockState(pos, state);
-		BlockEvent.PlaceEvent evt = new BlockEvent.PlaceEvent(before, Blocks.AIR.getDefaultState(), player, EnumHand.MAIN_HAND);
+		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled())
 		{

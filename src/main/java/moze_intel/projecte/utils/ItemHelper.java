@@ -160,6 +160,11 @@ public final class ItemHelper
 			{
 				return getStackInSlot(slot).getMaxStackSize();
 			}
+
+			@Override
+			public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+				return true;
+			}
 		};
 	}
 

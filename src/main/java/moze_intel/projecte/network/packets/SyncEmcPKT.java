@@ -59,7 +59,6 @@ public class SyncEmcPKT {
 
 				Transmutation.cacheFullKnowledge();
 				FuelMapper.loadMap();
-				PECore.refreshJEI();
 			});
 			ctx.get().setPacketHandled(true);
 		}

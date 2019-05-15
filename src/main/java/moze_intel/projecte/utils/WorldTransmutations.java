@@ -76,7 +76,7 @@ public final class WorldTransmutations
 	{
 		for (WorldTransmutationEntry e : ENTRIES)
 		{
-			if (e.getOrigin().test(current))
+			if (e.getOrigin() == current)
 			{
 				return isSneaking ? e.getAltResult() : e.getResult();
 			}
@@ -97,7 +97,7 @@ public final class WorldTransmutations
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		InterModComms.sendTo(PECore.MODID, "register_world_transmutation", () -> new WorldTransmutationEntry(s -> s == from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
+		InterModComms.sendTo(PECore.MODID, "register_world_transmutation", () -> new WorldTransmutationEntry(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 
 	private static void registerConsecutivePairs(Block[] blocks)

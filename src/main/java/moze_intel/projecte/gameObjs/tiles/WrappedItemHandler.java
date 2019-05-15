@@ -59,6 +59,11 @@ public class WrappedItemHandler implements IItemHandlerModifiable
     }
 
     @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return compose.isItemValid(slot, stack);
+    }
+
+    @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack)
     {
         compose.setStackInSlot(slot, stack);

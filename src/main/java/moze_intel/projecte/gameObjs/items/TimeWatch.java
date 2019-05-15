@@ -216,7 +216,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			{
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.needsRandomTick()
+				if (state.ticksRandomly()
 						&& !BLOCK_BLACKLIST_TAG.contains(block)
 						&& !(block instanceof BlockFlowingFluid) // Don't speed vanilla non-source blocks - dupe issues
 						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well

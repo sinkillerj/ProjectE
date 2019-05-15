@@ -32,10 +32,10 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20190214-1.13.1'
+    mappings channel: 'snapshot', version: '20190313-1.13.2'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
-    accessTransformer = file('src/main/resources/META-INF/pe_at.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // default run configurations.
     // these can be tweaked, removed, or duplicated as needed.
@@ -71,7 +71,7 @@ minecraft {
     }
 }
 
-/*repositories {
+repositories {
 	maven { //MinecraftForge
 		name "MinecraftForge Maven"
 		url "http://files.minecraftforge.net/maven/"
@@ -96,17 +96,18 @@ minecraft {
         name 'jared'
         url "http://maven.blamejared.com"
     }
-}*/
+}
  
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.13.2-25.0.64'
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.209'
 
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    //deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
+    compileOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.13.2:5.0.0.20")
     //deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     //deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
     //deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"

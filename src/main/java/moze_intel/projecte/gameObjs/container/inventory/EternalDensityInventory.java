@@ -62,6 +62,11 @@ public class EternalDensityInventory implements IItemHandlerModifiable
 	}
 
 	@Override
+	public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+		return inventory.isItemValid(slot, stack);
+	}
+
+	@Override
 	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 	{
 		inventory.setStackInSlot(slot, stack);

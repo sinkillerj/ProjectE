@@ -1,24 +1,19 @@
-/* todo 1.13
 package moze_intel.projecte.integration.jei.world_transmute;
 
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldTransmutations;
+import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class WorldTransmuteEntry implements IRecipeWrapper
+public class WorldTransmuteEntry
 {
 	private ItemStack inputItem = ItemStack.EMPTY;
 	private ItemStack leftOutputItem = ItemStack.EMPTY;
@@ -27,16 +22,16 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 	private FluidStack leftOutputFluid;
 	private FluidStack rightOutputFluid;
 
-	public WorldTransmuteEntry(WorldTransmutations.Entry transmutationEntry)
+	public WorldTransmuteEntry(WorldTransmutationEntry transmutationEntry)
 	{
-		Block inputBlock = transmutationEntry.input.getBlock();
-		IBlockState leftOutput = transmutationEntry.outputs.getLeft();
-		IBlockState rightOutput = transmutationEntry.outputs.getRight();
+		Block inputBlock = transmutationEntry.getOrigin().getBlock();
+		IBlockState leftOutput = transmutationEntry.getResult();
+		IBlockState rightOutput = transmutationEntry.getAltResult();
 
 		inputFluid = fluidFromBlock(inputBlock);
 		if (inputFluid == null)
 		{
-			inputItem = itemFromBlock(inputBlock, transmutationEntry.input);
+			inputItem = itemFromBlock(inputBlock, transmutationEntry.getOrigin());
 		}
 		if (leftOutput != null)
 		{
@@ -60,11 +55,11 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 	{
 		if (block == Blocks.WATER)
 		{
-			return new FluidStack(FluidRegistry.WATER, 1000);
+			// return new FluidStack(FluidRegistry.WATER, 1000);
 		}
 		else if (block == Blocks.LAVA)
 		{
-			return new FluidStack(FluidRegistry.LAVA, 1000);
+			// return new FluidStack(FluidRegistry.LAVA, 1000);
 		}
 		return null;
 	}
@@ -78,7 +73,7 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		} catch (Exception e)
 		{
 			//It failed, probably because of the null world and pos
-			return ItemHelper.stateToStack(state, 1);
+			return new ItemStack(block);
 		}
 	}
 
@@ -90,16 +85,15 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		return hasInput && (hasLeftOutput || hasRightOutput);
 	}
 
-	@Override
-	public void getIngredients(@Nonnull IIngredients ingredients)
+	public void setIngredients(@Nonnull IIngredients ingredients)
 	{
 		if (inputFluid != null)
 		{
-			ingredients.setInput(FluidStack.class, inputFluid);
+			ingredients.setInput(VanillaTypes.FLUID, inputFluid);
 		}
 		else if (!inputItem.isEmpty())
 		{
-			ingredients.setInput(ItemStack.class, inputItem);
+			ingredients.setInput(VanillaTypes.ITEM, inputItem);
 		}
 
 		List<FluidStack> fluidOutputs = new ArrayList<>();
@@ -113,7 +107,7 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		}
 		if (!fluidOutputs.isEmpty())
 		{
-			ingredients.setOutputs(FluidStack.class, fluidOutputs);
+			ingredients.setOutputs(VanillaTypes.FLUID, fluidOutputs);
 		}
 
 		List<ItemStack> outputList = new ArrayList<>();
@@ -127,19 +121,8 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		}
 		if (!outputList.isEmpty())
 		{
-			ingredients.setOutputs(ItemStack.class, outputList);
+			ingredients.setOutputs(VanillaTypes.ITEM, outputList);
 		}
-	}
-
-	@Override
-	@Nonnull
-	public java.util.List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
-		{
-			return Collections.singletonList(I18n.format("pe.nei.worldtransmute.description"));
-		}
-		return Collections.emptyList();
 	}
 
 	public ItemStack getInputItem()
@@ -152,4 +135,3 @@ public class WorldTransmuteEntry implements IRecipeWrapper
 		return inputFluid;
 	}
 }
-*/

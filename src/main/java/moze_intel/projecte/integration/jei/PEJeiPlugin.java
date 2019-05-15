@@ -1,40 +1,40 @@
-/*
 package moze_intel.projecte.integration.jei;
 
-import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.JEIPlugin;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
-import moze_intel.projecte.integration.jei.mappers.JEICompatMapper;
-import moze_intel.projecte.integration.jei.mappers.JEIFuelMapper;
+import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-@JEIPlugin
+@JeiPlugin
 public class PEJeiPlugin implements IModPlugin
 {
-    public static IJeiRuntime RUNTIME = null;
-    private static List<JEICompatMapper> mappers = new ArrayList<>();
+    private static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "main");
 
+    @Nonnull
     @Override
-    public void registerItemSubtypes(@Nonnull ISubtypeRegistry subtypeRegistry) {}
-
-    @Override
-    public void registerIngredients(@Nonnull IModIngredientRegistration registry) {}
+    public ResourceLocation getPluginUid() {
+        return UID;
+    }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
@@ -43,31 +43,34 @@ public class PEJeiPlugin implements IModPlugin
     }
 
     @Override
-    public void register(@Nonnull IModRegistry registry)
-    {
-        // todo finish this, add alchbag
-        registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
-        registry.getRecipeTransferRegistry().addRecipeTransferHandler(PhilosStoneContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        registration.addRecipeTransferHandler(PhilosStoneContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+    }
 
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone), VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone), WorldTransmuteRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK1), CollectorRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK2), CollectorRecipeCategory.UID);
         registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK3), CollectorRecipeCategory.UID);
-
-        mappers.add(new JEIFuelMapper());
     }
 
     @Override
-    public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime)
-    {
-        RUNTIME = jeiRuntime;
-    }
+    public void registerRecipes(IRecipeRegistration registry) {
+        // todo finish this, add alchbag
+        registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
 
-    public static void refresh()
-    {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> mappers.forEach(JEICompatMapper::refresh));
+        List<FuelUpgradeRecipe> fuelRecipes = new ArrayList<>();
+        for(Item i : FuelMapper.getFuelMap())
+        {
+            ItemStack stack = new ItemStack(i);
+            ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);
+            if (EMCHelper.getEmcValue(stack) <= EMCHelper.getEmcValue(fuelUpgrade))
+            {
+                fuelRecipes.add(new FuelUpgradeRecipe(stack, fuelUpgrade));
+            }
+        }
+        registry.addRecipes(fuelRecipes, CollectorRecipeCategory.UID);
     }
-
 }
-*/

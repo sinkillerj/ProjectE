@@ -248,12 +248,4 @@ public class PECore
 		Transmutation.clearCache();
 		EMCMapper.clearMaps();
 	}
-
-	public static void refreshJEI()
-	{
-		if (ModList.get().isLoaded("jei"))
-		{
-			// todo 1.13 PEJeiPlugin.refresh();
-		}
-	}
 }

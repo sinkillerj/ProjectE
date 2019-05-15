@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class WorldTransmutationEntry
 {
-    private final Predicate<IBlockState> origin;
+    private final IBlockState origin;
     private final IBlockState result;
     private final IBlockState altResult;
 
@@ -17,13 +17,13 @@ public class WorldTransmutationEntry
      * @param altResult defines what the shift right-click result will be, and can be null, in which {@code result} will
      *                  be used instead
      */
-    public WorldTransmutationEntry(Predicate<IBlockState> origin, IBlockState result, @Nullable IBlockState altResult) {
+    public WorldTransmutationEntry(IBlockState origin, IBlockState result, @Nullable IBlockState altResult) {
         this.origin = origin;
         this.result = result;
         this.altResult = altResult == null ? this.result : altResult;
     }
 
-    public Predicate<IBlockState> getOrigin() {
+    public IBlockState getOrigin() {
         return origin;
     }
 

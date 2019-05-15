@@ -114,8 +114,8 @@ public class ObjHandler
 	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
 	public static final IRecipeSerializer<RecipeShapelessHidden> SHAPELESS_HIDDEN_SERIALIZER = RecipeSerializers.register(new RecipeShapelessHidden.Serializer());
 	public static final Block alchChest = new AlchemicalChest(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
-	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "interdiction_torch");
-	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).needsRandomTick()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
+	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
 	public static final Block transmuteStone = new TransmutationStone(Block.Properties.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
 	public static final Block condenser = new Condenser(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");

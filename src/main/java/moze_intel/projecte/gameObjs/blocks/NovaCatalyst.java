@@ -82,7 +82,7 @@ public class NovaCatalyst extends BlockTNT
 	public void onEntityCollision(IBlockState state, World worldIn, BlockPos pos, Entity entityIn) {
 		if (!worldIn.isRemote && entityIn instanceof EntityArrow) {
 			EntityArrow entityarrow = (EntityArrow)entityIn;
-			Entity entity = entityarrow.func_212360_k();
+			Entity entity = entityarrow.getShooter();
 			if (entityarrow.isBurning()) {
 				this.explode(worldIn, pos, entity instanceof EntityLivingBase ? (EntityLivingBase)entity : null);
 				worldIn.removeBlock(pos);
