@@ -35,12 +35,12 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	{
         if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			player.playSound(PESounds.HEAL, 1.0F, 1.0F);
 			stack.getTag().putBoolean(TAG_ACTIVE, true);
 		}
 		else
 		{
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			player.playSound(PESounds.UNCHARGE, 1.0F, 1.0F);
 			stack.getTag().putBoolean(TAG_ACTIVE, false);
 		}
 		return true;

@@ -9,15 +9,20 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockFlowingFluid;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.init.Fluids;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -26,13 +31,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -50,39 +55,34 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 		super(props);
 	}
 
-	@Nonnull
-	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	private EnumActionResult tryPickupFluid(World world, EntityPlayer player, ItemStack stack)
 	{
-		World world = ctx.getWorld();
-		BlockPos fluidPos = ctx.getPos().offset(ctx.getFace());
-		IBlockState state = world.getBlockState(fluidPos);
-		if (state.getBlock() instanceof BlockFlowingFluid) // todo 1.13 change to bucket check?
-		{
-			if (!world.isRemote)
-			{
-				world.removeBlock(fluidPos);
-				/* todo 1.13
-				Fluid f = FluidRegistry.lookupFluidForBlock(state.getBlock());
-				if (f != null)
-				{
-					world.playSound(null, ctx.getPos(), f.getFillSound(world, fluidPos), SoundCategory.BLOCKS, 1, 1);
-				}
-				*/
-			}
+		RayTraceResult rtr = this.rayTrace(world, player, true);
 
-			return EnumActionResult.SUCCESS;
-		} else
-		{
+		if (rtr == null || rtr.type != RayTraceResult.Type.BLOCK)
 			return EnumActionResult.PASS;
+
+		BlockPos fluidPos = rtr.getBlockPos();
+		IBlockState state = world.getBlockState(fluidPos);
+
+		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, rtr.sideHit, stack)
+				&& state.getBlock() instanceof IBucketPickupHandler)
+		{
+			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
+			if (fluid != Fluids.EMPTY)
+			{
+				player.playSound(fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, 1.0F, 1.0F);
+				return EnumActionResult.SUCCESS;
+			}
 		}
+		return EnumActionResult.PASS;
 	}
 
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
-		if (!world.isRemote)
+		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != EnumActionResult.SUCCESS)
 		{
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
