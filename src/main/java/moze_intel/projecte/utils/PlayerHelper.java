@@ -39,7 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class PlayerHelper
 {
-	public final static ScoreCriteria SCOREBOARD_EMC = new ScoreCriteria(PECore.MODID + ":emc_score"); // todo 1.13 this is now writable by scoreboards since RO constructor is private
+	public final static ScoreCriteria SCOREBOARD_EMC = new ReadOnlyScoreCriteria(PECore.MODID + ":emc_score", ScoreCriteria.RenderType.INTEGER);
 
 	/**
 	 * Tries placing a block and fires an event for it.
