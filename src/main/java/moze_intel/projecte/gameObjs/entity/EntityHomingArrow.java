@@ -2,16 +2,20 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.EntityTippedArrow;
-import net.minecraft.init.Items;
-import net.minecraft.init.Particles;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -22,19 +26,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class EntityHomingArrow extends EntityTippedArrow
+public class EntityHomingArrow extends ArrowEntity
 {
 	private static final DataParameter<Integer> DW_TARGET_ID = EntityDataManager.createKey(EntityHomingArrow.class, DataSerializers.VARINT);
 	private static final int NO_TARGET = -1;
 
 	private int newTargetCooldown = 0;
 
-	public EntityHomingArrow(World world)
+	public EntityHomingArrow(EntityType<EntityHomingArrow> type, World world)
 	{
-		super(world);
+		super(type, world);
 	}
 
-	public EntityHomingArrow(World world, EntityLivingBase shooter, float damage)
+	public EntityHomingArrow(World world, LivingEntity shooter, float damage)
 	{
 		super(world, shooter);
 		this.setDamage(damage);
@@ -55,7 +59,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 	}
 
 	@Override
-	protected void arrowHit(@Nonnull EntityLivingBase living)
+	protected void arrowHit(@Nonnull LivingEntity living)
 	{
 		super.arrowHit(living);
 		// Strip damage vulnerability
@@ -83,19 +87,22 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 		if (ticksExisted > 3 && hasTarget() && !this.inGround)
 		{
-			this.getEntityWorld().addParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
-			this.getEntityWorld().addParticle(Particles.FLAME, this.posX + this.motionX / 4.0D, this.posY + this.motionY / 4.0D, this.posZ + this.motionZ / 4.0D, -this.motionX / 2, -this.motionY / 2 + 0.2D, -this.motionZ / 2);
+			double mX = getMotion().getX();
+			double mY = getMotion().getY();
+			double mZ = getMotion().getZ();
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, this.posX + mX / 4.0D, this.posY + mY / 4.0D, this.posZ + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, this.posX + mX / 4.0D, this.posY + mY / 4.0D, this.posZ + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
 
 			Vector3d arrowLoc = new Vector3d(posX, posY, posZ);
-			Vector3d targetLoc = new Vector3d(target.posX, target.posY + target.height / 2, target.posZ);
+			Vector3d targetLoc = new Vector3d(target.posX, target.posY + target.getHeight() / 2, target.posZ);
 
 			// Get the vector that points straight from the arrow to the target
 			Vector3d lookVec = new Vector3d(targetLoc);
 			lookVec.sub(arrowLoc);
 
-			Vector3d arrowMotion = new Vector3d(this.motionX, this.motionY, this.motionZ);
+			Vector3d arrowMotion = new Vector3d(mX, mY, mZ);
 
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
 			double theta = wrap180Radian(arrowMotion.angle(lookVec));
@@ -129,7 +136,7 @@ public class EntityHomingArrow extends EntityTippedArrow
 
 	private void findNewTarget()
 	{
-		List<EntityLiving> candidates = world.getEntitiesWithinAABB(EntityLiving.class, this.getBoundingBox().grow(8, 8, 8));
+		List<MobEntity> candidates = world.getEntitiesWithinAABB(MobEntity.class, this.getBoundingBox().grow(8, 8, 8));
 
 		if (!candidates.isEmpty())
 		{
@@ -140,9 +147,9 @@ public class EntityHomingArrow extends EntityTippedArrow
 		newTargetCooldown = 5;
 	}
 
-	private EntityLiving getTarget()
+	private MobEntity getTarget()
 	{
-		return ((EntityLiving) world.getEntityByID(dataManager.get(DW_TARGET_ID)));
+		return ((MobEntity) world.getEntityByID(dataManager.get(DW_TARGET_ID)));
 	}
 
 	private boolean hasTarget()

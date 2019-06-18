@@ -5,25 +5,27 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class GUIAlchChest extends GuiContainer
+public class GUIAlchChest extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/alchchest.png");
 	
-	public GUIAlchChest(InventoryPlayer invPlayer, AlchChestTile tile) 
+	public GUIAlchChest(PlayerInventory invPlayer, AlchChestTile tile)
 	{
 		super(new AlchChestContainer(invPlayer, tile));
 		this.xSize = 255;
 		this.ySize = 230;
 	}
 	
-	public GUIAlchChest(InventoryPlayer invPlayer, EnumHand hand, IItemHandlerModifiable invBag)
+	public GUIAlchChest(PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag)
 	{
 		super(new AlchBagContainer(invPlayer, hand, invBag));
 		this.xSize = 255;

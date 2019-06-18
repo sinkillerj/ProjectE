@@ -5,28 +5,30 @@ import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUICollectorMK1 extends GuiContainer
+public class GUICollectorMK1 extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector1.png");
 	private final CollectorMK1Tile tile;
 	private final CollectorMK1Container container;
 	
-	public GUICollectorMK1(InventoryPlayer invPlayer, CollectorMK1Tile tile)
+	public GUICollectorMK1(PlayerInventory invPlayer, CollectorMK1Tile tile)
 	{
 		super(new CollectorMK1Container(invPlayer, tile));
-		this.container = ((CollectorMK1Container) inventorySlots);
+		this.container = ((CollectorMK1Container) getContainer());
 		this.tile = tile;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }

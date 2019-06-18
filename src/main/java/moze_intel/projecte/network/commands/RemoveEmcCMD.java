@@ -8,16 +8,17 @@ import moze_intel.projecte.config.CustomEMCParser;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class RemoveEmcCMD
 {
-	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TextComponentTranslation("pe.command.remove.noitem"));
+	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TranslationTextComponent("pe.command.remove.noitem"));
 
 	public static LiteralArgumentBuilder<CommandSource> register()
 	{
@@ -28,12 +29,12 @@ public class RemoveEmcCMD
 					.executes(ctx -> removeEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
 				// todo 1.13 tag arg support?
 				.executes(ctx -> {
-					EntityPlayerMP player = ctx.getSource().asPlayer();
-					ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+					ServerPlayerEntity player = ctx.getSource().asPlayer();
+					ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
 					if (stack.isEmpty())
 					{
-						stack = player.getHeldItem(EnumHand.OFF_HAND);
+						stack = player.getHeldItem(Hand.OFF_HAND);
 					}
 
 					if (stack.isEmpty())
@@ -48,8 +49,8 @@ public class RemoveEmcCMD
 	private static int removeEmc(CommandContext<CommandSource> ctx, Item item)
 	{
 		CustomEMCParser.addToFile(item.getRegistryName().toString(), 0);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.remove.success", item.getRegistryName().toString()), true);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.remove.success", item.getRegistryName().toString()), true);
+		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

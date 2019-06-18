@@ -11,17 +11,20 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -35,7 +38,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAcceptor, IInteractionObject
+public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAcceptor, INamedContainerProvider
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
@@ -102,7 +105,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if (side != null && side.getAxis().isVertical())
@@ -340,7 +343,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		storedFuelEmc = nbt.getDouble("FuelEMC");
@@ -350,7 +353,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.putDouble("FuelEMC", storedFuelEmc);
@@ -361,9 +364,9 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 	private void sendRelayBonus()
 	{
-		for (Map.Entry<EnumFacing, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet())
+		for (Map.Entry<Direction, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet())
 		{
-			EnumFacing dir = entry.getKey();
+			Direction dir = entry.getKey();
 			TileEntity tile = entry.getValue();
 
 			if (tile instanceof RelayMK3Tile)
@@ -382,7 +385,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	}
 
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull Direction side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		removeEMC(toRemove);
@@ -391,40 +394,20 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 	@Nonnull
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn)
 	{
-		return new CollectorMK1Container(playerInventory, this);
+		return new CollectorMK1Container(windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public String getGuiID()
+	public ITextComponent getDisplayName()
 	{
-		return getType().getRegistryName().toString();
-	}
-
-	@Nonnull
-	@Override
-	public ITextComponent getName()
-	{
-		return new TextComponentString(getGuiID());
+		return new StringTextComponent(getType().getRegistryName().toString());
 	}
 
 	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return null;
-	}
-
-	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull Direction side, double toAccept)
 	{
 		if (hasFuel || hasChargeableItem)
 		{

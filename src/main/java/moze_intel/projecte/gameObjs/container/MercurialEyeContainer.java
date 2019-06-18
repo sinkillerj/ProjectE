@@ -4,11 +4,14 @@ import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -17,7 +20,7 @@ public class MercurialEyeContainer extends Container
 {
 	private final MercurialEyeInventory inventory;
 	
-	public MercurialEyeContainer(InventoryPlayer invPlayer, MercurialEyeInventory mercEyeInv)
+	public MercurialEyeContainer(PlayerInventory invPlayer, MercurialEyeInventory mercEyeInv)
 	{
 		inventory = mercEyeInv;
 
@@ -38,14 +41,14 @@ public class MercurialEyeContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer var1)
+	public boolean canInteractWith(@Nonnull PlayerEntity var1)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
 	{
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
@@ -62,7 +65,7 @@ public class MercurialEyeContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 

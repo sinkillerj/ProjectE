@@ -9,8 +9,8 @@ public class RedShovel extends DarkShovel
 	{
 		super(props, (byte)3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
-		this.harvestMaterials.add(Material.GRASS);
-		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.ORGANIC);
+		this.harvestMaterials.add(Material.EARTH);
 		this.harvestMaterials.add(Material.SAND);
 		this.harvestMaterials.add(Material.SNOW);
 		this.harvestMaterials.add(Material.CLAY);

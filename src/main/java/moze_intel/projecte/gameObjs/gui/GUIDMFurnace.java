@@ -4,18 +4,19 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUIDMFurnace extends GuiContainer
+public class GUIDMFurnace extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
 	private final DMFurnaceTile tile;
 
-	public GUIDMFurnace(InventoryPlayer invPlayer, DMFurnaceTile tile)
+	public GUIDMFurnace(PlayerInventory invPlayer, DMFurnaceTile tile)
 	{
 		super(new DMFurnaceContainer(invPlayer, tile));
 		this.xSize = 178;

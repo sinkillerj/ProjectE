@@ -9,15 +9,18 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -99,11 +102,11 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			if (side == EnumFacing.DOWN)
+			if (side == Direction.DOWN)
 			{
 				return automationOutput.cast();
 			} else return automationInput.cast();
@@ -242,7 +245,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
@@ -251,7 +254,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.put("Input", input.serializeNBT());
@@ -260,7 +263,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull Direction side, double toAccept)
 	{
 		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
@@ -275,7 +278,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	}
 
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull Direction side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;
@@ -284,7 +287,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 
 	@Nonnull
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
 	{
 		return new RelayMK1Container(playerInventory, this);
 	}
@@ -300,7 +303,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	@Override
 	public ITextComponent getName()
 	{
-		return new TextComponentString(getGuiID());
+		return new StringTextComponent(getGuiID());
 	}
 
 	@Override

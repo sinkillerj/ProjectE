@@ -4,17 +4,21 @@ import com.google.common.collect.Multimap;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -37,7 +41,7 @@ public class DarkHammer extends PEToolBase
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
@@ -45,15 +49,15 @@ public class DarkHammer extends PEToolBase
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		digAOE(stack, world, player, true, 0, hand);
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff)
@@ -66,9 +70,9 @@ public class DarkHammer extends PEToolBase
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
 	{
-		if (slot != EntityEquipmentSlot.MAINHAND)
+		if (slot != EquipmentSlotType.MAINHAND)
 		{
 			return super.getAttributeModifiers(slot, stack);
 		}

@@ -5,23 +5,23 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class DMFurnaceContainer extends RMFurnaceContainer
 {
-	public DMFurnaceContainer(InventoryPlayer invPlayer, DMFurnaceTile tile)
+	public DMFurnaceContainer(PlayerInventory invPlayer, DMFurnaceTile tile)
 	{
 		super(invPlayer, tile);
 	}
 
-	void initSlots(InventoryPlayer invPlayer)
+	void initSlots(PlayerInventory invPlayer)
 	{
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
@@ -64,7 +64,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -86,7 +86,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		else
 		{
 			
-			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
+			if (FurnaceTileEntity.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{
@@ -119,7 +119,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.dmFurnaceOff
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;

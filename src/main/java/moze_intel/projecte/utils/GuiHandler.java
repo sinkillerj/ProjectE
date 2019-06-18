@@ -33,19 +33,19 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class GuiHandler
 {
-	public static GuiScreen openGui(FMLPlayMessages.OpenContainer msg) {
-		EntityPlayer player = Minecraft.getInstance().player;
+	public static Screen openGui(FMLPlayMessages.OpenContainer msg) {
+		PlayerEntity player = Minecraft.getInstance().player;
 		switch (msg.getId().getPath()) {
 			case "alchemical_chest": {
 				BlockPos pos = msg.getAdditionalData().readBlockPos();
@@ -56,8 +56,8 @@ public class GuiHandler
 				break;
 			}
 			case "alch_bag": {
-				EnumHand hand = msg.getAdditionalData().readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-				EnumDyeColor color = ((AlchemicalBag) player.getHeldItem(hand).getItem()).color;
+				Hand hand = msg.getAdditionalData().readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+				DyeColor color = ((AlchemicalBag) player.getHeldItem(hand).getItem()).color;
 				IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 						.orElseThrow(NullPointerException::new)
 						.getBag(color);
@@ -83,18 +83,18 @@ public class GuiHandler
 				return new GUITransmutation(player.inventory, new TransmutationInventory(player), null);
 			}
 			case "transmutation_tablet": {
-				EnumHand hand = msg.getAdditionalData().readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+				Hand hand = msg.getAdditionalData().readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 				return new GUITransmutation(player.inventory, new TransmutationInventory(player), hand);
 			}
 			case "philosophers_stone": {
 				return new GUIPhilosStone(player.inventory);
 			}
 			case "mercurial_eye": {
-				EnumHand hand = msg.getAdditionalData().readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+				Hand hand = msg.getAdditionalData().readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 				return new GUIMercurialEye(player.inventory, new MercurialEyeInventory(player.getHeldItem(hand)));
 			}
 			case "eternal_density": {
-				EnumHand hand = msg.getAdditionalData().readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+				Hand hand = msg.getAdditionalData().readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 				return new GUIEternalDensity(player.inventory, new EternalDensityInventory(player.getHeldItem(hand), player));
 			}
 			case "rm_furnace": {

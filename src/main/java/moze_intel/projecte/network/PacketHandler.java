@@ -4,9 +4,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
@@ -50,21 +50,21 @@ public final class PacketHandler
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)
 	{
-		if (listener instanceof EntityPlayerMP)
+		if (listener instanceof ServerPlayerEntity)
 		{
-			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (EntityPlayerMP) listener);
+			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
 	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal)
 	{
-		if (listener instanceof EntityPlayerMP)
+		if (listener instanceof ServerPlayerEntity)
 		{
-			sendTo(new UpdateWindowLongPKT((short) container.windowId, (short) propId, propVal), (EntityPlayerMP) listener);
+			sendTo(new UpdateWindowLongPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
-	public static void sendNonLocal(Object msg, EntityPlayerMP player)
+	public static void sendNonLocal(Object msg, ServerPlayerEntity player)
 	{
 		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner()))
 		{
@@ -72,7 +72,7 @@ public final class PacketHandler
 		}
 	}
 
-	public static void sendFragmentedEmcPacket(EntityPlayerMP player)
+	public static void sendFragmentedEmcPacket(ServerPlayerEntity player)
 	{
 		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
 	}
@@ -80,7 +80,7 @@ public final class PacketHandler
 	public static void sendFragmentedEmcPacketToAll()
 	{
 		SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
-		for (EntityPlayerMP player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+		for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
 		{
 			sendNonLocal(pkt, player);
 		}
@@ -113,7 +113,7 @@ public final class PacketHandler
 	 * Send a packet to a specific player.<br>
 	 * Must be called Server side. 
 	 */
-	public static void sendTo(Object msg, EntityPlayerMP player)
+	public static void sendTo(Object msg, ServerPlayerEntity player)
 	{
 		if (!(player instanceof FakePlayer))
 		{

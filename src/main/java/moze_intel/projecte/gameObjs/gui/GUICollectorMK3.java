@@ -5,18 +5,20 @@ import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUICollectorMK3 extends GuiContainer
+public class GUICollectorMK3 extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector3.png");
 	private final CollectorMK3Tile tile;
 	private final CollectorMK3Container container;
 	
-	public GUICollectorMK3(InventoryPlayer invPlayer, CollectorMK3Tile tile)
+	public GUICollectorMK3(PlayerInventory invPlayer, CollectorMK3Tile tile)
 	{
 		super(new CollectorMK3Container(invPlayer, tile));
 		this.tile = tile;

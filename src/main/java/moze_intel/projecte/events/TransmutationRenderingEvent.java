@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -37,7 +37,7 @@ import java.util.List;
 public class TransmutationRenderingEvent
 {
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static IBlockState transmutationResult;
+	private static BlockState transmutationResult;
 
 	@SubscribeEvent
 	public static void preDrawHud(RenderGameOverlayEvent.Pre event)
@@ -75,12 +75,12 @@ public class TransmutationRenderingEvent
 	@SubscribeEvent
 	public static void onOverlay(DrawBlockHighlightEvent event)
 	{
-		EntityPlayer player = mc.player;
+		PlayerEntity player = mc.player;
 		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
 		if (stack.isEmpty())
-			stack = player.getHeldItem(EnumHand.OFF_HAND);
+			stack = player.getHeldItem(Hand.OFF_HAND);
 		
 		if (stack.isEmpty() || stack.getItem() != ObjHandler.philosStone)
 		{
@@ -96,7 +96,7 @@ public class TransmutationRenderingEvent
 		
 		if (mop != null && mop.type == Type.BLOCK)
 		{
-			IBlockState current = world.getBlockState(mop.getBlockPos());
+			BlockState current = world.getBlockState(mop.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 
 			if (transmutationResult != null)

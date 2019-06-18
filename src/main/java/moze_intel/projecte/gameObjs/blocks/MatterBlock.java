@@ -3,10 +3,11 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
@@ -22,7 +23,7 @@ public class MatterBlock extends Block
 	}
 
 	@Override
-	public float getBlockHardness(IBlockState state, IBlockReader world, BlockPos pos)
+	public float getBlockHardness(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		if (matterType == EnumMatterType.DARK_MATTER)
 		{
@@ -35,9 +36,9 @@ public class MatterBlock extends Block
 	}
 	
 	@Override
-	public boolean canHarvestBlock(IBlockState state, IBlockReader world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player)
+	public boolean canHarvestBlock(BlockState state, IBlockReader world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)
 	{
-		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
 		if (!stack.isEmpty())
 		{

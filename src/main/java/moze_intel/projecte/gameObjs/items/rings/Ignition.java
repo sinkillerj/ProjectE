@@ -10,25 +10,32 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockTNT;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.TNTBlock;
+import net.minecraft.block.TNTBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,10 +54,10 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int inventorySlot, boolean held)
 	{
-		if (world.isRemote || inventorySlot > 8 || !(entity instanceof EntityPlayer)) return;
+		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) return;
 		
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
-		EntityPlayerMP player = (EntityPlayerMP)entity;
+		ServerPlayerEntity player = (ServerPlayerEntity)entity;
 
         if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
@@ -71,34 +78,34 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
-        NBTTagCompound tag = stack.getOrCreateTag();
+        CompoundNBT tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
-		IBlockState state = world.getBlockState(pos);
-		if (state.getBlock() instanceof BlockTNT)
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof TNTBlock)
 		{
-			if (!world.isRemote && PlayerHelper.hasBreakPermission(((EntityPlayerMP) ctx.getPlayer()), pos))
+			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos))
 			{
 				// Ignite TNT or derivatives
-				((BlockTNT) state.getBlock()).explode(world, pos);
+				((TNTBlock) state.getBlock()).explode(world, pos);
 				world.removeBlock(pos);
 				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	@Override
@@ -114,8 +121,8 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
-				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
-				for (EntityLiving living : list)
+				List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+				for (MobEntity living : list)
 				{
 					living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
 					living.setFire(8);
@@ -137,14 +144,14 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.ignition.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.ignition.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.ignition.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
 	
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		World world = player.getEntityWorld();
 		
@@ -158,7 +165,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
 	{
 		return true;
 	}

@@ -8,11 +8,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class ResetEmcCMD
 {
@@ -25,12 +25,12 @@ public class ResetEmcCMD
 						.executes(ctx -> resetEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
 				// todo 1.13 tag arg support?
 				.executes(ctx -> {
-					EntityPlayerMP player = ctx.getSource().asPlayer();
-					ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+					ServerPlayerEntity player = ctx.getSource().asPlayer();
+					ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
 					if (stack.isEmpty())
 					{
-						stack = player.getHeldItem(EnumHand.OFF_HAND);
+						stack = player.getHeldItem(Hand.OFF_HAND);
 					}
 
 					if (stack.isEmpty())
@@ -46,13 +46,13 @@ public class ResetEmcCMD
 	{
 		if (CustomEMCParser.removeFromFile(item.getRegistryName().toString()))
 		{
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reset.success", item.getRegistryName().toString()), true);
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reset.success", item.getRegistryName().toString()), true);
+			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		else
 		{
-			throw new CommandException(new TextComponentTranslation("pe.command.remove.invaliditem", item.getRegistryName()));
+			throw new CommandException(new TranslationTextComponent("pe.command.remove.invaliditem", item.getRegistryName()));
 		}
 	}
 }

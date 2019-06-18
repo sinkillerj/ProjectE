@@ -3,17 +3,19 @@ package moze_intel.projecte.gameObjs.tiles;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -47,7 +49,7 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -57,7 +59,7 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 	}
 
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		inventory.deserializeNBT(nbt);
@@ -65,7 +67,7 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.merge(inventory.serializeNBT());
@@ -140,7 +142,7 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 
 	@Nonnull
 	@Override
-	public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn) {
+	public Container createContainer(@Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 		return new AlchChestContainer(playerInventory, this);
 	}
 
@@ -153,7 +155,7 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 	@Nonnull
 	@Override
 	public ITextComponent getName() {
-		return new TextComponentString(getGuiID());
+		return new StringTextComponent(getGuiID());
 	}
 
 	@Override

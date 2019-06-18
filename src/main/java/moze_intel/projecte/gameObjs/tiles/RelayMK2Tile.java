@@ -4,9 +4,12 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Container;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +22,7 @@ public class RelayMK2Tile extends RelayMK1Tile
 
 	@Nonnull
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
 	{
 		return new RelayMK2Container(playerInventory, this);
 	}

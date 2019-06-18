@@ -14,13 +14,14 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketCollectItem;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SCollectItemPacket;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
@@ -46,12 +47,12 @@ public class PlayerEvents
 	public static void cloneEvent(PlayerEvent.Clone evt)
 	{
 		evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
-			NBTTagCompound bags = old.serializeNBT();
+			CompoundNBT bags = old.serializeNBT();
 			evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 		});
 
 		evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(old -> {
-			NBTTagCompound knowledge = old.serializeNBT();
+			CompoundNBT knowledge = old.serializeNBT();
 			evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
 	}
@@ -60,16 +61,16 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void respawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent evt)
 	{
-		evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) evt.getPlayer()));
-		evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (EntityPlayerMP) evt.getPlayer()));
+		evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayerEntity) evt.getPlayer()));
+		evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (ServerPlayerEntity) evt.getPlayer()));
 	}
 
 	@SubscribeEvent
 	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((EntityPlayerMP) event.getPlayer()));
-		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (EntityPlayerMP) event.getPlayer()));
+		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayerEntity) event.getPlayer()));
+		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (ServerPlayerEntity) event.getPlayer()));
 
 		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
@@ -77,15 +78,15 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void attachCaps(AttachCapabilitiesEvent<Entity> evt)
 	{
-		if (evt.getObject() instanceof EntityPlayer)
+		if (evt.getObject() instanceof PlayerEntity)
 		{
 			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
-			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider((EntityPlayer) evt.getObject()));
+			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider((PlayerEntity) evt.getObject()));
 
-			if (evt.getObject() instanceof EntityPlayerMP)
+			if (evt.getObject() instanceof ServerPlayerEntity)
 			{
 				evt.addCapability(InternalTimers.NAME, new InternalTimers.Provider());
-				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((EntityPlayerMP) evt.getObject()));
+				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((ServerPlayerEntity) evt.getObject()));
 			}
 		}
 	}
@@ -93,7 +94,7 @@ public class PlayerEvents
 	@SubscribeEvent
 	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
 	{
-		EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
+		ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
 		PacketHandler.sendFragmentedEmcPacket(player);
 
 		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
@@ -112,7 +113,7 @@ public class PlayerEvents
 	public static void onConstruct(EntityEvent.EntityConstructing evt)
 	{
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER // No world to check yet
-			&& evt.getEntity() instanceof EntityPlayer && !(evt.getEntity() instanceof FakePlayer))
+			&& evt.getEntity() instanceof PlayerEntity && !(evt.getEntity() instanceof FakePlayer))
 		{
 			TransmutationOffline.clear(evt.getEntity().getUniqueID());
 			PECore.debugLog("Clearing offline data cache in preparation to load online data");
@@ -124,9 +125,9 @@ public class PlayerEvents
 	{
 		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString())))
 		{
-			ITextComponent prior = new TextComponentTranslation("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
+			ITextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
 			ITextComponent playername = evt.getPlayer().getDisplayName().setStyle(new Style().setColor(TextFormatting.GOLD));
-			ITextComponent latter = new TextComponentTranslation("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
+			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
 			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(
 					prior.appendText(" ")
 							.appendSibling(playername)
@@ -138,7 +139,7 @@ public class PlayerEvents
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event)
 	{
-		EntityPlayer player = event.getEntityPlayer();
+		PlayerEntity player = event.getEntityPlayer();
 		World world = player.getEntityWorld();
 		
 		if (world.isRemote)
@@ -162,7 +163,7 @@ public class PlayerEvents
 		{
 			event.getItem().remove();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), player.getEntityId(), 1));
+			((ServerPlayerEntity) player).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), player.getEntityId(), 1));
 		}
 		else
 		{

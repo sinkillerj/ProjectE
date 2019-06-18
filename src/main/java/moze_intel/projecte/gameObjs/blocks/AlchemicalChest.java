@@ -7,23 +7,26 @@ import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
@@ -41,37 +44,37 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	public AlchemicalChest(Properties props)
 	{
 		super(props);
-		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.HORIZONTAL_FACING, EnumFacing.NORTH));
+		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return SHAPE;
 	}
 	
 	@Override
-	public boolean isFullCube(IBlockState state)
+	public boolean isFullCube(BlockState state)
 	{
 		return false;
 	}
 
 	@Nonnull
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
+	public BlockRenderType getRenderType(BlockState state)
 	{
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 	
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
-				NetworkHooks.openGui((EntityPlayerMP) player, (AlchChestTile) te, pos);
+				NetworkHooks.openGui((ServerPlayerEntity) player, (AlchChestTile) te, pos);
 			}
 		}
 		
@@ -86,13 +89,13 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(IBlockState state)
+	public boolean hasComparatorInputOverride(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

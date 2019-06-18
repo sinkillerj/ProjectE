@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.proxy;
 
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

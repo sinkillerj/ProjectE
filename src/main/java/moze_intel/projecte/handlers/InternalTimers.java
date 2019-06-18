@@ -1,7 +1,7 @@
 package moze_intel.projecte.handlers;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -99,7 +99,7 @@ public class InternalTimers
 
         @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
         {
             if (capability == CAPABILITY)
                 return capInstance.cast();

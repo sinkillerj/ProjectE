@@ -4,7 +4,7 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
 public class RedHammer extends DarkHammer
@@ -19,7 +19,7 @@ public class RedHammer extends DarkHammer
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.rmBlock) || block == ObjHandler.rmFurnaceOff)

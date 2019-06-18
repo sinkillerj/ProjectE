@@ -10,26 +10,33 @@ import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -63,16 +70,16 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
 		ItemStack stack = ctx.getItem();
-		EnumFacing sideHit = ctx.getFace();
+		Direction sideHit = ctx.getFace();
 
 		if (!world.isRemote
-				&& PlayerHelper.hasEditPermission(((EntityPlayerMP) player), pos)
+				&& PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), pos)
 				&& consumeFuel(player, stack, 32, true))
 		{
 			TileEntity tile = world.getTileEntity(pos);
@@ -87,16 +94,16 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			}
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
-	private void placeLava(EntityPlayer player, BlockPos pos)
+	private void placeLava(PlayerEntity player, BlockPos pos)
 	{
-		PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.LAVA.getDefaultState());
+		PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos, Blocks.LAVA.getDefaultState());
 	}
 
 	@Override
-	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player)
 	{
 		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 		{
@@ -108,12 +115,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
+		if (invSlot > 8 || !(entity instanceof LivingEntity))
 		{
 			return;
 		}
 
-		EntityLivingBase living = (EntityLivingBase) entity;
+		LivingEntity living = (LivingEntity) entity;
 
 		int x = (int) Math.floor(living.posX);
 		int y = (int) (living.posY - living.getYOffset());
@@ -144,7 +151,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 	
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
@@ -157,10 +164,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(new TextComponentTranslation("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(new TextComponentTranslation("pe.volcanite.tooltip2"));
-		list.add(new TextComponentTranslation("pe.volcanite.tooltip3"));
-		list.add(new TextComponentTranslation("pe.volcanite.tooltip4"));
+		list.add(new TranslationTextComponent("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(new TranslationTextComponent("pe.volcanite.tooltip2"));
+		list.add(new TranslationTextComponent("pe.volcanite.tooltip3"));
+		list.add(new TranslationTextComponent("pe.volcanite.tooltip4"));
 	}
 
 	@Override
@@ -198,14 +205,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.volcanite.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
 	{
 		return true;
 	}

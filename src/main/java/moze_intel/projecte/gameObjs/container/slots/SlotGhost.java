@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -31,7 +31,7 @@ public class SlotGhost extends SlotItemHandler
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer player)
+	public boolean canTakeStack(PlayerEntity player)
 	{
 		return false;
 	}

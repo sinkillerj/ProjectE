@@ -45,9 +45,10 @@ import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.RenderSprite;
-import net.minecraft.client.renderer.entity.RenderTippedArrow;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.SpriteRenderer;
+import net.minecraft.client.renderer.entity.TippedArrowRenderer;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -137,8 +138,8 @@ public class PECore
 		{
 			// ClientSetup is too early to do this
 			DeferredWorkQueue.runLater(() -> {
-				Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
-				RenderPlayer render = skinMap.get("default");
+				Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+				PlayerRenderer render = skinMap.get("default");
 				render.addLayer(new LayerYue(render));
 				render = skinMap.get("slim");
 				render.addLayer(new LayerYue(render));
@@ -162,12 +163,12 @@ public class PECore
 			RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, createRenderFactoryForSnowball(ObjHandler.windProjectile));
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, NovaCatalystRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, NovaCataclysmRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, RenderTippedArrow::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
 		}
 
 		private static <T extends Entity> IRenderFactory<T> createRenderFactoryForSnowball(final Item itemToRender)
 		{
-			return manager -> new RenderSprite<>(manager, itemToRender, Minecraft.getInstance().getItemRenderer());
+			return manager -> new SpriteRenderer<>(manager, itemToRender, Minecraft.getInstance().getItemRenderer());
 		}
 	}
 

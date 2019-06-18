@@ -1,13 +1,18 @@
 package moze_intel.projecte.gameObjs.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftResultInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.inventory.CraftResultInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -15,18 +20,18 @@ import javax.annotation.Nonnull;
 
 public class PhilosStoneContainer extends Container
 {
-	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-	private final InventoryCraftResult craftResult = new InventoryCraftResult();
+	private final CraftingInventory craftMatrix = new CraftingInventory(this, 3, 3);
+	private final CraftResultInventory craftResult = new CraftResultInventory();
 	private final World worldObj;
-	private final EntityPlayer player;
+	private final PlayerEntity player;
 	
-	public PhilosStoneContainer(InventoryPlayer invPlayer) 
+	public PhilosStoneContainer(PlayerInventory invPlayer)
 	{
 		this.player = invPlayer.player;
 		this.worldObj = player.getEntityWorld();
 
 		//CraftingResult
-		this.addSlot(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
+		this.addSlot(new CraftingResultSlot(invPlayer.player, this.craftMatrix, this.craftResult, 0, 124, 35));
 		
 		//Crafting grid
 		for (int i = 0; i < 3; i++)
@@ -52,7 +57,7 @@ public class PhilosStoneContainer extends Container
 	}
 	
 	@Override
-	public void onContainerClosed(EntityPlayer player)
+	public void onContainerClosed(PlayerEntity player)
 	{
 		super.onContainerClosed(player);
 
@@ -63,14 +68,14 @@ public class PhilosStoneContainer extends Container
 	}
 	
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int index)
+	public ItemStack transferStackInSlot(PlayerEntity player, int index)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);

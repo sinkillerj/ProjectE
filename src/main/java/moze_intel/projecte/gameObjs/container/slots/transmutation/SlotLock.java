@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -61,7 +61,7 @@ public class SlotLock extends SlotItemHandler
 	
 	@Nonnull
 	@Override
-	public ItemStack onTake(EntityPlayer player, @Nonnull ItemStack stack)
+	public ItemStack onTake(PlayerEntity player, @Nonnull ItemStack stack)
 	{
 		stack = super.onTake(player, stack);
 		inv.updateClientTargets();

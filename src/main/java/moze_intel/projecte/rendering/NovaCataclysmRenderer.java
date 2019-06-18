@@ -5,9 +5,10 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,9 +17,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
-public class NovaCataclysmRenderer extends Render<EntityNovaCataclysmPrimed>
+public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPrimed>
 {
-	public NovaCataclysmRenderer(RenderManager manager)
+	public NovaCataclysmRenderer(EntityRendererManager manager)
 	{
 		super(manager);
 		this.shadowSize = 0.5F;
@@ -74,6 +75,6 @@ public class NovaCataclysmRenderer extends Render<EntityNovaCataclysmPrimed>
 	@Override
 	protected ResourceLocation getEntityTexture(@Nonnull EntityNovaCataclysmPrimed entity)
 	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
+		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

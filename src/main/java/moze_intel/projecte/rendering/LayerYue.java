@@ -6,17 +6,19 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public class LayerYue implements LayerRenderer<EntityPlayer> {
-	private final RenderPlayer render;
+public class LayerYue implements LayerRenderer<PlayerEntity> {
+	private final PlayerRenderer render;
 
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
@@ -24,13 +26,13 @@ public class LayerYue implements LayerRenderer<EntityPlayer> {
 	private static final ResourceLocation HEART_LOC = new ResourceLocation(PECore.MODID, "textures/models/heartcircle.png");
 	private static final ResourceLocation YUE_LOC = new ResourceLocation(PECore.MODID, "textures/models/yuecircle.png");
 
-	public LayerYue(RenderPlayer renderer)
+	public LayerYue(PlayerRenderer renderer)
 	{
 		this.render = renderer;
 	}
 
 	@Override
-	public void render(@Nonnull EntityPlayer player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
+	public void render(@Nonnull PlayerEntity player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
 		if (player.isInvisible())
 		{

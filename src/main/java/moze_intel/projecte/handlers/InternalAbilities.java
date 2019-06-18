@@ -7,9 +7,11 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -26,14 +28,14 @@ public final class InternalAbilities
 	public static Capability<InternalAbilities> CAPABILITY = null;
 	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_abilities");
 
-	private final EntityPlayerMP player;
+	private final ServerPlayerEntity player;
 	private boolean swrgOverride = false;
 	private boolean gemArmorReady = false;
 	private boolean hadFlightItem = false;
 	private int projectileCooldown = 0;
 	private int gemChestCooldown = 0;
 
-	public InternalAbilities(EntityPlayerMP player)
+	public InternalAbilities(ServerPlayerEntity player)
 	{
 		this.player = player;
 	}
@@ -314,14 +316,14 @@ public final class InternalAbilities
 	{
 		private final LazyOptional<InternalAbilities> capInstance;
 
-		public Provider(EntityPlayerMP player)
+		public Provider(ServerPlayerEntity player)
 		{
 			capInstance = LazyOptional.of(() -> new InternalAbilities(player));
 		}
 
 		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 		{
 			if (capability == CAPABILITY)
 				return capInstance.cast();

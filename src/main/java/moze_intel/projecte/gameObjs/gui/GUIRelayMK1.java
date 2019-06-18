@@ -5,19 +5,20 @@ import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUIRelayMK1 extends GuiContainer
+public class GUIRelayMK1 extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/relay1.png");
 	private final RelayMK1Tile tile;
 	private final RelayMK1Container container;
 	
-	public GUIRelayMK1(InventoryPlayer invPlayer, RelayMK1Tile tile)
+	public GUIRelayMK1(PlayerInventory invPlayer, RelayMK1Tile tile)
 	{
 		super(new RelayMK1Container(invPlayer, tile));
 		this.tile = tile;

@@ -89,7 +89,9 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}
 		String modForItem = itemName.substring(0, itemName.indexOf(':'));
-		String permission = "none"; // todo 1.13 get rid of this system? config.getString(modForItem,"permissions."+modId,"both", String.format("Allow '%s' to set and or remove values for '%s'. Options: [both, set, remove, none]", modId, modForItem), new String[]{"both", "set", "remove", "none"});
+		String configPath = String.format("permissions.%s.%s", modId, modForItem);
+		String comment = String.format("Allow mod '%s' to set and or remove values for mod '%s'. Options: [both, set, remove, none]", modId, modForItem);
+		String permission = EMCMapper.getOrSetDefault(config, configPath, comment, "both");
 		if (permission.equals("both"))
 		{
 			return true;

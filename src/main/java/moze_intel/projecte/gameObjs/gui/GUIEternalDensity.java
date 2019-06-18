@@ -4,21 +4,23 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-public class GUIEternalDensity extends GuiContainer
+public class GUIEternalDensity extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/eternal_density.png");
 	private final EternalDensityInventory inventory;
 	
-	public GUIEternalDensity(InventoryPlayer invPlayer, EternalDensityInventory invGem)
+	public GUIEternalDensity(PlayerInventory invPlayer, EternalDensityInventory invGem)
 	{
 		super (new EternalDensityContainer(invPlayer, invGem));
 		
@@ -41,7 +43,7 @@ public class GUIEternalDensity extends GuiContainer
 	{
 		super.initGui();
 		
-		this.buttons.add(new GuiButton(1, (width - xSize) / 2 + 62, (height - ySize) / 2 + 4, 52, 20, inventory.isWhitelistMode() ? "Whitelist" : "Blacklist") {
+		this.buttons.add(new Button(1, (width - xSize) / 2 + 62, (height - ySize) / 2 + 4, 52, 20, inventory.isWhitelistMode() ? "Whitelist" : "Blacklist") {
 			@Override
 			public void onClick(double mouseX, double mouseY)
 			{

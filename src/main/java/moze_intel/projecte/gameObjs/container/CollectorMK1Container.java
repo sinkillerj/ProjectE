@@ -7,12 +7,15 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.network.PacketHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,13 +32,14 @@ public class CollectorMK1Container extends LongContainer
 	public double fuelProgress = 0;
 	public int kleinEmc = 0;
 
-	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
+	public CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
 	{
+		super(type, windowId);
 		this.tile = collector;
 		initSlots(invPlayer);
 	}
 
-	void initSlots(InventoryPlayer invPlayer)
+	void initSlots(PlayerInventory invPlayer)
 	{
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
@@ -78,7 +82,7 @@ public class CollectorMK1Container extends LongContainer
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
 	{
 		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && !getSlot(slot).getStack().isEmpty())
 		{
@@ -174,7 +178,7 @@ public class CollectorMK1Container extends LongContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -218,7 +222,7 @@ public class CollectorMK1Container extends LongContainer
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK1
 			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;

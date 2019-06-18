@@ -1,6 +1,6 @@
 package moze_intel.projecte.api.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -21,5 +21,5 @@ public interface IAlchBagItem
 	 * @param stack The ItemStack being ticked
 	 * @return Whether the inventory was changed by this item ticking
 	 */
-	boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack);
+	boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack);
 }

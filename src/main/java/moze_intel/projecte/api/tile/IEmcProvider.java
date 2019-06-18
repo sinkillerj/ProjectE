@@ -1,6 +1,6 @@
 package moze_intel.projecte.api.tile;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 
@@ -20,5 +20,5 @@ public interface IEmcProvider extends IEmcStorage
 	 * @param toExtract The maximum amount to extract
 	 * @return The amount actually extracted
 	 */
-	double provideEMC(@Nonnull EnumFacing side, double toExtract);
+	double provideEMC(@Nonnull Direction side, double toExtract);
 }

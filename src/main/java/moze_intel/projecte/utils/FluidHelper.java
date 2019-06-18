@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public final class FluidHelper
 {
-	public static void tryFillTank(TileEntity tile, Fluid fluid, EnumFacing side, int quantity)
+	public static void tryFillTank(TileEntity tile, Fluid fluid, Direction side, int quantity)
 	{
 		tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)
 				.ifPresent(handler -> handler.fill(new FluidStack(fluid, quantity), true));

@@ -6,13 +6,16 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FurnaceBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -22,7 +25,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class MatterFurnace extends BlockFurnace
+public class MatterFurnace extends FurnaceBlock
 {
 	private final EnumMatterType matterType;
 
@@ -33,7 +36,7 @@ public class MatterFurnace extends BlockFurnace
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
@@ -41,11 +44,11 @@ public class MatterFurnace extends BlockFurnace
 
 			if (te != null && te.getType() == ObjHandler.DM_FURNACE_TILE)
 			{
-				NetworkHooks.openGui((EntityPlayerMP) player, (DMFurnaceTile) te, pos);
+				NetworkHooks.openGui((ServerPlayerEntity) player, (DMFurnaceTile) te, pos);
 			}
 			else if (te != null && te.getType() == ObjHandler.RM_FURNACE_TILE)
 			{
-				NetworkHooks.openGui((EntityPlayerMP) player, (RMFurnaceTile) te, pos);
+				NetworkHooks.openGui((ServerPlayerEntity) player, (RMFurnaceTile) te, pos);
 			}
 		}
 		
@@ -60,7 +63,7 @@ public class MatterFurnace extends BlockFurnace
 	}
 
 	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

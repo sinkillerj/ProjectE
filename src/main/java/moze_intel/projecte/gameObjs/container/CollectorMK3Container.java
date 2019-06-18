@@ -6,9 +6,11 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -16,13 +18,13 @@ import javax.annotation.Nonnull;
 
 public class CollectorMK3Container extends CollectorMK1Container
 {
-	public CollectorMK3Container(InventoryPlayer invPlayer, CollectorMK3Tile collector)
+	public CollectorMK3Container(int windowId, PlayerInventory invPlayer, CollectorMK3Tile collector)
 	{
-		super(invPlayer, collector);
+		super(windowId, invPlayer, collector);
 	}
 
 	@Override
-	void initSlots(InventoryPlayer invPlayer)
+	void initSlots(PlayerInventory invPlayer)
 	{
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
@@ -54,7 +56,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -98,7 +100,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK3
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;

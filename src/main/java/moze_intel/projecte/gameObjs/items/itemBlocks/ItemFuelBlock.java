@@ -3,12 +3,12 @@ package moze_intel.projecte.gameObjs.items.itemBlocks;
 import moze_intel.projecte.gameObjs.EnumFuelType;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ItemFuelBlock extends ItemBlock
+public class ItemFuelBlock extends BlockItem
 {
 	private final EnumFuelType type;
 

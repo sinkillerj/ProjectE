@@ -2,7 +2,8 @@ package moze_intel.projecte.network.packets;
 
 import moze_intel.projecte.gameObjs.container.LongContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -38,7 +39,7 @@ public class UpdateWindowLongPKT {
         public static void handle(final UpdateWindowLongPKT msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
-                EntityPlayer player = Minecraft.getInstance().player;
+                PlayerEntity player = Minecraft.getInstance().player;
                 if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
                     //It should always be a LongContainer if it is this type of packet, if not fallback to normal update
                     if (player.openContainer instanceof LongContainer)

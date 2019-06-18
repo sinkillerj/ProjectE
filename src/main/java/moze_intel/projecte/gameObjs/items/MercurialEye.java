@@ -11,18 +11,25 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -54,29 +61,29 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound prevCapNBT)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT prevCapNBT)
 	{
-		return new ICapabilitySerializable<NBTTagCompound>() {
+		return new ICapabilitySerializable<CompoundNBT>() {
 			private final IItemHandler inv = new ItemStackHandler(2);
 			private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
 
 			@Override
-			public NBTTagCompound serializeNBT()
+			public CompoundNBT serializeNBT()
 			{
-				NBTTagCompound ret = new NBTTagCompound();
+				CompoundNBT ret = new CompoundNBT();
 				ret.put("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null));
 				return ret;
 			}
 
 			@Override
-			public void deserializeNBT(NBTTagCompound nbt)
+			public void deserializeNBT(CompoundNBT nbt)
 			{
 				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getList("Items", NBT.TAG_COMPOUND));
 			}
 
 			@Nonnull
 			@Override
-			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 				{
 					return invInst.cast();
@@ -90,7 +97,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		if (!ctx.getWorld().isRemote)
 		{
@@ -99,18 +106,18 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			if (inventory.getStackInSlot(0).isEmpty()|| inventory.getStackInSlot(1).isEmpty())
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 
 			if (!(inventory.getStackInSlot(0).getItem() instanceof IItemEmc))
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 
-			IBlockState newState = ItemHelper.stackToState(inventory.getStackInSlot(1));
+			BlockState newState = ItemHelper.stackToState(inventory.getStackInSlot(1));
 			if (newState == null || newState.getBlock() == Blocks.AIR)
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 
 			double kleinEmc = ((IItemEmc) inventory.getStackInSlot(0).getItem()).getStoredEmc(inventory.getStackInSlot(0));
@@ -126,7 +133,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			boolean lookingDown = look.y >= -1 && look.y <= -WALL_MODE;
 			boolean lookingUp   = look.y <=  1 && look.y >=  WALL_MODE;
 
-			boolean lookingAlongZ = ctx.getPlayer().getHorizontalFacing().getAxis() == EnumFacing.Axis.Z;
+			boolean lookingAlongZ = ctx.getPlayer().getHorizontalFacing().getAxis() == Direction.Axis.Z;
 
 			BlockPos pos = ctx.getPos();
 			AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
@@ -184,14 +191,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 			for (BlockPos currentPos : WorldHelper.getPositionsFromBox(box))
             {
-                IBlockState oldState = ctx.getWorld().getBlockState(currentPos);
+                BlockState oldState = ctx.getWorld().getBlockState(currentPos);
                 Block oldBlock = oldState.getBlock();
 
                 if (mode == NORMAL_MODE && oldBlock == Blocks.AIR)
                 {
                     if (kleinEmc < reqEmc)
                         break;
-                    if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
+                    if (PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) ctx.getPlayer()), currentPos, newState))
                     {
                         removeKleinEMC(stack, reqEmc);
                         kleinEmc -= reqEmc;
@@ -208,7 +215,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                     if (emc > reqEmc)
                     {
-                        if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
+                        if (PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) ctx.getPlayer()), currentPos, newState))
                         {
                             long difference = emc - reqEmc;
                             kleinEmc += MathHelper.clamp(kleinEmc, 0, ((IItemEmc) inventory.getStackInSlot(0).getItem()).getMaximumEmc(inventory.getStackInSlot(0)));
@@ -221,7 +228,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
                         if (kleinEmc >= difference)
                         {
-                            if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState))
+                            if (PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) ctx.getPlayer()), currentPos, newState))
                             {
                                 kleinEmc -= difference;
                                 removeKleinEMC(stack, difference);
@@ -230,7 +237,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
                     }
                     else
                     {
-                        PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) ctx.getPlayer()), currentPos, newState);
+                        PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) ctx.getPlayer()), currentPos, newState);
                     }
                 }
 
@@ -239,7 +246,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			ctx.getWorld().playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 0.80F + ((0.20F / (float)getNumCharges(stack)) * charge));
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	private void addKleinEMC(ItemStack eye, long amount)
@@ -267,9 +274,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
-		NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(player.getHeldItem(hand)));
+		NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand)));
 		return true;
 	}
 
@@ -284,7 +291,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		@Nonnull
 		@Override
-		public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn)
+		public Container createContainer(@Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
 		{
 			return new MercurialEyeContainer(playerInventory, new MercurialEyeInventory(stack));
 		}

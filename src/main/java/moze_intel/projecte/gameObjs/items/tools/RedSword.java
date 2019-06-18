@@ -2,10 +2,11 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 
@@ -21,14 +22,14 @@ public class RedSword extends DarkSword
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{

@@ -2,10 +2,10 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -18,7 +18,7 @@ public class AlchChestContainer extends Container
 {
 	private final AlchChestTile tile;
 	
-	public AlchChestContainer(InventoryPlayer invPlayer, AlchChestTile tile)
+	public AlchChestContainer(PlayerInventory invPlayer, AlchChestTile tile)
 	{
 		this.tile = tile;
 		tile.numPlayersUsing++;
@@ -40,7 +40,7 @@ public class AlchChestContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.alchChest
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
@@ -48,7 +48,7 @@ public class AlchChestContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -85,7 +85,7 @@ public class AlchChestContainer extends Container
 	}
 	
 	@Override
-	public void onContainerClosed(EntityPlayer player)
+	public void onContainerClosed(PlayerEntity player)
 	{
 		super.onContainerClosed(player);
 		tile.numPlayersUsing--;

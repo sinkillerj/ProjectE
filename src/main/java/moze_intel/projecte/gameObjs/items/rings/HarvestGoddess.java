@@ -6,25 +6,32 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,14 +51,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
 		{
 			return;
 		}
 		
 		super.inventoryTick(stack, world, entity, slot, held);
 		
-		EntityPlayer player = (EntityPlayer) entity;
+		PlayerEntity player = (PlayerEntity) entity;
 
         if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
@@ -75,14 +82,14 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 
 		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem()))
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 		
 		if (player.isSneaking())
@@ -91,7 +98,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 			if (obj == null) 
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 			
 			ItemStack boneMeal = (ItemStack) obj[1];
@@ -100,13 +107,13 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.inventoryContainer.detectAndSendChanges();
-				return EnumActionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			}
 			
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 		
-		return plantSeeds(world, player, ctx.getPos()) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return plantSeeds(world, player, ctx.getPos()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
 	}
 	
 	private boolean useBoneMeal(World world, BlockPos pos)
@@ -115,7 +122,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15)))
 		{
-			IBlockState state = world.getBlockState(currentPos);
+			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
 			if (crop instanceof IGrowable)
@@ -136,7 +143,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		return result;
 	}
 	
-	private boolean plantSeeds(World world, EntityPlayer player, BlockPos pos)
+	private boolean plantSeeds(World world, PlayerEntity player, BlockPos pos)
 	{
 		boolean result = false;
 		
@@ -149,7 +156,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 
 		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
 		{
-			IBlockState state = world.getBlockState(currentPos);
+			BlockState state = world.getBlockState(currentPos);
 
 			if (world.isAirBlock(currentPos))
 			{
@@ -170,7 +177,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 					plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
 				}
 
-				if (state.getBlock().canSustainPlant(state, world, currentPos, EnumFacing.UP, plant) && world.isAirBlock(currentPos.up()))
+				if (state.getBlock().canSustainPlant(state, world, currentPos, Direction.UP, plant) && world.isAirBlock(currentPos.up()))
 				{
 					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
 					player.inventory.decrStackSize(s.slot, 1);
@@ -241,9 +248,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
-        NBTTagCompound tag = stack.getOrCreateTag();
+        CompoundNBT tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
@@ -279,9 +286,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

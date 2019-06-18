@@ -4,8 +4,9 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -25,8 +26,8 @@ public class WorldTransmuteEntry
 	public WorldTransmuteEntry(WorldTransmutationEntry transmutationEntry)
 	{
 		Block inputBlock = transmutationEntry.getOrigin().getBlock();
-		IBlockState leftOutput = transmutationEntry.getResult();
-		IBlockState rightOutput = transmutationEntry.getAltResult();
+		BlockState leftOutput = transmutationEntry.getResult();
+		BlockState rightOutput = transmutationEntry.getAltResult();
 
 		inputFluid = fluidFromBlock(inputBlock);
 		if (inputFluid == null)
@@ -64,7 +65,7 @@ public class WorldTransmuteEntry
 		return null;
 	}
 
-	private ItemStack itemFromBlock(Block block, IBlockState state)
+	private ItemStack itemFromBlock(Block block, BlockState state)
 	{
 		try
 		{

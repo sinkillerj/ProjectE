@@ -6,11 +6,13 @@ import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -25,7 +27,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		
@@ -34,11 +36,11 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 			shootProjectile(player, stack, hand);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 	
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		World world = player.getEntityWorld();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];

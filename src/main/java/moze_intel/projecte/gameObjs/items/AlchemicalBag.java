@@ -5,18 +5,21 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -28,9 +31,9 @@ import javax.annotation.Nullable;
 
 public class AlchemicalBag extends ItemPE
 {
-	public final EnumDyeColor color;
+	public final DyeColor color;
 	
-	public AlchemicalBag(Properties props, EnumDyeColor color)
+	public AlchemicalBag(Properties props, DyeColor color)
 	{
 		super(props);
 		this.color = color;
@@ -38,17 +41,17 @@ public class AlchemicalBag extends ItemPE
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if (!world.isRemote)
 		{
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider(hand), buf -> buf.writeBoolean(hand == EnumHand.MAIN_HAND));
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
-	public static ItemStack getFirstBagWithSuctionItem(EntityPlayer player, NonNullList<ItemStack> inventory)
+	public static ItemStack getFirstBagWithSuctionItem(PlayerEntity player, NonNullList<ItemStack> inventory)
 	{
 		for (ItemStack stack : inventory)
 		{
@@ -79,15 +82,15 @@ public class AlchemicalBag extends ItemPE
 
 	private class ContainerProvider extends BaseContainerProvider
 	{
-		private final EnumHand hand;
+		private final Hand hand;
 
-		private ContainerProvider(EnumHand hand) {
+		private ContainerProvider(Hand hand) {
 			this.hand = hand;
 		}
 
 		@Nonnull
 		@Override
-		public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn) {
+		public Container createContainer(@Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 			IItemHandlerModifiable inv = (IItemHandlerModifiable) playerIn.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);

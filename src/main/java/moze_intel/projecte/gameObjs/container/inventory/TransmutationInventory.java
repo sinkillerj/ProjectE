@@ -8,10 +8,11 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -22,7 +23,7 @@ import java.util.*;
 
 public class TransmutationInventory extends CombinedInvWrapper
 {
-	public final EntityPlayer player;
+	public final PlayerEntity player;
 	public final IKnowledgeProvider provider;
 	private final IItemHandlerModifiable inputLocks;
 	private final IItemHandlerModifiable learning;
@@ -36,7 +37,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 	public int searchpage = 0;
 	public final List<ItemStack> knowledge = new ArrayList<>();
 	
-	public TransmutationInventory(EntityPlayer player)
+	public TransmutationInventory(PlayerEntity player)
 	{
 		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY)
 						.orElseThrow(NullPointerException::new)
@@ -84,7 +85,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			if (!player.getEntityWorld().isRemote)
 			{
-				provider.sync(((EntityPlayerMP) player));
+				provider.sync(((ServerPlayerEntity) player));
 			}
 		}
 		
@@ -117,7 +118,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			
 			if (!player.getEntityWorld().isRemote)
 			{
-				provider.sync(((EntityPlayerMP) player));
+				provider.sync(((ServerPlayerEntity) player));
 			}
 		}
 		
@@ -171,7 +172,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 			if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy))
 			{
-				lockCopy.setTag(new NBTTagCompound());
+				lockCopy.setTag(new CompoundNBT());
 			}
 			
 			Iterator<ItemStack> iter = knowledge.iterator();
@@ -324,7 +325,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
+			PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 	
@@ -339,7 +340,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 
 		if (!player.getEntityWorld().isRemote)
 		{
-			PlayerHelper.updateScore((EntityPlayerMP) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
+			PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, MathHelper.floor(provider.getEmc()));
 		}
 	}
 

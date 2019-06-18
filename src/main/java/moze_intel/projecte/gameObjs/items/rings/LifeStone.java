@@ -8,17 +8,17 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,14 +38,14 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
 		{
 			return;
 		}
 		
 		super.inventoryTick(stack, world, entity, slot, held);
 		
-		EntityPlayer player = (EntityPlayer) entity;
+		PlayerEntity player = (PlayerEntity) entity;
 
         if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
@@ -77,9 +77,9 @@ public class LifeStone extends RingToggle implements IPedestalItem
 	}
 	
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
-        NBTTagCompound tag  = stack.getOrCreateTag();
+        CompoundNBT tag  = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
@@ -97,9 +97,9 @@ public class LifeStone extends RingToggle implements IPedestalItem
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
-				List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
+				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 
-				for (EntityPlayerMP player : players)
+				for (ServerPlayerEntity player : players)
 				{
 					if (player.getHealth() < player.getMaxHealth())
 					{
@@ -129,8 +129,8 @@ public class LifeStone extends RingToggle implements IPedestalItem
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.life.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.life.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.life.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

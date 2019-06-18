@@ -3,11 +3,13 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,9 +18,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 
 // todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
-public class RMArmor extends ItemArmor
+public class RMArmor extends ArmorItem
 {
-	public RMArmor(EntityEquipmentSlot armorType, Properties props)
+	public RMArmor(EquipmentSlotType armorType, Properties props)
 	{
 		// todo 1.13 custom matreial?
 		super(ArmorMaterial.DIAMOND, armorType, props);
@@ -58,9 +60,9 @@ public class RMArmor extends ItemArmor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	public String getArmorTexture (ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
-		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';
+		char index = this.armorType == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/redmatter_"+index+".png";
 	}
 

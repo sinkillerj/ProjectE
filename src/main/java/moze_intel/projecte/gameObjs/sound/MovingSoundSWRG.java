@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.sound;
 
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
-import net.minecraft.client.audio.MovingSound;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 // [VanillaCopy] MovingSoundMinecart
 @OnlyIn(Dist.CLIENT)
-public class MovingSoundSWRG extends MovingSound
+public class MovingSoundSWRG extends TickableSound
 {
 	private final EntitySWRGProjectile swrgProjectile;
 	private float distance = 0.0F;

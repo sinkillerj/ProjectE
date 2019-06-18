@@ -9,11 +9,13 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -32,9 +34,9 @@ public class TickEvents
 		if (event.phase == TickEvent.Phase.END)
 		{
 			event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
-				Set<EnumDyeColor> colorsChanged = EnumSet.noneOf(EnumDyeColor.class);
+				Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
 
-				for (EnumDyeColor color : getBagColorsPresent(event.player))
+				for (DyeColor color : getBagColorsPresent(event.player))
 				{
 					IItemHandler inv = provider.getBag(color);
 					for (int i = 0; i < inv.getSlots(); i++)
@@ -47,7 +49,7 @@ public class TickEvents
 					}
 				}
 
-				for (EnumDyeColor e : colorsChanged)
+				for (DyeColor e : colorsChanged)
 				{
 					if (event.player.openContainer instanceof AlchBagContainer)
 					{
@@ -58,7 +60,7 @@ public class TickEvents
 							continue;
 					}
 
-					provider.sync(e, (EntityPlayerMP) event.player);
+					provider.sync(e, (ServerPlayerEntity) event.player);
 				}
 			});
 
@@ -70,11 +72,11 @@ public class TickEvents
 		}
 	}
 
-	private static Set<EnumDyeColor> getBagColorsPresent(EntityPlayer player)
+	private static Set<DyeColor> getBagColorsPresent(PlayerEntity player)
 	{
-		Set<EnumDyeColor> bagsPresent = EnumSet.noneOf(EnumDyeColor.class);
+		Set<DyeColor> bagsPresent = EnumSet.noneOf(DyeColor.class);
 
-		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).ifPresent(inv -> {
+		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> {
 			for (int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack stack = inv.getStackInSlot(i);

@@ -13,12 +13,14 @@ import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -46,14 +48,14 @@ public class KeyPressPKT {
 		public static void handle(final KeyPressPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 		    ctx.get().enqueueWork(() -> {
-                EntityPlayerMP player = ctx.get().getSender();
+                ServerPlayerEntity player = ctx.get().getSender();
                 InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY).orElseThrow(NullPointerException::new);
 
                 if (message.key == PEKeybind.ARMOR_TOGGLE)
                 {
                     if (player.isSneaking())
                     {
-                        ItemStack helm = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+                        ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 
                         if (!helm.isEmpty() && helm.getItem() == ObjHandler.gemHelmet)
                         {
@@ -62,7 +64,7 @@ public class KeyPressPKT {
                     }
                     else
                     {
-                        ItemStack boots = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+                        ItemStack boots = player.getItemStackFromSlot(EquipmentSlotType.FEET);
 
                         if (!boots.isEmpty() && boots.getItem() == ObjHandler.gemFeet)
                         {
@@ -72,7 +74,7 @@ public class KeyPressPKT {
                     return;
                 }
 
-                for (EnumHand hand : EnumHand.values())
+                for (Hand hand : Hand.values())
                 {
                     ItemStack stack = player.getHeldItem(hand);
                     switch (message.key)
@@ -83,12 +85,12 @@ public class KeyPressPKT {
                                     && ((IItemCharge) stack.getItem()).changeCharge(player, stack, hand))
                             {
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
+                            } else if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (GemArmorBase.hasAnyPiece(player))
                                 {
                                     internalAbilities.setGemState(!internalAbilities.getGemState());
-                                    player.sendMessage(new TextComponentTranslation(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
+                                    player.sendMessage(new TranslationTextComponent(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
                                     return;
                                 }
                             }
@@ -99,11 +101,11 @@ public class KeyPressPKT {
                                     && ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player, hand))
                             {
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
+                            } else if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (internalAbilities.getGemState()
-                                        && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()
-                                        && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == ObjHandler.gemChest)
+                                        && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()
+                                        && player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == ObjHandler.gemChest)
                                 {
                                     if (internalAbilities.getGemCooldown() <= 0)
                                     {
@@ -123,11 +125,11 @@ public class KeyPressPKT {
                                 PlayerHelper.swingItem(player, hand);
                                 internalAbilities.resetProjectileCooldown();
                                 return;
-                            } else if (hand == EnumHand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
+                            } else if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()))
                             {
                                 if (internalAbilities.getGemState()
-                                        && !player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()
-                                        && player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() == ObjHandler.gemHelmet)
+                                        && !player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty()
+                                        && player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() == ObjHandler.gemHelmet)
                                 {
                                     ((GemHelmet) ObjHandler.gemHelmet).doZap(player);
                                     return;

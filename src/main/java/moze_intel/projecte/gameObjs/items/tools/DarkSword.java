@@ -4,16 +4,21 @@ import com.google.common.collect.Multimap;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 
@@ -32,14 +37,14 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		if (state.getBlock() == Blocks.COBWEB)
 		{
@@ -53,13 +58,13 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, @Nonnull IBlockState state)
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull BlockState state)
 	{
 		return state.getBlock() == Blocks.COBWEB;
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
 		if (player.getCooledAttackStrength(0F) == 1)
 		{
@@ -75,9 +80,9 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
 	{
-		if (slot != EntityEquipmentSlot.MAINHAND)
+		if (slot != EquipmentSlotType.MAINHAND)
 		{
 			return super.getAttributeModifiers(slot, stack);
 		}

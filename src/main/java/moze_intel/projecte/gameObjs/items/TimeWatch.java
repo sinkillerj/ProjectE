@@ -9,18 +9,21 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlowingFluid;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.IGrowable;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
@@ -28,8 +31,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,25 +56,25 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
 		{
 			if (!ProjectEConfig.items.enableTimeWatch.get())
 			{
-				player.sendMessage(new TextComponentTranslation("pe.timewatch.disabled"));
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
+				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
+				return ActionResult.newResult(ActionResultType.FAIL, stack);
 			}
 
 			byte current = getTimeBoost(stack);
 
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
-			player.sendMessage(new TextComponentTranslation("pe.timewatch.mode_switch", new TextComponentTranslation(getTimeName(stack)).getUnformattedComponentText()));
+			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()));
 		}
 
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
@@ -78,7 +82,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	{
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
 		
-		if (!(entity instanceof EntityPlayer) || invSlot > 8)
+		if (!(entity instanceof PlayerEntity) || invSlot > 8)
 		{
 			return;
 		}
@@ -120,7 +124,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 			return;
 		}
 
-		EntityPlayer player = (EntityPlayer) entity;
+		PlayerEntity player = (PlayerEntity) entity;
 		double reqEmc = getEmcPerTick(this.getCharge(stack));
 		
 		if (!consumeFuel(player, stack, reqEmc, true))
@@ -161,19 +165,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		{
 			return;
 		}
-		for (Object obj : world.getEntitiesWithinAABB(EntityLiving.class, bBox))
+		for (MobEntity ent : world.getEntitiesWithinAABB(MobEntity.class, bBox))
 		{
-			Entity ent = (Entity) obj;
-
-			if (ent.motionX != 0)
-			{
-				ent.motionX *= mobSlowdown;
-			}
-
-			if (ent.motionZ != 0)
-			{
-				ent.motionZ *= mobSlowdown;
-			}
+			ent.setMotion(ent.getMotion().mul(mobSlowdown, 1, mobSlowdown));
 		}
 	}
 
@@ -192,11 +186,11 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		{
 			for (TileEntity tile : list)
 			{
-				if (!tile.isRemoved() && tile instanceof ITickable
+				if (!tile.isRemoved() && tile instanceof ITickableTileEntity
 						&& !internalBlacklist.contains(tile.getType())
 						&& !blacklist.contains(tile.getType().getRegistryName()))
 				{
-					((ITickable) tile).tick();
+					((ITickableTileEntity) tile).tick();
 				}
 			}
 		}
@@ -213,11 +207,11 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		{
 			for (int i = 0; i < bonusTicks; i++)
 			{
-				IBlockState state = world.getBlockState(pos);
+				BlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.ticksRandomly()
 						&& !BLOCK_BLACKLIST_TAG.contains(block)
-						&& !(block instanceof BlockFlowingFluid) // Don't speed vanilla non-source blocks - dupe issues
+						&& !(block instanceof FlowingFluidBlock) // Don't speed vanilla non-source blocks - dupe issues
 						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)
 						&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
@@ -267,9 +261,9 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
-        NBTTagCompound tag = stack.getOrCreateTag();
+        CompoundNBT tag = stack.getOrCreateTag();
 		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
 		return true;
 	}
@@ -278,12 +272,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(new TextComponentTranslation("pe.timewatch.tooltip1"));
-		list.add(new TextComponentTranslation("pe.timewatch.tooltip2"));
+		list.add(new TranslationTextComponent("pe.timewatch.tooltip1"));
+		list.add(new TranslationTextComponent("pe.timewatch.tooltip2"));
 
 		if (stack.hasTag())
 		{
-			list.add(new TextComponentTranslation("pe.timewatch.mode").appendSibling(new TextComponentTranslation(getTimeName(stack))));
+			list.add(new TranslationTextComponent("pe.timewatch.mode").appendSibling(new TranslationTextComponent(getTimeName(stack))));
 		}
 	}
 
@@ -316,11 +310,11 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	{
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.effects.timePedBonus.get() > 0) {
-			list.add(new TextComponentTranslation("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
 		}
 		if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F)
 		{
-			list.add(new TextComponentTranslation("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

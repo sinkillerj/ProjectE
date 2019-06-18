@@ -8,22 +8,26 @@ import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockGravel;
-import net.minecraft.block.BlockSand;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.GrassBlock;
+import net.minecraft.block.GravelBlock;
+import net.minecraft.block.SandBlock;
+import net.minecraft.block.GrassBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -58,14 +62,14 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager)
+	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase eLiving)
+	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity eLiving)
 	{
 		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
@@ -73,7 +77,7 @@ public class RedStar extends PEToolBase
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
@@ -87,14 +91,14 @@ public class RedStar extends PEToolBase
 
 			if (mop == null)
 			{
-				return ActionResult.newResult(EnumActionResult.FAIL, stack);
+				return ActionResult.newResult(ActionResultType.FAIL, stack);
 			}
 			else if (mop.type == Type.BLOCK)
 			{
-				IBlockState state = world.getBlockState(mop.getBlockPos());
+				BlockState state = world.getBlockState(mop.getBlockPos());
 				Block block = state.getBlock();
 
-				if (block instanceof BlockGravel || block instanceof BlockClay)
+				if (block instanceof GravelBlock || block instanceof BlockClay)
 				{
 					if (ProjectEConfig.items.pickaxeAoeVeinMining.get())
 					{
@@ -112,7 +116,7 @@ public class RedStar extends PEToolBase
 						tryVeinMine(stack, player, mop);
 					}
 				}
-				else if (block instanceof BlockGrass
+				else if (block instanceof GrassBlock
 						|| BlockTags.SAND.contains(block)
 						|| BlockTags.getCollection().getOrCreate(new ResourceLocation("forge", "dirt")).contains(block))
 				{
@@ -125,11 +129,11 @@ public class RedStar extends PEToolBase
 			}
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		Block block = state.getBlock();
 		if (block instanceof MatterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.rmFurnaceOff)
@@ -142,9 +146,9 @@ public class RedStar extends PEToolBase
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
 	{
-		if (slot != EntityEquipmentSlot.MAINHAND)
+		if (slot != EquipmentSlotType.MAINHAND)
 		{
 			return super.getAttributeModifiers(slot, stack);
 		}

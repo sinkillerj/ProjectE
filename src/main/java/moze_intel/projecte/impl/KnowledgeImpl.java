@@ -10,13 +10,18 @@ import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -41,14 +46,14 @@ public final class KnowledgeImpl {
     {
         CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
             @Override
-            public NBTTagCompound writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side) {
+            public CompoundNBT writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side) {
                 return instance.serializeNBT();
             }
 
             @Override
-            public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, EnumFacing side, INBTBase nbt) {
-                if (nbt instanceof NBTTagCompound) {
-                    instance.deserializeNBT((NBTTagCompound) nbt);
+            public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side, INBT nbt) {
+                if (nbt instanceof CompoundNBT) {
+                    instance.deserializeNBT((CompoundNBT) nbt);
                 }
             }
         }, () -> new DefaultImpl(null));
@@ -57,13 +62,13 @@ public final class KnowledgeImpl {
     private static class DefaultImpl implements IKnowledgeProvider
     {
         @Nullable
-        private final EntityPlayer player;
+        private final PlayerEntity player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
         private double emc = 0;
         private boolean fullKnowledge = false;
 
-        private DefaultImpl(EntityPlayer player) {
+        private DefaultImpl(PlayerEntity player) {
             this.player = player;
         }
 
@@ -204,21 +209,21 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public void sync(@Nonnull EntityPlayerMP player)
+        public void sync(@Nonnull ServerPlayerEntity player)
         {
             PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
         }
 
         @Override
-        public NBTTagCompound serializeNBT()
+        public CompoundNBT serializeNBT()
         {
-            NBTTagCompound properties = new NBTTagCompound();
+            CompoundNBT properties = new CompoundNBT();
             properties.putDouble("transmutationEmc", emc);
 
-            NBTTagList knowledgeWrite = new NBTTagList();
+            ListNBT knowledgeWrite = new ListNBT();
             for (ItemStack i : knowledge)
             {
-                NBTTagCompound tag = i.write(new NBTTagCompound());
+                CompoundNBT tag = i.write(new CompoundNBT());
                 knowledgeWrite.add(tag);
             }
 
@@ -229,11 +234,11 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public void deserializeNBT(NBTTagCompound properties)
+        public void deserializeNBT(CompoundNBT properties)
         {
             emc = properties.getDouble("transmutationEmc");
 
-            NBTTagList list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
+            ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++)
             {
                 ItemStack item = ItemStack.read(list.getCompound(i));
@@ -274,14 +279,14 @@ public final class KnowledgeImpl {
 
     }
 
-    public static class Provider implements ICapabilitySerializable<NBTTagCompound>
+    public static class Provider implements ICapabilitySerializable<CompoundNBT>
     {
         public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
         private final DefaultImpl impl;
         private final LazyOptional<IKnowledgeProvider> cap;
 
-        public Provider(EntityPlayer player)
+        public Provider(PlayerEntity player)
         {
             impl = new DefaultImpl(player);
             cap = LazyOptional.of(() -> impl);
@@ -289,7 +294,7 @@ public final class KnowledgeImpl {
 
         @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
             if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
             {
                 return cap.cast();
@@ -298,13 +303,13 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public NBTTagCompound serializeNBT()
+        public CompoundNBT serializeNBT()
         {
             return impl.serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(NBTTagCompound nbt)
+        public void deserializeNBT(CompoundNBT nbt)
         {
             impl.deserializeNBT(nbt);
         }

@@ -1,6 +1,6 @@
 package thaumcraft.api.items;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -16,7 +16,7 @@ public interface IRevealer {
 	/*
 	 * If this method returns true the nodes will be visible.
 	 */
-	public boolean showNodes(ItemStack itemstack, EntityLivingBase player);
+	public boolean showNodes(ItemStack itemstack, LivingEntity player);
 	
 
 }

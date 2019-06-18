@@ -6,9 +6,11 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -16,13 +18,13 @@ import javax.annotation.Nonnull;
 
 public class CondenserMK2Container extends CondenserContainer
 {
-	public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser)
+	public CondenserMK2Container(PlayerInventory invPlayer, CondenserMK2Tile condenser)
 	{
 		super(invPlayer, condenser);
 	}
 
 	@Override
-	protected void initSlots(InventoryPlayer invPlayer)
+	protected void initSlots(PlayerInventory invPlayer)
 	{
 		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
@@ -52,7 +54,7 @@ public class CondenserMK2Container extends CondenserContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		if (slotIndex == 0)
 		{
@@ -94,7 +96,7 @@ public class CondenserMK2Container extends CondenserContainer
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.condenserMk2
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;

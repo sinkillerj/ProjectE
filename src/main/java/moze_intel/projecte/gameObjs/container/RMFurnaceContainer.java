@@ -5,13 +5,17 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -25,13 +29,13 @@ public class RMFurnaceContainer extends Container
 	private int lastBurnTime;
 	private int lastItemBurnTime;
 	
-	public RMFurnaceContainer(InventoryPlayer invPlayer, RMFurnaceTile tile)
+	public RMFurnaceContainer(PlayerInventory invPlayer, RMFurnaceTile tile)
 	{
 		this.tile = tile;
 		initSlots(invPlayer);
 	}
 
-	void initSlots(InventoryPlayer invPlayer)
+	void initSlots(PlayerInventory invPlayer)
 	{
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
@@ -71,7 +75,7 @@ public class RMFurnaceContainer extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnaceOff
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
@@ -124,7 +128,7 @@ public class RMFurnaceContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -146,7 +150,7 @@ public class RMFurnaceContainer extends Container
 		else
 		{
 			
-			if (TileEntityFurnace.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
+			if (FurnaceTileEntity.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

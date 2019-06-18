@@ -12,26 +12,29 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Particles;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -64,24 +67,24 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return stack.copy();
 	}
 
-	public RayTraceResult getHitBlock(EntityPlayer player)
+	public RayTraceResult getHitBlock(PlayerEntity player)
 	{
 		return rayTrace(player.getEntityWorld(), player, player.isSneaking());
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		BlockPos pos = ctx.getPos();
-		EnumFacing sideHit = ctx.getFace();
+		Direction sideHit = ctx.getFace();
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 		ItemStack stack = ctx.getItem();
 
 		if (world.isRemote)
 		{
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 
 		RayTraceResult rtr = getHitBlock(player);
@@ -92,7 +95,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			sideHit = rtr.sideHit;
 		}
 
-		IBlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
+		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
 
 		if (result != null)
 		{
@@ -101,23 +104,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
 			{
-				PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), currentPos, result);
+				PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), currentPos, result);
 				if (world.rand.nextInt(8) == 0)
 				{
-					((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
+					((ServerWorld) world).spawnParticle(Particles.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
 
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
-
-			// todo 1.13 PlayerHelper.swingItem(player, hand);
 		}
 		
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		World world = player.getEntityWorld();
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
@@ -128,11 +129,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 	
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
 		if (!player.getEntityWorld().isRemote)
 		{
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider());
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider());
 		}
 
 		return true;
@@ -143,13 +144,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
 		super.addInformation(stack, world, list, flags);
-		list.add(new TextComponentTranslation("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+		list.add(new TranslationTextComponent("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, EntityPlayer player, EnumFacing sideHit, int mode, int charge)
+	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge)
 	{
 		Set<BlockPos> ret = new HashSet<>();
-		IBlockState targeted = world.getBlockState(pos);
+		BlockState targeted = world.getBlockState(pos);
 		Iterable<BlockPos> iterable = null;
 
 		switch (mode)
@@ -158,27 +159,27 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
 				break;
 			case 1: // Panel
-				if (sideHit == EnumFacing.UP || sideHit == EnumFacing.DOWN)
+				if (sideHit == Direction.UP || sideHit == Direction.DOWN)
 				{
 					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
 				}
-				else if (sideHit == EnumFacing.EAST || sideHit == EnumFacing.WEST)
+				else if (sideHit == Direction.EAST || sideHit == Direction.WEST)
 				{
 					iterable = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
 				}
-				else if (sideHit == EnumFacing.SOUTH || sideHit == EnumFacing.NORTH)
+				else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH)
 				{
 					iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
 				}
 				break;
 			case 2: // Line
-				EnumFacing playerFacing = player.getHorizontalFacing();
+				Direction playerFacing = player.getHorizontalFacing();
 
-				if (playerFacing.getAxis() == EnumFacing.Axis.Z)
+				if (playerFacing.getAxis() == Direction.Axis.Z)
 				{
 					iterable = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
 				}
-				else if (playerFacing.getAxis() == EnumFacing.Axis.X)
+				else if (playerFacing.getAxis() == Direction.Axis.X)
 				{
 					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
 				}
@@ -202,7 +203,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		@Nonnull
 		@Override
-		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn) {
 			return new PhilosStoneContainer(playerInventory);
 		}
 

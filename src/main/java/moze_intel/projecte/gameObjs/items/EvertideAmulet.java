@@ -10,32 +10,38 @@ import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.block.BlockCauldron;
+import net.minecraft.block.CauldronBlock;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -78,12 +84,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 
-		if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), ctx.getPos()))
+		if (!world.isRemote && PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), ctx.getPos()))
 		{
 			TileEntity tile = world.getTileEntity(ctx.getPos());
 
@@ -92,13 +98,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				// todo 1.13 FluidHelper.tryFillTank(tile, FluidRegistry.WATER, ctx.getFace(), Fluid.BUCKET_VOLUME);
 			} else
 			{
-				IBlockState state = world.getBlockState(ctx.getPos());
+				BlockState state = world.getBlockState(ctx.getPos());
 				if (state.getBlock() == Blocks.CAULDRON)
 				{
-					int waterLevel = state.get(BlockCauldron.LEVEL);
+					int waterLevel = state.get(CauldronBlock.LEVEL);
 					if (waterLevel < 3)
 					{
-						((BlockCauldron) state.getBlock()).setWaterLevel(world, ctx.getPos(), state, waterLevel + 1);
+						((CauldronBlock) state.getBlock()).setWaterLevel(world, ctx.getPos(), state, waterLevel + 1);
 					}
 				}
 				else
@@ -109,19 +115,19 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			}
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Nonnull
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt)
 	{
 		return new ICapabilityProvider() {
 			private final LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> new InfiniteFluidHandler(stack));
 
 			@Nonnull
 			@Override
-			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
 				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 				{
 					return handler.cast();
@@ -133,7 +139,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		};
 	}
 
-	private void placeWater(World world, EntityPlayer player, BlockPos pos)
+	private void placeWater(World world, PlayerEntity player, BlockPos pos)
 	{
 		Material material = world.getBlockState(pos).getMaterial();
 
@@ -153,13 +159,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos, Blocks.WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos, Blocks.WATER.getDefaultState());
 		}
 
 	}
 
 	@Override
-	public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player)
 	{
 		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
 		{
@@ -171,12 +177,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityLivingBase))
+		if (invSlot > 8 || !(entity instanceof LivingEntity))
 		{
 			return;
 		}
 		
-		EntityLivingBase living = (EntityLivingBase) entity;
+		LivingEntity living = (LivingEntity) entity;
 
 		int x = (int) Math.floor(living.posX);
 		int y = (int) (living.posY - living.getYOffset());
@@ -212,7 +218,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 	
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		World world = player.getEntityWorld();
 
@@ -232,11 +238,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(new TextComponentTranslation("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(new TranslationTextComponent("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
-		list.add(new TextComponentTranslation("pe.evertide.tooltip2"));
-		list.add(new TextComponentTranslation("pe.evertide.tooltip3"));
-		list.add(new TextComponentTranslation("pe.evertide.tooltip4"));
+		list.add(new TranslationTextComponent("pe.evertide.tooltip2"));
+		list.add(new TranslationTextComponent("pe.evertide.tooltip3"));
+		list.add(new TranslationTextComponent("pe.evertide.tooltip4"));
 	}
 
 	@Override
@@ -275,8 +281,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.evertide.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.evertide.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.evertide.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

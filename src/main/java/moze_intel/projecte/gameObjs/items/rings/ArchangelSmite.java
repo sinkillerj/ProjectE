@@ -12,23 +12,26 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,7 +53,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
 	}
 
-	public void fireVolley(ItemStack stack, EntityPlayer player)
+	public void fireVolley(ItemStack stack, PlayerEntity player)
 	{
 		for (int i = 0; i < 10; i++)
 		{
@@ -73,7 +76,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity)
 	{
 		if (!player.world.isRemote)
 		{
@@ -85,28 +88,28 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
-		if (!world.isRemote && getMode(stack) == 1 && entity instanceof EntityLivingBase)
+		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity)
 		{
-			fireArrow(stack, world, ((EntityLivingBase) entity), 1F);
+			fireArrow(stack, world, ((LivingEntity) entity), 1F);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if (!world.isRemote)
 		{
 			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
-		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
-	private void fireArrow(ItemStack ring, World world, EntityLivingBase shooter, float inaccuracy)
+	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy)
 	{
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 
-		if (!(shooter instanceof EntityPlayer) || consumeFuel(((EntityPlayer) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true))
+		if (!(shooter instanceof PlayerEntity) || consumeFuel(((PlayerEntity) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true))
 		{
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
@@ -128,11 +131,11 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0)
 			{
-				if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty())
+				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty())
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((WorldServer) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((ServerWorld) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
 						arrow.posZ = tile.centeredZ;
@@ -158,8 +161,8 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	{
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.archangel.get() != -1) {
-			list.add(new TextComponentTranslation("pe.archangel.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangel.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.archangel.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.archangel.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

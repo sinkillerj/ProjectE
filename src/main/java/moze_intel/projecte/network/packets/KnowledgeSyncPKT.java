@@ -3,16 +3,16 @@ package moze_intel.projecte.network.packets;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class KnowledgeSyncPKT {
-	private final NBTTagCompound nbt;
+	private final CompoundNBT nbt;
 
-	public KnowledgeSyncPKT(NBTTagCompound nbt)
+	public KnowledgeSyncPKT(CompoundNBT nbt)
 	{
 		this.nbt = nbt;
 	}

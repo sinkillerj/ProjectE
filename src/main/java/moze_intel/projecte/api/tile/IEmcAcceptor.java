@@ -1,6 +1,6 @@
 package moze_intel.projecte.api.tile;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 
@@ -20,5 +20,5 @@ public interface IEmcAcceptor extends IEmcStorage
 	 * @param toAccept The maximum amount to accept
 	 * @return The amount actually accepted
 	 */
-	double acceptEMC(@Nonnull EnumFacing side, double toAccept);
+	double acceptEMC(@Nonnull Direction side, double toAccept);
 }

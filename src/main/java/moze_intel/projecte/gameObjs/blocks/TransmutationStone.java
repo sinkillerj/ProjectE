@@ -6,20 +6,25 @@ import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
@@ -40,22 +45,22 @@ public class TransmutationStone extends Block
 
 	@Nonnull
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos) {
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos) {
 		return SHAPE;
 	}
 	
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
-			NetworkHooks.openGui((EntityPlayerMP) player, new ContainerProvider());
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider());
 		}
 		return true;
 	}
 	
 	@Override
-	public boolean isFullCube(IBlockState state)
+	public boolean isFullCube(BlockState state)
 	{
 		return false;
 	}
@@ -63,7 +68,7 @@ public class TransmutationStone extends Block
 	private static class ContainerProvider implements IInteractionObject {
 
 		@Override
-		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn) {
 			return new TransmutationContainer(playerInventory, new TransmutationInventory(playerIn), null);
 		}
 
@@ -74,7 +79,7 @@ public class TransmutationStone extends Block
 
 		@Override
 		public ITextComponent getName() {
-			return new TextComponentString(getGuiID());
+			return new StringTextComponent(getGuiID());
 		}
 
 		@Override

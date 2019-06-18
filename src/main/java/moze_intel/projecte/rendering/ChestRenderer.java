@@ -3,12 +3,13 @@ package moze_intel.projecte.rendering;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.model.ModelChest;
+import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,15 +20,15 @@ import javax.annotation.Nonnull;
 public class ChestRenderer extends TileEntityRenderer<AlchChestTile>
 {
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/alchemy_chest.png");
-	private final ModelChest model = new ModelChest();
+	private final ChestModel model = new ChestModel();
 	
 	@Override
 	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		EnumFacing direction = null;
+		Direction direction = null;
 		if (chestTile.getWorld() != null && !chestTile.isRemoved())
 		{
-			IBlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
+			BlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
 			direction = state.getBlock() == ObjHandler.alchChest ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null;
 		}
 		

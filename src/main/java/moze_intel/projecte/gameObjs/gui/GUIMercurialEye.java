@@ -4,16 +4,17 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUIMercurialEye extends GuiContainer
+public class GUIMercurialEye extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
 
-	public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) 
+	public GUIMercurialEye(PlayerInventory invPlayer, MercurialEyeInventory inventory)
 	{
 		super(new MercurialEyeContainer(invPlayer, inventory));
 		this.xSize = 171;

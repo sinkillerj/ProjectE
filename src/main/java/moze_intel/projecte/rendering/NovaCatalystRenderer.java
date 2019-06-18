@@ -5,9 +5,12 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,9 +19,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
-public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
+public class NovaCatalystRenderer extends EntityRenderer<EntityNovaCatalystPrimed>
 {
-	public NovaCatalystRenderer(RenderManager manager)
+	public NovaCatalystRenderer(EntityRendererManager manager)
 	{
 		super(manager);
 		this.shadowSize = 0.5F;
@@ -74,6 +77,6 @@ public class NovaCatalystRenderer extends Render<EntityNovaCatalystPrimed>
 	@Override
 	protected ResourceLocation getEntityTexture(@Nonnull EntityNovaCatalystPrimed entity)
 	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
+		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

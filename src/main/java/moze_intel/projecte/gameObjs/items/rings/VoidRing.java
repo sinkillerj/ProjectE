@@ -8,11 +8,13 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -53,7 +55,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand)
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
 		if (player.getCooldownTracker().hasCooldown(this))
 		{
@@ -85,7 +87,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack)
 	{
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density

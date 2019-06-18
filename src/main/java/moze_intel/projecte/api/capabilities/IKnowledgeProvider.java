@@ -1,9 +1,11 @@
 package moze_intel.projecte.api.capabilities;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
@@ -13,9 +15,9 @@ import java.util.List;
 
 /**
  * This interface defines the contract for some object that exposes transmutation knowledge through the Capability system.
- * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, EnumFacing)}.
+ * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, Direction)}.
  */
-public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
+public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT>
 {
 
     /**
@@ -74,6 +76,6 @@ public interface IKnowledgeProvider extends INBTSerializable<NBTTagCompound>
     /**
      * @param player The player to sync to.
      */
-    void sync(@Nonnull EntityPlayerMP player);
+    void sync(@Nonnull ServerPlayerEntity player);
 
 }

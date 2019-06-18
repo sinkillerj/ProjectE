@@ -1,8 +1,9 @@
 package moze_intel.projecte.api.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,5 +27,5 @@ public interface IModeChanger
 	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
 	 * @return Whether the operation succeeded
 	 */
-	boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand);
+	boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand);
 }

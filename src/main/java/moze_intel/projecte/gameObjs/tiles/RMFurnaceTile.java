@@ -8,21 +8,25 @@ import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.*;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -84,7 +88,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	});
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
-	private final TileEntityFurnace dummyFurnace = new TileEntityFurnace();
+	private final FurnaceTileEntity dummyFurnace = new FurnaceTileEntity();
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
@@ -155,7 +159,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -247,7 +251,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 			if (flag != furnaceBurnTime > 0)
 			{
 				flag1 = true;
-				IBlockState state = world.getBlockState(pos);
+				BlockState state = world.getBlockState(pos);
 				
 				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace)
 				{
@@ -273,16 +277,16 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	private void pullFromInventories()
 	{
 		TileEntity tile = this.getWorld().getTileEntity(pos.up());
-		if (tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
+		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity)
 			return;
-		LazyOptional<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		LazyOptional<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
 		IItemHandler handler;
 
 		if (!handlerOpt.isPresent())
 		{
 			if (tile instanceof ISidedInventory)
 			{
-				handler = new SidedInvWrapper((ISidedInventory) tile, EnumFacing.DOWN);
+				handler = new SidedInvWrapper((ISidedInventory) tile, Direction.DOWN);
 			} else if (tile instanceof IInventory)
 			{
 				handler = new InvWrapper((IInventory) tile);
@@ -301,7 +305,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 			if (extractTest.isEmpty())
 				continue;
 
-			IItemHandler targetInv = extractTest.getItem() instanceof IItemEmc || TileEntityFurnace.isItemFuel(extractTest)
+			IItemHandler targetInv = extractTest.getItem() instanceof IItemEmc || FurnaceTileEntity.isItemFuel(extractTest)
 					? fuelInv : inputInventory;
 
 			ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);
@@ -388,7 +392,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 		if (!stack.isEmpty()) {
 			Item item = stack.getItem();
 			int ret = stack.getBurnTime();
-			burnTime = ForgeEventFactory.getItemBurnTime(stack, ret == -1 ? TileEntityFurnace.getBurnTimes().getOrDefault(item, 0) : ret);
+			burnTime = ForgeEventFactory.getItemBurnTime(stack, ret == -1 ? FurnaceTileEntity.getBurnTimes().getOrDefault(item, 0) : ret);
 		}
 
 		int val = burnTime;
@@ -410,7 +414,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
@@ -423,7 +427,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.putShort("BurnTime", (short) furnaceBurnTime);
@@ -435,7 +439,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull Direction side, double toAccept)
 	{
 		if (this.getStoredEmc() < EMC_CONSUMPTION)
 		{
@@ -449,7 +453,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 
 	@Nonnull
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
 	{
 		return new RMFurnaceContainer(playerInventory, this);
 	}
@@ -464,7 +468,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	@Override
 	public ITextComponent getName()
 	{
-		return new TextComponentString(getGuiID());
+		return new StringTextComponent(getGuiID());
 	}
 
 	@Override

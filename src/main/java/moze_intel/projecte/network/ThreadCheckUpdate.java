@@ -2,10 +2,12 @@ package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -64,13 +66,13 @@ public class ThreadCheckUpdate extends Thread
 	@SubscribeEvent
 	public static void worldLoad(EntityJoinWorldEvent evt)
 	{
-		if (evt.getEntity() instanceof EntityPlayerSP && target != null && !hasSentMessage)
+		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage)
 		{
 			hasSentMessage = true;
-			evt.getEntity().sendMessage(new TextComponentTranslation("pe.update.available", target));
-			evt.getEntity().sendMessage(new TextComponentTranslation("pe.update.getit"));
+			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.available", target));
+			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.getit"));
 
-			ITextComponent link = new TextComponentString(curseURL);
+			ITextComponent link = new StringTextComponent(curseURL);
 			link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
 			evt.getEntity().sendMessage(link);
 		}

@@ -15,21 +15,26 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.SnowballEntity;
+import net.minecraft.entity.projectile.SnowballEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -80,14 +85,14 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
         byte newMode = (byte) ((stack.getOrCreateTag().getByte(TAG_MODE) + 1) % 4);
 		stack.getTag().putByte(TAG_MODE, newMode);
 		return true;
 	}
 	
-	private void tick(ItemStack stack, World world, EntityPlayerMP player)
+	private void tick(ItemStack stack, World world, ServerPlayerEntity player)
 	{
         if(stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
@@ -112,9 +117,9 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if(world.isRemote || slot > 8 || !(entity instanceof EntityPlayerMP)) return;
+		if(world.isRemote || slot > 8 || !(entity instanceof ServerPlayerEntity)) return;
 		
-		tick(stack, world, (EntityPlayerMP)entity);
+		tick(stack, world, (ServerPlayerEntity)entity);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -125,32 +130,32 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		{
 			if(!stack.getTag().getBoolean(TAG_ACTIVE))
 			{
-				list.add(new TextComponentTranslation("pe.arcana.inactive").setStyle(new Style().setColor(TextFormatting.RED)));
+				list.add(new TranslationTextComponent("pe.arcana.inactive").setStyle(new Style().setColor(TextFormatting.RED)));
 			}
 			else
 			{
-				list.add(new TextComponentTranslation("pe.arcana.mode")
-						.appendSibling(new TextComponentTranslation(I18n.format("pe.arcana.mode." + stack.getTag().getByte(TAG_MODE))).setStyle(new Style().setColor(TextFormatting.AQUA))));
+				list.add(new TranslationTextComponent("pe.arcana.mode")
+						.appendSibling(new TranslationTextComponent(I18n.format("pe.arcana.mode." + stack.getTag().getByte(TAG_MODE))).setStyle(new Style().setColor(TextFormatting.AQUA))));
 			}
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if(!world.isRemote)
 		{
-            NBTTagCompound compound = player.getHeldItem(hand).getOrCreateTag();
+            CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
 
 			compound.putBoolean(TAG_ACTIVE, !compound.getBoolean(TAG_ACTIVE));
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, EnumHand hand) // GIANT FIRE ROW OF DEATH
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) // GIANT FIRE ROW OF DEATH
 	{
 		World world = player.getEntityWorld();
 		
@@ -168,7 +173,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
@@ -180,7 +185,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 						{
 							if (world.isAirBlock(pos))
 							{
-								PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
@@ -194,7 +199,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		World world = player.getEntityWorld();
 		
@@ -203,21 +208,21 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
         switch(stack.getOrCreateTag().getByte(TAG_MODE))
 		{
 			case 0: // zero
-				EntitySnowball snowball = new EntitySnowball(world, player);
+				SnowballEntity snowball = new SnowballEntity(world, player);
 				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-				world.spawnEntity(snowball);
+				world.addEntity(snowball);
 				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(player, world);
 				fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-				world.spawnEntity(fire);
+				world.addEntity(fire);
 				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);
 				lightning.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-				world.spawnEntity(lightning);
+				world.addEntity(lightning);
 				break;
 		}
 		
@@ -225,13 +230,13 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, EntityPlayerMP player)
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
+	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player)
 	{
 		return true;
 	}

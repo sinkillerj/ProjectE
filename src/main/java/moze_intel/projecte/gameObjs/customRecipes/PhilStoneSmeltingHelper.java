@@ -2,8 +2,9 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeManager;

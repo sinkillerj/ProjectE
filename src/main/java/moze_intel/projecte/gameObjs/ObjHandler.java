@@ -80,14 +80,14 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Items;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -98,8 +98,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
-
-import java.util.Map.Entry;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ObjHandler
@@ -114,8 +112,8 @@ public class ObjHandler
 	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
 	public static final IRecipeSerializer<RecipeShapelessHidden> SHAPELESS_HIDDEN_SERIALIZER = RecipeSerializers.register(new RecipeShapelessHidden.Serializer());
 	public static final Block alchChest = new AlchemicalChest(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
-	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "interdiction_torch");
-	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.CIRCUITS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
+	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
 	public static final Block transmuteStone = new TransmutationStone(Block.Properties.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
 	public static final Block condenser = new Condenser(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
@@ -137,32 +135,32 @@ public class ObjHandler
 	public static final Block novaCataclysm = new NovaCataclysm(Block.Properties.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_cataclysm");
 
 	public static final Item philosStone = new PhilosophersStone(ibNoStack()).setRegistryName(PECore.MODID, "philosophers_stone");
-	public static final Item alchBagWhite = new AlchemicalBag(ibNoStack(), EnumDyeColor.WHITE).setRegistryName(PECore.MODID, "white_alchemical_bag");
-	public static final Item alchBagOrange = new AlchemicalBag(ibNoStack(), EnumDyeColor.ORANGE).setRegistryName(PECore.MODID, "orange_alchemical_bag");
-	public static final Item alchBagMagenta = new AlchemicalBag(ibNoStack(), EnumDyeColor.MAGENTA).setRegistryName(PECore.MODID, "magenta_alchemical_bag");
-	public static final Item alchBagLightBlue = new AlchemicalBag(ibNoStack(), EnumDyeColor.LIGHT_BLUE).setRegistryName(PECore.MODID, "light_blue_alchemical_bag");
-	public static final Item alchBagYellow = new AlchemicalBag(ibNoStack(), EnumDyeColor.YELLOW).setRegistryName(PECore.MODID, "yellow_alchemical_bag");
-	public static final Item alchBagLime = new AlchemicalBag(ibNoStack(), EnumDyeColor.LIME).setRegistryName(PECore.MODID, "lime_alchemical_bag");
-	public static final Item alchBagPink = new AlchemicalBag(ibNoStack(), EnumDyeColor.PINK).setRegistryName(PECore.MODID, "pink_alchemical_bag");
-	public static final Item alchBagGray = new AlchemicalBag(ibNoStack(), EnumDyeColor.GRAY).setRegistryName(PECore.MODID, "gray_alchemical_bag");
-	public static final Item alchBagLightGray = new AlchemicalBag(ibNoStack(), EnumDyeColor.LIGHT_GRAY).setRegistryName(PECore.MODID, "light_gray_alchemical_bag");
-	public static final Item alchBagCyan = new AlchemicalBag(ibNoStack(), EnumDyeColor.CYAN).setRegistryName(PECore.MODID, "cyan_alchemical_bag");
-	public static final Item alchBagPurple = new AlchemicalBag(ibNoStack(), EnumDyeColor.PURPLE).setRegistryName(PECore.MODID, "purple_alchemical_bag");
-	public static final Item alchBagBlue = new AlchemicalBag(ibNoStack(), EnumDyeColor.BLUE).setRegistryName(PECore.MODID, "blue_alchemical_bag");
-	public static final Item alchBagBrown = new AlchemicalBag(ibNoStack(), EnumDyeColor.BROWN).setRegistryName(PECore.MODID, "brown_alchemical_bag");
-	public static final Item alchBagGreen = new AlchemicalBag(ibNoStack(), EnumDyeColor.GREEN).setRegistryName(PECore.MODID, "green_alchemical_bag");
-	public static final Item alchBagRed = new AlchemicalBag(ibNoStack(), EnumDyeColor.RED).setRegistryName(PECore.MODID, "red_alchemical_bag");
-	public static final Item alchBagBlack = new AlchemicalBag(ibNoStack(), EnumDyeColor.BLACK).setRegistryName(PECore.MODID, "black_alchemical_bag");
+	public static final Item alchBagWhite = new AlchemicalBag(ibNoStack(), DyeColor.WHITE).setRegistryName(PECore.MODID, "white_alchemical_bag");
+	public static final Item alchBagOrange = new AlchemicalBag(ibNoStack(), DyeColor.ORANGE).setRegistryName(PECore.MODID, "orange_alchemical_bag");
+	public static final Item alchBagMagenta = new AlchemicalBag(ibNoStack(), DyeColor.MAGENTA).setRegistryName(PECore.MODID, "magenta_alchemical_bag");
+	public static final Item alchBagLightBlue = new AlchemicalBag(ibNoStack(), DyeColor.LIGHT_BLUE).setRegistryName(PECore.MODID, "light_blue_alchemical_bag");
+	public static final Item alchBagYellow = new AlchemicalBag(ibNoStack(), DyeColor.YELLOW).setRegistryName(PECore.MODID, "yellow_alchemical_bag");
+	public static final Item alchBagLime = new AlchemicalBag(ibNoStack(), DyeColor.LIME).setRegistryName(PECore.MODID, "lime_alchemical_bag");
+	public static final Item alchBagPink = new AlchemicalBag(ibNoStack(), DyeColor.PINK).setRegistryName(PECore.MODID, "pink_alchemical_bag");
+	public static final Item alchBagGray = new AlchemicalBag(ibNoStack(), DyeColor.GRAY).setRegistryName(PECore.MODID, "gray_alchemical_bag");
+	public static final Item alchBagLightGray = new AlchemicalBag(ibNoStack(), DyeColor.LIGHT_GRAY).setRegistryName(PECore.MODID, "light_gray_alchemical_bag");
+	public static final Item alchBagCyan = new AlchemicalBag(ibNoStack(), DyeColor.CYAN).setRegistryName(PECore.MODID, "cyan_alchemical_bag");
+	public static final Item alchBagPurple = new AlchemicalBag(ibNoStack(), DyeColor.PURPLE).setRegistryName(PECore.MODID, "purple_alchemical_bag");
+	public static final Item alchBagBlue = new AlchemicalBag(ibNoStack(), DyeColor.BLUE).setRegistryName(PECore.MODID, "blue_alchemical_bag");
+	public static final Item alchBagBrown = new AlchemicalBag(ibNoStack(), DyeColor.BROWN).setRegistryName(PECore.MODID, "brown_alchemical_bag");
+	public static final Item alchBagGreen = new AlchemicalBag(ibNoStack(), DyeColor.GREEN).setRegistryName(PECore.MODID, "green_alchemical_bag");
+	public static final Item alchBagRed = new AlchemicalBag(ibNoStack(), DyeColor.RED).setRegistryName(PECore.MODID, "red_alchemical_bag");
+	public static final Item alchBagBlack = new AlchemicalBag(ibNoStack(), DyeColor.BLACK).setRegistryName(PECore.MODID, "black_alchemical_bag");
 	public static final Item repairTalisman = new RepairTalisman(ibNoStack()).setRegistryName(PECore.MODID, "repair_talisman");
 	public static final Item kleinStarEin = new KleinStar(ibNoStack(), KleinStar.EnumKleinTier.EIN).setRegistryName(PECore.MODID, "klein_star_ein");
 	public static final Item kleinStarZwei = new KleinStar(ibNoStack(), KleinStar.EnumKleinTier.ZWEI).setRegistryName(PECore.MODID, "klein_star_zwei");
 	public static final Item kleinStarDrei = new KleinStar(ibNoStack(), KleinStar.EnumKleinTier.DREI).setRegistryName(PECore.MODID, "klein_star_drei");
 	public static final Item kleinStarVier = new KleinStar(ibNoStack(), KleinStar.EnumKleinTier.VIER).setRegistryName(PECore.MODID, "klein_star_vier");
 	public static final Item kleinStarSphere = new KleinStar(ibNoStack(), KleinStar.EnumKleinTier.SPHERE).setRegistryName(PECore.MODID, "klein_star_sphere");
-	public static final Item kleinStarOmega = new KleinStar(ibNoStack().rarity(EnumRarity.EPIC), KleinStar.EnumKleinTier.OMEGA).setRegistryName(PECore.MODID, "klein_star_omega");
+	public static final Item kleinStarOmega = new KleinStar(ibNoStack().rarity(Rarity.EPIC), KleinStar.EnumKleinTier.OMEGA).setRegistryName(PECore.MODID, "klein_star_omega");
 	public static final Item alchemicalCoal = new AlchemicalFuel(ib(), EnumFuelType.ALCHEMICAL_COAL).setRegistryName(PECore.MODID, "alchemical_coal");
 	public static final Item mobiusFuel = new AlchemicalFuel(ib(), EnumFuelType.MOBIUS_FUEL).setRegistryName(PECore.MODID, "mobius_fuel");
-	public static final Item aeternalisFuel = new AlchemicalFuel(ib().rarity(EnumRarity.RARE), EnumFuelType.AETERNALIS_FUEL).setRegistryName(PECore.MODID, "aeternalis_fuel");
+	public static final Item aeternalisFuel = new AlchemicalFuel(ib().rarity(Rarity.RARE), EnumFuelType.AETERNALIS_FUEL).setRegistryName(PECore.MODID, "aeternalis_fuel");
 	public static final Item covalenceDustLow = new Item(ib()).setRegistryName(PECore.MODID, "low_covalence_dust");
 	public static final Item covalenceDustMedium = new Item(ib()).setRegistryName(PECore.MODID, "medium_covalence_dust");
 	public static final Item covalenceDustHigh = new Item(ib()).setRegistryName(PECore.MODID, "high_covalence_dust");
@@ -204,15 +202,15 @@ public class ObjHandler
 			.addToolType(ToolType.AXE, 5))
 			.setRegistryName(PECore.MODID, "rm_morning_star");
 
-	public static final Item dmHelmet = new DMArmor(EntityEquipmentSlot.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "dm_helmet");
-	public static final Item dmChest = new DMArmor(EntityEquipmentSlot.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "dm_chestplate");
-	public static final Item dmLegs = new DMArmor(EntityEquipmentSlot.LEGS, ibNoStack()).setRegistryName(PECore.MODID, "dm_leggings");
-	public static final Item dmFeet = new DMArmor(EntityEquipmentSlot.FEET, ibNoStack()).setRegistryName(PECore.MODID, "dm_boots");
+	public static final Item dmHelmet = new DMArmor(EquipmentSlotType.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "dm_helmet");
+	public static final Item dmChest = new DMArmor(EquipmentSlotType.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "dm_chestplate");
+	public static final Item dmLegs = new DMArmor(EquipmentSlotType.LEGS, ibNoStack()).setRegistryName(PECore.MODID, "dm_leggings");
+	public static final Item dmFeet = new DMArmor(EquipmentSlotType.FEET, ibNoStack()).setRegistryName(PECore.MODID, "dm_boots");
 
-	public static final Item rmHelmet = new RMArmor(EntityEquipmentSlot.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "rm_helmet");
-	public static final Item rmChest = new RMArmor(EntityEquipmentSlot.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "rm_chestplate");
-	public static final Item rmLegs = new RMArmor(EntityEquipmentSlot.LEGS, ibNoStack()).setRegistryName(PECore.MODID, "rm_leggings");
-	public static final Item rmFeet = new RMArmor(EntityEquipmentSlot.FEET, ibNoStack()).setRegistryName(PECore.MODID, "rm_boots");
+	public static final Item rmHelmet = new RMArmor(EquipmentSlotType.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "rm_helmet");
+	public static final Item rmChest = new RMArmor(EquipmentSlotType.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "rm_chestplate");
+	public static final Item rmLegs = new RMArmor(EquipmentSlotType.LEGS, ibNoStack()).setRegistryName(PECore.MODID, "rm_leggings");
+	public static final Item rmFeet = new RMArmor(EquipmentSlotType.FEET, ibNoStack()).setRegistryName(PECore.MODID, "rm_boots");
 
 	public static final Item gemHelmet = new GemHelmet(ibNoStack()).setRegistryName(PECore.MODID, "gem_helmet");
 	public static final Item gemChest = new GemChest(ibNoStack()).setRegistryName(PECore.MODID, "gem_chestplate");
@@ -235,7 +233,7 @@ public class ObjHandler
 	public static final Item dRod3 = new DiviningRod(ibNoStack(), new String[] { "3x3x3", "16x3x3", "64x3x3" }).setRegistryName(PECore.MODID, "divining_rod_3");
 	public static final Item mercEye = new MercurialEye(ibNoStack()).setRegistryName(PECore.MODID, "mercurial_eye");
 	public static final Item voidRing = new VoidRing(ibNoStack()).setRegistryName(PECore.MODID, "void_ring");
-	public static final Item arcana = new Arcana(ibNoStack().rarity(EnumRarity.RARE)).setRegistryName(PECore.MODID, "arcana_ring");
+	public static final Item arcana = new Arcana(ibNoStack().rarity(Rarity.RARE)).setRegistryName(PECore.MODID, "arcana_ring");
 
 	public static final Item dCatalyst = new DestructionCatalyst(ibNoStack()).setRegistryName(PECore.MODID, "destruction_catalyst");
 	public static final Item hyperLens = new HyperkineticLens(ibNoStack()).setRegistryName(PECore.MODID, "hyperkinetic_lens");
@@ -246,7 +244,7 @@ public class ObjHandler
 	public static final Item mindStone = new MindStone(ibNoStack()).setRegistryName(PECore.MODID, "mind_stone");
 	public static final Item lifeStone = new LifeStone(ibNoStack()).setRegistryName(PECore.MODID, "life_stone");
 
-	public static final Item tome = new Tome(ibNoStack().rarity(EnumRarity.EPIC)).setRegistryName(PECore.MODID, "tome");
+	public static final Item tome = new Tome(ibNoStack().rarity(Rarity.EPIC)).setRegistryName(PECore.MODID, "tome");
 
 	// TODO 1.13 get rid of these
 	public static final Item waterOrb = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "water_orb");
@@ -257,33 +255,52 @@ public class ObjHandler
 	public static final Item windProjectile = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 
-	public static final EntityType<?> FIRE_PROJECTILE = EntityType.Builder
-			.create(EntityFireProjectile.class, EntityFireProjectile::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "fire_projectile");
-	public static final EntityType<?> HOMING_ARROW = EntityType.Builder
-			.create(EntityHomingArrow.class, EntityHomingArrow::new) // use vanilla entitytracker settings
-			.build("") .setRegistryName(PECore.MODID, "homing_arrow");
-	public static final EntityType<?> LAVA_PROJECTILE = EntityType.Builder
-			.create(EntityLavaProjectile.class, EntityLavaProjectile::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "lava_projectile");
-	public static final EntityType<?> LENS_PROJECTILE = EntityType.Builder
-			.create(EntityLensProjectile.class, EntityLensProjectile::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "lens_projectile");
-	public static final EntityType<?> MOB_RANDOMIZER = EntityType.Builder
-			.create(EntityMobRandomizer.class, EntityMobRandomizer::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "mob_randomizer");
-	public static final EntityType<?> NOVA_CATALYST_PRIMED = EntityType.Builder
-			.create(EntityNovaCatalystPrimed.class, EntityNovaCatalystPrimed::new) // use vanilla tracking
-			.build("") .setRegistryName(PECore.MODID, "nova_catalyst_primed");
-	public static final EntityType<?> NOVA_CATACLYSM_PRIMED = EntityType.Builder
-			.create(EntityNovaCataclysmPrimed.class, EntityNovaCataclysmPrimed::new) // use vanilla tracking
-			.build("") .setRegistryName(PECore.MODID, "nova_cataclysm_primed");
-	public static final EntityType<?> SWRG_PROJECTILE = EntityType.Builder
-			.create(EntitySWRGProjectile.class, EntitySWRGProjectile::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "swrg_projectile");
-	public static final EntityType<?> WATER_PROJECTILE = EntityType.Builder
-			.create(EntityWaterProjectile.class, EntityWaterProjectile::new).tracker(256, 10, false)
-			.build("") .setRegistryName(PECore.MODID, "water_projectile");
+	public static final EntityType<EntityFireProjectile> FIRE_PROJECTILE = EntityType.Builder
+			.create((EntityType.IFactory<EntityFireProjectile>) EntityFireProjectile::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityHomingArrow> HOMING_ARROW = EntityType.Builder
+			.create((EntityType.IFactory<EntityHomingArrow>) EntityHomingArrow::new, EntityClassification.MISC)
+			.setTrackingRange(5)
+			.setUpdateInterval(20)
+			.setShouldReceiveVelocityUpdates(true)
+			.build("");
+	public static final EntityType<EntityLavaProjectile> LAVA_PROJECTILE = EntityType.Builder
+			.create((EntityType.IFactory<EntityLavaProjectile>) EntityLavaProjectile::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityLensProjectile> LENS_PROJECTILE = EntityType.Builder
+			.create((EntityType.IFactory<EntityLensProjectile>) EntityLensProjectile::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityMobRandomizer> MOB_RANDOMIZER = EntityType.Builder
+			.create((EntityType.IFactory<EntityMobRandomizer>) EntityMobRandomizer::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityNovaCatalystPrimed> NOVA_CATALYST_PRIMED = EntityType.Builder
+			.create((EntityType.IFactory<EntityNovaCatalystPrimed>) EntityNovaCatalystPrimed::new, EntityClassification.MISC)
+			.setTrackingRange(10)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityNovaCataclysmPrimed> NOVA_CATACLYSM_PRIMED = EntityType.Builder
+			.create((EntityType.IFactory<EntityNovaCataclysmPrimed>) EntityNovaCataclysmPrimed::new, EntityClassification.MISC)
+			.setTrackingRange(10)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntitySWRGProjectile> SWRG_PROJECTILE = EntityType.Builder
+			.create((EntityType.IFactory<EntitySWRGProjectile>) EntitySWRGProjectile::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
+	public static final EntityType<EntityWaterProjectile> WATER_PROJECTILE = EntityType.Builder
+			.create((EntityType.IFactory<EntityWaterProjectile>) EntityWaterProjectile::new, EntityClassification.MISC)
+			.setTrackingRange(256)
+			.setUpdateInterval(10)
+			.build("");
 
 	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1");
@@ -341,27 +358,27 @@ public class ObjHandler
 	public static void registerItems(RegistryEvent.Register<Item> evt)
 	{
 		IForgeRegistry<Item> r = evt.getRegistry();
-		registerObj(r, new ItemBlock(alchChest, ib()), alchChest.getRegistryName());
-		registerObj(r, new ItemBlock(collectorMK1, ib()), collectorMK1.getRegistryName());
-		registerObj(r, new ItemBlock(collectorMK2, ib()), collectorMK2.getRegistryName());
-		registerObj(r, new ItemBlock(collectorMK3, ib()), collectorMK3.getRegistryName());
-		registerObj(r, new ItemBlock(condenser, ib()), condenser.getRegistryName());
-		registerObj(r, new ItemBlock(condenserMk2, ib()), condenserMk2.getRegistryName());
-		registerObj(r, new ItemBlock(dmFurnaceOff, ib()), dmFurnaceOff.getRegistryName());
-		registerObj(r, new ItemBlock(dmPedestal, ib()), dmPedestal.getRegistryName());
+		registerObj(r, new BlockItem(alchChest, ib()), alchChest.getRegistryName());
+		registerObj(r, new BlockItem(collectorMK1, ib()), collectorMK1.getRegistryName());
+		registerObj(r, new BlockItem(collectorMK2, ib()), collectorMK2.getRegistryName());
+		registerObj(r, new BlockItem(collectorMK3, ib()), collectorMK3.getRegistryName());
+		registerObj(r, new BlockItem(condenser, ib()), condenser.getRegistryName());
+		registerObj(r, new BlockItem(condenserMk2, ib()), condenserMk2.getRegistryName());
+		registerObj(r, new BlockItem(dmFurnaceOff, ib()), dmFurnaceOff.getRegistryName());
+		registerObj(r, new BlockItem(dmPedestal, ib()), dmPedestal.getRegistryName());
 		registerObj(r, new ItemFuelBlock(alchemicalCoalBlock, ib(), EnumFuelType.ALCHEMICAL_COAL), alchemicalCoalBlock.getRegistryName());
 		registerObj(r, new ItemFuelBlock(mobiusFuelBlock, ib(), EnumFuelType.MOBIUS_FUEL), mobiusFuelBlock.getRegistryName());
 		registerObj(r, new ItemFuelBlock(aeternalisFuelBlock, ib(), EnumFuelType.AETERNALIS_FUEL), aeternalisFuelBlock.getRegistryName());
-		registerObj(r, new ItemWallOrFloor(interdictionTorch, interdictionTorchWall, ib()), interdictionTorch.getRegistryName());
-		registerObj(r, new ItemBlock(dmBlock, ib()), dmBlock.getRegistryName());
-		registerObj(r, new ItemBlock(rmBlock, ib()), rmBlock.getRegistryName());
-		registerObj(r, new ItemBlock(novaCatalyst, ib()), novaCatalyst.getRegistryName());
-		registerObj(r, new ItemBlock(novaCataclysm, ib()), novaCataclysm.getRegistryName());
-		registerObj(r, new ItemBlock(relay, ib()), relay.getRegistryName());
-		registerObj(r, new ItemBlock(relayMK2, ib()), relayMK2.getRegistryName());
-		registerObj(r, new ItemBlock(relayMK3, ib()), relayMK3.getRegistryName());
-		registerObj(r, new ItemBlock(rmFurnaceOff, ib()), rmFurnaceOff.getRegistryName());
-		registerObj(r, new ItemBlock(transmuteStone, ib()), transmuteStone.getRegistryName());
+		registerObj(r, new WallOrFloorItem(interdictionTorch, interdictionTorchWall, ib()), interdictionTorch.getRegistryName());
+		registerObj(r, new BlockItem(dmBlock, ib()), dmBlock.getRegistryName());
+		registerObj(r, new BlockItem(rmBlock, ib()), rmBlock.getRegistryName());
+		registerObj(r, new BlockItem(novaCatalyst, ib()), novaCatalyst.getRegistryName());
+		registerObj(r, new BlockItem(novaCataclysm, ib()), novaCataclysm.getRegistryName());
+		registerObj(r, new BlockItem(relay, ib()), relay.getRegistryName());
+		registerObj(r, new BlockItem(relayMK2, ib()), relayMK2.getRegistryName());
+		registerObj(r, new BlockItem(relayMK3, ib()), relayMK3.getRegistryName());
+		registerObj(r, new BlockItem(rmFurnaceOff, ib()), rmFurnaceOff.getRegistryName());
+		registerObj(r, new BlockItem(transmuteStone, ib()), transmuteStone.getRegistryName());
 
 		r.register(philosStone);
 		r.register(alchBagWhite); r.register(alchBagOrange); r.register(alchBagMagenta); r.register(alchBagLightBlue);
@@ -459,15 +476,15 @@ public class ObjHandler
 	@SubscribeEvent
 	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt)
 	{
-		evt.getRegistry().register(WATER_PROJECTILE);
-		evt.getRegistry().register(LAVA_PROJECTILE);
-		evt.getRegistry().register(MOB_RANDOMIZER);
-		evt.getRegistry().register(LENS_PROJECTILE);
-		evt.getRegistry().register(NOVA_CATALYST_PRIMED);
-		evt.getRegistry().register(NOVA_CATACLYSM_PRIMED);
-		evt.getRegistry().register(HOMING_ARROW);
-		evt.getRegistry().register(FIRE_PROJECTILE);
-		evt.getRegistry().register(SWRG_PROJECTILE);
+		evt.getRegistry().register(WATER_PROJECTILE.setRegistryName(PECore.MODID, "water_projectile"));
+		evt.getRegistry().register(LAVA_PROJECTILE.setRegistryName(PECore.MODID, "lava_projectile"));
+		evt.getRegistry().register(MOB_RANDOMIZER.setRegistryName(PECore.MODID, "mob_randomizer"));
+		evt.getRegistry().register(LENS_PROJECTILE.setRegistryName(PECore.MODID, "lens_projectile"));
+		evt.getRegistry().register(NOVA_CATALYST_PRIMED.setRegistryName(PECore.MODID, "nova_catalyst_primed"));
+		evt.getRegistry().register(NOVA_CATACLYSM_PRIMED.setRegistryName(PECore.MODID, "nova_cataclysm_primed"));
+		evt.getRegistry().register(HOMING_ARROW.setRegistryName(PECore.MODID, "homing_arrow"));
+		evt.getRegistry().register(FIRE_PROJECTILE.setRegistryName(PECore.MODID, "fire_projectile"));
+		evt.getRegistry().register(SWRG_PROJECTILE.setRegistryName(PECore.MODID, "swrg_projectile"));
 	}
 
 	@SubscribeEvent

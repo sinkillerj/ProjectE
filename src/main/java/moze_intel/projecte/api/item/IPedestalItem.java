@@ -2,8 +2,9 @@ package moze_intel.projecte.api.item;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author williewillus
  */
 public interface IPedestalItem {
-	ITextComponent TOOLTIPDISABLED = new TextComponentTranslation("pe.pedestal.item_disabled").applyTextStyle(TextFormatting.RED);
+	ITextComponent TOOLTIPDISABLED = new TranslationTextComponent("pe.pedestal.item_disabled").applyTextStyle(TextFormatting.RED);
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside

@@ -4,9 +4,11 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -14,13 +16,13 @@ import javax.annotation.Nonnull;
 
 public class RelayMK3Container extends RelayMK1Container
 {
-	public RelayMK3Container(InventoryPlayer invPlayer, RelayMK3Tile relay)
+	public RelayMK3Container(PlayerInventory invPlayer, RelayMK3Tile relay)
 	{
 		super(invPlayer, relay);
 	}
 
 	@Override
-	void initSlots(InventoryPlayer invPlayer)
+	void initSlots(PlayerInventory invPlayer)
 	{
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -49,7 +51,7 @@ public class RelayMK3Container extends RelayMK1Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 
@@ -84,7 +86,7 @@ public class RelayMK3Container extends RelayMK1Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relayMK3
 				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;

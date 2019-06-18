@@ -2,7 +2,8 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
 
 import javax.annotation.Nonnull;
 
@@ -22,9 +23,9 @@ public class DarkHoe extends PEToolBase
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		tillAOE(ctx.getItem(), ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getFace(), 0);
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 }

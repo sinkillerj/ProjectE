@@ -101,7 +101,6 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
-		//TODO implement buffered IMappingCollector to recover from failures
 		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
 		{
 			PECore.debugLog("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);

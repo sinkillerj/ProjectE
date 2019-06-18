@@ -7,11 +7,13 @@ import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.config.CustomEMCParser;
 import net.minecraft.command.*;
 import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class SetEmcCMD
 {
@@ -26,12 +28,12 @@ public class SetEmcCMD
 						// todo support longs
 						.executes(ctx -> setEmc(ctx, IntegerArgumentType.getInteger(ctx, "emc"), ItemArgument.getItem(ctx, "item").getItem())))
 					.executes(ctx -> {
-						EntityPlayerMP player = ctx.getSource().asPlayer();
-						ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+						ServerPlayerEntity player = ctx.getSource().asPlayer();
+						ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
 						if (stack.isEmpty())
 						{
-							stack = player.getHeldItem(EnumHand.OFF_HAND);
+							stack = player.getHeldItem(Hand.OFF_HAND);
 						}
 
 						if (stack.isEmpty())
@@ -47,8 +49,8 @@ public class SetEmcCMD
 	private static int setEmc(CommandContext<CommandSource> ctx, int emc, Item item)
 	{
 		CustomEMCParser.addToFile(item.getRegistryName().toString(), emc);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.set.success", item.getRegistryName().toString(), emc), true);
-		ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.reload.notice"), true);
+		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.set.success", item.getRegistryName().toString(), emc), true);
+		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

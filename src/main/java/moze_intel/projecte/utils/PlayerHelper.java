@@ -7,23 +7,29 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketAnimation;
+import net.minecraft.network.play.server.SAnimateHandPacket;
+import net.minecraft.network.play.server.SAnimateHandPacket;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -48,7 +54,7 @@ public final class PlayerHelper
 	 * Tries placing a block and fires an event for it.
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	public static boolean checkedPlaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state)
 	{
 		if (!hasEditPermission(player, pos))
 		{
@@ -71,12 +77,12 @@ public final class PlayerHelper
 		return true;
 	}
 
-	public static boolean checkedReplaceBlock(EntityPlayerMP player, BlockPos pos, IBlockState state)
+	public static boolean checkedReplaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state)
 	{
 		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
 	}
 
-	public static ItemStack findFirstItem(EntityPlayer player, Item consumeFrom)
+	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom)
 	{
 		for (ItemStack s : player.inventory.mainInventory)
 		{
@@ -89,7 +95,7 @@ public final class PlayerHelper
 	}
 
 	@Nullable
-	public static IItemHandler getCurios(EntityPlayer player)
+	public static IItemHandler getCurios(PlayerEntity player)
 	{
 		if (!ModList.get().isLoaded("curios"))
 		{
@@ -100,7 +106,7 @@ public final class PlayerHelper
 		}
 	}
 
-	public static BlockPos getBlockLookingAt(EntityPlayer player, double maxDistance)
+	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance)
 	{
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
 		RayTraceResult mop = player.getEntityWorld().rayTraceBlocks(vecs.getLeft(), vecs.getRight());
@@ -114,7 +120,7 @@ public final class PlayerHelper
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Pair<Vec3d, Vec3d> getLookVec(EntityPlayer player, double maxDistance)
+	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance)
 	{
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
@@ -124,20 +130,20 @@ public final class PlayerHelper
 		return ImmutablePair.of(src, dest);
 	}
 
-	public static boolean hasBreakPermission(EntityPlayerMP player, BlockPos pos)
+	public static boolean hasBreakPermission(ServerPlayerEntity player, BlockPos pos)
 	{
 		return hasEditPermission(player, pos)
 				&& ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
 	}
 
-	public static boolean hasEditPermission(EntityPlayerMP player, BlockPos pos)
+	public static boolean hasEditPermission(ServerPlayerEntity player, BlockPos pos)
 	{
 		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected(player.getEntityWorld(), pos, player))
 		{
 			return false;
 		}
 
-		for (EnumFacing e : EnumFacing.values())
+		for (Direction e : Direction.values())
 		{
 			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
 			{
@@ -148,21 +154,21 @@ public final class PlayerHelper
 		return true;
 	}
 
-	public static void resetCooldown(EntityPlayer player)
+	public static void resetCooldown(PlayerEntity player)
 	{
 		player.resetCooldown();
-		PacketHandler.sendTo(new CooldownResetPKT(), (EntityPlayerMP) player);
+		PacketHandler.sendTo(new CooldownResetPKT(), (ServerPlayerEntity) player);
 	}
 
-	public static void swingItem(EntityPlayer player, EnumHand hand)
+	public static void swingItem(PlayerEntity player, Hand hand)
 	{
-		if (player.getEntityWorld() instanceof WorldServer)
+		if (player.getEntityWorld() instanceof ServerWorld)
 		{
-			((WorldServer) player.getEntityWorld()).getEntityTracker().sendToTrackingAndSelf(player, new SPacketAnimation(player, hand == EnumHand.MAIN_HAND ? 0 : 3));
+			((ServerWorld) player.getEntityWorld()).getEntityTracker().sendToTrackingAndSelf(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
 		}
 	}
 
-	public static void updateClientServerFlight(EntityPlayerMP player, boolean state)
+	public static void updateClientServerFlight(ServerPlayerEntity player, boolean state)
 	{
 		PacketHandler.sendTo(new SetFlyPKT(state), player);
 		player.abilities.allowFlying = state;
@@ -173,13 +179,13 @@ public final class PlayerHelper
 		}
 	}
 
-	public static void updateClientServerStepHeight(EntityPlayerMP player, float value)
+	public static void updateClientServerStepHeight(ServerPlayerEntity player, float value)
 	{
 		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 
-	public static void updateScore(EntityPlayerMP player, ScoreCriteria objective, int value)
+	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value)
 	{
 		// [VanillaCopy] EntityPlayerMP.updateScorePoints
 		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), obj -> obj.setScorePoints(value));

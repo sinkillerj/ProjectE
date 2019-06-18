@@ -3,30 +3,37 @@ package moze_intel.projecte.gameObjs.entity;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 
-public class EntityLensProjectile extends EntityThrowable
+public class EntityLensProjectile extends ThrowableEntity
 {
 	private int charge;
 	
-	public EntityLensProjectile(World world) 
+	public EntityLensProjectile(EntityType<EntityLensProjectile> type, World world)
 	{
-		super(ObjHandler.LENS_PROJECTILE, world);
+		super(type, world);
 	}
 
-	public EntityLensProjectile(EntityPlayer entity, int charge, World world)
+	public EntityLensProjectile(PlayerEntity entity, int charge, World world)
 	{
 		super(ObjHandler.LENS_PROJECTILE, entity, world);
 		this.charge = charge;
 	}
+
+	@Override
+	protected void registerData() {}
 
 	@Override
 	public void tick()
@@ -47,7 +54,7 @@ public class EntityLensProjectile extends EntityThrowable
 		if (this.isInWater())
 		{
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, posX, posY, posZ, 2, 0, 0, 0, 0);
+			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, posX, posY, posZ, 2, 0, 0, 0, 0);
 			this.remove();
 		}
 	}
@@ -69,14 +76,14 @@ public class EntityLensProjectile extends EntityThrowable
 	}
 
 	@Override
-	public void writeAdditional(NBTTagCompound nbt)
+	public void writeAdditional(CompoundNBT nbt)
 	{
 		super.writeAdditional(nbt);
 		nbt.putInt("Charge", charge);
 	}
 
 	@Override
-	public void readAdditional(NBTTagCompound nbt)
+	public void readAdditional(CompoundNBT nbt)
 	{
 		super.readAdditional(nbt);
 		charge = nbt.getInt("Charge");

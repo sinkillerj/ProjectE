@@ -4,19 +4,23 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +42,7 @@ public class Pedestal extends Block implements ITileEntityProvider
 
     @Nonnull
     @Override
-    public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
     {
         return SHAPE;
     }
@@ -53,7 +57,7 @@ public class Pedestal extends Block implements ITileEntityProvider
             if (!stack.isEmpty())
             {
                 tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
-                EntityItem ent = new EntityItem(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
+                ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
                 ent.setItem(stack);
                 world.spawnEntity(ent);
             }
@@ -61,14 +65,14 @@ public class Pedestal extends Block implements ITileEntityProvider
     }
 
     @Override
-    public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
     {
         dropItem(world, pos);
         super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override
-    public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player)
+    public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
     {
         if (!world.isRemote)
         {
@@ -78,7 +82,7 @@ public class Pedestal extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
@@ -113,7 +117,7 @@ public class Pedestal extends Block implements ITileEntityProvider
 
     // [VanillaCopy] Adapted from BlockNote
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos)
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos)
     {
         boolean flag = world.isBlockPowered(pos);
         TileEntity te = world.getTileEntity(pos);
@@ -137,7 +141,7 @@ public class Pedestal extends Block implements ITileEntityProvider
     }
 
 	@Override
-    public boolean isFullCube(IBlockState state)
+    public boolean isFullCube(BlockState state)
     {
         return false;
     }
@@ -152,8 +156,8 @@ public class Pedestal extends Block implements ITileEntityProvider
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flags)
     {
-        tooltip.add(new TextComponentTranslation("pe.pedestal.tooltip1"));
-        tooltip.add(new TextComponentTranslation("pe.pedestal.tooltip2"));
+        tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip1"));
+        tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip2"));
     }
 
 }

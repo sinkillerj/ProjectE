@@ -10,9 +10,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -31,7 +34,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     public GemFeet(Properties props)
     {
-        super(EntityEquipmentSlot.FEET, props);
+        super(EquipmentSlotType.FEET, props);
     }
 
     public static boolean isStepAssistEnabled(ItemStack boots)
@@ -40,7 +43,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     }
 
-    public void toggleStepAssist(ItemStack boots, EntityPlayer player)
+    public void toggleStepAssist(ItemStack boots, PlayerEntity player)
     {
         boolean value;
 
@@ -57,8 +60,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
         TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
         String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
-        player.sendMessage(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ")
-                .appendSibling(new TextComponentTranslation(s).setStyle(new Style().setColor(e))));
+        player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
+                .appendSibling(new TranslationTextComponent(s).setStyle(new Style().setColor(e))));
     }
 
     private static boolean isJumpPressed()
@@ -68,11 +71,11 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     }
 
     @Override
-    public void onArmorTick(ItemStack stack, World world, EntityPlayer player)
+    public void onArmorTick(ItemStack stack, World world, PlayerEntity player)
     {
         if (!world.isRemote)
         {
-            EntityPlayerMP playerMP = ((EntityPlayerMP) player);
+            ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
             playerMP.fallDistance = 0;
         }
         else
@@ -108,13 +111,13 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags)
     {
-        tooltips.add(new TextComponentTranslation("pe.gem.feet.lorename"));
-        tooltips.add(new TextComponentTranslation("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+        tooltips.add(new TranslationTextComponent("pe.gem.feet.lorename"));
+        tooltips.add(new TranslationTextComponent("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
         TextFormatting color = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
-        TextComponentTranslation status = new TextComponentTranslation(canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
+        TranslationTextComponent status = new TranslationTextComponent(canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
         status.setStyle(new Style().setColor(color));
-        tooltips.add(new TextComponentTranslation("pe.gem.stepassist_tooltip").appendText(" ").appendSibling(status));
+        tooltips.add(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ").appendSibling(status));
     }
 
     private boolean canStep(ItemStack stack)
@@ -124,24 +127,24 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
     @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot slot, ItemStack stack)
+    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
     {
-        if (slot != EntityEquipmentSlot.FEET) return super.getAttributeModifiers(slot, stack);
+        if (slot != EquipmentSlotType.FEET) return super.getAttributeModifiers(slot, stack);
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
         multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2).setSaved(false));
         return multimap;
     }
 
     @Override
-    public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
+    public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player)
     {
-        return player.getItemStackFromSlot(EntityEquipmentSlot.FEET) == stack;
+        return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack;
     }
 
     @Override
-    public boolean canAssistStep(ItemStack stack, EntityPlayerMP player)
+    public boolean canAssistStep(ItemStack stack, ServerPlayerEntity player)
     {
-        return player.getItemStackFromSlot(EntityEquipmentSlot.FEET) == stack
+        return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack
                 && canStep(stack);
     }
 }

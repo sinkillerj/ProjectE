@@ -3,7 +3,7 @@ package moze_intel.projecte.network.packets;
 import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -32,7 +32,7 @@ public class ShowBagPKT {
 		public static void handle(ShowBagPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> {
-				Minecraft.getInstance().displayGuiScreen(new GUIAlchChest(Minecraft.getInstance().player.inventory, EnumHand.OFF_HAND, new ItemStackHandler(104)));
+				Minecraft.getInstance().displayGuiScreen(new GUIAlchChest(Minecraft.getInstance().player.inventory, Hand.OFF_HAND, new ItemStackHandler(104)));
 				Minecraft.getInstance().player.openContainer.windowId = message.windowId;
 			});
 			ctx.get().setPacketHandled(true);

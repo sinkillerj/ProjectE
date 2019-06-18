@@ -7,12 +7,12 @@ import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
@@ -20,7 +20,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public abstract class TileEmc extends TileEmcBase implements ITickable
+public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 {
 	public TileEmc(TileEntityType<?> type)
 	{
@@ -35,9 +35,9 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 	}
 
 	@Override
-	public final NBTTagCompound getUpdateTag()
+	public final CompoundNBT getUpdateTag()
 	{
-		return write(new NBTTagCompound());
+		return write(new CompoundNBT());
 	}
 
 	protected boolean hasMaxedEmc()
@@ -60,10 +60,10 @@ public abstract class TileEmc extends TileEmcBase implements ITickable
 		}
 
 
-		Map<EnumFacing, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
+		Map<Direction, TileEntity> tiles = Maps.filterValues(WorldHelper.getAdjacentTileEntitiesMapped(world, this), Predicates.instanceOf(IEmcAcceptor.class));
 
 		double emcPer = emc / tiles.size();
-		for (Map.Entry<EnumFacing, TileEntity> entry : tiles.entrySet())
+		for (Map.Entry<Direction, TileEntity> entry : tiles.entrySet())
 		{
 			if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile)
 			{

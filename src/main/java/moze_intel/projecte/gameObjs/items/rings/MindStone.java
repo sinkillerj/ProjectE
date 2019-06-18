@@ -7,13 +7,13 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -35,14 +35,14 @@ public class MindStone extends RingToggle implements IPedestalItem
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
 	{
-		if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayer))
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
 		{
 			return;
 		}
 
 		super.inventoryTick(stack, world, entity, slot, held);
 
-		EntityPlayer player = (EntityPlayer) entity;
+		PlayerEntity player = (PlayerEntity) entity;
 
         if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
@@ -57,7 +57,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote && !stack.getOrCreateTag().getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)
@@ -70,7 +70,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 			}
 		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -79,15 +79,15 @@ public class MindStone extends RingToggle implements IPedestalItem
 	{
 		if(stack.getTag() != null)
 		{
-			ITextComponent label = new TextComponentTranslation("pe.misc.storedxp_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_GREEN));
-			ITextComponent value = new TextComponentString(String.format("%,d", getStoredXP(stack))).setStyle(new Style().setColor(TextFormatting.GREEN));
+			ITextComponent label = new TranslationTextComponent("pe.misc.storedxp_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_GREEN));
+			ITextComponent value = new StringTextComponent(String.format("%,d", getStoredXP(stack))).setStyle(new Style().setColor(TextFormatting.GREEN));
 			tooltip.add(label.appendText(" ").appendSibling(value));
 		}
 
 	}
 
 
-	private void removeXP(EntityPlayer player, int amount)
+	private void removeXP(PlayerEntity player, int amount)
 	{
 		int experiencetotal = getXP(player) - amount;
 		
@@ -105,7 +105,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		}
 	}
 
-	private void addXP(EntityPlayer player, int amount)
+	private void addXP(PlayerEntity player, int amount)
 	{
 		int experiencetotal = getXP(player) + amount;
 		player.experienceTotal = experiencetotal;
@@ -113,7 +113,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		player.experience = (float)(experiencetotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
 	}
 
-	private int getXP(EntityPlayer player)
+	private int getXP(PlayerEntity player)
 	{
 		return (int)(getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
 	}
@@ -203,8 +203,8 @@ public class MindStone extends RingToggle implements IPedestalItem
 			return;
 		}
 		DMPedestalTile tile = (DMPedestalTile) te;
-		List<EntityXPOrb> orbs = world.getEntitiesWithinAABB(EntityXPOrb.class, tile.getEffectBounds());
-		for (EntityXPOrb orb : orbs)
+		List<ExperienceOrbEntity> orbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, tile.getEffectBounds());
+		for (ExperienceOrbEntity orb : orbs)
 		{
 			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 			if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21)
@@ -215,7 +215,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 
 	}
 
-	private void suckXP(EntityXPOrb orb, ItemStack mindStone)
+	private void suckXP(ExperienceOrbEntity orb, ItemStack mindStone)
 	{
 		long l = getStoredXP(mindStone);
 		if (l + orb.xpValue > Integer.MAX_VALUE)
@@ -234,6 +234,6 @@ public class MindStone extends RingToggle implements IPedestalItem
 	@Override
 	public List<ITextComponent> getPedestalDescription()
 	{
-		return Lists.newArrayList(new TextComponentTranslation("pe.mind.pedestal1"));
+		return Lists.newArrayList(new TranslationTextComponent("pe.mind.pedestal1"));
 	}
 }

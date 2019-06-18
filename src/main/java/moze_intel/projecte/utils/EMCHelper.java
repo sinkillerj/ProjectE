@@ -6,9 +6,10 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -27,14 +28,14 @@ public final class EMCHelper
 	 * Consumes EMC from fuel items or Klein Stars
 	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
 	 */
-	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
+	public static double consumePlayerFuel(PlayerEntity player, double minFuel)
 	{
 		if (player.abilities.isCreativeMode)
 		{
 			return minFuel;
 		}
 
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).orElseThrow(NullPointerException::new);
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		boolean metRequirement = false;
 		int emcConsumed = 0;

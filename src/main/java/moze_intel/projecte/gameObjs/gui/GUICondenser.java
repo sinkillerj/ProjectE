@@ -6,15 +6,15 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
 
-public class GUICondenser extends GuiContainer
+public class GUICondenser extends ContainerScreen
 {
 	protected final ResourceLocation texture;
 	protected final CondenserContainer container;
@@ -28,7 +28,7 @@ public class GUICondenser extends GuiContainer
 		this.ySize = 233;
 	}
 
-	public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile)
+	public GUICondenser(PlayerInventory invPlayer, CondenserTile tile)
 	{
 		this(new CondenserContainer(invPlayer, tile), new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png"));
 	}

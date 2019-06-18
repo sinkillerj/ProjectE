@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -11,5 +11,5 @@ public interface IFlightProvider
     /**
      * @return If this stack currently should provide its bearer flight
      */
-    boolean canProvideFlight(ItemStack stack, EntityPlayerMP player);
+    boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player);
 }

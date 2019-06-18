@@ -11,6 +11,6 @@ public class RedAxe extends DarkAxe
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
-		this.harvestMaterials.add(Material.VINE);
+		this.harvestMaterials.add(Material.TALL_PLANTS);
 	}
 }

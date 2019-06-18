@@ -4,12 +4,14 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -82,7 +84,7 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		getOutput().deserializeNBT(nbt.getCompound("Output"));
@@ -90,7 +92,7 @@ public class CondenserMK2Tile extends CondenserTile
 
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.put("Output", getOutput().serializeNBT());
@@ -98,7 +100,7 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public Container createContainer(InventoryPlayer playerInv, EntityPlayer player)
+	public Container createContainer(PlayerInventory playerInv, PlayerEntity player)
 	{
 		return new CondenserMK2Container(playerInv, this);
 	}

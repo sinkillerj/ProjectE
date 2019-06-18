@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.event;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
@@ -15,10 +16,10 @@ import javax.annotation.Nonnull;
 @Cancelable
 public class PlayerAttemptLearnEvent extends Event
 {
-    private final EntityPlayer player;
+    private final PlayerEntity player;
     private final ItemStack stack;
 
-    public PlayerAttemptLearnEvent(@Nonnull EntityPlayer entityPlayer, @Nonnull ItemStack stack)
+    public PlayerAttemptLearnEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemStack stack)
     {
         player = entityPlayer;
         this.stack = stack;
@@ -28,7 +29,7 @@ public class PlayerAttemptLearnEvent extends Event
      * @return The player who is attempting to learn a new item.
      */
     @Nonnull
-    public EntityPlayer getPlayer()
+    public PlayerEntity getPlayer()
     {
         return player;
     }

@@ -14,15 +14,17 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,12 +47,12 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int par4, boolean par5)
 	{
-		if (world.isRemote || !(entity instanceof EntityPlayer))
+		if (world.isRemote || !(entity instanceof PlayerEntity))
 		{
 			return;
 		}
 		
-		EntityPlayer player = (EntityPlayer) entity;
+		PlayerEntity player = (PlayerEntity) entity;
 		player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 			timers.activateRepair();
 			if (timers.canRepair())
@@ -60,7 +62,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		});
 	}
 
-	private void repairAllItems(EntityPlayer player)
+	private void repairAllItems(PlayerEntity player)
 	{
 		LazyOptional<IItemHandler> inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		if (inv.isPresent())
@@ -78,7 +80,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		}
 	}
 
-	private void repairInv(IItemHandler inv, EntityPlayer player)
+	private void repairInv(IItemHandler inv, PlayerEntity player)
 	{
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
@@ -89,7 +91,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				continue;
 			}
 
-			if (invStack == player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) && player.isSwingInProgress)
+			if (invStack == player.getItemStackFromSlot(EquipmentSlotType.MAINHAND) && player.isSwingInProgress)
 			{
 				//Don't repair item that is currently used by the player.
 				continue;
@@ -111,7 +113,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{
-				world.getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds()).forEach(this::repairAllItems);
+				world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repair.get());
 			}
 			else
@@ -128,8 +130,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.repair.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.repairtalisman.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repair.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repair.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
@@ -189,7 +191,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull EntityPlayer player, @Nonnull ItemStack stack)
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack)
 	{
 		if (player.getEntityWorld().isRemote)
 		{

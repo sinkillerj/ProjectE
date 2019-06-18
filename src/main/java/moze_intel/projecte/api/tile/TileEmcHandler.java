@@ -1,7 +1,8 @@
 package moze_intel.projecte.api.tile;
 
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +27,7 @@ public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcPro
 
 	// -- IEMCAcceptor -- //
 	@Override
-	public double acceptEMC(@Nonnull EnumFacing side, double toAccept)
+	public double acceptEMC(@Nonnull Direction side, double toAccept)
 	{
 		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 		currentEMC += toAdd;
@@ -35,7 +36,7 @@ public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcPro
 
 	// -- IEMCProvider -- //
 	@Override
-	public double provideEMC(@Nonnull EnumFacing side, double toExtract)
+	public double provideEMC(@Nonnull Direction side, double toExtract)
 	{
 		double toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;

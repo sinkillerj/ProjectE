@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -37,7 +37,7 @@ public class UpdateWindowIntPKT {
         public static void handle(final UpdateWindowIntPKT msg, Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() -> {
-                EntityPlayer player = Minecraft.getInstance().player;
+                PlayerEntity player = Minecraft.getInstance().player;
                 if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
                 {
                     player.openContainer.updateProgressBar(msg.propId, msg.propVal);

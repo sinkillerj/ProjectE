@@ -5,18 +5,19 @@ import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUICollectorMK2 extends GuiContainer
+public class GUICollectorMK2 extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector2.png");
 	private final CollectorMK2Tile tile;
 	private final CollectorMK2Container container;
 	
-	public GUICollectorMK2(InventoryPlayer invPlayer, CollectorMK2Tile tile)
+	public GUICollectorMK2(PlayerInventory invPlayer, CollectorMK2Tile tile)
 	{
 		super(new CollectorMK2Container(invPlayer, tile));
 		this.container = ((CollectorMK2Container) inventorySlots);

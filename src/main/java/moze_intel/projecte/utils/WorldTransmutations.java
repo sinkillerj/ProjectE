@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.*;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.InterModComms;
@@ -67,12 +67,12 @@ public final class WorldTransmutations
 		registerConsecutivePairs(carpets);
 	}
 
-	public static IBlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking)
+	public static BlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking)
 	{
 		return getWorldTransmutation(world.getBlockState(pos), isSneaking);
 	}
 
-	public static IBlockState getWorldTransmutation(IBlockState current, boolean isSneaking)
+	public static BlockState getWorldTransmutation(BlockState current, boolean isSneaking)
 	{
 		for (WorldTransmutationEntry e : ENTRIES)
 		{

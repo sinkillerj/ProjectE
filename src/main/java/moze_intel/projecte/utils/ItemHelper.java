@@ -2,9 +2,9 @@ package moze_intel.projecte.utils;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -184,11 +184,11 @@ public final class ItemHelper
 		return isOre(Block.getBlockFromItem(i));
 	}
 
-	public static IBlockState stackToState(ItemStack stack)
+	public static BlockState stackToState(ItemStack stack)
 	{
-		if (stack.getItem() instanceof ItemBlock)
+		if (stack.getItem() instanceof BlockItem)
 		{
-			return ((ItemBlock) stack.getItem()).getBlock().getDefaultState();
+			return ((BlockItem) stack.getItem()).getBlock().getDefaultState();
 		}
 		else
 		{

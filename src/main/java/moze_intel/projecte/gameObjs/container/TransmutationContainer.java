@@ -11,14 +11,19 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -31,7 +36,7 @@ public class TransmutationContainer extends Container
 	public final TransmutationInventory transmutationInventory;
 	private final int blocked;
 
-	public TransmutationContainer(InventoryPlayer invPlayer, TransmutationInventory inventory, @Nullable EnumHand hand)
+	public TransmutationContainer(PlayerInventory invPlayer, TransmutationInventory inventory, @Nullable Hand hand)
 	{
 		this.transmutationInventory = inventory;
 		
@@ -73,18 +78,18 @@ public class TransmutationContainer extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlot(new Slot(invPlayer, i, 35 + i * 18, 175));
 
-		blocked = hand == EnumHand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
+		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer var1)
+	public boolean canInteractWith(@Nonnull PlayerEntity var1)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -106,7 +111,7 @@ public class TransmutationContainer extends Container
 			
 			int stackSize = 0;
 
-			IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP).orElseThrow(NullPointerException::new);
+			IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
 
 			while (transmutationInventory.provider.getEmc() >= emc && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory.mainInventory, newStack))
 			{
@@ -145,7 +150,7 @@ public class TransmutationContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
 	{
 		if (player.getEntityWorld().isRemote && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs)
 		{

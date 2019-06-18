@@ -3,10 +3,11 @@ package moze_intel.projecte.integration.curios;
 import com.google.common.collect.ImmutableSet;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -30,7 +31,7 @@ import java.util.Set;
 public class CuriosIntegration
 {
     @Nullable
-    public static IItemHandler getAll(EntityLivingBase living) {
+    public static IItemHandler getAll(LivingEntity living) {
         return CuriosAPI.getCuriosHandler(living).map(handler -> {
             IItemHandlerModifiable[] invs = handler.getCurioMap().values().toArray(new IItemHandlerModifiable[0]);
             return new CombinedInvWrapper(invs);
@@ -53,7 +54,7 @@ public class CuriosIntegration
 
         @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
             return CuriosCapability.ITEM.orEmpty(cap, curio);
         }
     }

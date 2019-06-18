@@ -3,22 +3,27 @@ package moze_intel.projecte.gameObjs.entity;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityFireProjectile extends EntityThrowable
+public class EntityFireProjectile extends ThrowableEntity
 {
-	public EntityFireProjectile(World world)
+	public EntityFireProjectile(EntityType<EntityFireProjectile> type, World world)
 	{
-		super(ObjHandler.FIRE_PROJECTILE, world);
+		super(type, world);
 	}
 
-	public EntityFireProjectile(EntityPlayer entity, World world)
+	public EntityFireProjectile(PlayerEntity entity, World world)
 	{
 		super(ObjHandler.FIRE_PROJECTILE, entity, world);
 	}
@@ -32,7 +37,7 @@ public class EntityFireProjectile extends EntityThrowable
 	@Override
 	protected void onImpact(RayTraceResult mop)
 	{
-		if(!world.isRemote && getThrower() instanceof EntityPlayer && mop.type == RayTraceResult.Type.BLOCK)
+		if(!world.isRemote && getThrower() instanceof PlayerEntity && mop.type == RayTraceResult.Type.BLOCK)
 		{
 			BlockPos pos = mop.getBlockPos();
 			Block block = world.getBlockState(pos).getBlock();
@@ -47,7 +52,7 @@ public class EntityFireProjectile extends EntityThrowable
 				{
 					if(world.getBlockState(currentPos).getBlock() == Blocks.SAND)
 					{
-						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), pos, Blocks.GLASS.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), pos, Blocks.GLASS.getDefaultState());
 					}
 				}
 			}
@@ -57,7 +62,7 @@ public class EntityFireProjectile extends EntityThrowable
 				{
 					if(world.isAirBlock(currentPos))
 					{
-						PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), currentPos, Blocks.FIRE.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), currentPos, Blocks.FIRE.getDefaultState());
 					}
 				}
 			}
@@ -67,4 +72,7 @@ public class EntityFireProjectile extends EntityThrowable
 			remove();
 		}
 	}
+
+	@Override
+	protected void registerData() {}
 }

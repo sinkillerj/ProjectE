@@ -2,15 +2,17 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Explosion;
@@ -54,7 +56,7 @@ public class NovaExplosion extends Explosion
 
 		if (this.damagesTerrain) {
 			for(BlockPos blockpos : this.getAffectedBlockPositions()) {
-				IBlockState iblockstate = this.world.getBlockState(blockpos);
+				BlockState iblockstate = this.world.getBlockState(blockpos);
 				Block block = iblockstate.getBlock();
 				if (spawnParticles) {
 					double d0 = (double)((float)blockpos.getX() + this.world.rand.nextFloat());

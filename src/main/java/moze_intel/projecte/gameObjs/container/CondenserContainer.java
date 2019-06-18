@@ -10,12 +10,15 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,14 +33,14 @@ public class CondenserContainer extends LongContainer
 	public long displayEmc;
 	public long requiredEmc;
 	
-	public CondenserContainer(InventoryPlayer invPlayer, CondenserTile condenser)
+	public CondenserContainer(PlayerInventory invPlayer, CondenserTile condenser)
 	{
 		tile = condenser;
 		tile.numPlayersUsing++;
 		initSlots(invPlayer);
 	}
 
-	protected void initSlots(InventoryPlayer invPlayer)
+	protected void initSlots(PlayerInventory invPlayer)
 	{
 		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
 
@@ -117,7 +120,7 @@ public class CondenserContainer extends LongContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -151,14 +154,14 @@ public class CondenserContainer extends LongContainer
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() instanceof Condenser
 			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 	
 	@Override
-	public void onContainerClosed(EntityPlayer player)
+	public void onContainerClosed(PlayerEntity player)
 	{
 		super.onContainerClosed(player);
 		tile.numPlayersUsing--;
@@ -166,7 +169,7 @@ public class CondenserContainer extends LongContainer
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
 	{
 		if (slot == 0 && (!tile.getLock().getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack()))))
 		{

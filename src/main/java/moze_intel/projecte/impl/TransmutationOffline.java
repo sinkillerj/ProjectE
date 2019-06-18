@@ -6,10 +6,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
@@ -63,8 +63,8 @@ public class TransmutationOffline
             File player = new File(playerData, playerUUID.toString() + ".dat");
             if (player.exists() && player.isFile()) {
                 try(FileInputStream in = new FileInputStream(player)) {
-                    NBTTagCompound playerDat = CompressedStreamTools.readCompressed(in); // No need to create buffered stream, that call does it for us
-                    NBTTagCompound knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
+                    CompoundNBT playerDat = CompressedStreamTools.readCompressed(in); // No need to create buffered stream, that call does it for us
+                    CompoundNBT knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
 
                     IKnowledgeProvider provider = ProjectEAPI.KNOWLEDGE_CAPABILITY.getDefaultInstance();
                     ProjectEAPI.KNOWLEDGE_CAPABILITY.readNBT(provider, null, knowledgeProvider);
@@ -130,17 +130,17 @@ public class TransmutationOffline
             public void setEmc(double emc) {}
 
             @Override
-            public void sync(@Nonnull EntityPlayerMP player) {
+            public void sync(@Nonnull ServerPlayerEntity player) {
                 toCopy.sync(player);
             }
 
             @Override
-            public NBTTagCompound serializeNBT() {
+            public CompoundNBT serializeNBT() {
                 return toCopy.serializeNBT();
             }
 
             @Override
-            public void deserializeNBT(NBTTagCompound nbt) {}
+            public void deserializeNBT(CompoundNBT nbt) {}
         };
     }
 }

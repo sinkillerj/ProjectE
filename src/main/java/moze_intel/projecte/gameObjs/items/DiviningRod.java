@@ -6,15 +6,18 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -40,14 +43,14 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 
 		if (world.isRemote)
 		{
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 
 		List<Long> emcValues = new ArrayList<>();
@@ -60,7 +63,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
-			IBlockState state = world.getBlockState(digPos);
+			BlockState state = world.getBlockState(digPos);
 			Block block = state.getBlock();
 
 			if (world.isAirBlock(digPos))
@@ -115,7 +118,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 		if (numBlocks == 0)
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 
 		long[] maxValues = new long[3];
@@ -134,20 +137,20 @@ public class DiviningRod extends ItemPE implements IModeChanger
 			maxValues[i] = emcValues.get(i);
 		}
 
-		player.sendMessage(new TextComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+		player.sendMessage(new TranslationTextComponent("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3)
 		{
-			player.sendMessage(new TextComponentTranslation("pe.divining.maxemc", maxValues[0]));
+			player.sendMessage(new TranslationTextComponent("pe.divining.maxemc", maxValues[0]));
 		}
 
 		if (this == ObjHandler.dRod3)
 		{
-			player.sendMessage(new TextComponentTranslation("pe.divining.secondmax", maxValues[1]));
-			player.sendMessage(new TextComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+			player.sendMessage(new TranslationTextComponent("pe.divining.secondmax", maxValues[1]));
+			player.sendMessage(new TranslationTextComponent("pe.divining.thirdmax", maxValues[2]));
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	/**
@@ -167,7 +170,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		if (modes.length == 1)
 		{
@@ -182,7 +185,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
             stack.getOrCreateTag().putByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
 		}
 
-		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modes[getMode(stack)]));
 
 		return true;
 	}
@@ -191,9 +194,9 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(new TextComponentTranslation("pe.item.mode")
+		list.add(new TranslationTextComponent("pe.item.mode")
 				.appendText(": ")
-				.appendSibling(new TextComponentString(modes[getMode(stack)])
+				.appendSibling(new StringTextComponent(modes[getMode(stack)])
 						.setStyle(new Style().setColor(TextFormatting.AQUA))));
 	}
 }

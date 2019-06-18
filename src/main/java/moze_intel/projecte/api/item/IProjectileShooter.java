@@ -1,8 +1,9 @@
 package moze_intel.projecte.api.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,5 +20,5 @@ public interface IProjectileShooter
 	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
 	 * @return If the projectile was actually fired
 	 */
-	boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand);
+	boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand);
 }

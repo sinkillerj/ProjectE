@@ -3,8 +3,9 @@ package moze_intel.projecte.gameObjs.items.tools;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
 public class RedPick extends DarkPick
@@ -21,7 +22,7 @@ public class RedPick extends DarkPick
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		Block b = state.getBlock();
 		if (b == ObjHandler.rmBlock || b == ObjHandler.rmFurnaceOff)

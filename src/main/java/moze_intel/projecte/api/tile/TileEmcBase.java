@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.tile;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -71,7 +72,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound tag)
+	public CompoundNBT write(CompoundNBT tag)
 	{
 		tag = super.write(tag);
 		if (currentEMC > maximumEMC)
@@ -83,7 +84,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	}
 
 	@Override
-	public void read(NBTTagCompound tag)
+	public void read(CompoundNBT tag)
 	{
 		super.read(tag);
 		double set = tag.getDouble("EMC");

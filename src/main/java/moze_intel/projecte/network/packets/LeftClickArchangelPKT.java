@@ -2,7 +2,7 @@ package moze_intel.projecte.network.packets;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -22,7 +22,7 @@ public class LeftClickArchangelPKT {
 		public static void handle(LeftClickArchangelPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> {
-				EntityPlayer player = ctx.get().getSender();
+				PlayerEntity player = ctx.get().getSender();
 				ItemStack main = player.getHeldItemMainhand();
 				if (!main.isEmpty() && main.getItem() == ObjHandler.angelSmite)
 				{

@@ -3,11 +3,12 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -43,16 +44,16 @@ public class KleinStar extends ItemPE implements IItemEmc
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
 		{
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
-			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
 		
-		return ActionResult.newResult(EnumActionResult.PASS, stack);
+		return ActionResult.newResult(ActionResultType.PASS, stack);
 	}
 	
 	public enum EnumKleinTier

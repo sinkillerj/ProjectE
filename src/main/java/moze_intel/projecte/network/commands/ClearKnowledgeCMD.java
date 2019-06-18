@@ -9,9 +9,10 @@ import moze_intel.projecte.network.packets.KnowledgeClearPKT;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collection;
@@ -26,17 +27,17 @@ public class ClearKnowledgeCMD
 						.executes(cs -> execute(cs, EntityArgument.getPlayers(cs, "targets"))));
 	}
 
-	private static int execute(CommandContext<CommandSource> ctx, Collection<EntityPlayerMP> targets)
+	private static int execute(CommandContext<CommandSource> ctx, Collection<ServerPlayerEntity> targets)
 	{
-		for (EntityPlayerMP player : targets)
+		for (ServerPlayerEntity player : targets)
 		{
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-			ctx.getSource().sendFeedback(new TextComponentTranslation("pe.command.clearknowledge.success", player.getDisplayName()), true);
+			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.clearknowledge.success", player.getDisplayName()), true);
 
 			if (player != ctx.getSource().getEntity())
 			{
-				player.sendMessage(new TextComponentTranslation("pe.command.clearknowledge.notify", ctx.getSource().getDisplayName()).setStyle(new Style().setColor(TextFormatting.RED)));
+				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", ctx.getSource().getDisplayName()).setStyle(new Style().setColor(TextFormatting.RED)));
 			}
 		}
 

@@ -9,34 +9,42 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRedstoneOre;
-import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneOreBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Enchantments;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.init.Particles;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
@@ -64,13 +72,13 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, @Nonnull IBlockState state)
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull BlockState state)
 	{
 		return harvestMaterials.contains(state.getMaterial());
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		if (this.peToolMaterial == EnumMatterType.DARK_MATTER)
 		{
@@ -92,7 +100,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void clearTagAOE(World world, ItemStack stack, EntityPlayer player, Tag<Block> tag, long emcCost, EnumHand hand)
+	protected void clearTagAOE(World world, ItemStack stack, PlayerEntity player, Tag<Block> tag, long emcCost, Hand hand)
 	{
 		int charge = getCharge(stack);
 		if (charge == 0 || world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get())
@@ -107,20 +115,20 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 
 			if (tag.contains(state.getBlock()))
 			{
 				List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
 
-				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
+				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)
 						&& consumeFuel(player, stack, emcCost, true))
 				{
 					drops.addAll(blockDrops);
 					world.removeBlock(pos);
 					if (world.rand.nextInt(5) == 0)
 					{
-						((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
+						((ServerWorld) world).spawnParticle(Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
 					}
 				}
 			}
@@ -133,7 +141,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void tillAOE(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sidehit, long emcCost)
+	protected void tillAOE(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost)
 	{
 		int charge = this.getCharge(stack);
 		boolean hasAction = false;
@@ -141,8 +149,8 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos newPos : BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
 		{
-			IBlockState state = world.getBlockState(newPos);
-			IBlockState stateAbove = world.getBlockState(newPos.up());
+			BlockState state = world.getBlockState(newPos);
+			BlockState stateAbove = world.getBlockState(newPos.up());
 			Block block = state.getBlock();
 			Block blockAbove = stateAbove.getBlock();
 
@@ -160,7 +168,7 @@ public abstract class PEToolBase extends ItemMode
 				}
 				else
 				{
-					ItemUseContext ctx = new ItemUseContext(player, stack, newPos, EnumFacing.UP, 0, 0, 0);
+					ItemUseContext ctx = new ItemUseContext(player, stack, newPos, Direction.UP, 0, 0, 0);
 					if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(ctx)))
 					{
 						continue;
@@ -169,13 +177,13 @@ public abstract class PEToolBase extends ItemMode
 					// The initial block we target is always free
 					if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || consumeFuel(player, stack, emcCost, true))
 					{
-						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), newPos, Blocks.FARMLAND.getDefaultState());
+						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), newPos, Blocks.FARMLAND.getDefaultState());
 
 						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.VINE)
 								&& !(blockAbove.hasTileEntity(stateAbove)) // Just in case, you never know
 								)
 						{
-							if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), newPos)) {
+							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos)) {
 								world.destroyBlock(newPos.up(), true);
 							}
 						}
@@ -197,14 +205,14 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
-	protected void digBasedOnMode(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase living)
+	protected void digBasedOnMode(ItemStack stack, World world, Block block, BlockPos pos, LivingEntity living)
 	{
-		if (world.isRemote || !(living instanceof EntityPlayer))
+		if (world.isRemote || !(living instanceof PlayerEntity))
 		{
 			return;
 		}
 
-		EntityPlayer player = (EntityPlayer) living;
+		PlayerEntity player = (PlayerEntity) living;
 		byte mode = this.getMode(stack);
 
 		if (mode == 0) // Standard
@@ -219,26 +227,26 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		EnumFacing direction = mop.sideHit;
+		Direction direction = mop.sideHit;
 		BlockPos hitPos = mop.getBlockPos();
 		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
 		if (!ProjectEConfig.items.disableAllRadiusMining.get()) {
 			switch (mode) {
 				case 1: // 3x Tallshot
-					box = new AxisAlignedBB(hitPos.offset(EnumFacing.DOWN, 1), hitPos.offset(EnumFacing.UP, 1)); break;
+					box = new AxisAlignedBB(hitPos.offset(Direction.DOWN, 1), hitPos.offset(Direction.UP, 1)); break;
 				case 2: // 3x Wideshot
 					switch (direction.getAxis())
 					{
-						case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
+						case X: box = new AxisAlignedBB(hitPos.offset(Direction.SOUTH), hitPos.offset(Direction.NORTH)); break;
 						case Y:
 							switch (player.getHorizontalFacing().getAxis())
 							{
-								case X: box = new AxisAlignedBB(hitPos.offset(EnumFacing.SOUTH), hitPos.offset(EnumFacing.NORTH)); break;
-								case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
+								case X: box = new AxisAlignedBB(hitPos.offset(Direction.SOUTH), hitPos.offset(Direction.NORTH)); break;
+								case Z: box = new AxisAlignedBB(hitPos.offset(Direction.WEST), hitPos.offset(Direction.EAST)); break;
 							}
 							break;
-						case Z: box = new AxisAlignedBB(hitPos.offset(EnumFacing.WEST), hitPos.offset(EnumFacing.EAST)); break;
+						case Z: box = new AxisAlignedBB(hitPos.offset(Direction.WEST), hitPos.offset(Direction.EAST)); break;
 					}
 					break;
 				case 3: // 3x Longshot
@@ -251,16 +259,16 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
-			IBlockState state = world.getBlockState(digPos);
+			BlockState state = world.getBlockState(digPos);
 			Block b = state.getBlock();
 
 			if (b != Blocks.AIR
 					&& state.getBlockHardness(world, digPos) != -1
 					&& (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
-					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), digPos))
+					&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), digPos))
 			{
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
-				if (!(b instanceof BlockShulkerBox))
+				if (!(b instanceof ShulkerBoxBlock))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
 				world.removeBlock(digPos);
 			}
@@ -272,7 +280,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
-	protected void digAOE(ItemStack stack, World world, EntityPlayer player, boolean affectDepth, long emcCost, EnumHand hand)
+	protected void digAOE(ItemStack stack, World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand)
 	{
 		if (world.isRemote || this.getCharge(stack) == 0 || ProjectEConfig.items.disableAllRadiusMining.get())
 		{
@@ -293,17 +301,17 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 
 			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1
 					&& canHarvestBlock(stack, state)
-					&& PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos)
+					&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)
 					&& consumeFuel(player, stack, emcCost, true)
 					)
 			{
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
-				if (!(b instanceof BlockShulkerBox))
+				if (!(b instanceof ShulkerBoxBlock))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
 				world.removeBlock(pos);
 			}
@@ -321,14 +329,14 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
-	protected void attackWithCharge(ItemStack stack, EntityLivingBase damaged, EntityLivingBase damager, float baseDmg)
+	protected void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg)
 	{
-		if (!(damager instanceof EntityPlayer) || damager.getEntityWorld().isRemote)
+		if (!(damager instanceof PlayerEntity) || damager.getEntityWorld().isRemote)
 		{
 			return;
 		}
 
-		DamageSource dmg = DamageSource.causePlayerDamage((EntityPlayer) damager);
+		DamageSource dmg = DamageSource.causePlayerDamage((PlayerEntity) damager);
 		int charge = this.getCharge(stack);
 		float totalDmg = baseDmg;
 
@@ -344,7 +352,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Attacks in an AOE. Charge affects AOE, not damage (intentional). Optional per-entity EMC cost.
 	 */
-	protected void attackAOE(ItemStack stack, EntityPlayer player, boolean slayAll, float damage, long emcCost, EnumHand hand)
+	protected void attackAOE(ItemStack stack, PlayerEntity player, boolean slayAll, float damage, long emcCost, Hand hand)
 	{
 		if (player.getEntityWorld().isRemote)
 		{
@@ -364,7 +372,7 @@ public abstract class PEToolBase extends ItemMode
 				{
 					entity.attackEntityFrom(src, damage);
 				}
-				else if (entity instanceof EntityLivingBase && slayAll)
+				else if (entity instanceof LivingEntity && slayAll)
 				{
 					entity.attackEntityFrom(src, damage);
 				}
@@ -377,7 +385,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
-	protected void shearBlock(ItemStack stack, BlockPos pos, EntityPlayer player)
+	protected void shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player)
 	{
 		if (player.getEntityWorld().isRemote)
 		{
@@ -390,14 +398,14 @@ public abstract class PEToolBase extends ItemMode
 		{
 			IShearable target = (IShearable) block;
 
-			if (target.isShearable(stack, player.getEntityWorld(), pos) && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+			if (target.isShearable(stack, player.getEntityWorld(), pos) && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos))
 			{
 				List<ItemStack> drops = target.onSheared(stack, player.getEntityWorld(), pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
 
 				stack.damageItem(1, player);
-				player.addStat(StatList.BLOCK_MINED.get(block), 1);
+				player.addStat(Stats.BLOCK_MINED.get(block), 1);
 			}
 		}
 	}
@@ -405,7 +413,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
-	protected void shearEntityAOE(ItemStack stack, EntityPlayer player, long emcCost, EnumHand hand)
+	protected void shearEntityAOE(ItemStack stack, PlayerEntity player, long emcCost, Hand hand)
 	{
 		World world = player.getEntityWorld();
 		if (!world.isRemote)
@@ -452,19 +460,19 @@ public abstract class PEToolBase extends ItemMode
 						e.setPosition(ent.posX, ent.posY, ent.posZ);
 					}
 
-					if (e instanceof EntityLiving)
+					if (e instanceof MobEntity)
 					{
-						((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null, null);
+						((MobEntity) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null, null);
 					}
 
-					if (e instanceof EntitySheep)
+					if (e instanceof SheepEntity)
 					{
-						((EntitySheep) e).setFleeceColor(EnumDyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
+						((SheepEntity) e).setFleeceColor(DyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
 					}
 
-					if (e instanceof EntityAgeable)
+					if (e instanceof AgeableEntity)
 					{
-						((EntityAgeable) e).setGrowingAge(-24000);
+						((AgeableEntity) e).setGrowingAge(-24000);
 					}
 					world.spawnEntity(e);
 				}
@@ -478,7 +486,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
 	 */
-	protected void tryVeinMine(ItemStack stack, EntityPlayer player, RayTraceResult mop)
+	protected void tryVeinMine(ItemStack stack, PlayerEntity player, RayTraceResult mop)
 	{
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get())
 		{
@@ -486,7 +494,7 @@ public abstract class PEToolBase extends ItemMode
 		}
 
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
-		IBlockState target = player.getEntityWorld().getBlockState(mop.getBlockPos());
+		BlockState target = player.getEntityWorld().getBlockState(mop.getBlockPos());
 		if (target.getBlockHardness(player.getEntityWorld(), mop.getBlockPos()) <= -1 || !(canHarvestBlock(stack, target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getBlockPos(), stack)))
 		{
 			return;
@@ -496,7 +504,7 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb))
 		{
-			IBlockState state = player.getEntityWorld().getBlockState(pos);
+			BlockState state = player.getEntityWorld().getBlockState(pos);
 			if (target.getBlock() == state.getBlock())
 			{
 				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state.getBlock(), drops, 0);
@@ -514,7 +522,7 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Mines all ore veins in a Box around the player.
 	 */
-	protected void mineOreVeinsInAOE(ItemStack stack, EntityPlayer player, EnumHand hand) {
+	protected void mineOreVeinsInAOE(ItemStack stack, PlayerEntity player, Hand hand) {
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get())
 		{
 			return;
@@ -526,7 +534,7 @@ public abstract class PEToolBase extends ItemMode
 
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			if (ItemHelper.isOre(state.getBlock()) && state.getBlockHardness(player.getEntityWorld(), pos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, pos, stack)))
 			{
 				WorldHelper.harvestVein(world, player, stack, pos, state.getBlock(), drops, 0);

@@ -3,9 +3,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
         if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{

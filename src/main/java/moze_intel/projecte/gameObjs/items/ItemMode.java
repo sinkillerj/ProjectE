@@ -5,13 +5,14 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,7 +53,7 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	}
 	
 	@Override
-	public boolean changeMode(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, EnumHand hand)
+	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
 	{
 		if (numModes == 0)
 		{
@@ -60,8 +61,8 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 		}
 		changeMode(stack);
 
-		TextComponentTranslation modeName = new TextComponentTranslation(modes[getMode(stack)]);
-		player.sendMessage(new TextComponentTranslation("pe.item.mode_switch", modeName));
+		TranslationTextComponent modeName = new TranslationTextComponent(modes[getMode(stack)]);
+		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName));
 		return true;
 	}
 	
@@ -71,8 +72,8 @@ public abstract class ItemMode extends ItemPE implements IModeChanger, IItemChar
 	{
 		if (stack.hasTag() && this.numModes > 0)
 		{
-			ITextComponent root = new TextComponentTranslation("pe.item.mode");
-			ITextComponent mode = new TextComponentTranslation(getUnlocalizedMode(stack)).setStyle(new Style().setColor(TextFormatting.AQUA));
+			ITextComponent root = new TranslationTextComponent("pe.item.mode");
+			ITextComponent mode = new TranslationTextComponent(getUnlocalizedMode(stack)).setStyle(new Style().setColor(TextFormatting.AQUA));
 			list.add(root.appendText(": ").appendSibling(mode));
 		}
 	}

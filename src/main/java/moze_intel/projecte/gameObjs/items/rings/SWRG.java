@@ -14,22 +14,27 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,7 +52,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 	}
 
-	private void tick(ItemStack stack, EntityPlayer player)
+	private void tick(ItemStack stack, PlayerEntity player)
 	{
         if (stack.getOrCreateTag().getInt(TAG_MODE) > 1)
 		{
@@ -60,7 +65,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			return;
 		}
 
-		EntityPlayerMP playerMP = (EntityPlayerMP) player;
+		ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
 		{
@@ -126,16 +131,16 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem)
 	{
-		if (invSlot > 8 || !(entity instanceof EntityPlayer))
+		if (invSlot > 8 || !(entity instanceof PlayerEntity))
 		{
 			return;
 		}
-		tick(stack, ((EntityPlayer) entity));
+		tick(stack, ((PlayerEntity) entity));
 	}
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote)
@@ -160,7 +165,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			
 			changeMode(player, stack, newMode);
 		}
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
 	/**
@@ -170,7 +175,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	 * 2 = Shield<p>
 	 * 3 = Flight + Shield<p>
 	 */
-	public void changeMode(EntityPlayer player, ItemStack stack, int mode)
+	public void changeMode(PlayerEntity player, ItemStack stack, int mode)
 	{
 		int oldMode = stack.getOrCreateTag().getInt(TAG_MODE);
 		if (mode == oldMode)
@@ -197,7 +202,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, EntityPlayerMP player)
+	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player)
 	{
 		// Dummy result - swrg needs special-casing
 		return false;
@@ -222,14 +227,14 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() <= 0)
 			{
-				List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds());
-				for (EntityLiving living : list)
+				List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+				for (MobEntity living : list)
 				{
-					if (living instanceof EntityTameable && ((EntityTameable) living).isTamed())
+					if (living instanceof TameableEntity && ((TameableEntity) living).isTamed())
 					{
 						continue;
 					}
-					world.addWeatherEffect(new EntityLightningBolt(world, living.posX, living.posY, living.posZ, false));
+					world.addWeatherEffect(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.swrg.get());
 			}
@@ -247,14 +252,14 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.swrg.get() != -1)
 		{
-			list.add(new TextComponentTranslation("pe.swrg.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TextComponentTranslation("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.swrg.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.swrg.pedestal1").applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.swrg.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand)
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand)
 	{
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
 		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);

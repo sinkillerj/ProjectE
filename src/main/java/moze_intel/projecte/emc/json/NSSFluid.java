@@ -13,7 +13,6 @@ public class NSSFluid implements NormalizedSimpleStack {
 
 	@Nonnull
 	public static NormalizedSimpleStack create(Fluid fluid) {
-		//TODO cache The fluid normalizedSimpleStacks?
 		return new NSSFluid(fluid);
 	}
 

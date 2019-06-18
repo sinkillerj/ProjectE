@@ -5,11 +5,14 @@ import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.init.Particles;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
@@ -132,7 +135,7 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public void read(NBTTagCompound tag)
+	public void read(CompoundNBT tag)
 	{
 		super.read(tag);
 		inventory = new ItemStackHandler(1);
@@ -144,7 +147,7 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public NBTTagCompound write(NBTTagCompound tag)
+	public CompoundNBT write(CompoundNBT tag)
 	{
 		tag = super.write(tag);
 		tag.merge(inventory.serializeNBT());
@@ -155,13 +158,13 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
+	public SUpdateTileEntityPacket getUpdatePacket()
 	{
-		return new SPacketUpdateTileEntity(pos, -1, getUpdateTag());
+		return new SUpdateTileEntityPacket(pos, -1, getUpdateTag());
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet)
+	public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet)
 	{
 		read(packet.getNbtCompound());
 	}
@@ -203,7 +206,7 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,7 +65,7 @@ public class ItemPE extends Item
 		setEmc(stack, result);
 	}
 	
-	public static boolean consumeFuel(EntityPlayer player, ItemStack stack, double amount, boolean shouldRemove)
+	public static boolean consumeFuel(PlayerEntity player, ItemStack stack, double amount, boolean shouldRemove)
 	{
 		if (amount <= 0)
 		{

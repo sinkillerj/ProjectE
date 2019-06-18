@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 
 import javax.annotation.Nonnull;
@@ -11,7 +11,7 @@ public abstract class BaseContainerProvider implements IInteractionObject {
     @Nonnull
     @Override
     public ITextComponent getName() {
-        return new TextComponentString(getGuiID());
+        return new StringTextComponent(getGuiID());
     }
 
     @Override

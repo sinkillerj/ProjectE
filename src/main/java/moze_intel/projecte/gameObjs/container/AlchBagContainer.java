@@ -1,12 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -15,16 +19,16 @@ import javax.annotation.Nonnull;
 // todo 1.13 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchBagContainer extends Container
 {
-	public final EnumHand hand;
+	public final Hand hand;
 	private final int blocked;
 	private final boolean immutable;
 
-	public AlchBagContainer(InventoryPlayer invPlayer, EnumHand hand, IItemHandlerModifiable invBag)
+	public AlchBagContainer(PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag)
 	{
 		this(invPlayer, hand, invBag, false);
 	}
 	
-	public AlchBagContainer(InventoryPlayer invPlayer, EnumHand hand, IItemHandlerModifiable invBag, boolean immutable)
+	public AlchBagContainer(PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable)
 	{
 		this.hand = hand;
 		this.immutable = immutable;
@@ -43,18 +47,18 @@ public class AlchBagContainer extends Container
 		for (int i = 0; i < 9; i++)
 			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 210));
 
-		blocked = hand == EnumHand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
+		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
 	}
 	
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
 	{
 		if (immutable)
 		{
@@ -95,7 +99,7 @@ public class AlchBagContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, EntityPlayer player)
+	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
 	{
 		if (slot == blocked || immutable)
 		{

@@ -18,15 +18,17 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -53,9 +55,9 @@ public class ShowBagCMD
 							.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target")))));
 	}
 
-	private static int showBag(CommandContext<CommandSource> ctx, EnumDyeColor color, EntityPlayerMP player) throws CommandSyntaxException
+	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException
 	{
-		EntityPlayerMP senderPlayer = ctx.getSource().asPlayer();
+		ServerPlayerEntity senderPlayer = ctx.getSource().asPlayer();
 		senderPlayer.closeScreen();
 		senderPlayer.getNextWindowId();
 		senderPlayer.openContainer = createContainer(senderPlayer, player, color);
@@ -65,15 +67,15 @@ public class ShowBagCMD
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static Container createContainer(EntityPlayerMP sender, EntityPlayerMP target, EnumDyeColor color) throws CommandException
+	private static Container createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) throws CommandException
 	{
 			IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
-			return new AlchBagContainer(sender.inventory, EnumHand.OFF_HAND, inv)
+			return new AlchBagContainer(sender.inventory, Hand.OFF_HAND, inv)
 			{
 				@Override
-				public boolean canInteractWith(@Nonnull EntityPlayer player)
+				public boolean canInteractWith(@Nonnull PlayerEntity player)
 				{
 					return target.isAlive() && !target.hasDisconnected();
 				}

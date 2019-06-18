@@ -1,10 +1,12 @@
 package moze_intel.projecte.api.item;
 
 import moze_intel.projecte.api.PESounds;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 
 import javax.annotation.Nonnull;
@@ -26,7 +28,7 @@ public interface IItemCharge
 	default int getCharge(@Nonnull ItemStack stack) {
 		if (!stack.hasTag())
 		{
-			stack.setTag(new NBTTagCompound());
+			stack.setTag(new CompoundNBT());
 		}
 
 		return stack.getTag().getInt(KEY);
@@ -39,7 +41,7 @@ public interface IItemCharge
 	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
 	 * @return Whether the operation succeeded
 	 */
-	default boolean changeCharge(@Nonnull EntityPlayer player, @Nonnull ItemStack stack, @Nullable EnumHand hand) {
+	default boolean changeCharge(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 

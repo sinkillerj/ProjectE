@@ -4,13 +4,15 @@ import io.netty.buffer.Unpooled;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -30,20 +32,20 @@ public class Condenser extends AlchemicalChest
 	
 	@Nonnull
 	@Override
-	public TileEntity createTileEntity(@Nonnull IBlockState state, @Nonnull IBlockReader world)
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new CondenserTile();
 	}
 	
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote) 
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof CondenserTile)
 			{
-				NetworkHooks.openGui((EntityPlayerMP) player, (CondenserTile) te, pos);
+				NetworkHooks.openGui((ServerPlayerEntity) player, (CondenserTile) te, pos);
 			}
 		}
 		
@@ -51,7 +53,7 @@ public class Condenser extends AlchemicalChest
 	}
 
 	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

@@ -8,14 +8,18 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -23,13 +27,13 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Arrays;
 
-public class GUITransmutation extends GuiContainer
+public class GUITransmutation extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	private final TransmutationInventory inv;
-	private GuiTextField textBoxFilter;
+	private TextFieldWidget textBoxFilter;
 
-	public GUITransmutation(InventoryPlayer invPlayer, TransmutationInventory inventory, @Nullable EnumHand hand)
+	public GUITransmutation(PlayerInventory invPlayer, TransmutationInventory inventory, @Nullable Hand hand)
 	{
 		super(new TransmutationContainer(invPlayer, inventory, hand));
 		this.inv = inventory;
@@ -53,10 +57,10 @@ public class GUITransmutation extends GuiContainer
 		int xLocation = (this.width - this.xSize) / 2;
 		int yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new GuiTextField(0, this.fontRenderer, xLocation + 88, yLocation + 8, 45, 10);
+		this.textBoxFilter = new TextFieldWidget(0, this.fontRenderer, xLocation + 88, yLocation + 8, 45, 10);
 		this.textBoxFilter.setText(inv.filter);
 
-		this.buttons.add(new GuiButton(1, xLocation + 125, yLocation + 100, 14, 14, "<") {
+		this.buttons.add(new Button(1, xLocation + 125, yLocation + 100, 14, 14, "<") {
 			@Override
 			public void onClick(double mouseX, double mouseY)
 			{
@@ -68,7 +72,7 @@ public class GUITransmutation extends GuiContainer
 				inv.updateClientTargets();
 			}
 		});
-		this.buttons.add(new GuiButton(2, xLocation + 193, yLocation + 100, 14, 14, ">") {
+		this.buttons.add(new Button(2, xLocation + 193, yLocation + 100, 14, 14, ">") {
 			@Override
 			public void onClick(double mouseX, double mouseY)
 			{

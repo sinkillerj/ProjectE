@@ -3,11 +3,13 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,9 +17,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
-public class DMArmor extends ItemArmor
+public class DMArmor extends ArmorItem
 {
-	public DMArmor(EntityEquipmentSlot armorPiece, Properties props)
+	public DMArmor(EquipmentSlotType armorPiece, Properties props)
 	{
 		// TODO 1.13 custom material?
 		super(ArmorMaterial.DIAMOND, armorPiece, props);
@@ -57,9 +59,9 @@ public class DMArmor extends ItemArmor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getArmorTexture (ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	public String getArmorTexture (ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
-		char index = this.armorType == EntityEquipmentSlot.LEGS ? '2' : '1';
+		char index = this.armorType == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/darkmatter_"+index+".png";
 	}
 }

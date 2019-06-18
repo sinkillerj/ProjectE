@@ -1,17 +1,18 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUIPhilosStone extends GuiContainer
+public class GUIPhilosStone extends ContainerScreen
 {
 	private static final ResourceLocation craftingTableGuiTextures = new ResourceLocation("textures/gui/container/crafting_table.png");
 	
-	public GUIPhilosStone(InventoryPlayer inventoryPlayer)
+	public GUIPhilosStone(PlayerInventory inventoryPlayer)
 	{
 		super(new PhilosStoneContainer(inventoryPlayer));
 	}

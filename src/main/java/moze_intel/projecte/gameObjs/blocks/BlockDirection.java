@@ -3,16 +3,20 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -28,14 +32,14 @@ public abstract class BlockDirection extends Block
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> props)
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props)
 	{
-		props.add((IProperty<EnumFacing>) BlockStateProperties.HORIZONTAL_FACING);
+		props.add((IProperty<Direction>) BlockStateProperties.HORIZONTAL_FACING);
 	}
 
 	@Nonnull
 	@Override
-	public IBlockState getStateForPlacement(BlockItemUseContext ctx)
+	public BlockState getStateForPlacement(BlockItemUseContext ctx)
 	{
 		if (ctx.getPlayer() != null)
 		{
@@ -45,7 +49,7 @@ public abstract class BlockDirection extends Block
 	}
 
 	@Override
-	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
@@ -59,14 +63,14 @@ public abstract class BlockDirection extends Block
 	}
 	
 	@Override
-	public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player)
+	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
 	{
 		if (world.isRemote)
 		{
 			return;
 		}
 		
-		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 		
 		if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone)
 		{
@@ -74,7 +78,7 @@ public abstract class BlockDirection extends Block
 		}
 	}
 
-	private void setFacingMeta(World world, BlockPos pos, EntityPlayer player)
+	private void setFacingMeta(World world, BlockPos pos, PlayerEntity player)
 	{
 		world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite()));
 	}

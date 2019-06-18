@@ -6,40 +6,57 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.EntityZombieHorse;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Enchantments;
+import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.MooshroomEntity;
+import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.entity.passive.RabbitEntity;
+import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.passive.horse.DonkeyEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
+import net.minecraft.entity.passive.MooshroomEntity;
+import net.minecraft.entity.passive.horse.MuleEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.passive.RabbitEntity;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
+import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.passive.horse.ZombieHorseEntity;
+import net.minecraft.entity.passive.PolarBearEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
+import net.minecraft.entity.passive.horse.MuleEntity;
+import net.minecraft.entity.passive.horse.ZombieHorseEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -67,23 +84,23 @@ import java.util.Set;
  */
 public final class WorldHelper
 {
-	private static final List<Class<? extends EntityLiving>> peacefuls = Lists.newArrayList(
-			EntitySheep.class, EntityPig.class, EntityCow.class,
-			EntityMooshroom.class, EntityChicken.class, EntityBat.class,
-			EntityVillager.class, EntitySquid.class, EntityOcelot.class,
-			EntityWolf.class, EntityHorse.class, EntityRabbit.class,
-			EntityDonkey.class, EntityMule.class, EntityPolarBear.class,
-			EntityLlama.class, EntityParrot.class
+	private static final List<Class<? extends MobEntity>> peacefuls = Lists.newArrayList(
+			SheepEntity.class, PigEntity.class, CowEntity.class,
+			MooshroomEntity.class, ChickenEntity.class, BatEntity.class,
+			VillagerEntity.class, SquidEntity.class, OcelotEntity.class,
+			WolfEntity.class, HorseEntity.class, RabbitEntity.class,
+			DonkeyEntity.class, MuleEntity.class, PolarBearEntity.class,
+			LlamaEntity.class, ParrotEntity.class
 	);
 
-	private static final List<Class<? extends EntityLiving>> mobs = Lists.newArrayList(
-			EntityZombie.class, EntitySkeleton.class, EntityCreeper.class,
-			EntitySpider.class, EntityEnderman.class, EntitySilverfish.class,
-			EntityPigZombie.class, EntityGhast.class, EntityBlaze.class,
-			EntitySlime.class, EntityWitch.class, EntityRabbit.class, EntityEndermite.class,
-			EntityStray.class, EntityWitherSkeleton.class, EntitySkeletonHorse.class, EntityZombieHorse.class,
-			EntityZombieVillager.class, EntityHusk.class, EntityGuardian.class,
-			EntityEvoker.class, EntityVex.class, EntityVindicator.class, EntityShulker.class
+	private static final List<Class<? extends MobEntity>> mobs = Lists.newArrayList(
+			ZombieEntity.class, SkeletonEntity.class, CreeperEntity.class,
+			SpiderEntity.class, EndermanEntity.class, SilverfishEntity.class,
+			ZombiePigmanEntity.class, GhastEntity.class, BlazeEntity.class,
+			SlimeEntity.class, WitchEntity.class, RabbitEntity.class, EndermiteEntity.class,
+			StrayEntity.class, WitherSkeletonEntity.class, SkeletonHorseEntity.class, ZombieHorseEntity.class,
+			ZombieVillagerEntity.class, HuskEntity.class, GuardianEntity.class,
+			EvokerEntity.class, VexEntity.class, VindicatorEntity.class, ShulkerEntity.class
 	);
 
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
@@ -100,7 +117,7 @@ public final class WorldHelper
 		swrgBlacklist = ImmutableSet.copyOf(types);
 	}
 
-	public static boolean addPeaceful(Class<? extends EntityLiving> clazz)
+	public static boolean addPeaceful(Class<? extends MobEntity> clazz)
 	{
 		if (!peacefuls.contains(clazz))
 		{
@@ -110,7 +127,7 @@ public final class WorldHelper
 		return false;
 	}
 
-	public static boolean removePeaceful(Class<? extends EntityLiving> clazz)
+	public static boolean removePeaceful(Class<? extends MobEntity> clazz)
 	{
 		return peacefuls.remove(clazz);
 	}
@@ -120,7 +137,7 @@ public final class WorldHelper
 		peacefuls.clear();
 	}
 
-	public static boolean addMob(Class<? extends EntityLiving> clazz)
+	public static boolean addMob(Class<? extends MobEntity> clazz)
 	{
 		if (!mobs.contains(clazz))
 		{
@@ -130,7 +147,7 @@ public final class WorldHelper
 		return false;
 	}
 
-	public static boolean removeMob(Class<? extends EntityLiving> clazz)
+	public static boolean removeMob(Class<? extends MobEntity> clazz)
 	{
 		return mobs.remove(clazz);
 	}
@@ -151,7 +168,7 @@ public final class WorldHelper
 
 		for (ItemStack drop : drops)
 		{
-			EntityItem ent = new EntityItem(world, x, y, z);
+			ItemEntity ent = new ItemEntity(world, x, y, z);
 			ent.setItem(drop);
 			world.spawnEntity(ent);
 		}
@@ -181,62 +198,62 @@ public final class WorldHelper
 
 			if (!stack.isEmpty())
 			{
-				EntityItem ent = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ());
+				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ());
 				ent.setItem(stack);
 				world.spawnEntity(ent);
 			}
 		}
 	}
 
-	public static void extinguishNearby(World world, EntityPlayer player)
+	public static void extinguishNearby(World world, PlayerEntity player)
 	{
 		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
 		{
-			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), pos))
+			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos))
 			{
 				world.removeBlock(pos);
 			}
 		}
 	}
 	
-	public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random)
+	public static void freezeInBoundingBox(World world, AxisAlignedBB box, PlayerEntity player, boolean random)
 	{
 		for (BlockPos pos : getPositionsFromBox(box))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 
 			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0))
 			{
 				if (player != null)
 				{
-					PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), pos, Blocks.ICE.getDefaultState());
+					PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), pos, Blocks.ICE.getDefaultState());
 				}
 				else
 				{
 					world.setBlockState(pos, Blocks.ICE.getDefaultState());
 				}
 			}
-			else if (state.getBlockFaceShape(world, pos, EnumFacing.UP) == BlockFaceShape.SOLID)
+			else if (state.getBlockFaceShape(world, pos, Direction.UP) == BlockFaceShape.SOLID)
 			{
 				BlockPos up = pos.up();
-				IBlockState stateUp = world.getBlockState(up);
-				IBlockState newState = null;
+				BlockState stateUp = world.getBlockState(up);
+				BlockState newState = null;
 
 				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0))
 				{
 					newState = Blocks.SNOW.getDefaultState();
-				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(BlockSnowLayer.LAYERS) < 8
+				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(SnowBlock.LAYERS) < 8
 							&& world.rand.nextInt(512) == 0)
 				{
-					newState = stateUp.with(BlockSnowLayer.LAYERS, stateUp.get(BlockSnowLayer.LAYERS) + 1);
+					newState = stateUp.with(SnowBlock.LAYERS, stateUp.get(SnowBlock.LAYERS) + 1);
 				}
 
 				if (newState != null)
 				{
 					if (player != null)
 					{
-						PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), up, newState);
+						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), up, newState);
 					}
 					else
 					{
@@ -247,11 +264,11 @@ public final class WorldHelper
 		}
 	}
 	
-	public static Map<EnumFacing, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
+	public static Map<Direction, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile)
 	{
-		Map<EnumFacing, TileEntity> ret = new EnumMap<>(EnumFacing.class);
+		Map<Direction, TileEntity> ret = new EnumMap<>(Direction.class);
 
-		for (EnumFacing dir : EnumFacing.values()) {
+		for (Direction dir : Direction.values()) {
 			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
 			if (candidate != null) {
 				ret.put(dir, candidate);
@@ -261,7 +278,7 @@ public final class WorldHelper
 		return ret;
 	}
 
-	public static List<ItemStack> getBlockDrops(World world, EntityPlayer player, IBlockState state, ItemStack stack, BlockPos pos)
+	public static List<ItemStack> getBlockDrops(World world, PlayerEntity player, BlockState state, ItemStack stack, BlockPos pos)
 	{
 		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.canSilkHarvest(world, pos, player))
 		{
@@ -276,7 +293,7 @@ public final class WorldHelper
 	/**
 	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
-	public static AxisAlignedBB getBroadDeepBox(BlockPos pos, EnumFacing direction, int offset)
+	public static AxisAlignedBB getBroadDeepBox(BlockPos pos, Direction direction, int offset)
 	{
 		switch (direction)
 		{
@@ -293,7 +310,7 @@ public final class WorldHelper
 	/**
 	 * Returns in AABB that is always 3x3 orthogonal to the side hit, but varies in depth in the direction of the side hit
 	 */
-	public static AxisAlignedBB getDeepBox(BlockPos pos, EnumFacing direction, int depth)
+	public static AxisAlignedBB getDeepBox(BlockPos pos, Direction direction, int depth)
 	{
 		switch (direction)
 		{
@@ -340,9 +357,9 @@ public final class WorldHelper
 		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
 	}
 
-	public static EntityLiving getRandomEntity(World world, EntityLiving toRandomize)
+	public static MobEntity getRandomEntity(World world, MobEntity toRandomize)
 	{
-		Class<? extends EntityLiving> entClass = toRandomize.getClass();
+		Class<? extends MobEntity> entClass = toRandomize.getClass();
 
 		if (peacefuls.contains(entClass))
 		{
@@ -350,20 +367,20 @@ public final class WorldHelper
 		}
 		else if (mobs.contains(entClass))
 		{
-			EntityLiving ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
-			if (ent instanceof EntityRabbit)
+			MobEntity ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			if (ent instanceof RabbitEntity)
 			{
-				((EntityRabbit) ent).setRabbitType(99);
+				((RabbitEntity) ent).setRabbitType(99);
 			}
 			return ent;
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
-			return getNewEntityInstance(EntitySlime.class, world);
+			return getNewEntityInstance(SlimeEntity.class, world);
 		}
 		else
 		{
-			return getNewEntityInstance(EntitySheep.class, world);
+			return getNewEntityInstance(SheepEntity.class, world);
 		}
 	}
 
@@ -404,13 +421,13 @@ public final class WorldHelper
 		}
 	}
 
-	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, EntityPlayer player)
+	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, PlayerEntity player)
 	{
 		int chance = harvest ? 16 : 32;
 
 		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-5, -3, -5), pos.add(5, 3, 5)))
 		{
-			IBlockState state = world.getBlockState(currentPos);
+			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
@@ -430,7 +447,7 @@ public final class WorldHelper
 				{
 					if (harvest
 							&& crop != Blocks.MELON_STEM && crop != Blocks.PUMPKIN_STEM
-							&& (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos)))
+							&& (player == null || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)))
 					{
 						world.destroyBlock(currentPos, true);
 					}
@@ -457,9 +474,9 @@ public final class WorldHelper
 
 				if (harvest)
 				{
-					if (crop instanceof BlockFlower)
+					if (crop instanceof FlowerBlock)
 					{
-						if (player == null || PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
+						if (player == null || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos))
 						{
 							world.destroyBlock(currentPos, true);
 						}
@@ -481,7 +498,7 @@ public final class WorldHelper
 						{
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++)
 							{
-								if (player != null && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos.up(i)))
+								if (player != null && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos.up(i)))
 								{
 									world.destroyBlock(currentPos.up(i), true);
 								} else if (player == null)
@@ -493,10 +510,10 @@ public final class WorldHelper
 					}
 					if (crop == Blocks.NETHER_WART)
 					{
-						int age = state.get(BlockNetherWart.AGE);
+						int age = state.get(NetherWartBlock.AGE);
 						if (age == 3)
 						{
-							if (player == null || PlayerHelper.hasBreakPermission((EntityPlayerMP) player, currentPos))
+							if (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos))
 							{
 								world.destroyBlock(currentPos, true);
 							}
@@ -511,7 +528,7 @@ public final class WorldHelper
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
-	public static int harvestVein(World world, EntityPlayer player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined)
+	public static int harvestVein(World world, PlayerEntity player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined)
 	{
 		if (numMined >= Constants.MAX_VEIN_SIZE)
 		{
@@ -522,12 +539,12 @@ public final class WorldHelper
 
 		for (BlockPos currentPos : getPositionsFromBox(b))
 		{
-			IBlockState currentState = world.getBlockState(currentPos);
+			BlockState currentState = world.getBlockState(currentPos);
 
 			if (currentState.getBlock() == target)
 			{
 				numMined++;
-				if (PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), currentPos))
+				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos))
 				{
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
 					world.removeBlock(currentPos);
@@ -541,13 +558,13 @@ public final class WorldHelper
 		return numMined;
 	}
 	
-	public static void igniteNearby(World world, EntityPlayer player)
+	public static void igniteNearby(World world, PlayerEntity player)
 	{
 		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8)))
 		{
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos))
 			{
-				PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+				PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 			}
 		}
 	}
@@ -563,7 +580,7 @@ public final class WorldHelper
 		{
 			if ((isSWRG && !swrgBlacklist.contains(ent.getType()))
 					|| (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
-				if ((ent instanceof EntityLiving) || (ent instanceof IProjectile))
+				if ((ent instanceof MobEntity) || (ent instanceof IProjectile))
 				{
 					if (!isSWRG && ProjectEConfig.effects.interdictionMode.get() && !(ent instanceof IMob || ent instanceof IProjectile))
 					{
@@ -571,7 +588,7 @@ public final class WorldHelper
 					}
 					else
 					{
-						if (ent instanceof EntityArrow && ((EntityArrow) ent).onGround)
+						if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround)
 						{
 							continue;
 						}

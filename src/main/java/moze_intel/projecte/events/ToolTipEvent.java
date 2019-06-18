@@ -13,8 +13,10 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
@@ -41,12 +43,12 @@ public class ToolTipEvent
 		}
 		Item currentItem = current.getItem();
 		Block currentBlock = Block.getBlockFromItem(currentItem);
-		EntityPlayer clientPlayer = Minecraft.getInstance().player;
+		PlayerEntity clientPlayer = Minecraft.getInstance().player;
 
 		if (ProjectEConfig.misc.pedestalToolTips.get()
 			&& currentItem instanceof IPedestalItem)
 		{
-			event.getToolTip().add(new TextComponentTranslation("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
+			event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
 			List<ITextComponent> description = ((IPedestalItem) currentItem).getPedestalDescription();
 			if (description.isEmpty())
 			{
@@ -62,7 +64,7 @@ public class ToolTipEvent
 		{
 			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem()))
 			{
-				event.getToolTip().add(new TextComponentString("#" + tag.toString()));
+				event.getToolTip().add(new StringTextComponent("#" + tag.toString()));
 			}
 		}
 
@@ -72,33 +74,33 @@ public class ToolTipEvent
 			{
 				long value = EMCHelper.getEmcValue(current);
 
-				ITextComponent prefix = new TextComponentTranslation("pe.emc.emc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
-				ITextComponent valueText = new TextComponentString(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.WHITE));
-				ITextComponent sell = new TextComponentString(EMCHelper.getEmcSellString(current, 1)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
+				ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.WHITE));
+				ITextComponent sell = new StringTextComponent(EMCHelper.getEmcSellString(current, 1)).setStyle(new Style().setColor(TextFormatting.BLUE));
 
 				event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 
 				if (current.getCount() > 1)
 				{
-					prefix = new TextComponentTranslation("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW);
-					valueText= new TextComponentString(Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount())))).applyTextStyle(TextFormatting.WHITE);
-					sell = new TextComponentString(EMCHelper.getEmcSellString(current, current.getCount())).applyTextStyle(TextFormatting.BLUE);
+					prefix = new TranslationTextComponent("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW);
+					valueText= new StringTextComponent(Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount())))).applyTextStyle(TextFormatting.WHITE);
+					sell = new StringTextComponent(EMCHelper.getEmcSellString(current, current.getCount())).applyTextStyle(TextFormatting.BLUE);
 					event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 				}
 
-				if (GuiScreen.isShiftKeyDown()
+				if (Screen.isShiftKeyDown()
 						&& clientPlayer != null
 						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false))
 				{
-					event.getToolTip().add(new TextComponentTranslation("pe.emc.has_knowledge").setStyle(new Style().setColor(TextFormatting.YELLOW)));
+					event.getToolTip().add(new TranslationTextComponent("pe.emc.has_knowledge").setStyle(new Style().setColor(TextFormatting.YELLOW)));
 				}
 			}
 		}
 
 		if (ProjectEConfig.misc.statToolTips.get())
 		{
-			ITextComponent unit = new TextComponentTranslation("pe.emc.name");
-			ITextComponent rate = new TextComponentTranslation("pe.emc.rate");
+			ITextComponent unit = new TranslationTextComponent("pe.emc.name");
+			ITextComponent rate = new TranslationTextComponent("pe.emc.rate");
 			/*
 			 * Collector ToolTips
 			 */
@@ -124,12 +126,12 @@ public class ToolTipEvent
 
 			if (currentBlock instanceof Collector)
 			{
-				ITextComponent label = new TextComponentTranslation("pe.emc.maxgenrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new TextComponentString(Long.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent label = new TranslationTextComponent("pe.emc.maxgenrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				ITextComponent val = new StringTextComponent(Long.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
 
-				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new TextComponentString(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				label = new TranslationTextComponent("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				val = new StringTextComponent(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 
@@ -157,12 +159,12 @@ public class ToolTipEvent
 
 			if (currentBlock instanceof Relay)
 			{
-				ITextComponent label = new TextComponentTranslation("pe.emc.maxoutrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new TextComponentString(Long.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent label = new TranslationTextComponent("pe.emc.maxoutrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				ITextComponent val = new StringTextComponent(Long.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
 
-				label = new TextComponentTranslation("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new TextComponentString(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				label = new TranslationTextComponent("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
+				val = new StringTextComponent(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 		}
@@ -180,8 +182,8 @@ public class ToolTipEvent
 					value = ((IItemEmc) current.getItem()).getStoredEmc(current);
 				}
 
-				ITextComponent label = new TextComponentTranslation("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
-				ITextComponent val = new TextComponentString(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
+				ITextComponent label = new TranslationTextComponent("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
+				ITextComponent val = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
 				event.getToolTip().add(label.appendText(" ").appendSibling(val));
 			}
 		}
