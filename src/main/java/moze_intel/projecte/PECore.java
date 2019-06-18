@@ -112,7 +112,6 @@ public class PECore
 	public PECore()
 	{
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::openGui);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
 			MinecraftForge.EVENT_BUS.addListener(ClientHandler::registerRenders);

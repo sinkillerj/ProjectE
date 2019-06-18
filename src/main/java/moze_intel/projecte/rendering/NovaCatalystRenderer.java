@@ -1,10 +1,10 @@
 package moze_intel.projecte.rendering;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -53,7 +53,7 @@ public class NovaCatalystRenderer extends EntityRenderer<EntityNovaCatalystPrime
 
 		if (entity.getFuse() / 5 % 2 == 0)
 		{
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.disableLighting();
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(770, 772);
@@ -66,7 +66,7 @@ public class NovaCatalystRenderer extends EntityRenderer<EntityNovaCatalystPrime
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.disableBlend();
 			GlStateManager.enableLighting();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 
 		GlStateManager.popMatrix();

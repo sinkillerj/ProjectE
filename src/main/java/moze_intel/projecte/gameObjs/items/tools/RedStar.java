@@ -7,7 +7,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GrassBlock;
 import net.minecraft.block.GravelBlock;
@@ -30,6 +29,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -46,8 +47,8 @@ public class RedStar extends PEToolBase
 		});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 
-		this.harvestMaterials.add(Material.GRASS);
-		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.ORGANIC);
+		this.harvestMaterials.add(Material.EARTH);
 		this.harvestMaterials.add(Material.SAND);
 		this.harvestMaterials.add(Material.SNOW);
 		this.harvestMaterials.add(Material.CLAY);
@@ -58,7 +59,7 @@ public class RedStar extends PEToolBase
 
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
-		this.harvestMaterials.add(Material.VINE);
+		this.harvestMaterials.add(Material.TALL_PLANTS);
 	}
 
 	@Override
@@ -87,18 +88,19 @@ public class RedStar extends PEToolBase
 				mineOreVeinsInAOE(stack, player, hand);
 			}
 
-			RayTraceResult mop = this.rayTrace(world, player, true);
+			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-			if (mop == null)
+			if (!(mop instanceof BlockRayTraceResult))
 			{
 				return ActionResult.newResult(ActionResultType.FAIL, stack);
 			}
-			else if (mop.type == Type.BLOCK)
+			else
 			{
-				BlockState state = world.getBlockState(mop.getBlockPos());
+				BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
+				BlockState state = world.getBlockState(rtr.getPos());
 				Block block = state.getBlock();
 
-				if (block instanceof GravelBlock || block instanceof BlockClay)
+				if (block instanceof GravelBlock || block == Blocks.CLAY)
 				{
 					if (ProjectEConfig.items.pickaxeAoeVeinMining.get())
 					{
@@ -106,14 +108,14 @@ public class RedStar extends PEToolBase
 					}
 					else
 					{
-						tryVeinMine(stack, player, mop);
+						tryVeinMine(stack, player, rtr);
 					}
 				}
 				else if (ItemHelper.isOre(state.getBlock()))
 				{
 					if (!ProjectEConfig.items.pickaxeAoeVeinMining.get())
 					{
-						tryVeinMine(stack, player, mop);
+						tryVeinMine(stack, player, rtr);
 					}
 				}
 				else if (block instanceof GrassBlock
@@ -157,8 +159,8 @@ public class RedStar extends PEToolBase
 		float damage = STAR_BASE_ATTACK + charge;
 
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, 0));
-		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, AttributeModifier.Operation.ADDITION));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, AttributeModifier.Operation.ADDITION));
 		return multimap;
 	}
 }

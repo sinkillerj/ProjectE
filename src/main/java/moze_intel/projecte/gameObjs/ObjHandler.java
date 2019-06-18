@@ -88,6 +88,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -108,9 +109,9 @@ public class ObjHandler
 			return new ItemStack(philosStone);
 		}
 	};
-	public static final IRecipeSerializer<RecipesCovalenceRepair> COVALENCE_REPAIR_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeSerializers.SimpleSerializer<>(PECore.MODID + ":covalence_repair", RecipesCovalenceRepair::new));
-	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = RecipeSerializers.register(new RecipeShapelessKleinStar.Serializer());
-	public static final IRecipeSerializer<RecipeShapelessHidden> SHAPELESS_HIDDEN_SERIALIZER = RecipeSerializers.register(new RecipeShapelessHidden.Serializer());
+	public static final IRecipeSerializer<RecipesCovalenceRepair> COVALENCE_REPAIR_RECIPE_SERIALIZER = new SpecialRecipeSerializer<>(RecipesCovalenceRepair::new);
+	public static final IRecipeSerializer<RecipeShapelessKleinStar> KLEIN_RECIPE_SERIALIZER = new RecipeShapelessKleinStar.Serializer();
+	public static final IRecipeSerializer<RecipeShapelessHidden> SHAPELESS_HIDDEN_SERIALIZER = new RecipeShapelessHidden.Serializer();
 	public static final Block alchChest = new AlchemicalChest(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "alchemical_chest");
 	public static final Block interdictionTorch = new InterdictionTorch(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final Block interdictionTorchWall = new InterdictionTorchWall(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).tickRandomly()).setRegistryName(PECore.MODID, "wall_interdiction_torch");
@@ -324,6 +325,18 @@ public class ObjHandler
 	private static Item.Properties ibNoStack()
 	{
 		return ib().maxStackSize(1);
+	}
+
+	@SubscribeEvent
+	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt)
+	{
+		IForgeRegistry<IRecipeSerializer<?>> r = evt.getRegistry();
+		r.register(COVALENCE_REPAIR_RECIPE_SERIALIZER
+				.setRegistryName(new ResourceLocation(PECore.MODID, "covalence_repair")));
+		r.register(SHAPELESS_HIDDEN_SERIALIZER
+				.setRegistryName(new ResourceLocation(PECore.MODID, "shapeless_recipe_hidden")));
+		r.register(KLEIN_RECIPE_SERIALIZER
+				.setRegistryName(new ResourceLocation(PECore.MODID, "crafting_shapeless_kleinstar")));
 	}
 
 	@SubscribeEvent

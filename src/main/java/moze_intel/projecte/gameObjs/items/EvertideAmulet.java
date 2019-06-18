@@ -25,8 +25,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
-import net.minecraft.init.Particles;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -63,7 +63,7 @@ import java.util.List;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem
 {
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, 0).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, AttributeModifier.Operation.ADDITION).setSaved(false);
 
 	public EvertideAmulet(Properties props)
 	{
@@ -149,7 +149,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 			for (int l = 0; l < 8; ++l)
 			{
-				world.addParticle(Particles.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 		else
@@ -193,7 +193,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		{
 			if (!living.isSneaking())
 			{
-				living.motionY = 0.0D;
+				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
 			}
@@ -227,7 +227,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
 			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-			world.spawnEntity(ent);
+			world.addEntity(ent);
 			return true;
 		}
 

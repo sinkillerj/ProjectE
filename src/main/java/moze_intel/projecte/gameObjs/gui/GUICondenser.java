@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -7,7 +8,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +36,7 @@ public class GUICondenser extends ContainerScreen
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
@@ -50,10 +50,10 @@ public class GUICondenser extends ContainerScreen
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		int progress = container.getProgressScaled();
-		this.drawTexturedModalRect(x + 33, y + 10, 0, 235, progress, 10);
+		this.blit(x + 33, y + 10, 0, 235, progress, 10);
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class GUICondenser extends ContainerScreen
 	{
 		long toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
 		String emc = TransmutationEMCFormatter.EMCFormat(toDisplay);
-		this.fontRenderer.drawString(emc, 140, 10, 4210752);
+		this.font.drawString(emc, 140, 10, 4210752);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class GUICondenser extends ContainerScreen
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(toDisplay);
-			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
+			renderTooltip(Arrays.asList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);
 		}

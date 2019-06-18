@@ -52,6 +52,6 @@ public class ClientKeyHelper
 
     public static String getKeyName(KeyBinding k)
     {
-        return k.func_197978_k();
+        return k.getTranslationKey();
     }
 }

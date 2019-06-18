@@ -153,7 +153,7 @@ public class GemHelmet extends GemArmorBase
             BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
             if (strikePos != null)
 			{
-                ((ServerWorld) player.getEntityWorld()).func_217468_a(new LightningBoltEntity(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
+                ((ServerWorld) player.getEntityWorld()).addLightningBolt(new LightningBoltEntity(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
 			}
         }
     }

@@ -113,7 +113,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		{
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
-			world.spawnEntity(arrow);
+			world.addEntity(arrow);
 		}
 	}
 
@@ -139,11 +139,9 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
 						arrow.posZ = tile.centeredZ;
-						arrow.motionX = 0;
-						arrow.motionZ = 0;
-						arrow.motionY = 1;
+						arrow.setMotion(0, 1, 0);
 						arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
-						world.spawnEntity(arrow);
+						world.addEntity(arrow);
 					}
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.archangel.get());

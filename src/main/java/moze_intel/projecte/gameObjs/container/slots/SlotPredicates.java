@@ -6,6 +6,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 
@@ -25,7 +26,7 @@ public final class SlotPredicates {
     // slotrelayinput
     public static final Predicate<ItemStack> RELAY_INV = input -> IITEMEMC.test(input) || HAS_EMC.test(input);
 
-    public static final Predicate<ItemStack> FURNACE_FUEL = input -> IITEMEMC.test(input) || !input.isEmpty() && FurnaceTileEntity.isItemFuel(input);
+    public static final Predicate<ItemStack> FURNACE_FUEL = input -> IITEMEMC.test(input) || !input.isEmpty() && AbstractFurnaceTileEntity.isFuel(input);
 
     public static final Predicate<ItemStack> MERCURIAL_TARGET = input -> {
         if (input.isEmpty()) return false;

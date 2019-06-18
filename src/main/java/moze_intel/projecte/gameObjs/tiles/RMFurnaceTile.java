@@ -18,7 +18,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.Direction;
@@ -45,6 +47,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteractionObject
 {
@@ -255,7 +258,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 				
 				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace)
 				{
-					getWorld().setBlockState(pos, state.with(MatterFurnace.LIT, furnaceBurnTime > 0));
+					getWorld().setBlockState(pos, state.with(MatterFurnace.field_220091_b, furnaceBurnTime > 0));
 				}
 			}
 
@@ -305,7 +308,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 			if (extractTest.isEmpty())
 				continue;
 
-			IItemHandler targetInv = extractTest.getItem() instanceof IItemEmc || FurnaceTileEntity.isItemFuel(extractTest)
+			IItemHandler targetInv = extractTest.getItem() instanceof IItemEmc || AbstractFurnaceTileEntity.isFuel(extractTest)
 					? fuelInv : inputInventory;
 
 			ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);
@@ -328,15 +331,10 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 	public ItemStack getSmeltingResult(ItemStack in)
 	{
 		dummyFurnace.setInventorySlotContents(0, in);
-		IRecipe recipe = getWorld().getRecipeManager().getRecipe(dummyFurnace, getWorld());
+		Optional<FurnaceRecipe> recipe = getWorld().getRecipeManager().getRecipe(IRecipeType.SMELTING, dummyFurnace, world);
 		dummyFurnace.clear();
 
-		if (recipe != null)
-		{
-			return recipe.getRecipeOutput();
-		}
-
-		return ItemStack.EMPTY;
+		return recipe.map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
 	}
 	
 	private void smeltItem()

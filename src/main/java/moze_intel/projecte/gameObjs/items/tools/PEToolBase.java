@@ -14,6 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneOreBlock;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,12 +27,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.init.Particles;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.Tag;
@@ -42,7 +43,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
@@ -113,7 +117,7 @@ public abstract class PEToolBase extends ItemMode
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
 
-		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)))
+		BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)).forEach(pos ->
 		{
 			BlockState state = world.getBlockState(pos);
 
@@ -125,14 +129,14 @@ public abstract class PEToolBase extends ItemMode
 						&& consumeFuel(player, stack, emcCost, true))
 				{
 					drops.addAll(blockDrops);
-					world.removeBlock(pos);
+					world.removeBlock(pos, false);
 					if (world.rand.nextInt(5) == 0)
 					{
-						((ServerWorld) world).spawnParticle(Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
+						((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
 					}
 				}
 			}
-		}
+		});
 
 		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 		PlayerHelper.swingItem(player, hand);
@@ -141,13 +145,14 @@ public abstract class PEToolBase extends ItemMode
 	/**
 	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	protected void tillAOE(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost)
+	protected void tillAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost)
 	{
+		ItemStack stack = player.getHeldItem(hand);
 		int charge = this.getCharge(stack);
 		boolean hasAction = false;
 		boolean hasSoundPlayed = false;
 
-		for (BlockPos newPos : BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
+		for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge)))
 		{
 			BlockState state = world.getBlockState(newPos);
 			BlockState stateAbove = world.getBlockState(newPos.up());
@@ -158,7 +163,12 @@ public abstract class PEToolBase extends ItemMode
 			{
 				if (!hasSoundPlayed)
 				{
-					world.playSound(null, newPos, Blocks.FARMLAND.getSoundType().getStepSound(), SoundCategory.BLOCKS, (Blocks.FARMLAND.getSoundType().getVolume() + 1.0F) / 2.0F, Blocks.FARMLAND.getSoundType().getPitch() * 0.8F);
+					SoundType type = Blocks.FARMLAND.getDefaultState().getSoundType();
+					world.playSound(null, newPos,
+							type.getStepSound(),
+							SoundCategory.BLOCKS,
+							(type.getVolume() + 1.0F) / 2.0F,
+							type.getPitch() * 0.8F);
 					hasSoundPlayed = true;
 				}
 
@@ -168,7 +178,8 @@ public abstract class PEToolBase extends ItemMode
 				}
 				else
 				{
-					ItemUseContext ctx = new ItemUseContext(player, stack, newPos, Direction.UP, 0, 0, 0);
+					BlockRayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false);
+					ItemUseContext ctx = new ItemUseContext(player, hand, rtr);
 					if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(ctx)))
 					{
 						continue;
@@ -179,7 +190,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), newPos, Blocks.FARMLAND.getDefaultState());
 
-						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.VINE)
+						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.TALL_PLANTS)
 								&& !(blockAbove.hasTileEntity(stateAbove)) // Just in case, you never know
 								)
 						{
@@ -220,15 +231,15 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		RayTraceResult mop = this.rayTrace(world, player, false);
+		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 
-		if (mop == null || mop.type != RayTraceResult.Type.BLOCK)
+		if (!(mop instanceof BlockRayTraceResult))
 		{
 			return;
 		}
 
-		Direction direction = mop.sideHit;
-		BlockPos hitPos = mop.getBlockPos();
+		Direction direction = ((BlockRayTraceResult) mop).getFace();
+		BlockPos hitPos = ((BlockRayTraceResult) mop).getPos();
 		AxisAlignedBB box = new AxisAlignedBB(hitPos, hitPos);
 
 		if (!ProjectEConfig.items.disableAllRadiusMining.get()) {
@@ -270,7 +281,7 @@ public abstract class PEToolBase extends ItemMode
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof ShulkerBoxBlock))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
-				world.removeBlock(digPos);
+				world.removeBlock(digPos, false);
 			}
 		}
 
@@ -287,15 +298,16 @@ public abstract class PEToolBase extends ItemMode
 			return;
 		}
 
-		RayTraceResult mop = this.rayTrace(world, player, false);
+		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 
-		if (mop == null || mop.type != RayTraceResult.Type.BLOCK)
+		if (!(mop instanceof BlockRayTraceResult))
 		{
 			return;
 		}
 
-		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, this.getCharge(stack))
-				: WorldHelper.getFlatYBox(mop.getBlockPos(), this.getCharge(stack));
+		BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(rtr.getPos(), rtr.getFace(), this.getCharge(stack))
+				: WorldHelper.getFlatYBox(rtr.getPos(), this.getCharge(stack));
 
 		List<ItemStack> drops = new ArrayList<>();
 
@@ -313,11 +325,11 @@ public abstract class PEToolBase extends ItemMode
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof ShulkerBoxBlock))
 					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
-				world.removeBlock(pos);
+				world.removeBlock(pos, false);
 			}
 		}
 
-		WorldHelper.createLootDrop(drops, world, mop.getBlockPos());
+		WorldHelper.createLootDrop(drops, world, rtr.getPos());
 		PlayerHelper.swingItem(player, hand);
 
 		if (!drops.isEmpty())
@@ -404,7 +416,7 @@ public abstract class PEToolBase extends ItemMode
 
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
 
-				stack.damageItem(1, player);
+				stack.damageItem(1, player, p -> p.sendBreakAnimation(Hand.MAIN_HAND)); // todo 1.14 pass the hand in
 				player.addStat(Stats.BLOCK_MINED.get(block), 1);
 			}
 		}
@@ -462,7 +474,7 @@ public abstract class PEToolBase extends ItemMode
 
 					if (e instanceof MobEntity)
 					{
-						((MobEntity) e).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(ent)), null, null);
+						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(ent)), SpawnReason.EVENT, null, null);
 					}
 
 					if (e instanceof SheepEntity)
@@ -474,7 +486,7 @@ public abstract class PEToolBase extends ItemMode
 					{
 						((AgeableEntity) e).setGrowingAge(-24000);
 					}
-					world.spawnEntity(e);
+					world.addEntity(e);
 				}
 			}
 
@@ -484,18 +496,18 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	/**
-	 * Scans and harvests an ore vein. This is called already knowing the mop is pointing at an ore or gravel.
+	 * Scans and harvests an ore vein.
 	 */
-	protected void tryVeinMine(ItemStack stack, PlayerEntity player, RayTraceResult mop)
+	protected void tryVeinMine(ItemStack stack, PlayerEntity player, BlockRayTraceResult mop)
 	{
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get())
 		{
 			return;
 		}
 
-		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getBlockPos(), mop.sideHit, getCharge(stack));
-		BlockState target = player.getEntityWorld().getBlockState(mop.getBlockPos());
-		if (target.getBlockHardness(player.getEntityWorld(), mop.getBlockPos()) <= -1 || !(canHarvestBlock(stack, target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getBlockPos(), stack)))
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getPos(), mop.getFace(), getCharge(stack));
+		BlockState target = player.getEntityWorld().getBlockState(mop.getPos());
+		if (target.getBlockHardness(player.getEntityWorld(), mop.getPos()) <= -1 || !(canHarvestBlock(stack, target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getPos(), stack)))
 		{
 			return;
 		}
@@ -511,7 +523,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 		}
 
-		WorldHelper.createLootDrop(drops, player.getEntityWorld(), mop.getBlockPos());
+		WorldHelper.createLootDrop(drops, player.getEntityWorld(), mop.getPos());
 		if (!drops.isEmpty())
 		{
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);

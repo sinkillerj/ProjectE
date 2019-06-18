@@ -6,6 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RecipesCovalenceRepair implements IRecipe
+public class RecipesCovalenceRepair implements IRecipe<IInventory>
 {
 	private final ResourceLocation id;
 	private ItemStack output = ItemStack.EMPTY;
@@ -116,15 +117,24 @@ public class RecipesCovalenceRepair implements IRecipe
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public ResourceLocation getId()
 	{
 		return id;
 	}
 
+	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
 		return ObjHandler.COVALENCE_REPAIR_RECIPE_SERIALIZER;
+	}
+
+	@Nonnull
+	@Override
+	public IRecipeType<?> getType()
+	{
+		return IRecipeType.CRAFTING;
 	}
 }

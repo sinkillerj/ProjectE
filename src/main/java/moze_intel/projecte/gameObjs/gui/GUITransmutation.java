@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -14,7 +15,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Arrays;
 
@@ -44,46 +45,38 @@ public class GUITransmutation extends ContainerScreen
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 	
 	@Override
-	public void initGui() 
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		int xLocation = (this.width - this.xSize) / 2;
 		int yLocation = (this.height - this.ySize) / 2;
 
-		this.textBoxFilter = new TextFieldWidget(0, this.fontRenderer, xLocation + 88, yLocation + 8, 45, 10);
+		this.textBoxFilter = new TextFieldWidget(this.font, xLocation + 88, yLocation + 8, 45, 10, "");
 		this.textBoxFilter.setText(inv.filter);
 
-		this.buttons.add(new Button(1, xLocation + 125, yLocation + 100, 14, 14, "<") {
-			@Override
-			public void onClick(double mouseX, double mouseY)
+		this.buttons.add(new Button(xLocation + 125, yLocation + 100, 14, 14, "<", b -> {
+			if (inv.searchpage != 0)
 			{
-				if (inv.searchpage != 0)
-				{
-					inv.searchpage--;
-				}
-				inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
-				inv.updateClientTargets();
+				inv.searchpage--;
 			}
-		});
-		this.buttons.add(new Button(2, xLocation + 193, yLocation + 100, 14, 14, ">") {
-			@Override
-			public void onClick(double mouseX, double mouseY)
+			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
+			inv.updateClientTargets();
+		}));
+		this.buttons.add(new Button(xLocation + 193, yLocation + 100, 14, 14, ">", b -> {
+			if (!(inv.knowledge.size() <= 12))
 			{
-				if (!(inv.knowledge.size() <= 12))
-				{
-					inv.searchpage++;
-				}
-				inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
-				inv.updateClientTargets();
+				inv.searchpage++;
 			}
-		});
+			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
+			inv.updateClientTargets();
+		}));
 	}
 
 	@Override
@@ -91,45 +84,45 @@ public class GUITransmutation extends ContainerScreen
 	{
 		GlStateManager.color4f(1F, 1F, 1F, 1F);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		this.textBoxFilter.drawTextField(mouseX, mouseY, partialTicks);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.textBoxFilter.render(mouseX, mouseY, partialTicks);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRenderer.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
+		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
-		this.fontRenderer.drawString(emcLabel, 6, this.ySize - 104, 4210752);
+		this.font.drawString(emcLabel, 6, this.ySize - 104, 4210752);
 		String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);
-		this.fontRenderer.drawString(emc, 6, this.ySize - 94, 4210752);
+		this.font.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
 		{
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
 			
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0)
 		{
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
-			this.fontRenderer.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
 			
 			inv.unlearnFlag--;
 		}
@@ -165,8 +158,8 @@ public class GUITransmutation extends ContainerScreen
 	{
 		int minX = textBoxFilter.x;
 		int minY = textBoxFilter.y;
-		int maxX = minX + textBoxFilter.width;
-		int maxY = minY + textBoxFilter.height;
+		int maxX = minX + textBoxFilter.getWidth();
+		int maxY = minY + textBoxFilter.getHeight();
 
 		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
 		{
@@ -180,9 +173,9 @@ public class GUITransmutation extends ContainerScreen
 	}
 
 	@Override
-	public void onGuiClosed()
+	public void onClose()
 	{
-		super.onGuiClosed();
+		super.onClose();
 		inv.learnFlag = 0;
 		inv.unlearnFlag = 0;
 	}
@@ -203,7 +196,7 @@ public class GUITransmutation extends ContainerScreen
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
-			drawHoveringText(Arrays.asList(emcAsString), mouseX, mouseY);
+			renderTooltip(Collections.singletonList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);
 		}

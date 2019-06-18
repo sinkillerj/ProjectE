@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,7 +28,7 @@ public class GUIRMFurnace extends ContainerScreen
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
@@ -42,7 +42,7 @@ public class GUIRMFurnace extends ContainerScreen
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		
 		int progress;
@@ -50,17 +50,17 @@ public class GUIRMFurnace extends ContainerScreen
 		if (tile.isBurning())
 		{
 			progress = tile.getBurnTimeRemainingScaled(12);
-			this.drawTexturedModalRect(x + 66, y + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
+			this.blit(x + 66, y + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
 		}
 		
 		progress = tile.getCookProgressScaled(24);
-		this.drawTexturedModalRect(x + 88, y + 35, 210, 14, progress, 17);
+		this.blit(x + 88, y + 35, 210, 14, progress, 17);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		this.fontRenderer.drawString(I18n.format("pe.rmfurnace.shortname"), 76, 5, 4210752);
-		this.fontRenderer.drawString(I18n.format("container.inventory"), 76, ySize - 96 + 2, 4210752);
+		this.font.drawString(I18n.format("pe.rmfurnace.shortname"), 76, 5, 4210752);
+		this.font.drawString(I18n.format("container.inventory"), 76, ySize - 96 + 2, 4210752);
 	}
 }

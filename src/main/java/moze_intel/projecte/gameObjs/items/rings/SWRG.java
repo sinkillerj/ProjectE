@@ -35,6 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -234,7 +235,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					{
 						continue;
 					}
-					world.addWeatherEffect(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));
+					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));;
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.swrg.get());
 			}
@@ -263,7 +264,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	{
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
 		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.world.spawnEntity(projectile);
+		player.world.addEntity(projectile);
 		return true;
 	}
 }

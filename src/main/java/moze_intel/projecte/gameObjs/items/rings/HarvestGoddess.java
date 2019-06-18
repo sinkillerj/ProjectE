@@ -106,7 +106,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			if (!boneMeal.isEmpty() && useBoneMeal(world, ctx.getPos()))
 			{
 				player.inventory.decrStackSize((Integer) obj[0], 4);
-				player.inventoryContainer.detectAndSendChanges();
+				player.container.detectAndSendChanges();
 				return ActionResultType.SUCCESS;
 			}
 			
@@ -154,7 +154,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 			return false;
 		}
 
-		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
+		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
 		{
 			BlockState state = world.getBlockState(currentPos);
 
@@ -181,7 +181,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 				{
 					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
 					player.inventory.decrStackSize(s.slot, 1);
-					player.inventoryContainer.detectAndSendChanges();
+					player.container.detectAndSendChanges();
 
 					s.stack.shrink(1);
 

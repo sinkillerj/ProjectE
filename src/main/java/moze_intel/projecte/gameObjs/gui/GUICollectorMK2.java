@@ -1,26 +1,24 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GUICollectorMK2 extends ContainerScreen
+public class GUICollectorMK2 extends ContainerScreen<CollectorMK2Container>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector2.png");
 	private final CollectorMK2Tile tile;
-	private final CollectorMK2Container container;
 	
 	public GUICollectorMK2(PlayerInventory invPlayer, CollectorMK2Tile tile)
 	{
 		super(new CollectorMK2Container(invPlayer, tile));
-		this.container = ((CollectorMK2Container) inventorySlots);
 		this.tile = tile;
 		this.xSize = 200;
 		this.ySize = 165;
@@ -29,7 +27,7 @@ public class GUICollectorMK2 extends ContainerScreen
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
@@ -37,11 +35,11 @@ public class GUICollectorMK2 extends ContainerScreen
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRenderer.drawString(Long.toString(container.emc), 75, 32, 4210752);
+		this.font.drawString(Long.toString(container.emc), 75, 32, 4210752);
 		
 		double kleinCharge = container.kleinEmc;
 		if (kleinCharge > 0)
-			this.fontRenderer.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
+			this.font.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
 	}
 
 	@Override
@@ -53,21 +51,21 @@ public class GUICollectorMK2 extends ContainerScreen
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
 		int progress = (int) (container.sunLevel * 12.0 / 16);
-		this.drawTexturedModalRect(x + 142, y + 49 - progress, 202, 13 - progress, 12, progress);
+		this.blit(x + 142, y + 49 - progress, 202, 13 - progress, 12, progress);
 				
 		//EMC storage. Max is 48
-		this.drawTexturedModalRect(x + 80, y + 18, 0, 166, (int) (container.emc / tile.getMaximumEmc() * 48), 10);
+		this.blit(x + 80, y + 18, 0, 166, (int) (container.emc / tile.getMaximumEmc() * 48), 10);
 				
 		//Klein Star Charge Progress. Max is 48
 		progress = (int) (container.kleinChargeProgress * 48);
-		this.drawTexturedModalRect(x + 80, y + 58, 0, 166, progress, 10);
+		this.blit(x + 80, y + 58, 0, 166, progress, 10);
 		
 		//Fuel Progress. Max is 24.
 		progress = (int) (container.fuelProgress * 24);
-		this.drawTexturedModalRect(x + 154, y + 55 - progress, 201, 38 - progress, 10, progress + 1);
+		this.blit(x + 154, y + 55 - progress, 201, 38 - progress, 10, progress + 1);
 	}
 }

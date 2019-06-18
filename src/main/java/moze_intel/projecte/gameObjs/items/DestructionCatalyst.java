@@ -12,9 +12,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -80,11 +80,11 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 					drops.addAll(list);
 				}
 
-				world.removeBlock(pos);
+				world.removeBlock(pos, false);
 
 				if (world.rand.nextInt(8) == 0)
 				{
-					((ServerWorld) world).spawnParticle(world.rand.nextBoolean() ? Particles.POOF : Particles.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+					((ServerWorld) world).spawnParticle(world.rand.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}

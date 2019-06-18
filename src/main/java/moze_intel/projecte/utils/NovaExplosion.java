@@ -1,40 +1,39 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Particles;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
+import javax.annotation.Nullable;
 
 public class NovaExplosion extends Explosion 
 {
 	// Copies of private super fields
 	private final World world;
-	private final boolean damagesTerrain;
+	private final Explosion.Mode mode;
 	private final double x, y, z;
 	private final float size;
-	
-	public NovaExplosion(World world, Entity entity, double x, double y, double z, float radius, boolean causesFire, boolean damagesTerrain)
+
+	public NovaExplosion(World world, @Nullable Entity entity, double x, double y, double z, float radius, boolean causesFire, Explosion.Mode mode)
 	{
-		super(world, entity, x, y, z, radius, causesFire, damagesTerrain);
+		super(world, entity, x, y, z, radius, causesFire, mode);
 		this.world = world;
-		this.damagesTerrain = damagesTerrain;
+		this.mode = mode;
 		this.size = radius;
 		this.x = x;
 		this.y = y;
@@ -46,18 +45,18 @@ public class NovaExplosion extends Explosion
 	public void doExplosionB(boolean spawnParticles)
 	{
 		this.world.playSound(null, this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
-		if (!(this.size < 2.0F) && this.damagesTerrain) {
-			this.world.addParticle(Particles.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+		boolean flag = this.mode != Explosion.Mode.NONE;
+		if (!(this.size < 2.0F) && flag) {
+			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 		} else {
-			this.world.addParticle(Particles.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+			this.world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
 		}
 
 		NonNullList<ItemStack> allDrops = NonNullList.create();
-
-		if (this.damagesTerrain) {
+		if (flag) {
 			for(BlockPos blockpos : this.getAffectedBlockPositions()) {
-				BlockState iblockstate = this.world.getBlockState(blockpos);
-				Block block = iblockstate.getBlock();
+				BlockState blockstate = this.world.getBlockState(blockpos);
+				Block block = blockstate.getBlock();
 				if (spawnParticles) {
 					double d0 = (double)((float)blockpos.getX() + this.world.rand.nextFloat());
 					double d1 = (double)((float)blockpos.getY() + this.world.rand.nextFloat());
@@ -74,19 +73,25 @@ public class NovaExplosion extends Explosion
 					d3 = d3 * d7;
 					d4 = d4 * d7;
 					d5 = d5 * d7;
-					this.world.addParticle(Particles.POOF, (d0 + this.x) / 2.0D, (d1 + this.y) / 2.0D, (d2 + this.z) / 2.0D, d3, d4, d5);
-					this.world.addParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
+					this.world.addParticle(ParticleTypes.POOF, (d0 + this.x) / 2.0D, (d1 + this.y) / 2.0D, (d2 + this.z) / 2.0D, d3, d4, d5);
+					this.world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
 				}
 
-				if (!iblockstate.isAir(world, blockpos)) {
-					if (block.canDropFromExplosion(this)) {
-						// PE: Collect all drops in one place
-						NonNullList<ItemStack> drops = NonNullList.create();
-						iblockstate.getDrops(drops, world, blockpos, 0);
-						allDrops.addAll(drops);
+				if (!blockstate.isAir(this.world, blockpos)) {
+					if (this.world instanceof ServerWorld && blockstate.canDropFromExplosion(this.world, blockpos, this)) {
+						TileEntity tileentity = blockstate.hasTileEntity() ? this.world.getTileEntity(blockpos) : null;
+						LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld)this.world)).withRandom(this.world.rand).withParameter(LootParameters.POSITION, blockpos).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity);
+						if (this.mode == Explosion.Mode.DESTROY) {
+							lootcontext$builder.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
+						}
+
+						// PE: Collect the drops we can, spawn the stuff we can't
+						allDrops.addAll(blockstate.getDrops( lootcontext$builder));
+						blockstate.spawnAdditionalDrops(world, blockpos, ItemStack.EMPTY);
 					}
 
-					iblockstate.onBlockExploded(this.world, blockpos, this);
+					this.world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 3);
+					block.onExplosionDestroy(this.world, blockpos, this);
 				}
 			}
 		}

@@ -1,8 +1,8 @@
 package moze_intel.projecte.rendering;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -24,7 +24,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile>
                 GlStateManager.pushMatrix();
                 GlStateManager.translated(x, y, z);
                 GlStateManager.depthMask(false);
-                GlStateManager.disableTexture2D();
+                GlStateManager.disableTexture();
                 GlStateManager.disableLighting();
                 GlStateManager.disableCull();
                 GlStateManager.disableBlend();
@@ -36,7 +36,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile>
                 GlStateManager.enableBlend();
                 GlStateManager.enableCull();
                 GlStateManager.enableLighting();
-                GlStateManager.enableTexture2D();
+                GlStateManager.enableTexture();
                 GlStateManager.depthMask(true);
                 GlStateManager.popMatrix();
             }

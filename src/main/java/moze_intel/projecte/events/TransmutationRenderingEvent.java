@@ -1,5 +1,6 @@
 package moze_intel.projecte.events;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -9,7 +10,6 @@ import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -94,9 +95,10 @@ public class TransmutationRenderingEvent
 		
 		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		
-		if (mop != null && mop.type == Type.BLOCK)
+		if (mop instanceof BlockRayTraceResult)
 		{
-			BlockState current = world.getBlockState(mop.getBlockPos());
+			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
+			BlockState current = world.getBlockState(rtr.getPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 
 			if (transmutationResult != null)
@@ -105,7 +107,7 @@ public class TransmutationRenderingEvent
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 
-				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, mop.getBlockPos(), player, mop.sideHit, mode, charge))
+				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge))
 				{
 					for (AxisAlignedBB bb : world.getBlockState(pos).getShape(world, pos).toBoundingBoxList())
 					{
@@ -126,7 +128,7 @@ public class TransmutationRenderingEvent
 	{
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.disableCull();
 		GlStateManager.disableLighting();
 		GlStateManager.depthMask(false);
@@ -182,7 +184,7 @@ public class TransmutationRenderingEvent
 		GlStateManager.depthMask(true);
 		GlStateManager.enableCull();
 		GlStateManager.enableLighting();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 		GlStateManager.disableBlend();
 	}
 

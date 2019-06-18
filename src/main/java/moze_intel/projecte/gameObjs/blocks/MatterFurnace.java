@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.BlockState;
@@ -25,7 +26,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class MatterFurnace extends FurnaceBlock
+public class MatterFurnace extends AbstractFurnaceBlock
 {
 	private final EnumMatterType matterType;
 
@@ -34,9 +35,16 @@ public class MatterFurnace extends FurnaceBlock
 		super(props);
 		this.matterType = type;
 	}
+	
+	@Nonnull
+	@Override
+	public TileEntity createNewTileEntity(IBlockReader world)
+	{
+		return matterType == EnumMatterType.RED_MATTER ? new RMFurnaceTile() : new DMFurnaceTile();
+	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
+	protected void func_220089_a(World world, BlockPos pos, PlayerEntity player)
 	{
 		if (!world.isRemote)
 		{
@@ -51,15 +59,6 @@ public class MatterFurnace extends FurnaceBlock
 				NetworkHooks.openGui((ServerPlayerEntity) player, (RMFurnaceTile) te, pos);
 			}
 		}
-		
-		return true;
-	}
-	
-	@Nonnull
-	@Override
-	public TileEntity createNewTileEntity(IBlockReader world)
-	{
-		return matterType == EnumMatterType.RED_MATTER ? new RMFurnaceTile() : new DMFurnaceTile();
 	}
 
 	@Override

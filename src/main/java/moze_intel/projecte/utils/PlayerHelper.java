@@ -26,6 +26,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -109,12 +111,8 @@ public final class PlayerHelper
 	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance)
 	{
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
-		RayTraceResult mop = player.getEntityWorld().rayTraceBlocks(vecs.getLeft(), vecs.getRight());
-		if (mop != null && mop.type == RayTraceResult.Type.BLOCK)
-		{
-			return mop.getBlockPos();
-		}
-		return null;
+		RayTraceContext ctx = new RayTraceContext(vecs.getLeft(), vecs.getRight(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
+		return player.getEntityWorld().rayTraceBlocks(ctx).getPos();
 	}
 
 	/**
@@ -124,7 +122,7 @@ public final class PlayerHelper
 	{
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
-		Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+		Vec3d playerPos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
 		Vec3d src = playerPos.add(0, player.getEyeHeight(), 0);
 		Vec3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
@@ -164,7 +162,7 @@ public final class PlayerHelper
 	{
 		if (player.getEntityWorld() instanceof ServerWorld)
 		{
-			((ServerWorld) player.getEntityWorld()).getEntityTracker().sendToTrackingAndSelf(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
+			((ServerWorld) player.getEntityWorld()).getChunkProvider().sendToTrackingAndSelf(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
 		}
 	}
 

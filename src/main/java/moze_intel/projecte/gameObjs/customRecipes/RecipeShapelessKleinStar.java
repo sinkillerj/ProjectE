@@ -12,12 +12,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 
 import javax.annotation.Nonnull;
 
 // todo 1.13 @Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
-public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
+public class RecipeShapelessKleinStar implements IRecipe<CraftingInventory>/*, IRecipeWrapper*/ {
 	private final ShapelessRecipe compose;
 
 	public RecipeShapelessKleinStar(ShapelessRecipe compose) {
@@ -36,14 +37,21 @@ public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
 		return ObjHandler.KLEIN_RECIPE_SERIALIZER;
 	}
 
+	@Nonnull
 	@Override
-	public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
+	public IRecipeType<?> getType()
+	{
+		return IRecipeType.CRAFTING;
+	}
+
+	@Override
+	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World worldIn) {
 		return compose.matches(inv, worldIn);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
 		ItemStack result = compose.getCraftingResult(inv);
 		double storedEMC = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
@@ -72,7 +80,7 @@ public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv) {
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
 		return compose.getRemainingItems(inv);
 	}
 
@@ -107,32 +115,24 @@ public class RecipeShapelessKleinStar implements IRecipe/*, IRecipeWrapper*/ {
 	}
 	*/
 
-	public static class Serializer implements IRecipeSerializer<RecipeShapelessKleinStar>
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessKleinStar>
 	{
-		private static final ResourceLocation TYPE_ID = new ResourceLocation(PECore.MODID, "crafting_shapeless_kleinstar");
-
 		@Override
 		public RecipeShapelessKleinStar read(ResourceLocation recipeId, JsonObject json)
 		{
-			return new RecipeShapelessKleinStar(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json));
+			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
 		}
 
 		@Override
 		public RecipeShapelessKleinStar read(ResourceLocation recipeId, PacketBuffer buffer)
 		{
-			return new RecipeShapelessKleinStar(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, buffer));
+			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
 		}
 
 		@Override
 		public void write(PacketBuffer buffer, RecipeShapelessKleinStar recipe)
 		{
-			RecipeSerializers.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
-		}
-
-		@Override
-		public ResourceLocation getName()
-		{
-			return TYPE_ID;
+			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
 		}
 	}
 }

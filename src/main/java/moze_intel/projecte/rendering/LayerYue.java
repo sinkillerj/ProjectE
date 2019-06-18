@@ -1,23 +1,22 @@
 package moze_intel.projecte.rendering;
 
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public class LayerYue implements LayerRenderer<PlayerEntity> {
+public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
 	private final PlayerRenderer render;
 
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
@@ -28,11 +27,12 @@ public class LayerYue implements LayerRenderer<PlayerEntity> {
 
 	public LayerYue(PlayerRenderer renderer)
 	{
+		super(renderer);
 		this.render = renderer;
 	}
 
 	@Override
-	public void render(@Nonnull PlayerEntity player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
+	public void render(@Nonnull AbstractClientPlayerEntity player, float angle1, float angle2, float partialTicks, float angle3, float angle4, float angle5, float angle8)
 	{
 		if (player.isInvisible())
 		{
@@ -44,7 +44,7 @@ public class LayerYue implements LayerRenderer<PlayerEntity> {
 				|| PECore.DEV_ENVIRONMENT)
 		{
 			GlStateManager.pushMatrix();
-			render.getMainModel().bipedBody.postRender(0.0625F);
+			render.getEntityModel().bipedBodyWear.postRender(0.0625F);
 			if (player.isSneaking())
 			{
 				GlStateManager.rotatef(-28.64789F, 1.0F, 0.0F, 0.0F);
@@ -54,7 +54,7 @@ public class LayerYue implements LayerRenderer<PlayerEntity> {
 			GlStateManager.translatef(-0.5f, -0.498f, -0.5f);
 			GlStateManager.color4f(0.0F, 1.0F, 0.0F, 1.0F);
 			GlStateManager.disableLighting();
-			OpenGlHelper.glMultiTexCoord2f(OpenGlHelper.GL_TEXTURE1, 240f, 240f);
+			GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240f, 240f);
 			if (CLAR_UUID.equals(player.getUniqueID()))
 			{
 				Minecraft.getInstance().textureManager.bindTexture(HEART_LOC);

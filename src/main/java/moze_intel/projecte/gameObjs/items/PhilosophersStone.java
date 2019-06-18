@@ -17,7 +17,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.init.Particles;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -29,10 +28,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraft.world.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,6 +43,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
@@ -69,7 +69,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	public RayTraceResult getHitBlock(PlayerEntity player)
 	{
-		return rayTrace(player.getEntityWorld(), player, player.isSneaking());
+		return rayTrace(player.getEntityWorld(), player, player.isSneaking() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 	}
 
 	@Nonnull
@@ -124,7 +124,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.spawnEntity(ent);
+		world.addEntity(ent);
 		return true;
 	}
 	
@@ -151,25 +151,25 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		Set<BlockPos> ret = new HashSet<>();
 		BlockState targeted = world.getBlockState(pos);
-		Iterable<BlockPos> iterable = null;
+		Stream<BlockPos> stream = null;
 
 		switch (mode)
 		{
 			case 0: // Cube
-				iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
+				stream = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
 				break;
 			case 1: // Panel
 				if (sideHit == Direction.UP || sideHit == Direction.DOWN)
 				{
-					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
+					stream = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
 				}
 				else if (sideHit == Direction.EAST || sideHit == Direction.WEST)
 				{
-					iterable = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
+					stream = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
 				}
 				else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH)
 				{
-					iterable = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
+					stream = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
 				}
 				break;
 			case 2: // Line
@@ -177,23 +177,23 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 				if (playerFacing.getAxis() == Direction.Axis.Z)
 				{
-					iterable = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
+					stream = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
 				}
 				else if (playerFacing.getAxis() == Direction.Axis.X)
 				{
-					iterable = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
+					stream = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
 				}
 				break;
 		}
 
-		if (iterable != null) {
-			for (BlockPos currentPos : iterable)
+		if (stream != null) {
+			stream.forEach(currentPos ->
             {
                 if (world.getBlockState(currentPos) == targeted)
                 {
                     ret.add(currentPos);
                 }
-            }
+            });
 		}
 
 		return ret;

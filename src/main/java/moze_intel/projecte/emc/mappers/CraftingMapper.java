@@ -75,7 +75,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			if (!handled) {
 				canNotMap.add(recipe.getClass());
 			} else {
-				recipeCount.merge(recipe.getSerializer().getName(), 1, Integer::sum);
+				recipeCount.merge(recipe.getSerializer().getRegistryName(), 1, Integer::sum);
 			}
 		}
 
@@ -111,7 +111,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		default Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 			List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
 			List<ItemStack> fixedInputs = new ArrayList<>();
-			for (Ingredient recipeItem : recipe.getIngredients()) {
+			for (Object i : recipe.getIngredients()) {
+				Ingredient recipeItem = (Ingredient) i;
 				ItemStack[] matches = recipeItem.getMatchingStacks();
 				if (matches.length == 1) {
 					fixedInputs.add(matches[0].copy());

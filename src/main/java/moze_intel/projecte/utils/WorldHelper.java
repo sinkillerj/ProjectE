@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -62,6 +61,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
@@ -170,7 +171,7 @@ public final class WorldHelper
 		{
 			ItemEntity ent = new ItemEntity(world, x, y, z);
 			ent.setItem(drop);
-			world.spawnEntity(ent);
+			world.addEntity(ent);
 		}
 	}
 
@@ -179,7 +180,7 @@ public final class WorldHelper
 	 */
 	public static void createNovaExplosion(World world, Entity exploder, double x, double y, double z, float power)
 	{
-		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power, true, true);
+		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power, true, Explosion.Mode.BREAK);
 		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion)))
 		{
 			explosion.doExplosionA();
@@ -200,20 +201,20 @@ public final class WorldHelper
 			{
 				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ());
 				ent.setItem(stack);
-				world.spawnEntity(ent);
+				world.addEntity(ent);
 			}
 		}
 	}
 
 	public static void extinguishNearby(World world, PlayerEntity player)
 	{
-		for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)))
+		BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)).forEach(pos ->
 		{
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos))
 			{
-				world.removeBlock(pos);
+				world.removeBlock(pos, false);
 			}
-		}
+		});
 	}
 	
 	public static void freezeInBoundingBox(World world, AxisAlignedBB box, PlayerEntity player, boolean random)
@@ -234,7 +235,7 @@ public final class WorldHelper
 					world.setBlockState(pos, Blocks.ICE.getDefaultState());
 				}
 			}
-			else if (state.getBlockFaceShape(world, pos, Direction.UP) == BlockFaceShape.SOLID)
+			else if (Block.doesSideFillSquare(state.getCollisionShape(world, pos.down()), Direction.UP))
 			{
 				BlockPos up = pos.up();
 				BlockState stateUp = world.getBlockState(up);
@@ -280,14 +281,8 @@ public final class WorldHelper
 
 	public static List<ItemStack> getBlockDrops(World world, PlayerEntity player, BlockState state, ItemStack stack, BlockPos pos)
 	{
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0 && state.canSilkHarvest(world, pos, player))
-		{
-			return Lists.newArrayList(new ItemStack(state.getBlock()));
-		}
-
-		NonNullList<ItemStack> ret = NonNullList.create();
-		state.getBlock().getDrops(state, ret, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-		return ret;
+		TileEntity te = world.getTileEntity(pos);
+		return Block.getDrops(state, (ServerWorld) world, pos, te, player, stack);
 	}
 
 	/**
@@ -354,7 +349,7 @@ public final class WorldHelper
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
 	{
-		return BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
+		return () -> BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ)).iterator();
 	}
 
 	public static MobEntity getRandomEntity(World world, MobEntity toRandomize)
@@ -415,9 +410,7 @@ public final class WorldHelper
 		if (vel > 0.0D)
 		{
 			vel *= vel;
-			ent.motionX += dX / dist * vel * 0.1;
-			ent.motionY += dY / dist * vel * 0.2;
-			ent.motionZ += dZ / dist * vel * 0.1;
+			ent.setMotion(ent.getMotion().add(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
 		}
 	}
 
@@ -425,7 +418,7 @@ public final class WorldHelper
 	{
 		int chance = harvest ? 16 : 32;
 
-		for (BlockPos currentPos : BlockPos.getAllInBox(pos.add(-5, -3, -5), pos.add(5, 3, 5)))
+		BlockPos.getAllInBox(pos.add(-5, -3, -5), pos.add(5, 3, 5)).forEach(currentPos ->
 		{
 			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
@@ -522,7 +515,7 @@ public final class WorldHelper
 				}
 
 			}
-		}
+		});
 	}
 
 	/**
@@ -547,7 +540,7 @@ public final class WorldHelper
 				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos))
 				{
 					currentDrops.addAll(getBlockDrops(world, player, currentState, stack, currentPos));
-					world.removeBlock(currentPos);
+					world.removeBlock(currentPos, false);
 					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
 					if (numMined >= Constants.MAX_VEIN_SIZE) {
 						break;
@@ -598,9 +591,7 @@ public final class WorldHelper
 
 						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
 
-						ent.motionX += r.x / 1.5D / distance;
-						ent.motionY += r.y / 1.5D / distance;
-						ent.motionZ += r.z / 1.5D / distance;
+						ent.setMotion(ent.getMotion().add(r.scale(1/1.5D * 1/distance)));
 					}
 				}
 			}

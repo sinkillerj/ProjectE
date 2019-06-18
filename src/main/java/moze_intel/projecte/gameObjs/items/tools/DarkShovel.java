@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -23,8 +25,8 @@ public class DarkShovel extends PEToolBase
 	{
 		super(props, (byte)1, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
-		this.harvestMaterials.add(Material.GRASS);
-		this.harvestMaterials.add(Material.GROUND);
+		this.harvestMaterials.add(Material.ORGANIC);
+		this.harvestMaterials.add(Material.EARTH);
 		this.harvestMaterials.add(Material.SAND);
 		this.harvestMaterials.add(Material.SNOW);
 		this.harvestMaterials.add(Material.CLAY);
@@ -46,11 +48,11 @@ public class DarkShovel extends PEToolBase
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
 
-		RayTraceResult mop = this.rayTrace(world, player, false);
-		if (mop != null && mop.type == RayTraceResult.Type.BLOCK
-				&& world.getBlockState(mop.getBlockPos()).getBlock() == Blocks.GRAVEL)
+		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+		if (mop instanceof BlockRayTraceResult
+				&& world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL)
 		{
-			tryVeinMine(stack, player, mop);
+			tryVeinMine(stack, player, (BlockRayTraceResult) mop);
 		}
 		else
 		{
@@ -65,8 +67,8 @@ public class DarkShovel extends PEToolBase
 	{
 		if (slot != EquipmentSlotType.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedShovel ? 6 : 5, 0));
-		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedShovel ? 6 : 5, AttributeModifier.Operation.ADDITION));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, AttributeModifier.Operation.ADDITION));
 		return multimap;
 	}
 }

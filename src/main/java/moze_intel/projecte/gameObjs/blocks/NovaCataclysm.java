@@ -42,7 +42,7 @@ public class NovaCataclysm extends TNTBlock
 		if (!world.isRemote)
 		{
 			TNTEntity entitytntprimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, exploder);
-			world.spawnEntity(entitytntprimed);
+			world.addEntity(entitytntprimed);
 			world.playSound(null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		}
 	}

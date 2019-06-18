@@ -26,10 +26,10 @@ public class DarkShears extends PEToolBase
 		super(props, (byte)2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.WEB);
-		this.harvestMaterials.add(Material.CLOTH);
+		this.harvestMaterials.add(Material.WOOL);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.LEAVES);
-		this.harvestMaterials.add(Material.VINE);
+		this.harvestMaterials.add(Material.TALL_PLANTS);
 	}
 
 	// Only for RedShears

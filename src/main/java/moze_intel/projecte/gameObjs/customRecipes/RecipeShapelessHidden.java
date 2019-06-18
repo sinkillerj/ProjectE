@@ -1,26 +1,26 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
 /**
  * Composes a ShapelessRecipe to hide it from JEI and the book
  */
-public class RecipeShapelessHidden implements IRecipe
+public class RecipeShapelessHidden implements IRecipe<CraftingInventory>
 {
 	private final ShapelessRecipe compose;
 
@@ -35,13 +35,13 @@ public class RecipeShapelessHidden implements IRecipe
 	}
 
 	@Override
-	public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
+	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World worldIn) {
 		return compose.matches(inv, worldIn);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull IInventory inv) {
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
 		return compose.getCraftingResult(inv);
 	}
 
@@ -58,7 +58,7 @@ public class RecipeShapelessHidden implements IRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		return compose.getRemainingItems(inv);
 	}
@@ -97,35 +97,32 @@ public class RecipeShapelessHidden implements IRecipe
 		return ObjHandler.SHAPELESS_HIDDEN_SERIALIZER;
 	}
 
-	public static class Serializer implements IRecipeSerializer<RecipeShapelessHidden>
-	{
-		private static final ResourceLocation TYPE_ID = new ResourceLocation(PECore.MODID, "shapeless_recipe_hidden");
+	@Nonnull
+	@Override
+	public IRecipeType<?> getType() {
+		return IRecipeType.CRAFTING;
+	}
 
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessHidden>
+	{
 		@Nonnull
 		@Override
 		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 		{
-			return new RecipeShapelessHidden(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json));
+			return new RecipeShapelessHidden(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
 		}
 
 		@Nonnull
 		@Override
 		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 		{
-			return new RecipeShapelessHidden(RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, buffer));
+			return new RecipeShapelessHidden(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
 		}
 
 		@Override
 		public void write(@Nonnull PacketBuffer buffer, @Nonnull RecipeShapelessHidden recipe)
 		{
-			RecipeSerializers.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
-		}
-
-		@Nonnull
-		@Override
-		public ResourceLocation getName()
-		{
-			return TYPE_ID;
+			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
 		}
 	}
 }

@@ -49,7 +49,7 @@ import java.util.List;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector
 {
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, 0).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, AttributeModifier.Operation.ADDITION).setSaved(false);
 
 	public VolcaniteAmulet(Properties props)
 	{
@@ -131,7 +131,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		{
 			if (!living.isSneaking())
 			{
-				living.motionY = 0.0D;
+				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
 			}
@@ -156,7 +156,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.getEntityWorld().spawnEntity(ent);
+		player.getEntityWorld().addEntity(ent);
 		return true;
 	}
 

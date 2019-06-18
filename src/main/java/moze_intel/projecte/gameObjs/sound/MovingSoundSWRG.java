@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.sound;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +35,7 @@ public class MovingSoundSWRG extends TickableSound
 			this.x = (float) this.swrgProjectile.posX;
 			this.y = (float) this.swrgProjectile.posY;
 			this.z = (float) this.swrgProjectile.posZ;
-			float f = MathHelper.sqrt(this.swrgProjectile.motionX * this.swrgProjectile.motionX + this.swrgProjectile.motionZ * this.swrgProjectile.motionZ);
+			float f = MathHelper.sqrt(Entity.getSqrtPlaneDistance(this.swrgProjectile.getMotion()));
 
 			if ((double) f >= 0.01D)
 			{
