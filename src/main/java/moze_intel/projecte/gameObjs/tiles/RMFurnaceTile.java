@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
@@ -28,8 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteractionObject
+public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
 {
 	private static final float EMC_CONSUMPTION = 1.6f;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
@@ -449,34 +449,17 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, IInteraction
 		return 0;
 	}
 
-	@Nonnull
-	@Override
-	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
-	{
-		return new RMFurnaceContainer(playerInventory, this);
-	}
-
-	@Nonnull
-	@Override
-	public String getGuiID() {
-		return getType().getRegistryName().toString();
-	}
-
-	@Nonnull
-	@Override
-	public ITextComponent getName()
-	{
-		return new StringTextComponent(getGuiID());
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
 	@Nullable
 	@Override
-	public ITextComponent getCustomName() {
-		return null;
+	public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player)
+	{
+		return new RMFurnaceContainer(ObjHandler.RM_FURNACE_CONTAINER, windowId, inv, this);
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return new TranslationTextComponent(ObjHandler.rmFurnaceOff.getTranslationKey());
 	}
 }

@@ -10,16 +10,19 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,11 +36,17 @@ public class CondenserContainer extends LongContainer
 	public long displayEmc;
 	public long requiredEmc;
 	
-	public CondenserContainer(PlayerInventory invPlayer, CondenserTile condenser)
+	public CondenserContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser)
 	{
+		super(type, windowId);
 		tile = condenser;
 		tile.numPlayersUsing++;
 		initSlots(invPlayer);
+	}
+
+	public CondenserContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	{
+		this(ObjHandler.CONDENSER_CONTAINER, windowId, invPlayer, (CondenserTile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	protected void initSlots(PlayerInventory invPlayer)

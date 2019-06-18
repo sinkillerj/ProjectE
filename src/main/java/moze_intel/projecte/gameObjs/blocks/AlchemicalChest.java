@@ -24,11 +24,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -49,17 +50,11 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 
 	@Nonnull
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx)
 	{
 		return SHAPE;
 	}
 	
-	@Override
-	public boolean isFullCube(BlockState state)
-	{
-		return false;
-	}
-
 	@Nonnull
 	@Override
 	public BlockRenderType getRenderType(BlockState state)
@@ -68,7 +63,7 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr)
 	{
 		if (!world.isRemote)
 		{

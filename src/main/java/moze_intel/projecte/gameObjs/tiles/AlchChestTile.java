@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.container.Container;
@@ -16,7 +17,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -26,7 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class AlchChestTile extends TileEmc implements IInteractionObject
+public class AlchChestTile extends TileEmc implements INamedContainerProvider
 {
 	private final ItemStackHandler inventory = new StackHandler(104);
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
@@ -142,30 +143,15 @@ public class AlchChestTile extends TileEmc implements IInteractionObject
 
 	@Nonnull
 	@Override
-	public Container createContainer(@Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-		return new AlchChestContainer(playerInventory, this);
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
+	{
+		return new AlchChestContainer(windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public String getGuiID() {
-		return getType().getRegistryName().toString();
-	}
-
-	@Nonnull
-	@Override
-	public ITextComponent getName() {
-		return new StringTextComponent(getGuiID());
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName() {
-		return null;
+	public ITextComponent getDisplayName()
+	{
+		return new TranslationTextComponent(ObjHandler.alchChest.getTranslationKey());
 	}
 }

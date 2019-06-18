@@ -2,6 +2,11 @@ package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.blocks.*;
+import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import moze_intel.projecte.gameObjs.container.CondenserContainer;
+import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
+import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
+import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -14,6 +19,11 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
+import moze_intel.projecte.gameObjs.gui.GUICondenser;
+import moze_intel.projecte.gameObjs.gui.GUICondenserMK2;
+import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
+import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
 import moze_intel.projecte.gameObjs.items.CataliticLens;
@@ -80,8 +90,10 @@ import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
@@ -93,6 +105,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -303,19 +316,25 @@ public class ObjHandler
 			.setUpdateInterval(10)
 			.build("");
 
-	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
-	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk1");
-	public static final TileEntityType<?> COLLECTOR_MK2_TILE = TileEntityType.Builder.create(CollectorMK2Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk2");
-	public static final TileEntityType<?> COLLECTOR_MK3_TILE = TileEntityType.Builder.create(CollectorMK3Tile::new).build(null).setRegistryName(PECore.MODID, "collector_mk3");
-	public static final TileEntityType<?> CONDENSER_TILE = TileEntityType.Builder.create(CondenserTile::new).build(null).setRegistryName(PECore.MODID, "condenser");
-	public static final TileEntityType<?> CONDENSER_MK2_TILE = TileEntityType.Builder.create(CondenserMK2Tile::new).build(null).setRegistryName(PECore.MODID, "condenser_mk2");
-	public static final TileEntityType<?> RELAY_MK1_TILE = TileEntityType.Builder.create(RelayMK1Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk1");
-	public static final TileEntityType<?> RELAY_MK2_TILE = TileEntityType.Builder.create(RelayMK2Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk2");
-	public static final TileEntityType<?> RELAY_MK3_TILE = TileEntityType.Builder.create(RelayMK3Tile::new).build(null).setRegistryName(PECore.MODID, "relay_mk3");
-	public static final TileEntityType<?> DM_FURNACE_TILE = TileEntityType.Builder.create(DMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final TileEntityType<?> RM_FURNACE_TILE = TileEntityType.Builder.create(RMFurnaceTile::new).build(null).setRegistryName(PECore.MODID, "rm_furnace");
-	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
-	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
+	public static final TileEntityType<?> ALCH_CHEST_TILE = TileEntityType.Builder.create(AlchChestTile::new, alchChest).build(null).setRegistryName(PECore.MODID, "alchemical_chest");
+	public static final TileEntityType<?> COLLECTOR_MK1_TILE = TileEntityType.Builder.create(CollectorMK1Tile::new, collectorMK1).build(null).setRegistryName(PECore.MODID, "collector_mk1");
+	public static final TileEntityType<?> COLLECTOR_MK2_TILE = TileEntityType.Builder.create(CollectorMK2Tile::new, collectorMK2).build(null).setRegistryName(PECore.MODID, "collector_mk2");
+	public static final TileEntityType<?> COLLECTOR_MK3_TILE = TileEntityType.Builder.create(CollectorMK3Tile::new, collectorMK3).build(null).setRegistryName(PECore.MODID, "collector_mk3");
+	public static final TileEntityType<?> CONDENSER_TILE = TileEntityType.Builder.create(CondenserTile::new, condenser).build(null).setRegistryName(PECore.MODID, "condenser");
+	public static final TileEntityType<?> CONDENSER_MK2_TILE = TileEntityType.Builder.create(CondenserMK2Tile::new, condenserMk2).build(null).setRegistryName(PECore.MODID, "condenser_mk2");
+	public static final TileEntityType<?> RELAY_MK1_TILE = TileEntityType.Builder.create(RelayMK1Tile::new, relay).build(null).setRegistryName(PECore.MODID, "relay_mk1");
+	public static final TileEntityType<?> RELAY_MK2_TILE = TileEntityType.Builder.create(RelayMK2Tile::new, relayMK2).build(null).setRegistryName(PECore.MODID, "relay_mk2");
+	public static final TileEntityType<?> RELAY_MK3_TILE = TileEntityType.Builder.create(RelayMK3Tile::new, relayMK3).build(null).setRegistryName(PECore.MODID, "relay_mk3");
+	public static final TileEntityType<?> DM_FURNACE_TILE = TileEntityType.Builder.create(DMFurnaceTile::new, dmFurnaceOff).build(null).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final TileEntityType<?> RM_FURNACE_TILE = TileEntityType.Builder.create(RMFurnaceTile::new, rmFurnaceOff).build(null).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new, interdictionTorch, interdictionTorchWall).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
+	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new, dmPedestal).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
+
+	public static final ContainerType<RMFurnaceContainer> RM_FURNACE_CONTAINER = IForgeContainerType.create(RMFurnaceContainer::new);
+	public static final ContainerType<DMFurnaceContainer> DM_FURNACE_CONTAINER = IForgeContainerType.create(DMFurnaceContainer::new);
+	public static final ContainerType<CondenserContainer> CONDENSER_CONTAINER = IForgeContainerType.create(CondenserContainer::new);
+	public static final ContainerType<CondenserMK2Container> CONDENSER_MK2_CONTAINER = IForgeContainerType.create(CondenserMK2Container::new);
+	public static final ContainerType<AlchChestContainer> ALCH_CHEST_CONTAINER = IForgeContainerType.create(AlchChestContainer::new);
 
 	private static Item.Properties ib()
 	{
@@ -325,6 +344,22 @@ public class ObjHandler
 	private static Item.Properties ibNoStack()
 	{
 		return ib().maxStackSize(1);
+	}
+
+	@SubscribeEvent
+	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> evt)
+	{
+		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
+		r.register(RM_FURNACE_CONTAINER.setRegistryName(RM_FURNACE_TILE.getRegistryName()));
+		r.register(DM_FURNACE_CONTAINER.setRegistryName(DM_FURNACE_TILE.getRegistryName()));
+		r.register(CONDENSER_CONTAINER.setRegistryName(CONDENSER_TILE.getRegistryName()));
+		r.register(CONDENSER_MK2_CONTAINER.setRegistryName(CONDENSER_MK2_TILE.getRegistryName()));
+		r.register(ALCH_CHEST_CONTAINER.setRegistryName(ALCH_CHEST_TILE.getRegistryName()));
+		ScreenManager.registerFactory(RM_FURNACE_CONTAINER, GUIRMFurnace::new);
+		ScreenManager.registerFactory(DM_FURNACE_CONTAINER, GUIDMFurnace::new);
+		ScreenManager.registerFactory(CONDENSER_CONTAINER, GUICondenser::new);
+		ScreenManager.registerFactory(CONDENSER_MK2_CONTAINER, GUICondenserMK2::new);
+		ScreenManager.registerFactory(ALCH_CHEST_CONTAINER, GUIAlchChest::new);
 	}
 
 	@SubscribeEvent

@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.container.Container;
@@ -17,7 +18,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -28,7 +29,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CondenserTile extends TileEmc implements IEmcAcceptor, IInteractionObject
+public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
 {
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
@@ -333,33 +334,15 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, IInteraction
 	}
 
 	@Override
-	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn)
 	{
-		return new CondenserContainer(playerInventory, this);
+		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, playerInventory, this);
 	}
 
+	@Nonnull
 	@Override
-	public String getGuiID()
+	public ITextComponent getDisplayName()
 	{
-		return getType().getRegistryName().toString();
-	}
-
-	@Override
-	public ITextComponent getName()
-	{
-		return new StringTextComponent(getGuiID());
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return null;
+		return new TranslationTextComponent(ObjHandler.condenser.getTranslationKey());
 	}
 }

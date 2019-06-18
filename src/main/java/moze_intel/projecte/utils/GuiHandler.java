@@ -36,14 +36,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class GuiHandler
 {
+	public static TileEntity getTeFromBuf(PacketBuffer buf) {
+		DistExecutor.runForDist(() -> () -> {
+			BlockPos pos = buf.readBlockPos();
+			return Minecraft.getInstance().world.getTileEntity(pos);
+		}, () -> () -> {
+			throw new RuntimeException("Shouldn't be called on server!");
+		});
+
+	}
+
 	public static Screen openGui(FMLPlayMessages.OpenContainer msg) {
 		PlayerEntity player = Minecraft.getInstance().player;
 		switch (msg.getId().getPath()) {

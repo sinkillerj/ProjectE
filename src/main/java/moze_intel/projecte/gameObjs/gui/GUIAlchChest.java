@@ -12,15 +12,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class GUIAlchChest extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/alchchest.png");
 	
-	public GUIAlchChest(PlayerInventory invPlayer, AlchChestTile tile)
+	public GUIAlchChest(AlchChestContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new AlchChestContainer(invPlayer, tile));
+		super(container, invPlayer, title);
 		this.xSize = 255;
 		this.ySize = 230;
 	}

@@ -5,22 +5,31 @@ import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class CondenserMK2Container extends CondenserContainer
 {
-	public CondenserMK2Container(PlayerInventory invPlayer, CondenserMK2Tile condenser)
+	public CondenserMK2Container(int windowId, PlayerInventory invPlayer, CondenserMK2Tile condenser)
 	{
-		super(invPlayer, condenser);
+		super(ObjHandler.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
+	}
+
+	public CondenserMK2Container(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	{
+		this(windowId, invPlayer, (CondenserMK2Tile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	@Override

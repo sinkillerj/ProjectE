@@ -11,18 +11,19 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GUIRMFurnace extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/rmfurnace.png");
 	private final RMFurnaceTile tile;
 	
-	public GUIRMFurnace(PlayerInventory invPlayer, RMFurnaceTile tile)
+	public GUIRMFurnace(RMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new RMFurnaceContainer(invPlayer, tile));
+		super(container, invPlayer, title);
 		this.xSize = 209;
 		this.ySize = 165;
-		this.tile = tile;
+		this.tile = container.tile;
 	}
 
 	@Override

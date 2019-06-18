@@ -5,10 +5,14 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.items.IItemHandler;
 
@@ -16,9 +20,14 @@ import javax.annotation.Nonnull;
 
 public class DMFurnaceContainer extends RMFurnaceContainer
 {
-	public DMFurnaceContainer(PlayerInventory invPlayer, DMFurnaceTile tile)
+	public DMFurnaceContainer(int windowId, PlayerInventory invPlayer, DMFurnaceTile tile)
 	{
-		super(invPlayer, tile);
+		super(ObjHandler.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
+	}
+
+	public DMFurnaceContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
+	{
+		super(ObjHandler.DM_FURNACE_CONTAINER, windowId, invPlayer, (DMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
 	}
 
 	void initSlots(PlayerInventory invPlayer)
@@ -86,7 +95,7 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		else
 		{
 			
-			if (FurnaceTileEntity.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
+			if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

@@ -11,26 +11,25 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 
 public class GUICondenser extends ContainerScreen
 {
-	protected final ResourceLocation texture;
 	protected final CondenserContainer container;
 
-	public GUICondenser(CondenserContainer condenser, ResourceLocation texture)
+	public GUICondenser(CondenserContainer condenser, PlayerInventory playerInventory, ITextComponent title)
 	{
-		super(condenser);
+		super(condenser, playerInventory, title);
 		this.container = condenser;
-		this.texture = texture;
 		this.xSize = 255;
 		this.ySize = 233;
 	}
 
-	public GUICondenser(PlayerInventory invPlayer, CondenserTile tile)
+	protected ResourceLocation getTexture()
 	{
-		this(new CondenserContainer(invPlayer, tile), new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/condenser.png"));
+		return new ResourceLocation(PECore.MODID, "textures/gui/condenser.png");
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public class GUICondenser extends ContainerScreen
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
 		GlStateManager.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(texture);
+		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 		
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;

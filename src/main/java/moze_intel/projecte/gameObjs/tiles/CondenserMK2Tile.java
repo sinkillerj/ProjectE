@@ -12,6 +12,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -100,8 +102,15 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public Container createContainer(PlayerInventory playerInv, PlayerEntity player)
+	public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity player)
 	{
-		return new CondenserMK2Container(playerInv, this);
+		return new CondenserMK2Container(windowId, playerInv, this);
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return new TranslationTextComponent(ObjHandler.condenserMk2.getTranslationKey());
 	}
 }

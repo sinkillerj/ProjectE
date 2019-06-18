@@ -8,6 +8,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 
@@ -37,8 +39,15 @@ public class DMFurnaceTile extends RMFurnaceTile
 
 	@Nonnull
 	@Override
-	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity playerIn)
 	{
-		return new DMFurnaceContainer(playerInventory, this);
+		return new DMFurnaceContainer(windowId, playerInv, this);
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return new TranslationTextComponent(ObjHandler.dmFurnaceOff.getTranslationKey());
 	}
 }

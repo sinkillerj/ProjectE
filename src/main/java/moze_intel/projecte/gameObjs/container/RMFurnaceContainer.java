@@ -5,16 +5,20 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,15 +28,21 @@ import javax.annotation.Nonnull;
 
 public class RMFurnaceContainer extends Container
 {
-	final RMFurnaceTile tile;
+	public final RMFurnaceTile tile;
 	private int lastCookTime;
 	private int lastBurnTime;
 	private int lastItemBurnTime;
-	
-	public RMFurnaceContainer(PlayerInventory invPlayer, RMFurnaceTile tile)
+
+	public RMFurnaceContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, RMFurnaceTile tile)
 	{
+		super(type, windowId);
 		this.tile = tile;
 		initSlots(invPlayer);
+	}
+
+	public RMFurnaceContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
+	{
+		this(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer, (RMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
 	}
 
 	void initSlots(PlayerInventory invPlayer)
@@ -150,7 +160,7 @@ public class RMFurnaceContainer extends Container
 		else
 		{
 			
-			if (FurnaceTileEntity.isItemFuel(newStack) || newStack.getItem() instanceof IItemEmc)
+			if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getItem() instanceof IItemEmc)
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

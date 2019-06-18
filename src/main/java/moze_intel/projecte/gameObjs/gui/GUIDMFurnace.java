@@ -10,18 +10,19 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GUIDMFurnace extends ContainerScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
 	private final DMFurnaceTile tile;
 
-	public GUIDMFurnace(PlayerInventory invPlayer, DMFurnaceTile tile)
+	public GUIDMFurnace(DMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new DMFurnaceContainer(invPlayer, tile));
+		super(container, invPlayer, title);
 		this.xSize = 178;
 		this.ySize = 165;
-		this.tile = tile;
+		this.tile = (DMFurnaceTile) container.tile;
 	}
 
 	@Override

@@ -2,11 +2,13 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -18,8 +20,9 @@ public class AlchChestContainer extends Container
 {
 	private final AlchChestTile tile;
 	
-	public AlchChestContainer(PlayerInventory invPlayer, AlchChestTile tile)
+	public AlchChestContainer(int windowId, PlayerInventory invPlayer, AlchChestTile tile)
 	{
+		super(ObjHandler.ALCH_CHEST_CONTAINER, windowId);
 		this.tile = tile;
 		tile.numPlayersUsing++;
 
@@ -37,6 +40,11 @@ public class AlchChestContainer extends Container
 		//Player Hotbar
 		for (int i = 0; i < 9; i++)
 			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 210));
+	}
+
+	public AlchChestContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	{
+		this(windowId, invPlayer, (AlchChestTile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	@Override
