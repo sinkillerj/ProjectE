@@ -19,10 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.capability.CuriosCapability;
-import top.theillusivec4.curios.api.capability.ICurio;
-import top.theillusivec4.curios.api.imc.CurioIMCMessage;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,20 +29,21 @@ public class CuriosIntegration
 {
     @Nullable
     public static IItemHandler getAll(LivingEntity living) {
-        return CuriosAPI.getCuriosHandler(living).map(handler -> {
+        return EmptyHandler.INSTANCE;
+        /*return CuriosAPI.getCuriosHandler(living).map(handler -> {
             IItemHandlerModifiable[] invs = handler.getCurioMap().values().toArray(new IItemHandlerModifiable[0]);
             return new CombinedInvWrapper(invs);
-        }).orElse(null);
+        }).orElse(null);*/
     }
 
     @SubscribeEvent
     public static void enqueueImc(InterModEnqueueEvent evt) {
-        InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("amulet"));
+        /*InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("amulet"));
         InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("belt"));
-        InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring"));
+        InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring"));*/
     }
 
-    private static class Provider implements ICapabilityProvider {
+    /*private static class Provider implements ICapabilityProvider {
         private final LazyOptional<ICurio> curio;
 
         public Provider(ICurio curio) {
@@ -57,11 +55,11 @@ public class CuriosIntegration
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
             return CuriosCapability.ITEM.orEmpty(cap, curio);
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void attachCaps(AttachCapabilitiesEvent<ItemStack> evt) {
-        ItemStack stack = evt.getObject();
+        /*ItemStack stack = evt.getObject();
         ResourceLocation key = new ResourceLocation(PECore.MODID, "curio");
         Set<Item> invTicking = ImmutableSet.of(
                 ObjHandler.zero, ObjHandler.everTide, ObjHandler.eternalDensity, ObjHandler.voidRing,
@@ -72,6 +70,6 @@ public class CuriosIntegration
 
         if(invTicking.contains(stack.getItem())) {
             evt.addCapability(key, new Provider(new DefaultCurio(stack)));
-        }
+        }*/
     }
 }

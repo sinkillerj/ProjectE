@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.collectors;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -109,3 +110,4 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
         arrow.draw(55, 18);
     }
 }
+*/

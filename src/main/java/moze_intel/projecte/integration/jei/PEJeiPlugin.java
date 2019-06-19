@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei;
 
 import mezz.jei.api.IModPlugin;
@@ -74,3 +75,4 @@ public class PEJeiPlugin implements IModPlugin
         registry.addRecipes(fuelRecipes, CollectorRecipeCategory.UID);
     }
 }
+*/

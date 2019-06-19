@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.jei.collectors;
 
 import moze_intel.projecte.utils.EMCHelper;
@@ -27,3 +28,4 @@ public class FuelUpgradeRecipe {
         return upgradeEMC;
     }
 }
+*/

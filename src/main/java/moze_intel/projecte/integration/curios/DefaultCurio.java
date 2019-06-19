@@ -1,3 +1,4 @@
+/*
 package moze_intel.projecte.integration.curios;
 
 import net.minecraft.entity.LivingEntity;
@@ -17,3 +18,4 @@ public class DefaultCurio implements ICurio {
         stack.inventoryTick(living.getEntityWorld(), living, 0, false);
     }
 }
+*/
