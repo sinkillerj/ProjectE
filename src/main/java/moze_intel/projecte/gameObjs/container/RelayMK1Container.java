@@ -5,12 +5,15 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -19,13 +22,24 @@ import javax.annotation.Nonnull;
 
 public class RelayMK1Container extends LongContainer
 {
-	final RelayMK1Tile tile;
+	public final RelayMK1Tile tile;
 	public double kleinChargeProgress = 0;
 	public double inputBurnProgress = 0;
 	public long emc = 0;
-	
-	public RelayMK1Container(PlayerInventory invPlayer, RelayMK1Tile relay)
+
+	public static RelayMK1Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
+		return new RelayMK1Container(windowId, invPlayer, (RelayMK1Tile) GuiHandler.getTeFromBuf(buf));
+	}
+
+	public RelayMK1Container(int windowId, PlayerInventory invPlayer, RelayMK1Tile relay)
+	{
+		this(ObjHandler.RELAY_MK1_CONTAINER, windowId, invPlayer, relay);
+	}
+
+	protected RelayMK1Container(ContainerType<?> type, int windowId, PlayerInventory invPlayer, RelayMK1Tile relay)
+	{
+		super(type, windowId);
 		this.tile = relay;
 		initSlots(invPlayer);
 	}

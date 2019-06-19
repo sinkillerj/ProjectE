@@ -6,7 +6,6 @@ import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -23,6 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Items;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -371,8 +371,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return !player.getEntityWorld().isRemote && condense(stack, inv);
 	}
 
-	private static class ContainerProvider extends BaseContainerProvider
-	{
+	private static class ContainerProvider implements INamedContainerProvider {
 		private final ItemStack stack;
 
 		private ContainerProvider(ItemStack stack) {
@@ -381,13 +380,15 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		@Nonnull
 		@Override
-		public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn) {
-			return new EternalDensityContainer(playerInventory, new EternalDensityInventory(stack, playerIn));
+		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
+			return new EternalDensityContainer(windowId, playerInventory,
+					new EternalDensityInventory(stack, player));
 		}
 
+		@Nonnull
 		@Override
-		public String getGuiID() {
-			return "projecte:eternal_density";
+		public ITextComponent getDisplayName() {
+			return new TranslationTextComponent(ObjHandler.eternalDensity.getTranslationKey());
 		}
 	}
 }

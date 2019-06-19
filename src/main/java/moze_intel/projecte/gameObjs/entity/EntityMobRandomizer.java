@@ -4,6 +4,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
@@ -11,13 +12,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityMobRandomizer extends ThrowableEntity
+import javax.annotation.Nonnull;
+
+public class EntityMobRandomizer extends ThrowableEntity implements IRendersAsItem
 {
 	public EntityMobRandomizer(EntityType<EntityMobRandomizer> type, World world)
 	{
@@ -83,5 +87,12 @@ public class EntityMobRandomizer extends ThrowableEntity
 			randomized.spawnExplosionParticle();
 		}
 		remove();
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getItem()
+	{
+		return new ItemStack(ObjHandler.mobRandomizer);
 	}
 }

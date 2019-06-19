@@ -1,14 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
@@ -18,16 +15,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -39,7 +36,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,10 +85,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		RayTraceResult rtr = getHitBlock(player);
 
-		if (rtr != null && rtr.getBlockPos() != null && !rtr.getBlockPos().equals(pos))
+		if (rtr instanceof BlockRayTraceResult && !((BlockRayTraceResult) rtr).getPos().equals(pos))
 		{
-			pos = rtr.getBlockPos();
-			sideHit = rtr.sideHit;
+			pos = ((BlockRayTraceResult) rtr).getPos();
+			sideHit = ((BlockRayTraceResult) rtr).getFace();
 		}
 
 		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
@@ -107,7 +103,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), currentPos, result);
 				if (world.rand.nextInt(8) == 0)
 				{
-					((ServerWorld) world).spawnParticle(Particles.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
+					((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
 
@@ -133,7 +129,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	{
 		if (!player.getEntityWorld().isRemote)
 		{
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider());
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack));
 		}
 
 		return true;
@@ -199,19 +195,26 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return ret;
 	}
 
-	private static class ContainerProvider extends BaseContainerProvider
+	private static class ContainerProvider implements INamedContainerProvider
 	{
-		@Nonnull
-		@Override
-		public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn) {
-			return new PhilosStoneContainer(playerInventory);
+		private final ItemStack stack;
+
+		private ContainerProvider(ItemStack stack)
+		{
+			this.stack = stack;
 		}
 
 		@Nonnull
 		@Override
-		public String getGuiID()
+		public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn) {
+			return new PhilosStoneContainer(windowId, playerInventory);
+		}
+
+		@Nonnull
+		@Override
+		public ITextComponent getDisplayName()
 		{
-			return "projecte:philosophers_stone";
+			return stack.getDisplayName();
 		}
 	}
 }

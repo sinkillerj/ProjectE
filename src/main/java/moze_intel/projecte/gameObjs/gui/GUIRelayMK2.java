@@ -12,16 +12,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GUIRelayMK2 extends ContainerScreen<RelayMK2Container>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/relay2.png");
-	private final RelayMK2Tile tile;
 
-	public GUIRelayMK2(PlayerInventory invPlayer, RelayMK2Tile tile)
+	public GUIRelayMK2(RelayMK2Container container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new RelayMK2Container(invPlayer, tile));
-		this.tile = tile;
+		super(container, invPlayer, title);
 		this.xSize = 193;
 		this.ySize = 182;
 	}
@@ -53,7 +52,7 @@ public class GUIRelayMK2 extends ContainerScreen<RelayMK2Container>
 		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		//Emc bar progress
-		int progress = (int) (container.emc / tile.getMaximumEmc() * 102);
+		int progress = (int) (container.emc / container.tile.getMaximumEmc() * 102);
 		this.blit(x + 86, y + 6, 30, 183, progress, 10);
 		
 		//Klein start bar progress. Max is 30.

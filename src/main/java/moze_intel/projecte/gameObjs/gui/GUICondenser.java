@@ -15,11 +15,11 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 
-public class GUICondenser extends ContainerScreen
+public class GUICondenser<T extends CondenserContainer> extends ContainerScreen
 {
 	protected final CondenserContainer container;
 
-	public GUICondenser(CondenserContainer condenser, PlayerInventory playerInventory, ITextComponent title)
+	public GUICondenser(T condenser, PlayerInventory playerInventory, ITextComponent title)
 	{
 		super(condenser, playerInventory, title);
 		this.container = condenser;

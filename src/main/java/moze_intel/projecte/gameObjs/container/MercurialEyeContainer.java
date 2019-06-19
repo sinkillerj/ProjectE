@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,16 +15,25 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 
 public class MercurialEyeContainer extends Container
 {
 	private final MercurialEyeInventory inventory;
-	
-	public MercurialEyeContainer(PlayerInventory invPlayer, MercurialEyeInventory mercEyeInv)
+
+	public static MercurialEyeContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		inventory = mercEyeInv;
+		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+		return new MercurialEyeContainer(windowId, invPlayer, hand);
+	}
+
+	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand)
+	{
+		super(ObjHandler.MERCURIAL_EYE_CONTAINER, windowId);
+		inventory = new MercurialEyeInventory(invPlayer.player.getHeldItem(hand));
 
 		//Klein Star
 		this.addSlot(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.IITEMEMC));

@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +18,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -25,14 +27,24 @@ import javax.annotation.Nonnull;
 
 public class CollectorMK1Container extends LongContainer
 {
-	final CollectorMK1Tile tile;
+	public final CollectorMK1Tile tile;
 	public int sunLevel = 0;
 	public long emc = 0;
 	public double kleinChargeProgress = 0;
 	public double fuelProgress = 0;
 	public int kleinEmc = 0;
 
-	public CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
+	public static CollectorMK1Container fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf)
+	{
+		return new CollectorMK1Container(windowId, playerInv, (CollectorMK1Tile) GuiHandler.getTeFromBuf(buf));
+	}
+
+	public CollectorMK1Container(int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
+	{
+		this(ObjHandler.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
+	}
+
+	protected CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
 	{
 		super(type, windowId);
 		this.tile = collector;

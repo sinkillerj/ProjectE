@@ -12,7 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GUIDMFurnace extends ContainerScreen
+public class GUIDMFurnace extends ContainerScreen<DMFurnaceContainer>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/dmfurnace.png");
 	private final DMFurnaceTile tile;

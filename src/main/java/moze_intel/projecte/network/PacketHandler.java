@@ -45,7 +45,6 @@ public final class PacketHandler
 		HANDLER.registerMessage(disc++, CooldownResetPKT.class, CooldownResetPKT::encode, CooldownResetPKT::decode, CooldownResetPKT.Handler::handle);
 		HANDLER.registerMessage(disc++, LeftClickArchangelPKT.class, LeftClickArchangelPKT::encode, LeftClickArchangelPKT::decode, LeftClickArchangelPKT.Handler::handle);
 		HANDLER.registerMessage(disc++, SyncCovalencePKT.class, SyncCovalencePKT::encode, SyncCovalencePKT::decode, SyncCovalencePKT.Handler::handle);
-		HANDLER.registerMessage(disc++, ShowBagPKT.class, ShowBagPKT::encode, ShowBagPKT::decode, ShowBagPKT.Handler::handle);
 	}
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)

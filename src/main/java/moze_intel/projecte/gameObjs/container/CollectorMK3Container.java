@@ -6,18 +6,25 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class CollectorMK3Container extends CollectorMK1Container
 {
+	public static CollectorMK3Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	{
+		return new CollectorMK3Container(windowId, invPlayer, (CollectorMK3Tile) GuiHandler.getTeFromBuf(buf));
+	}
+
 	public CollectorMK3Container(int windowId, PlayerInventory invPlayer, CollectorMK3Tile collector)
 	{
 		super(windowId, invPlayer, collector);

@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.gameObjs.container.BaseContainerProvider;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.utils.EMCHelper;
@@ -22,6 +21,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,6 +35,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -276,31 +277,35 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
 	{
-		NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand)));
+		NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand, player.getHeldItem(hand)), b -> {
+			b.writeBoolean(hand == Hand.MAIN_HAND);
+		});
 		return true;
 	}
 
-	private static class ContainerProvider extends BaseContainerProvider
+	private static class ContainerProvider implements INamedContainerProvider
 	{
+		private final Hand hand;
 		private final ItemStack stack;
 
-		private ContainerProvider(ItemStack stack)
+		private ContainerProvider(Hand hand, ItemStack stack)
 		{
+			this.hand = hand;
 			this.stack = stack;
 		}
 
 		@Nonnull
 		@Override
-		public Container createContainer(@Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
+		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
 		{
-			return new MercurialEyeContainer(playerInventory, new MercurialEyeInventory(stack));
+			return new MercurialEyeContainer(windowId, playerInventory, hand);
 		}
 
 		@Nonnull
 		@Override
-		public String getGuiID()
+		public ITextComponent getDisplayName()
 		{
-			return "projecte:mercurial_eye";
+			return stack.getDisplayName();
 		}
 	}
 

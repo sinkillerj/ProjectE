@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,16 +14,24 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
 public class EternalDensityContainer extends Container
 {
-	private final EternalDensityInventory inventory;
-	
-	public EternalDensityContainer(PlayerInventory invPlayer, EternalDensityInventory gemInv)
+	public final EternalDensityInventory inventory;
+
+	public static EternalDensityContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer data)
 	{
+		return new EternalDensityContainer(windowId, invPlayer,
+				new EternalDensityInventory(GuiHandler.getHeldFromBuf(data), invPlayer.player));
+	}
+	
+	public EternalDensityContainer(int windowId, PlayerInventory invPlayer, EternalDensityInventory gemInv)
+	{
+		super(ObjHandler.ETERNAL_DENSITY_CONTAINER, windowId);
 		inventory = gemInv;
 		
 		 for (int i = 0; i < 3; ++i)
@@ -40,7 +50,6 @@ public class EternalDensityContainer extends Container
 		{
 			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 151));
 		}
-
 	}
 
 	@Nonnull

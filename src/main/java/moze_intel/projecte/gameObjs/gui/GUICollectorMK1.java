@@ -11,16 +11,15 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GUICollectorMK1 extends ContainerScreen<CollectorMK1Container>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector1.png");
-	private final CollectorMK1Tile tile;
 
-	public GUICollectorMK1(PlayerInventory invPlayer, CollectorMK1Tile tile)
+	public GUICollectorMK1(CollectorMK1Container container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new CollectorMK1Container(invPlayer, tile));
-		this.tile = tile;
+		super(container, invPlayer, title);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class GUICollectorMK1 extends ContainerScreen<CollectorMK1Container>
 		this.blit(x + 126, y + 49 - progress, 177, 13 - progress, 12, progress);
 		
 		//EMC storage. Max is 48
-		this.blit(x + 64, y + 18, 0, 166, (int) (container.emc / tile.getMaximumEmc() * 48), 10);
+		this.blit(x + 64, y + 18, 0, 166, (int) (container.emc / container.tile.getMaximumEmc() * 48), 10);
 		
 		//Klein Star Charge Progress. Max is 48
 		progress = (int) (container.kleinChargeProgress * 48);

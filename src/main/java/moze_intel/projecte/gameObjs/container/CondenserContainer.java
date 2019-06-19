@@ -44,9 +44,10 @@ public class CondenserContainer extends LongContainer
 		initSlots(invPlayer);
 	}
 
-	public CondenserContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	public static CondenserContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		this(ObjHandler.CONDENSER_CONTAINER, windowId, invPlayer, (CondenserTile) GuiHandler.getTeFromBuf(buf));
+		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, invPlayer,
+				(CondenserTile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	protected void initSlots(PlayerInventory invPlayer)

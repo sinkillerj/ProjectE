@@ -23,6 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
@@ -41,7 +42,7 @@ public class NovaCatalyst extends TNTBlock
 		if (!world.isRemote)
 		{
 			TNTEntity entitytntprimed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, exploder);
-			world.spawnEntity(entitytntprimed);
+			world.addEntity(entitytntprimed);
 			world.playSound(null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		}
 	}
@@ -59,13 +60,13 @@ public class NovaCatalyst extends TNTBlock
 		{
 			EntityNovaCatalystPrimed primed = new EntityNovaCatalystPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
 			primed.setFuse(world.rand.nextInt(primed.getFuse() / 4) + primed.getFuse() / 8);
-			world.spawnEntity(primed);
+			world.addEntity(primed);
 		}
 	}
 
 	// [VanillaCopy] super to call our own private explode
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
@@ -91,7 +92,7 @@ public class NovaCatalyst extends TNTBlock
 			Entity entity = entityarrow.getShooter();
 			if (entityarrow.isBurning()) {
 				this.explode(worldIn, pos, entity instanceof LivingEntity ? (LivingEntity)entity : null);
-				worldIn.removeBlock(pos);
+				worldIn.removeBlock(pos, false);
 			}
 		}
 	}

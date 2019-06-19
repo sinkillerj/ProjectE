@@ -4,9 +4,11 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
@@ -17,7 +19,9 @@ import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.ServerWorld;
 
-public class EntityLensProjectile extends ThrowableEntity
+import javax.annotation.Nonnull;
+
+public class EntityLensProjectile extends ThrowableEntity implements IRendersAsItem
 {
 	private int charge;
 	
@@ -87,5 +91,12 @@ public class EntityLensProjectile extends ThrowableEntity
 	{
 		super.readAdditional(nbt);
 		charge = nbt.getInt("Charge");
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getItem()
+	{
+		return new ItemStack(ObjHandler.lensExplosive);
 	}
 }

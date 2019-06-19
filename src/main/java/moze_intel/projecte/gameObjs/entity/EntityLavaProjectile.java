@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +25,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-public class EntityLavaProjectile extends ThrowableEntity
+import javax.annotation.Nonnull;
+
+public class EntityLavaProjectile extends ThrowableEntity implements IRendersAsItem
 {
 	public EntityLavaProjectile(EntityType<EntityLavaProjectile> type, World world)
 	{
@@ -109,5 +112,12 @@ public class EntityLavaProjectile extends ThrowableEntity
 		{
 			remove();
 		}
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getItem()
+	{
+		return new ItemStack(ObjHandler.lavaOrb);
 	}
 }

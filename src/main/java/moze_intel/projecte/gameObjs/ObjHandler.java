@@ -2,11 +2,21 @@ package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.blocks.*;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
+import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
+import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
+import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
+import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
+import moze_intel.projecte.gameObjs.container.RelayMK1Container;
+import moze_intel.projecte.gameObjs.container.RelayMK2Container;
+import moze_intel.projecte.gameObjs.container.RelayMK3Container;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
@@ -20,10 +30,19 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.gui.GUIAlchChest;
+import moze_intel.projecte.gameObjs.gui.GUICollectorMK1;
+import moze_intel.projecte.gameObjs.gui.GUICollectorMK2;
+import moze_intel.projecte.gameObjs.gui.GUICollectorMK3;
 import moze_intel.projecte.gameObjs.gui.GUICondenser;
 import moze_intel.projecte.gameObjs.gui.GUICondenserMK2;
 import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
+import moze_intel.projecte.gameObjs.gui.GUIEternalDensity;
+import moze_intel.projecte.gameObjs.gui.GUIMercurialEye;
 import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
+import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
+import moze_intel.projecte.gameObjs.gui.GUIRelayMK2;
+import moze_intel.projecte.gameObjs.gui.GUIRelayMK3;
+import moze_intel.projecte.gameObjs.gui.GUITransmutation;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
 import moze_intel.projecte.gameObjs.items.CataliticLens;
@@ -330,11 +349,21 @@ public class ObjHandler
 	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new, interdictionTorch, interdictionTorchWall).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new, dmPedestal).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
 
-	public static final ContainerType<RMFurnaceContainer> RM_FURNACE_CONTAINER = IForgeContainerType.create(RMFurnaceContainer::new);
-	public static final ContainerType<DMFurnaceContainer> DM_FURNACE_CONTAINER = IForgeContainerType.create(DMFurnaceContainer::new);
-	public static final ContainerType<CondenserContainer> CONDENSER_CONTAINER = IForgeContainerType.create(CondenserContainer::new);
-	public static final ContainerType<CondenserMK2Container> CONDENSER_MK2_CONTAINER = IForgeContainerType.create(CondenserMK2Container::new);
-	public static final ContainerType<AlchChestContainer> ALCH_CHEST_CONTAINER = IForgeContainerType.create(AlchChestContainer::new);
+	public static final ContainerType<RMFurnaceContainer> RM_FURNACE_CONTAINER = IForgeContainerType.create(RMFurnaceContainer::fromNetwork);
+	public static final ContainerType<DMFurnaceContainer> DM_FURNACE_CONTAINER = IForgeContainerType.create(DMFurnaceContainer::fromNetwork);
+	public static final ContainerType<CondenserContainer> CONDENSER_CONTAINER = IForgeContainerType.create(CondenserContainer::fromNetwork);
+	public static final ContainerType<CondenserMK2Container> CONDENSER_MK2_CONTAINER = IForgeContainerType.create(CondenserMK2Container::fromNetwork);
+	public static final ContainerType<AlchChestContainer> ALCH_CHEST_CONTAINER = IForgeContainerType.create(AlchChestContainer::fromNetwork);
+	public static final ContainerType<AlchBagContainer> ALCH_BAG_CONTAINER = IForgeContainerType.create(AlchBagContainer::fromNetwork);
+	public static final ContainerType<EternalDensityContainer> ETERNAL_DENSITY_CONTAINER = IForgeContainerType.create(EternalDensityContainer::fromNetwork);
+	public static final ContainerType<TransmutationContainer> TRANSMUTATION_CONTAINER = IForgeContainerType.create(TransmutationContainer::fromNetwork);
+	public static final ContainerType<RelayMK1Container> RELAY_MK1_CONTAINER = IForgeContainerType.create(RelayMK1Container::fromNetwork);
+	public static final ContainerType<RelayMK2Container> RELAY_MK2_CONTAINER = IForgeContainerType.create(RelayMK2Container::fromNetwork);
+	public static final ContainerType<RelayMK3Container> RELAY_MK3_CONTAINER = IForgeContainerType.create(RelayMK3Container::fromNetwork);
+	public static final ContainerType<CollectorMK1Container> COLLECTOR_MK1_CONTAINER = IForgeContainerType.create(CollectorMK1Container::fromNetwork);
+	public static final ContainerType<CollectorMK2Container> COLLECTOR_MK2_CONTAINER = IForgeContainerType.create(CollectorMK2Container::fromNetwork);
+	public static final ContainerType<CollectorMK3Container> COLLECTOR_MK3_CONTAINER = IForgeContainerType.create(CollectorMK3Container::fromNetwork);
+	public static final ContainerType<MercurialEyeContainer> MERCURIAL_EYE_CONTAINER = IForgeContainerType.create(MercurialEyeContainer::fromNetwork);
 
 	private static Item.Properties ib()
 	{
@@ -350,16 +379,35 @@ public class ObjHandler
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> evt)
 	{
 		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
-		r.register(RM_FURNACE_CONTAINER.setRegistryName(RM_FURNACE_TILE.getRegistryName()));
-		r.register(DM_FURNACE_CONTAINER.setRegistryName(DM_FURNACE_TILE.getRegistryName()));
-		r.register(CONDENSER_CONTAINER.setRegistryName(CONDENSER_TILE.getRegistryName()));
-		r.register(CONDENSER_MK2_CONTAINER.setRegistryName(CONDENSER_MK2_TILE.getRegistryName()));
-		r.register(ALCH_CHEST_CONTAINER.setRegistryName(ALCH_CHEST_TILE.getRegistryName()));
+		r.register(RM_FURNACE_CONTAINER.setRegistryName(rmFurnaceOff.getRegistryName()));
+		r.register(DM_FURNACE_CONTAINER.setRegistryName(dmFurnaceOff.getRegistryName()));
+		r.register(CONDENSER_CONTAINER.setRegistryName(condenser.getRegistryName()));
+		r.register(CONDENSER_MK2_CONTAINER.setRegistryName(condenserMk2.getRegistryName()));
+		r.register(ALCH_CHEST_CONTAINER.setRegistryName(alchChest.getRegistryName()));
+		r.register(ETERNAL_DENSITY_CONTAINER.setRegistryName(eternalDensity.getRegistryName()));
+		r.register(TRANSMUTATION_CONTAINER.setRegistryName(transmuteStone.getRegistryName()));
+		r.register(RELAY_MK1_CONTAINER.setRegistryName(relay.getRegistryName()));
+		r.register(RELAY_MK2_CONTAINER.setRegistryName(relayMK2.getRegistryName()));
+		r.register(RELAY_MK3_CONTAINER.setRegistryName(relayMK3.getRegistryName()));
+		r.register(COLLECTOR_MK1_CONTAINER.setRegistryName(collectorMK1.getRegistryName()));
+		r.register(COLLECTOR_MK2_CONTAINER.setRegistryName(collectorMK2.getRegistryName()));
+		r.register(COLLECTOR_MK3_CONTAINER.setRegistryName(collectorMK3.getRegistryName()));
+		r.register(MERCURIAL_EYE_CONTAINER.setRegistryName(mercEye.getRegistryName()));
 		ScreenManager.registerFactory(RM_FURNACE_CONTAINER, GUIRMFurnace::new);
 		ScreenManager.registerFactory(DM_FURNACE_CONTAINER, GUIDMFurnace::new);
 		ScreenManager.registerFactory(CONDENSER_CONTAINER, GUICondenser::new);
 		ScreenManager.registerFactory(CONDENSER_MK2_CONTAINER, GUICondenserMK2::new);
 		ScreenManager.registerFactory(ALCH_CHEST_CONTAINER, GUIAlchChest::new);
+		ScreenManager.registerFactory(ALCH_BAG_CONTAINER, GUIAlchChest::new);
+		ScreenManager.registerFactory(ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
+		ScreenManager.registerFactory(TRANSMUTATION_CONTAINER, GUITransmutation::new);
+		ScreenManager.registerFactory(RELAY_MK1_CONTAINER, GUIRelayMK1::new);
+		ScreenManager.registerFactory(RELAY_MK2_CONTAINER, GUIRelayMK2::new);
+		ScreenManager.registerFactory(RELAY_MK3_CONTAINER, GUIRelayMK3::new);
+		ScreenManager.registerFactory(COLLECTOR_MK1_CONTAINER, GUICollectorMK1::new);
+		ScreenManager.registerFactory(COLLECTOR_MK2_CONTAINER, GUICollectorMK2::new);
+		ScreenManager.registerFactory(COLLECTOR_MK3_CONTAINER, GUICollectorMK3::new);
+		ScreenManager.registerFactory(MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
 	}
 
 	@SubscribeEvent
@@ -556,5 +604,29 @@ public class ObjHandler
 	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)
 	{
 		registry.register(o.setRegistryName(name));
+	}
+
+	public static Item getBag(DyeColor color)
+	{
+		switch (color)
+		{
+			default:
+			case WHITE: return alchBagWhite;
+			case ORANGE: return alchBagOrange;
+			case MAGENTA: return alchBagMagenta;
+			case LIGHT_BLUE: return alchBagLightBlue;
+			case YELLOW: return alchBagYellow;
+			case LIME: return alchBagLime;
+			case PINK: return alchBagPink;
+			case GRAY: return alchBagGray;
+			case LIGHT_GRAY: return alchBagLightGray;
+			case CYAN: return alchBagCyan;
+			case PURPLE: return alchBagPurple;
+			case BLUE: return alchBagBlue;
+			case BROWN: return alchBagBrown;
+			case GREEN: return alchBagGreen;
+			case RED: return alchBagRed;
+			case BLACK: return alchBagBlack;
+		}
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GUICondenserMK2 extends GUICondenser
+public class GUICondenserMK2 extends GUICondenser<CondenserMK2Container>
 {
 	public GUICondenserMK2(CondenserMK2Container container, PlayerInventory invPlayer, ITextComponent title)
 	{

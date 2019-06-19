@@ -9,14 +9,15 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
-public class GUIMercurialEye extends ContainerScreen
+public class GUIMercurialEye extends ContainerScreen<MercurialEyeContainer>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
 
-	public GUIMercurialEye(PlayerInventory invPlayer, MercurialEyeInventory inventory)
+	public GUIMercurialEye(MercurialEyeContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new MercurialEyeContainer(invPlayer, inventory));
+		super(container, invPlayer, title);
 		this.xSize = 171;
 		this.ySize = 134;
 	}

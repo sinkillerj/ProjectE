@@ -27,9 +27,10 @@ public class CondenserMK2Container extends CondenserContainer
 		super(ObjHandler.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
 	}
 
-	public CondenserMK2Container(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	public static CondenserMK2Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		this(windowId, invPlayer, (CondenserMK2Tile) GuiHandler.getTeFromBuf(buf));
+		return new CondenserMK2Container(windowId, invPlayer,
+				(CondenserMK2Tile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	@Override

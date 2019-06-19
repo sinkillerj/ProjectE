@@ -9,6 +9,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 
@@ -21,8 +23,15 @@ public class RelayMK3Tile extends RelayMK1Tile
 
 	@Nonnull
 	@Override
-	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player)
 	{
-		return new RelayMK3Container(playerInventory, this);
+		return new RelayMK3Container(windowId, playerInventory, this);
+	}
+
+	@Nonnull
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return new TranslationTextComponent(ObjHandler.relayMK3.getTranslationKey());
 	}
 }

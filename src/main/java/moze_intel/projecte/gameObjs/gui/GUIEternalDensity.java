@@ -12,20 +12,17 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.io.IOException;
 
-public class GUIEternalDensity extends ContainerScreen
+public class GUIEternalDensity extends ContainerScreen<EternalDensityContainer>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/eternal_density.png");
-	private final EternalDensityInventory inventory;
-	
-	public GUIEternalDensity(PlayerInventory invPlayer, EternalDensityInventory invGem)
+
+	public GUIEternalDensity(EternalDensityContainer container, PlayerInventory inv, ITextComponent title)
 	{
-		super (new EternalDensityContainer(invPlayer, invGem));
-		
-		this.inventory = invGem;
-		
+		super (container, inv, title);
 		this.xSize = 180;
 		this.ySize = 180;
 	}
@@ -45,9 +42,9 @@ public class GUIEternalDensity extends ContainerScreen
 		
 		this.buttons.add(new Button((width - xSize) / 2 + 62, (height - ySize) / 2 + 4,
 				52, 20,
-				inventory.isWhitelistMode() ? "Whitelist" : "Blacklist", b -> {
-			inventory.changeMode();
-			b.setMessage(I18n.format(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist"));
+				container.inventory.isWhitelistMode() ? "Whitelist" : "Blacklist", b -> {
+			container.inventory.changeMode();
+			b.setMessage(I18n.format(container.inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist"));
 		}));
 	}
 	

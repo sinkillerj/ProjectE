@@ -4,21 +4,28 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
+import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class RelayMK2Container extends RelayMK1Container
 {
-	public RelayMK2Container(PlayerInventory invPlayer, RelayMK2Tile relay)
+	public static RelayMK2Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		super(invPlayer, relay);
+		return new RelayMK2Container(windowId, invPlayer, (RelayMK2Tile) GuiHandler.getTeFromBuf(buf));
+	}
+
+	public RelayMK2Container(int windowId, PlayerInventory invPlayer, RelayMK2Tile relay)
+	{
+		super(ObjHandler.RELAY_MK2_CONTAINER, windowId, invPlayer, relay);
 	}
 
 	@Override

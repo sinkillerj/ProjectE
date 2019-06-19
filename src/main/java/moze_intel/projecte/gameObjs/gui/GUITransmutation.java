@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -28,16 +29,16 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Arrays;
 
-public class GUITransmutation extends ContainerScreen
+public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 {
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
 	private final TransmutationInventory inv;
 	private TextFieldWidget textBoxFilter;
 
-	public GUITransmutation(PlayerInventory invPlayer, TransmutationInventory inventory, @Nullable Hand hand)
+	public GUITransmutation(TransmutationContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{
-		super(new TransmutationContainer(invPlayer, inventory, hand));
-		this.inv = inventory;
+		super(container, invPlayer, title);
+		this.inv = container.transmutationInventory;
 		this.xSize = 228;
 		this.ySize = 196;
 	}

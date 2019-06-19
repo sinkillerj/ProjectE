@@ -48,7 +48,7 @@ public final class EMCHelper
 			if (itemEmc.getStoredEmc(offhand) >= minFuel)
 			{
 				itemEmc.extractEmc(offhand, minFuel);
-				player.inventoryContainer.detectAndSendChanges();
+				player.openContainer.detectAndSendChanges();
 				return minFuel;
 			}
 		}
@@ -67,7 +67,7 @@ public final class EMCHelper
 				if (itemEmc.getStoredEmc(stack) >= minFuel)
 				{
 					itemEmc.extractEmc(stack, minFuel);
-					player.inventoryContainer.detectAndSendChanges();
+					player.openContainer.detectAndSendChanges();
 					return minFuel;
 				}
 			}
@@ -106,7 +106,7 @@ public final class EMCHelper
 				inv.extractItem(entry.getKey(), entry.getValue(), false);
 			}
 
-			player.inventoryContainer.detectAndSendChanges();
+			player.openContainer.detectAndSendChanges();
 			return emcConsumed;
 		}
 

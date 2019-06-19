@@ -20,6 +20,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -36,9 +37,16 @@ public class TransmutationContainer extends Container
 	public final TransmutationInventory transmutationInventory;
 	private final int blocked;
 
-	public TransmutationContainer(PlayerInventory invPlayer, TransmutationInventory inventory, @Nullable Hand hand)
+	public static TransmutationContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		this.transmutationInventory = inventory;
+		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+		return new TransmutationContainer(windowId, invPlayer, hand);
+	}
+
+	public TransmutationContainer(int windowId, PlayerInventory invPlayer, Hand hand)
+	{
+		super(ObjHandler.TRANSMUTATION_CONTAINER, windowId);
+		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
 		
 		// Transmutation Inventory
 		this.addSlot(new SlotInput(transmutationInventory, 0, 43, 23));

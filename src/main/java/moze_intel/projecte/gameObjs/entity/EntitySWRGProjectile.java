@@ -4,6 +4,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
@@ -22,7 +23,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 
-public class EntitySWRGProjectile extends ThrowableEntity
+import javax.annotation.Nonnull;
+
+public class EntitySWRGProjectile extends ThrowableEntity implements IRendersAsItem
 {
 	private boolean fromArcana = false;
 
@@ -92,14 +95,14 @@ public class EntitySWRGProjectile extends ThrowableEntity
 				BlockPos pos = ((BlockRayTraceResult) mop).getPos();
 
 				LightningBoltEntity lightning = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), false);
-				((ServerWorld) world).func_217468_a(lightning);
+				((ServerWorld) world).addLightningBolt(lightning);
 
 				if (world.isThundering())
 				{
 					for (int i = 0; i < 3; i++)
 					{
 						LightningBoltEntity bonus = new LightningBoltEntity(world, pos.getX() + world.rand.nextGaussian(), pos.getY() + world.rand.nextGaussian(), pos.getZ() + world.rand.nextGaussian(), false);
-						((ServerWorld) world).func_217468_a(bonus);
+						((ServerWorld) world).addLightningBolt(bonus);
 					}
 				}
 			}
@@ -135,5 +138,12 @@ public class EntitySWRGProjectile extends ThrowableEntity
 	{
 		super.writeAdditional(compound);
 		compound.putBoolean("fromArcana", fromArcana);
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getItem()
+	{
+		return new ItemStack(ObjHandler.windProjectile);
 	}
 }

@@ -25,9 +25,10 @@ public class DMFurnaceContainer extends RMFurnaceContainer
 		super(ObjHandler.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
-	public DMFurnaceContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
+	public static DMFurnaceContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
 	{
-		super(ObjHandler.DM_FURNACE_CONTAINER, windowId, invPlayer, (DMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
+		return new DMFurnaceContainer(windowId, invPlayer,
+				(DMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
 	}
 
 	void initSlots(PlayerInventory invPlayer)

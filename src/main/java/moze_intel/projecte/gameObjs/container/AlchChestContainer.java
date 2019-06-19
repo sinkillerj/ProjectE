@@ -42,9 +42,10 @@ public class AlchChestContainer extends Container
 			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 210));
 	}
 
-	public AlchChestContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
+	public static AlchChestContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
-		this(windowId, invPlayer, (AlchChestTile) GuiHandler.getTeFromBuf(buf));
+		return new AlchChestContainer(windowId, invPlayer,
+				(AlchChestTile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	@Override

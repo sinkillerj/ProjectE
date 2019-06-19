@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
@@ -9,9 +10,11 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
@@ -23,13 +26,16 @@ public class AlchBagContainer extends Container
 	private final int blocked;
 	private final boolean immutable;
 
-	public AlchBagContainer(PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag)
+	public static AlchBagContainer fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf)
 	{
-		this(invPlayer, hand, invBag, false);
+		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+		boolean imm = buf.readBoolean();
+		return new AlchBagContainer(windowId, playerInv, hand, new ItemStackHandler(104), imm);
 	}
 	
-	public AlchBagContainer(PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable)
+	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable)
 	{
+		super(ObjHandler.ALCH_BAG_CONTAINER, windowId);
 		this.hand = hand;
 		this.immutable = immutable;
 

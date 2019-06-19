@@ -9,28 +9,32 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ShowBagPKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -58,30 +62,48 @@ public class ShowBagCMD
 	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException
 	{
 		ServerPlayerEntity senderPlayer = ctx.getSource().asPlayer();
-		senderPlayer.closeScreen();
-		senderPlayer.getNextWindowId();
-		senderPlayer.openContainer = createContainer(senderPlayer, player, color);
-		senderPlayer.openContainer.windowId = senderPlayer.currentWindowId;
-		PacketHandler.sendTo(new ShowBagPKT(senderPlayer.openContainer.windowId), senderPlayer);
-		senderPlayer.openContainer.addListener(senderPlayer);
+		NetworkHooks.openGui(senderPlayer, createContainer(senderPlayer, player, color), b -> {
+			b.writeBoolean(false);
+			b.writeBoolean(false);
+		});
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static Container createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) throws CommandException
+	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) throws CommandException
 	{
-			IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
-					.orElseThrow(NullPointerException::new)
-					.getBag(color);
-			return new AlchBagContainer(sender.inventory, Hand.OFF_HAND, inv)
-			{
-				@Override
-				public boolean canInteractWith(@Nonnull PlayerEntity player)
-				{
-					return target.isAlive() && !target.hasDisconnected();
-				}
-			};
+		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+				.orElseThrow(NullPointerException::new)
+				.getBag(color);
+		ITextComponent name = new TranslationTextComponent(ObjHandler.getBag(color).getTranslationKey())
+				.appendText(" (")
+				.appendSibling(target.getDisplayName())
+				.appendText(")");
 
-	/*	UUID uuid;
+		return new INamedContainerProvider() {
+			@Nonnull
+			@Override
+			public ITextComponent getDisplayName()
+			{
+				return name;
+			}
+
+			@Override
+			public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity player)
+			{
+				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, false)
+				{
+					@Override
+					public boolean canInteractWith(@Nonnull PlayerEntity player)
+					{
+						return target.isAlive() && !target.hasDisconnected();
+					}
+				};
+			}
+		};
+
+
+
+	/*	UUID uuid; todo 1.13
 		try
 		{
 			uuid = UUID.fromString(playerArg);

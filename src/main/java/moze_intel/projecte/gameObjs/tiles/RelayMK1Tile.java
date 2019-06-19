@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,7 +22,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider, IInteractionObject
+public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider, INamedContainerProvider
 {
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
@@ -287,35 +288,15 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 
 	@Nonnull
 	@Override
-	public Container createContainer(PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player)
 	{
-		return new RelayMK1Container(playerInventory, this);
+		return new RelayMK1Container(windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public String getGuiID()
+	public ITextComponent getDisplayName()
 	{
-		return getType().getRegistryName().toString();
-	}
-
-	@Nonnull
-	@Override
-	public ITextComponent getName()
-	{
-		return new StringTextComponent(getGuiID());
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return null;
+		return new TranslationTextComponent(ObjHandler.relay.getTranslationKey());
 	}
 }

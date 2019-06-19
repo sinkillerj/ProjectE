@@ -40,9 +40,10 @@ public class RMFurnaceContainer extends Container
 		initSlots(invPlayer);
 	}
 
-	public RMFurnaceContainer(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
+	public static RMFurnaceContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buffer)
 	{
-		this(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer, (RMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
+		return new RMFurnaceContainer(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer,
+				(RMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
 	}
 
 	void initSlots(PlayerInventory invPlayer)
