@@ -2,11 +2,10 @@ package moze_intel.projecte;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -42,10 +41,8 @@ import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
-import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
@@ -53,8 +50,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.item.Item;
-import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -64,7 +59,6 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -222,21 +216,9 @@ public class PECore
 	{
 		// I'd love for these to be parallel, but they have to run serially, and after vanilla's because
 		// they look at vanilla's recipes
+		// KEEP THESE CALLS IN THIS ORDER
+		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
 		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
-		event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
-			long start = System.currentTimeMillis();
-
-			CustomEMCParser.init();
-
-			try {
-				EMCMapper.map(resourceManager);
-				LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-				PacketHandler.sendFragmentedEmcPacketToAll();
-			} catch (Throwable t)
-			{
-				LOGGER.error("Error calculating EMC values", t);
-			}
-		});
 	}
 	
 	private void serverStarting(FMLServerStartingEvent event)
