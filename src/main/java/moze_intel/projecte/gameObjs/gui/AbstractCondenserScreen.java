@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
+import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
@@ -15,11 +16,11 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 
-public class GUICondenser<T extends CondenserContainer> extends ContainerScreen
+public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T>
 {
-	protected final CondenserContainer container;
+	protected final T container;
 
-	public GUICondenser(T condenser, PlayerInventory playerInventory, ITextComponent title)
+	public AbstractCondenserScreen(T condenser, PlayerInventory playerInventory, ITextComponent title)
 	{
 		super(condenser, playerInventory, title);
 		this.container = condenser;
@@ -27,10 +28,7 @@ public class GUICondenser<T extends CondenserContainer> extends ContainerScreen
 		this.ySize = 233;
 	}
 
-	protected ResourceLocation getTexture()
-	{
-		return new ResourceLocation(PECore.MODID, "textures/gui/condenser.png");
-	}
+	protected abstract ResourceLocation getTexture();
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
@@ -82,6 +80,34 @@ public class GUICondenser<T extends CondenserContainer> extends ContainerScreen
 			renderTooltip(Arrays.asList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);
+		}
+	}
+
+	public static class MK1 extends AbstractCondenserScreen<CondenserContainer>
+	{
+		public MK1(CondenserContainer condenser, PlayerInventory playerInventory, ITextComponent title)
+		{
+			super(condenser, playerInventory, title);
+		}
+
+		@Override
+		protected ResourceLocation getTexture()
+		{
+			return new ResourceLocation(PECore.MODID, "textures/gui/condenser.png");
+		}
+	}
+
+	public static class MK2 extends AbstractCondenserScreen<CondenserMK2Container>
+	{
+		public MK2(CondenserMK2Container condenser, PlayerInventory playerInventory, ITextComponent title)
+		{
+			super(condenser, playerInventory, title);
+		}
+
+		@Override
+		protected ResourceLocation getTexture()
+		{
+			return new ResourceLocation(PECore.MODID, "textures/gui/condenser_mk2.png");
 		}
 	}
 }

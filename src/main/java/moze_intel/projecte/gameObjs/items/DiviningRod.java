@@ -22,6 +22,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -64,15 +65,14 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
 		{
 			BlockState state = world.getBlockState(digPos);
-			Block block = state.getBlock();
 
 			if (world.isAirBlock(digPos))
 			{
 				continue;
 			}
 
-			NonNullList<ItemStack> drops = NonNullList.create();
-			block.getDrops(state, drops, world, digPos, 0);
+			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos,
+					world.getTileEntity(digPos), player, ctx.getItem());
 
 			if (drops.isEmpty())
 			{

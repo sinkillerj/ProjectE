@@ -88,7 +88,7 @@ public class ToolTipEvent
 					event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 				}
 
-				if (Screen.isShiftKeyDown()
+				if (Screen.hasShiftDown()
 						&& clientPlayer != null
 						&& clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false))
 				{

@@ -46,55 +46,6 @@ public class NovaCataclysm extends TNTBlock
 			world.playSound(null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		}
 	}
-	
-	@Override
-	public void explode(World world, @Nonnull BlockPos pos)
-	{
-		this.explode(world, pos, null);
-	}
 
-	@Override
-	public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
-	{
-		if (!world.isRemote)
-		{
-			EntityNovaCataclysmPrimed cataclysmPrimed = new EntityNovaCataclysmPrimed(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosion.getExplosivePlacedBy());
-			cataclysmPrimed.setFuse(world.rand.nextInt(cataclysmPrimed.getFuse() / 4) + cataclysmPrimed.getFuse() / 8);
-			world.spawnEntity(cataclysmPrimed);
-		}
-	}
-
-	// [VanillaCopy] super to call our own private explode
-	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-		ItemStack itemstack = player.getHeldItem(hand);
-		Item item = itemstack.getItem();
-		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
-			return false;
-		} else {
-			this.explode(worldIn, pos, player);
-			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
-			if (item == Items.FLINT_AND_STEEL) {
-				itemstack.damageItem(1, player);
-			} else {
-				itemstack.shrink(1);
-			}
-
-			return true;
-		}
-	}
-
-	// [VanillaCopy] super to call our own private explode
-	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-		if (!worldIn.isRemote && entityIn instanceof AbstractArrowEntity) {
-			AbstractArrowEntity entityarrow = (AbstractArrowEntity)entityIn;
-			Entity entity = entityarrow.getShooter();
-			if (entityarrow.isBurning()) {
-				this.explode(worldIn, pos, entity instanceof LivingEntity ? (LivingEntity)entity : null);
-				worldIn.removeBlock(pos);
-			}
-		}
-
-	}
+	// todo 1.14 impossible without https://github.com/MinecraftForge/MinecraftForge/issues/5841
 }

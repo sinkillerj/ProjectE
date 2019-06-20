@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[25,)"
+loaderVersion="[26,)"
 issueTrackerURL="https://github.com/sinkillerj/ProjectE/issues" #optional
 displayURL="https://github.com/sinkillerj/ProjectE" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
@@ -13,7 +13,7 @@ authors="x3n0ph0b3, MidnightLightning, Magic Banana, MaPePeR, williewillus, Lily
 modId="projecte"
 version="2.0.0"
 displayName="ProjectE"
-updateJSONURL="https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.13.x/update.json"
+updateJSONURL="https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.14.x/update.json"
 description='''
 A complete rewrite of EE2 for modern Minecraft versions.
 '''

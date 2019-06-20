@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -171,5 +172,16 @@ public class PlayerEvents
 		}
 
 		event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onHurt(LivingAttackEvent evt)
+	{
+		if (evt.getEntity() instanceof ServerPlayerEntity
+				&& evt.getSource().isFireDamage()
+				&& TickEvents.shouldPlayerResistFire((ServerPlayerEntity) evt.getEntity()))
+		{
+			evt.setCanceled(true);
+		}
 	}
 }

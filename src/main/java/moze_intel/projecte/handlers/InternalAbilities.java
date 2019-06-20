@@ -98,21 +98,6 @@ public final class InternalAbilities
 			hadFlightItem = true;
 		}
 
-		if (!shouldPlayerResistFire())
-		{
-			if (player.isImmuneToFire())
-			{
-				player.isImmuneToFire = false;
-			}
-		}
-		else
-		{
-			if (!player.isImmuneToFire())
-			{
-				player.isImmuneToFire = true;
-			}
-		}
-
 		if (!shouldPlayerStep())
 		{
 			if (player.stepHeight > 0.6F)
@@ -179,54 +164,6 @@ public final class InternalAbilities
 				if (!stack.isEmpty()
 						&& stack.getItem() instanceof IFlightProvider
 						&& ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player))
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-	
-	private boolean shouldPlayerResistFire()
-	{
-		if (player.abilities.isCreativeMode)
-		{
-			return true;
-		}
-
-
-		for (ItemStack stack : player.inventory.armorInventory)
-		{
-			if (!stack.isEmpty()
-					&& stack.getItem() instanceof IFireProtector
-					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
-			{
-				return true;
-			}
-		}
-
-		for (int i = 0; i <= 8; i++)
-		{
-			ItemStack stack = player.inventory.getStackInSlot(i);
-
-			if (!stack.isEmpty()
-					&& stack.getItem() instanceof IFireProtector
-					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
-			{
-				return true;
-			}
-		}
-
-		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null)
-		{
-			for (int i = 0; i < curios.getSlots(); i++)
-			{
-				ItemStack stack = curios.getStackInSlot(i);
-				if (!stack.isEmpty()
-						&& stack.getItem() instanceof IFireProtector
-						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
 				{
 					return true;
 				}

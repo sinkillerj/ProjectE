@@ -85,7 +85,7 @@ public abstract class GemArmorBase extends ArmorItem
 	@OnlyIn(Dist.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
-		char index = this.armorType == EquipmentSlotType.LEGS ? '2' : '1';
+		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/gem_" + index + ".png";
 	}
 }

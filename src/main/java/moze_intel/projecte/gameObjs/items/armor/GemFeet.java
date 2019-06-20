@@ -82,25 +82,23 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
         {
             if (!player.abilities.isFlying && isJumpPressed())
             {
-                player.motionY += 0.1;
+                player.setMotion(player.getMotion().add(0, 0.1, 0));
             }
 
             if (!player.onGround)
             {
-                if (player.motionY <= 0)
+                if (player.getMotion().getY() <= 0)
                 {
-                    player.motionY *= 0.90;
+                    player.setMotion(player.getMotion().mul(1, 0.9, 1));
                 }
                 if (!player.abilities.isFlying)
                 {
                     if (player.moveForward < 0)
                     {
-                        player.motionX *= 0.9;
-                        player.motionZ *= 0.9;
-                    } else if (player.moveForward > 0 && player.motionX * player.motionX + player.motionY * player.motionY + player.motionZ * player.motionZ < 3)
+                        player.setMotion(player.getMotion().mul(0.9, 1, 0.9));
+                    } else if (player.moveForward > 0 && player.getMotion().lengthSquared() < 3)
                     {
-                        player.motionX *= 1.1;
-                        player.motionZ *= 1.1;
+                        player.setMotion(player.getMotion().mul(1.1, 1, 1.1));
                     }
                 }
             }
@@ -131,7 +129,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
     {
         if (slot != EquipmentSlotType.FEET) return super.getAttributeModifiers(slot, stack);
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, 2).setSaved(false));
+        multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, AttributeModifier.Operation.MULTIPLY_TOTAL).setSaved(false));
         return multimap;
     }
 

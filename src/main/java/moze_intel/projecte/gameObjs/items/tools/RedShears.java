@@ -10,6 +10,6 @@ public class RedShears extends DarkShears
 		super(props, (byte) 3, new String[]{});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.WEB);
-		this.harvestMaterials.add(Material.CIRCUITS);
+		this.harvestMaterials.add(Material.MISCELLANEOUS);
 	}
 }

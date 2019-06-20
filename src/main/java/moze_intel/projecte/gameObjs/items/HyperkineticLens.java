@@ -53,7 +53,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), world);
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.spawnEntity(ent);
+		world.addEntity(ent);
 		return true;
 	}
 

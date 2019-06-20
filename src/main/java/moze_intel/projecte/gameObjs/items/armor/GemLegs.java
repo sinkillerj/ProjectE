@@ -63,9 +63,9 @@ public class GemLegs extends GemArmorBase
     {
         if (world.isRemote)
         {
-            if (player.isSneaking() && !player.onGround && player.motionY > -8 && !jumpedRecently(player))
+            if (player.isSneaking() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player))
             {
-                player.motionY -= 0.32F;
+                player.setMotion(player.getMotion().add(0, -0.32F, 0));
             }
         }
 
@@ -74,17 +74,17 @@ public class GemLegs extends GemArmorBase
             AxisAlignedBB box = new AxisAlignedBB(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
             WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
 
-            if (!world.isRemote && player.motionY < -0.08)
+            if (!world.isRemote && player.getMotion().getY() < -0.08)
             {
                 List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
-                        player.getBoundingBox().offset(player.motionX, player.motionY, player.motionZ).grow(2.0D),
+                        player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
                         Predicates.instanceOf(LivingEntity.class));
 
                 for (Entity e : entities)
                 {
                     if (e.canBeCollidedWith())
                     {
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) -player.motionY * 6F);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) -player.getMotion().getY() * 6F);
                     }
                 }
             }

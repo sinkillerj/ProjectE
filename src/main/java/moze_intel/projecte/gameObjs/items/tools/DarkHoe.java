@@ -25,7 +25,7 @@ public class DarkHoe extends PEToolBase
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
-		tillAOE(ctx.getItem(), ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getFace(), 0);
+		tillAOE(ctx.getHand(), ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getFace(), 0);
 		return ActionResultType.SUCCESS;
 	}
 }

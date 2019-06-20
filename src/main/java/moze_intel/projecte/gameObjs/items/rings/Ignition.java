@@ -97,8 +97,9 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos))
 			{
 				// Ignite TNT or derivatives
+				// todo 1.14 doesn't work properly
 				((TNTBlock) state.getBlock()).explode(world, pos);
-				world.removeBlock(pos);
+				world.removeBlock(pos, false);
 				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 
@@ -159,7 +160,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 		
 		EntityFireProjectile fire = new EntityFireProjectile(player, world);
 		fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.spawnEntity(fire);
+		world.addEntity(fire);
 		
 		return true;
 	}

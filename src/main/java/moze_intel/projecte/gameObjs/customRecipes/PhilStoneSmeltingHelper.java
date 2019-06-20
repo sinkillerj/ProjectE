@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.item.crafting.ShapelessRecipe;
@@ -29,7 +30,7 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener
                 .getWorldInfo().getDisabledDataPacks().contains("mod:" + PECore.MODID))
         {
             RecipeManager mgr = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
-            for (IRecipe<?> r : mgr.getRecipes(VanillaRecipeTypes.SMELTING).values())
+            for (IRecipe<?> r : mgr.getRecipes(IRecipeType.SMELTING).values())
             {
                 if (r.getIngredients().isEmpty()
                         || r.getIngredients().get(0).hasNoMatchingItems()

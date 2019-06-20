@@ -7,8 +7,10 @@ import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,8 +70,54 @@ public class TickEvents
 			{
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
+				if (event.player.isBurning() && shouldPlayerResistFire((ServerPlayerEntity) event.player))
+				{
+					event.player.extinguish();
+				}
 			}
 		}
+	}
+
+	public static boolean shouldPlayerResistFire(ServerPlayerEntity player)
+	{
+		for (ItemStack stack : player.inventory.armorInventory)
+		{
+			if (!stack.isEmpty()
+					&& stack.getItem() instanceof IFireProtector
+					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+			{
+				return true;
+			}
+		}
+
+		for (int i = 0; i <= 8; i++)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+
+			if (!stack.isEmpty()
+					&& stack.getItem() instanceof IFireProtector
+					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+			{
+				return true;
+			}
+		}
+
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null)
+		{
+			for (int i = 0; i < curios.getSlots(); i++)
+			{
+				ItemStack stack = curios.getStackInSlot(i);
+				if (!stack.isEmpty()
+						&& stack.getItem() instanceof IFireProtector
+						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private static Set<DyeColor> getBagColorsPresent(PlayerEntity player)

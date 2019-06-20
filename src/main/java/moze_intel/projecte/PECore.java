@@ -54,6 +54,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.item.Item;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -73,6 +74,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -120,6 +122,7 @@ public class PECore
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
+		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
@@ -214,6 +217,27 @@ public class PECore
 	{
 		IMCHandler.handleMessages();
 	}
+
+	private void serverAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		// I'd love for these to be parallel, but they have to run serially, and after vanilla's because
+		// they look at vanilla's recipes
+		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
+		event.getServer().getResourceManager().addReloadListener((IResourceManagerReloadListener) resourceManager -> {
+			long start = System.currentTimeMillis();
+
+			CustomEMCParser.init();
+
+			try {
+				EMCMapper.map(resourceManager);
+				LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+				PacketHandler.sendFragmentedEmcPacketToAll();
+			} catch (Throwable t)
+			{
+				LOGGER.error("Error calculating EMC values", t);
+			}
+		});
+	}
 	
 	private void serverStarting(FMLServerStartingEvent event)
 	{
@@ -230,23 +254,6 @@ public class PECore
 		{
 			new ThreadCheckUUID(true).start();
 		}
-
-		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
-
-		event.getServer().getResourceManager().addReloadListener(resourceManager -> {
-			long start = System.currentTimeMillis();
-
-			CustomEMCParser.init();
-
-			try {
-				EMCMapper.map(resourceManager);
-				LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-				PacketHandler.sendFragmentedEmcPacketToAll();
-			} catch (Throwable t)
-			{
-				LOGGER.error("Error calculating EMC values", t);
-			}
-		});
 	}
 
 	private void serverQuit(FMLServerStoppedEvent event)

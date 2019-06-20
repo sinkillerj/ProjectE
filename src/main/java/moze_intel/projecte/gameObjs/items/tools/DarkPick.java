@@ -23,6 +23,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -63,12 +65,12 @@ public class DarkPick extends PEToolBase
 		}
 		else
 		{
-			RayTraceResult mop = this.rayTrace(world, player, false);
-			if (mop != null && mop.type == RayTraceResult.Type.BLOCK)
+			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+			if (mop instanceof BlockRayTraceResult)
 			{
-				if (ItemHelper.isOre(world.getBlockState(mop.getBlockPos()).getBlock()))
+				if (ItemHelper.isOre(world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock()))
 				{
-					tryVeinMine(stack, player, mop);
+					tryVeinMine(stack, player, (BlockRayTraceResult) mop);
 				}
 			}
 		}
@@ -101,8 +103,8 @@ public class DarkPick extends PEToolBase
 	{
 		if (slot != EquipmentSlotType.MAINHAND) return super.getAttributeModifiers(slot, stack);
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, 0));
-		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.8, 0));
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedPick ? 8 : 7, AttributeModifier.Operation.ADDITION));
+		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.8, AttributeModifier.Operation.ADDITION));
 		return multimap;
 	}
 }
