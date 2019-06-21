@@ -164,7 +164,7 @@ public class PECore
 
 		private static <T extends Entity & IRendersAsItem> IRenderFactory<T> createRenderFactoryForSnowball()
 		{
-			return manager -> new SpriteRenderer<T>(manager, Minecraft.getInstance().getItemRenderer());
+			return manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer());
 		}
 	}
 

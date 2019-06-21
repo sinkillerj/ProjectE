@@ -4,28 +4,24 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class RelayMK1Container extends LongContainer
+public class RelayMK1Container extends PEContainer
 {
 	public final RelayMK1Tile tile;
-	public double kleinChargeProgress = 0;
-	public double inputBurnProgress = 0;
-	public long emc = 0;
+	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.single();
+	private final IntReferenceHolder inputBurnProgress = IntReferenceHolder.single();
+	public final BoxedLong emc = new BoxedLong();
 
 	public static RelayMK1Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
 	{
@@ -40,6 +36,9 @@ public class RelayMK1Container extends LongContainer
 	protected RelayMK1Container(ContainerType<?> type, int windowId, PlayerInventory invPlayer, RelayMK1Tile relay)
 	{
 		super(type, windowId);
+		this.longFields.add(emc);
+		this.intFields.add(kleinChargeProgress);
+		this.intFields.add(inputBurnProgress);
 		this.tile = relay;
 		initSlots(invPlayer);
 	}
@@ -72,72 +71,12 @@ public class RelayMK1Container extends LongContainer
 	}
 
 	@Override
-	public void addListener(IContainerListener listener)
-	{
-		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, (long) tile.getStoredEmc());
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 1, (int) (tile.getItemChargeProportion() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getInputBurnProportion() * 8000));
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
+		emc.set((long) tile.getStoredEmc());
+		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
+		inputBurnProgress.set((int) (tile.getInputBurnProportion() * 8000));
 		super.detectAndSendChanges();
-
-		if (emc != ((long) tile.getStoredEmc()))
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 0, ((long) tile.getStoredEmc()));
-			}
-
-			emc = ((long) tile.getStoredEmc());
-		}
-
-		if (kleinChargeProgress != tile.getItemChargeProportion())
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 1, (int) (tile.getItemChargeProportion() * 8000));
-			}
-
-			kleinChargeProgress = tile.getItemChargeProportion();
-		}
-
-		if (inputBurnProgress != tile.getInputBurnProportion())
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getInputBurnProportion() * 8000));
-			}
-
-			inputBurnProgress = tile.getInputBurnProportion();
-		}
-
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBar(int id, int data)
-	{
-		switch (id)
-		{
-			case 0: emc = data; break;
-			case 1: kleinChargeProgress = data / 8000.0; break;
-			case 2: inputBurnProgress = data / 8000.0; break;
-		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBarLong(int id, long data)
-	{
-		switch (id)
-		{
-			case 0: emc = data; break;
-			default: updateProgressBar(id, (int) data);
-		}
 	}
 
 	@Nonnull
@@ -181,5 +120,15 @@ public class RelayMK1Container extends LongContainer
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relay
 			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	}
+
+	public double getKleinChargeProgress()
+	{
+		return kleinChargeProgress.get() / 8000.0;
+	}
+
+	public double getInputBurnProgress()
+	{
+		return inputBurnProgress.get() / 8000.0;
 	}
 }

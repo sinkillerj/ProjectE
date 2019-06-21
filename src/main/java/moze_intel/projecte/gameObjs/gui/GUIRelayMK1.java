@@ -35,7 +35,7 @@ public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container>
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
 		this.font.drawString(I18n.format("pe.relay.mk1"), 10, 6, 4210752);
-		this.font.drawString(Constants.EMC_FORMATTER.format(container.emc), 88, 24, 4210752);
+		this.font.drawString(Constants.EMC_FORMATTER.format(container.emc.get()), 88, 24, 4210752);
 	}
 
 	@Override
@@ -50,15 +50,15 @@ public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container>
 		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		//Emc bar progress. Max is 102.
-		int progress = (int) (container.emc / container.tile.getMaximumEmc() * 102);
+		int progress = (int) (container.emc.get() / container.tile.getMaximumEmc() * 102);
 		this.blit(x + 64, y + 6, 30, 177, progress, 10);
 		
 		//Klein start bar progress. Max is 30.
-		progress = (int) (container.kleinChargeProgress * 30);
+		progress = (int) (container.getKleinChargeProgress() * 30);
 		this.blit(x + 116, y + 67, 0, 177, progress, 10);
 		
 		//Burn Slot bar progress. Max is 30.
-		progress = (int) (container.inputBurnProgress * 30);
+		progress = (int) (container.getInputBurnProgress() * 30);
 		this.blit(x + 64, y + 67, 0, 177, progress, 10);
 	}
 }

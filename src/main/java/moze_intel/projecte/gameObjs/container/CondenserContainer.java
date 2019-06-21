@@ -7,38 +7,32 @@ import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class CondenserContainer extends LongContainer
+public class CondenserContainer extends PEContainer
 {	
 	protected final CondenserTile tile;
-	public long displayEmc;
-	public long requiredEmc;
+	public final BoxedLong displayEmc = new BoxedLong();
+	public final BoxedLong requiredEmc = new BoxedLong();
 	
 	public CondenserContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser)
 	{
 		super(type, windowId);
+		this.longFields.add(displayEmc);
+		this.longFields.add(requiredEmc);
 		tile = condenser;
 		tile.numPlayersUsing++;
 		initSlots(invPlayer);
@@ -73,59 +67,11 @@ public class CondenserContainer extends LongContainer
 	}
 
 	@Override
-	public void addListener(IContainerListener listener)
-	{
-		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.displayEmc);
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, tile.requiredEmc);
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
+		this.displayEmc.set(tile.displayEmc);
+		this.requiredEmc.set(tile.requiredEmc);
 		super.detectAndSendChanges();
-
-		if (displayEmc != tile.displayEmc)
-		{
-			for (IContainerListener listener : listeners)
-			{
-				PacketHandler.sendProgressBarUpdateLong(listener, this, 0, tile.displayEmc);
-			}
-
-			displayEmc = tile.displayEmc;
-		}
-
-		if (requiredEmc != tile.requiredEmc)
-		{
-			for (IContainerListener listener : listeners)
-			{
-				PacketHandler.sendProgressBarUpdateLong(listener, this, 1, tile.requiredEmc);
-			}
-
-			requiredEmc = tile.requiredEmc;
-		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBar(int id, int data)
-	{
-		switch(id)
-		{
-			case 0: displayEmc = data; break;
-			case 1: requiredEmc = data; break;
-		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBarLong(int id, long data)
-	{
-		switch(id)
-		{
-			case 0: displayEmc = data; break;
-			case 1: requiredEmc = data; break;
-		}
 	}
 
 	@Nonnull
@@ -195,16 +141,16 @@ public class CondenserContainer extends LongContainer
 
 	public int getProgressScaled()
 	{
-		if (requiredEmc == 0)
+		if (requiredEmc.get() == 0)
 		{
 			return 0;
 		}
 
-		if (displayEmc >= requiredEmc)
+		if (displayEmc.get() >= requiredEmc.get())
 		{
 			return Constants.MAX_CONDENSER_PROGRESS;
 		}
 
-		return (int) (Constants.MAX_CONDENSER_PROGRESS * ((double) displayEmc / requiredEmc));
+		return (int) (Constants.MAX_CONDENSER_PROGRESS * ((double) displayEmc.get() / requiredEmc.get()));
 	}
 }

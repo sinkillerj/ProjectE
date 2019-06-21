@@ -15,7 +15,6 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-// todo 1.13 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchChestContainer extends Container
 {
 	private final AlchChestTile tile;

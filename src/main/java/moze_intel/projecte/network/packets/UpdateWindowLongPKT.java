@@ -1,8 +1,8 @@
 package moze_intel.projecte.network.packets;
 
-import moze_intel.projecte.gameObjs.container.LongContainer;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.PEContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -40,16 +40,9 @@ public class UpdateWindowLongPKT {
         {
             ctx.get().enqueueWork(() -> {
                 PlayerEntity player = Minecraft.getInstance().player;
-                if (player.openContainer != null && player.openContainer.windowId == msg.windowId) {
-                    //It should always be a LongContainer if it is this type of packet, if not fallback to normal update
-                    if (player.openContainer instanceof LongContainer)
-                    {
-                        ((LongContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
-                    }
-                    else
-                    {
-                        player.openContainer.updateProgressBar(msg.propId, (int) msg.propVal);
-                    }
+                if (player.openContainer instanceof PEContainer && player.openContainer.windowId == msg.windowId)
+                {
+                    ((PEContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
                 }
             });
             ctx.get().setPacketHandled(true);

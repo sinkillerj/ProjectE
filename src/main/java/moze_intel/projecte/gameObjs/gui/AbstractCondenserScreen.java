@@ -56,14 +56,18 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		long toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
+		long toDisplay = container.displayEmc.get() > container.requiredEmc.get()
+				? container.requiredEmc.get()
+				: container.displayEmc.get();
 		String emc = TransmutationEMCFormatter.EMCFormat(toDisplay);
 		this.font.drawString(emc, 140, 10, 4210752);
 	}
 
 	@Override
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		long toDisplay = container.displayEmc > container.requiredEmc ? container.requiredEmc : container.displayEmc;
+		long toDisplay = container.displayEmc.get() > container.requiredEmc.get()
+				? container.requiredEmc.get()
+				: container.displayEmc.get();
 
 		if (toDisplay < 1e12) {
 			super.renderHoveredToolTip(mouseX, mouseY);

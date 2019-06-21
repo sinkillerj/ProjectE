@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import moze_intel.projecte.gameObjs.container.PEContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -38,9 +39,9 @@ public class UpdateWindowIntPKT {
         {
             ctx.get().enqueueWork(() -> {
                 PlayerEntity player = Minecraft.getInstance().player;
-                if (player.openContainer != null && player.openContainer.windowId == msg.windowId)
+                if (player.openContainer instanceof PEContainer && player.openContainer.windowId == msg.windowId)
                 {
-                    player.openContainer.updateProgressBar(msg.propId, msg.propVal);
+                    ((PEContainer) player.openContainer).updateProgressBarInt(msg.propId, msg.propVal);
                 }
             });
             ctx.get().setPacketHandled(true);

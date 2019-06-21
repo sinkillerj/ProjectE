@@ -34,9 +34,9 @@ public class GUICollectorMK2 extends ContainerScreen<CollectorMK2Container>
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.font.drawString(Long.toString(container.emc), 75, 32, 4210752);
+		this.font.drawString(Long.toString(container.emc.get()), 75, 32, 4210752);
 		
-		double kleinCharge = container.kleinEmc;
+		double kleinCharge = container.kleinEmc.get();
 		if (kleinCharge > 0)
 			this.font.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
 	}
@@ -53,18 +53,18 @@ public class GUICollectorMK2 extends ContainerScreen<CollectorMK2Container>
 		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		//Ligh Level. Max is 12
-		int progress = (int) (container.sunLevel * 12.0 / 16);
+		int progress = (int) (container.sunLevel.get() * 12.0 / 16);
 		this.blit(x + 142, y + 49 - progress, 202, 13 - progress, 12, progress);
 				
 		//EMC storage. Max is 48
-		this.blit(x + 80, y + 18, 0, 166, (int) (container.emc / container.tile.getMaximumEmc() * 48), 10);
+		this.blit(x + 80, y + 18, 0, 166, (int) (container.emc.get() / container.tile.getMaximumEmc() * 48), 10);
 				
 		//Klein Star Charge Progress. Max is 48
-		progress = (int) (container.kleinChargeProgress * 48);
+		progress = (int) (container.getKleinChargeProgress() * 48);
 		this.blit(x + 80, y + 58, 0, 166, progress, 10);
 		
 		//Fuel Progress. Max is 24.
-		progress = (int) (container.fuelProgress * 24);
+		progress = (int) (container.getFuelProgress() * 24);
 		this.blit(x + 154, y + 55 - progress, 201, 38 - progress, 10, progress + 1);
 	}
 }

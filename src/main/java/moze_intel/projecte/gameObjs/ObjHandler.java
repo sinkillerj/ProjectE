@@ -384,6 +384,7 @@ public class ObjHandler
 		r.register(CONDENSER_CONTAINER.setRegistryName(condenser.getRegistryName()));
 		r.register(CONDENSER_MK2_CONTAINER.setRegistryName(condenserMk2.getRegistryName()));
 		r.register(ALCH_CHEST_CONTAINER.setRegistryName(alchChest.getRegistryName()));
+		r.register(ALCH_BAG_CONTAINER.setRegistryName(new ResourceLocation(PECore.MODID, "alchemical_bag")));
 		r.register(ETERNAL_DENSITY_CONTAINER.setRegistryName(eternalDensity.getRegistryName()));
 		r.register(TRANSMUTATION_CONTAINER.setRegistryName(transmuteStone.getRegistryName()));
 		r.register(RELAY_MK1_CONTAINER.setRegistryName(relay.getRegistryName()));

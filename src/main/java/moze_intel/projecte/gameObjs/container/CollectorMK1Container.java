@@ -6,33 +6,27 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class CollectorMK1Container extends LongContainer
+public class CollectorMK1Container extends PEContainer
 {
 	public final CollectorMK1Tile tile;
-	public int sunLevel = 0;
-	public long emc = 0;
-	public double kleinChargeProgress = 0;
-	public double fuelProgress = 0;
-	public int kleinEmc = 0;
+	public final IntReferenceHolder sunLevel = IntReferenceHolder.single();
+	public final BoxedLong emc = new BoxedLong();
+	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.single();
+	private final IntReferenceHolder fuelProgress = IntReferenceHolder.single();
+	public final IntReferenceHolder kleinEmc = IntReferenceHolder.single();
 
 	public static CollectorMK1Container fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf)
 	{
@@ -44,9 +38,14 @@ public class CollectorMK1Container extends LongContainer
 		this(ObjHandler.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
 	}
 
-	protected CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
+	private CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
 	{
 		super(type, windowId);
+		this.longFields.add(emc);
+		this.intFields.add(sunLevel);
+		this.intFields.add(kleinChargeProgress);
+		this.intFields.add(fuelProgress);
+		this.intFields.add(kleinEmc);
 		this.tile = collector;
 		initSlots(invPlayer);
 	}
@@ -81,17 +80,6 @@ public class CollectorMK1Container extends LongContainer
 			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 142));
 	}
 
-	@Override
-	public void addListener(IContainerListener listener)
-	{
-		super.addListener(listener);
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 0, tile.getSunLevel());
-		PacketHandler.sendProgressBarUpdateLong(listener, this, 1, (long) tile.getStoredEmc());
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 2, (int) (tile.getItemChargeProportion() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 3, (int) (tile.getFuelProgress() * 8000));
-		PacketHandler.sendProgressBarUpdateInt(listener, this, 4, (int) tile.getItemCharge());
-	}
-
 	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
@@ -109,83 +97,12 @@ public class CollectorMK1Container extends LongContainer
 	@Override
 	public void detectAndSendChanges()
 	{
+		emc.set((long) tile.getStoredEmc());
+		sunLevel.set(tile.getSunLevel());
+		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
+		fuelProgress.set((int) (tile.getFuelProgress() * 8000));
+		kleinEmc.set((int) tile.getItemCharge());
 		super.detectAndSendChanges();
-
-		if (sunLevel != tile.getSunLevel())
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 0, tile.getSunLevel());
-			}
-
-			sunLevel = tile.getSunLevel();
-		}
-
-		if (emc != ((long) tile.getStoredEmc()))
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateLong(icrafting, this, 1, ((long) tile.getStoredEmc()));
-			}
-
-			emc = ((long) tile.getStoredEmc());
-		}
-
-		if (kleinChargeProgress != tile.getItemChargeProportion())
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 2, (int) (tile.getItemChargeProportion() * 8000));
-			}
-
-			kleinChargeProgress = tile.getItemChargeProportion();
-		}
-
-		if (fuelProgress != tile.getFuelProgress())
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 3, (int) (tile.getFuelProgress() * 8000));
-			}
-
-			fuelProgress = tile.getFuelProgress();
-		}
-
-		if (kleinEmc != ((int) tile.getItemCharge()))
-		{
-			for (IContainerListener icrafting : this.listeners)
-			{
-				PacketHandler.sendProgressBarUpdateInt(icrafting, this, 4, (int) (tile.getItemCharge()));
-			}
-
-			kleinEmc = ((int) tile.getItemCharge());
-		}
-
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBar(int id, int data)
-	{
-		switch (id)
-		{
-			case 0: sunLevel = data; break;
-			case 1: emc = data; break;
-			case 2: kleinChargeProgress = data / 8000.0; break;
-			case 3: fuelProgress = data / 8000.0; break;
-			case 4: kleinEmc = data; break;
-		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBarLong(int id, long data)
-	{
-		switch (id)
-		{
-			case 1: emc = data; break;
-			default: updateProgressBar(id, (int) data);
-		}
 	}
 
 	@Nonnull
@@ -238,5 +155,15 @@ public class CollectorMK1Container extends LongContainer
 	{
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK1
 			&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	}
+
+	public double getKleinChargeProgress()
+	{
+		return kleinChargeProgress.get() / 8000.0;
+	}
+
+	public double getFuelProgress()
+	{
+		return fuelProgress.get() / 8000.0;
 	}
 }
