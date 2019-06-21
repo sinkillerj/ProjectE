@@ -1,10 +1,12 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
@@ -21,5 +23,12 @@ public class InterdictionTorchWall extends WallTorchBlock implements ITileEntity
     public TileEntity createNewTileEntity(@Nonnull IBlockReader world)
     {
         return new InterdictionTile();
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getLootTable()
+    {
+        return ObjHandler.interdictionTorch.getLootTable();
     }
 }
