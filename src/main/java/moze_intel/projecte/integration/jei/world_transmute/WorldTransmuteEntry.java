@@ -1,4 +1,3 @@
-/*
 package moze_intel.projecte.integration.jei.world_transmute;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -137,4 +136,3 @@ public class WorldTransmuteEntry
 		return inputFluid;
 	}
 }
-*/

@@ -1,29 +1,23 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Lists;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -72,7 +66,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge
 
 			if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos))
 			{
-				List<ItemStack> list = WorldHelper.getBlockDrops(world, player, state, stack, pos);
+				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
 				if (list != null && list.size() > 0
 					// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 					&& !(state.getBlock() instanceof ShulkerBoxBlock))

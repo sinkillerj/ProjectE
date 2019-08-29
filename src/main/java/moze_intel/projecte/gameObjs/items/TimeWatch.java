@@ -34,6 +34,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,7 +95,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (world.getGameRules().getBoolean("doDaylightCycle")) {
+		if (world.getGameRules().func_223586_b(GameRules.field_223607_j)) {
 			if (timeControl == 1)
             {
                 if (world.getDayTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)

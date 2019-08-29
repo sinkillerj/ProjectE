@@ -11,33 +11,23 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneOreBlock;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
-import net.minecraft.stats.Stats;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -48,7 +38,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
@@ -123,7 +113,7 @@ public abstract class PEToolBase extends ItemMode
 
 			if (tag.contains(state.getBlock()))
 			{
-				List<ItemStack> blockDrops = WorldHelper.getBlockDrops(world, player, state, stack, pos);
+				List<ItemStack> blockDrops = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
 
 				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)
 						&& consumeFuel(player, stack, emcCost, true))
@@ -280,7 +270,7 @@ public abstract class PEToolBase extends ItemMode
 			{
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof ShulkerBoxBlock))
-					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, digPos));
+					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, stack));
 				world.removeBlock(digPos, false);
 			}
 		}
@@ -324,7 +314,7 @@ public abstract class PEToolBase extends ItemMode
 			{
 				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
 				if (!(b instanceof ShulkerBoxBlock))
-					drops.addAll(WorldHelper.getBlockDrops(world, player, state, stack, pos));
+					drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
 				world.removeBlock(pos, false);
 			}
 		}

@@ -16,7 +16,6 @@ import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -26,7 +25,7 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        if (!ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD)
+        if (!ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.field_223227_a_)
                 .getWorldInfo().getDisabledDataPacks().contains("mod:" + PECore.MODID))
         {
             RecipeManager mgr = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
@@ -50,7 +49,8 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener
                         Ingredient.fromItems(ObjHandler.philosStone),
                         input, input, input, input, input, input, input,
                         Ingredient.fromItems(Items.COAL, Items.CHARCOAL));
-                mgr.addRecipe(new RecipeShapelessHidden(recipeName, "projecte:philstone_smelt", output, ingrs));
+                // todo 1.14 immutable now so can't add to it >.>
+                // mgr.getRecipes(IRecipeType.CRAFTING).put(recipeName, new RecipeShapelessHidden(recipeName, "projecte:philstone_smelt", output, ingrs));
             }
         }
     }

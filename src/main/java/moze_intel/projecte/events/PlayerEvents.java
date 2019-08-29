@@ -60,14 +60,14 @@ public class PlayerEvents
 
 	// On death or return from end, sync to the client
 	@SubscribeEvent
-	public static void respawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent evt)
+	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent evt)
 	{
 		evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayerEntity) evt.getPlayer()));
 		evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (ServerPlayerEntity) evt.getPlayer()));
 	}
 
 	@SubscribeEvent
-	public static void playerChangeDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event)
+	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event)
 	{
 		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
 		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayerEntity) event.getPlayer()));
@@ -93,7 +93,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public static void playerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event)
+	public static void playerConnect(PlayerEvent.PlayerLoggedInEvent event)
 	{
 		ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
 		PacketHandler.sendFragmentedEmcPacket(player);
@@ -122,7 +122,7 @@ public class PlayerEvents
 	}
 
 	@SubscribeEvent
-	public static void onHighAlchemistJoin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt)
+	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt)
 	{
 		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString())))
 		{
