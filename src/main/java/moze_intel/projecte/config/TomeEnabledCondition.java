@@ -1,15 +1,41 @@
 package moze_intel.projecte.config;
 
 import com.google.gson.JsonObject;
-import net.minecraftforge.common.crafting.IConditionSerializer;
+import moze_intel.projecte.PECore;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 import javax.annotation.Nonnull;
 import java.util.function.BooleanSupplier;
 
-public class TomeEnabledCondition implements IConditionSerializer {
-    @Nonnull
+public class TomeEnabledCondition implements ICondition {
+    private static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "tome_enabled");
+
     @Override
-    public BooleanSupplier parse(@Nonnull JsonObject json) {
-        return ProjectEConfig.difficulty.craftableTome::get;
+    public ResourceLocation getID() {
+        return ID;
     }
+
+    @Override
+    public boolean test() {
+        return ProjectEConfig.difficulty.craftableTome.get();
+    }
+
+    public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {
+        @Override
+        public void write(JsonObject json, TomeEnabledCondition value) {
+
+        }
+
+        @Override
+        public TomeEnabledCondition read(JsonObject json) {
+            return new TomeEnabledCondition();
+        }
+
+        @Override
+        public ResourceLocation getID() {
+            return ID;
+        }
+    };
 }

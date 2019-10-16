@@ -18,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nonnull;
 
 // todo 1.13 @Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
-public class RecipeShapelessKleinStar implements IRecipe<CraftingInventory>/*, IRecipeWrapper*/ {
+public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapper*/ {
 	private final ShapelessRecipe compose;
 
 	public RecipeShapelessKleinStar(ShapelessRecipe compose) {
@@ -35,13 +35,6 @@ public class RecipeShapelessKleinStar implements IRecipe<CraftingInventory>/*, I
 	public IRecipeSerializer<?> getSerializer()
 	{
 		return ObjHandler.KLEIN_RECIPE_SERIALIZER;
-	}
-
-	@Nonnull
-	@Override
-	public IRecipeType<?> getType()
-	{
-		return IRecipeType.CRAFTING;
 	}
 
 	@Override

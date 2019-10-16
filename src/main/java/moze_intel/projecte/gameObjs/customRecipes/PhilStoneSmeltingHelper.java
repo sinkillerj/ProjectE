@@ -25,7 +25,7 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        if (!ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.field_223227_a_)
+        if (!ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD)
                 .getWorldInfo().getDisabledDataPacks().contains("mod:" + PECore.MODID))
         {
             RecipeManager mgr = ServerLifecycleHooks.getCurrentServer().getRecipeManager();

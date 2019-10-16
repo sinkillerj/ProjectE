@@ -258,7 +258,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 				
 				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace)
 				{
-					getWorld().setBlockState(pos, state.with(MatterFurnace.field_220091_b, furnaceBurnTime > 0));
+					getWorld().setBlockState(pos, state.with(MatterFurnace.LIT, furnaceBurnTime > 0));
 				}
 			}
 

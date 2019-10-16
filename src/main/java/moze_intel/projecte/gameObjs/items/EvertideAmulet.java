@@ -7,6 +7,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -25,6 +26,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
@@ -49,12 +51,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -95,7 +95,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ctx.getFace()).isPresent())
 			{
-				// todo 1.13 FluidHelper.tryFillTank(tile, FluidRegistry.WATER, ctx.getFace(), Fluid.BUCKET_VOLUME);
+				FluidHelper.tryFillTank(tile, Fluids.WATER, ctx.getFace(), FluidAttributes.BUCKET_VOLUME);
 			} else
 			{
 				BlockState state = world.getBlockState(ctx.getPos());
@@ -295,39 +295,52 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			container = stack;
 		}
 
-		private final FluidTankProperties props =
-				new FluidTankProperties(null/*todo 1.13 new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME)*/, Fluid.BUCKET_VOLUME);
-
-		@Override
-		public IFluidTankProperties[] getTankProperties() {
-			return new IFluidTankProperties[] { props };
-		}
-
-		@Override
-		public int fill(FluidStack resource, boolean doFill) { return 0; }
-
-		@Nullable
-		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain) {
-			/*if (resource.getFluid() == FluidRegistry.WATER)
-			{
-				return resource.copy();
-			} else*/
-			{
-				return null;
-			}
-		}
-
-		@Nullable
-		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain) {
-			return null; //new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
-		}
-
 		@Nonnull
 		@Override
 		public ItemStack getContainer() {
 			return container;
+		}
+
+		@Override
+		public int getTanks() {
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank) {
+			return tank == 0 ? new FluidStack(Fluids.WATER, Integer.MAX_VALUE) : FluidStack.EMPTY;
+		}
+
+		@Override
+		public int getTankCapacity(int tank) {
+			return tank == 0 ? Integer.MAX_VALUE : 0;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+			return stack.getFluid() == Fluids.WATER;
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action) {
+			if (resource.getFluid() == Fluids.WATER)
+				return resource.getAmount();
+			else return 0;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action) {
+			if (resource.getFluid() == Fluids.WATER)
+				return resource;
+			else return FluidStack.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action) {
+			return new FluidStack(Fluids.WATER, maxDrain);
 		}
 	}
 

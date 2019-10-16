@@ -8,11 +8,11 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import moze_intel.projecte.emc.collector.IMappingCollector;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -38,9 +38,15 @@ public interface NormalizedSimpleStack {
 				return NSSFake.create(s.substring("FAKE|".length()));
 			} else if (s.startsWith("FLUID|")) {
 				String fluidName = s.substring("FLUID|".length());
-				Fluid fluid = null; // todo 1.13 FluidRegistry.getFluid(fluidName);
+				Fluid fluid;
+				try {
+					fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+				} catch (ResourceLocationException e)
+				{
+					throw new JsonParseException("Malformed fluid ID", e);
+				}
 				if (fluid == null)
-					throw new JsonParseException("Tried to identify nonexistent Fluid " + fluidName);
+					throw new JsonParseException("Tried to identify nonexistent fluid " + fluidName);
 				return NSSFluid.create(fluid);
 			} else {
 				try

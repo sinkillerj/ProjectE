@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.imc;
 
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ public class CustomConversionRegistration
      *     <li>{@link ItemStack} - Refers to the Item inside.</li>
      *     <li>{@link Block} - Same as {@code Item.getItemFromBlock(block)}.</li>
      *     <li>{@link Item} - Obvious.</li>
-     *     <li>{@link FluidStack} - {@link FluidStack#getFluid()} and {@link Fluid#getName()} will be used to identify
+     *     <li>{@link FluidStack} - {@link FluidStack#getFluid()} and {@link Fluid#getRegistryName()} will be used to identify
      *     this Fluid.</li>
      *     <li>{@link ResourceLocation} - will be interpreted as an Item Tag ID and apply to all items within it.</li>
      *     <li>{@link Object} - (No subclasses of {@code Object} - only {@code Object}!) can be used as a intermediate

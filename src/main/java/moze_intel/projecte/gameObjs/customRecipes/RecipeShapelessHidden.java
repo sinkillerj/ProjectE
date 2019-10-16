@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * Composes a ShapelessRecipe to hide it from JEI and the book
  */
-public class RecipeShapelessHidden implements IRecipe<CraftingInventory>
+public class RecipeShapelessHidden implements ICraftingRecipe
 {
 	private final ShapelessRecipe compose;
 
@@ -95,12 +96,6 @@ public class RecipeShapelessHidden implements IRecipe<CraftingInventory>
 	public IRecipeSerializer<?> getSerializer()
 	{
 		return ObjHandler.SHAPELESS_HIDDEN_SERIALIZER;
-	}
-
-	@Nonnull
-	@Override
-	public IRecipeType<?> getType() {
-		return IRecipeType.CRAFTING;
 	}
 
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessHidden>

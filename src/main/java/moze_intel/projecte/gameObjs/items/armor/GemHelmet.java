@@ -74,7 +74,7 @@ public class GemHelmet extends GemArmorBase
         tooltips.add(new TranslationTextComponent("pe.gem.helm.lorename"));
 
         tooltips.add(
-                new TranslationTextComponent("pe.gem.nightvision.prompt", ClientKeyHelper.getKeyName(Minecraft.getInstance().gameSettings.keyBindSneak), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
+                new TranslationTextComponent("pe.gem.nightvision.prompt", Minecraft.getInstance().gameSettings.keyBindSneak.getTranslationKey(), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)
         ));
 
         TextFormatting color = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;

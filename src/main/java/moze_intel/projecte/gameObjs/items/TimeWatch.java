@@ -95,7 +95,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 
 		byte timeControl = getTimeBoost(stack);
 
-		if (world.getGameRules().func_223586_b(GameRules.field_223607_j)) {
+		if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			if (timeControl == 1)
             {
                 if (world.getDayTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)

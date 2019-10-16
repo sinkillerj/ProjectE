@@ -32,7 +32,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20190617-1.14.2'
+    mappings channel: 'snapshot', version: '20191011-1.14.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -106,40 +106,20 @@ repositories {
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.49'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.44'
 
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.10:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.10")
+    compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-0.22:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-0.22")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-1.0.2:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-1.0.2")
     //deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
     //deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
     //deobfCompile "CraftTweaker2:ZenScript:1.12-${crafttweaker_version}"
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
-}
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft_version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META_INF/mods.toml'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion': project.minecraft_version
-    }
-        
-    // copy everything else, thats not the mods.toml
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META_INF/mods.toml'
-    }
 }
 
 jar {

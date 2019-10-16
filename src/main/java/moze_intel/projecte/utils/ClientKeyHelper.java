@@ -12,11 +12,12 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Locale;
+
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ClientKeyHelper
 {
     private static ImmutableBiMap<KeyBinding, PEKeybind> mcToPe;
-    private static ImmutableBiMap<PEKeybind, KeyBinding> peToMc;
 
     @SubscribeEvent
 	public static void keyPress(TickEvent.ClientTickEvent event)
@@ -39,7 +40,6 @@ public class ClientKeyHelper
         builder.put(new KeyBinding("key.projecte.fire_projectile", GLFW.GLFW_KEY_R, PECore.MODID), PEKeybind.FIRE_PROJECTILE);
         builder.put(new KeyBinding("key.projecte.mode", GLFW.GLFW_KEY_G, PECore.MODID), PEKeybind.MODE);
         mcToPe = builder.build();
-        peToMc = mcToPe.inverse();
         for (KeyBinding k : mcToPe.keySet()) {
             ClientRegistry.registerKeyBinding(k);
         }
@@ -47,11 +47,6 @@ public class ClientKeyHelper
 
     public static String getKeyName(PEKeybind k)
     {
-        return getKeyName(peToMc.get(k));
-    }
-
-    public static String getKeyName(KeyBinding k)
-    {
-        return k.getTranslationKey();
+        return "key.projecte." + k.name().toLowerCase(Locale.ROOT);
     }
 }

@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[26,)"
+loaderVersion="[28,)"
 issueTrackerURL="https://github.com/sinkillerj/ProjectE/issues" #optional
 displayURL="https://github.com/sinkillerj/ProjectE" #optional
 # A file name (in the root of the mod JAR) containing a logo for display

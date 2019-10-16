@@ -2,8 +2,10 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RecipesCovalenceRepair implements IRecipe<IInventory>
+public class RecipesCovalenceRepair implements ICraftingRecipe
 {
 	private final ResourceLocation id;
 	private ItemStack output = ItemStack.EMPTY;
@@ -68,7 +70,7 @@ public class RecipesCovalenceRepair implements IRecipe<IInventory>
 	}
 
 	@Override
-	public boolean matches(@Nonnull IInventory inv, @Nonnull World world)
+	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world)
 	{
 		Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
 		if (ingredients.getA().isEmpty() || ingredients.getB().isEmpty())
@@ -85,7 +87,7 @@ public class RecipesCovalenceRepair implements IRecipe<IInventory>
 	
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull IInventory inv)
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)
 	{
 	    Tuple<ItemStack, List<ItemStack>> ingredients = findIngredients(inv);
 	    long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getA());
@@ -129,12 +131,5 @@ public class RecipesCovalenceRepair implements IRecipe<IInventory>
 	public IRecipeSerializer<?> getSerializer()
 	{
 		return ObjHandler.COVALENCE_REPAIR_RECIPE_SERIALIZER;
-	}
-
-	@Nonnull
-	@Override
-	public IRecipeType<?> getType()
-	{
-		return IRecipeType.CRAFTING;
 	}
 }

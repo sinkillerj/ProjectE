@@ -198,7 +198,7 @@ public class PECore
 			PacketHandler.register(); // NetworkRegistry.createInstance
 
 			// internals unsafe
-			CraftingHelper.register(new ResourceLocation(PECore.MODID, "tome_enabled"), new TomeEnabledCondition());
+			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 		});
 	}
 	
@@ -218,7 +218,8 @@ public class PECore
 		// they look at vanilla's recipes
 		// KEEP THESE CALLS IN THIS ORDER
 		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
-		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
+		// todo 1.14 broken
+		// event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
 	}
 	
 	private void serverStarting(FMLServerStartingEvent event)

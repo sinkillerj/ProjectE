@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.json;
 
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 
 import javax.annotation.Nonnull;
 
@@ -8,7 +8,7 @@ public class NSSFluid implements NormalizedSimpleStack {
 	public final String name;
 
 	private NSSFluid(Fluid f) {
-		this.name = f.getName();
+		this.name = f.getRegistryName().toString();
 	}
 
 	@Nonnull

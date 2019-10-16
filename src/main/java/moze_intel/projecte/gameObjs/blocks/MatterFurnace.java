@@ -44,7 +44,7 @@ public class MatterFurnace extends AbstractFurnaceBlock
 	}
 
 	@Override
-	protected void func_220089_a(World world, BlockPos pos, PlayerEntity player)
+	protected void interactWith(World world, BlockPos pos, PlayerEntity player)
 	{
 		if (!world.isRemote)
 		{
