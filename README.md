@@ -31,12 +31,14 @@ SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 * Twitter: https://twitter.com/sinkillerj
 * Patreon: https://www.patreon.com/sinkillerj
 
-Williewillus - Lord of Lore and Refactors - Lead Assistant Developer & 1.8 Dev:
+Williewillus - Lord of Lore and Refactors - Former Lead of New Version Ports:
 
 * Twitter: https://twitter.com/williewillus
 * Patreon: https://www.patreon.com/williewillus
 
-MaPePeR(Blubberbub) - Alchemical Value Archivist - Assistant Developer: 
+Pupnewfster - Rising superstar - Current Lead of New Version Ports
+
+MaPePeR(Blubberbub) - Alchemical Value Archivist - Lead EMC Mapper Developer: 
 
 * Twitter: https://twitter.com/Blubb3rbub
 
