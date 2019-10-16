@@ -1,5 +1,5 @@
 {
-  "comment": "Default values for non-OreDictionary vanilla items",
+  "comment": "Default values for vanilla items",
   "groups": {
     "default": {
       "comment": "Default conversion group",
@@ -58,6 +58,12 @@
         {
           "output": "minecraft:wet_sponge",
           "ingredients": [ "minecraft:sponge" ]
+        },
+        {
+          "output": "minecraft:bell",
+          "ingredients": {
+            "minecraft:gold_ingot": 7
+          }
         }
       ]
     },
@@ -153,23 +159,15 @@
       "minecraft:vine": 8,
       "minecraft:cobweb": 12,
       "minecraft:lily_pad": 16,
-      "minecraft:poppy": 16,
-      "minecraft:blue_orchid": 16,
-      "minecraft:allium": 16,
-      "minecraft:azure_bluet": 16,
-      "minecraft:red_tulip": 16,
-      "minecraft:orange_tulip": 16,
-      "minecraft:white_tulip": 16,
-      "minecraft:pink_tulip": 16,
-      "minecraft:oxeye_daisy": 16,
+      "#minecraft:small_flowers": 16,
       "minecraft:sunflower": 32,
       "minecraft:lilac": 32,
       "minecraft:rose_bush": 32,
       "minecraft:peony": 32,
-      "minecraft:dandelion": 16,
       "minecraft:red_mushroom": 32,
       "minecraft:brown_mushroom": 32,
       "minecraft:sugar_cane": 32,
+      "minecraft:bamboo": 32,
       "minecraft:soul_sand": 49,
       "minecraft:obsidian": 64,
       "minecraft:white_terracotta": 64,
@@ -231,6 +229,7 @@
       "minecraft:wheat_seeds": 16,
       "minecraft:beetroot_seeds": 16,
       "minecraft:melon": 16,
+      "minecraft:sweet_berries": 16,
       "minecraft:wheat": 24,
       "minecraft:nether_wart": 24,
       "minecraft:apple": 128,
@@ -263,6 +262,7 @@
       "minecraft:gunpowder": 192,
       "minecraft:ender_pearl": 1024,
       "minecraft:nautilus_shell": 1024,
+      "minecraft:heart_of_the_sea": 32768,
       "minecraft:blaze_rod": 1536,
       "minecraft:shulker_shell": 2048,
       "minecraft:ghast_tear": 4096,
@@ -287,7 +287,19 @@
       "minecraft:clay_ball": 16,
       "minecraft:bone": 144,
       "minecraft:snowball": 1,
-      "minecraft:filled_map": 1472
+      "minecraft:filled_map": 1472,
+
+      "#minecraft:logs": 32,
+      "#minecraft:planks": 8,
+      "#minecraft:saplings": 32,
+      "#forge:rods/wooden": 4,
+      "#minecraft:leaves": 1,
+
+      "#minecraft:wool": 48,
+
+      "#forge:gems/diamond": 8192,
+      "#forge:dusts/redstone": 64,
+      "#forge:dusts/glowstone": 384
     }
   }
 }

@@ -74,15 +74,15 @@ public class ToolTipEvent
 			{
 				long value = EMCHelper.getEmcValue(current);
 
-				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendText(" ");
-				ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.WHITE));
-				ITextComponent sell = new StringTextComponent(EMCHelper.getEmcSellString(current, 1)).setStyle(new Style().setColor(TextFormatting.BLUE));
+				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
+				ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).applyTextStyle(TextFormatting.WHITE);
+				ITextComponent sell = new StringTextComponent(EMCHelper.getEmcSellString(current, 1)).applyTextStyle(TextFormatting.BLUE);
 
 				event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
 
 				if (current.getCount() > 1)
 				{
-					prefix = new TranslationTextComponent("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW);
+					prefix = new TranslationTextComponent("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
 					valueText= new StringTextComponent(Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount())))).applyTextStyle(TextFormatting.WHITE);
 					sell = new StringTextComponent(EMCHelper.getEmcSellString(current, current.getCount())).applyTextStyle(TextFormatting.BLUE);
 					event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));

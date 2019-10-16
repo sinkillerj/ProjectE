@@ -50,6 +50,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IRendersAsItem;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -116,7 +117,6 @@ public class PECore
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
-		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
@@ -212,18 +212,18 @@ public class PECore
 		IMCHandler.handleMessages();
 	}
 
-	private void serverAboutToStart(FMLServerAboutToStartEvent event)
-	{
-		// I'd love for these to be parallel, but they have to run serially, and after vanilla's because
-		// they look at vanilla's recipes
-		// KEEP THESE CALLS IN THIS ORDER
-		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
-		// todo 1.14 broken
-		// event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
-	}
-	
 	private void serverStarting(FMLServerStartingEvent event)
 	{
+		IResourceManagerReloadListener emc = new EMCReloadListener();
+		IResourceManagerReloadListener phil = new PhilStoneSmeltingHelper();
+
+		event.getServer().getResourceManager().addReloadListener(emc);
+		event.getServer().getResourceManager().addReloadListener(phil);
+
+		// Initial reload already happened before this event fired so manually trigger it here
+		emc.onResourceManagerReload(event.getServer().getResourceManager());
+		phil.onResourceManagerReload(event.getServer().getResourceManager());
+
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
 				.then(RemoveEmcCMD.register())
