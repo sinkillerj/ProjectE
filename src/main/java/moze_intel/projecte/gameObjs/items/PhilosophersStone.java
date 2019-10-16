@@ -184,12 +184,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		if (stream != null) {
 			stream.forEach(currentPos ->
-            {
-                if (world.getBlockState(currentPos) == targeted)
-                {
-                    ret.add(currentPos);
-                }
-            });
+			{
+				if (world.getBlockState(currentPos) == targeted)
+				{
+					ret.add(currentPos.toImmutable());
+				}
+			});
 		}
 
 		return ret;

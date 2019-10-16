@@ -8,15 +8,19 @@ import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -47,11 +51,11 @@ public class TransmutationRenderingEvent
 		{
 			if (transmutationResult != null)
 			{
-				/*TODO 1.13
-				if (FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()) != null)
+				if (transmutationResult.getBlock() instanceof FlowingFluidBlock)
 				{
-					TextureAtlasSprite sprite = mc.getTextureMap().getAtlasSprite(FluidRegistry.lookupFluidForBlock(transmutationResult.getBlock()).getFlowing().toString());
-					mc.textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+					ResourceLocation spriteName = ((FlowingFluidBlock) transmutationResult.getBlock()).getFluid().getAttributes().getFlowingTexture();
+					TextureAtlasSprite sprite = mc.getTextureMap().getSprite(spriteName);
+					mc.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 					BufferBuilder wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
 					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
@@ -60,7 +64,6 @@ public class TransmutationRenderingEvent
 					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
 					Tessellator.getInstance().draw();
 				} else
-				*/
 				{
 					RenderHelper.enableStandardItemLighting();
 
