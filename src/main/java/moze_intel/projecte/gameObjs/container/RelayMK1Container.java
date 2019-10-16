@@ -73,7 +73,7 @@ public class RelayMK1Container extends PEContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		emc.set((long) tile.getStoredEmc());
+		emc.set(tile.getStoredEmc());
 		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
 		inputBurnProgress.set((int) (tile.getInputBurnProportion() * 8000));
 		super.detectAndSendChanges();

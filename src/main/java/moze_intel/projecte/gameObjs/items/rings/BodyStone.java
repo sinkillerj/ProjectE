@@ -51,7 +51,7 @@ public class BodyStone extends RingToggle implements IPedestalItem
 
         if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
-			double itemEmc = getEmc(stack);
+			long itemEmc = getEmc(stack);
 			
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
 			{

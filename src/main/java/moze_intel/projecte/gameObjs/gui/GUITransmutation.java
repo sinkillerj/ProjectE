@@ -93,7 +93,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
-		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
+		long emcAmount = inv.getAvailableEMC();
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
 		this.font.drawString(emcLabel, 6, this.ySize - 104, 4210752);
 		String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);
@@ -183,7 +183,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 
 	@Override
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		double emcAmount = inv.player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(IKnowledgeProvider::getEmc).orElse(0.0);
+		long emcAmount = inv.getAvailableEMC();
 
 		if (emcAmount < 1e12) {
 			super.renderHoveredToolTip(mouseX, mouseY);

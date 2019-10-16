@@ -173,10 +173,10 @@ public class ToolTipEvent
 		{
 			if (current.getItem() instanceof IItemEmc || current.getTag().contains("StoredEMC"))
 			{
-				double value;
+				long value;
 				if (current.getTag().contains("StoredEMC"))
 				{
-					value = current.getTag().getDouble("StoredEMC");
+					value = current.getTag().getLong("StoredEMC");
 				} else
 				{
 					value = ((IItemEmc) current.getItem()).getStoredEmc(current);

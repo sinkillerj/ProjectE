@@ -65,7 +65,7 @@ public final class KnowledgeImpl {
         private final PlayerEntity player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
-        private double emc = 0;
+        private long emc = 0;
         private boolean fullKnowledge = false;
 
         private DefaultImpl(PlayerEntity player) {
@@ -174,7 +174,7 @@ public final class KnowledgeImpl {
 
             while (iter.hasNext())
             {
-                if (ItemStack.areItemStacksEqual(stack, iter.next()))
+                if (stack.getItem() == iter.next().getItem())
                 {
                     iter.remove();
                     removed = true;
@@ -199,12 +199,12 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public double getEmc() {
+        public long getEmc() {
             return emc;
         }
 
         @Override
-        public void setEmc(double emc) {
+        public void setEmc(long emc) {
             this.emc = emc;
         }
 
@@ -218,7 +218,7 @@ public final class KnowledgeImpl {
         public CompoundNBT serializeNBT()
         {
             CompoundNBT properties = new CompoundNBT();
-            properties.putDouble("transmutationEmc", emc);
+            properties.putLong("transmutationEmc", emc);
 
             ListNBT knowledgeWrite = new ListNBT();
             for (ItemStack i : knowledge)
@@ -236,7 +236,7 @@ public final class KnowledgeImpl {
         @Override
         public void deserializeNBT(CompoundNBT properties)
         {
-            emc = properties.getDouble("transmutationEmc");
+            emc = properties.getLong("transmutationEmc");
 
             ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++)
@@ -262,6 +262,7 @@ public final class KnowledgeImpl {
 
         private void pruneDuplicateKnowledge()
         {
+            ItemHelper.removeEmptyTags(knowledge);
             ItemHelper.compactItemListNoStacksize(knowledge);
             for (ItemStack s : knowledge)
             {

@@ -36,7 +36,7 @@ public class GUICollectorMK2 extends ContainerScreen<CollectorMK2Container>
 	{
 		this.font.drawString(Long.toString(container.emc.get()), 75, 32, 4210752);
 		
-		double kleinCharge = container.kleinEmc.get();
+		long kleinCharge = container.kleinEmc.get();
 		if (kleinCharge > 0)
 			this.font.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
 	}

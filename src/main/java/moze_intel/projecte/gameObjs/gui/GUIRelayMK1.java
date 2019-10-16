@@ -50,9 +50,9 @@ public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container>
 		this.blit(x, y, 0, 0, xSize, ySize);
 		
 		//Emc bar progress. Max is 102.
-		int progress = (int) (container.emc.get() / container.tile.getMaximumEmc() * 102);
+		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * 102);
 		this.blit(x + 64, y + 6, 30, 177, progress, 10);
-		
+
 		//Klein start bar progress. Max is 30.
 		progress = (int) (container.getKleinChargeProgress() * 30);
 		this.blit(x + 116, y + 67, 0, 177, progress, 10);

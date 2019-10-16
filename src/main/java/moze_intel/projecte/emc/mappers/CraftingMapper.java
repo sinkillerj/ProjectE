@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/);
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/, new RecipeStagesRecipeMapper());
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {

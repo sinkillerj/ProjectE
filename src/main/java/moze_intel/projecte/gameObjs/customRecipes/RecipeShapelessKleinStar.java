@@ -46,7 +46,7 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapp
 	@Override
 	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
 		ItemStack result = compose.getCraftingResult(inv);
-		double storedEMC = 0;
+		long storedEMC = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof KleinStar) {

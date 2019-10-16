@@ -19,9 +19,9 @@ public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor
 	}
 
 	@Override
-	public double acceptEMC(@Nonnull Direction side, double toAccept)
+	public long acceptEMC(@Nonnull Direction side, long toAccept)
 	{
-		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+		long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 		addEMC(toAdd);
 		return toAdd;
 	}

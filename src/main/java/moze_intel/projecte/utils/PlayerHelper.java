@@ -166,15 +166,16 @@ public final class PlayerHelper
 		}
 	}
 
-	public static void updateClientServerFlight(ServerPlayerEntity player, boolean state)
+	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying)
 	{
-		PacketHandler.sendTo(new SetFlyPKT(state), player);
-		player.abilities.allowFlying = state;
+		updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.isFlying);
+	}
 
-		if (!state)
-		{
-			player.abilities.isFlying = false;
-		}
+	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying, boolean isFlying)
+	{
+		PacketHandler.sendTo(new SetFlyPKT(allowFlying, isFlying), player);
+		player.abilities.allowFlying = allowFlying;
+		player.abilities.isFlying = isFlying;
 	}
 
 	public static void updateClientServerStepHeight(ServerPlayerEntity player, float value)

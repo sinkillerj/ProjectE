@@ -20,5 +20,5 @@ public interface IEmcProvider extends IEmcStorage
 	 * @param toExtract The maximum amount to extract
 	 * @return The amount actually extracted
 	 */
-	double provideEMC(@Nonnull Direction side, double toExtract);
+	long provideEMC(@Nonnull Direction side, long toExtract);
 }

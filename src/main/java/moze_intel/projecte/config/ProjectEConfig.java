@@ -27,6 +27,7 @@ public final class ProjectEConfig
 		public final ForgeConfigSpec.BooleanValue offensiveAbilities;
 		public final ForgeConfigSpec.DoubleValue katarDeathAura;
 		public final ForgeConfigSpec.DoubleValue covalenceLoss;
+		public final ForgeConfigSpec.BooleanValue covalenceLossRounding;
 		Difficulty()
 		{
 			BUILDER.push("difficulty");
@@ -42,6 +43,9 @@ public final class ProjectEConfig
 			covalenceLoss = BUILDER
 				.comment("Adjusting this ratio changes how much EMC is received when burning a item. For example setting this to 0.5 will return half of the EMC cost.")
 				.defineInRange("covalenceLoss", 1.0, 0.1, 1.0);
+			covalenceLossRounding = BUILDER
+				.comment("How rounding occurs when Covalence Loss results in a burn value less than 1 EMC. If true the value will be rounded up to 1. If false the value will be rounded down to 0.")
+				.define("covalenceLossRounding", true);
 			BUILDER.pop();
 		}
 	}

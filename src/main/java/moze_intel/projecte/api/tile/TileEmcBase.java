@@ -16,16 +16,16 @@ import javax.annotation.Nonnull;
  */
 public class TileEmcBase extends TileEntity implements IEmcStorage
 {
-	protected double maximumEMC;
-	protected double currentEMC = 0;
+	protected long maximumEMC;
+	protected long currentEMC = 0;
 
 	protected TileEmcBase(TileEntityType<?> type)
 	{
 		super(type);
-		setMaximumEMC(Double.MAX_VALUE);
+		setMaximumEMC(Long.MAX_VALUE);
 	}
 
-	public final void setMaximumEMC(double max)
+	public final void setMaximumEMC(long max)
 	{
 		maximumEMC = max;
 		if (currentEMC > maximumEMC)
@@ -35,13 +35,13 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	}
 
 	@Override
-	public double getStoredEmc()
+	public long getStoredEmc()
 	{
 		return currentEMC;
 	}
 
 	@Override
-	public double getMaximumEmc()
+	public long getMaximumEmc()
 	{
 		return maximumEMC;
 	}
@@ -49,7 +49,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	/**
 	 * Add EMC directly into the internal buffer. Use for internal implementation of your tile
 	 */
-	protected void addEMC(double toAdd)
+	protected void addEMC(long toAdd)
 	{
 		currentEMC += toAdd;
 		if (currentEMC > maximumEMC)
@@ -61,7 +61,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	/**
 	 * Removes EMC directly into the internal buffer. Use for internal implementation of your tile
 	 */
-	protected void removeEMC(double toRemove)
+	protected void removeEMC(long toRemove)
 	{
 		currentEMC -= toRemove;
 		if (currentEMC < 0)
@@ -79,7 +79,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 		{
 			currentEMC = maximumEMC;
 		}
-		tag.putDouble("EMC", currentEMC);
+		tag.putLong("EMC", currentEMC);
 		return tag;
 	}
 
@@ -87,7 +87,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	public void read(CompoundNBT tag)
 	{
 		super.read(tag);
-		double set = tag.getDouble("EMC");
+		long set = tag.getLong("EMC");
 		if (set > maximumEMC)
 		{
 			set = maximumEMC;

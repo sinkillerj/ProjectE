@@ -7,21 +7,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class SetFlyPKT {
-	private final boolean flag;
+	private boolean allowFlying;
+	private boolean isFlying;
 
-	public SetFlyPKT(boolean value)
+	public SetFlyPKT(boolean allowFlying, boolean isFlying)
 	{
-		flag = value;
+		this.allowFlying = allowFlying;
+		this.isFlying = isFlying;
 	}
 
 	public static void encode(SetFlyPKT msg, PacketBuffer buf)
 	{
-		buf.writeBoolean(msg.flag);
+		buf.writeBoolean(msg.allowFlying);
+		buf.writeBoolean(msg.isFlying);
 	}
 
 	public static SetFlyPKT decode(PacketBuffer buf)
 	{
-		return new SetFlyPKT(buf.readBoolean());
+		return new SetFlyPKT(buf.readBoolean(), buf.readBoolean());
 	}
 
 	public static class Handler
@@ -29,12 +32,8 @@ public class SetFlyPKT {
 		public static void handle(final SetFlyPKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> {
-				Minecraft.getInstance().player.abilities.allowFlying = message.flag;
-
-				if (!message.flag)
-				{
-					Minecraft.getInstance().player.abilities.isFlying = false;
-				}
+				Minecraft.getInstance().player.abilities.allowFlying = message.allowFlying;
+				Minecraft.getInstance().player.abilities.isFlying = message.isFlying;
 			});
 			ctx.get().setPacketHandled(true);
 		}

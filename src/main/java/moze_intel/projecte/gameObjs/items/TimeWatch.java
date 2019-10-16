@@ -7,6 +7,8 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -126,8 +128,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		}
 
 		PlayerEntity player = (PlayerEntity) entity;
-		double reqEmc = getEmcPerTick(this.getCharge(stack));
-		
+		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
+
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
@@ -251,7 +253,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 
 	public double getEmcPerTick(int charge)
 	{
-		int actualCharge = charge + 1;
+		int actualCharge = charge + 2;
 		return (10.0D * actualCharge) / 20.0D;
 	}
 

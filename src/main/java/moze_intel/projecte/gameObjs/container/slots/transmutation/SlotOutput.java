@@ -26,7 +26,7 @@ public class SlotOutput extends SlotItemHandler
 		ItemStack stack = getStack().copy();
 		stack.setCount(amount);
 		long emcValue = amount * EMCHelper.getEmcValue(stack);
-		if (emcValue > inv.provider.getEmc()) {
+		if (emcValue > inv.getAvailableEMC()) {
 			//Requesting more emc than available
 			//Container expects stacksize=0-Itemstack for 'nothing'
 			stack.setCount(0);
@@ -49,6 +49,6 @@ public class SlotOutput extends SlotItemHandler
 	
 	@Override
 	public boolean canTakeStack(PlayerEntity player) {
-		return !getHasStack() || EMCHelper.getEmcValue(getStack()) <= inv.provider.getEmc();
+		return !getHasStack() || EMCHelper.getEmcValue(getStack()) <= inv.getAvailableEMC();
 	}
 }

@@ -8,27 +8,33 @@ import java.util.function.Supplier;
 
 public class SyncCovalencePKT {
 	private final double covalenceLoss;
+	private boolean covalenceLossRounding;
 
-	public SyncCovalencePKT(double value)
+	public SyncCovalencePKT(double value, boolean rounding)
 	{
 		covalenceLoss = value;
+		covalenceLossRounding = rounding;
 	}
 
 	public static void encode(SyncCovalencePKT msg, PacketBuffer buf)
 	{
 		buf.writeDouble(msg.covalenceLoss);
+		buf.writeBoolean(msg.covalenceLossRounding);
 	}
 
 	public static SyncCovalencePKT decode(PacketBuffer buf)
 	{
-		return new SyncCovalencePKT(buf.readDouble());
+		return new SyncCovalencePKT(buf.readDouble(), buf.readBoolean());
 	}
 
 	public static class Handler
 	{
 		public static void handle(final SyncCovalencePKT message, Supplier<NetworkEvent.Context> ctx)
 		{
-			ctx.get().enqueueWork(() -> EMCMapper.covalenceLoss = message.covalenceLoss);
+			ctx.get().enqueueWork(() -> {
+				EMCMapper.covalenceLoss = message.covalenceLoss;
+				EMCMapper.covalenceLossRounding = message.covalenceLossRounding;
+			});
 			ctx.get().setPacketHandled(true);
 		}
 	}

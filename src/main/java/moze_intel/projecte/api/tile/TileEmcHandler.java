@@ -16,10 +16,10 @@ public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcPro
 	public TileEmcHandler(TileEntityType<?> type)
 	{
 		super(type);
-		this.maximumEMC = Double.MAX_VALUE;
+		this.maximumEMC = Long.MAX_VALUE;
 	}
 
-	public TileEmcHandler(TileEntityType<?> type, double max)
+	public TileEmcHandler(TileEntityType<?> type, long max)
 	{
 		super(type);
 		this.maximumEMC = max;
@@ -27,31 +27,31 @@ public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcPro
 
 	// -- IEMCAcceptor -- //
 	@Override
-	public double acceptEMC(@Nonnull Direction side, double toAccept)
+	public long acceptEMC(@Nonnull Direction side, long toAccept)
 	{
-		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+		long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
 		currentEMC += toAdd;
 		return toAdd;
 	}
 
 	// -- IEMCProvider -- //
 	@Override
-	public double provideEMC(@Nonnull Direction side, double toExtract)
+	public long provideEMC(@Nonnull Direction side, long toExtract)
 	{
-		double toRemove = Math.min(currentEMC, toExtract);
+		long toRemove = Math.min(currentEMC, toExtract);
 		currentEMC -= toRemove;
 		return toRemove;
 	}
 
 	// -- IEMCStorage --//
 	@Override
-	public double getStoredEmc()
+	public long getStoredEmc()
 	{
 		return currentEMC;
 	}
 
 	@Override
-	public double getMaximumEmc()
+	public long getMaximumEmc()
 	{
 		return maximumEMC;
 	}

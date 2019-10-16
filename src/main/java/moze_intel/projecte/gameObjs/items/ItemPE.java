@@ -38,24 +38,24 @@ public class ItemPE extends Item
 		return diffActive || diffMode;
 	}
 
-	public static double getEmc(ItemStack stack)
+	public static long getEmc(ItemStack stack)
 	{
-        return stack.getOrCreateTag().getDouble("StoredEMC");
+		return stack.getOrCreateTag().getLong("StoredEMC");
 	}
 	
-	public static void setEmc(ItemStack stack, double amount)
+	public static void setEmc(ItemStack stack, long amount)
 	{
-        stack.getOrCreateTag().putDouble("StoredEMC", amount);
+		stack.getOrCreateTag().putLong("StoredEMC", amount);
 	}
 	
-	public static void addEmcToStack(ItemStack stack, double amount)
+	public static void addEmcToStack(ItemStack stack, long amount)
 	{
 		setEmc(stack, getEmc(stack) + amount);
 	}
 	
-	public static void removeEmc(ItemStack stack, double amount)
+	public static void removeEmc(ItemStack stack, long amount)
 	{
-		double result = getEmc(stack) - amount;
+		long result = getEmc(stack) - amount;
 		
 		if (result < 0)
 		{
@@ -65,18 +65,18 @@ public class ItemPE extends Item
 		setEmc(stack, result);
 	}
 	
-	public static boolean consumeFuel(PlayerEntity player, ItemStack stack, double amount, boolean shouldRemove)
+	public static boolean consumeFuel(PlayerEntity player, ItemStack stack, long amount, boolean shouldRemove)
 	{
 		if (amount <= 0)
 		{
 			return true;
 		}
 
-		double current = getEmc(stack);
+		long current = getEmc(stack);
 		
 		if (current < amount)
 		{
-			double consume = EMCHelper.consumePlayerFuel(player, amount - current);
+			long consume = EMCHelper.consumePlayerFuel(player, amount - current);
 			
 			if (consume == -1)
 			{

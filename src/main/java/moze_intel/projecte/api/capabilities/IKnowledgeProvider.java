@@ -66,12 +66,21 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT>
     /**
      * @return The emc in this player's transmutation tablet network
      */
-    double getEmc();
+    long getEmc();
 
     /**
      * @param emc The emc to set in this player's transmutation tablet network
      */
-    void setEmc(double emc);
+    void setEmc(long emc);
+
+    /**
+     * @param emc The emc to set in this player's transmutation tablet network
+     * @deprecated 
+     */
+    @Deprecated
+    default void setEmc(double emc) {
+        setEmc((long) emc);
+    }
 
     /**
      * @param player The player to sync to.

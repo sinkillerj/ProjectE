@@ -26,7 +26,7 @@ public class CollectorMK1Container extends PEContainer
 	public final BoxedLong emc = new BoxedLong();
 	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.single();
 	private final IntReferenceHolder fuelProgress = IntReferenceHolder.single();
-	public final IntReferenceHolder kleinEmc = IntReferenceHolder.single();
+	public final BoxedLong kleinEmc = new BoxedLong();
 
 	public static CollectorMK1Container fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf)
 	{
@@ -45,7 +45,7 @@ public class CollectorMK1Container extends PEContainer
 		this.intFields.add(sunLevel);
 		this.intFields.add(kleinChargeProgress);
 		this.intFields.add(fuelProgress);
-		this.intFields.add(kleinEmc);
+		this.longFields.add(kleinEmc);
 		this.tile = collector;
 		initSlots(invPlayer);
 	}
@@ -101,7 +101,7 @@ public class CollectorMK1Container extends PEContainer
 		sunLevel.set(tile.getSunLevel());
 		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
 		fuelProgress.set((int) (tile.getFuelProgress() * 8000));
-		kleinEmc.set((int) tile.getItemCharge());
+		kleinEmc.set(tile.getItemCharge());
 		super.detectAndSendChanges();
 	}
 

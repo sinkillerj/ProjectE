@@ -122,12 +122,12 @@ public class TransmutationOffline
             }
 
             @Override
-            public double getEmc() {
+            public long getEmc() {
                 return toCopy.getEmc();
             }
 
             @Override
-            public void setEmc(double emc) {}
+            public void setEmc(long emc) {}
 
             @Override
             public void sync(@Nonnull ServerPlayerEntity player) {

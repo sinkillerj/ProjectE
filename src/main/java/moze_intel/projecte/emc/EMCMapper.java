@@ -43,6 +43,7 @@ public final class EMCMapper
 {
 	public static final Map<Item, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
+	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
 
 	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
 	{

@@ -7,6 +7,8 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -68,7 +70,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 			else 
 			{
 				WorldHelper.igniteNearby(world, player);
-				removeEmc(stack, 0.32F);
+				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		}
 		else 
