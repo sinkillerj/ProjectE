@@ -6,7 +6,6 @@ import moze_intel.projecte.emc.collector.MappingCollector;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

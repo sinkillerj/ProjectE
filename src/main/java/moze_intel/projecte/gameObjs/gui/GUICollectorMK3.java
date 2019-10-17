@@ -3,19 +3,16 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GUICollectorMK3 extends ContainerScreen<CollectorMK3Container>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/collector3.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/collector3.png");
 
 	public GUICollectorMK3(CollectorMK3Container container, PlayerInventory invPlayer, ITextComponent title)
 	{

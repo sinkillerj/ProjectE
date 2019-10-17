@@ -1,7 +1,6 @@
 package moze_intel.projecte.api.tile;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 

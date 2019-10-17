@@ -2,9 +2,6 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
-import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

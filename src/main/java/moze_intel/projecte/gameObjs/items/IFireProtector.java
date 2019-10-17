@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 /**

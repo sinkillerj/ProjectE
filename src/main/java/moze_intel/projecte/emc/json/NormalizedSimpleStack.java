@@ -20,7 +20,7 @@ import java.util.Map;
 
 public interface NormalizedSimpleStack {
 
-	public static enum Serializer implements JsonSerializer<NormalizedSimpleStack>, JsonDeserializer<NormalizedSimpleStack> {
+	enum Serializer implements JsonSerializer<NormalizedSimpleStack>, JsonDeserializer<NormalizedSimpleStack> {
 		INSTANCE;
 
 		@Override
@@ -65,7 +65,7 @@ public interface NormalizedSimpleStack {
 		}
 	}
 
-	public static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
+	static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
 		// Add conversions for all items <-> NSSTag for tags they belong to
 		for (Map.Entry<String, NSSTag> entry: NSSTag.tagStacks.entrySet()) {
 			NSSTag nssTag = entry.getValue();
@@ -77,7 +77,7 @@ public interface NormalizedSimpleStack {
 	}
 
 	@Override
-	public boolean equals(Object o);
+	boolean equals(Object o);
 
-	public String json();
+	String json();
 }

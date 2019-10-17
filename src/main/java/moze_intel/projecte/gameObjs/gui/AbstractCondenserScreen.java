@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.util.Collections;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
@@ -13,8 +13,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-
-import java.util.Arrays;
 
 public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T>
 {
@@ -56,18 +54,14 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		long toDisplay = container.displayEmc.get() > container.requiredEmc.get()
-				? container.requiredEmc.get()
-				: container.displayEmc.get();
+		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 		String emc = TransmutationEMCFormatter.EMCFormat(toDisplay);
 		this.font.drawString(emc, 140, 10, 4210752);
 	}
 
 	@Override
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		long toDisplay = container.displayEmc.get() > container.requiredEmc.get()
-				? container.requiredEmc.get()
-				: container.displayEmc.get();
+		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 
 		if (toDisplay < 1e12) {
 			super.renderHoveredToolTip(mouseX, mouseY);
@@ -81,7 +75,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(toDisplay);
-			renderTooltip(Arrays.asList(emcAsString), mouseX, mouseY);
+			renderTooltip(Collections.singletonList(emcAsString), mouseX, mouseY);
 		} else {
 			super.renderHoveredToolTip(mouseX, mouseY);
 		}

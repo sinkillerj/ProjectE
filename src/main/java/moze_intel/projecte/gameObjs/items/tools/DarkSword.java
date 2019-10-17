@@ -7,17 +7,12 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;

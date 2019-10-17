@@ -3,10 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
-import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -14,11 +11,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-import java.io.IOException;
-
 public class GUIEternalDensity extends ContainerScreen<EternalDensityContainer>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/eternal_density.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/eternal_density.png");
 
 	public GUIEternalDensity(EternalDensityContainer container, PlayerInventory inv, ITextComponent title)
 	{

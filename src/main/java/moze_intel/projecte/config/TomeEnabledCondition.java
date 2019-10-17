@@ -6,9 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
-import javax.annotation.Nonnull;
-import java.util.function.BooleanSupplier;
-
 public class TomeEnabledCondition implements ICondition {
     private static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "tome_enabled");
 

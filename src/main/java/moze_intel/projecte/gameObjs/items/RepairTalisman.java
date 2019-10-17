@@ -12,11 +12,9 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,10 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -109,7 +104,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	{
 		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repair.get() != -1)
 		{
-			TileEntity te = world.getTileEntity(pos);
 			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
 			if (tile.getActivityCooldown() == 0)
 			{

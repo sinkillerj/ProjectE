@@ -3,7 +3,6 @@ package moze_intel.projecte.api.item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

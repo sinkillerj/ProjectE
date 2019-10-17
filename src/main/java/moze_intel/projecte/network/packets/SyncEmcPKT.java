@@ -7,7 +7,6 @@ import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 

@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeColor;
 
 import java.util.Arrays;
 import java.util.Collection;

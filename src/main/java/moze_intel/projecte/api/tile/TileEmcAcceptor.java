@@ -2,7 +2,6 @@ package moze_intel.projecte.api.tile;
 
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 

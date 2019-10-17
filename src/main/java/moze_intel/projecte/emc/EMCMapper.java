@@ -24,7 +24,6 @@ import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;

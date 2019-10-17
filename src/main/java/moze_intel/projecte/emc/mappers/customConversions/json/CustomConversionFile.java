@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 import java.io.File;

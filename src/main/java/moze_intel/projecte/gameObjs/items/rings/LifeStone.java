@@ -6,7 +6,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -20,8 +19,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

@@ -1,12 +1,10 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;

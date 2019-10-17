@@ -3,7 +3,6 @@ package moze_intel.projecte.events;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

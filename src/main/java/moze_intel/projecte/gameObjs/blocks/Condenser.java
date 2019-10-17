@@ -1,17 +1,10 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import io.netty.buffer.Unpooled;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.utils.Constants;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -19,7 +12,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;

@@ -2,19 +2,12 @@ package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class AlchChestScreen extends ContainerScreen<AlchChestContainer>
 {

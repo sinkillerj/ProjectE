@@ -1,6 +1,5 @@
 package moze_intel.projecte.events;
 
-import com.google.common.math.LongMath;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.item.IItemEmc;
@@ -14,8 +13,6 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

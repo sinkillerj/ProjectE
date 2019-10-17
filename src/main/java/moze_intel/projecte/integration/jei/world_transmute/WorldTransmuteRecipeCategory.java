@@ -9,9 +9,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
@@ -19,7 +17,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

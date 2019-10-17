@@ -1,29 +1,14 @@
 package moze_intel.projecte.integration.curios;
 
-import com.google.common.collect.ImmutableSet;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Set;
 
 public class CuriosIntegration
 {

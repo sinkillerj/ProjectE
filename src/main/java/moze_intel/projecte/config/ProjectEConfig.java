@@ -1,7 +1,6 @@
 package moze_intel.projecte.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.file.CommentedFileConfigBuilder;
 import moze_intel.projecte.PECore;
 import net.minecraftforge.common.ForgeConfigSpec;
 

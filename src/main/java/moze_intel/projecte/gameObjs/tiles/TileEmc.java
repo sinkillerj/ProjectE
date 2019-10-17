@@ -7,17 +7,13 @@ import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 
 public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity

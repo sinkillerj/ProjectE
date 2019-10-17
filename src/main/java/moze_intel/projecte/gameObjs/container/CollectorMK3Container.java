@@ -9,8 +9,6 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

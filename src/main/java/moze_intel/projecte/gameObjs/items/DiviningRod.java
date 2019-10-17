@@ -3,22 +3,16 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -29,7 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class DiviningRod extends ItemPE implements IModeChanger
 {
@@ -130,7 +123,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 
 		emcValues.sort(Comparator.reverseOrder());
 
-		int num = emcValues.size() >= 3 ? 3 : emcValues.size();
+		int num = Math.min(emcValues.size(), 3);
 
 		for (int i = 0; i < num; i++)
 		{

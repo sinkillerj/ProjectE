@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 
 import javax.annotation.Nonnull;
 

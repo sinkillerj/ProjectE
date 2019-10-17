@@ -6,16 +6,14 @@ import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/rmfurnace.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/rmfurnace.png");
 	private final RMFurnaceTile tile;
 	
 	public GUIRMFurnace(RMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title)

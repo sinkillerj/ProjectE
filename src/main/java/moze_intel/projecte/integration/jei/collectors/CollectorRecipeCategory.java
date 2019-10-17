@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe>

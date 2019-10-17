@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
@@ -12,26 +10,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Arrays;
 
 public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/transmute.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/transmute.png");
 	private final TransmutationInventory inv;
 	private TextFieldWidget textBoxFilter;
 

@@ -3,10 +3,8 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK3Container;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,7 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIRelayMK3 extends ContainerScreen<RelayMK3Container>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/relay3.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/relay3.png");
 
 	public GUIRelayMK3(RelayMK3Container container, PlayerInventory invPlayer, ITextComponent title)
 	{

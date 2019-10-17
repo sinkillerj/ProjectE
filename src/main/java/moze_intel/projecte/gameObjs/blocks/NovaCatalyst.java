@@ -1,33 +1,14 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.TNTBlock;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class NovaCatalyst extends TNTBlock

@@ -3,9 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
-import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIMercurialEye extends ContainerScreen<MercurialEyeContainer>
 {
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/gui/mercurial_eye.png");
+	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/mercurial_eye.png");
 
 	public GUIMercurialEye(MercurialEyeContainer container, PlayerInventory invPlayer, ITextComponent title)
 	{

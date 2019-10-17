@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 

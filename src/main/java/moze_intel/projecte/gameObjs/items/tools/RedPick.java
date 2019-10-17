@@ -5,7 +5,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
 public class RedPick extends DarkPick

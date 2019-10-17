@@ -1,10 +1,8 @@
 package moze_intel.projecte.api.capabilities;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -72,15 +70,6 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT>
      * @param emc The emc to set in this player's transmutation tablet network
      */
     void setEmc(long emc);
-
-    /**
-     * @param emc The emc to set in this player's transmutation tablet network
-     * @deprecated 
-     */
-    @Deprecated
-    default void setEmc(double emc) {
-        setEmc((long) emc);
-    }
 
     /**
      * @param player The player to sync to.

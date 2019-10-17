@@ -1,9 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;

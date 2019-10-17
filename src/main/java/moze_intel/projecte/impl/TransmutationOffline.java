@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
@@ -25,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 public class TransmutationOffline
 {
     private static final IKnowledgeProvider NOT_FOUND_PROVIDER = immutableCopy(ProjectEAPI.KNOWLEDGE_CAPABILITY.getDefaultInstance());

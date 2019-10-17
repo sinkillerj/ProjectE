@@ -5,7 +5,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +12,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;

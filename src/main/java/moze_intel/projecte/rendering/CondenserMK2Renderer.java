@@ -5,12 +5,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +18,7 @@ import javax.annotation.Nonnull;
 @OnlyIn(Dist.CLIENT)
 public class CondenserMK2Renderer extends TileEntityRenderer<CondenserMK2Tile>
 {
-	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser_mk2.png");
+	private final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png");
 	private final ChestModel model = new ChestModel();
 
 	@Override

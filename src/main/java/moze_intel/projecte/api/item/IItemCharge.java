@@ -4,8 +4,6 @@ import moze_intel.projecte.api.PESounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 

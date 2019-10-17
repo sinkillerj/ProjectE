@@ -7,8 +7,6 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.FurnaceTileEntity;
 
 import java.util.function.Predicate;
 

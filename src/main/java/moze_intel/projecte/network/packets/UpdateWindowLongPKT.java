@@ -1,6 +1,5 @@
 package moze_intel.projecte.network.packets;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.PEContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;

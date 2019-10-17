@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ActionResultType;
 
 import javax.annotation.Nonnull;
 

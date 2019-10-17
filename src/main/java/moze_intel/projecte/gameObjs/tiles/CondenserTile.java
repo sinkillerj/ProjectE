@@ -17,7 +17,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -27,7 +26,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
 {

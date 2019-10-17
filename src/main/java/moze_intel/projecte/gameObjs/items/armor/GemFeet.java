@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -12,9 +11,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.*;

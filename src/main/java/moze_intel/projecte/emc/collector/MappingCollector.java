@@ -1,16 +1,12 @@
 package moze_intel.projecte.emc.collector;
 
-
 import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;

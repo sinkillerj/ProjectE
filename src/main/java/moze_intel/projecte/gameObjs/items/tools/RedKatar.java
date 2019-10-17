@@ -8,8 +8,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.LogBlock;
 import net.minecraft.block.GrassBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import io.netty.buffer.Unpooled;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
@@ -8,10 +7,8 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;

@@ -2,7 +2,6 @@ package moze_intel.projecte.events;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -16,9 +15,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SCollectItemPacket;

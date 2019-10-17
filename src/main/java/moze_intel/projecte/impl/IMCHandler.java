@@ -10,19 +10,11 @@ import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.InterModComms;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 

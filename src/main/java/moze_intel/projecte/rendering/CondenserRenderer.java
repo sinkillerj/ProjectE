@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 @OnlyIn(Dist.CLIENT)
 public class CondenserRenderer extends TileEntityRenderer<CondenserTile>
 {
-	private final ResourceLocation texture = new ResourceLocation(PECore.MODID.toLowerCase(), "textures/blocks/condenser.png");
+	private final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png");
 	private final ChestModel model = new ChestModel();
 	
 	@Override

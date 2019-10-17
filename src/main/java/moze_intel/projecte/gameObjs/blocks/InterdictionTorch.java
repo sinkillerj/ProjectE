@@ -3,8 +3,6 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.TorchBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 

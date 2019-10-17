@@ -113,15 +113,11 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -130,7 +126,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.minecraftforge.registries.ObjectHolder;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ObjHandler

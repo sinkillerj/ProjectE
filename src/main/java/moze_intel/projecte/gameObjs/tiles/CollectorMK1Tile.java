@@ -13,8 +13,6 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -23,7 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -35,7 +32,6 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAcceptor, INamedContainerProvider

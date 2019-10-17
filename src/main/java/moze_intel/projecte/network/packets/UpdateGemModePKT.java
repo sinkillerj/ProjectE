@@ -4,7 +4,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;

@@ -13,6 +13,7 @@ public class ThreadCheckUUID extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
+	//TODO: 1.14 update this to the 1.14 branch?
 	private static final String uuidURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.12.x/haUUID.txt";
 	private final boolean isServerSide;
 	

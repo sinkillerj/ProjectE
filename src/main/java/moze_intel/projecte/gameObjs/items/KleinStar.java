@@ -4,7 +4,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;

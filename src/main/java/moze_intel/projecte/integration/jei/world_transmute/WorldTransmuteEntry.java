@@ -5,8 +5,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -56,11 +56,11 @@ public class WorldTransmuteEntry
 	{
 		if (block == Blocks.WATER)
 		{
-			// return new FluidStack(FluidRegistry.WATER, 1000);
+			return new FluidStack(Fluids.WATER, 1000);
 		}
 		else if (block == Blocks.LAVA)
 		{
-			// return new FluidStack(FluidRegistry.LAVA, 1000);
+			return new FluidStack(Fluids.LAVA, 1000);
 		}
 		return null;
 	}

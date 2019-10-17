@@ -4,7 +4,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
