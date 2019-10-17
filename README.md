@@ -25,16 +25,13 @@ We accept donations via Patreon, visit the team members section to learn more.
 
 Discord: https://discordapp.com/invite/uTbDkT4
 
-#Current Team Members
+# Current Team Members
+Members actively working on ProjectE.
+
 SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 
 * Twitter: https://twitter.com/sinkillerj
 * Patreon: https://www.patreon.com/sinkillerj
-
-Williewillus - Lord of Lore and Refactors - Former Lead of New Version Ports:
-
-* Twitter: https://twitter.com/williewillus
-* Patreon: https://www.patreon.com/williewillus
 
 Pupnewfster - Rising superstar - Current Lead of New Version Ports
 
@@ -46,8 +43,15 @@ Lilylicious - Lady of Little Big Things - Assistant Developer:
 
 * Twitter: https://twitter.com/Lilyliciously
 
-# Former Team Members
+# Emeritus (Retired Team Members)
+Members that have retired from their role, but are welcome to return and contribute further.
+
 MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
+
+Williewillus - Maintainer, 1.8.x-1.13.x: https://twitter.com/williewillus
+
+# Former Team Members
+Members that are no longer part of the team.
 
 Magic Banana - Former texture artist: https://twitter.com/Magic_Banana_
 
