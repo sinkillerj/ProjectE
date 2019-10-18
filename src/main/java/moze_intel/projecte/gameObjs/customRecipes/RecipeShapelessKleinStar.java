@@ -15,8 +15,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-// todo 1.13 @Optional.Interface(iface = "mezz.jei.api.recipe.IRecipeWrapper", modid = "jei")
-public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapper*/ {
+public class RecipeShapelessKleinStar implements ICraftingRecipe {
 	private final ShapelessRecipe compose;
 
 	public RecipeShapelessKleinStar(ShapelessRecipe compose) {
@@ -85,7 +84,8 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapp
 
 	@Override
 	public boolean isDynamic() {
-		return true;
+		//Allow the klein recipes to show up in the recipe book and in JEI
+		return false;
 	}
 
 	@Nonnull
@@ -93,20 +93,6 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapp
 	public String getGroup() {
 		return compose.getGroup();
 	}
-	/* todo 1.13
-	@Override
-	@Optional.Method(modid = "jei")
-	public void getIngredients(IIngredients ingredients) {
-		List<ItemStack> stacks = new ArrayList<>();
-
-		for(Ingredient ing : this.compose.getIngredients()){
-			stacks.add(ing.getMatchingStacks()[0]);
-		}
-
-		ingredients.setInputs(ItemStack.class, stacks);
-		ingredients.setOutput(ItemStack.class, this.compose.getRecipeOutput());
-	}
-	*/
 
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessKleinStar>
 	{

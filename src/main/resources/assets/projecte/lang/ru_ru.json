@@ -413,8 +413,8 @@
 
     "pe.debug.metainvalid": "Неверные метаданные",
 
-    "pe.nei.worldtransmute": "Преобразования в мире",
-    "pe.nei.philo": "Выплавка Философским кимнем",
+    "pe.jei.worldtransmute": "Преобразования в мире",
+    "pe.jei.philo": "Выплавка Философским кимнем",
 
     "pe.manual.index": "Содержание"
 }

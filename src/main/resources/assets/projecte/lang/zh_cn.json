@@ -371,8 +371,8 @@
 
     "pe.debug.metainvalid": "metadata参数设置无效",
 
-    "pe.nei.worldtransmute": "世界转化",
-    "pe.nei.philo": "贤者之石的转化",
+    "pe.jei.worldtransmute": "世界转化",
+    "pe.jei.philo": "贤者之石的转化",
 
     "_comment": "Yes these empty lines are for the manual",
     "_comment": "Don't translate them for now.",

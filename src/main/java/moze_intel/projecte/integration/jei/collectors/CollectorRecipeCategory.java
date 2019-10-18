@@ -32,7 +32,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
         arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
                 .setTextureSize(32, 32).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.collectorMK1));
-        localizedName = I18n.format("pe.nei.collector");
+        localizedName = I18n.format("pe.jei.collector");
     }
 
     @Nonnull

@@ -373,9 +373,9 @@
 
     "pe.debug.metainvalid": "Ensemble de métadonnées non valide",
 
-    "pe.nei.worldtransmute": "Transmutation du monde",
-    "pe.nei.philo": "Pierre philosophale en fusion",
-    "pe.nei.collector": "Amélioration du collecteur",
+    "pe.jei.worldtransmute": "Transmutation du monde",
+    "pe.jei.philo": "Pierre philosophale en fusion",
+    "pe.jei.collector": "Amélioration du collecteur",
 
     "pe.manual.index": "Index",
     "pe.manual.index_button": "ToC",

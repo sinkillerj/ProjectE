@@ -35,7 +35,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
         arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
                 .setTextureSize(32, 32).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
-        localizedName = I18n.format("pe.nei.worldtransmute");
+        localizedName = I18n.format("pe.jei.worldtransmute");
     }
 
     @Nonnull
@@ -133,7 +133,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
     public List<String> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
         if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
         {
-            return Collections.singletonList(I18n.format("pe.nei.worldtransmute.description"));
+            return Collections.singletonList(I18n.format("pe.jei.worldtransmute.description"));
         }
         return Collections.emptyList();
     }

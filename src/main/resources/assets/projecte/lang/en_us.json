@@ -380,9 +380,10 @@
 
     "pe.debug.metainvalid": "Invalid metadata set",
 
-    "pe.nei.worldtransmute": "World Transmutation",
-    "pe.nei.philo": "Philosopher's Stone Smelting",
-    "pe.nei.collector": "Collector Fuel Upgrades",
+    "pe.jei.worldtransmute": "World Transmutation",
+    "pe.jei.worldtransmute.description": "Click in world, shift click for second output",
+    "pe.jei.philo": "Philosopher's Stone Smelting",
+    "pe.jei.collector": "Collector Fuel Upgrades",
 
     "pe.manual.index": "Index",
     "pe.manual.index_button": "ToC",
