@@ -228,7 +228,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					{
 						continue;
 					}
-					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));;
+					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.swrg.get());
 			}

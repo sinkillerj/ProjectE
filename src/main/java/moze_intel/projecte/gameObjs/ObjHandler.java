@@ -148,8 +148,9 @@ public class ObjHandler
 	public static final Block rmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
 	public static final Block dmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
 	public static final Block dmPedestal = new Pedestal(Block.Properties.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
+	//TODO: 1.14, Check this again, in 1.12 this would have equivalently had a resistance of 6 not something in the millions
 	public static final Block dmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");
-	public static final Block rmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "red_matter_block");
+	public static final Block rmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(2000000), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "red_matter_block");
 	public static final Block alchemicalCoalBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
 	public static final Block mobiusFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "mobius_fuel_block");
 	public static final Block aeternalisFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F)).setRegistryName(PECore.MODID, "aeternalis_fuel_block");

@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.blocks;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -22,8 +21,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class AlchemicalChest extends BlockDirection implements ITileEntityProvider
+public class AlchemicalChest extends BlockDirection
 {
 	private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
@@ -61,9 +61,14 @@ public class AlchemicalChest extends BlockDirection implements ITileEntityProvid
 		return true;
 	}
 
-	@Nonnull
 	@Override
-	public TileEntity createNewTileEntity(@Nonnull IBlockReader world)
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new AlchChestTile();
 	}

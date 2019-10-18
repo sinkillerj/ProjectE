@@ -20,19 +20,6 @@ public class MatterBlock extends Block
 		super(props);
 		this.matterType = type;
 	}
-
-	@Override
-	public float getBlockHardness(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		if (matterType == EnumMatterType.DARK_MATTER)
-		{
-			return 1000000.0F;
-		}
-		else
-		{
-			return 2000000.0F;
-		}
-	}
 	
 	@Override
 	public boolean canHarvestBlock(BlockState state, IBlockReader world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)

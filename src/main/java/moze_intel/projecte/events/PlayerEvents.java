@@ -46,12 +46,12 @@ public class PlayerEvents
 	{
 		evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
 			CompoundNBT bags = old.serializeNBT();
-			evt.getEntityPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
+			evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 		});
 
 		evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(old -> {
 			CompoundNBT knowledge = old.serializeNBT();
-			evt.getEntityPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(c -> c.deserializeNBT(knowledge));
+			evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
 	}
 
@@ -137,7 +137,7 @@ public class PlayerEvents
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event)
 	{
-		PlayerEntity player = event.getEntityPlayer();
+		PlayerEntity player = event.getPlayer();
 		World world = player.getEntityWorld();
 		
 		if (world.isRemote)

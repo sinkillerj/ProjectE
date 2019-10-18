@@ -8,6 +8,7 @@ import net.minecraft.resources.IResourceManagerReloadListener;
 
 import javax.annotation.Nonnull;
 
+//TODO: 1.14, Switch to ISelectiveResourceReloadListener
 public class EMCReloadListener implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)

@@ -17,6 +17,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 
+//TODO: 1.14, Switch to ISelectiveResourceReloadListener
 public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener
 {
     @Override

@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -25,7 +24,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Collector extends BlockDirection implements ITileEntityProvider
+public class Collector extends BlockDirection
 {
 	private final int tier;
 	
@@ -60,16 +59,18 @@ public class Collector extends BlockDirection implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(@Nonnull IBlockReader world) {
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
 		switch (tier) {
-			case 3:
-				return new CollectorMK3Tile();
-			case 2:
-				return new CollectorMK2Tile();
-			case 1:
-				return new CollectorMK1Tile();
-			default:
-				return null;
+			case 1: return new CollectorMK1Tile();
+			case 2: return new CollectorMK2Tile();
+			case 3: return new CollectorMK3Tile();
+			default: return null;
 		}
 	}
 

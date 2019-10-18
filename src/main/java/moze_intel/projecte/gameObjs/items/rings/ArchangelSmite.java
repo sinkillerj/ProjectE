@@ -64,7 +64,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY
 				&& !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this)
 		{
-			fireVolley(evt.getItemStack(), evt.getEntityPlayer());
+			fireVolley(evt.getItemStack(), evt.getPlayer());
 		}
 	}
 

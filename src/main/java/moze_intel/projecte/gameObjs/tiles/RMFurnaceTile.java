@@ -10,17 +10,21 @@ import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
+import net.minecraft.tileentity.DropperTileEntity;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.HopperTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -28,9 +32,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -380,16 +384,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 	
 	private int getItemBurnTime(ItemStack stack)
 	{
-		int burnTime = 0;
-
-		if (!stack.isEmpty()) {
-			Item item = stack.getItem();
-			int ret = stack.getBurnTime();
-			burnTime = ForgeEventFactory.getItemBurnTime(stack, ret == -1 ? FurnaceTileEntity.getBurnTimes().getOrDefault(item, 0) : ret);
-		}
-
-		int val = burnTime;
-		return (val * ticksBeforeSmelt) / 200 * efficiencyBonus;
+		return (ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt) / 200 * efficiencyBonus;
 	}
 	
 	public int getCookProgressScaled(int value)
