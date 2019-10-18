@@ -4,12 +4,12 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
+import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
@@ -17,6 +17,7 @@ import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
+import moze_intel.projecte.emc.mappers.FluidMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
@@ -63,7 +64,7 @@ public final class EMCMapper
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
-				// todo 1.13 new moze_intel.projecte.emc.mappers.FluidMapper(),
+				new FluidMapper(),
 				APICustomConversionMapper.instance
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());

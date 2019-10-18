@@ -63,11 +63,9 @@ public class EntityRandomizer
 		if (entityType == null) {
 			return null;
 		}
-		EntityType<?> internal = entityType.getInternal();
 		try {
 			//TODO: 1.14, Figure out a better method to check that this is a mob, as I am not sure this will even work
-			EntityType<? extends MobEntity> mobEntity = (EntityType<? extends MobEntity>) internal;
-			return mobEntity;
+			return (EntityType<? extends MobEntity>) entityType.getInternal();
 		} catch (Exception ignored) {
 		}
 		return null;

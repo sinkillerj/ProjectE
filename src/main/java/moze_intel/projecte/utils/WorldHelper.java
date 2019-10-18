@@ -529,12 +529,7 @@ public final class WorldHelper
 					|| (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
 				if ((ent instanceof MobEntity) || (ent instanceof IProjectile))
 				{
-					if (!isSWRG && ProjectEConfig.effects.interdictionMode.get() && !(ent instanceof IMob || ent instanceof IProjectile))
-					{
-						continue;
-					}
-					else
-					{
+					if (isSWRG || !ProjectEConfig.effects.interdictionMode.get() || (ent instanceof IMob || ent instanceof IProjectile)) {
 						if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround)
 						{
 							continue;

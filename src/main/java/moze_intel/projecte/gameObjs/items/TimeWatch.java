@@ -95,14 +95,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 		if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			if (timeControl == 1)
             {
-                if (world.getDayTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE)
-                {
-                    world.setDayTime(Long.MAX_VALUE);
-                }
-                else
-                {
-                    world.setDayTime((world.getDayTime() + ((getCharge(stack) + 1) * 4)));
-                }
+				world.setDayTime(Math.min(world.getDayTime() + ((getCharge(stack) + 1) * 4), Long.MAX_VALUE));
             }
             else if (timeControl == 2)
             {
@@ -209,8 +202,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 				Block block = state.getBlock();
 				if (state.ticksRandomly()
 						&& !BLOCK_BLACKLIST_TAG.contains(block)
-						&& !(block instanceof FlowingFluidBlock) // Don't speed vanilla non-source blocks - dupe issues
-						// todo 1.13 && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
+						&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
 						&& !(block instanceof IGrowable)
 						&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{

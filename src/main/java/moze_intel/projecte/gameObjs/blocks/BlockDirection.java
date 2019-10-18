@@ -7,11 +7,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -30,7 +28,7 @@ public abstract class BlockDirection extends Block
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props)
 	{
-		props.add((IProperty<Direction>) BlockStateProperties.HORIZONTAL_FACING);
+		props.add(BlockStateProperties.HORIZONTAL_FACING);
 	}
 
 	@Nonnull

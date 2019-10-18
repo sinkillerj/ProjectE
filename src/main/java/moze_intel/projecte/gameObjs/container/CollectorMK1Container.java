@@ -97,7 +97,7 @@ public class CollectorMK1Container extends PEContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		emc.set((long) tile.getStoredEmc());
+		emc.set(tile.getStoredEmc());
 		sunLevel.set(tile.getSunLevel());
 		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
 		fuelProgress.set((int) (tile.getFuelProgress() * 8000));

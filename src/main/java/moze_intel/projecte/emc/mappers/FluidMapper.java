@@ -1,8 +1,7 @@
-/*
 package moze_intel.projecte.emc.mappers;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.ImmutableMap;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.arithmetics.FullBigFractionArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
@@ -12,13 +11,13 @@ import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,6 +28,11 @@ import java.util.List;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = new ArrayList<>();
+
+	private static void addForgeMelting(String itemTagId, String fluidName, int amount) {
+		addMelting(new ResourceLocation("forge", itemTagId), fluidName, amount);
+		addMelting(NSSTag.create(itemTagId.toString()), fluidName, amount);
+	}
 
 	private static void addMelting(ResourceLocation itemTagId, String fluidName, int amount) {
 		addMelting(NSSTag.create(itemTagId.toString()), fluidName, amount);
@@ -43,80 +47,82 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	private static void addMelting(NormalizedSimpleStack stack, String fluidName, int amount) {
-		Fluid fluid = FluidRegistry.getFluid(fluidName);
+		//TODO: 1.14 fix getting fluids
+		/*Fluid fluid = FluidRegistry.getFluid(fluidName);
 		if (fluid != null) {
 			melting.add(Pair.of(stack, new FluidStack(fluid, amount)));
 		} else {
 			PECore.LOGGER.warn("Can not get Fluid '{}'", fluidName);
-		}
+		}*/
 	}
+
 	static {
 		addMelting(Blocks.OBSIDIAN, "obisidan.molten", 288);
 		addMelting(Blocks.GLASS, "glass.molten", 1000);
 		addMelting(Blocks.GLASS_PANE, "glass.molten", 250);
 		addMelting(Items.ENDER_PEARL, "ender", 250);
 
-		addMelting("ingotIron", "iron.molten", 144);
-		addMelting("ingotGold", "gold.molten", 144);
-		addMelting("ingotCopper", "copper.molten", 144);
-		addMelting("ingotTin", "tin.molten", 144);
-		addMelting("ingotSilver", "silver.molten", 144);
-		addMelting("ingotLead", "lead.molten", 144);
-		addMelting("ingotNickel", "nickel.molten", 144);
-		addMelting("ingotAluminum", "aluminum.molten", 144);
-		addMelting("ingotArdite", "ardite.molten", 144);
-		addMelting("ingotCobalt", "cobalt.molten", 144);
-		addMelting("ingotPlatinum", "platinum.molten", 144);
-		addMelting("ingotObsidian", "obsidian.molten", 144);
-		addMelting("ingotElectrum", "electrum.molten", 144);
-		addMelting("ingotInvar", "invar.molten", 144);
-		addMelting("ingotSignalum", "signalum.molten", 144);
-		addMelting("ingotLumium", "lumium.molten", 144);
-		addMelting("ingotEnderium", "enderium.molten", 144);
-		addMelting("ingotMithril", "mithril.molten", 144);
+		addForgeMelting("ingots/iron", "iron.molten", 144);
+		addForgeMelting("ingots/gold", "gold.molten", 144);
+		addForgeMelting("ingots/copper", "copper.molten", 144);
+		addForgeMelting("ingots/tin", "tin.molten", 144);
+		addForgeMelting("ingots/silver", "silver.molten", 144);
+		addForgeMelting("ingots/lead", "lead.molten", 144);
+		addForgeMelting("ingots/nickel", "nickel.molten", 144);
+		addForgeMelting("ingots/aluminum", "aluminum.molten", 144);
+		addForgeMelting("ingots/ardite", "ardite.molten", 144);
+		addForgeMelting("ingots/cobalt", "cobalt.molten", 144);
+		addForgeMelting("ingots/platinum", "platinum.molten", 144);
+		addForgeMelting("ingots/obsidian", "obsidian.molten", 144);
+		addForgeMelting("ingots/electrum", "electrum.molten", 144);
+		addForgeMelting("ingots/invar", "invar.molten", 144);
+		addForgeMelting("ingots/signalum", "signalum.molten", 144);
+		addForgeMelting("ingots/lumium", "lumium.molten", 144);
+		addForgeMelting("ingots/enderium", "enderium.molten", 144);
+		addForgeMelting("ingots/mithril", "mithril.molten", 144);
 
-		addMelting("ingotBronze", "bronze.molten", 144);
-		addMelting("ingotAluminumBrass", "aluminumbrass.molten", 144);
-		addMelting("ingotManyullyn", "manyullyn.molten", 144);
-		addMelting("ingotAlumite", "alumite.molten", 144);
+		addForgeMelting("ingots/bronze", "bronze.molten", 144);
+		addForgeMelting("ingots/aluminum_brass", "aluminumbrass.molten", 144);
+		addForgeMelting("ingots/manyullyn", "manyullyn.molten", 144);
+		addForgeMelting("ingots/alumite", "alumite.molten", 144);
 
-		addMelting("gemEmerald", "emerald.liquid", 640);
-		addMelting("dustRedstone", "redstone", 100);
-		addMelting("dustGlowstone", "glowstone", 250);
+		addForgeMelting("gems/emerald", "emerald.liquid", 640);
+		addForgeMelting("dusts/redstone", "redstone", 100);
+		addForgeMelting("dusts/glowstone", "glowstone", 250);
 
-		addMelting("dustCryotheum", "cryotheum", 100);
-		addMelting("dustPryotheum", "pryotheum", 100);
+		addForgeMelting("dusts/cryotheum", "cryotheum", 100);
+		addForgeMelting("dusts/pryotheum", "pryotheum", 100);
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
-		mapper.setValueBefore(NSSFluid.create(FluidRegistry.WATER), Long.MIN_VALUE*/
-/*=Free. TODO: Use IntArithmetic*//*
-);
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
+		mapper.setValueBefore(NSSFluid.create(Fluids.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NSSFluid.create(FluidRegistry.LAVA), Collections.singletonList(new NSSItem(Blocks.OBSIDIAN)));
+		mapper.addConversion(1000, NSSFluid.create(Fluids.LAVA), Collections.singletonList(new NSSItem(Blocks.OBSIDIAN)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NSSFake.create("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16L);
 		mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), Arrays.asList(new NSSItem(Items.BUCKET), fakeMilkFluid));
 
-		Fluid milkFluid = FluidRegistry.getFluid("milk");
+		//TODO: 1.14 fix getting fluids
+		Fluid milkFluid = null;//FluidRegistry.getFluid("milk");
 		if (milkFluid != null) {
 			mapper.addConversion(1000, NSSFluid.create(milkFluid), Collections.singletonList(fakeMilkFluid));
 		}
 
-		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
+		if (!(mapper instanceof IExtendedMappingCollector))
+			throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
 		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
 		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 
-		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
-			emapper.addConversion(pair.getValue().amount, NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+		for (Pair<NormalizedSimpleStack, FluidStack> pair : melting) {
+			emapper.addConversion(pair.getValue().getAmount(), NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 
 		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps
-		mapper.addConversion(1, new NSSItem(Items.WATER_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.WATER), 1000));
-		mapper.addConversion(1, new NSSItem(Items.LAVA_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(FluidRegistry.LAVA), 1000));
+		mapper.addConversion(1, new NSSItem(Items.WATER_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(Fluids.WATER), 1000));
+		mapper.addConversion(1, new NSSItem(Items.LAVA_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(Fluids.LAVA), 1000));
 		if (milkFluid != null) {
 			mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(milkFluid), 1000));
 		}
@@ -136,4 +142,4 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public boolean isAvailable() {
 		return true;
 	}
-}*/
+}

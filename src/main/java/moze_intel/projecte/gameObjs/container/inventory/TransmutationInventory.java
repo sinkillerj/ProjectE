@@ -360,14 +360,7 @@ public class TransmutationInventory extends CombinedInvWrapper
 			{
 				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
 				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
-				if (excessEMC > neededEmc)
-				{
-					itemEmc.addEmc(stack, neededEmc);
-				}
-				else
-				{
-					itemEmc.addEmc(stack, excessEMC);
-				}
+				itemEmc.addEmc(stack, Math.min(excessEMC, neededEmc));
 			}
 		}
 

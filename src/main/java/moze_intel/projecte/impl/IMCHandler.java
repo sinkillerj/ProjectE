@@ -48,14 +48,16 @@ public class IMCHandler
 
         InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
                 .filter(msg -> msg.getMessageSupplier().get() instanceof CustomEMCRegistration)
-                .map(msg -> (CustomEMCRegistration) msg.getMessageSupplier().get())
-                .forEach(r -> APICustomEMCMapper.instance.registerCustomEMC("unknown", r.getThing(), r.getValue()));
-        // todo 1.13 can we get sender?
+                .forEach(msg -> {
+                    CustomEMCRegistration registration = (CustomEMCRegistration) msg.getMessageSupplier().get();
+                    APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), registration.getThing(), registration.getValue());
+                });
 
         InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_CONVERSION::equals)
                 .filter(msg -> msg.getMessageSupplier().get() instanceof CustomConversionRegistration)
-                .map(msg -> (CustomConversionRegistration) msg.getMessageSupplier().get())
-                .forEach(r -> APICustomConversionMapper.instance.addConversion("unknown", r.getAmount(), r.getOutput(), r.getInput()));
-        // todo 1.13 can we get sender?
+                .forEach(msg -> {
+                    CustomConversionRegistration registration = (CustomConversionRegistration) msg.getMessageSupplier().get();
+                    APICustomConversionMapper.instance.addConversion(msg.getSenderModId(), registration.getAmount(), registration.getOutput(), registration.getInput());
+                });
     }
 }

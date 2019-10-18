@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: 1.14, should we care about tag type, as if there is the same resource location for a fluid and item tag there will be issues
 public class NSSTag implements NormalizedSimpleStack {
 	static final Map<String, NSSTag> tagStacks = new HashMap<>();
 

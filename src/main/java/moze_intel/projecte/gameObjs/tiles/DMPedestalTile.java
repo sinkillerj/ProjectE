@@ -98,11 +98,11 @@ public class DMPedestalTile extends TileEmc
 			int j = rand.nextInt(2) * 2 - 1;
 			int k = rand.nextInt(2) * 2 - 1;
 			double d0 = (double)pos.getX() + 0.5D + 0.25D * (double)j;
-			double d1 = (double)((float)pos.getY() + rand.nextFloat());
+			double d1 = (float)pos.getY() + rand.nextFloat();
 			double d2 = (double)pos.getZ() + 0.5D + 0.25D * (double)k;
-			double d3 = (double)(rand.nextFloat() * (float)j);
+			double d3 = rand.nextFloat() * (float)j;
 			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
-			double d5 = (double)(rand.nextFloat() * (float)k);
+			double d5 = rand.nextFloat() * (float)k;
 			world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}

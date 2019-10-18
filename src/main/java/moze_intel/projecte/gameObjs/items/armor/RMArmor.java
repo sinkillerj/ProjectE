@@ -2,53 +2,32 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 // todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
 public class RMArmor extends ArmorItem
 {
 	public RMArmor(EquipmentSlotType armorType, Properties props)
 	{
-		// todo 1.13 custom matreial?
-		super(ArmorMaterial.DIAMOND, armorType, props);
-	}
-	
-	/*@Override todo 1.13
-	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
-	{
-		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorType;
-		if (source.isExplosion())
-		{
-			return new ArmorProperties(1, 1.0D, 500);
-		}
-
-		if (type == EntityEquipmentSlot.HEAD && source == DamageSource.FALL)
-		{
-			return new ArmorProperties(1, 1.0D, 10);
-		}
-		
-		if (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET)
-		{
-			return new ArmorProperties(0, 0.2D, 250);
-		}
-		
-		return new ArmorProperties(0, 0.3D, 350);
+		super(RMArmorMaterial.INSTANCE, armorType, props);
 	}
 
 	@Override
-	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
-	{
-		EntityEquipmentSlot type = ((RMArmor) armor.getItem()).armorType;
-		return (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET) ? 4 : 6;
+	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+		return 0;
 	}
-
-	@Override
-	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -72,4 +51,59 @@ public class RMArmor extends ArmorItem
 	{
 		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
 	}*/
+
+	private static class RMArmorMaterial implements IArmorMaterial {
+
+		private static final RMArmorMaterial INSTANCE = new RMArmorMaterial();
+
+		@Override
+		public int getDurability(@Nonnull EquipmentSlotType slot) {
+			return 0;
+		}
+
+		@Override
+		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
+			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
+			if (slot == EquipmentSlotType.FEET) {
+				return 3;
+			} else if (slot == EquipmentSlotType.LEGS) {
+				return 6;
+			} else if (slot == EquipmentSlotType.CHEST) {
+				return 8;
+			} else if (slot == EquipmentSlotType.HEAD) {
+				return 3;
+			}
+			return 0;
+		}
+
+		@Override
+		public int getEnchantability() {
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public SoundEvent getSoundEvent() {
+			return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+		}
+
+		@Nonnull
+		@Override
+		public Ingredient getRepairMaterial() {
+			return Ingredient.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public String getName() {
+			return "red_matter";
+		}
+
+		@Override
+		public float getToughness() {
+			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
+			return 2;
+		}
+	}
 }

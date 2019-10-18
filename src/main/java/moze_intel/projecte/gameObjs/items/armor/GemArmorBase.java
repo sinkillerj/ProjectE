@@ -2,20 +2,26 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 public abstract class GemArmorBase extends ArmorItem
 {
 	public GemArmorBase(EquipmentSlotType armorType, Properties props)
 	{
-		// todo 1.13 custom material?
-		super(ArmorMaterial.DIAMOND, armorType, props);
+		super(GemArmorMaterial.INSTANCE, armorType, props);
 	}
 
 	public static boolean hasAnyPiece(PlayerEntity player)
@@ -41,38 +47,11 @@ public abstract class GemArmorBase extends ArmorItem
 		}
 		return true;
 	}
-/* todo 1.13
+
 	@Override
-	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
-	{
-		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorType;
-		if (source.isExplosion())
-		{
-			return new ArmorProperties(1, 1.0D, 750);
-		}
-
-		if (type == EntityEquipmentSlot.FEET && source == DamageSource.FALL)
-		{
-			return new ArmorProperties(1, 1.0D, 15);
-		}
-
-		if (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET)
-		{
-			return new ArmorProperties(0, 0.2D, 400);
-		}
-
-		return new ArmorProperties(0, 0.3D, 500);
+	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+		return 0;
 	}
-
-	@Override
-	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
-	{
-		EntityEquipmentSlot type = ((GemArmorBase) armor.getItem()).armorType;
-		return (type == EntityEquipmentSlot.HEAD || type == EntityEquipmentSlot.FEET) ? 4 : 6;
-	}
-
-	@Override
-	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -80,5 +59,60 @@ public abstract class GemArmorBase extends ArmorItem
 	{
 		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/gem_" + index + ".png";
+	}
+
+	private static class GemArmorMaterial implements IArmorMaterial {
+
+		private static final GemArmorMaterial INSTANCE = new GemArmorMaterial();
+
+		@Override
+		public int getDurability(@Nonnull EquipmentSlotType slot) {
+			return 0;
+		}
+
+		@Override
+		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
+			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
+			if (slot == EquipmentSlotType.FEET) {
+				return 3;
+			} else if (slot == EquipmentSlotType.LEGS) {
+				return 6;
+			} else if (slot == EquipmentSlotType.CHEST) {
+				return 8;
+			} else if (slot == EquipmentSlotType.HEAD) {
+				return 3;
+			}
+			return 0;
+		}
+
+		@Override
+		public int getEnchantability() {
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public SoundEvent getSoundEvent() {
+			return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+		}
+
+		@Nonnull
+		@Override
+		public Ingredient getRepairMaterial() {
+			return Ingredient.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public String getName() {
+			return "gem_armor";
+		}
+
+		@Override
+		public float getToughness() {
+			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
+			return 2;
+		}
 	}
 }

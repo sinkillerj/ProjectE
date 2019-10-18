@@ -47,7 +47,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 		{
 			if (getXP(player) > 0)
 			{
-				int toAdd = getXP(player) >= TRANSFER_RATE ? TRANSFER_RATE : getXP(player);
+				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 				addStoredXP(stack, toAdd);
 				removeXP(player, TRANSFER_RATE);
 			}

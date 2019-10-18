@@ -57,13 +57,13 @@ public class NovaExplosion extends Explosion
 				BlockState blockstate = this.world.getBlockState(blockpos);
 				Block block = blockstate.getBlock();
 				if (spawnParticles) {
-					double d0 = (double)((float)blockpos.getX() + this.world.rand.nextFloat());
-					double d1 = (double)((float)blockpos.getY() + this.world.rand.nextFloat());
-					double d2 = (double)((float)blockpos.getZ() + this.world.rand.nextFloat());
+					double d0 = (float)blockpos.getX() + this.world.rand.nextFloat();
+					double d1 = (float)blockpos.getY() + this.world.rand.nextFloat();
+					double d2 = (float)blockpos.getZ() + this.world.rand.nextFloat();
 					double d3 = d0 - this.x;
 					double d4 = d1 - this.y;
 					double d5 = d2 - this.z;
-					double d6 = (double)MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
+					double d6 = MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
 					d3 = d3 / d6;
 					d4 = d4 / d6;
 					d5 = d5 / d6;
