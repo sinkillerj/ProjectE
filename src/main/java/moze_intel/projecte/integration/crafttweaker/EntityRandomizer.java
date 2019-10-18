@@ -1,86 +1,84 @@
-/* todo 1.13
 package moze_intel.projecte.integration.crafttweaker;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.entity.IEntityDefinition;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.impl.entity.MCEntityType;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenClass("mods.projecte.EntityRandomizer")
+@ZenCodeType.Name("mods.projecte.EntityRandomizer")
 public class EntityRandomizer
 {
-	@ZenMethod
-	public static void addPeaceful(IEntityDefinition entityDefinition)
+	@ZenCodeType.Method
+	public static void addPeaceful(MCEntityType entityType)
 	{
-		Class<? extends EntityLiving> living = getLiving(entityDefinition);
-		if (isLiving(living)) {
-			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityDefinition.getName(), true));
+		EntityType<? extends MobEntity> living = getMob(entityType);
+		if (isMob(living)) {
+			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityType.getName(), true));
 		}
 	}
 
-	@ZenMethod
-	public static void removePeaceful(IEntityDefinition entityDefinition)
+	@ZenCodeType.Method
+	public static void removePeaceful(MCEntityType entityType)
 	{
-		Class<? extends EntityLiving> living = getLiving(entityDefinition);
-		if (isLiving(living)) {
-			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityDefinition.getName(), true));
+		EntityType<? extends MobEntity> living = getMob(entityType);
+		if (isMob(living)) {
+			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityType.getName(), true));
 		}
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
 	public static void clearPeacefuls()
 	{
 		CraftTweakerAPI.apply(new EntityRandomizerAction.Clear(true));
 	}
 
-	@ZenMethod
-	public static void addMob(IEntityDefinition entityDefinition)
+	@ZenCodeType.Method
+	public static void addMob(MCEntityType entityType)
 	{
-		Class<? extends EntityLiving> living = getLiving(entityDefinition);
-		if (isLiving(living)) {
-			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityDefinition.getName(), false));
+		EntityType<? extends MobEntity> living = getMob(entityType);
+		if (isMob(living)) {
+			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityType.getName(), false));
 		}
 	}
 
-	@ZenMethod
-	public static void removeMob(IEntityDefinition entityDefinition)
+	@ZenCodeType.Method
+	public static void removeMob(MCEntityType entityType)
 	{
-		Class<? extends EntityLiving> living = getLiving(entityDefinition);
-		if (isLiving(living)) {
-			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityDefinition.getName(), false));
+		EntityType<? extends MobEntity> living = getMob(entityType);
+		if (isMob(living)) {
+			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityType.getName(), false));
 		}
 	}
 
-	@ZenMethod
+	@ZenCodeType.Method
 	public static void clearMobs()
 	{
 		CraftTweakerAPI.apply(new EntityRandomizerAction.Clear(false));
 	}
 
-	private static Class<? extends EntityLiving> getLiving(IEntityDefinition entityDefinition) {
-		if (entityDefinition == null) {
+	private static EntityType<? extends MobEntity> getMob(MCEntityType entityType) {
+		if (entityType == null) {
 			return null;
 		}
-		EntityEntry entry = (EntityEntry) entityDefinition.getInternal();
-		Class<? extends Entity> entityClass = entry.getEntityClass();
-		if (EntityLiving.class.isAssignableFrom(entityClass)) {
-			return (Class<? extends EntityLiving>) entityClass;
+		EntityType<?> internal = entityType.getInternal();
+		try {
+			//TODO: 1.14, Figure out a better method to check that this is a mob, as I am not sure this will even work
+			EntityType<? extends MobEntity> mobEntity = (EntityType<? extends MobEntity>) internal;
+			return mobEntity;
+		} catch (Exception ignored) {
 		}
 		return null;
 	}
 
-	private static boolean isLiving(Class<? extends EntityLiving> living) {
+	private static boolean isMob(EntityType<? extends MobEntity> living) {
 		if (living == null)
 		{
-			CraftTweakerAPI.logError("IEntityDefinition must be of a living entity.");
+			CraftTweakerAPI.logError("MCEntityType must be of a valid mob entity.");
 			return false;
 		}
 		return true;
 	}
 }
-*/

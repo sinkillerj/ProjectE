@@ -1,31 +1,33 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
-import static org.junit.Assert.*;
-
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
-
 import net.minecraft.util.ResourceLocation;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.List;
 
-public class CustomConversionMapperTest
+@DisplayName("Test Custom Conversion Mappers")
+class CustomConversionMapperTest
 {
 	@Test
-	public void testCommentOnlyCustomConversionFileJson() {
+	@DisplayName("Test conversion file that only contains a comment")
+	void testCommentOnlyCustomConversionFileJson() {
 		String simpleFile = "{'comment':'A very simple Example'}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
-		assertNotNull(f);
-		assertEquals("A very simple Example", f.comment);
+		Assertions.assertNotNull(f);
+		Assertions.assertEquals("A very simple Example", f.comment);
 	}
 
 	@Test
-	public void testSingleEmptyGroupConversionFileJson() {
+	@DisplayName("Test conversion file with empty group")
+	void testSingleEmptyGroupConversionFileJson() {
 		String simpleFile =
 				"{'groups': {" +
 						"	'groupa': {" +
@@ -37,17 +39,18 @@ public class CustomConversionMapperTest
 					"}";
 
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
-		assertNotNull(f);
-		assertEquals(1, f.groups.size());
-		assertTrue("Map contains key for group", f.groups.containsKey("groupa"));
+		Assertions.assertNotNull(f);
+		Assertions.assertEquals(1, f.groups.size());
+		Assertions.assertTrue(f.groups.containsKey("groupa"), "Map contains key for group");
 		ConversionGroup group = f.groups.get("groupa");
-		assertNotNull(group);
-		assertEquals("Group contains specific comment", group.comment, "A conversion group for something");
-		assertEquals(0, group.conversions.size());
+		Assertions.assertNotNull(group);
+		Assertions.assertEquals(group.comment, "A conversion group for something", "Group contains specific comment");
+		Assertions.assertEquals(0, group.conversions.size());
 	}
 
 	@Test
-	public void testSimpleConversionFileJson() {
+	@DisplayName("Test simple conversion file")
+	void testSimpleConversionFileJson() {
 		String simpleFile =
 				"{'groups': {" +
 						"	'groupa': {" +
@@ -61,43 +64,43 @@ public class CustomConversionMapperTest
 					"}";
 
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
-		assertNotNull(f);
-		assertEquals(1, f.groups.size());
-		assertTrue("Map contains key for group", f.groups.containsKey("groupa"));
+		Assertions.assertNotNull(f);
+		Assertions.assertEquals(1, f.groups.size());
+		Assertions.assertTrue(f.groups.containsKey("groupa"), "Map contains key for group");
 		ConversionGroup group = f.groups.get("groupa");
-		assertNotNull(group);
-		assertEquals(3, group.conversions.size());
+		Assertions.assertNotNull(group);
+		Assertions.assertEquals(3, group.conversions.size());
 		List<CustomConversion> conversions = group.conversions;
 		{
 			CustomConversion conversion = conversions.get(0);
-            assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
-			assertEquals(1, conversion.count);
-			assertEquals(3, conversion.ingredients.size());
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-            assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-            assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
+			Assertions.assertEquals(1, conversion.count);
+			Assertions.assertEquals(3, conversion.ingredients.size());
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+			Assertions.assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+			Assertions.assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(1);
-            assertEquals(new NSSItem(new ResourceLocation("out_b")), conversion.output);
-			assertEquals(1, conversion.count);
-			assertEquals(3, conversion.ingredients.size());
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-            assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_b")), conversion.output);
+			Assertions.assertEquals(1, conversion.count);
+			Assertions.assertEquals(3, conversion.ingredients.size());
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(2);
-            assertEquals(new NSSItem(new ResourceLocation("out_c")), conversion.output);
-			assertEquals(3, conversion.count);
-			assertEquals(1, conversion.ingredients.size());
-            assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-
+			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_c")), conversion.output);
+			Assertions.assertEquals(3, conversion.count);
+			Assertions.assertEquals(1, conversion.ingredients.size());
+			Assertions.assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
 		}
 	}
 
 	@Test
-	public void testSetValueConversionFileJson()
+	@DisplayName("Test conversion file setting value")
+	void testSetValueConversionFileJson()
 	{
 		String simpleFile =
 				"{'values': {" +
@@ -110,16 +113,17 @@ public class CustomConversionMapperTest
 						"}" +
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
-		assertNotNull(f.values);
-        assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("a"))).longValue());
-        assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("b"))).longValue());
-        assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("c"))).longValue());
-        assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation("d"))).longValue());
+		Assertions.assertNotNull(f.values);
+		Assertions.assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("a"))).longValue());
+		Assertions.assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("b"))).longValue());
+		Assertions.assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("c"))).longValue());
+		Assertions.assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation("d"))).longValue());
 
 	}
 
 	@Test
-	public void testSetValueFromConversion()
+	@DisplayName("Test set value from conversion")
+	void testSetValueFromConversion()
 	{
 		String simpleFile =
 				"{'values': {" +
@@ -129,20 +133,21 @@ public class CustomConversionMapperTest
 						"}" +
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
-		assertNotNull(f.values);
-		assertNotNull(f.values.conversion);
-		assertEquals(1, f.values.conversion.size());
+		Assertions.assertNotNull(f.values);
+		Assertions.assertNotNull(f.values.conversion);
+		Assertions.assertEquals(1, f.values.conversion.size());
 		CustomConversion conversion = f.values.conversion.get(0);
-        assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
-		assertEquals(1, conversion.count);
-		assertEquals(3, conversion.ingredients.size());
-        assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-        assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-        assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+		Assertions.assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
+		Assertions.assertEquals(1, conversion.count);
+		Assertions.assertEquals(3, conversion.ingredients.size());
+		Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+		Assertions.assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
+		Assertions.assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
 	}
 
 	@Test
-	public void testNonInteferingFakes() {
+	@DisplayName("Test to make sure FAKE values in conversions don't break things")
+	void testNonInterferingFakes() {
 		String file1 = "{ 'values': { 'conversion': [{ 'output':'FAKE|FOO', 'ingredients': ['FAKE|BAR'] }] }  }";
 
 		NSSFake.setCurrentNamespace("file1");
@@ -151,20 +156,20 @@ public class CustomConversionMapperTest
 		NSSFake.setCurrentNamespace("file2");
 		CustomConversionFile f3 = CustomConversionMapper.parseJson(new StringReader(file1));
 
-		assertNotNull(f1);
-		assertNotNull(f2);
-		assertNotNull(f3);
+		Assertions.assertNotNull(f1);
+		Assertions.assertNotNull(f2);
+		Assertions.assertNotNull(f3);
 
 		CustomConversion conversion1 = f1.values.conversion.get(0);
 		CustomConversion conversion2 = f2.values.conversion.get(0);
 		CustomConversion conversion3 = f3.values.conversion.get(0);
 
-		assertNotNull(conversion1);
-		assertNotNull(conversion2);
-		assertNotNull(conversion3);
+		Assertions.assertNotNull(conversion1);
+		Assertions.assertNotNull(conversion2);
+		Assertions.assertNotNull(conversion3);
 
-		assertEquals(conversion1.output, conversion2.output);
-		assertNotEquals(conversion1.output, conversion3.output);
-		assertNotEquals(conversion2.output, conversion3.output);
+		Assertions.assertEquals(conversion1.output, conversion2.output);
+		Assertions.assertNotEquals(conversion1.output, conversion3.output);
+		Assertions.assertNotEquals(conversion2.output, conversion3.output);
 	}
 }

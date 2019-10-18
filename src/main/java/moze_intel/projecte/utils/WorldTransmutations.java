@@ -10,11 +10,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.InterModComms;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//TODO: 1.14 decide if World Transmutations should support tags
 public final class WorldTransmutations
 {
+	private static List<WorldTransmutationEntry> DEFAULT_ENTRIES = Collections.emptyList();
 	private static List<WorldTransmutationEntry> ENTRIES = Collections.emptyList();
 
 	public static void init()
@@ -92,7 +96,19 @@ public final class WorldTransmutations
 
 	public static void setWorldTransmutation(List<WorldTransmutationEntry> entries)
 	{
-		ENTRIES = ImmutableList.copyOf(entries);
+		DEFAULT_ENTRIES = ImmutableList.copyOf(entries);
+		resetWorldTransmutations();
+	}
+
+	public static void resetWorldTransmutations()
+	{
+		//Make it so that ENTRIES are mutable so we can modify it with CraftTweaker
+		ENTRIES = new ArrayList<>(DEFAULT_ENTRIES);
+	}
+
+	public static void register(BlockState from, BlockState result, @Nullable BlockState altResult)
+	{
+		ENTRIES.add(new WorldTransmutationEntry(from, result, altResult));
 	}
 
 	private static void registerDefault(Block from, Block result, Block altResult)

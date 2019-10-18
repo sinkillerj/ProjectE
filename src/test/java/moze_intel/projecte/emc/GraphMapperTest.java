@@ -1,24 +1,30 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
+import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
 import org.apache.commons.math3.fraction.BigFraction;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 //@RunWith(value = Parameterized.class)
-public class GraphMapperTest {
+@Timeout(3000)
+@DisplayName("Test graph mapper")
+class GraphMapperTest {
 
-/*	@Parameterized.Parameters
+	/*@Parameterized.Parameters
 	public static Collection  parameters() {
 		Object[][] data = new Object[][] { { new ComplexGraphMapper<String, Integer>(new IntArithmetic())  }};
 		return Arrays.asList(data);
@@ -27,34 +33,35 @@ public class GraphMapperTest {
 	public GraphMapperTest(GraphMapper<String, Integer> mappingCollector) {
 		this.mappingCollector = mappingCollector;
 	}*/
-	@Before
-	public void setup() {
+
+	@BeforeEach
+	void setup() {
 		//mappingCollector = new SimpleGraphMapper<String, Integer>(new IntArithmetic());
 		SimpleGraphMapper<String, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		mappingCollector = new LongToBigFractionCollector<>(mapper);
 	}
 
-	@Rule
-	public Timeout timeout = new Timeout(3000);
 	private IValueGenerator<String, Long> valueGenerator;
 	private IExtendedMappingCollector<String, Long, IValueArithmetic<BigFraction>> mappingCollector;
 
-	@org.junit.Test
-	public void testGenerateValuesSimple() throws Exception {
+	@Test
+	@DisplayName("Test generating simple values")
+	void testGenerateValuesSimple() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(4, getValue(values, "c4"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(4, getValue(values, "c4"));
 
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleMultiRecipe() throws Exception {
+	@Test
+	@DisplayName("Test generating simple values from multiple recipes")
+	void testGenerateValuesSimpleMultiRecipe() {
 		mappingCollector.setValueBefore("a1", 1L);
 		//2 Recipes for c4
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
@@ -62,13 +69,14 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(2, getValue(values, "c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(2, getValue(values, "c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleMultiRecipeWithEmptyAlternative() throws Exception {
+	@Test
+	@DisplayName("Test generating simple values from multiple recipes, with an empty alternate")
+	void testGenerateValuesSimpleMultiRecipeWithEmptyAlternative() {
 		mappingCollector.setValueBefore("a1", 1L);
 		//2 Recipes for c4
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
@@ -76,26 +84,28 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(4, getValue(values, "c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(4, getValue(values, "c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleFixedAfterInherit() throws Exception {
+	@Test
+	@DisplayName("Test generating and fixing simple values after inheriting")
+	void testGenerateValuesSimpleFixedAfterInherit() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "c4", Arrays.asList("a1", "a1", "a1", "a1"));
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		mappingCollector.setValueAfter("b2", 20L);
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(20, getValue(values, "b2"));
-		assertEquals(4, getValue(values, "c4"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(20, getValue(values, "b2"));
+		Assertions.assertEquals(4, getValue(values, "c4"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleFixedDoNotInherit() throws Exception {
+	@Test
+	@DisplayName("Test generating and fixing simple values without inheriting")
+	void testGenerateValuesSimpleFixedDoNotInherit() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		mappingCollector.addConversion(1, "c4", Arrays.asList("b2", "b2"));
@@ -103,13 +113,14 @@ public class GraphMapperTest {
 		mappingCollector.setValueAfter("b2", 20L);
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(20, getValue(values, "b2"));
-		assertEquals(0, getValue(values, "c4"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(20, getValue(values, "b2"));
+		Assertions.assertEquals(0, getValue(values, "c4"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() throws Exception
+	@Test
+	@DisplayName("Test generating and fixing simple values multiple recipes without inheriting")
+	void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a1", "a1"));
@@ -118,13 +129,14 @@ public class GraphMapperTest {
 		mappingCollector.setValueAfter("b", 20L);
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(20, getValue(values, "b"));
-		assertEquals(2, getValue(values, "c"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(20, getValue(values, "b"));
+		Assertions.assertEquals(2, getValue(values, "c"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleSelectMinValue() throws Exception
+	@Test
+	@DisplayName("Test generating simple values with a given min value")
+	void testGenerateValuesSimpleSelectMinValue()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.setValueBefore("b2", 2L);
@@ -132,13 +144,14 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "c", Arrays.asList("b2", "b2"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(2, getValue(values, "c"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(2, getValue(values, "c"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleSelectMinValueWithDependency() throws Exception
+	@Test
+	@DisplayName("Test generating simple values with a given min value, with dependency")
+	void testGenerateValuesSimpleSelectMinValueWithDependency()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.setValueBefore("b2", 2L);
@@ -147,27 +160,29 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "d", Arrays.asList("c", "c"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(2, getValue(values, "c"));
-		assertEquals(4, getValue(values, "d"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(2, getValue(values, "c"));
+		Assertions.assertEquals(4, getValue(values, "d"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesSimpleWoodToWorkBench() throws Exception
+	@Test
+	@DisplayName("Test generating EMC values for a crafting table")
+	void testGenerateValuesSimpleWoodToWorkBench()
 	{
 		mappingCollector.setValueBefore("planks", 1L);
 		mappingCollector.addConversion(4, "planks", Collections.singletonList("wood"));
 		mappingCollector.addConversion(1, "workbench", Arrays.asList("planks", "planks", "planks", "planks"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(0, getValue(values, "wood"));
-		assertEquals(1, getValue(values, "planks"));
-		assertEquals(4, getValue(values, "workbench"));
+		Assertions.assertEquals(0, getValue(values, "wood"));
+		Assertions.assertEquals(1, getValue(values, "planks"));
+		Assertions.assertEquals(4, getValue(values, "workbench"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesWood() throws Exception {
+	@Test
+	@DisplayName("Test generating EMC values for wood")
+	void testGenerateValuesWood() {
 		for (char i : "ABCD".toCharArray())
 		{
 			mappingCollector.setValueBefore("wood" + i, 32L);
@@ -188,30 +203,32 @@ public class GraphMapperTest {
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		for (char i : "ABCD".toCharArray())
-			assertEquals(32, getValue(values, "wood" + i));
+			Assertions.assertEquals(32, getValue(values, "wood" + i));
 		for (char i : "ABCD".toCharArray())
-			assertEquals(8, getValue(values, "planks" + i));
-		assertEquals(4, getValue(values, "stick"));
-		assertEquals(32, getValue(values, "crafting_table"));
-		assertEquals(24, getValue(values, "wooden_hoe"));
+			Assertions.assertEquals(8, getValue(values, "planks" + i));
+		Assertions.assertEquals(4, getValue(values, "stick"));
+		Assertions.assertEquals(32, getValue(values, "crafting_table"));
+		Assertions.assertEquals(24, getValue(values, "wooden_hoe"));
 
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesDeepConversions() throws Exception
+	@Test
+	@DisplayName("Test generating values with deep conversion")
+	void testGenerateValuesDeepConversions()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b1", Collections.singletonList("a1"));
 		mappingCollector.addConversion(1, "c1", Collections.singletonList("b1"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(1, getValue(values, "b1"));
-		assertEquals(1, getValue(values, "c1"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(1, getValue(values, "b1"));
+		Assertions.assertEquals(1, getValue(values, "c1"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesDeepInvalidConversion() throws Exception
+	@Test
+	@DisplayName("Test generating values with deep invalid conversion")
+	void testGenerateValuesDeepInvalidConversion()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b", Arrays.asList("a1", "invalid1"));
@@ -220,15 +237,16 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(0, getValue(values, "b"));
-		assertEquals(0, getValue(values, "invalid1"));
-		assertEquals(0, getValue(values, "invalid2"));
-		assertEquals(0, getValue(values, "invalid3"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(0, getValue(values, "b"));
+		Assertions.assertEquals(0, getValue(values, "invalid1"));
+		Assertions.assertEquals(0, getValue(values, "invalid2"));
+		Assertions.assertEquals(0, getValue(values, "invalid3"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesMultiRecipeDeepInvalid() throws Exception
+	@Test
+	@DisplayName("Test generating values from multiple deep recipes with invalid conversion")
+	void testGenerateValuesMultiRecipeDeepInvalid()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
@@ -237,14 +255,15 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(0, getValue(values, "invalid1"));
-		assertEquals(0, getValue(values, "invalid2"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(0, getValue(values, "invalid1"));
+		Assertions.assertEquals(0, getValue(values, "invalid2"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesMultiRecipesInvalidIngredient() throws Exception
+	@Test
+	@DisplayName("Test generating values from multiple deep recipes with invalid ingredient")
+	void testGenerateValuesMultiRecipesInvalidIngredient()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
@@ -252,13 +271,14 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(2, getValue(values, "b2"));
-		assertEquals(0, getValue(values, "invalid"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(2, getValue(values, "b2"));
+		Assertions.assertEquals(0, getValue(values, "invalid"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesCycleRecipe() throws Exception
+	@Test
+	@DisplayName("Test generating values from recipes that have a cycle")
+	void testGenerateValuesCycleRecipe()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
@@ -267,13 +287,14 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(1, getValue(values, "cycle-1"));
-		assertEquals(1, getValue(values, "cycle-2"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(1, getValue(values, "cycle-1"));
+		Assertions.assertEquals(1, getValue(values, "cycle-2"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesBigCycleRecipe() throws Exception
+	@Test
+	@DisplayName("Test generating values from recipes that have a large cycle")
+	void testGenerateValuesBigCycleRecipe()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
@@ -285,16 +306,17 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(1, getValue(values, "cycle-1"));
-		assertEquals(1, getValue(values, "cycle-2"));
-		assertEquals(1, getValue(values, "cycle-3"));
-		assertEquals(1, getValue(values, "cycle-4"));
-		assertEquals(1, getValue(values, "cycle-5"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(1, getValue(values, "cycle-1"));
+		Assertions.assertEquals(1, getValue(values, "cycle-2"));
+		Assertions.assertEquals(1, getValue(values, "cycle-3"));
+		Assertions.assertEquals(1, getValue(values, "cycle-4"));
+		Assertions.assertEquals(1, getValue(values, "cycle-5"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesFuelAndMatter() throws Exception {
+	@Test
+	@DisplayName("Test generating EMC values for fuels and matter")
+	void testGenerateValuesFuelAndMatter() {
 		final String coal = "coal";
 		final String aCoal = "alchemicalCoal";
 		final String aCoalBlock = "alchemicalCoalBlock";
@@ -339,22 +361,23 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(128, getValue(values, coal));
-		assertEquals(512, getValue(values, aCoal));
-		assertEquals(4608, getValue(values, aCoalBlock));
-		assertEquals(2048, getValue(values, mFuel));
-		assertEquals(18432, getValue(values, mFuelBlock));
-		assertEquals(8192, getValue(values, aFuel));
-		assertEquals(73728, getValue(values, aFuelBlock));
-		assertEquals(73728, getValue(values, "diamondBlock"));
-		assertEquals(139264, getValue(values, dMatter));
-		assertEquals(139264, getValue(values, dMatterBlock));
-		assertEquals(466944, getValue(values, rMatter));
-		assertEquals(466944, getValue(values, rMatterBlock));
+		Assertions.assertEquals(128, getValue(values, coal));
+		Assertions.assertEquals(512, getValue(values, aCoal));
+		Assertions.assertEquals(4608, getValue(values, aCoalBlock));
+		Assertions.assertEquals(2048, getValue(values, mFuel));
+		Assertions.assertEquals(18432, getValue(values, mFuelBlock));
+		Assertions.assertEquals(8192, getValue(values, aFuel));
+		Assertions.assertEquals(73728, getValue(values, aFuelBlock));
+		Assertions.assertEquals(73728, getValue(values, "diamondBlock"));
+		Assertions.assertEquals(139264, getValue(values, dMatter));
+		Assertions.assertEquals(139264, getValue(values, dMatterBlock));
+		Assertions.assertEquals(466944, getValue(values, rMatter));
+		Assertions.assertEquals(466944, getValue(values, rMatterBlock));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesWool() throws Exception {
+	@Test
+	@DisplayName("Test generating EMC values for things made from wools")
+	void testGenerateValuesWool() {
 		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
 		final int[] dyeValue = new int[]{864, 176, 48, 16};
 		for (int i = 0; i < dyes.length; i++)
@@ -375,25 +398,26 @@ public class GraphMapperTest {
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		for (int i = 0; i < dyes.length; i++) {
-			assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
+			Assertions.assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
 		}
-		assertEquals(12, getValue(values, "string"));
-		assertEquals(48, getValue(values, "woolWhite"));
-		assertEquals(224, getValue(values, "woolBrown"));
-		assertEquals(912, getValue(values, "woolBlue"));
-		assertEquals(64, getValue(values, "woolOther"));
+		Assertions.assertEquals(12, getValue(values, "string"));
+		Assertions.assertEquals(48, getValue(values, "woolWhite"));
+		Assertions.assertEquals(224, getValue(values, "woolBrown"));
+		Assertions.assertEquals(912, getValue(values, "woolBlue"));
+		Assertions.assertEquals(64, getValue(values, "woolOther"));
 
-		assertEquals(32, getValue(values, "carpetWhite"));
-		assertEquals(149, getValue(values, "carpetBrown"));
-		assertEquals(608, getValue(values, "carpetBlue"));
-		assertEquals(42, getValue(values, "carpetOther"));
+		Assertions.assertEquals(32, getValue(values, "carpetWhite"));
+		Assertions.assertEquals(149, getValue(values, "carpetBrown"));
+		Assertions.assertEquals(608, getValue(values, "carpetBlue"));
+		Assertions.assertEquals(42, getValue(values, "carpetOther"));
 
-		assertEquals(168, getValue(values, "bed"));
-		assertEquals(80, getValue(values, "painting"));
+		Assertions.assertEquals(168, getValue(values, "bed"));
+		Assertions.assertEquals(80, getValue(values, "painting"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesBucketRecipe() throws Exception
+	@Test
+	@DisplayName("Test generating values for arbitrary bucket")
+	void testGenerateValuesBucketRecipe()
 	{
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
@@ -408,16 +432,17 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "fluidCraft", map);
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(9, getValue(values, "somethingElse"));
-		assertEquals(23, getValue(values, "container"));
-		assertEquals(17, getValue(values, "fluid"));
-		assertEquals(17 + 23, getValue(values, "filledContainer"));
-		assertEquals(17 + 2 * 9, getValue(values, "fluidCraft"));
+		Assertions.assertEquals(9, getValue(values, "somethingElse"));
+		Assertions.assertEquals(23, getValue(values, "container"));
+		Assertions.assertEquals(17, getValue(values, "fluid"));
+		Assertions.assertEquals(17 + 23, getValue(values, "filledContainer"));
+		Assertions.assertEquals(17 + 2 * 9, getValue(values, "fluidCraft"));
 
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesWaterBucketRecipe() throws Exception
+	@Test
+	@DisplayName("Test generating EMC value for water bucket")
+	void testGenerateValuesWaterBucketRecipe()
 	{
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
@@ -432,69 +457,73 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "fluidCraft", map);
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(9, getValue(values, "somethingElse"));
-		assertEquals(23, getValue(values, "container"));
-		assertEquals(0, getValue(values, "fluid"));
-		assertEquals(23, getValue(values, "filledContainer"));
-		assertEquals(2 * 9, getValue(values, "fluidCraft"));
+		Assertions.assertEquals(9, getValue(values, "somethingElse"));
+		Assertions.assertEquals(23, getValue(values, "container"));
+		Assertions.assertEquals(0, getValue(values, "fluid"));
+		Assertions.assertEquals(23, getValue(values, "filledContainer"));
+		Assertions.assertEquals(2 * 9, getValue(values, "fluidCraft"));
 
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesCycleRecipeExploit() throws Exception
+	@Test
+	@DisplayName("Test generating EMC from cyclic recipes with exploits")
+	void testGenerateValuesCycleRecipeExploit()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
-		//Exploitable Cycle Recype
+		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "exploitable", Collections.singletonList("exploitable"));
 
-		//Not-exploitable Cycle Recype
+		//Not-exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "notExploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(0, getValue(values, "exploitable"));
-		assertEquals(1, getValue(values, "notExploitable"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(0, getValue(values, "exploitable"));
+		Assertions.assertEquals(1, getValue(values, "notExploitable"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesDelayedCycleRecipeExploit() throws Exception
+	@Test
+	@DisplayName("Test generating EMC from cyclic recipes with delayed exploit")
+	void testGenerateValuesDelayedCycleRecipeExploit()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
-		//Exploitable Cycle Recype
+		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable1", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "exploitable2", Collections.singletonList("exploitable1"));
 		mappingCollector.addConversion(1, "exploitable1", Collections.singletonList("exploitable2"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(0, getValue(values, "exploitable1"));
-		assertEquals(0, getValue(values, "exploitable2"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(0, getValue(values, "exploitable1"));
+		Assertions.assertEquals(0, getValue(values, "exploitable2"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesCycleRecipeExploit2() throws Exception
+	@Test
+	@DisplayName("Test generating EMC from cyclic recipes with exploits 2")
+	void testGenerateValuesCycleRecipeExploit2()
 	{
 		mappingCollector.setValueBefore("a1", 1L);
-		//Exploitable Cycle Recype
+		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "exploitable", Collections.singletonList("exploitable"));
 		mappingCollector.addConversion(1, "b", Collections.singletonList("exploitable"));
 
-		//Not-exploitable Cycle Recype
+		//Not-exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "notExploitable", Collections.singletonList("a1"));
 		mappingCollector.addConversion(2, "notExploitable", Arrays.asList("notExploitable", "notExploitable"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a1"));
-		assertEquals(0, getValue(values, "exploitable"));
-		assertEquals(1, getValue(values, "notExploitable"));
-		assertEquals(0, getValue(values, "b"));
+		Assertions.assertEquals(1, getValue(values, "a1"));
+		Assertions.assertEquals(0, getValue(values, "exploitable"));
+		Assertions.assertEquals(1, getValue(values, "notExploitable"));
+		Assertions.assertEquals(0, getValue(values, "b"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesCoalToFireChargeWithWildcard() throws Exception {
+	@Test
+	@DisplayName("Test generating EMC for coal to fire charge with wildcard")
+	void testGenerateValuesCoalToFireChargeWithWildcard() {
 		String[] logTypes = new String[]{"logA", "logB", "logC"};
 		String[] log2Types = new String[]{"log2A", "log2B", "log2C"};
 		String[] coalTypes = new String[]{"coal0", "coal1"};
@@ -550,17 +579,18 @@ public class GraphMapperTest {
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		for (String logType : logTypes) {
-			assertEquals(32, getValue(values, logType));
+			Assertions.assertEquals(32, getValue(values, logType));
 		}
-		assertEquals(32, getValue(values, "log*"));
-		assertEquals(128, getValue(values, "coal0"));
-		assertEquals(32, getValue(values, "coal1"));
-		assertEquals(32, getValue(values, "coal*"));
-		assertEquals(330, getValue(values, "firecharge"));
+		Assertions.assertEquals(32, getValue(values, "log*"));
+		Assertions.assertEquals(128, getValue(values, "coal0"));
+		Assertions.assertEquals(32, getValue(values, "coal1"));
+		Assertions.assertEquals(32, getValue(values, "coal*"));
+		Assertions.assertEquals(330, getValue(values, "firecharge"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesChisel2AntiBlock() throws Exception {
+	@Test
+	@DisplayName("Test generating EMC values for chisel's Anti Block recipe")
+	void testGenerateValuesChisel2AntiBlock() {
 		final String gDust = "glowstone dust";
 		final String stone = "stone";
 
@@ -585,16 +615,17 @@ public class GraphMapperTest {
 				stone, stone, stone));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
+		Assertions.assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
 		for (int i = 0; i < dyes.length; i++) {
-			assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
+			Assertions.assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
 			if (!dyes[i].equals("White"))
-				assertEquals((dyeValue[i] + ((8 + 384)/8)*8)/8, getValue(values, "antiblock" + dyes[i]));
+				Assertions.assertEquals((dyeValue[i] + ((8 + 384)/8)*8)/8, getValue(values, "antiblock" + dyes[i]));
 		}
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesZeroCountIngredientDependency() throws Exception
+	@Test
+	@DisplayName("Test generating values from a zero count ingredient")
+	void testGenerateValuesZeroCountIngredientDependency()
 	{
 		mappingCollector.setValueBefore("a", 2L);
 		mappingCollector.setValueBefore("b", 3L);
@@ -610,17 +641,18 @@ public class GraphMapperTest {
 
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(2, getValue(values, "a"));
-		assertEquals(3, getValue(values, "b"));
-		assertEquals(1, getValue(values, "notConsume1"));
-		assertEquals(0, getValue(values, "notConsume2"));
-		assertEquals(5, getValue(values, "c1"));
-		assertEquals(0, getValue(values, "c2"));
+		Assertions.assertEquals(2, getValue(values, "a"));
+		Assertions.assertEquals(3, getValue(values, "b"));
+		Assertions.assertEquals(1, getValue(values, "notConsume1"));
+		Assertions.assertEquals(0, getValue(values, "notConsume2"));
+		Assertions.assertEquals(5, getValue(values, "c1"));
+		Assertions.assertEquals(0, getValue(values, "c2"));
 	}
 
 
-	@org.junit.Test
-	public void testGenerateValuesFreeAlternatives() throws Exception
+	@Test
+	@DisplayName("Test generating values with a free alternative recipe")
+	void testGenerateValuesFreeAlternatives()
 	{
 		mappingCollector.setValueBefore("freeWater", Long.MIN_VALUE/* = 'Free' */);
 		mappingCollector.setValueBefore("waterBottle", 0L);
@@ -630,15 +662,16 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(3, getValue(values, "a"));
-		assertEquals(0, getValue(values, "freeWater"));
-		assertEquals(0, getValue(values, "waterBottle"));
-		assertEquals(0, getValue(values, "waterGroup"));
-		assertEquals(3, getValue(values, "result"));
+		Assertions.assertEquals(3, getValue(values, "a"));
+		Assertions.assertEquals(0, getValue(values, "freeWater"));
+		Assertions.assertEquals(0, getValue(values, "waterBottle"));
+		Assertions.assertEquals(0, getValue(values, "waterGroup"));
+		Assertions.assertEquals(3, getValue(values, "result"));
 	}
 
-	@org.junit.Test
-	public void testGenerateValuesFreeAlternativesWithNegativeIngredients() throws Exception
+	@Test
+	@DisplayName("Test generating values with a free alternative recipe, when we have a negative ingredient")
+	void testGenerateValuesFreeAlternativesWithNegativeIngredients()
 	{
 		mappingCollector.setValueBefore("bucket", 768L);
 		mappingCollector.setValueBefore("waterBucket", 768L);
@@ -652,76 +685,80 @@ public class GraphMapperTest {
 		mappingCollector.addConversion(1, "result", Arrays.asList("a", "waterGroup"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(3, getValue(values, "a"));
-		assertEquals(768, getValue(values, "bucket"));
-		assertEquals(768, getValue(values, "waterBucket"));
-		assertEquals(0, getValue(values, "waterGroup"));
-		assertEquals(3, getValue(values, "result"));
+		Assertions.assertEquals(3, getValue(values, "a"));
+		Assertions.assertEquals(768, getValue(values, "bucket"));
+		Assertions.assertEquals(768, getValue(values, "waterBucket"));
+		Assertions.assertEquals(0, getValue(values, "waterGroup"));
+		Assertions.assertEquals(3, getValue(values, "result"));
 	}
 
 
-	@org.junit.Test
-	public void testOverflowWithIngredients() throws Exception
+	@Test
+	@DisplayName("Test overflow from recipe")
+	void testOverflowWithIngredients()
 	{
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE / 2 + 1);
 		mappingCollector.setValueBefore("b", Long.MAX_VALUE / 2 + 1);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a", "b"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(Long.MAX_VALUE / 2 + 1, getValue(values, "a"));
-		assertEquals(Long.MAX_VALUE/2+1, getValue(values, "b"));
-		assertEquals(0, getValue(values, "c"));
+		Assertions.assertEquals(Long.MAX_VALUE / 2 + 1, getValue(values, "a"));
+		Assertions.assertEquals(Long.MAX_VALUE / 2 + 1, getValue(values, "b"));
+		Assertions.assertEquals(0, getValue(values, "c"));
 	}
 
-	@org.junit.Test
-	public void testOverflowWithAmount() throws Exception
+	@Test
+	@DisplayName("Test overflow with an already set in range amount")
+	void testOverflowWithAmount()
 	{
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE / 2);
 		mappingCollector.addConversion(3, "a", Collections.singletonList("something"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(Long.MAX_VALUE/2, getValue(values, "a"));
+		Assertions.assertEquals(Long.MAX_VALUE / 2, getValue(values, "a"));
 	}
 
-	@org.junit.Test
-	public void testLargeOverflow() throws Exception
+	@Test
+	@DisplayName("Test extreme overflow")
+	void testLargeOverflow()
 	{
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
 		mappingCollector.addConversion(1, "b", Arrays.asList("a", "a", "a", "a", "a", "a", "a", "a", "a"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(0, getValue(values, "b"));
+		Assertions.assertEquals(0, getValue(values, "b"));
 	}
 
-	@org.junit.Test
-	public void testHiddenOverflow() throws Exception
+	@Test
+	@DisplayName("Test simple overflow hidden by result being within bounds")
+	void testHiddenOverflow()
 	{
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
 		mappingCollector.addConversion(2, "b", Arrays.asList("a", "a"));
 		mappingCollector.addConversion(5, "c", Arrays.asList("a", "a", "a", "a", "a"));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(Long.MAX_VALUE, getValue(values, "b"));
-		assertEquals(Long.MAX_VALUE, getValue(values, "c"));
+		Assertions.assertEquals(Long.MAX_VALUE, getValue(values, "b"));
+		Assertions.assertEquals(Long.MAX_VALUE, getValue(values, "c"));
 	}
 
-	@org.junit.Test
-	public void testOverwriteConversions()
+	@Test
+	@DisplayName("Test overwriting conversion with smaller value")
+	void testOverwriteConversions()
 	{
 		mappingCollector.setValueBefore("a", 1L);
 		mappingCollector.setValueFromConversion(1, "b", Arrays.asList("a", "a", "a"));
 		mappingCollector.addConversion(1, "b", Collections.singletonList("a"));
 		mappingCollector.addConversion(1, "c", Arrays.asList("b", "b"));
 		Map<String, Long> values = valueGenerator.generateValues();
-		assertEquals(1, getValue(values, "a"));
-		assertEquals(3, getValue(values, "b"));
-		assertEquals(6, getValue(values, "c"));
+		Assertions.assertEquals(1, getValue(values, "a"));
+		Assertions.assertEquals(3, getValue(values, "b"));
+		Assertions.assertEquals(6, getValue(values, "c"));
 
 	}
 
 	private static <T, V extends Number> long getValue(Map<T, V> map, T key) {
 		V val = map.get(key);
-		if (val == null) return 0;
-		return val.longValue();
+		return val == null ? 0 : val.longValue();
 	}
 }

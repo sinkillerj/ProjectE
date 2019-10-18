@@ -1,87 +1,111 @@
-/* todo 1.13
 package moze_intel.projecte.integration.crafttweaker;
 
-import crafttweaker.IAction;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.api.actions.IUndoableAction;
+import com.blamejared.crafttweaker.impl.blocks.MCBlockState;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
-abstract class WorldTransmuteAction implements IAction {
-    final IBlockState output;
-    final IBlockState sneakOutput;
-    final IBlockState input;
+abstract class WorldTransmuteAction implements IUndoableAction {
 
-    private WorldTransmuteAction(IItemStack output, IItemStack input, IItemStack sneakOutput)
+    protected final BlockState input;
+    protected final BlockState output;
+    protected final BlockState sneakOutput;
+
+    private WorldTransmuteAction(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
     {
-        this(CraftTweakerMC.getBlock(output).getStateFromMeta(output.getDamage()),
-                CraftTweakerMC.getBlock(input).getStateFromMeta(input.getDamage()),
-                sneakOutput == null ? null : CraftTweakerMC.getBlock(sneakOutput).getStateFromMeta(sneakOutput.getDamage()));
+        this(input.getInternal(), output.getInternal(), sneakOutput.getInternal());
     }
 
-    private WorldTransmuteAction(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
+    private WorldTransmuteAction(BlockState input, BlockState output, BlockState sneakOutput)
     {
-        this(CraftTweakerMC.getBlockState(output), CraftTweakerMC.getBlockState(input), CraftTweakerMC.getBlockState(sneakOutput));
-    }
-
-    private WorldTransmuteAction(IBlockState output, IBlockState input, IBlockState sneakOutput)
-    {
+        this.input = input;
         this.output = output;
         this.sneakOutput = sneakOutput;
-        this.input = input;
+    }
+
+    protected void apply(boolean add)
+    {
+        if (add) {
+            WorldTransmutations.register(this.input, this.output, this.sneakOutput);
+        } else {
+            WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.getOrigin() == this.input &&
+                    entry.getResult() == this.output && entry.getAltResult() == this.sneakOutput);
+        }
     }
 
     static class Add extends WorldTransmuteAction
     {
-        Add(IItemStack output, IItemStack input, IItemStack sneakOutput)
+        Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
         {
-            super(output, input, sneakOutput);
-        }
-
-        Add(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
-        {
-            super(output, input, sneakOutput);
+            super(input, output, sneakOutput);
         }
 
         @Override
         public void apply()
         {
-            WorldTransmutations.register(this.input, this.output, this.sneakOutput);
+            apply(true);
         }
 
         @Override
         public String describe()
         {
-            return "Adding world transmutation recipe for " + output;
+            if (sneakOutput == null) {
+                return "Adding world transmutation recipe for: " + input + " with output: " + output;
+            }
+            return "Adding world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+        }
+
+        @Override
+        public void undo() {
+            apply(false);
+        }
+
+        @Override
+        public String describeUndo() {
+            if (sneakOutput == null) {
+                return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output;
+            }
+            return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
         }
     }
 
     static class Remove extends WorldTransmuteAction
     {
-        Remove(IItemStack output, IItemStack input, IItemStack sneakOutput)
+        Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
         {
-            super(output, input, sneakOutput);
-        }
-
-        Remove(crafttweaker.api.block.IBlockState output, crafttweaker.api.block.IBlockState input, crafttweaker.api.block.IBlockState sneakOutput)
-        {
-            super(output, input, sneakOutput);
+            super(input, output, sneakOutput);
         }
 
         @Override
         public void apply()
         {
-            WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.input == this.input && entry.outputs.getLeft() == this.output && entry.outputs.getRight() == this.sneakOutput);
+            apply(false);
         }
 
         @Override
         public String describe()
         {
-            return "Removing world transmutation recipe for " + output;
+            if (sneakOutput == null) {
+                return "Removing world transmutation recipe for: " + input + " with output: " + output;
+            }
+            return "Removing world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+        }
+
+        @Override
+        public void undo() {
+            apply(true);
+        }
+
+        @Override
+        public String describeUndo() {
+            if (sneakOutput == null) {
+                return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output;
+            }
+            return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
         }
     }
 
-    static class RemoveAll implements IAction {
+    static class RemoveAll implements IUndoableAction {
         @Override
         public void apply() {
             WorldTransmutations.getWorldTransmutations().clear();
@@ -91,6 +115,15 @@ abstract class WorldTransmuteAction implements IAction {
         public String describe() {
             return "Removing all world transmutation recipes";
         }
+
+        @Override
+        public void undo() {
+            WorldTransmutations.resetWorldTransmutations();
+        }
+
+        @Override
+        public String describeUndo() {
+            return "Restored world transmutation recipes to default";
+        }
     }
 }
-*/

@@ -32,7 +32,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20191011-1.14.3'
+    mappings channel: "snapshot", version: "${mappings_version}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -78,22 +78,12 @@ repositories {
 	}
 
     maven {
-        name 'Chisel'
-        url "http://maven.tterrag.com/"
-    }
-
-    maven {
-        name = "thiakil"
-        url = "http://maven.thiakil.com"
-    }
-
-    maven {
         name 'JEI'
         url "http://dvs1.progwml6.com/files/maven"
     }
 
     maven {
-        name 'jared'
+        name 'CraftTweaker'
         url "http://maven.blamejared.com"
     }
 
@@ -102,22 +92,27 @@ repositories {
         url "https://maven.theillusivec4.top/"
     }
 }
+
+test {
+    useJUnitPlatform()
+}
  
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    minecraft 'net.minecraftforge:forge:1.14.4-28.1.44'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-1.0.2:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.14.4-1.0.2")
-    //deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
-    //deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
-    //deobfCompile "CraftTweaker2:ZenScript:1.12-${crafttweaker_version}"
+    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
+
+    //TODO: Split this into a compileOnly runtimeOnly if CrT starts packing its API separately
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }

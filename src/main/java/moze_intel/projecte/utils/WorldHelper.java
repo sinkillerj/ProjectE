@@ -2,39 +2,18 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.*;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.passive.MooshroomEntity;
-import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.RabbitEntity;
-import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.horse.DonkeyEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.entity.passive.horse.LlamaEntity;
-import net.minecraft.entity.passive.horse.MuleEntity;
-import net.minecraft.entity.passive.OcelotEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.passive.horse.ZombieHorseEntity;
-import net.minecraft.entity.passive.PolarBearEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -64,24 +43,31 @@ import java.util.Set;
  */
 public final class WorldHelper
 {
-	private static final List<Class<? extends MobEntity>> peacefuls = Lists.newArrayList(
-			SheepEntity.class, PigEntity.class, CowEntity.class,
-			MooshroomEntity.class, ChickenEntity.class, BatEntity.class,
-			VillagerEntity.class, SquidEntity.class, OcelotEntity.class,
-			WolfEntity.class, HorseEntity.class, RabbitEntity.class,
-			DonkeyEntity.class, MuleEntity.class, PolarBearEntity.class,
-			LlamaEntity.class, ParrotEntity.class
+	//TODO: 1.14, Make IMC adjust the default list
+	//TODO: 1.14, add the missing 1.13 and 1.14 peaceful and hostile mob types
+	//TODO: 1.14, should we somehow support Tag<EntityType>
+	private static final List<EntityType<? extends MobEntity>> PEACEFUL_DEFAULT = Lists.newArrayList(
+			EntityType.SHEEP, EntityType.PIG, EntityType.COW,
+			EntityType.MOOSHROOM, EntityType.CHICKEN, EntityType.BAT,
+			EntityType.VILLAGER, EntityType.SQUID, EntityType.OCELOT,
+			EntityType.WOLF, EntityType.HORSE, EntityType.RABBIT,
+			EntityType.DONKEY, EntityType.MULE, EntityType.POLAR_BEAR,
+			EntityType.LLAMA, EntityType.PARROT
 	);
 
-	private static final List<Class<? extends MobEntity>> mobs = Lists.newArrayList(
-			ZombieEntity.class, SkeletonEntity.class, CreeperEntity.class,
-			SpiderEntity.class, EndermanEntity.class, SilverfishEntity.class,
-			ZombiePigmanEntity.class, GhastEntity.class, BlazeEntity.class,
-			SlimeEntity.class, WitchEntity.class, RabbitEntity.class, EndermiteEntity.class,
-			StrayEntity.class, WitherSkeletonEntity.class, SkeletonHorseEntity.class, ZombieHorseEntity.class,
-			ZombieVillagerEntity.class, HuskEntity.class, GuardianEntity.class,
-			EvokerEntity.class, VexEntity.class, VindicatorEntity.class, ShulkerEntity.class
+	private static final List<EntityType<? extends MobEntity>> MOBS_DEFAULT = Lists.newArrayList(
+			EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
+			EntityType.SPIDER, EntityType.ENDERMAN, EntityType.SILVERFISH,
+			EntityType.ZOMBIE_PIGMAN, EntityType.GHAST, EntityType.BLAZE,
+			EntityType.SLIME, EntityType.WITCH, EntityType.RABBIT, EntityType.ENDERMITE,
+			EntityType.STRAY, EntityType.WITHER_SKELETON, EntityType.SKELETON_HORSE, EntityType.ZOMBIE_HORSE,
+			EntityType.ZOMBIE_VILLAGER, EntityType.HUSK, EntityType.GUARDIAN,
+			EntityType.EVOKER, EntityType.VEX, EntityType.VINDICATOR, EntityType.SHULKER
 	);
+
+	private static List<EntityType<? extends MobEntity>> peacefuls = new ArrayList<>(PEACEFUL_DEFAULT);
+
+	private static List<EntityType<? extends MobEntity>> mobs = new ArrayList<>(MOBS_DEFAULT);
 
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 
@@ -97,19 +83,19 @@ public final class WorldHelper
 		swrgBlacklist = ImmutableSet.copyOf(types);
 	}
 
-	public static boolean addPeaceful(Class<? extends MobEntity> clazz)
+	public static boolean addPeaceful(EntityType<? extends MobEntity> type)
 	{
-		if (!peacefuls.contains(clazz))
+		if (!peacefuls.contains(type))
 		{
-			peacefuls.add(clazz);
+			peacefuls.add(type);
 			return true;
 		}
 		return false;
 	}
 
-	public static boolean removePeaceful(Class<? extends MobEntity> clazz)
+	public static boolean removePeaceful(EntityType<? extends MobEntity> type)
 	{
-		return peacefuls.remove(clazz);
+		return peacefuls.remove(type);
 	}
 
 	public static void clearPeacefuls()
@@ -117,24 +103,34 @@ public final class WorldHelper
 		peacefuls.clear();
 	}
 
-	public static boolean addMob(Class<? extends MobEntity> clazz)
+	public static void resetPeacefuls()
 	{
-		if (!mobs.contains(clazz))
+		peacefuls = new ArrayList<>(PEACEFUL_DEFAULT);
+	}
+
+	public static boolean addMob(EntityType<? extends MobEntity> type)
+	{
+		if (!mobs.contains(type))
 		{
-			mobs.add(clazz);
+			mobs.add(type);
 			return true;
 		}
 		return false;
 	}
 
-	public static boolean removeMob(Class<? extends MobEntity> clazz)
+	public static boolean removeMob(EntityType<? extends MobEntity> type)
 	{
-		return mobs.remove(clazz);
+		return mobs.remove(type);
 	}
 
 	public static void clearMobs()
 	{
 		mobs.clear();
+	}
+
+	public static void resetMobs()
+	{
+		mobs = new ArrayList<>(MOBS_DEFAULT);
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
@@ -301,21 +297,6 @@ public final class WorldHelper
 		return new AxisAlignedBB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
 	}
 
-	public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world)
-	{
-		try
-		{
-			return c.getConstructor(World.class).newInstance(world);
-		}
-		catch (Exception e)
-		{
-			PECore.LOGGER.fatal("Could not create new entity instance for: {}", c.getCanonicalName());
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	/**
 	 * Wrapper around BlockPos.getAllInBox() with an AABB
 	 * Note that this is inclusive of all positions in the AABB!
@@ -327,15 +308,15 @@ public final class WorldHelper
 
 	public static MobEntity getRandomEntity(World world, MobEntity toRandomize)
 	{
-		Class<? extends MobEntity> entClass = toRandomize.getClass();
+		EntityType<? extends MobEntity> entType = (EntityType<? extends MobEntity>) toRandomize.getType();
 
-		if (peacefuls.contains(entClass))
+		if (peacefuls.contains(entType))
 		{
-			return getNewEntityInstance(CollectionHelper.getRandomListEntry(peacefuls, entClass), world);
+			return CollectionHelper.getRandomListEntry(peacefuls, entType).create(world);
 		}
-		else if (mobs.contains(entClass))
+		else if (mobs.contains(entType))
 		{
-			MobEntity ent = getNewEntityInstance(CollectionHelper.getRandomListEntry(mobs, entClass), world);
+			MobEntity ent = CollectionHelper.getRandomListEntry(mobs, entType).create(world);
 			if (ent instanceof RabbitEntity)
 			{
 				((RabbitEntity) ent).setRabbitType(99);
@@ -344,11 +325,11 @@ public final class WorldHelper
 		}
 		else if (world.rand.nextInt(2) == 0)
 		{
-			return getNewEntityInstance(SlimeEntity.class, world);
+			return EntityType.SLIME.create(world);
 		}
 		else
 		{
-			return getNewEntityInstance(SheepEntity.class, world);
+			return EntityType.SHEEP.create(world);
 		}
 	}
 

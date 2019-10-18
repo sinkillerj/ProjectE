@@ -1,20 +1,23 @@
 package moze_intel.projecte.api;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-public class ProjectEAPITest
+@DisplayName("Test ProjectE's API")
+class ProjectEAPITest
 {
 	@Test
-	public void testGetEMCProxy() throws Exception
+	@DisplayName("Test getting the EMC Proxy")
+	void testGetEMCProxy()
 	{
-		assertNotNull(ProjectEAPI.getEMCProxy());
+		Assertions.assertNotNull(ProjectEAPI.getEMCProxy());
 	}
 
 	@Test
-	public void testGetTransmutationProxy() throws Exception
+	@DisplayName("Test getting the Transmutation Proxy")
+	void testGetTransmutationProxy()
 	{
-		assertNotNull(ProjectEAPI.getTransmutationProxy());
+		Assertions.assertNotNull(ProjectEAPI.getTransmutationProxy());
 	}
 }

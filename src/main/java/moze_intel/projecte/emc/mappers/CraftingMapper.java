@@ -4,14 +4,15 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSItem;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new PECustomRecipeMapper()/* TODO 1.13 , new CraftTweakerRecipeMapper()*/, new RecipeStagesRecipeMapper());
+	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new RecipeStagesRecipeMapper());
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
@@ -146,30 +147,13 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public String getDescription() {
-			return "Maps vanilla crafting table and furnace recipes";
+			return "Maps crafting table and cooking recipes";
 		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof FurnaceRecipe;
-		}
-	}
-
-	private static class PECustomRecipeMapper implements IRecipeMapper {
-
-		@Override
-		public String getName() {
-			return "PECustomRecipeMapper";
-		}
-
-		@Override
-		public String getDescription() {
-			return "Maps custom IRecipe's from ProjectE";
-		}
-
-		@Override
-		public boolean canHandle(IRecipe recipe) {
-			return recipe instanceof RecipeShapelessKleinStar || recipe instanceof RecipeShapelessHidden;
+			//TODO: 1.14, should we support SingleItemRecipe (stone cutter)
+			return recipe instanceof ICraftingRecipe || recipe instanceof AbstractCookingRecipe;
 		}
 	}
 }

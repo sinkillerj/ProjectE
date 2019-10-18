@@ -25,6 +25,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -90,11 +91,11 @@ public class TransmutationRenderingEvent
 			transmutationResult = null;
 			return;
 		}
-		
-		double playerX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.getPartialTicks();
-		double playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
-		double playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
-		
+		Vec3d viewPosition = event.getInfo().getProjectedView();
+		double playerX = viewPosition.x;
+		double playerY = viewPosition.y;
+		double playerZ = viewPosition.z;
+
 		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		
 		if (mop instanceof BlockRayTraceResult)

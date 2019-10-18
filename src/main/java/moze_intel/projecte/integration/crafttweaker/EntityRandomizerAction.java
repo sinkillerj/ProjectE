@@ -1,75 +1,103 @@
-/* todo 1.13
 package moze_intel.projecte.integration.crafttweaker;
 
-import crafttweaker.IAction;
+import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
 
-abstract class EntityRandomizerAction implements IAction {
-	final boolean peaceful;
+abstract class EntityRandomizerAction implements IUndoableAction {
 
-	EntityRandomizerAction(boolean peaceful) {
+	protected final EntityType<? extends MobEntity> entityType;
+	protected final String typeName;
+	protected final boolean peaceful;
+
+	EntityRandomizerAction(EntityType<? extends MobEntity> entityType, String typeName, boolean peaceful) {
+		this.entityType = entityType;
+		this.typeName = typeName;
 		this.peaceful = peaceful;
 	}
 
-	static class Add extends EntityRandomizerAction {
-		private final Class<? extends EntityLiving> living;
-		private final String typeName;
+	protected void apply(boolean add) {
+		if (peaceful) {
+			if (add) {
+				WorldHelper.addPeaceful(entityType);
+			} else {
+				WorldHelper.removePeaceful(entityType);
+			}
+		} else {
+			if (add) {
+				WorldHelper.addMob(entityType);
+			} else {
+				WorldHelper.removeMob(entityType);
+			}
+		}
+	}
 
-		Add(Class<? extends EntityLiving> living, String typeName, boolean peaceful) {
-			super(peaceful);
-			this.living = living;
-			this.typeName = typeName;
+	static class Add extends EntityRandomizerAction {
+
+		Add(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
+			super(living, typeName, peaceful);
 		}
 
 		@Override
 		public void apply() {
-			if (this.peaceful) {
-				WorldHelper.addPeaceful(living);
-			} else {
-				WorldHelper.addMob(living);
-			}
+			apply(true);
 		}
 
 		@Override
 		public String describe() {
-			return "Added " + this.typeName + " to the " + (this.peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
+			return "Added " + typeName + " to the " + (peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
+		}
+
+		@Override
+		public void undo() {
+			apply(false);
+		}
+
+		@Override
+		public String describeUndo() {
+			return "Undid Addition of " + typeName + " to the " + (peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
 		}
 	}
 
 	static class Remove extends EntityRandomizerAction {
-		private final Class<? extends EntityLiving> living;
-		private final String typeName;
 
-		Remove(Class<? extends EntityLiving> living, String typeName, boolean peaceful) {
-			super(peaceful);
-			this.living = living;
-			this.typeName = typeName;
+		Remove(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
+			super(living, typeName, peaceful);
 		}
 
 		@Override
 		public void apply() {
-			if (this.peaceful) {
-				WorldHelper.removePeaceful(this.living);
-			} else {
-				WorldHelper.removeMob(this.living);
-			}
+			apply(false);
 		}
 
 		@Override
 		public String describe() {
-			return "Removed " + this.typeName + " from the " + (this.peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
+			return "Removed " + typeName + " from the " + (peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
+		}
+
+		@Override
+		public void undo() {
+			apply(true);
+		}
+
+		@Override
+		public String describeUndo() {
+			return "Undid removal of " + typeName + " from the " + (peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
 		}
 	}
 
-	static class Clear extends EntityRandomizerAction {
+	static class Clear implements IUndoableAction {
+
+		private boolean peaceful;
+
 		Clear(boolean peaceful) {
-			super(peaceful);
+			this.peaceful = peaceful;
 		}
 
 		@Override
 		public void apply() {
-			if (this.peaceful) {
+			if (peaceful) {
 				WorldHelper.clearPeacefuls();
 			} else {
 				WorldHelper.clearMobs();
@@ -80,6 +108,19 @@ abstract class EntityRandomizerAction implements IAction {
 		public String describe() {
 			return "Cleared the " + (this.peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer.";
 		}
+
+		@Override
+		public void undo() {
+			if (peaceful) {
+				WorldHelper.resetPeacefuls();
+			} else {
+				WorldHelper.resetMobs();
+			}
+		}
+
+		@Override
+		public String describeUndo() {
+			return "Restored the " + (this.peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer to default.";
+		}
 	}
 }
-*/
