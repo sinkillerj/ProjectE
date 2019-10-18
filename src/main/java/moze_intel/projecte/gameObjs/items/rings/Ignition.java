@@ -43,7 +43,7 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int inventorySlot, boolean held)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int inventorySlot, boolean held)
 	{
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) return;
 		

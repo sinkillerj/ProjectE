@@ -40,7 +40,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
 	{
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
 		{

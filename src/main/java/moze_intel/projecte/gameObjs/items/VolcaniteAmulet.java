@@ -105,7 +105,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof LivingEntity))
 		{
@@ -154,7 +154,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags)
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, List<ITextComponent> list, @Nonnull ITooltipFlag flags)
 	{
 		list.add(new TranslationTextComponent("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		list.add(new TranslationTextComponent("pe.volcanite.tooltip2"));

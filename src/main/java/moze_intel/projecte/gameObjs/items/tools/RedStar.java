@@ -57,14 +57,14 @@ public class RedStar extends PEToolBase
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
+	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity eLiving)
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving)
 	{
 		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
@@ -129,7 +129,7 @@ public class RedStar extends PEToolBase
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		Block block = state.getBlock();
 		if (block instanceof MatterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.rmFurnaceOff)

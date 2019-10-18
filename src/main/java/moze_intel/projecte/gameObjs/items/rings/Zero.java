@@ -52,7 +52,7 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held)
 	{
 		super.inventoryTick(stack, world, entity, slot, held);
 

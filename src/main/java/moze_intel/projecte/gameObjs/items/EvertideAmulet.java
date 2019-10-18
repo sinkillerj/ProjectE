@@ -168,7 +168,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean par5)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean par5)
 	{
 		if (invSlot > 8 || !(entity instanceof LivingEntity))
 		{

@@ -242,7 +242,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	}
 	
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
@@ -252,7 +252,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.put("Input", input.serializeNBT());

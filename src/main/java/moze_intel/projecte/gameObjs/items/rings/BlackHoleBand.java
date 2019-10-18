@@ -75,7 +75,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS)
 		{
@@ -86,7 +86,7 @@ public class BlackHoleBand extends RingToggle implements IAlchBagItem, IAlchChes
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
+	public void inventoryTick(ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held)
 	{
         if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE) || !(entity instanceof PlayerEntity))
 		{

@@ -32,14 +32,14 @@ public class DarkSword extends PEToolBase implements IExtraFunction
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
+	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		if (state.getBlock() == Blocks.COBWEB)
 		{

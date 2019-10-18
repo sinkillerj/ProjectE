@@ -65,7 +65,7 @@ public class ShowBagCMD
 			}
 
 			@Override
-			public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity player)
+			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player)
 			{
 				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, false)
 				{

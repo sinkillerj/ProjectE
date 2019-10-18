@@ -79,7 +79,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int par4, boolean par5)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5)
 	{
 		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity)
 		{

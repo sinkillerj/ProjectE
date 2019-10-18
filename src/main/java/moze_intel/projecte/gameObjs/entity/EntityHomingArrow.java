@@ -40,6 +40,7 @@ public class EntityHomingArrow extends ArrowEntity
 		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
 	}
 
+	@Nonnull
 	@Override
 	public EntityType<?> getType()
 	{

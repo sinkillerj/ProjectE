@@ -7,6 +7,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class RedPick extends DarkPick
 {
 	public RedPick(Properties props)
@@ -21,7 +23,7 @@ public class RedPick extends DarkPick
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		Block b = state.getBlock();
 		if (b == ObjHandler.rmBlock || b == ObjHandler.rmFurnaceOff)

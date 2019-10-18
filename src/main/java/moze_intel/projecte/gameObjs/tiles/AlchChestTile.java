@@ -55,7 +55,7 @@ public class AlchChestTile extends TileEmc implements INamedContainerProvider
 	}
 
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		inventory.deserializeNBT(nbt);
@@ -63,7 +63,7 @@ public class AlchChestTile extends TileEmc implements INamedContainerProvider
 	
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.merge(inventory.serializeNBT());

@@ -7,6 +7,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class RedHammer extends DarkHammer
 {
 	public RedHammer(Properties props)
@@ -19,7 +21,7 @@ public class RedHammer extends DarkHammer
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.rmBlock) || block == ObjHandler.rmFurnaceOff)

@@ -55,7 +55,7 @@ public class MercurialEyeContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
+	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player)
 	{
 		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
 		{
@@ -72,7 +72,7 @@ public class MercurialEyeContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 

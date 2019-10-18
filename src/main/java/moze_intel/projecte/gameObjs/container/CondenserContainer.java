@@ -76,7 +76,7 @@ public class CondenserContainer extends PEContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		
@@ -125,7 +125,7 @@ public class CondenserContainer extends PEContainer
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, ClickType flag, PlayerEntity player)
+	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player)
 	{
 		if (slot == 0 && (!tile.getLock().getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack()))))
 		{

@@ -61,7 +61,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		

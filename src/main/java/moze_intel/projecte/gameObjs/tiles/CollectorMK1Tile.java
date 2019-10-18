@@ -346,7 +346,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	}
 	
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		storedFuelEmc = nbt.getLong("FuelEMC");
@@ -357,7 +357,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.putLong("FuelEMC", storedFuelEmc);
@@ -399,7 +399,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
 	{
 		return new CollectorMK1Container(windowId, playerInventory, this);
 	}

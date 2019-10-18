@@ -60,7 +60,7 @@ public class CondenserMK2Container extends CondenserContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
 	{
 		if (slotIndex == 0)
 		{

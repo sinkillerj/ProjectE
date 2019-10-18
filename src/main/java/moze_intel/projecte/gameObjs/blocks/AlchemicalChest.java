@@ -35,20 +35,23 @@ public class AlchemicalChest extends BlockDirection
 
 	@Nonnull
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx)
+	@Deprecated
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx)
 	{
 		return SHAPE;
 	}
 	
 	@Nonnull
 	@Override
-	public BlockRenderType getRenderType(BlockState state)
+	@Deprecated
+	public BlockRenderType getRenderType(@Nonnull BlockState state)
 	{
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr)
+	@Deprecated
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
 	{
 		if (!world.isRemote)
 		{
@@ -74,13 +77,15 @@ public class AlchemicalChest extends BlockDirection
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(BlockState state)
+	@Deprecated
+	public boolean hasComparatorInputOverride(@Nonnull BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	@Deprecated
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

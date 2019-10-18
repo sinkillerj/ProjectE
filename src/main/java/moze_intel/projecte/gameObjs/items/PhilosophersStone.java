@@ -206,7 +206,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		@Nonnull
 		@Override
-		public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn) {
+		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 			return new PhilosStoneContainer(windowId, playerInventory);
 		}
 

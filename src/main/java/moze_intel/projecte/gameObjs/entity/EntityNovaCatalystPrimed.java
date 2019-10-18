@@ -2,12 +2,14 @@ package moze_intel.projecte.gameObjs.entity;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class EntityNovaCatalystPrimed extends TNTEntity
 {
@@ -23,6 +25,7 @@ public class EntityNovaCatalystPrimed extends TNTEntity
 		setFuse(20);
 	}
 
+	@Nonnull
 	@Override
 	public EntityType<?> getType()
 	{

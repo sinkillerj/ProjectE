@@ -25,12 +25,14 @@ public class CondenserMK2Tile extends CondenserTile
 		super(ObjHandler.CONDENSER_MK2_TILE);
 	}
 
+	@Nonnull
 	protected IItemHandler createAutomationInventory()
 	{
 		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
 		{
+			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 			{
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
 						? super.insertItem(slot, stack, simulate)
@@ -81,7 +83,7 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		getOutput().deserializeNBT(nbt.getCompound("Output"));
@@ -89,7 +91,7 @@ public class CondenserMK2Tile extends CondenserTile
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.put("Output", getOutput().serializeNBT());
@@ -97,7 +99,7 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity player)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player)
 	{
 		return new CondenserMK2Container(windowId, playerInv, this);
 	}

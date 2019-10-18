@@ -74,13 +74,13 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
     }
 
     @Override
-    public void draw(WorldTransmuteEntry recipe, double mouseX, double mouseY)
+    public void draw(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY)
     {
         arrow.draw(55, 18);
     }
 
     @Override
-    public void setIngredients(WorldTransmuteEntry recipe, IIngredients ingredients) {
+    public void setIngredients(WorldTransmuteEntry recipe, @Nonnull IIngredients ingredients) {
         recipe.setIngredients(ingredients);
     }
 
@@ -130,7 +130,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
     @Nonnull
     @Override
-    public List<String> getTooltipStrings(WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+    public List<String> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
         if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
         {
             return Collections.singletonList(I18n.format("pe.nei.worldtransmute.description"));

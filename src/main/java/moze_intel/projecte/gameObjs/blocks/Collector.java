@@ -35,7 +35,8 @@ public class Collector extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+	@Deprecated
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit)
 	{
 		if (!world.isRemote)
 		{
@@ -50,7 +51,8 @@ public class Collector extends BlockDirection
 
 	@Nullable
 	@Override
-	public INamedContainerProvider getContainer(BlockState state, World world, BlockPos pos) {
+	@Deprecated
+	public INamedContainerProvider getContainer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof CollectorMK1Tile) {
 			return ((CollectorMK1Tile) te);
@@ -75,13 +77,15 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(BlockState state)
+	@Deprecated
+	public boolean hasComparatorInputOverride(@Nonnull BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	@Deprecated
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
 	{
 		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
 		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
@@ -106,7 +110,7 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
 	{
 		TileEntity ent = world.getTileEntity(pos);
 		if (ent != null)

@@ -37,7 +37,8 @@ public class Pedestal extends Block
 
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx)
+    @Deprecated
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx)
     {
         return SHAPE;
     }
@@ -60,14 +61,16 @@ public class Pedestal extends Block
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+    @Deprecated
+    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
     {
         dropItem(world, pos);
         super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override
-    public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
+    @Deprecated
+    public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)
     {
         if (!world.isRemote)
         {
@@ -77,7 +80,8 @@ public class Pedestal extends Block
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr)
+    @Deprecated
+    public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
     {
         if (!world.isRemote)
         {
@@ -112,7 +116,8 @@ public class Pedestal extends Block
 
     // [VanillaCopy] Adapted from BlockNote
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean isMoving)
+    @Deprecated
+    public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving)
     {
         boolean flag = world.isBlockPowered(pos);
         TileEntity te = world.getTileEntity(pos);
@@ -148,7 +153,7 @@ public class Pedestal extends Block
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flags)
+    public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags)
     {
         tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip1"));
         tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip2"));

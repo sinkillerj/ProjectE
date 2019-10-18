@@ -32,7 +32,8 @@ public class Relay extends BlockDirection
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr)
+	@Deprecated
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
 	{
 		if (!world.isRemote)
 		{
@@ -64,13 +65,15 @@ public class Relay extends BlockDirection
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(BlockState state)
+	@Deprecated
+	public boolean hasComparatorInputOverride(@Nonnull BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	@Deprecated
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof RelayMK1Tile)
@@ -82,7 +85,7 @@ public class Relay extends BlockDirection
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

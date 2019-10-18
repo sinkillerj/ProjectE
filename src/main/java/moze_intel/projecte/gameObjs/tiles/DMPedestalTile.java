@@ -131,7 +131,7 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public void read(CompoundNBT tag)
+	public void read(@Nonnull CompoundNBT tag)
 	{
 		super.read(tag);
 		inventory = new ItemStackHandler(1);
@@ -143,7 +143,7 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT tag)
+	public CompoundNBT write(@Nonnull CompoundNBT tag)
 	{
 		tag = super.write(tag);
 		tag.merge(inventory.serializeNBT());

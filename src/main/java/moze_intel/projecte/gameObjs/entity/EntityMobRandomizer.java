@@ -54,7 +54,7 @@ public class EntityMobRandomizer extends ThrowableEntity implements IRendersAsIt
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult mop)
+	protected void onImpact(@Nonnull RayTraceResult mop)
 	{
 		if (this.getEntityWorld().isRemote)
 		{

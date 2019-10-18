@@ -63,7 +63,7 @@ public final class KnowledgeImpl {
         private long emc = 0;
         private boolean fullKnowledge = false;
 
-        private DefaultImpl(PlayerEntity player) {
+        private DefaultImpl(@Nullable PlayerEntity player) {
             this.player = player;
         }
 

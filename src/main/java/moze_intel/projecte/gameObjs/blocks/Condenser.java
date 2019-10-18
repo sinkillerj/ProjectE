@@ -31,7 +31,7 @@ public class Condenser extends AlchemicalChest
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr)
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
 	{
 		if (!world.isRemote) 
 		{
@@ -46,7 +46,7 @@ public class Condenser extends AlchemicalChest
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

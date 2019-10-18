@@ -74,14 +74,14 @@ public class DarkPick extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity eLiving)
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving)
 	{
 		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
 		return true;
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		Block block = state.getBlock();
 		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnaceOff)

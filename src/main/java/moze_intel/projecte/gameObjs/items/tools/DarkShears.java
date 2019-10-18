@@ -37,7 +37,7 @@ public class DarkShears extends PEToolBase
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity ent)
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity ent)
 	{
 		Block block = state.getBlock();
 		if (state.getMaterial() != Material.LEAVES && block != Blocks.COBWEB && block != Blocks.TALL_GRASS && block != Blocks.VINE && block != Blocks.TRIPWIRE && !(block instanceof IShearable))
@@ -58,7 +58,7 @@ public class DarkShears extends PEToolBase
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		shearEntityAOE(stack, player, 0, hand);

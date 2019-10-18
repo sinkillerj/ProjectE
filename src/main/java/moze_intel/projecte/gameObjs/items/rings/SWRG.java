@@ -123,7 +123,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeldItem)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeldItem)
 	{
 		if (invSlot > 8 || !(entity instanceof PlayerEntity))
 		{

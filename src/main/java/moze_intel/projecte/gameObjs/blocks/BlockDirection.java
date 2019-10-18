@@ -45,7 +45,8 @@ public abstract class BlockDirection extends Block
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	@Deprecated
+	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 
@@ -59,7 +60,8 @@ public abstract class BlockDirection extends Block
 	}
 	
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
+	@Deprecated
+	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)
 	{
 		if (world.isRemote)
 		{

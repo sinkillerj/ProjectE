@@ -30,13 +30,13 @@ public class MatterFurnace extends AbstractFurnaceBlock
 	
 	@Nonnull
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader world)
+	public TileEntity createNewTileEntity(@Nonnull IBlockReader world)
 	{
 		return matterType == EnumMatterType.RED_MATTER ? new RMFurnaceTile() : new DMFurnaceTile();
 	}
 
 	@Override
-	protected void interactWith(World world, BlockPos pos, PlayerEntity player)
+	protected void interactWith(World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)
 	{
 		if (!world.isRemote)
 		{
@@ -54,7 +54,7 @@ public class MatterFurnace extends AbstractFurnaceBlock
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(BlockState state, World world, @Nonnull BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null)

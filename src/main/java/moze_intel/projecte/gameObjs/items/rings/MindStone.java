@@ -32,7 +32,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
 	{
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
 		{
@@ -56,7 +56,7 @@ public class MindStone extends RingToggle implements IPedestalItem
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote && !stack.getOrCreateTag().getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0)

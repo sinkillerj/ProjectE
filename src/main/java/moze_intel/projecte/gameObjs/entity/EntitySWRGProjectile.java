@@ -68,7 +68,7 @@ public class EntitySWRGProjectile extends ThrowableEntity implements IRendersAsI
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult mop)
+	protected void onImpact(@Nonnull RayTraceResult mop)
 	{
 		if (world.isRemote)
 		{

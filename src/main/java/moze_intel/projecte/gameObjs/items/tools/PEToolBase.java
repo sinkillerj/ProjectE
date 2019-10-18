@@ -72,7 +72,7 @@ public abstract class PEToolBase extends ItemMode
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		if (this.peToolMaterial == EnumMatterType.DARK_MATTER)
 		{

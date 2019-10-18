@@ -109,7 +109,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean held)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
 	{
 		if(world.isRemote || slot > 8 || !(entity instanceof ServerPlayerEntity)) return;
 		
@@ -118,7 +118,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
+	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags)
 	{
 		if(stack.hasTag())
 		{

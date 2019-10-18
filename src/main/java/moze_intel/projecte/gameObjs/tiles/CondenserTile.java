@@ -76,18 +76,21 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 		return inputInventory;
 	}
 
+	@Nonnull
 	protected IItemHandler createAutomationInventory()
 	{
 		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
 		{
+			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 			{
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
 						? super.insertItem(slot, stack, simulate)
 						: stack;
 			}
 
+			@Nonnull
 			@Override
 			public ItemStack extractItem(int slot, int max, boolean simulate)
 			{
@@ -242,7 +245,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 	}
 
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
@@ -251,7 +254,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 	
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.put("Input", inputInventory.serializeNBT());
@@ -332,7 +335,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 	}
 
 	@Override
-	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
 	{
 		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, playerInventory, this);
 	}

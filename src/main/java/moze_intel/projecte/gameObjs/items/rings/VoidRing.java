@@ -31,7 +31,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean isHeld)
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld)
 	{
 		super.inventoryTick(stack, world, entity, slot, isHeld);
 		ObjHandler.blackHole.inventoryTick(stack, world, entity, slot, isHeld);

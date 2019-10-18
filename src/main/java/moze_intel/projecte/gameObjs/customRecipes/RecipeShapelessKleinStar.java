@@ -23,12 +23,14 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapp
 		this.compose = compose;
 	}
 
+	@Nonnull
 	@Override
 	public ResourceLocation getId()
 	{
 		return compose.getId();
 	}
 
+	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
@@ -108,20 +110,22 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe/*, IRecipeWrapp
 
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessKleinStar>
 	{
+		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(ResourceLocation recipeId, JsonObject json)
+		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 		{
 			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
 		}
 
+		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(ResourceLocation recipeId, PacketBuffer buffer)
+		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 		{
 			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, RecipeShapelessKleinStar recipe)
+		public void write(@Nonnull PacketBuffer buffer, RecipeShapelessKleinStar recipe)
 		{
 			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
 		}

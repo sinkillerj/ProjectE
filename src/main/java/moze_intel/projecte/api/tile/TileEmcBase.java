@@ -71,7 +71,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT tag)
+	public CompoundNBT write(@Nonnull CompoundNBT tag)
 	{
 		tag = super.write(tag);
 		if (currentEMC > maximumEMC)
@@ -83,7 +83,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage
 	}
 
 	@Override
-	public void read(CompoundNBT tag)
+	public void read(@Nonnull CompoundNBT tag)
 	{
 		super.read(tag);
 		long set = tag.getLong("EMC");

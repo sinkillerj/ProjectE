@@ -24,7 +24,7 @@ public class CollectorMK2Tile extends CollectorMK1Tile
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
 	{
 		return new CollectorMK2Container(windowId, playerInventory, this);
 	}

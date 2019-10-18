@@ -37,7 +37,7 @@ public class DarkHammer extends PEToolBase
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity damaged, LivingEntity damager)
+	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager)
 	{
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
@@ -45,7 +45,7 @@ public class DarkHammer extends PEToolBase
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		digAOE(stack, world, player, true, 0, hand);
@@ -53,7 +53,7 @@ public class DarkHammer extends PEToolBase
 	}
 	
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
 	{
 		Block block = state.getBlock();
 		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff)

@@ -88,7 +88,7 @@ public class RMFurnaceContainer extends Container
 	}
 	
 	@Override
-	public void addListener(IContainerListener par1IContainerListener)
+	public void addListener(@Nonnull IContainerListener par1IContainerListener)
 	{
 		super.addListener(par1IContainerListener);
 		par1IContainerListener.sendWindowProperty(this, 0, tile.furnaceCookTime);
@@ -134,7 +134,7 @@ public class RMFurnaceContainer extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex)
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
 	{
 		Slot slot = this.getSlot(slotIndex);
 		

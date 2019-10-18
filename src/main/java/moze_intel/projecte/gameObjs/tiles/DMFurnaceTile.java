@@ -36,7 +36,7 @@ public class DMFurnaceTile extends RMFurnaceTile
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity playerIn)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity playerIn)
 	{
 		return new DMFurnaceContainer(windowId, playerInv, this);
 	}

@@ -108,14 +108,14 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 	}
 
 	@Override
-	public void setPos(BlockPos pos)
+	public void setPos(@Nonnull BlockPos pos)
 	{
 		super.setPos(pos);
 		dummyFurnace.setPos(pos);
 	}
 
 	@Override
-	public void setWorld(World world)
+	public void setWorld(@Nonnull World world)
 	{
 		super.setWorld(world);
 		dummyFurnace.setWorld(world);
@@ -160,6 +160,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		automationSides.invalidate();
 	}
 
+	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
 	{
@@ -402,7 +403,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 	}
 	
 	@Override
-	public void read(CompoundNBT nbt)
+	public void read(@Nonnull CompoundNBT nbt)
 	{
 		super.read(nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
@@ -415,7 +416,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 	
 	@Nonnull
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		nbt = super.write(nbt);
 		nbt.putShort("BurnTime", (short) furnaceBurnTime);
@@ -441,7 +442,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 
 	@Nullable
 	@Override
-	public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player)
+	public Container createMenu(int windowId, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player)
 	{
 		return new RMFurnaceContainer(ObjHandler.RM_FURNACE_CONTAINER, windowId, inv, this);
 	}

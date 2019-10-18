@@ -76,7 +76,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IPedestalItem, II
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeld)
 	{
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
 		
