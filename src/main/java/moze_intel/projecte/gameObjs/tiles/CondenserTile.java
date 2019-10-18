@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
@@ -8,14 +9,14 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,8 +25,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nonnull;
 
 public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
 {
@@ -173,13 +172,13 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 			this.isAcceptingEmc = false;
 		}
 	}
-	
+
 	protected void condense()
 	{
 		for (int i = 0; i < inputInventory.getSlots(); i++)
 		{
 			ItemStack stack = inputInventory.getStackInSlot(i);
-			
+
 			if (stack.isEmpty() || isStackEqualToLock(stack))
 			{
 				continue;
@@ -189,14 +188,14 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 			this.addEMC(EMCHelper.getEmcSellValue(stack));
 			break;
 		}
-		
+
 		if (this.getStoredEmc() >= requiredEmc && this.hasSpace())
 		{
 			this.removeEMC(requiredEmc);
 			pushStack();
 		}
 	}
-	
+
 	protected void pushStack()
 	{
 		ItemStack lockCopy = lock.getStackInSlot(0).copy();
@@ -208,18 +207,18 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 
 		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
 	}
-	
+
 	protected boolean hasSpace()
 	{
 		for (int i = 0; i < outputInventory.getSlots(); i++)
 		{
 			ItemStack stack = outputInventory.getStackInSlot(i);
-			
+
 			if (stack.isEmpty())
 			{
 				return true;
 			}
-			
+
 			if (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize())
 			{
 				return true;
@@ -228,7 +227,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 
 		return false;
 	}
-	
+
 	public boolean isStackEqualToLock(ItemStack stack)
 	{
 		if (lock.getStackInSlot(0).isEmpty())
@@ -251,7 +250,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lock.deserializeNBT(nbt.getCompound("LockSlot"));
 	}
-	
+
 	@Nonnull
 	@Override
 	public CompoundNBT write(@Nonnull CompoundNBT nbt)
@@ -307,7 +306,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean receiveClientEvent(int number, int arg)
 	{

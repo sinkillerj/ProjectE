@@ -60,9 +60,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
-			return !getSmeltingResult(stack).isEmpty()
-					? super.insertItem(slot, stack, simulate)
-					: stack;
+			return !getSmeltingResult(stack).isEmpty() ? super.insertItem(slot, stack, simulate) : stack;
 		}
 	});
 	private final LazyOptional<IItemHandler> automationFuel = LazyOptional.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
@@ -71,9 +69,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
-			return SlotPredicates.FURNACE_FUEL.test(stack)
-					? super.insertItem(slot, stack, simulate)
-					: stack;
+			return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 		}
 	});
 	private final LazyOptional<IItemHandler> automationOutput = LazyOptional.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
@@ -342,8 +338,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
 
-		if (world.rand.nextFloat() < getOreDoubleChance()
-			&& ItemHelper.isOre(toSmelt.getItem()))
+		if (world.rand.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem()))
 		{
 			smeltResult.grow(smeltResult.getCount());
 		}

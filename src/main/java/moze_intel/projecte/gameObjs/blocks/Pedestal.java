@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -27,8 +28,13 @@ import java.util.List;
 
 public class Pedestal extends Block
 {
-    // todo 1.13 fancify
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(3, 0, 3, 13, 12, 13);
+    private static final VoxelShape SHAPE = VoxelShapes.or(
+            Block.makeCuboidShape(3, 0, 3, 13, 2, 13),
+            VoxelShapes.or(
+                    Block.makeCuboidShape(6, 2, 6, 10, 9, 10),
+                    Block.makeCuboidShape(5, 9, 5, 11, 10, 11)
+            )
+    );
 
     public Pedestal(Properties props)
     {

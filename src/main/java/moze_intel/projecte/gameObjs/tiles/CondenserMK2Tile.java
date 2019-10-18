@@ -34,9 +34,7 @@ public class CondenserMK2Tile extends CondenserTile
 			@Override
 			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 			{
-				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
-						? super.insertItem(slot, stack, simulate)
-						: stack;
+				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
 		IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
