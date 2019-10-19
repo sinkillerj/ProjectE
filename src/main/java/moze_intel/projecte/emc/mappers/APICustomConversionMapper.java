@@ -87,6 +87,7 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
 		} else if (object instanceof FluidStack) {
 			return NSSFluid.create(((FluidStack) object).getFluid());
 		} else if (object instanceof ResourceLocation) {
+			//TODO: 1.14, Figure out if this should be an item or a fluid
 			return NSSTag.create(object.toString());
 		} else if (object != null && object.getClass() == Object.class) {
 			return fakes.computeIfAbsent(object, o -> NSSFake.create("" + object + " by " + modId));

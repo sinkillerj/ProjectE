@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: 1.14, should we care about tag type, as if there is the same resource location for a fluid and item tag there will be issues
 public class NSSTag implements NormalizedSimpleStack {
 	static final Map<String, NSSTag> tagStacks = new HashMap<>();
 
@@ -24,12 +23,16 @@ public class NSSTag implements NormalizedSimpleStack {
 		return tagStacks.computeIfAbsent(oreDictionaryName, s -> new NSSTag(new ResourceLocation(s)));
 	}
 
+	public static NormalizedSimpleStack create(ResourceLocation tagId) {
+		return tagStacks.computeIfAbsent(tagId.toString(), s -> new NSSTag(tagId));
+	}
+
 	public Iterable<Item> getAllElements()
 	{
 		Tag<Item> tag = ItemTags.getCollection().get(tagId);
 		if (tag == null)
 		{
-			PECore.LOGGER.warn("Couldn't find tag {}", tagId);
+			PECore.LOGGER.warn("Couldn't find item tag {}", tagId);
 			return Collections.emptyList();
 		}
 		return tag.getAllElements();

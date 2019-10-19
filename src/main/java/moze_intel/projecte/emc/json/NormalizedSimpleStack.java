@@ -32,10 +32,18 @@ public interface NormalizedSimpleStack {
 					return NSSTag.create(s.substring(1));
 				} catch (ResourceLocationException ex)
 				{
-					throw new JsonParseException("Malformed tag ID", ex);
+					throw new JsonParseException("Malformed item tag ID", ex);
 				}
 			} else if (s.startsWith("FAKE|")) {
 				return NSSFake.create(s.substring("FAKE|".length()));
+			} else if (s.startsWith("FLUID|#")) {
+				try
+				{
+					return NSSFluidTag.create("FLUID|#".substring(1));
+				} catch (ResourceLocationException ex)
+				{
+					throw new JsonParseException("Malformed fluid tag ID", ex);
+				}
 			} else if (s.startsWith("FLUID|")) {
 				String fluidName = s.substring("FLUID|".length());
 				Fluid fluid;
@@ -72,6 +80,14 @@ public interface NormalizedSimpleStack {
 			for (Item i : nssTag.getAllElements()) {
 				mapper.addConversion(1, nssTag, Collections.singletonList(new NSSItem(i)));
 				mapper.addConversion(1, new NSSItem(i), Collections.singletonList(nssTag));
+			}
+		}
+		// Add conversions for all fluids <-> NSSFluidTag for tags they belong to
+		for (Map.Entry<String, NSSFluidTag> entry: NSSFluidTag.tagStacks.entrySet()) {
+			NSSFluidTag nssTag = entry.getValue();
+			for (Fluid i : nssTag.getAllElements()) {
+				mapper.addConversion(1, nssTag, Collections.singletonList(NSSFluid.create(i)));
+				mapper.addConversion(1, NSSFluid.create(i), Collections.singletonList(nssTag));
 			}
 		}
 	}
