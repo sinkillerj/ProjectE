@@ -1,5 +1,8 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -10,9 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -20,11 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
-public class LifeStone extends RingToggle implements IPedestalItem
+public class LifeStone extends PEToggleItem implements IPedestalItem
 {
 	public LifeStone(Properties props)
 	{
@@ -71,14 +68,6 @@ public class LifeStone extends RingToggle implements IPedestalItem
 				});
 			}
 		}
-	}
-	
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-        CompoundNBT tag  = stack.getOrCreateTag();
-		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Override

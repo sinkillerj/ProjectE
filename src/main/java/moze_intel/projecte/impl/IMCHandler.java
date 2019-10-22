@@ -7,7 +7,7 @@ import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.gameObjs.items.TimeWatch;
+import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.entity.EntityType;

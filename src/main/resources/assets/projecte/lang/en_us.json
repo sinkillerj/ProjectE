@@ -156,7 +156,6 @@
     "advancements.pe_klein_big": "BIG EMC Batteries",
     "advancements.pe_klein_big.desc": "Holding the universe in your pocket.",
 
-    "pe.arcana.mode": "Mode:",
     "pe.arcana.mode.0": "Zero",
     "pe.arcana.mode.1": "Ignition",
     "pe.arcana.mode.2": "Harvest",
@@ -261,6 +260,7 @@
     "pe.ignition.pedestal1": "Nearby mobs combust",
     "pe.ignition.pedestal2": "Activates every %s",
 
+    "pe.item.mode.invalid": "Invalid Mode",
     "pe.item.mode": "Mode",
     "pe.item.mode_switch": "Switched to %s Mode",
 
@@ -305,6 +305,10 @@
     "pe.pe_mercurial_eye.mode4": "Transmutation",
     "pe.pe_mercurial_eye.mode5": "Transmutation-Classic",
     "pe.pe_mercurial_eye.mode6": "Pillar",
+
+    "pe.diving_rod.mode.range.3": "3x3x3",
+    "pe.diving_rod.mode.range.16": "16x3x3",
+    "pe.diving_rod.mode.range.64": "64x3x3",
 
     "pe.redpick.mode1": "Standard",
     "pe.redpick.mode2": "3x Tallshot",

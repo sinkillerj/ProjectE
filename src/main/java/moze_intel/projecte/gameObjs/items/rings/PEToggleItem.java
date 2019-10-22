@@ -1,17 +1,17 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 
-import javax.annotation.Nonnull;
-
-public abstract class RingToggle extends ItemPE implements IModeChanger
+public abstract class PEToggleItem extends ItemPE implements IModeChanger
 {
-	public RingToggle(Properties props)
+	public PEToggleItem(Properties props)
 	{
 		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
@@ -34,12 +34,12 @@ public abstract class RingToggle extends ItemPE implements IModeChanger
 	{
         if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
-			player.playSound(PESounds.HEAL, 1.0F, 1.0F);
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			stack.getTag().putBoolean(TAG_ACTIVE, true);
 		}
 		else
 		{
-			player.playSound(PESounds.UNCHARGE, 1.0F, 1.0F);
+			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			stack.getTag().putBoolean(TAG_ACTIVE, false);
 		}
 		return true;

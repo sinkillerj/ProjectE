@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class MindStone extends RingToggle implements IPedestalItem
+public class MindStone extends PEToggleItem implements IPedestalItem
 {
 	private static final int TRANSFER_RATE = 50;
 

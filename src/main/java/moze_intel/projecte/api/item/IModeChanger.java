@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 /**
  * This interface specifies items that switch between modes when the mode switch keybind is activated (default G)
  */
-public interface IModeChanger 
+public interface IModeChanger
 {
 	/**
 	 * Gets the mode from this ItemStack

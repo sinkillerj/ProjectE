@@ -1,18 +1,18 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IItemCharge;
-import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -21,22 +21,17 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
-public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCharge
+public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 {
 	public Zero(Properties props)
 	{
 		super(props);
-		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 	}
 
 	@Override
@@ -80,20 +75,6 @@ public class Zero extends ItemPE implements IModeChanger, IPedestalItem, IItemCh
 		}
 		
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
-	}
-
-	@Override
-	public byte getMode(@Nonnull ItemStack stack)
-	{
-        return stack.getOrCreateTag().getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-        CompoundNBT tag = stack.getOrCreateTag();
-		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Override

@@ -1,6 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.item.IModeChanger;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PrimitiveIterator;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -12,19 +16,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.*;
-
-public class DiviningRod extends ItemPE implements IModeChanger
+public class DiviningRod extends ItemPE implements IItemMode
 {
 	// Modes should be in the format depthx3x3
 	private final String[] modes;
@@ -51,8 +52,7 @@ public class DiviningRod extends ItemPE implements IModeChanger
 		long totalEmc = 0;
 		int numBlocks = 0;
 
-		byte mode = getMode(ctx.getItem());
-		int depth = getDepthFromMode(mode);
+		int depth = getDepthFromMode(ctx.getItem());
 		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth);
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box))
@@ -147,49 +147,24 @@ public class DiviningRod extends ItemPE implements IModeChanger
 	}
 
 	/**
-	 * Gets the first number in the mode description.
+	 * Gets the range from the translation keys string
+	 *
+	 * Format is "pe.diving_rod.mode.range.RANGE"
 	 */
-	private int getDepthFromMode(byte mode)
+	private int getDepthFromMode(ItemStack stack)
 	{
-		String modeDesc = modes[mode];
-		// Subtract one because of how the box method works
-		return Integer.parseInt(modeDesc.substring(0, modeDesc.indexOf('x'))) - 1;
+		return Integer.parseInt(getModeTranslationKey(stack).substring(25));
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
-	{
-        return stack.getOrCreateTag().getByte(TAG_MODE);
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-		if (modes.length == 1)
-		{
-			return false;
-		}
-		if (getMode(stack) == modes.length - 1)
-		{
-            stack.getOrCreateTag().putByte(TAG_MODE, ((byte) 0));
-		}
-		else
-		{
-            stack.getOrCreateTag().putByte(TAG_MODE, ((byte) (getMode(stack) + 1)));
-		}
-
-		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modes[getMode(stack)]));
-
-		return true;
+	public String[] getModeTranslationKeys() {
+		return modes;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
 	{
-		list.add(new TranslationTextComponent("pe.item.mode")
-				.appendText(": ")
-				.appendSibling(new StringTextComponent(modes[getMode(stack)])
-						.setStyle(new Style().setColor(TextFormatting.AQUA))));
+		list.add(getToolTip(stack));
 	}
 }

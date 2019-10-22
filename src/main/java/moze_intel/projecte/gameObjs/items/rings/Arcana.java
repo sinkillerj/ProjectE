@@ -1,43 +1,53 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
+import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
-public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
+public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
 {
+	private final static String[] modes = new String[] {
+		  "pe.arcana.mode.0",
+		  "pe.arcana.mode.1",
+		  "pe.arcana.mode.2",
+		  "pe.arcana.mode.3"
+	};
+
 	public Arcana(Properties props)
 	{
 		super(props);
@@ -63,34 +73,25 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 	{
 		if (isInGroup(group))
 		{
-			for (byte i = 0; i < 4; ++i)
+			for (byte i = 0; i < getModeCount(); ++i)
 			{
 				ItemStack stack = new ItemStack(this);
-                stack.getOrCreateTag().putByte(TAG_MODE, i);
+                stack.getOrCreateTag().putByte(getModeTag(), i);
 				list.add(stack);
 			}
 		}
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
-	{
-        return stack.getOrCreateTag().getByte(TAG_MODE);
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-        byte newMode = (byte) ((stack.getOrCreateTag().getByte(TAG_MODE) + 1) % 4);
-		stack.getTag().putByte(TAG_MODE, newMode);
-		return true;
+	public String[] getModeTranslationKeys() {
+		return modes;
 	}
 	
 	private void tick(ItemStack stack, World world, ServerPlayerEntity player)
 	{
         if(stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
 		{
-			switch(stack.getTag().getByte(TAG_MODE))
+			switch(getMode(stack))
 			{
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().grow(5), player, true);
@@ -128,8 +129,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 			}
 			else
 			{
-				list.add(new TranslationTextComponent("pe.arcana.mode")
-						.appendSibling(new TranslationTextComponent(I18n.format("pe.arcana.mode." + stack.getTag().getByte(TAG_MODE))).setStyle(new Style().setColor(TextFormatting.AQUA))));
+				list.add(getToolTip(stack));
 			}
 		}
 	}
@@ -155,7 +155,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		
 		if(world.isRemote) return true;
 
-        switch(stack.getOrCreateTag().getByte(TAG_MODE))
+        switch(getMode(stack))
 		{
 			case 1: // ignition
 				switch(player.getHorizontalFacing())
@@ -199,7 +199,7 @@ public class Arcana extends ItemPE implements IModeChanger, IFlightProvider, IFi
 		
 		if(world.isRemote) return false;
 
-        switch(stack.getOrCreateTag().getByte(TAG_MODE))
+        switch(getMode(stack))
 		{
 			case 0: // zero
 				SnowballEntity snowball = new SnowballEntity(world, player);

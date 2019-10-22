@@ -1,5 +1,8 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -19,23 +22,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
-public class Ignition extends RingToggle implements IPedestalItem, IFireProtector, IProjectileShooter
+public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter
 {
 	public Ignition(Properties props)
 	{
@@ -66,14 +64,6 @@ public class Ignition extends RingToggle implements IPedestalItem, IFireProtecto
 		{
 			WorldHelper.extinguishNearby(world, player);
 		}
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-        CompoundNBT tag = stack.getOrCreateTag();
-		tag.putBoolean(TAG_ACTIVE, !tag.getBoolean(TAG_ACTIVE));
-		return true;
 	}
 
 	@Nonnull

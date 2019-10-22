@@ -1,9 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
@@ -19,10 +22,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Items;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -42,17 +46,21 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode
 {
+	private final String[] modes;
+
 	public GemEternalDensity(Properties props)
 	{
 		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
+		modes = new String[] {
+			"item.minecraft.iron_ingot",
+			"item.minecraft.gold_ingot",
+			"item.minecraft.diamond",
+			"item.projecte.dark_matter",
+			"item.projecte.red_matter"
+		};
 	}
 	
 	@Override
@@ -168,28 +176,14 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 	
-	private String getTargetName(ItemStack stack)
-	{
-        switch(stack.getOrCreateTag().getByte("Target"))
-		{
-			case 0:
-				return "item.ingotIron.name";
-			case 1:
-				return "item.ingotGold.name";
-			case 2:
-				return "item.diamond.name";
-			case 3:
-				return "item.pe_matter_dark.name";
-			case 4:
-				return "item.pe_matter_red.name";
-			default:
-				return "INVALID";
-		}
-	}
-	
 	private static ItemStack getTarget(ItemStack stack)
 	{
-        byte target = stack.getOrCreateTag().getByte("Target");
+		Item item = stack.getItem();
+		if (!(item instanceof GemEternalDensity)) {
+			PECore.LOGGER.fatal("Invalid gem of eternal density: {}", stack);
+			return ItemStack.EMPTY;
+		}
+		byte target = ((GemEternalDensity) item).getMode(stack);
 		switch (target)
 		{
 			case 0:
@@ -306,27 +300,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public byte getMode(@Nonnull ItemStack stack)
-	{
-        return stack.getOrCreateTag().getByte("Target");
-	}
-
-	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
-		byte oldMode = getMode(stack);
-
-		if (oldMode == 4)
-		{
-            stack.getOrCreateTag().putByte("Target", (byte) 0);
-		}
-		else
-		{
-            stack.getOrCreateTag().putByte("Target", (byte) (oldMode + 1));
-		}
-
-		player.sendMessage(new TranslationTextComponent("pe.gemdensity.mode_switch").appendText(" ").appendSibling(new TranslationTextComponent(getTargetName(stack))));
-		return true;
+	public String[] getModeTranslationKeys() {
+		return modes;
 	}
 	
 	@Override
@@ -337,7 +312,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		
 		if (stack.hasTag())
 		{
-			list.add(new TranslationTextComponent("pe.gemdensity.tooltip2").appendSibling(new TranslationTextComponent(getTargetName(stack))));
+			list.add(new TranslationTextComponent("pe.gemdensity.tooltip2").appendSibling(new TranslationTextComponent(getModeTranslationKey(stack))));
 		}
 		list.add(new TranslationTextComponent("pe.gemdensity.tooltip3", ClientKeyHelper.getKeyName(PEKeybind.MODE)));
 		list.add(new TranslationTextComponent("pe.gemdensity.tooltip4"));

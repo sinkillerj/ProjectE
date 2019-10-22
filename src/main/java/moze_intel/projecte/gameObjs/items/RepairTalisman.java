@@ -5,7 +5,7 @@ import moze_intel.projecte.api.item.IAlchChestItem;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.rings.RingToggle;
+import moze_intel.projecte.gameObjs.items.rings.PEToggleItem;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
@@ -160,7 +160,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 
-				if (invStack.isEmpty() || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable(invStack))
+				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack))
 				{
 					continue;
 				}
@@ -206,7 +206,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			{
 				ItemStack invStack = inv.getStackInSlot(i);
 
-				if (invStack.isEmpty() || invStack.getItem() instanceof RingToggle || !invStack.getItem().isRepairable(invStack))
+				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack))
 				{
 					continue;
 				}
