@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 public final class Constants 
 {
+	//TODO: Make sure these support countries that have decimals and commas the opposite way
 	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
 	public static final DecimalFormat SINGLE_DP_EMC_FORMATTER = new DecimalFormat("#,###.#");
 

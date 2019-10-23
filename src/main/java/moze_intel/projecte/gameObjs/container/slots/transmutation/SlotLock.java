@@ -4,9 +4,10 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
+import java.math.BigInteger;
+import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -41,18 +42,8 @@ public class SlotLock extends SlotItemHandler
 		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.orElse(null);
-			long remainEmc = Constants.TILE_MAX_EMC - inv.provider.getEmc();
-			
-			if (emcHolder.getStoredEmc(stack) >= remainEmc)
-			{
-				inv.addEmc(remainEmc);
-				emcHolder.extractEmc(stack, remainEmc, EmcAction.EXECUTE);
-			}
-			else
-			{
-				inv.addEmc(emcHolder.getStoredEmc(stack));
-				emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);
-			}
+			inv.addEmc(BigInteger.valueOf(emcHolder.getStoredEmc(stack)), EmcAction.EXECUTE);
+			emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);
 		}
 		
 		if (EMCHelper.doesItemHaveEmc(stack)) {

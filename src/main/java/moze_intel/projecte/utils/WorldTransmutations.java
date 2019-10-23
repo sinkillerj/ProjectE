@@ -1,20 +1,19 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.InterModComms;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public final class WorldTransmutations
 {

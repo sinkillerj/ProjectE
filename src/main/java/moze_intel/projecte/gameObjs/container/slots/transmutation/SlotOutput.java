@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import java.math.BigInteger;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nonnull;
 
 public class SlotOutput extends SlotItemHandler
 {
@@ -24,8 +24,8 @@ public class SlotOutput extends SlotItemHandler
 	{
 		ItemStack stack = getStack().copy();
 		stack.setCount(amount);
-		long emcValue = amount * EMCHelper.getEmcValue(stack);
-		if (emcValue > inv.getAvailableEMC()) {
+		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack)).multiply(BigInteger.valueOf(amount));
+		if (emcValue.compareTo(inv.getAvailableEMC()) > 0) {
 			//Requesting more emc than available
 			//Container expects stacksize=0-Itemstack for 'nothing'
 			stack.setCount(0);
@@ -48,6 +48,6 @@ public class SlotOutput extends SlotItemHandler
 	
 	@Override
 	public boolean canTakeStack(PlayerEntity player) {
-		return !getHasStack() || EMCHelper.getEmcValue(getStack()) <= inv.getAvailableEMC();
+		return !getHasStack() || BigInteger.valueOf(EMCHelper.getEmcValue(getStack())).compareTo(inv.getAvailableEMC()) <= 0;
 	}
 }

@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import java.math.BigInteger;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
@@ -30,8 +32,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
 
 /**
  * Helper class for player-related methods.
@@ -171,6 +171,17 @@ public final class PlayerHelper
 	{
 		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
+	}
+
+	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, BigInteger value) {
+		int val;
+		//TODO: Should this be stored in a constant
+		if (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+			val = Integer.MAX_VALUE;
+		} else {
+			val = value.intValueExact();
+		}
+		updateScore(player, objective, val);
 	}
 
 	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value)

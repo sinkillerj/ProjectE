@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import java.math.BigInteger;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
@@ -27,16 +28,9 @@ public class SlotConsume extends SlotItemHandler
 		}
 		
 		ItemStack cache = stack.copy();
-		
-		long toAdd = 0;
-		
-		while (!inv.hasMaxedEmc() && stack.getCount() > 0)
-		{
-			toAdd += EMCHelper.getEmcSellValue(stack);
-			stack.shrink(1);
-		}
-		
-		inv.addEmc(toAdd);
+		inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
+		//TODO: Figure out if setting the count to zero needed
+		stack.setCount(0);
 		this.onSlotChanged();
 		inv.handleKnowledge(cache);
 	}
@@ -44,6 +38,6 @@ public class SlotConsume extends SlotItemHandler
 	@Override
 	public boolean isItemValid(@Nonnull ItemStack stack)
 	{
-		return !inv.hasMaxedEmc() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome);
+		return EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome;
 	}
 }

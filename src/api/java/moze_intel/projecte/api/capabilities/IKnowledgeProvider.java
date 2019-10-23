@@ -1,5 +1,6 @@
 package moze_intel.projecte.api.capabilities;
 
+import java.math.BigInteger;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -64,12 +65,12 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT>
     /**
      * @return The emc in this player's transmutation tablet network
      */
-    long getEmc();
+    BigInteger getEmc();
 
     /**
      * @param emc The emc to set in this player's transmutation tablet network
      */
-    void setEmc(long emc);
+    void setEmc(BigInteger emc);
 
     /**
      * @param player The player to sync to.

@@ -55,7 +55,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
-		String emc = TransmutationEMCFormatter.EMCFormat(toDisplay);
+		String emc = TransmutationEMCFormatter.formatEMC(toDisplay);
 		this.font.drawString(emc, 140, 10, 4210752);
 	}
 

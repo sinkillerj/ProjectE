@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
+import java.math.BigInteger;
+import moze_intel.projecte.api.item.IItemEmc;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -55,16 +57,18 @@ public class SlotInput extends SlotItemHandler
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.orElse(null);
 			long remainingEmc = emcHolder.getNeededEmc(stack);
-			long availableEMC = inv.getAvailableEMC();
+			BigInteger availableEMC = inv.getAvailableEMC();
+			BigInteger remainingBigInt = BigInteger.valueOf(remainingEmc);
 
-			if (availableEMC >= remainingEmc)
+			if (availableEMC.compareTo(remainingBigInt) >= 0)
 			{
 				emcHolder.insertEmc(stack, remainingEmc, EmcAction.EXECUTE);
-				inv.removeEmc(remainingEmc);
+				inv.removeEmc(remainingBigInt);
 			}
 			else
 			{
-				emcHolder.insertEmc(stack, availableEMC, EmcAction.EXECUTE);
+				//Can use longValueExact, as this should ALWAYS be less than max long, because we only get here if we have less than remainingEmc
+				emcHolder.insertEmc(stack, availableEMC.longValueExact(), EmcAction.EXECUTE);
 				inv.removeEmc(availableEMC);
 			}
 		}

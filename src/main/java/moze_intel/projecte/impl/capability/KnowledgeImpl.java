@@ -1,5 +1,12 @@
 package moze_intel.projecte.impl.capability;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -22,18 +29,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public final class KnowledgeImpl {
 
@@ -59,7 +59,7 @@ public final class KnowledgeImpl {
         private final PlayerEntity player;
         private final List<ItemStack> knowledge = new ArrayList<>();
         private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
-        private long emc = 0;
+        private BigInteger emc = BigInteger.ZERO;
         private boolean fullKnowledge = false;
 
         private DefaultImpl(@Nullable PlayerEntity player) {
@@ -193,12 +193,12 @@ public final class KnowledgeImpl {
         }
 
         @Override
-        public long getEmc() {
+        public BigInteger getEmc() {
             return emc;
         }
 
         @Override
-        public void setEmc(long emc) {
+        public void setEmc(BigInteger emc) {
             this.emc = emc;
         }
 
@@ -212,7 +212,7 @@ public final class KnowledgeImpl {
         public CompoundNBT serializeNBT()
         {
             CompoundNBT properties = new CompoundNBT();
-            properties.putLong("transmutationEmc", emc);
+            properties.putString("transmutationEmc", emc.toString());
 
             ListNBT knowledgeWrite = new ListNBT();
             for (ItemStack i : knowledge)
@@ -230,7 +230,8 @@ public final class KnowledgeImpl {
         @Override
         public void deserializeNBT(CompoundNBT properties)
         {
-            emc = properties.getLong("transmutationEmc");
+            String transmutationEmc = properties.getString("transmutationEmc");
+            emc = transmutationEmc.isEmpty () ? BigInteger.ZERO : new BigInteger(transmutationEmc);
 
             ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++)

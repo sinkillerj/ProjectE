@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Locale;
 import moze_intel.projecte.PECore;
@@ -82,10 +83,10 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
 		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
-		long emcAmount = inv.getAvailableEMC();
+		BigInteger emcAmount = inv.getAvailableEMC();
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
 		this.font.drawString(emcLabel, 6, this.ySize - 104, 4210752);
-		String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);
+		String emc = TransmutationEMCFormatter.formatEMC(emcAmount);
 		this.font.drawString(emc, 6, this.ySize - 94, 4210752);
 
 		if (inv.learnFlag > 0)
@@ -198,9 +199,10 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 
 	@Override
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		long emcAmount = inv.getAvailableEMC();
+		BigInteger emcAmount = inv.getAvailableEMC();
 
-		if (emcAmount < 1e12) {
+		//TODO: Should this be put into a constant
+		if (emcAmount.compareTo(BigInteger.valueOf(1_000_000_000_000L)) < 0) {
 			super.renderHoveredToolTip(mouseX, mouseY);
 			return;
 		}
