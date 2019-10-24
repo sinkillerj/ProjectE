@@ -11,17 +11,15 @@ import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
-import moze_intel.projecte.emc.json.NSSFluidTag;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,15 +33,15 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	private static void addMelting(ResourceLocation itemTagId, ResourceLocation fluidTag, int amount) {
-		addMelting(NSSTag.create(itemTagId), fluidTag, amount);
+		addMelting(NSSItem.createTag(itemTagId), fluidTag, amount);
 	}
 
 	private static void addMelting(Item item, String fluidName, int amount) {
-		addMelting(new NSSItem(item), new ResourceLocation("forge", fluidName), amount);
+		addMelting(NSSItem.createItem(item), new ResourceLocation("forge", fluidName), amount);
 	}
 
 	private static void addMelting(Block block, String fluidName, int amount) {
-		addMelting(new NSSItem(block), new ResourceLocation("forge", fluidName), amount);
+		addMelting(NSSItem.createItem(block), new ResourceLocation("forge", fluidName), amount);
 	}
 
 	private static void addMelting(NormalizedSimpleStack stack, ResourceLocation fluidTag, int amount) {
@@ -95,16 +93,17 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
-		mapper.setValueBefore(NSSFluid.create(Fluids.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+		mapper.setValueBefore(NSSFluid.createTag(FluidTags.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
-		mapper.addConversion(1000, NSSFluid.create(Fluids.LAVA), Collections.singletonList(new NSSItem(Blocks.OBSIDIAN)));
+		mapper.addConversion(1000, NSSFluid.createTag(FluidTags.LAVA), Collections.singletonList(NSSItem.createItem(Blocks.OBSIDIAN)));
 
+		NSSItem bucketNSS = NSSItem.createItem(Items.BUCKET);
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NSSFake.create("fakeMilkFluid");
 		mapper.setValueBefore(fakeMilkFluid, 16L);
-		mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), Arrays.asList(new NSSItem(Items.BUCKET), fakeMilkFluid));
+		mapper.addConversion(1, NSSItem.createItem(Items.MILK_BUCKET), Arrays.asList(bucketNSS, fakeMilkFluid));
 
-		NormalizedSimpleStack milkNSS = NSSFluidTag.create(new ResourceLocation("forge", "milk"));
+		NSSFluid milkNSS = NSSFluid.createTag(new ResourceLocation("forge", "milk"));
 		mapper.addConversion(1000, milkNSS, Collections.singletonList(fakeMilkFluid));
 
 		if (!(mapper instanceof IExtendedMappingCollector))
@@ -113,16 +112,16 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair : melting) {
-			emapper.addConversion(pair.getValue().getAmount(), NSSFluid.create(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+			emapper.addConversion(pair.getValue().getAmount(), NSSFluid.createFluid(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 		for (Pair<NormalizedSimpleStack, Pair<ResourceLocation, Integer>> pair : meltingAlt) {
-			emapper.addConversion(pair.getValue().getValue(), NSSFluidTag.create(pair.getValue().getKey()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+			emapper.addConversion(pair.getValue().getValue(), NSSFluid.createTag(pair.getValue().getKey()), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 
 		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps
-		mapper.addConversion(1, new NSSItem(Items.WATER_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(Fluids.WATER), 1000));
-		mapper.addConversion(1, new NSSItem(Items.LAVA_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, NSSFluid.create(Fluids.LAVA), 1000));
-		mapper.addConversion(1, new NSSItem(Items.MILK_BUCKET), ImmutableMap.of(new NSSItem(Items.BUCKET), 1, milkNSS, 1000));
+		mapper.addConversion(1, NSSItem.createItem(Items.WATER_BUCKET), ImmutableMap.of(bucketNSS, 1, NSSFluid.createTag(FluidTags.WATER), 1000));
+		mapper.addConversion(1, NSSItem.createItem(Items.LAVA_BUCKET), ImmutableMap.of(bucketNSS, 1, NSSFluid.createTag(FluidTags.LAVA), 1000));
+		mapper.addConversion(1, NSSItem.createItem(Items.MILK_BUCKET), ImmutableMap.of(bucketNSS, 1, milkNSS, 1000));
 	}
 
 	@Override

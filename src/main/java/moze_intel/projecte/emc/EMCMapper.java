@@ -1,6 +1,15 @@
 package moze_intel.projecte.emc;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -19,6 +28,7 @@ import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.mappers.CustomEMCMapper;
 import moze_intel.projecte.emc.mappers.FluidMapper;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
+import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
@@ -28,16 +38,6 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class EMCMapper 
 {
@@ -120,7 +120,7 @@ public final class EMCMapper
 				}
 			}
 			DumpToFileCollector.currentGroupName = "NSSHelper";
-			NormalizedSimpleStack.addMappings(mappingCollector);
+			TagMapper.addMappings(mappingCollector);
 
 			PECore.debugLog("Mapping Collection finished");
 			mappingCollector.finishCollection();

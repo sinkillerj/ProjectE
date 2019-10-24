@@ -39,7 +39,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput.isEmpty()) continue;
-			NormalizedSimpleStack recipeOutputNorm = new NSSItem(recipeOutput);
+			NormalizedSimpleStack recipeOutputNorm = NSSItem.createItem(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
 				if (!EMCMapper.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true))
@@ -51,9 +51,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						for (ItemStack stack : variation.fixedIngredients) {
 							if (stack.isEmpty()) continue;
 							if (stack.getItem().hasContainerItem(stack)) {
-								ingredientMap.addIngredient(new NSSItem(stack.getItem().getContainerItem(stack)), -1);
+								ingredientMap.addIngredient(NSSItem.createItem(stack.getItem().getContainerItem(stack)), -1);
 							}
-							ingredientMap.addIngredient(new NSSItem(stack), 1);
+							ingredientMap.addIngredient(NSSItem.createItem(stack), 1);
 						}
 						for (Iterable<ItemStack> multiIngredient : variation.multiIngredients) {
 							NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
@@ -62,9 +62,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 								if (stack.isEmpty()) continue;
 								IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 								if (stack.getItem().hasContainerItem(stack)) {
-									groupIngredientMap.addIngredient(new NSSItem(stack.getItem().getContainerItem(stack)), -1);
+									groupIngredientMap.addIngredient(NSSItem.createItem(stack.getItem().getContainerItem(stack)), -1);
 								}
-								groupIngredientMap.addIngredient(new NSSItem(stack), 1);
+								groupIngredientMap.addIngredient(NSSItem.createItem(stack), 1);
 								mapper.addConversion(1, dummy, groupIngredientMap.getMap());
 							}
 						}

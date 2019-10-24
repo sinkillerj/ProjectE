@@ -9,7 +9,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -88,7 +87,7 @@ public final class CustomEMCParser
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG))) {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem || e.item instanceof NSSTag) || e.emc < 0);
+			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem) || e.emc < 0);
 		} catch (IOException | JsonParseException e) {
 			PECore.LOGGER.fatal("Couldn't read custom emc file");
 			e.printStackTrace();
@@ -100,11 +99,11 @@ public final class CustomEMCParser
 	{
 		if (str.startsWith("#"))
 		{
-			return NSSTag.create(str.substring(1));
+			return NSSItem.createTag(new ResourceLocation(str.substring(1)));
 		}
 		else
 		{
-			return new NSSItem(new ResourceLocation(str));
+			return NSSItem.createItem(new ResourceLocation(str));
 		}
 	}
 

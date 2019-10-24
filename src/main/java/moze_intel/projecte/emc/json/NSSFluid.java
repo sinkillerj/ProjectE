@@ -1,38 +1,92 @@
 package moze_intel.projecte.emc.json;
 
-import net.minecraft.fluid.Fluid;
-
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.PECore;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
-public class NSSFluid implements NormalizedSimpleStack {
-	public final String name;
+public class NSSFluid implements NSSTag {
 
-	private NSSFluid(Fluid f) {
-		this.name = f.getRegistryName().toString();
+	@Nonnull
+	private final ResourceLocation fluidName;
+	private final boolean isTag;
+
+	private NSSFluid(Fluid fluid) {
+		//This should never be null or it would have crashed on being registered
+		fluidName = fluid.getRegistryName();
+		isTag = false;
+	}
+
+	private NSSFluid(@Nonnull ResourceLocation tagId) {
+		fluidName = tagId;
+		isTag = false;
 	}
 
 	@Nonnull
-	public static NormalizedSimpleStack create(Fluid fluid) {
+	public static NSSFluid createFluid(@Nonnull Fluid fluid) {
 		return new NSSFluid(fluid);
+	}
+
+	@Nonnull
+	public static NSSFluid createTag(@Nonnull ResourceLocation tagId) {
+		return new NSSFluid(tagId);
+	}
+
+	@Nonnull
+	public static NSSFluid createTag(@Nonnull Tag<Fluid> tag) {
+		//TODO: Decide if we want to store it as a tag or the resource location of the tag
+		return createTag(tag.getId());
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof NSSFluid && name.equals(((NSSFluid) o).name);
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof NSSFluid) {
+			NSSFluid other = (NSSFluid) o;
+			return isTag == other.isTag && fluidName.equals(other.fluidName);
+		}
+		return false;
 	}
 
 	@Override
 	public String json() {
-		return "FLUID|" + this.name;
+		if (isTag) {
+			return "FLUID|#" + fluidName;
+		}
+		return "FLUID|" + fluidName;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.name.hashCode();
+		if (isTag) {
+			return 31 + fluidName.hashCode();
+		}
+		return fluidName.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return "Fluid: " + this.name;
+		if (isTag) {
+			return "Fluid Tag: " + fluidName;
+		}
+		return "Fluid: " + fluidName;
+	}
+
+	@Override
+	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
+		if (isTag) {
+			Tag<Fluid> tag = FluidTags.getCollection().get(fluidName);
+			if (tag == null) {
+				//TODO: Decide what to do about this warning given for example it theoretically will be thrown each time for milk if there is no milk loaded
+				PECore.LOGGER.warn("Couldn't find fluid tag {}", fluidName);
+			} else {
+				tag.getAllElements().stream().map(NSSFluid::createFluid).forEach(consumer);
+			}
+		}
 	}
 }

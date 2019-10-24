@@ -73,28 +73,28 @@ class CustomConversionMapperTest
 		List<CustomConversion> conversions = group.conversions;
 		{
 			CustomConversion conversion = conversions.get(0);
-			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
+			Assertions.assertEquals(NSSItem.createItem(new ResourceLocation("out_a")), conversion.output);
 			Assertions.assertEquals(1, conversion.count);
 			Assertions.assertEquals(3, conversion.ingredients.size());
-			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-			Assertions.assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-			Assertions.assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing1"))));
+			Assertions.assertEquals(2, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing2"))));
+			Assertions.assertEquals(3, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(1);
-			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_b")), conversion.output);
+			Assertions.assertEquals(NSSItem.createItem(new ResourceLocation("out_b")), conversion.output);
 			Assertions.assertEquals(1, conversion.count);
 			Assertions.assertEquals(3, conversion.ingredients.size());
-			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-			Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing1"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing2"))));
+			Assertions.assertEquals(1, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing3"))));
 		}
 		{
 			CustomConversion conversion = conversions.get(2);
-			Assertions.assertEquals(new NSSItem(new ResourceLocation("out_c")), conversion.output);
+			Assertions.assertEquals(NSSItem.createItem(new ResourceLocation("out_c")), conversion.output);
 			Assertions.assertEquals(3, conversion.count);
 			Assertions.assertEquals(1, conversion.ingredients.size());
-			Assertions.assertEquals(3, (int) conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
+			Assertions.assertEquals(3, (int) conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing1"))));
 		}
 	}
 
@@ -114,10 +114,10 @@ class CustomConversionMapperTest
 						"}";
 		CustomConversionFile f = CustomConversionMapper.parseJson(new StringReader(simpleFile));
 		Assertions.assertNotNull(f.values);
-		Assertions.assertEquals(1, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("a"))).longValue());
-		Assertions.assertEquals(2, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("b"))).longValue());
-		Assertions.assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(new NSSItem(new ResourceLocation("c"))).longValue());
-		Assertions.assertEquals(3, f.values.setValueAfter.get(new NSSItem(new ResourceLocation("d"))).longValue());
+		Assertions.assertEquals(1, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("a"))).longValue());
+		Assertions.assertEquals(2, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("b"))).longValue());
+		Assertions.assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("c"))).longValue());
+		Assertions.assertEquals(3, f.values.setValueAfter.get(NSSItem.createItem(new ResourceLocation("d"))).longValue());
 
 	}
 
@@ -137,12 +137,12 @@ class CustomConversionMapperTest
 		Assertions.assertNotNull(f.values.conversion);
 		Assertions.assertEquals(1, f.values.conversion.size());
 		CustomConversion conversion = f.values.conversion.get(0);
-		Assertions.assertEquals(new NSSItem(new ResourceLocation("out_a")), conversion.output);
+		Assertions.assertEquals(NSSItem.createItem(new ResourceLocation("out_a")), conversion.output);
 		Assertions.assertEquals(1, conversion.count);
 		Assertions.assertEquals(3, conversion.ingredients.size());
-		Assertions.assertEquals(1, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing1"))));
-		Assertions.assertEquals(2, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing2"))));
-		Assertions.assertEquals(3, (int)conversion.ingredients.get(new NSSItem(new ResourceLocation("ing3"))));
+		Assertions.assertEquals(1, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing1"))));
+		Assertions.assertEquals(2, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing2"))));
+		Assertions.assertEquals(3, (int)conversion.ingredients.get(NSSItem.createItem(new ResourceLocation("ing3"))));
 	}
 
 	@Test

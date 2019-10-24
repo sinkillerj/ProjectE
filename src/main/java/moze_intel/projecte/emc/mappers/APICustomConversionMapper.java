@@ -2,14 +2,18 @@ package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSFake;
 import moze_intel.projecte.emc.json.NSSFluid;
 import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NSSTag;
 import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,12 +21,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,Long>
 {
@@ -79,20 +77,20 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
 	NormalizedSimpleStack objectToNSS(String modId, Object object)
 	{
 		if (object instanceof Block) {
-			return new NSSItem((Block) object);
+			return NSSItem.createItem((Block) object);
 		} else if (object instanceof Item) {
-			return new NSSItem((Item) object);
+			return NSSItem.createItem((Item) object);
 		} else if (object instanceof ItemStack) {
-			return new NSSItem((ItemStack) object);
+			return NSSItem.createItem((ItemStack) object);
 		} else if (object instanceof FluidStack) {
-			return NSSFluid.create(((FluidStack) object).getFluid());
+			return NSSFluid.createFluid(((FluidStack) object).getFluid());
 		} else if (object instanceof ResourceLocation) {
 			//TODO: 1.14, Figure out if this should be an item or a fluid
-			return NSSTag.create(object.toString());
+			return NSSItem.createTag((ResourceLocation) object);
 		} else if (object != null && object.getClass() == Object.class) {
 			return fakes.computeIfAbsent(object, o -> NSSFake.create("" + object + " by " + modId));
 		} else {
-			throw new IllegalArgumentException("Cannot turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. need ItemStack, FluidStack, String or 'Object'");
+			throw new IllegalArgumentException("Cannot turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. need ItemStack, FluidStack, ResourceLocation or 'Object'");
 		}
 	}
 
