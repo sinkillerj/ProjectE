@@ -2,11 +2,13 @@ package moze_intel.projecte.emc.mappers.customConversions;
 
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
+import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import net.minecraft.util.ResourceLocation;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +18,16 @@ import java.util.List;
 @DisplayName("Test Custom Conversion Mappers")
 class CustomConversionMapperTest
 {
+
+	@BeforeAll
+	@DisplayName("Manually load the default supported json serializers")
+	static void setupAdditionalSerializers() {
+		//IMC/init does not happen in
+		NSSSerializer.INSTANCE.addCreator("FAKE", NSSSerializer.fakeCreator);
+		NSSSerializer.INSTANCE.addCreator("ITEM", NSSSerializer.itemCreator);
+		NSSSerializer.INSTANCE.addCreator("FLUID", NSSSerializer.fluidCreator);
+	}
+
 	@Test
 	@DisplayName("Test conversion file that only contains a comment")
 	void testCommentOnlyCustomConversionFileJson() {

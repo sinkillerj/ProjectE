@@ -1,10 +1,9 @@
 package moze_intel.projecte.api;
 
-import moze_intel.projecte.PECore;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder(PECore.MODID)
+@ObjectHolder(ProjectEAPI.PROJECTE_MODID)
 public final class PESounds
 {
     @ObjectHolder("windmagic")

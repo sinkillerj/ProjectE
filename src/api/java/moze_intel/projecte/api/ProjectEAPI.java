@@ -14,6 +14,7 @@ public final class ProjectEAPI
 	private static IEMCProxy emcProxy;
 	private static ITransmutationProxy transProxy;
 	private static final Logger LOGGER = LogManager.getLogger("projecteapi");
+	public static final String PROJECTE_MODID = "projecte";
 
 	private ProjectEAPI() {}
 

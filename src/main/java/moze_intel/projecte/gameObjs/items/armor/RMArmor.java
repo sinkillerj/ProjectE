@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-// todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
+//TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
 public class RMArmor extends ArmorItem
 {
 	public RMArmor(EquipmentSlotType armorType, Properties props)
@@ -36,21 +36,6 @@ public class RMArmor extends ArmorItem
 		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/redmatter_"+index+".png";
 	}
-
-	/* todo 1.13
-	@Override
-	@Optional.Method(modid = "Thaumcraft")
-	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
-	}
-
-	@Override
-	@Optional.Method(modid = "Thaumcraft")
-	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) 
-	{
-		return ((RMArmor) itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD;
-	}*/
 
 	private static class RMArmorMaterial implements IArmorMaterial {
 

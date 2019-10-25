@@ -53,7 +53,6 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	static {
-		//TODO: 1.14 Ask tinkers people what they probably will do for the base tags of different molten things metals
 		addMelting(Blocks.OBSIDIAN, "molten/obisidan", 288);
 		addMelting(Blocks.GLASS, "molten/glass", 1000);
 		addMelting(Blocks.GLASS_PANE, "molten/glass", 250);

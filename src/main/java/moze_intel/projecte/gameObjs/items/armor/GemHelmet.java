@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-// todo 1.13 @Optional.InterfaceList(value = {@Optional.Interface(iface = "thaumcraft.api.items.IRevealer", modid = "Thaumcraft"), @Optional.Interface(iface = "thaumcraft.api.items.IGoggles", modid = "Thaumcraft")})
+//TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
 public class GemHelmet extends GemArmorBase
 {
     public GemHelmet(Properties props)
@@ -123,22 +123,6 @@ public class GemHelmet extends GemArmorBase
             }
         }
     }
-
-    /* todo 1.13
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean showIngamePopups(ItemStack stack, EntityLivingBase player)
-    {
-        return true;
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean showNodes(ItemStack stack, EntityLivingBase player)
-    {
-        return true;
-    }
-    */
 
     public void doZap(PlayerEntity player)
     {

@@ -2,7 +2,6 @@ package moze_intel.projecte.api.nss;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
@@ -20,9 +19,9 @@ public final class NSSFluid implements NSSTag {
 		isTag = false;
 	}
 
-	private NSSFluid(@Nonnull ResourceLocation tagId) {
-		fluidName = tagId;
-		isTag = false;
+	private NSSFluid(@Nonnull ResourceLocation resourceLocation) {
+		fluidName = resourceLocation;
+		isTag = true;
 	}
 
 	@Nonnull
@@ -84,7 +83,7 @@ public final class NSSFluid implements NSSTag {
 			if (tag == null) {
 				//TODO: Decide what to do about this warning given for example it theoretically will be thrown each time for milk if there is no milk loaded
 				//TODO: FIXME this logger should not be accessed by the API package. Move over to multiple sourcesets to make it easier to not accidentally access non API?
-				PECore.LOGGER.warn("Couldn't find fluid tag {}", fluidName);
+				//PECore.LOGGER.warn("Couldn't find fluid tag {}", fluidName);
 			} else {
 				tag.getAllElements().stream().map(NSSFluid::createFluid).forEach(consumer);
 			}

@@ -28,9 +28,9 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 
 	public static NSSSerializer INSTANCE = new NSSSerializer();
 
-	private Map<String, NSSCreator> creatorHelper = new HashMap<>();
+	public static final NSSCreator fakeCreator = NSSFake::create;
 
-	private NSSCreator itemCreator = string -> {
+	public static final NSSCreator itemCreator = string -> {
 		if (string.startsWith("#")) {
 			try {
 				return NSSItem.createTag(new ResourceLocation(string.substring(1)));
@@ -45,6 +45,28 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 		}
 	};
 
+	public static final NSSCreator fluidCreator = fluidName -> {
+		if (fluidName.startsWith("#")) {
+			try {
+				return NSSFluid.createTag(new ResourceLocation(fluidName.substring(1)));
+			} catch (ResourceLocationException ex) {
+				throw new JsonParseException("Malformed fluid tag ID", ex);
+			}
+		}
+		Fluid fluid;
+		try {
+			fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+		} catch (ResourceLocationException e) {
+			throw new JsonParseException("Malformed fluid ID", e);
+		}
+		if (fluid == null) {
+			throw new JsonParseException("Tried to identify nonexistent fluid " + fluidName);
+		}
+		return NSSFluid.createFluid(fluid);
+	};
+
+	private Map<String, NSSCreator> creatorHelper = new HashMap<>();
+
 	public void addCreator(String key, NSSCreator creator) {
 		//TODO: Should we check if we already have one registered for the key?
 		creatorHelper.put(key, creator);
@@ -52,6 +74,7 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 
 	@Override
 	public NormalizedSimpleStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+		//TODO: Add tests to support the different ones we add
 		String s = json.getAsString();
 		if (s.contains("|")) {
 			String[] parts = s.split("\\|");
@@ -60,6 +83,7 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 				return creatorHelper.get(key).apply(parts[1]);
 			}
 		}
+		//Fallback to the item creator
 		return itemCreator.apply(s);
 	}
 
@@ -69,30 +93,14 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 	}
 
 	public static void init() {
-		//TODO: Do we also want to register the itemCreator via the ITEM key?
-		registerDefault("FAKE", NSSFake::create);
-		registerDefault("FLUID", fluidName -> {
-			if (fluidName.startsWith("#")) {
-				try {
-					return NSSFluid.createTag(new ResourceLocation(fluidName.substring(1)));
-				} catch (ResourceLocationException ex) {
-					throw new JsonParseException("Malformed fluid tag ID", ex);
-				}
-			}
-			Fluid fluid;
-			try {
-				fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
-			} catch (ResourceLocationException e) {
-				throw new JsonParseException("Malformed fluid ID", e);
-			}
-			if (fluid == null) {
-				throw new JsonParseException("Tried to identify nonexistent fluid " + fluidName);
-			}
-			return NSSFluid.createFluid(fluid);
-		});
+		registerDefault("FAKE", fakeCreator);
+		registerDefault("ITEM", itemCreator);
+		registerDefault("FLUID", fluidCreator);
 	}
 
 	private static void registerDefault(String key, NSSCreator creator) {
+		//Do it via IMC rather than using INSTANCE.addCreator, so that it is easier to make sure that the IMC support works
+		//TODO: Do we want to make it so that IMC makes a map that is immutable and then we set that as our helper?
 		InterModComms.sendTo(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER, () -> new NSSCreatorInfo(key, creator));
 	}
 }

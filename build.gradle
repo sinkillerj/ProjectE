@@ -14,11 +14,43 @@ buildscript {
 
 plugins {
     id "com.github.johnrengelman.shadow" version "1.2.4"
+    id 'java'
+    id 'eclipse'
+    id 'idea'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
+idea {
+    module {
+        //Exclude directories from being managed
+        for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
+            File excludeDir = new File(projectDir, excludeDirName)
+            excludeDirs.add(excludeDir)
+        }
+    }
+}
+
+sourceSets {
+    api {
+        java {
+            srcDir 'src/api/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+configurations {
+    //Let the api source set know about forge
+    apiCompile.extendsFrom(compile)
+}
 
 version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -42,29 +74,33 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
-            // recommended logging data for a userdev environment
             properties 'forge.logging.markers': 'REGISTRIES,REGISTRYDUMP'
-
-            // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
+            properties 'fml.earlyprogresswindow': 'false'
             mods {
                 projecte {
-                    source sourceSets.main
+                    sources(sourceSets.main, sourceSets.api)
                 }
             }
         }
         server {
             workingDirectory project.file('run')
-
-            // recommended logging data for a userdev environment
             properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
             mods {
                 projecte {
-                    source sourceSets.main
+                    sources(sourceSets.main, sourceSets.api)
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
+            properties 'fml.earlyprogresswindow': 'false'
+            mods {
+                projecte {
+                    sources(sourceSets.main, sourceSets.api)
                 }
             }
         }
@@ -118,6 +154,8 @@ dependencies {
 }
 
 jar {
+    from sourceSets.main.output
+    from sourceSets.api.output
     manifest {
         attributes([
             "Specification-Title": project.name,
@@ -131,7 +169,15 @@ jar {
     }
 }
 
+task apiJar(type: Jar) {
+    from sourceSets.api.output
+    classifier = "api"
+}
+
 shadowJar {
+    from sourceSets.main.output
+    from sourceSets.api.output
+
     // Only shadow apache commons-math3
     dependencies {
         include dependency('org.apache.commons:commons-math3:.*')
@@ -168,11 +214,17 @@ reobf {
     shadowJar {
         // Reobfuscate the shadowed JAR
     }
+    apiJar {
+        classpath = sourceSets.api.compileClasspath
+    }
 }
 
 // Dev jar (deobfuscated)
 task devJar(type: Jar) {
+    //TODO: What is the point of the dev jar, given we now have an API jar,
+    // and it being deobfuscated would make mappings have to match
     from sourceSets.main.output
+    from sourceSets.api.output
     classifier = 'dev'
     version = "${project.version}"
 
@@ -196,4 +248,5 @@ task updateJSON {
 
 artifacts {
     archives devJar
+    archives apiJar
 }
