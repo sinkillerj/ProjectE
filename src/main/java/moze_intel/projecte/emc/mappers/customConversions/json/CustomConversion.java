@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,7 @@
 package moze_intel.projecte.api.imc;
 
+import java.util.Map;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -7,13 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Map;
-
+//TODO: Update docs
 public class CustomConversionRegistration
 {
     private final int amount;
-    private final Object output;
-    private final Map<Object, Integer> input;
+    private final NormalizedSimpleStack output;
+    private final Map<NormalizedSimpleStack, Integer> input;
 
     /**
      * Declare to ProjectE's EMC calculation that something is made from something else
@@ -46,35 +47,21 @@ public class CustomConversionRegistration
      * @param output The result of this conversion
      * @param input The inputs to the conversion, mapping each ingredient to the amount needed
      */
-    public CustomConversionRegistration(int amount, Object output, Map<Object, Integer> input) {
+    public CustomConversionRegistration(int amount, NormalizedSimpleStack output, Map<NormalizedSimpleStack, Integer> input) {
         this.amount = amount;
         this.output = output;
         this.input = input;
-        typecheck(this.output);
-        for (Object o : input.keySet())
-        {
-            typecheck(o);
-        }
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public Object getOutput() {
+    public NormalizedSimpleStack getOutput() {
         return output;
     }
 
-    public Map<Object, Integer> getInput() {
+    public Map<NormalizedSimpleStack, Integer> getInput() {
         return input;
-    }
-
-    private static void typecheck(Object thing)
-    {
-        if (!(thing instanceof ItemStack || thing instanceof Item || thing instanceof Block || thing instanceof FluidStack
-            || thing instanceof ResourceLocation || thing.getClass() == Object.class))
-        {
-            throw new IllegalArgumentException("Thing does not have a supported type");
-        }
     }
 }

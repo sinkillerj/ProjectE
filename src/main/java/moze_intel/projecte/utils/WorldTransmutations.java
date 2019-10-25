@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.*;
 import net.minecraft.block.BlockState;
@@ -113,7 +114,7 @@ public final class WorldTransmutations
 
 	private static void registerDefault(Block from, Block result, Block altResult)
 	{
-		InterModComms.sendTo(PECore.MODID, "register_world_transmutation", () -> new WorldTransmutationEntry(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
+		InterModComms.sendTo(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION, () -> new WorldTransmutationEntry(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 
 	private static void registerConsecutivePairs(Block[] blocks)

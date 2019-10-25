@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
 import com.google.gson.annotations.SerializedName;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc.json;
+package moze_intel.projecte.api.nss;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -10,7 +10,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
-public class NSSItem implements NSSTag {
+public final class NSSItem implements NSSTag {
 
 	//TODO: Make private
 	@Nonnull
@@ -101,6 +101,7 @@ public class NSSItem implements NSSTag {
 		if (isTag) {
 			Tag<Item> tag = ItemTags.getCollection().get(itemName);
 			if (tag == null) {
+				//TODO: FIXME this logger should not be accessed by the API package. Move over to multiple sourcesets to make it easier to not accidentally access non API?
 				PECore.LOGGER.warn("Couldn't find item tag {}", itemName);
 			} else {
 				tag.getAllElements().stream().map(NSSItem::createItem).forEach(consumer);

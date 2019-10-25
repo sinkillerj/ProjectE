@@ -7,11 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import net.minecraft.util.ResourceLocation;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -19,10 +14,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.nss.NSSItem;
+import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.ResourceLocation;
 
 public final class CustomEMCParser
 {
-	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE).setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE).setPrettyPrinting().create();
 	private static final File CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.json");
 
 	public static class CustomEMCFile

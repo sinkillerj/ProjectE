@@ -4,7 +4,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.CustomConversionRegistration;
 import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.imc.IMCMethods;
+import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
+import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
@@ -50,7 +52,7 @@ public class IMCHandler
                 .filter(msg -> msg.getMessageSupplier().get() instanceof CustomEMCRegistration)
                 .forEach(msg -> {
                     CustomEMCRegistration registration = (CustomEMCRegistration) msg.getMessageSupplier().get();
-                    APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), registration.getThing(), registration.getValue());
+                    APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), registration.getStack(), registration.getValue());
                 });
 
         InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_CONVERSION::equals)
@@ -59,5 +61,10 @@ public class IMCHandler
                     CustomConversionRegistration registration = (CustomConversionRegistration) msg.getMessageSupplier().get();
                     APICustomConversionMapper.instance.addConversion(msg.getSenderModId(), registration.getAmount(), registration.getOutput(), registration.getInput());
                 });
+
+        InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER::equals)
+              .filter(msg -> msg.getMessageSupplier().get() instanceof NSSCreatorInfo)
+              .map(msg -> (NSSCreatorInfo) msg.getMessageSupplier().get())
+              .forEach(info -> NSSSerializer.INSTANCE.addCreator(info.getKey(), info.getCreator()));
     }
 }

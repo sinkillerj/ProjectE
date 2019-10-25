@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

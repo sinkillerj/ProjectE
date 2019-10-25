@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc.json;
+package moze_intel.projecte.api.nss;
 
 import java.util.function.Consumer;
 

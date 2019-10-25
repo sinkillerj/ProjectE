@@ -3,7 +3,7 @@ package moze_intel.projecte.emc.mappers;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.CustomEMCParser;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.resources.IResourceManager;
 

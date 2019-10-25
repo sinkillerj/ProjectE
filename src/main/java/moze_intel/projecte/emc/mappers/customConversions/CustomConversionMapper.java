@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.emc.json.NSSTag;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.api.nss.NSSTag;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.mappers.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
@@ -31,7 +32,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(CustomConversion.class, new CustomConversionDeserializer())
 			.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer())
-			.registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE)
+			.registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE)
 			.setPrettyPrinting()
 			.create();
 

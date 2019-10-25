@@ -40,4 +40,7 @@ public class IMCMethods
      * The Object sent must be an instance of {@link CustomConversionRegistration}, or else the message is ignored.
      */
     public static final String REGISTER_CUSTOM_CONVERSION = "register_custom_conversion";
+
+    //TODO: JavaDoc
+    public static final String REGISTER_NSS_SERIALIZER = "register_nss_serializer";
 }

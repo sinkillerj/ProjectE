@@ -3,8 +3,8 @@ package moze_intel.projecte.emc.mappers;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
+import moze_intel.projecte.api.nss.NSSItem;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.resources.IResourceManager;
 
@@ -23,8 +23,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 
-	public void registerCustomEMC(String modid, Object o, long emcValue) {
-		NormalizedSimpleStack stack = APICustomConversionMapper.instance.objectToNSS(modid, o);
+	public void registerCustomEMC(String modid, NormalizedSimpleStack stack, long emcValue) {
 		if (stack == null) return;
 		if (emcValue < 0) emcValue = 0;
 		customEMCforMod.computeIfAbsent(modid, k -> new HashMap<>()).put(stack, emcValue);

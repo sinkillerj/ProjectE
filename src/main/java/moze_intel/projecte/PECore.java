@@ -6,6 +6,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.EMCReloadListener;
+import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -203,6 +204,7 @@ public class PECore
 	private void imcQueue(InterModEnqueueEvent event)
 	{
 		WorldTransmutations.init();
+		NSSSerializer.init();
 	}
 
 	private void imcHandle(InterModProcessEvent event)

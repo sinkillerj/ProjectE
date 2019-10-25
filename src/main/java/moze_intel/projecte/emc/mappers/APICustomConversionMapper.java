@@ -7,20 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.emc.json.NSSFake;
-import moze_intel.projecte.emc.json.NSSFluid;
-import moze_intel.projecte.emc.json.NSSItem;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.ClassUtils;
 
 public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,Long>
 {
@@ -61,37 +52,14 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
 		}
 	}
 
-	public void addConversion(String modId, int amount, @Nonnull Object output, @Nonnull Map<Object, Integer> ingredients)
+	public void addConversion(String modId, int amount, @Nonnull NormalizedSimpleStack output, @Nonnull Map<NormalizedSimpleStack, Integer> ingredients)
 	{
-		NormalizedSimpleStack nssOut = objectToNSS(modId, output);
 		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
-		for (Map.Entry<Object, Integer> entry: ingredients.entrySet())
+		for (Map.Entry<NormalizedSimpleStack, Integer> entry: ingredients.entrySet())
 		{
-			NormalizedSimpleStack nss = objectToNSS(modId, entry.getKey());
-			ingredientMap.addIngredient(nss, entry.getValue());
+			ingredientMap.addIngredient(entry.getKey(), entry.getValue());
 		}
-		storedConversions.computeIfAbsent(modId, s -> new ArrayList<>())
-				.add(new APIConversion(amount, nssOut, ImmutableMap.copyOf(ingredientMap.getMap())));
-	}
-
-	NormalizedSimpleStack objectToNSS(String modId, Object object)
-	{
-		if (object instanceof Block) {
-			return NSSItem.createItem((Block) object);
-		} else if (object instanceof Item) {
-			return NSSItem.createItem((Item) object);
-		} else if (object instanceof ItemStack) {
-			return NSSItem.createItem((ItemStack) object);
-		} else if (object instanceof FluidStack) {
-			return NSSFluid.createFluid(((FluidStack) object).getFluid());
-		} else if (object instanceof ResourceLocation) {
-			//TODO: 1.14, Figure out if this should be an item or a fluid
-			return NSSItem.createTag((ResourceLocation) object);
-		} else if (object != null && object.getClass() == Object.class) {
-			return fakes.computeIfAbsent(object, o -> NSSFake.create("" + object + " by " + modId));
-		} else {
-			throw new IllegalArgumentException("Cannot turn " + object + " (" + ClassUtils.getPackageCanonicalName(object, "") + ") into NormalizedSimpleStack. need ItemStack, FluidStack, ResourceLocation or 'Object'");
-		}
+		storedConversions.computeIfAbsent(modId, s -> new ArrayList<>()).add(new APIConversion(amount, output, ImmutableMap.copyOf(ingredientMap.getMap())));
 	}
 
 	public static class APIConversion

@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
-import moze_intel.projecte.emc.json.NSSFake;
-import moze_intel.projecte.emc.json.NSSItem;
+import moze_intel.projecte.api.nss.NSSFake;
+import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;

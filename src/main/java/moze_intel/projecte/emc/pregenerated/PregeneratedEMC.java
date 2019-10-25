@@ -3,8 +3,6 @@ package moze_intel.projecte.emc.pregenerated;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import moze_intel.projecte.emc.json.NormalizedSimpleStack;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,11 +11,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
 public class PregeneratedEMC
 {
 	private static final Gson gson =  new GsonBuilder()
-			.registerTypeAdapter(NormalizedSimpleStack.class, NormalizedSimpleStack.Serializer.INSTANCE)
+			.registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE)
 			.enableComplexMapKeySerialization().setPrettyPrinting().create();
 
 	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Long> map)
