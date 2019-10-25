@@ -35,7 +35,7 @@ public class MovingSoundSWRG extends TickableSound
 			this.x = (float) this.swrgProjectile.posX;
 			this.y = (float) this.swrgProjectile.posY;
 			this.z = (float) this.swrgProjectile.posZ;
-			float f = MathHelper.sqrt(Entity.func_213296_b(this.swrgProjectile.getMotion()));
+			float f = MathHelper.sqrt(Entity.horizontalMag(this.swrgProjectile.getMotion()));
 
 			if ((double) f >= 0.01D)
 			{

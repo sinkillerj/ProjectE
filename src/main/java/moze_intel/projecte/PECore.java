@@ -2,6 +2,11 @@ package moze_intel.projecte;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
@@ -32,7 +37,11 @@ import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.*;
+import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
+import moze_intel.projecte.network.commands.RemoveEmcCMD;
+import moze_intel.projecte.network.commands.ResetEmcCMD;
+import moze_intel.projecte.network.commands.SetEmcCMD;
+import moze_intel.projecte.network.commands.ShowBagCMD;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
@@ -54,7 +63,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -75,12 +83,6 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Mod(PECore.MODID)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -111,7 +113,6 @@ public class PECore
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
-			MinecraftForge.EVENT_BUS.addListener(ClientHandler::registerRenders);
 		});
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
@@ -128,23 +129,8 @@ public class PECore
 			DeferredWorkQueue.runLater(() -> {
 				ClientKeyHelper.registerKeyBindings();
 			});
-		}
 
-		static void loadComplete(FMLLoadCompleteEvent evt)
-		{
-			// ClientSetup is too early to do this
-			DeferredWorkQueue.runLater(() -> {
-				Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
-				PlayerRenderer render = skinMap.get("default");
-				render.addLayer(new LayerYue(render));
-				render = skinMap.get("slim");
-				render.addLayer(new LayerYue(render));
-			});
-		}
-
-		static void registerRenders(ModelRegistryEvent evt)
-		{
-			// Tile Entity
+			//Tile Entity
 			ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());
 			ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new CondenserRenderer());
 			ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new CondenserMK2Renderer());
@@ -160,6 +146,18 @@ public class PECore
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, NovaCatalystRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, NovaCataclysmRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
+		}
+
+		static void loadComplete(FMLLoadCompleteEvent evt)
+		{
+			// ClientSetup is too early to do this
+			DeferredWorkQueue.runLater(() -> {
+				Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+				PlayerRenderer render = skinMap.get("default");
+				render.addLayer(new LayerYue(render));
+				render = skinMap.get("slim");
+				render.addLayer(new LayerYue(render));
+			});
 		}
 
 		private static <T extends Entity & IRendersAsItem> IRenderFactory<T> createRenderFactoryForSnowball()
