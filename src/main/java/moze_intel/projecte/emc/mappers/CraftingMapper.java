@@ -132,7 +132,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static class CraftingIngredients {
 		public final Iterable<ItemStack> fixedIngredients;
 		public final Iterable<Iterable<ItemStack>> multiIngredients;
-		public CraftingIngredients( Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
+		public CraftingIngredients(Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
 			this.fixedIngredients = fixedIngredients;
 			this.multiIngredients = multiIngredients;
 		}

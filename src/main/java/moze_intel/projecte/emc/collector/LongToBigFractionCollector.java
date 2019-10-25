@@ -1,9 +1,8 @@
 package moze_intel.projecte.emc.collector;
 
+import java.util.Map;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import org.apache.commons.math3.fraction.BigFraction;
-
-import java.util.Map;
 
 public class LongToBigFractionCollector<T, A extends IValueArithmetic> extends AbstractMappingCollector<T, Long, A>
 {

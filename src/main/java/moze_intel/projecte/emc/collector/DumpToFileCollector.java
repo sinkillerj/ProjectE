@@ -1,14 +1,13 @@
 package moze_intel.projecte.emc.collector;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 
 public class DumpToFileCollector<A extends IValueArithmetic> extends AbstractMappingCollector<NormalizedSimpleStack, Long, A>
 {

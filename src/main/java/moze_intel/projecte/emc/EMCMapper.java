@@ -60,12 +60,14 @@ public final class EMCMapper
 	public static void map(IResourceManager resourceManager)
 	{
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
-				APICustomEMCMapper.instance,
+			  APICustomEMCMapper.instance,
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
 				new FluidMapper(),
-				APICustomConversionMapper.instance
+				APICustomConversionMapper.instance,
+				//Note: Make sure the Tag Mapper is last so that it can "fix" all the tags used in any of the other mappers
+				new TagMapper()
 		);
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
@@ -120,7 +122,6 @@ public final class EMCMapper
 				}
 			}
 			DumpToFileCollector.currentGroupName = "NSSHelper";
-			TagMapper.addMappings(mappingCollector);
 
 			PECore.debugLog("Mapping Collection finished");
 			mappingCollector.finishCollection();

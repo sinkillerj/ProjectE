@@ -64,6 +64,7 @@ public class IMCHandler
                 });
 
         //Note: It is first come first serve. If we already received a value for it we don't try to overwrite it
+        //TODO: Should we print a warning if someone tries to register one with a key that is already registered?
         Map<String, NSSCreator> creators = InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER::equals)
               .filter(msg -> msg.getMessageSupplier().get() instanceof NSSCreatorInfo)
               .map(msg -> (NSSCreatorInfo) msg.getMessageSupplier().get())

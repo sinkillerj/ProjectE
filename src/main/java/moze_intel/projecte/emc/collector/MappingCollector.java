@@ -86,8 +86,6 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		fixValueAfterInherit.put(something, value);
 	}
 
-
-
 	@Override
 	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
 	{

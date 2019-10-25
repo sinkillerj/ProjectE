@@ -1,5 +1,8 @@
 package moze_intel.projecte.api.nss;
 
+import com.google.common.collect.ImmutableSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -8,11 +11,35 @@ import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Abstract implementation to make implementing {@link NSSTag} simpler.
+ * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:
+ *
+ * - Tag -> Type
+ *
+ * - Type -> Tag
  *
  * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
  */
 public abstract class AbstractNSSTag<TYPE> implements NSSTag {
+
+	private static final Set<NSSTag> createdTags = new HashSet<>();
+
+	/**
+	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link Tag}
+	 *
+	 * @apiNote This method is meant for internal use of adding Tag -> Type and Type -> Tag conversions
+	 */
+	public static Set<NSSTag> getAllCreatedTags() {
+		return ImmutableSet.copyOf(createdTags);
+	}
+
+	/**
+	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link Tag}s
+	 *
+	 * @apiNote This method is meant for internal use when the EMC mapper is reloading.
+	 */
+	public static void clearCreatedTags() {
+		createdTags.clear();
+	}
 
 	@Nonnull
 	private final ResourceLocation resourceLocation;
@@ -21,6 +48,9 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	protected AbstractNSSTag(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
 		this.resourceLocation = resourceLocation;
 		this.isTag = isTag;
+		if (isTag) {
+			createdTags.add(this);
+		}
 	}
 
 	/**

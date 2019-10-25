@@ -1,8 +1,7 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-
 import java.util.Map;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 /**
  * A Class that is used to collect Contributions to the EMC Mapping.

@@ -1,9 +1,8 @@
 package moze_intel.projecte.emc.collector;
 
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-
 import java.util.HashMap;
 import java.util.Map;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A>
 {
@@ -42,11 +41,8 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 
 	@Override
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount) {
-		this.addConversion(outnumber, output, ingredientsWithAmount, this.defaultArithmetic);
+		this.addConversion(outnumber, output, ingredientsWithAmount, getArithmetic());
 	}
-
-	@Override
-	public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion);
 
 	@Override
 	public A getArithmetic()

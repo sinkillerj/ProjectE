@@ -1,27 +1,33 @@
 package moze_intel.projecte.emc.mappers;
 
-import java.util.Collection;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.Collections;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.api.nss.NSSTag;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
+import net.minecraft.resources.IResourceManager;
 
-//TODO: Should this be a normal "Mapper", currently this is just an extraction of what used to be NormalizedSimpleStack#addMappings
-// We really have no reason and probably should not let this mapper be disabled.
-public class TagMapper {
+public class TagMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	public static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
-		//TODO: Get all the NormalizedSimpleStacks, should this be part of the mapper?
-		//TODO: Should this be part of the mapping logic that when adding a thing, if it is an NSSTag it also adds a conversion between the two
-		// Also make sure that this is unique so that we only go over ach tag once
-		Collection<NormalizedSimpleStack> stacks = Collections.emptyList();
-		for (NormalizedSimpleStack stack : stacks) {
-			if (stack instanceof NSSTag) {
-				((NSSTag) stack).forEachElement(normalizedSimpleStack -> {
-					mapper.addConversion(1, stack, Collections.singletonList(normalizedSimpleStack));
-					mapper.addConversion(1, normalizedSimpleStack, Collections.singletonList(stack));
-				});
-			}
-		}
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
+		AbstractNSSTag.getAllCreatedTags().forEach(stack -> stack.forEachElement(normalizedSimpleStack -> {
+			mapper.addConversion(1, stack, Collections.singletonList(normalizedSimpleStack));
+			mapper.addConversion(1, normalizedSimpleStack, Collections.singletonList(stack));
+		}));
+	}
+
+	@Override
+	public String getName() {
+		return "TagMapper";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Adds back and forth conversions of objects and their Tag variant. (EMC values assigned to tags will not behave properly if this mapper is disabled)";
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return true;
 	}
 }
