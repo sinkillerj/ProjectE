@@ -26,13 +26,10 @@ public class SlotConsume extends SlotItemHandler
 		{
 			return;
 		}
-		
-		ItemStack cache = stack.copy();
+
 		inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
-		//TODO: Figure out if setting the count to zero needed
-		stack.setCount(0);
 		this.onSlotChanged();
-		inv.handleKnowledge(cache);
+		inv.handleKnowledge(stack.copy());
 	}
 	
 	@Override

@@ -174,14 +174,7 @@ public final class PlayerHelper
 	}
 
 	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, BigInteger value) {
-		int val;
-		//TODO: Should this be stored in a constant
-		if (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
-			val = Integer.MAX_VALUE;
-		} else {
-			val = value.intValueExact();
-		}
-		updateScore(player, objective, val);
+		updateScore(player, objective, value.compareTo(Constants.MAX_INTEGER) > 0 ? Integer.MAX_VALUE : value.intValueExact());
 	}
 
 	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value)

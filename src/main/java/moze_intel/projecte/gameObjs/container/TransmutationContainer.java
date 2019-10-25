@@ -116,7 +116,8 @@ public class TransmutationContainer extends Container
 			IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
 
 			BigInteger emcBigInt = BigInteger.valueOf(emc);
-			//TODO: Can we optimize this to check it all at once
+			//Note: While it may be possible to remove multiple at once rather than re-getting available EMC,
+			// it is likely to have a bigger performance impact worst case, due to division for massive numbers being inefficient.
 			while (transmutationInventory.getAvailableEMC().compareTo(emcBigInt) >= 0 && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory.mainInventory, newStack))
 			{
 				transmutationInventory.removeEmc(emcBigInt);

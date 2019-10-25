@@ -17,6 +17,7 @@ public final class Constants
 	}
 
 	public static final BigInteger MAX_EXACT_TRANSMUTATION_DISPLAY = BigInteger.valueOf(1_000_000_000_000L);
+	public static final BigInteger MAX_INTEGER = BigInteger.valueOf(Integer.MAX_VALUE);
 
 	public static final long[] MAX_KLEIN_EMC = new long[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final long[] RELAY_KLEIN_CHARGE_RATE = new long[] {16, 48, 160};
