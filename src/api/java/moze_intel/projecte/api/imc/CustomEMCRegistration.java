@@ -7,6 +7,10 @@ public class CustomEMCRegistration
     private final NormalizedSimpleStack stack;
     private final long value;
 
+    /**
+     * @param stack Defines the stack to set the EMC for.
+     * @param value The EMC value to register for the given stack.
+     */
     public CustomEMCRegistration(NormalizedSimpleStack stack, long value)
     {
         this.stack = stack;

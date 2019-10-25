@@ -80,10 +80,10 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, CommentedFileConfig config) {
 		String itemName;
-		if (stack instanceof NSSItem)
-		{
+		//TODO: Double check we are handling this right for when it represents a tag
+		if (stack instanceof NSSItem && !((NSSItem)stack).representsTag()) {
 			NSSItem item = (NSSItem)stack;
-			itemName = item.itemName.toString();
+			itemName = item.getResourceLocation().toString();
 		} else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
 		}

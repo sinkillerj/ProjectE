@@ -150,13 +150,12 @@ public final class EMCMapper
 
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
-			NSSItem normStackItem = (NSSItem)entry.getKey();
-			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.itemName);
-			if (obj != null)
-			{
+			NSSItem normStackItem = (NSSItem) entry.getKey();
+			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.getResourceLocation());
+			if (obj != null) {
 				emc.put(obj, entry.getValue());
 			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}, item does not exist!", normStackItem.itemName);
+				PECore.LOGGER.warn("Could not add EMC value for {}, item does not exist!", normStackItem.getResourceLocation());
 			}
 		}
 
@@ -166,8 +165,7 @@ public final class EMCMapper
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
-		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem)
-										|| e.getValue() <= 0);
+		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem) || ((NSSItem) e.getKey()).representsTag() || e.getValue() <= 0);
 	}
 
 	public static long getEmcValue(IItemProvider item)

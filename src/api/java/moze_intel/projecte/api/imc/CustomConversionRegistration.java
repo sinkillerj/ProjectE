@@ -2,14 +2,7 @@ package moze_intel.projecte.api.imc;
 
 import java.util.Map;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
-//TODO: Update docs
 public class CustomConversionRegistration
 {
     private final int amount;
@@ -21,26 +14,14 @@ public class CustomConversionRegistration
      * This can be used to tell ProjectE about recipes it does not know about, or it can be used to "float" the value
      * of something relative to something else.
      *
-     * {@code output} and the keys of {@code input} can be the following:
-     * <ul>
-     *     <li>{@link ItemStack} - Refers to the Item inside.</li>
-     *     <li>{@link Block} - Same as {@code Item.getItemFromBlock(block)}.</li>
-     *     <li>{@link Item} - Obvious.</li>
-     *     <li>{@link FluidStack} - {@link FluidStack#getFluid()} and {@link Fluid#getRegistryName()} will be used to identify
-     *     this Fluid.</li>
-     *     <li>{@link ResourceLocation} - will be interpreted as an Item Tag ID and apply to all items within it.</li>
-     *     <li>{@link Object} - (No subclasses of {@code Object} - only {@code Object}!) can be used as a intermediate
-     *     fake object for complex conversion.</li>
-     * </ul>
-     *
      * For example, you can set the value of a specific item in your mod to always be twice the value of gold:
      * <pre>
-     *     new CustomConversionRegistration(1, ModItems.myItem, ImmutableMap.of(Items.GOLD_INGOT, 2))
+     *     new CustomConversionRegistration(1, NSSItem.createItem(ModItems.myItem), ImmutableMap.of(NSSItem.createItem(Items.GOLD_INGOT), 2))
      * </pre>
      *
      * or that the value of another item is equal to the value of the cheapest item in a particular tag:
      * <pre>
-     *     new CustomConversionRegistration(1, ModItems.myItemB, ImmutableMap.of(new ResourceLocation("mymod", "mytag"), 1))
+     *     new CustomConversionRegistration(1, NSSItem.createItem(ModItems.myItemB), ImmutableMap.of(NSSItem.createTag(new ResourceLocation("mymod", "mytag")), 1))
      * </pre>
      *
      * @param amount The amount of {@code output} that is produced, millibuckets for fluids

@@ -1,5 +1,10 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.emc.json.NSSSerializer;
@@ -12,9 +17,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.StringReader;
-import java.util.List;
-
 @DisplayName("Test Custom Conversion Mappers")
 class CustomConversionMapperTest
 {
@@ -22,10 +24,12 @@ class CustomConversionMapperTest
 	@BeforeAll
 	@DisplayName("Manually load the default supported json serializers")
 	static void setupAdditionalSerializers() {
-		//IMC/init does not happen in
-		NSSSerializer.INSTANCE.addCreator("FAKE", NSSSerializer.fakeCreator);
-		NSSSerializer.INSTANCE.addCreator("ITEM", NSSSerializer.itemCreator);
-		NSSSerializer.INSTANCE.addCreator("FLUID", NSSSerializer.fluidCreator);
+		//IMC/init does not happen for tests so we need to manually add our serializers
+		Map<String, NSSCreator> creators = new HashMap<>();
+		creators.put("FAKE", NSSSerializer.fakeCreator);
+		creators.put("ITEM", NSSSerializer.itemCreator);
+		creators.put("FLUID", NSSSerializer.fluidCreator);
+		NSSSerializer.INSTANCE.setCreators(creators);
 	}
 
 	@Test
