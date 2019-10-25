@@ -201,8 +201,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEMC();
 
-		//TODO: Should this be put into a constant
-		if (emcAmount.compareTo(BigInteger.valueOf(1_000_000_000_000L)) < 0) {
+		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {
 			super.renderHoveredToolTip(mouseX, mouseY);
 			return;
 		}

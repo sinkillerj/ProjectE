@@ -1,12 +1,22 @@
 package moze_intel.projecte.utils;
 
-import java.text.DecimalFormat;
+import java.math.BigInteger;
+import java.text.NumberFormat;
 
 public final class Constants 
 {
-	//TODO: Make sure these support countries that have decimals and commas the opposite way
-	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
-	public static final DecimalFormat SINGLE_DP_EMC_FORMATTER = new DecimalFormat("#,###.#");
+	public static final NumberFormat EMC_FORMATTER = getFormatter();
+
+	private static NumberFormat getFormatter() {
+		NumberFormat format = NumberFormat.getInstance();
+		//Only ever use a single decimal point for our formatter,
+		// because the majority of the time we are a whole number
+		// except for when we are abbreviating
+		format.setMaximumFractionDigits(1);
+		return format;
+	}
+
+	public static final BigInteger MAX_EXACT_TRANSMUTATION_DISPLAY = BigInteger.valueOf(1_000_000_000_000L);
 
 	public static final long[] MAX_KLEIN_EMC = new long[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
 	public static final long[] RELAY_KLEIN_CHARGE_RATE = new long[] {16, 48, 160};
