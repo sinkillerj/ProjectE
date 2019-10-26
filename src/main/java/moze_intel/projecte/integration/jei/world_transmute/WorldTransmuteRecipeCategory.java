@@ -1,5 +1,9 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,12 +18,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry>
 {
@@ -93,7 +93,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
         int xPos = 16;
         for (List<FluidStack> s : ingredients.getInputs(VanillaTypes.FLUID))
         {
-            recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, 1000, false, null);
+            recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
             recipeLayout.getFluidStacks().set(fluidSlots, s);
             fluidSlots++;
             xPos += 16;
@@ -120,7 +120,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
         xPos = 96;
         for (List<FluidStack> stacks : ingredients.getOutputs(VanillaTypes.FLUID))
         {
-            recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, 1000, false, null);
+            recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
             recipeLayout.getFluidStacks().set(fluidSlots, stacks);
             fluidSlots++;
             xPos += 16;

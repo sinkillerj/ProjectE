@@ -1,18 +1,18 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class WorldTransmuteEntry
 {
@@ -54,13 +54,10 @@ public class WorldTransmuteEntry
 
 	private FluidStack fluidFromBlock(Block block)
 	{
-		if (block == Blocks.WATER)
-		{
-			return new FluidStack(Fluids.WATER, 1000);
-		}
-		else if (block == Blocks.LAVA)
-		{
-			return new FluidStack(Fluids.LAVA, 1000);
+		if (block instanceof FlowingFluidBlock) {
+			return new FluidStack(((FlowingFluidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
+		} else if (block instanceof IFluidBlock) {
+			return new FluidStack(((IFluidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
 		}
 		return null;
 	}
