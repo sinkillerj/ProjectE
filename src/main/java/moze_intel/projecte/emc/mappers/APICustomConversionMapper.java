@@ -13,6 +13,8 @@ import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import net.minecraft.resources.IResourceManager;
 
+//TODO: Should this get removed if/when we end up making a way to register custom IEMCMappers
+// Given this class is a bit limiting due to the ability to reload recipes
 public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,Long>
 {
 	public static final APICustomConversionMapper instance = new APICustomConversionMapper();

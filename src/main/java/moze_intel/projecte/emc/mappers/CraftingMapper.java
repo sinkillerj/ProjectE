@@ -13,6 +13,7 @@ import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -147,13 +148,14 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		@Override
 		public String getDescription() {
-			return "Maps crafting table and cooking recipes";
+			return "Maps crafting table, cooking, and stone cutter recipes";
 		}
 
 		@Override
 		public boolean canHandle(IRecipe recipe) {
-			//TODO: 1.14, should we support SingleItemRecipe (stone cutter)
-			return recipe instanceof ICraftingRecipe || recipe instanceof AbstractCookingRecipe;
+			//Note: Does not just directly support IRecipe, as mods may extend it for "random" things and have more input types
+			// required than just items
+			return recipe instanceof ICraftingRecipe || recipe instanceof AbstractCookingRecipe || recipe instanceof SingleItemRecipe;
 		}
 	}
 }
