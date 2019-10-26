@@ -81,6 +81,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -168,7 +169,7 @@ public class PECore
 
 	private void commonSetup(FMLCommonSetupEvent event)
 	{
-		DEV_ENVIRONMENT = true; // TODO 1.13 ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+		DEV_ENVIRONMENT = FMLLoader.getNameFunction("srg").isPresent();
 
 		CONFIG_DIR = new File(new File("config"), MODNAME);
 
