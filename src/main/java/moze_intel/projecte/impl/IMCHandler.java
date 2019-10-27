@@ -1,5 +1,6 @@
 package moze_intel.projecte.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,47 +20,51 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.InterModComms;
 
-public class IMCHandler
-{
-    public static void handleMessages()
-    {
-        Set<EntityType<?>> interd = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_INTERDICTION::equals)
-                .filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
-                .map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
-                .collect(Collectors.toSet());
-        WorldHelper.setInterdictionBlacklist(interd);
+public class IMCHandler {
 
-        Set<EntityType<?>> swrg = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_SWRG::equals)
-                .filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
-                .map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
-                .collect(Collectors.toSet());
-        WorldHelper.setSwrgBlacklist(swrg);
+	public static void handleMessages() {
+		Set<EntityType<?>> interd = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_INTERDICTION::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
+			  .map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
+			  .collect(Collectors.toSet());
+		WorldHelper.setInterdictionBlacklist(interd);
 
-        Set<TileEntityType<?>> timeWatch = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_TIMEWATCH::equals)
-                .filter(msg -> msg.getMessageSupplier().get() instanceof TileEntityType)
-                .map(msg -> (TileEntityType<?>) msg.getMessageSupplier().get())
-                .collect(Collectors.toSet());
-        TimeWatch.setInternalBlacklist(timeWatch);
+		Set<EntityType<?>> swrg = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_SWRG::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
+			  .map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
+			  .collect(Collectors.toSet());
+		WorldHelper.setSwrgBlacklist(swrg);
 
-        List<WorldTransmutationEntry> entries = InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
-                .filter(msg -> msg.getMessageSupplier().get() instanceof WorldTransmutationEntry)
-                .map(msg -> (WorldTransmutationEntry) msg.getMessageSupplier().get())
-                .collect(Collectors.toList());
-        WorldTransmutations.setWorldTransmutation(entries);
+		Set<TileEntityType<?>> timeWatch = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_TIMEWATCH::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof TileEntityType)
+			  .map(msg -> (TileEntityType<?>) msg.getMessageSupplier().get())
+			  .collect(Collectors.toSet());
+		TimeWatch.setInternalBlacklist(timeWatch);
 
-        InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
-                .filter(msg -> msg.getMessageSupplier().get() instanceof CustomEMCRegistration)
-                .forEach(msg -> {
-                    CustomEMCRegistration registration = (CustomEMCRegistration) msg.getMessageSupplier().get();
-                    APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), registration.getStack(), registration.getValue());
-                });
+		List<WorldTransmutationEntry> entries = InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof WorldTransmutationEntry)
+			  .map(msg -> (WorldTransmutationEntry) msg.getMessageSupplier().get())
+			  .collect(Collectors.toList());
+		WorldTransmutations.setWorldTransmutation(entries);
 
-        //Note: It is first come first serve. If we already received a value for it we don't try to overwrite it
-        //TODO: Should we print a warning if someone tries to register one with a key that is already registered?
-        Map<String, NSSCreator> creators = InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER::equals)
-              .filter(msg -> msg.getMessageSupplier().get() instanceof NSSCreatorInfo)
-              .map(msg -> (NSSCreatorInfo) msg.getMessageSupplier().get())
-              .collect(Collectors.toMap(NSSCreatorInfo::getKey, NSSCreatorInfo::getCreator, (a, b) -> a));
-        NSSSerializer.INSTANCE.setCreators(creators);
-    }
+		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof CustomEMCRegistration)
+			  .forEach(msg -> APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), (CustomEMCRegistration) msg.getMessageSupplier().get()));
+
+		//Note: It is first come first serve. If we already received a value for it we don't try to overwrite it, but we do log a warning
+		Map<String, NSSCreator> creators = new HashMap<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER::equals)
+			  .filter(msg -> msg.getMessageSupplier().get() instanceof NSSCreatorInfo)
+			  .forEach(msg -> {
+				  NSSCreatorInfo creatorInfo = (NSSCreatorInfo) msg.getMessageSupplier().get();
+				  String key = creatorInfo.getKey();
+				  if (creators.containsKey(key)) {
+					  PECore.LOGGER.warn("Mod: '{}' tried to register NSS creator with key: '{}', but another mod already registered that key.", msg.getSenderModId(), key);
+				  } else {
+					  creators.put(key, creatorInfo.getCreator());
+					  PECore.debugLog("Mod: '{}' registered NSS creator with key: '{}'", msg.getSenderModId(), key);
+				  }
+			  });
+		NSSSerializer.INSTANCE.setCreators(creators);
+	}
 }

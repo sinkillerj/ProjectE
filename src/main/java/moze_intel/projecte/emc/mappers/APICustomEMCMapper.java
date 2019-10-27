@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -27,9 +28,15 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 
-	public void registerCustomEMC(String modid, NormalizedSimpleStack stack, long emcValue) {
-		if (stack == null) return;
-		if (emcValue < 0) emcValue = 0;
+	public void registerCustomEMC(String modid, CustomEMCRegistration customEMCRegistration) {
+		NormalizedSimpleStack stack = customEMCRegistration.getStack();
+		if (stack == null) {
+			return;
+		}
+		long emcValue = customEMCRegistration.getValue();
+		if (emcValue < 0) {
+			emcValue = 0;
+		}
 		customEMCforMod.computeIfAbsent(modid, k -> new HashMap<>()).put(stack, emcValue);
 	}
 
