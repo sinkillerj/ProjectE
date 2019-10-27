@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.util.Collections;
+import java.util.Locale;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
@@ -8,15 +10,13 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-
-import java.util.Collections;
-import java.util.Locale;
+import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 {
@@ -126,21 +126,47 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	}
 
 	@Override
-	public boolean charTyped(char par1, int par2)
-	{
-		boolean res = super.charTyped(par1, par2);
-		if (this.textBoxFilter.isFocused()) 
-		{
-			String srch = this.textBoxFilter.getText().toLowerCase();
-
-			if (!inv.filter.equals(srch))
-			{
-				inv.filter = srch;
-				inv.searchpage = 0;
-				inv.updateClientTargets();
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (textBoxFilter.isFocused()) {
+			//Manually make it so that hitting escape when the filter is focused will exit the focus
+			if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+				textBoxFilter.setFocused2(false);
+				return true;
 			}
+			//Otherwise have it handle the key press
+			//This is where key combos and deletion is handled
+			if (textBoxFilter.keyPressed(keyCode, scanCode, modifiers)) {
+				//If the filter reacted from the key press, then something happened and we should update the filter
+				updateFilter();
+				return true;
+			}
+			return false;
 		}
-		return res;
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char c, int keyCode) {
+		if (textBoxFilter.isFocused()) {
+			//If our filter is focused have it handle the character being typed
+			//This is where adding characters is handled
+			if (textBoxFilter.charTyped(c, keyCode)) {
+				//If the filter reacted from to a character being typed, then something happened and we should update the filter
+				updateFilter();
+				return true;
+			}
+			return false;
+		}
+		return super.charTyped(c, keyCode);
+	}
+
+	private void updateFilter() {
+		String search = textBoxFilter.getText().toLowerCase();
+		if (!inv.filter.equals(search)) {
+			inv.filter = search;
+			inv.searchpage = 0;
+			inv.updateClientTargets();
+		}
 	}
 
 	@Override
