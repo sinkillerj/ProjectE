@@ -1,52 +1,28 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 public final class FuelMapper
 {
+	private static final Tag<Item> collectorFuelTag = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "collector_fuel"));
+
 	private static final List<Item> FUEL_MAP = new ArrayList<>();
 	
 	public static void loadMap()
 	{
 		FUEL_MAP.clear();
-
-		addToMap(Items.CHARCOAL);
-		addToMap(Items.REDSTONE);
-		addToMap(Blocks.REDSTONE_BLOCK);
-		addToMap(Items.COAL);
-		addToMap(Blocks.COAL_BLOCK);
-		addToMap(Items.GUNPOWDER);
-		addToMap(Items.GLOWSTONE_DUST);
-		addToMap(ObjHandler.alchemicalCoal);
-		addToMap(ObjHandler.alchemicalCoalBlock);
-		addToMap(Items.BLAZE_POWDER);
-		addToMap(Blocks.GLOWSTONE);
-		addToMap(ObjHandler.mobiusFuel);
-		addToMap(ObjHandler.mobiusFuelBlock);
-		addToMap(ObjHandler.aeternalisFuel);
-		addToMap(ObjHandler.aeternalisFuelBlock);
-		
+		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCMappingHandler::getEmcValue));
-	}
-	
-	private static void addToMap(IItemProvider item)
-	{
-		if (EMCHelper.doesItemHaveEmc(item) && !FUEL_MAP.contains(item.asItem()))
-		{
-			FUEL_MAP.add(item.asItem());
-		}
 	}
 	
 	public static boolean isStackFuel(ItemStack stack)
