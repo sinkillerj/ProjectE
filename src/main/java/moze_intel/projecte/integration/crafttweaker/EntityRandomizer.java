@@ -3,6 +3,7 @@ package moze_intel.projecte.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.entity.MCEntityType;
+import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import org.openzen.zencode.java.ZenCodeType;
@@ -60,20 +61,11 @@ public class EntityRandomizer
 	}
 
 	private static EntityType<? extends MobEntity> getMob(MCEntityType entityType) {
-		if (entityType == null) {
-			return null;
-		}
-		try {
-			//TODO: 1.14, Figure out a better method to check that this is a mob, as I am not sure this will even work
-			return (EntityType<? extends MobEntity>) entityType.getInternal();
-		} catch (Exception ignored) {
-		}
-		return null;
+		return entityType == null ? null : EntityRandomizerHelper.getEntityIfMob(entityType.getInternal());
 	}
 
 	private static boolean isMob(EntityType<? extends MobEntity> living) {
-		if (living == null)
-		{
+		if (living == null) {
 			CraftTweakerAPI.logError("MCEntityType must be of a valid mob entity.");
 			return false;
 		}

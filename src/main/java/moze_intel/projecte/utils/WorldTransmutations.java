@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//TODO: 1.14 decide if World Transmutations should support tags
 public final class WorldTransmutations
 {
 	private static List<WorldTransmutationEntry> DEFAULT_ENTRIES = Collections.emptyList();

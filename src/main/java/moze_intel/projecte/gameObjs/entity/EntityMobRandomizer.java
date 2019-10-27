@@ -1,8 +1,9 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.MobEntity;
@@ -15,8 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
 
 public class EntityMobRandomizer extends ThrowableEntity implements IRendersAsItem
 {
@@ -73,7 +72,7 @@ public class EntityMobRandomizer extends ThrowableEntity implements IRendersAsIt
 		}
 
 		MobEntity ent = ((MobEntity) ((EntityRayTraceResult) mop).getEntity());
-		MobEntity randomized = WorldHelper.getRandomEntity(this.getEntityWorld(), ent);
+		MobEntity randomized = EntityRandomizerHelper.getRandomEntity(this.getEntityWorld(), ent);
 		
 		if (randomized != null && EMCHelper.consumePlayerFuel(((PlayerEntity) getThrower()), 384) != -1)
 		{

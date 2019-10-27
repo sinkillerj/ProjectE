@@ -1,16 +1,27 @@
 package moze_intel.projecte.utils;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowerBlock;
+import net.minecraft.block.IGrowable;
+import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.SnowBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -29,45 +40,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Helper class for anything that touches a World.
  * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
 public final class WorldHelper
 {
-	//TODO: 1.14, Make IMC adjust the default list
-	//TODO: 1.14, add the missing 1.13 and 1.14 peaceful and hostile mob types
-	//TODO: 1.14, should we somehow support Tag<EntityType>
-	private static final List<EntityType<? extends MobEntity>> PEACEFUL_DEFAULT = Lists.newArrayList(
-			EntityType.SHEEP, EntityType.PIG, EntityType.COW,
-			EntityType.MOOSHROOM, EntityType.CHICKEN, EntityType.BAT,
-			EntityType.VILLAGER, EntityType.SQUID, EntityType.OCELOT,
-			EntityType.WOLF, EntityType.HORSE, EntityType.RABBIT,
-			EntityType.DONKEY, EntityType.MULE, EntityType.POLAR_BEAR,
-			EntityType.LLAMA, EntityType.PARROT
-	);
-
-	private static final List<EntityType<? extends MobEntity>> MOBS_DEFAULT = Lists.newArrayList(
-			EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
-			EntityType.SPIDER, EntityType.ENDERMAN, EntityType.SILVERFISH,
-			EntityType.ZOMBIE_PIGMAN, EntityType.GHAST, EntityType.BLAZE,
-			EntityType.SLIME, EntityType.WITCH, EntityType.RABBIT, EntityType.ENDERMITE,
-			EntityType.STRAY, EntityType.WITHER_SKELETON, EntityType.SKELETON_HORSE, EntityType.ZOMBIE_HORSE,
-			EntityType.ZOMBIE_VILLAGER, EntityType.HUSK, EntityType.GUARDIAN,
-			EntityType.EVOKER, EntityType.VEX, EntityType.VINDICATOR, EntityType.SHULKER
-	);
-
-	private static List<EntityType<? extends MobEntity>> peacefuls = new ArrayList<>(PEACEFUL_DEFAULT);
-
-	private static List<EntityType<? extends MobEntity>> mobs = new ArrayList<>(MOBS_DEFAULT);
 
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 
@@ -81,56 +59,6 @@ public final class WorldHelper
 	public static void setSwrgBlacklist(Set<EntityType<?>> types)
 	{
 		swrgBlacklist = ImmutableSet.copyOf(types);
-	}
-
-	public static boolean addPeaceful(EntityType<? extends MobEntity> type)
-	{
-		if (!peacefuls.contains(type))
-		{
-			peacefuls.add(type);
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean removePeaceful(EntityType<? extends MobEntity> type)
-	{
-		return peacefuls.remove(type);
-	}
-
-	public static void clearPeacefuls()
-	{
-		peacefuls.clear();
-	}
-
-	public static void resetPeacefuls()
-	{
-		peacefuls = new ArrayList<>(PEACEFUL_DEFAULT);
-	}
-
-	public static boolean addMob(EntityType<? extends MobEntity> type)
-	{
-		if (!mobs.contains(type))
-		{
-			mobs.add(type);
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean removeMob(EntityType<? extends MobEntity> type)
-	{
-		return mobs.remove(type);
-	}
-
-	public static void clearMobs()
-	{
-		mobs.clear();
-	}
-
-	public static void resetMobs()
-	{
-		mobs = new ArrayList<>(MOBS_DEFAULT);
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos)
@@ -304,33 +232,6 @@ public final class WorldHelper
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box)
 	{
 		return () -> BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ)).iterator();
-	}
-
-	public static MobEntity getRandomEntity(World world, MobEntity toRandomize)
-	{
-		EntityType<? extends MobEntity> entType = (EntityType<? extends MobEntity>) toRandomize.getType();
-
-		if (peacefuls.contains(entType))
-		{
-			return CollectionHelper.getRandomListEntry(peacefuls, entType).create(world);
-		}
-		else if (mobs.contains(entType))
-		{
-			MobEntity ent = CollectionHelper.getRandomListEntry(mobs, entType).create(world);
-			if (ent instanceof RabbitEntity)
-			{
-				((RabbitEntity) ent).setRabbitType(99);
-			}
-			return ent;
-		}
-		else if (world.rand.nextInt(2) == 0)
-		{
-			return EntityType.SLIME.create(world);
-		}
-		else
-		{
-			return EntityType.SHEEP.create(world);
-		}
 	}
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox)

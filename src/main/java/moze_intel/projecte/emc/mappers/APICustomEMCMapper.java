@@ -16,6 +16,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.resources.IResourceManager;
 
+//TODO: Make a mapper like this except for CraftTweaker that only loads when CraftTweaker is loaded, but lets people assign direct EMC values using CrT
 @EMCMapper
 public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 

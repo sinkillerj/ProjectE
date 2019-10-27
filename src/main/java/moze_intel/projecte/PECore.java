@@ -52,6 +52,7 @@ import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
+import moze_intel.projecte.utils.EntityRandomizerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -203,6 +204,7 @@ public class PECore
 	
 	private void imcQueue(InterModEnqueueEvent event)
 	{
+		EntityRandomizerHelper.init();
 		WorldTransmutations.init();
 		NSSSerializer.init();
 	}

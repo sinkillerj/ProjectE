@@ -1,7 +1,7 @@
 package moze_intel.projecte.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
-import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 
@@ -20,15 +20,15 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 	protected void apply(boolean add) {
 		if (peaceful) {
 			if (add) {
-				WorldHelper.addPeaceful(entityType);
+				EntityRandomizerHelper.addPeacefulMob(entityType);
 			} else {
-				WorldHelper.removePeaceful(entityType);
+				EntityRandomizerHelper.removePeacefulMob(entityType);
 			}
 		} else {
 			if (add) {
-				WorldHelper.addMob(entityType);
+				EntityRandomizerHelper.addHostileMob(entityType);
 			} else {
-				WorldHelper.removeMob(entityType);
+				EntityRandomizerHelper.removeHostileMob(entityType);
 			}
 		}
 	}
@@ -98,9 +98,9 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 		@Override
 		public void apply() {
 			if (peaceful) {
-				WorldHelper.clearPeacefuls();
+				EntityRandomizerHelper.clearPeacefulMobs();
 			} else {
-				WorldHelper.clearMobs();
+				EntityRandomizerHelper.clearHostileMobs();
 			}
 		}
 
@@ -112,9 +112,9 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 		@Override
 		public void undo() {
 			if (peaceful) {
-				WorldHelper.resetPeacefuls();
+				EntityRandomizerHelper.resetPeacefulMobs();
 			} else {
-				WorldHelper.resetMobs();
+				EntityRandomizerHelper.resetHostileMobs();
 			}
 		}
 
