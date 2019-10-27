@@ -55,7 +55,6 @@ public class PEJeiPlugin implements IModPlugin
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        // todo finish this, add alchbag
         registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
 
         List<FuelUpgradeRecipe> fuelRecipes = new ArrayList<>();

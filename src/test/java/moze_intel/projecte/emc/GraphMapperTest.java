@@ -1,23 +1,23 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetic.HiddenBigFractionArithmetic;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
+import moze_intel.projecte.api.mapper.generator.IValueGenerator;
+import moze_intel.projecte.emc.arithmetic.HiddenBigFractionArithmetic;
 import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
-import moze_intel.projecte.api.mapper.generator.IValueGenerator;
+import moze_intel.projecte.utils.Constants;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 //@RunWith(value = Parameterized.class)
 @Timeout(3000)
@@ -446,7 +446,7 @@ class GraphMapperTest {
 	{
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
-		mappingCollector.setValueBefore("fluid", Long.MIN_VALUE);
+		mappingCollector.setValueBefore("fluid", Constants.FREE_ARITHMETIC_VALUE);
 		mappingCollector.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
@@ -654,7 +654,7 @@ class GraphMapperTest {
 	@DisplayName("Test generating values with a free alternative recipe")
 	void testGenerateValuesFreeAlternatives()
 	{
-		mappingCollector.setValueBefore("freeWater", Long.MIN_VALUE/* = 'Free' */);
+		mappingCollector.setValueBefore("freeWater", Constants.FREE_ARITHMETIC_VALUE);
 		mappingCollector.setValueBefore("waterBottle", 0L);
 		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("freeWater"));
 		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("waterBottle"));

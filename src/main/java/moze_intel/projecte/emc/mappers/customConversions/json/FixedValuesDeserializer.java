@@ -7,12 +7,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.utils.Constants;
 
 public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 {
@@ -44,7 +44,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 				continue;
 			} else if (primitive.isString()) {
 				if (primitive.getAsString().toLowerCase().equals("free")) {
-					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Long.MIN_VALUE); //TODO Get Value for 'free' from arithmetic?
+					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Constants.FREE_ARITHMETIC_VALUE);
 					continue;
 				}
 			}

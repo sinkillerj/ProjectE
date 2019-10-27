@@ -15,6 +15,7 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.arithmetic.FullBigFractionArithmetic;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -90,7 +91,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
-		mapper.setValueBefore(NSSFluid.createTag(FluidTags.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+		mapper.setValueBefore(NSSFluid.createTag(FluidTags.WATER), Constants.FREE_ARITHMETIC_VALUE);
 		//1 Bucket of Lava = 1 Block of Obsidian
 		mapper.addConversion(FluidAttributes.BUCKET_VOLUME, NSSFluid.createTag(FluidTags.LAVA), Collections.singletonList(NSSItem.createItem(Blocks.OBSIDIAN)));
 

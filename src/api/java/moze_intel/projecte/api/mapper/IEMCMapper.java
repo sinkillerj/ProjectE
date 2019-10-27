@@ -9,8 +9,6 @@ import net.minecraft.resources.IResourceManager;
  * @param <T> The type, that is used to uniquely identify Items/Blocks/Everything
  * @param <V> The type for the EMC Value
  */
-//TODO: Make it so that it is possible/easier to register custom IEMCMappers.
-// Maybe we want to do it in a similar way to having an annotation to find them for registering? (Similar to how JEI does their plugins)
 public interface IEMCMapper<T, V extends Comparable<V>> {
 	/**
 	 * A unique Name for the IEMCMapper. This is used to identify the IEMCMapper in the Configuration.

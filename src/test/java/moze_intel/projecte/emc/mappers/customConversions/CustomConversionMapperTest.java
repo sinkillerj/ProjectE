@@ -11,6 +11,7 @@ import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.util.ResourceLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -132,7 +133,7 @@ class CustomConversionMapperTest
 		Assertions.assertNotNull(f.values);
 		Assertions.assertEquals(1, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("a"))).longValue());
 		Assertions.assertEquals(2, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("b"))).longValue());
-		Assertions.assertEquals(Long.MIN_VALUE, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("c"))).longValue());
+		Assertions.assertEquals(Constants.FREE_ARITHMETIC_VALUE, f.values.setValueBefore.get(NSSItem.createItem(new ResourceLocation("c"))).longValue());
 		Assertions.assertEquals(3, f.values.setValueAfter.get(NSSItem.createItem(new ResourceLocation("d"))).longValue());
 
 	}
