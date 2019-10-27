@@ -62,11 +62,11 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -79,6 +79,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -120,6 +121,8 @@ public class PECore
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
+		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
@@ -214,18 +217,19 @@ public class PECore
 		IMCHandler.handleMessages();
 	}
 
+	private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+		//Register the philo stone smelting helper at the regular event timing
+		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
+	}
+
+	private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {
+		//Note: We register our listener for this event on lowest priority so that if other mods register custom NSSTags
+		// or other things that need to be sync'd/reloaded they have a chance to go before we do
+		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
+	}
+
 	private void serverStarting(FMLServerStartingEvent event)
 	{
-		IResourceManagerReloadListener emc = new EMCReloadListener();
-		IResourceManagerReloadListener phil = new PhilStoneSmeltingHelper();
-
-		event.getServer().getResourceManager().addReloadListener(emc);
-		event.getServer().getResourceManager().addReloadListener(phil);
-
-		// Initial reload already happened before this event fired so manually trigger it here
-		emc.onResourceManagerReload(event.getServer().getResourceManager());
-		phil.onResourceManagerReload(event.getServer().getResourceManager());
-
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
 				.then(RemoveEmcCMD.register())
