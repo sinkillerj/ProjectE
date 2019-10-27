@@ -2,11 +2,14 @@ package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.config.CustomEMCParser;
 import net.minecraft.resources.IResourceManager;
 
+@EMCMapper
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {

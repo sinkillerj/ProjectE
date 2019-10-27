@@ -6,28 +6,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.arithmetics.FullBigFractionArithmetic;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.arithmetic.FullBigFractionArithmetic;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+@EMCMapper
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-	private static final List<Pair<NormalizedSimpleStack, FluidStack>> melting = new ArrayList<>();
-	private static final List<Pair<NormalizedSimpleStack, Pair<ResourceLocation, Integer>>> meltingAlt = new ArrayList<>();
+
+	private static final List<Pair<NormalizedSimpleStack, Pair<NormalizedSimpleStack, Integer>>> meltingAlt = new ArrayList<>();
 
 	private static void addForgeMelting(String itemTagId, String fluidName, int amount) {
 		addMelting(new ResourceLocation("forge", itemTagId), new ResourceLocation("forge", fluidName), amount);
@@ -46,11 +47,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	private static void addMelting(NormalizedSimpleStack stack, ResourceLocation fluidTag, int amount) {
-		meltingAlt.add(Pair.of(stack, Pair.of(fluidTag, amount)));
-	}
-
-	private static void addMelting(NormalizedSimpleStack stack, Fluid fluid, int amount) {
-		melting.add(Pair.of(stack, new FluidStack(fluid, amount)));
+		meltingAlt.add(Pair.of(stack, Pair.of(NSSFluid.createTag(fluidTag), amount)));
 	}
 
 	static {
@@ -111,11 +108,8 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
 		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 
-		for (Pair<NormalizedSimpleStack, FluidStack> pair : melting) {
-			emapper.addConversion(pair.getValue().getAmount(), NSSFluid.createFluid(pair.getValue().getFluid()), Collections.singletonList(pair.getKey()), fluidArithmetic);
-		}
-		for (Pair<NormalizedSimpleStack, Pair<ResourceLocation, Integer>> pair : meltingAlt) {
-			emapper.addConversion(pair.getValue().getValue(), NSSFluid.createTag(pair.getValue().getKey()), Collections.singletonList(pair.getKey()), fluidArithmetic);
+		for (Pair<NormalizedSimpleStack, Pair<NormalizedSimpleStack, Integer>> pair : meltingAlt) {
+			emapper.addConversion(pair.getValue().getValue(), pair.getValue().getKey(), Collections.singletonList(pair.getKey()), fluidArithmetic);
 		}
 
 		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps

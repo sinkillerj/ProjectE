@@ -1,7 +1,7 @@
 package moze_intel.projecte.playerData;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.Item;
@@ -22,7 +22,7 @@ public final class Transmutation
 	public static void cacheFullKnowledge()
 	{
 		clearCache();
-		for (Item item : EMCMapper.emc.keySet())
+		for (Item item : EMCMappingHandler.emc.keySet())
 		{
 			try
 			{

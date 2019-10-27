@@ -1,6 +1,6 @@
 package moze_intel.projecte.network.packets;
 
-import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -32,8 +32,8 @@ public class SyncCovalencePKT {
 		public static void handle(final SyncCovalencePKT message, Supplier<NetworkEvent.Context> ctx)
 		{
 			ctx.get().enqueueWork(() -> {
-				EMCMapper.covalenceLoss = message.covalenceLoss;
-				EMCMapper.covalenceLossRounding = message.covalenceLossRounding;
+				EMCMappingHandler.covalenceLoss = message.covalenceLoss;
+				EMCMappingHandler.covalenceLossRounding = message.covalenceLossRounding;
 			});
 			ctx.get().setPacketHandled(true);
 		}

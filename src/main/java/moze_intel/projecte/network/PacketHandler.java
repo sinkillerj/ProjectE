@@ -1,7 +1,7 @@
 package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.network.packets.*;
 import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -87,9 +87,9 @@ public final class PacketHandler
 
 	private static EmcPKTInfo[] serializeEmcData()
 	{
-		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMapper.emc.size()];
+		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMappingHandler.emc.size()];
 		int i = 0;
-		for (Map.Entry<Item, Long> entry : EMCMapper.emc.entrySet())
+		for (Map.Entry<Item, Long> entry : EMCMappingHandler.emc.entrySet())
 		{
 			int id = Item.getIdFromItem(entry.getKey());
 			ret[i] = new EmcPKTInfo(id, entry.getValue());

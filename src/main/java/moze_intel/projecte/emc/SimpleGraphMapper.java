@@ -1,9 +1,9 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.emc.collector.MappingCollector;
-import moze_intel.projecte.emc.generators.IValueGenerator;
+import moze_intel.projecte.api.mapper.generator.IValueGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

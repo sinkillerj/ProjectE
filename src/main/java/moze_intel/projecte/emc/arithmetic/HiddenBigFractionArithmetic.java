@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc.arithmetics;
+package moze_intel.projecte.emc.arithmetic;
 
 import org.apache.commons.math3.fraction.BigFraction;
 

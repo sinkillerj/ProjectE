@@ -1,7 +1,7 @@
-package moze_intel.projecte.emc.mappers;
+package moze_intel.projecte.api.mapper;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import net.minecraft.resources.IResourceManager;
 
 /**

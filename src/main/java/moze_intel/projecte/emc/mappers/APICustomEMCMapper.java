@@ -1,20 +1,24 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.api.nss.NSSItem;
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import net.minecraft.resources.IResourceManager;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.nss.NSSItem;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.emc.EMCMappingHandler;
+import net.minecraft.resources.IResourceManager;
 
+@EMCMapper
 public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+
+	@EMCMapper.Instance
 	public static final APICustomEMCMapper instance = new APICustomEMCMapper();
 	private static final int PRIORITY_MIN_VALUE = 0;
 	private static final int PRIORITY_MAX_VALUE = 512;
@@ -36,7 +40,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	@Override
 	public String getDescription() {
-		return "Allows other mods to set EMC values using the ProjectEAPI";
+		return "Allows other mods to easily set EMC values using the ProjectEAPI";
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 		for (String modId: customEMCforMod.keySet()) {
 			String configKey = getName() + ".priority." + (modId == null ? "__no_modid" : modId);
-			int priority = EMCMapper.getOrSetDefault(config, configKey, "Priority for this mod", PRIORITY_DEFAULT_VALUE);
+			int priority = EMCMappingHandler.getOrSetDefault(config, configKey, "Priority for this mod", PRIORITY_DEFAULT_VALUE);
 			priorityMap.put(modId, priority);
 		}
 
@@ -90,7 +94,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		String modForItem = itemName.substring(0, itemName.indexOf(':'));
 		String configPath = String.format("permissions.%s.%s", modId, modForItem);
 		String comment = String.format("Allow mod '%s' to set and or remove values for mod '%s'. Options: [both, set, remove, none]", modId, modForItem);
-		String permission = EMCMapper.getOrSetDefault(config, configPath, comment, "both");
+		String permission = EMCMappingHandler.getOrSetDefault(config, configPath, comment, "both");
 		if (permission.equals("both"))
 		{
 			return true;

@@ -5,33 +5,28 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.DumpToFileCollector;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
-import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
-import moze_intel.projecte.emc.generators.IValueGenerator;
+import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
+import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
+import moze_intel.projecte.api.mapper.generator.IValueGenerator;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
-import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.emc.mappers.CraftingMapper;
-import moze_intel.projecte.emc.mappers.CustomEMCMapper;
-import moze_intel.projecte.emc.mappers.FluidMapper;
-import moze_intel.projecte.emc.mappers.IEMCMapper;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.emc.arithmetic.HiddenBigFractionArithmetic;
+import moze_intel.projecte.emc.collector.DumpToFileCollector;
+import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
+import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.mappers.TagMapper;
-import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.IItemProvider;
@@ -39,11 +34,23 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;
 
-public final class EMCMapper 
+public final class EMCMappingHandler
 {
+	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
 	public static final Map<Item, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
+
+	private static void loadMappers() {
+		//If we don't have any mappers loaded try to load them
+		if (EMC_MAPPERS.isEmpty()) {
+			//Add all the EMC mappers we have encountered
+			EMC_MAPPERS.addAll(AnnotationHelper.getEMCMappers());
+			//Manually register the Tag Mapper to ensure that it is registered last so that it can "fix" all the tags used in any of the other mappers
+			// This also has the side effect to make sure that we can use EMC_MAPPERS.isEmpty to check if we have attempted to initialize our cache yet
+			EMC_MAPPERS.add(new TagMapper());
+		}
+	}
 
 	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
 	{
@@ -59,16 +66,8 @@ public final class EMCMapper
 
 	public static void map(IResourceManager resourceManager)
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
-			  APICustomEMCMapper.instance,
-				new CustomConversionMapper(),
-				new CustomEMCMapper(),
-				new CraftingMapper(),
-				new FluidMapper(),
-				APICustomConversionMapper.instance,
-				//Note: Make sure the Tag Mapper is last so that it can "fix" all the tags used in any of the other mappers
-				new TagMapper()
-		);
+		//Ensure we load the EMC mappers
+		loadMappers();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
@@ -105,7 +104,7 @@ public final class EMCMapper
 			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
 			PECore.debugLog("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers)
+			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : EMC_MAPPERS)
 			{
 				try
 				{

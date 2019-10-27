@@ -1,13 +1,24 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.emc.IngredientMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -18,16 +29,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+@EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new RecipeStagesRecipeMapper());
 
@@ -43,7 +45,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			NormalizedSimpleStack recipeOutputNorm = NSSItem.createItem(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
-				if (!EMCMapper.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true))
+				if (!EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true))
 					continue;
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;

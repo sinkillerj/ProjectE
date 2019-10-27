@@ -36,12 +36,6 @@ public class IMCMethods
     public static final String REGISTER_CUSTOM_EMC = "register_custom_emc";
 
     /**
-     * Declare a conversion from something to something else. Use to inform ProjectE about recipes it may not know about.
-     * The Object sent must be an instance of {@link CustomConversionRegistration}, or else the message is ignored.
-     */
-    public static final String REGISTER_CUSTOM_CONVERSION = "register_custom_conversion";
-
-    /**
      * Declare a deserializer for a custom {@link moze_intel.projecte.api.nss.NormalizedSimpleStack}
      * The Object sent must be an instance of {@link NSSCreatorInfo}, or else the message is ignored.
      */

@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
 import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.enchantment.Enchantment;
@@ -119,14 +119,14 @@ public final class EMCHelper
 
 	public static boolean doesItemHaveEmc(IItemProvider item)
 	{
-		return item != null && EMCMapper.emc.containsKey(item.asItem());
+		return item != null && EMCMappingHandler.emc.containsKey(item.asItem());
 	}
 
 	public static long getEmcValue(IItemProvider item)
 	{
-		if (EMCMapper.emc.containsKey(item.asItem()))
+		if (EMCMappingHandler.emc.containsKey(item.asItem()))
 		{
-			return EMCMapper.getEmcValue(item);
+			return EMCMappingHandler.getEmcValue(item);
 		}
 
 		return 0;
@@ -137,14 +137,14 @@ public final class EMCHelper
 	 */
 	public static long getEmcValue(ItemStack stack)
 	{
-		if (stack.isEmpty() || !EMCMapper.emc.containsKey(stack.getItem()))
+		if (stack.isEmpty() || !EMCMappingHandler.emc.containsKey(stack.getItem()))
 		{
 			return 0;
 		}
 
 		if (ItemHelper.isDamageable(stack))
 		{
-			long emc = EMCMapper.getEmcValue(stack.getItem());
+			long emc = EMCMappingHandler.getEmcValue(stack.getItem());
 
 			// maxDmg + 1 because vanilla lets you use the tool one more time
 			// when item damage == max damage (shows as Durability: 0 / max)
@@ -191,7 +191,7 @@ public final class EMCHelper
 		}
 		else
 		{
-			return EMCMapper.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
+			return EMCMappingHandler.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
 		}
 	}
 
@@ -227,11 +227,11 @@ public final class EMCHelper
 			return 0;
 		}
 
-		long emc = (long) Math.floor(originalValue * EMCMapper.covalenceLoss);
+		long emc = (long) Math.floor(originalValue * EMCMappingHandler.covalenceLoss);
 
 		if (emc < 1)
 		{
-			if (EMCMapper.covalenceLossRounding)
+			if (EMCMappingHandler.covalenceLossRounding)
 			{
 				emc = 1;
 			}
@@ -246,7 +246,7 @@ public final class EMCHelper
 
 	public static String getEmcSellString(ItemStack stack, int stackSize)
 	{
-		if (EMCMapper.covalenceLoss == 1.0)
+		if (EMCMappingHandler.covalenceLoss == 1.0)
 		{
 			return " ";
 		}

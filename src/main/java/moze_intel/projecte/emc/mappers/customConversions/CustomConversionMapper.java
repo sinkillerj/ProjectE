@@ -11,11 +11,12 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.mappers.IEMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
@@ -27,6 +28,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
+@EMCMapper
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long>
 {
 	public static final Gson GSON = new GsonBuilder()

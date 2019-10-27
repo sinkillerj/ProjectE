@@ -21,8 +21,8 @@ public class EMCReloadListener implements IResourceManagerReloadListener {
         CustomEMCParser.init();
 
         try {
-            EMCMapper.map(resourceManager);
-            PECore.LOGGER.info("Registered " + EMCMapper.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+            EMCMappingHandler.map(resourceManager);
+            PECore.LOGGER.info("Registered " + EMCMappingHandler.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
             PacketHandler.sendFragmentedEmcPacketToAll();
         } catch (Throwable t)
         {

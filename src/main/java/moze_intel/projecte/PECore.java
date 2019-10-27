@@ -10,7 +10,7 @@ import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
-import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
@@ -243,6 +243,6 @@ public class PECore
 	{
 		TransmutationOffline.cleanAll();
 		Transmutation.clearCache();
-		EMCMapper.clearMaps();
+		EMCMappingHandler.clearMaps();
 	}
 }

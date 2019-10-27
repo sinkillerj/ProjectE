@@ -2,7 +2,7 @@ package moze_intel.projecte.emc.collector;
 
 import com.google.common.collect.Maps;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 
 import java.util.Collections;
 import java.util.HashMap;

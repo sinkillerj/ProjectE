@@ -1,11 +1,11 @@
 package moze_intel.projecte.emc;
 
-import moze_intel.projecte.emc.arithmetics.HiddenBigFractionArithmetic;
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.arithmetic.HiddenBigFractionArithmetic;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
+import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
-import moze_intel.projecte.emc.generators.BigFractionToLongGenerator;
-import moze_intel.projecte.emc.generators.IValueGenerator;
+import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
+import moze_intel.projecte.api.mapper.generator.IValueGenerator;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

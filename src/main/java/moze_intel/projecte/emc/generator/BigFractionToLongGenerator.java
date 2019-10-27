@@ -1,5 +1,6 @@
-package moze_intel.projecte.emc.generators;
+package moze_intel.projecte.emc.generator;
 
+import moze_intel.projecte.api.mapper.generator.IValueGenerator;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import java.util.HashMap;
