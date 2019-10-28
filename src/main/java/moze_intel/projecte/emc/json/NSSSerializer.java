@@ -70,8 +70,11 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 
 	@Override
 	public NormalizedSimpleStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+		return deserialize(json.getAsString());
+	}
+
+	public NormalizedSimpleStack deserialize(String s) {
 		//TODO: Add tests to support the different ones we add
-		String s = json.getAsString();
 		if (s.contains("|")) {
 			String[] parts = s.split("\\|");
 			String key = parts[0];

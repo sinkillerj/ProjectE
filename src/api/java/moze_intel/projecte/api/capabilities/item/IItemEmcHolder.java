@@ -56,9 +56,8 @@ public interface IItemEmcHolder {
 	 *
 	 * @return The maximum amount of publicly-accessible EMC that can be stored in this stack
 	 *
-	 * @implNote Must be greater than zero
+	 * @implNote This value should never be zero
 	 */
-	//TODO: Let this and IEmcStorage's variant be zero??
 	long getMaximumEmc(@Nonnull ItemStack stack);
 
 	/**

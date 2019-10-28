@@ -52,6 +52,8 @@ public interface IEmcStorage {
 	 * Gets the maximum amount of EMC this IEMCStorage is allowed to contain
 	 *
 	 * @return The maximum EMC allowed
+	 *
+	 * @implNote This value should never be zero
 	 */
 	long getMaximumEmc();
 

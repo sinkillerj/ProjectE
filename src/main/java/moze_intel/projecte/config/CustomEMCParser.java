@@ -18,7 +18,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.json.NSSSerializer;
-import net.minecraft.util.ResourceLocation;
 
 public final class CustomEMCParser {
 
@@ -84,11 +83,7 @@ public final class CustomEMCParser {
 	}
 
 	private static NormalizedSimpleStack getNss(String str) {
-		//TODO: Use the general NSS deserializer for this??
-		if (str.startsWith("#")) {
-			return NSSItem.createTag(new ResourceLocation(str.substring(1)));
-		}
-		return NSSItem.createItem(new ResourceLocation(str));
+		return NSSSerializer.INSTANCE.deserialize(str);
 	}
 
 	public static void addToFile(String toAdd, long emc) {
