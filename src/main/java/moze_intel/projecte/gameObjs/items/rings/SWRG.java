@@ -1,9 +1,15 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
@@ -28,22 +34,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter
 {
-	public SWRG(Properties props)
-	{
+	public SWRG(Properties props) {
 		super(props);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 
 	private void tick(ItemStack stack, PlayerEntity player)

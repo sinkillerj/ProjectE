@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.api.item.IExtraFunction;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.BlockState;
@@ -15,14 +17,13 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-import javax.annotation.Nonnull;
-
 public class DarkSword extends PEToolBase implements IExtraFunction
 {
 	public DarkSword(Properties props)
 	{
 		super(props, (byte)2, new String[] {});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	// Only for RedSword to use

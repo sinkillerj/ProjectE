@@ -8,6 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
@@ -29,10 +37,18 @@ import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.impl.AlchBagImpl;
 import moze_intel.projecte.impl.IMCHandler;
-import moze_intel.projecte.impl.KnowledgeImpl;
 import moze_intel.projecte.impl.TransmutationOffline;
+import moze_intel.projecte.impl.capability.AlchBagImpl;
+import moze_intel.projecte.impl.capability.AlchBagItemDefaultImpl;
+import moze_intel.projecte.impl.capability.AlchChestItemDefaultImpl;
+import moze_intel.projecte.impl.capability.ChargeItemDefaultImpl;
+import moze_intel.projecte.impl.capability.EmcHolderItemDefaultImpl;
+import moze_intel.projecte.impl.capability.ExtraFunctionItemDefaultImpl;
+import moze_intel.projecte.impl.capability.KnowledgeImpl;
+import moze_intel.projecte.impl.capability.ModeChangerItemDefaultImpl;
+import moze_intel.projecte.impl.capability.PedestalItemDefaultImpl;
+import moze_intel.projecte.impl.capability.ProjectileShooterItemDefaultImpl;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -188,6 +204,15 @@ public class PECore
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+		//TODO: Evaluate if any should have storage
+		CapabilityManager.INSTANCE.register(IAlchBagItem.class, new DummyIStorage<>(), AlchBagItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IAlchChestItem.class, new DummyIStorage<>(), AlchChestItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IExtraFunction.class, new DummyIStorage<>(), ExtraFunctionItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IItemCharge.class, new DummyIStorage<>(), ChargeItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IItemEmcHolder.class, new DummyIStorage<>(), EmcHolderItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IModeChanger.class, new DummyIStorage<>(), ModeChangerItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IPedestalItem.class, new DummyIStorage<>(), PedestalItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
 
 		if (ModList.get().isLoaded("curios"))
 		{

@@ -1,7 +1,8 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -43,6 +44,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.LEAVES);
 		this.harvestMaterials.add(Material.TALL_PLANTS);
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	@Override

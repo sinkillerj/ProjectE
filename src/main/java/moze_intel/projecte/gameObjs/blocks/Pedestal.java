@@ -1,6 +1,9 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import moze_intel.projecte.api.item.IPedestalItem;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,10 +24,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class Pedestal extends Block
 {
@@ -101,14 +100,12 @@ public class Pedestal extends Block
             ItemStack item = tile.getInventory().getStackInSlot(0);
             ItemStack stack = player.getHeldItem(hand);
 
-            if (stack.isEmpty()
-                    && !item.isEmpty()
-                    && item.getItem() instanceof IPedestalItem)
-            {
-                tile.setActive(!tile.getActive());
-                world.notifyBlockUpdate(pos, state, state, 8);
-            } else if (!stack.isEmpty() && item.isEmpty())
-            {
+            if (stack.isEmpty() && !item.isEmpty()) {
+                item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+                    tile.setActive(!tile.getActive());
+                    world.notifyBlockUpdate(pos, state, state, 8);
+                });
+            } else if (!stack.isEmpty() && item.isEmpty()) {
                 tile.getInventory().setStackInSlot(0, stack.split(1));
                 if (stack.getCount() <= 0)
                 {
@@ -134,11 +131,14 @@ public class Pedestal extends Block
 
             if (ped.previousRedstoneState != flag)
             {
-                if (flag && !ped.getInventory().getStackInSlot(0).isEmpty()
-                        && ped.getInventory().getStackInSlot(0).getItem() instanceof IPedestalItem)
-                {
-                    ped.setActive(!ped.getActive());
-                    world.notifyBlockUpdate(pos, state, state, 11);
+                if (flag) {
+                    ItemStack stack = ped.getInventory().getStackInSlot(0);
+                    if (!stack.isEmpty()) {
+                        stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+                            ped.setActive(!ped.getActive());
+                            world.notifyBlockUpdate(pos, state, state, 11);
+                        });
+                    }
                 }
 
                 ped.previousRedstoneState = flag;

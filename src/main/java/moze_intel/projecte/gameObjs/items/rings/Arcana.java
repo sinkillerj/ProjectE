@@ -4,8 +4,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -53,6 +56,9 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		super(props);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(new ModeChangerItemCapabilityWrapper());
 	}
 
 	@Override

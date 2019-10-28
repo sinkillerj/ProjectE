@@ -1,14 +1,20 @@
-package moze_intel.projecte.api.item;
+package moze_intel.projecte.api.capabilities.item;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * This interface specifies items that fire a projectile when the Shoot Projectile keybind is activated (default R)
+ *
+ * This is exposed through the Capability system.
+ *
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
  */
 public interface IProjectileShooter 
 {

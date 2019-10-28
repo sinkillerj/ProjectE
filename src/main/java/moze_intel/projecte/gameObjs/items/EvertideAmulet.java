@@ -1,8 +1,14 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -11,9 +17,10 @@ import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -21,38 +28,28 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem
 {
@@ -61,6 +58,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public EvertideAmulet(Properties props)
 	{
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new InfiniteFluidHandler());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 
 	@Override
@@ -109,27 +109,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		}
 
 		return ActionResultType.SUCCESS;
-	}
-
-	@Nonnull
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt)
-	{
-		return new ICapabilityProvider() {
-			private final LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> new InfiniteFluidHandler(stack));
-
-			@Nonnull
-			@Override
-			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-				if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-				{
-					return handler.cast();
-				} else
-				{
-					return LazyOptional.empty();
-				}
-			}
-		};
 	}
 
 	private void placeWater(World world, PlayerEntity player, BlockPos pos)
@@ -280,18 +259,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		return list;
 	}
 
-	private static class InfiniteFluidHandler implements IFluidHandlerItem
-	{
-		private final ItemStack container;
-
-		InfiniteFluidHandler(ItemStack stack) {
-			container = stack;
-		}
+	private static class InfiniteFluidHandler extends ItemCapability<IFluidHandlerItem> implements IFluidHandlerItem {
 
 		@Nonnull
 		@Override
 		public ItemStack getContainer() {
-			return container;
+			return getStack();
 		}
 
 		@Override
@@ -335,6 +308,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		public FluidStack drain(int maxDrain, FluidAction action) {
 			return new FluidStack(Fluids.WATER, maxDrain);
 		}
-	}
 
+		@Override
+		protected Capability<IFluidHandlerItem> getCapability() {
+			return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
+		}
+	}
 }

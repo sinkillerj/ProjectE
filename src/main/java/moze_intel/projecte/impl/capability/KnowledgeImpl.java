@@ -1,4 +1,4 @@
-package moze_intel.projecte.impl;
+package moze_intel.projecte.impl.capability;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -37,8 +37,7 @@ import java.util.List;
 
 public final class KnowledgeImpl {
 
-    public static void init()
-    {
+    public static void init() {
         CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
             @Override
             public CompoundNBT writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side) {

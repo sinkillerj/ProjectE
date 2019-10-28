@@ -1,6 +1,10 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
@@ -43,10 +47,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
 {
@@ -196,14 +196,15 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		{
 			pullFromInventories();
 			ItemHelper.compactInventory(inputInventory);
-
-			if (canSmelt() && !getFuelItem().isEmpty() && getFuelItem().getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) getFuelItem().getItem());
-				if (itemEmc.getStoredEmc(getFuelItem()) >= EMC_CONSUMPTION)
-				{
-					itemEmc.extractEmc(getFuelItem(), EMC_CONSUMPTION);
-					this.addEMC(EMC_CONSUMPTION);
+			ItemStack fuelItem = getFuelItem();
+			if (canSmelt() && !fuelItem.isEmpty()) {
+				LazyOptional<IItemEmcHolder> holderCapability = fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					if (emcHolder.getStoredEmc(fuelItem) >= EMC_CONSUMPTION) {
+						emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION);
+						this.addEMC(EMC_CONSUMPTION);
+					}
 				}
 			}
 			
@@ -215,19 +216,19 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 			
 			if (furnaceBurnTime == 0 && canSmelt())
 			{
-				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(getFuelItem());
+				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(fuelItem);
 			
 				if (furnaceBurnTime > 0)
 				{
 					flag1 = true;
 					
-					if (!getFuelItem().isEmpty())
+					if (!fuelItem.isEmpty())
 					{
-						ItemStack copy = getFuelItem().copy();
+						ItemStack copy = fuelItem.copy();
 
-						getFuelItem().shrink(1);
+						fuelItem.shrink(1);
 
-						if (getFuelItem().isEmpty())
+						if (fuelItem.isEmpty())
 						{
 							fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
 						}
@@ -304,7 +305,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 			if (extractTest.isEmpty())
 				continue;
 
-			IItemHandler targetInv = extractTest.getItem() instanceof IItemEmc || AbstractFurnaceTileEntity.isFuel(extractTest)
+			IItemHandler targetInv = extractTest.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent() || AbstractFurnaceTileEntity.isFuel(extractTest)
 					? fuelInv : inputInventory;
 
 			ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);

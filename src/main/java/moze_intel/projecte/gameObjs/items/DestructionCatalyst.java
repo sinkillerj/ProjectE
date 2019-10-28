@@ -1,7 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -19,15 +23,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
 public class DestructionCatalyst extends ItemPE implements IItemCharge
 {
-	public DestructionCatalyst(Properties props)
-	{
+	public DestructionCatalyst(Properties props) {
 		super(props);
+		addItemCapability(new ChargeItemCapabilityWrapper());
 	}
 
 	@Nonnull

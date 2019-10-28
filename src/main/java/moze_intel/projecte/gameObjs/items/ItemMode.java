@@ -3,7 +3,9 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -21,6 +23,8 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge
 		super(props);
 		this.numCharge = numCharge;
 		this.modes = modeDescrp;
+		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(new ModeChangerItemCapabilityWrapper());
 	}
 
 	@Override

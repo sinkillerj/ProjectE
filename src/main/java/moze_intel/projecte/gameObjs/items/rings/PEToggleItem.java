@@ -2,7 +2,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger
 	{
 		super(props);
 		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
+		addItemCapability(new ModeChangerItemCapabilityWrapper());
 	}
 
 	@Override

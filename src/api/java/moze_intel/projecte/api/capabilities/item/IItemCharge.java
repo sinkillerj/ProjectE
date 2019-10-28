@@ -1,17 +1,23 @@
-package moze_intel.projecte.api.item;
+package moze_intel.projecte.api.capabilities.item;
 
 import moze_intel.projecte.api.PESounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * This interface specifies items that have a charge that changes when the respective keybinding is activated (default V)
+ *
+ * This is exposed through the Capability system.
+ *
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
  */
 public interface IItemCharge 
 {

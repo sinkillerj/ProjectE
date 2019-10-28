@@ -8,8 +8,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IItemCharge;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.EMCHelper;
@@ -49,9 +51,10 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
 	private static final Tag<Block> BLOCK_BLACKLIST_TAG = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "time_watch_blacklist"));
 
-	public TimeWatch(Properties props)
-	{
+	public TimeWatch(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new ChargeItemCapabilityWrapper());
 	}
 
 	@Nonnull

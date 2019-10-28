@@ -2,6 +2,14 @@ package moze_intel.projecte.api;
 
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,6 +37,54 @@ public final class ProjectEAPI
 	 */
 	@CapabilityInject(IKnowledgeProvider.class)
 	public static Capability<IKnowledgeProvider> KNOWLEDGE_CAPABILITY = null;
+
+	/**
+	 * The capability object for IAlchBagItem
+	 */
+	@CapabilityInject(IAlchBagItem.class)
+	public static Capability<IAlchBagItem> ALCH_BAG_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IAlchChestItem
+	 */
+	@CapabilityInject(IAlchChestItem.class)
+	public static Capability<IAlchChestItem> ALCH_CHEST_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IExtraFunction
+	 */
+	@CapabilityInject(IExtraFunction.class)
+	public static Capability<IExtraFunction> EXTRA_FUNCTION_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IItemCharge
+	 */
+	@CapabilityInject(IItemCharge.class)
+	public static Capability<IItemCharge> CHARGE_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IItemEmcHolder
+	 */
+	@CapabilityInject(IItemEmcHolder.class)
+	public static Capability<IItemEmcHolder> EMC_HOLDER_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IModeChanger
+	 */
+	@CapabilityInject(IModeChanger.class)
+	public static Capability<IModeChanger> MODE_CHANGER_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IPedestalItem
+	 */
+	@CapabilityInject(IPedestalItem.class)
+	public static Capability<IPedestalItem> PEDESTAL_ITEM_CAPABILITY = null;
+
+	/**
+	 * The capability object for IProjectileShooter
+	 */
+	@CapabilityInject(IProjectileShooter.class)
+	public static Capability<IProjectileShooter> PROJECTILE_SHOOTER_ITEM_CAPABILITY = null;
 
 	/**
 	 * Retrieves the proxy for EMC-based API queries.

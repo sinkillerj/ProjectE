@@ -1,7 +1,10 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.api.item.IPedestalItem;
+import java.util.List;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.util.ITooltipFlag;
@@ -14,21 +17,22 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nonnull;
-import java.util.List;
 
 public class MindStone extends PEToggleItem implements IPedestalItem
 {
 	private static final int TRANSFER_RATE = 50;
 
-	public MindStone(Properties props)
-	{
+	public MindStone(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
 	@Override

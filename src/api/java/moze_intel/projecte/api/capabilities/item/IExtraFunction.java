@@ -1,14 +1,20 @@
-package moze_intel.projecte.api.item;
+package moze_intel.projecte.api.capabilities.item;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * This interface specifies items that perform a specific function when the Extra Function key is activated (default C)
+ *
+ * This is exposed through the Capability system.
+ *
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
  */
 public interface IExtraFunction 
 {

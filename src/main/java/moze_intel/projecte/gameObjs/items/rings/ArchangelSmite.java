@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -42,6 +43,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem
 		super(props);
 		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
 		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
 	public void fireVolley(ItemStack stack, PlayerEntity player)

@@ -1,8 +1,9 @@
 package moze_intel.projecte.events;
 
+import java.util.EnumSet;
+import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.item.IAlchBagItem;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -19,9 +20,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-import java.util.EnumSet;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents
@@ -40,9 +38,12 @@ public class TickEvents
 					for (int i = 0; i < inv.getSlots(); i++)
 					{
 						ItemStack current = inv.getStackInSlot(i);
-						if (!current.isEmpty() && current.getItem() instanceof IAlchBagItem
-								&& ((IAlchBagItem) current.getItem()).updateInAlchBag(inv, event.player, current)) {
-							colorsChanged.add(color);
+						if (!current.isEmpty()) {
+							current.getCapability(ProjectEAPI.ALCH_BAG_ITEM_CAPABILITY).ifPresent(alchBagItem -> {
+								if (alchBagItem.updateInAlchBag(inv, event.player, current)) {
+									colorsChanged.add(color);
+								}
+							});
 						}
 					}
 				}

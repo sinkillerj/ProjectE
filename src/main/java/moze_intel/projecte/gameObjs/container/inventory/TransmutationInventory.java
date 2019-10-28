@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
-import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -14,6 +14,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -333,19 +334,21 @@ public class TransmutationInventory extends CombinedInvWrapper
 				continue;
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			if (!stack.isEmpty())
 			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
-				if (value <= neededEmc)
-				{
-					//This item can store all of the amount being added
-					itemEmc.addEmc(stack, value);
-					return;
+				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					long neededEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
+					if (value <= neededEmc) {
+						//This item can store all of the amount being added
+						emcHolder.addEmc(stack, value);
+						return;
+					}
+					//else more than this item can fit, so fill the item and then continue going
+					emcHolder.addEmc(stack, neededEmc);
+					value -= neededEmc;
 				}
-				//else more than this item can fit, so fill the item and then continue going
-				itemEmc.addEmc(stack, neededEmc);
-				value -= neededEmc;
 			}
 		}
 		long emcToMax = Constants.TILE_MAX_EMC - provider.getEmc();
@@ -356,11 +359,13 @@ public class TransmutationInventory extends CombinedInvWrapper
 			//Will finish filling provider
 			//Now with excess EMC we can check against the lock slot as that is the last spot that has its EMC used.
 			ItemStack stack = inputLocks.getStackInSlot(LOCK_INDEX);
-			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				long neededEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
-				itemEmc.addEmc(stack, Math.min(excessEMC, neededEmc));
+			if (!stack.isEmpty()) {
+				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					long neededEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
+					emcHolder.addEmc(stack, Math.min(excessEMC, neededEmc));
+				}
 			}
 		}
 
@@ -394,18 +399,19 @@ public class TransmutationInventory extends CombinedInvWrapper
 			//If the EMC is maxed, check and try to remove from the lock slot if it is IItemEMC
 			//This is the only case if the provider is full when the IItemEMC was put in the lock slot
 			ItemStack stack = inputLocks.getStackInSlot(LOCK_INDEX);
-			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				long storedEmc = itemEmc.getStoredEmc(stack);
-				if (storedEmc >= value)
-				{
-					//All of it can be removed from the lock item
-					itemEmc.extractEmc(stack, value);
-					return;
+			if (!stack.isEmpty()) {
+				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					long storedEmc = emcHolder.getStoredEmc(stack);
+					if (storedEmc >= value) {
+						//All of it can be removed from the lock item
+						emcHolder.extractEmc(stack, value);
+						return;
+					}
+					emcHolder.extractEmc(stack, storedEmc);
+					value -= storedEmc;
 				}
-				itemEmc.extractEmc(stack, storedEmc);
-				value -= storedEmc;
 			}
 		}
 		if (value > provider.getEmc())
@@ -422,20 +428,21 @@ public class TransmutationInventory extends CombinedInvWrapper
 					continue;
 				}
 				ItemStack stack = inputLocks.getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-				{
-					IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-					long storedEmc = itemEmc.getStoredEmc(stack);
-					if (toRemove <= storedEmc)
-					{
-						//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
-						//Remove it and then
-						itemEmc.extractEmc(stack, toRemove);
-						break;
+				if (!stack.isEmpty()) {
+					LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+					if (holderCapability.isPresent()) {
+						IItemEmcHolder emcHolder = holderCapability.orElse(null);
+						long storedEmc = emcHolder.getStoredEmc(stack);
+						if (toRemove <= storedEmc) {
+							//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
+							//Remove it and then
+							emcHolder.extractEmc(stack, toRemove);
+							break;
+						}
+						//Removes all the emc from this item
+						emcHolder.extractEmc(stack, storedEmc);
+						toRemove -= storedEmc;
 					}
-					//Removes all the emc from this item
-					itemEmc.extractEmc(stack, storedEmc);
-					toRemove -= storedEmc;
 				}
 			}
 		}
@@ -497,16 +504,17 @@ public class TransmutationInventory extends CombinedInvWrapper
 				continue;
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
+			if (!stack.isEmpty())
 			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				long storedEmc = itemEmc.getStoredEmc(stack);
-				if (storedEmc >= emcToMax)
-				{
-					return Constants.TILE_MAX_EMC;
+				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					long storedEmc = holderCapability.orElse(null).getStoredEmc(stack);
+					if (storedEmc >= emcToMax) {
+						return Constants.TILE_MAX_EMC;
+					}
+					emc += storedEmc;
+					emcToMax -= storedEmc;
 				}
-				emc += storedEmc;
-				emcToMax -= storedEmc;
 			}
 		}
 		return emc;

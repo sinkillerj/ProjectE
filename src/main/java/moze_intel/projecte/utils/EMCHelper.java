@@ -1,6 +1,10 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import java.math.BigInteger;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.KleinStar;
@@ -10,12 +14,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-import java.math.BigInteger;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Helper class for EMC.
@@ -41,14 +42,15 @@ public final class EMCHelper
 
 		ItemStack offhand = player.getHeldItemOffhand();
 
-		if (!offhand.isEmpty() && offhand.getItem() instanceof IItemEmc)
-		{
-			IItemEmc itemEmc = ((IItemEmc) offhand.getItem());
-			if (itemEmc.getStoredEmc(offhand) >= minFuel)
-			{
-				itemEmc.extractEmc(offhand, minFuel);
-				player.openContainer.detectAndSendChanges();
-				return minFuel;
+		if (!offhand.isEmpty()) {
+			LazyOptional<IItemEmcHolder> holderCapability = offhand.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				if (emcHolder.getStoredEmc(offhand) >= minFuel) {
+					emcHolder.extractEmc(offhand, minFuel);
+					player.openContainer.detectAndSendChanges();
+					return minFuel;
+				}
 			}
 		}
 
@@ -56,22 +58,18 @@ public final class EMCHelper
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 
-			if (stack.isEmpty())
-			{
+			if (stack.isEmpty()) {
 				continue;
 			}
-			else if (stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				if (itemEmc.getStoredEmc(stack) >= minFuel)
-				{
-					itemEmc.extractEmc(stack, minFuel);
+			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				if (emcHolder.getStoredEmc(stack) >= minFuel) {
+					emcHolder.extractEmc(stack, minFuel);
 					player.openContainer.detectAndSendChanges();
 					return minFuel;
 				}
-			}
-			else if (!metRequirement)
-			{
+			} else if (!metRequirement) {
 				if(FuelMapper.isStackFuel(stack))
 				{
 					long emc = getEmcValue(stack);
@@ -268,8 +266,10 @@ public final class EMCHelper
 	private static long getStoredEMCBonus(ItemStack stack) {
 		if (stack.getOrCreateTag().contains("StoredEMC")) {
 			return stack.getTag().getLong("StoredEMC");
-		} else if (stack.getItem() instanceof IItemEmc) {
-			return ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+		}
+		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		if (holderCapability.isPresent()) {
+			return holderCapability.orElse(null).getStoredEmc(stack);
 		}
 		return 0;
 	}

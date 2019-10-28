@@ -1,18 +1,22 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IPedestalItem;
+import java.util.List;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -20,14 +24,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
 {
-	public VoidRing(Properties props)
-	{
+	public VoidRing(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	@Override

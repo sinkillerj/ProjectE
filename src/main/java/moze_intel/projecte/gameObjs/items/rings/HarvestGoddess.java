@@ -3,7 +3,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.EMCHelper;
@@ -31,9 +32,9 @@ import net.minecraftforge.common.IPlantable;
 
 public class HarvestGoddess extends PEToggleItem implements IPedestalItem
 {
-	public HarvestGoddess(Properties props)
-	{
+	public HarvestGoddess(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 	
 	@Override

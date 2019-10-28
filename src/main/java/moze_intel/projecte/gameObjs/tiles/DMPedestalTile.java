@@ -1,9 +1,11 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import java.util.Random;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -17,9 +19,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class DMPedestalTile extends TileEmc
 {
@@ -53,13 +52,10 @@ public class DMPedestalTile extends TileEmc
 
 		if (getActive())
 		{
-			if (!inventory.getStackInSlot(0).isEmpty())
+			ItemStack stack = inventory.getStackInSlot(0);
+			if (!stack.isEmpty())
 			{
-				Item item = inventory.getStackInSlot(0).getItem();
-				if (item instanceof IPedestalItem)
-				{
-					((IPedestalItem) item).updateInPedestal(world, getPos());
-				}
+				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(world, getPos()));
 				if (particleCooldown <= 0)
 				{
 					spawnParticleTypes();

@@ -11,9 +11,10 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 
 /**
- * This interface defines the contract for some object that exposes sixteen colored inventories,
- * for the purpose of usage as Alchemical Bags.
+ * This interface defines the contract for some object that exposes sixteen colored inventories, for the purpose of usage as Alchemical Bags.
+ *
  * This is exposed through the Capability system.
+ *
  * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, Direction)}.
  */
 public interface IAlchBagProvider extends INBTSerializable<CompoundNBT>

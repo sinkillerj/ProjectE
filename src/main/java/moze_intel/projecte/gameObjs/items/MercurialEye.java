@@ -1,8 +1,15 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -32,20 +39,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
 public class MercurialEye extends ItemMode implements IExtraFunction
 {
@@ -65,12 +66,14 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 				"pe.pe_mercurial_eye.mode4",
 				"pe.pe_mercurial_eye.mode5",
 				"pe.pe_mercurial_eye.mode6"});
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT prevCapNBT)
 	{
+		//TODO: Switch this over to somehow using ItemCapabilityWrapper??
 		return new ICapabilitySerializable<CompoundNBT>()
 		{
 			private final IItemHandler inv = new ItemStackHandler(2);
@@ -143,14 +146,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing)
 	{
-		IItemHandler inventory = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-		if (inventory == null)
-		{
+		LazyOptional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		if (!inventoryCapability.isPresent()) {
 			return ActionResultType.FAIL;
 		}
+		IItemHandler inventory = inventoryCapability.orElse(null);
 		ItemStack klein = inventory.getStackInSlot(0);
-		if (klein.isEmpty() || !(klein.getItem() instanceof IItemEmc))
-		{
+		if (klein.isEmpty()) {
+			return ActionResultType.FAIL;
+		}
+		if (!klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
 			return ActionResultType.FAIL;
 		}
 
@@ -319,15 +324,17 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 	private boolean doBlockPlace(PlayerEntity player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops)
 	{
-		IItemHandler capability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-		if (capability == null)
-		{
+		LazyOptional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		if (!inventoryCapability.isPresent()) {
 			return false;
 		}
-		ItemStack klein = capability.getStackInSlot(0);
-
-		if (klein.isEmpty() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null)
-		{
+		IItemHandler inventory = inventoryCapability.orElse(null);
+		ItemStack klein = inventory.getStackInSlot(0);
+		if (klein.isEmpty()) {
+			return false;
+		}
+		LazyOptional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null) {
 			return false;
 		}
 
@@ -339,20 +346,20 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 
 		if (PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, placePos, newState))
 		{
-			IItemEmc itemEMC = (IItemEmc) klein.getItem();
+			IItemEmcHolder emcHolder = holderCapability.orElse(null);
 			if (oldEMC == 0)
 			{
 				//Drop the block because it doesn't have an emc value
 				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getServerWorld(), placePos, null));
-				itemEMC.extractEmc(klein, newEMC);
+				emcHolder.extractEmc(klein, newEMC);
 			}
 			else if (oldEMC > newEMC)
 			{
-				itemEMC.addEmc(klein, oldEMC - newEMC);
+				emcHolder.addEmc(klein, oldEMC - newEMC);
 			}
 			else if (oldEMC < newEMC)
 			{
-				itemEMC.extractEmc(klein, newEMC - oldEMC);
+				emcHolder.extractEmc(klein, newEMC - oldEMC);
 			}
 			return true;
 		}

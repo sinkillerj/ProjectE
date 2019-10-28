@@ -4,9 +4,12 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
+import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ItemHelper;
@@ -47,6 +50,9 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	public BlackHoleBand(Properties props)
 	{
 		super(props);
+		addItemCapability(new AlchBagItemCapabilityWrapper());
+		addItemCapability(new AlchChestItemCapabilityWrapper());
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack)

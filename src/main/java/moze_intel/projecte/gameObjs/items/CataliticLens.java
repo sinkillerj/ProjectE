@@ -1,18 +1,18 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.item.IProjectileShooter;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-import javax.annotation.Nonnull;
-
 public class CataliticLens extends DestructionCatalyst implements IProjectileShooter
 {
-	public CataliticLens(Properties props)
-	{
+	public CataliticLens(Properties props) {
 		super(props);
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 	
 	@Override

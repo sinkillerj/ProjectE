@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -35,9 +37,10 @@ import net.minecraft.world.World;
 
 public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter
 {
-	public Ignition(Properties props)
-	{
+	public Ignition(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 	
 	@Override

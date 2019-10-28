@@ -1,8 +1,11 @@
 package moze_intel.projecte.gameObjs.items;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IItemCharge;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,13 +16,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-
 public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge
 {
-	public HyperkineticLens(Properties props)
-	{
+	public HyperkineticLens(Properties props) {
 		super(props);
+		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 	
 	@Nonnull

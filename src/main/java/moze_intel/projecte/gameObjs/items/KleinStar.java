@@ -1,7 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -12,13 +13,14 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class KleinStar extends ItemPE implements IItemEmc
+public class KleinStar extends ItemPE implements IItemEmcHolder
 {
 	public final EnumKleinTier tier;
 	public KleinStar(Properties props, EnumKleinTier tier)
 	{
 		super(props);
 		this.tier = tier;
+		addItemCapability(new EmcHolderItemCapabilityWrapper());
 	}
 	
 	@Override
@@ -39,7 +41,6 @@ public class KleinStar extends ItemPE implements IItemEmc
 		
 		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
-
 	
 	@Nonnull
 	@Override

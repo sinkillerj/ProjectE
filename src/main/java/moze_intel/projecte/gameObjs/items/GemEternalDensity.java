@@ -5,8 +5,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
+import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
@@ -61,6 +64,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			"item.projecte.dark_matter",
 			"item.projecte.red_matter"
 		};
+		addItemCapability(new AlchBagItemCapabilityWrapper());
+		addItemCapability(new AlchChestItemCapabilityWrapper());
+		addItemCapability(new ModeChangerItemCapabilityWrapper());
 	}
 	
 	@Override

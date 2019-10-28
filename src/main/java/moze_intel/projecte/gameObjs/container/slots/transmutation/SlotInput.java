@@ -1,13 +1,14 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nonnull;
 
 public class SlotInput extends SlotItemHandler
 {
@@ -31,8 +32,7 @@ public class SlotInput extends SlotItemHandler
 	{
 		ItemStack stack = super.decrStackSize(amount);
 		//Decrease the size of the stack
-		if (stack.getItem() instanceof IItemEmc)
-		{
+		if (stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
 			//If it was an EMC storing item then check for updates,
 			// so that the right hand side shows the proper items
 			inv.checkForUpdates();
@@ -49,21 +49,21 @@ public class SlotInput extends SlotItemHandler
 		}
 		
 		super.putStack(stack);
-		
-		if (stack.getItem() instanceof IItemEmc)
-		{
-			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-			long remainingEmc = itemEmc.getMaximumEmc(stack) - itemEmc.getStoredEmc(stack);
+
+		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		if (holderCapability.isPresent()) {
+			IItemEmcHolder emcHolder = holderCapability.orElse(null);
+			long remainingEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
 			long availableEMC = inv.getAvailableEMC();
 
 			if (availableEMC >= remainingEmc)
 			{
-				itemEmc.addEmc(stack, remainingEmc);
+				emcHolder.addEmc(stack, remainingEmc);
 				inv.removeEmc(remainingEmc);
 			}
 			else
 			{
-				itemEmc.addEmc(stack, availableEMC);
+				emcHolder.addEmc(stack, availableEMC);
 				inv.removeEmc(availableEMC);
 			}
 		}

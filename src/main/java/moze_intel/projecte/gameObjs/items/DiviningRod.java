@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PrimitiveIterator;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -34,6 +35,7 @@ public class DiviningRod extends ItemPE implements IItemMode
 	{
 		super(props);
 		modes = modeDesc;
+		addItemCapability(new ModeChangerItemCapabilityWrapper());
 	}
 	
 	@Nonnull

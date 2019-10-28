@@ -1,9 +1,11 @@
 package moze_intel.projecte.events;
 
+import java.math.BigInteger;
+import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.Collector;
@@ -14,18 +16,19 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.math.BigInteger;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ToolTipEvent
@@ -38,23 +41,19 @@ public class ToolTipEvent
 		{
 			return;
 		}
-		Item currentItem = current.getItem();
-		Block currentBlock = Block.getBlockFromItem(currentItem);
 		PlayerEntity clientPlayer = Minecraft.getInstance().player;
 
-		if (ProjectEConfig.misc.pedestalToolTips.get()
-			&& currentItem instanceof IPedestalItem)
+		if (ProjectEConfig.misc.pedestalToolTips.get())
 		{
-			event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
-			List<ITextComponent> description = ((IPedestalItem) currentItem).getPedestalDescription();
-			if (description.isEmpty())
-			{
-				event.getToolTip().add(IPedestalItem.TOOLTIPDISABLED);
-			}
-			else
-			{
-				event.getToolTip().addAll(description);
-			}
+			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
+				List<ITextComponent> description = pedestalItem.getPedestalDescription();
+				if (description.isEmpty()) {
+					event.getToolTip().add(IPedestalItem.TOOLTIP_DISABLED);
+				} else {
+					event.getToolTip().addAll(description);
+				}
+			});
 		}
 
 		if (ProjectEConfig.misc.tagToolTips.get())
@@ -96,6 +95,9 @@ public class ToolTipEvent
 
 		if (ProjectEConfig.misc.statToolTips.get())
 		{
+			//TODO: Move these tooltips to the Block's items themselves?
+			Block currentBlock = Block.getBlockFromItem(current.getItem());
+
 			ITextComponent unit = new TranslationTextComponent("pe.emc.name");
 			ITextComponent rate = new TranslationTextComponent("pe.emc.rate");
 			/*
@@ -168,21 +170,21 @@ public class ToolTipEvent
 
 		if (current.hasTag())
 		{
-			if (current.getItem() instanceof IItemEmc || current.getTag().contains("StoredEMC"))
-			{
-				long value;
-				if (current.getTag().contains("StoredEMC"))
-				{
-					value = current.getTag().getLong("StoredEMC");
-				} else
-				{
-					value = ((IItemEmc) current.getItem()).getStoredEmc(current);
+			long value;
+			if (current.getTag().contains("StoredEMC")) {
+				value = current.getTag().getLong("StoredEMC");
+			} else {
+				LazyOptional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					value = holderCapability.orElse(null).getStoredEmc(current);
+				} else {
+					return;
 				}
-
-				ITextComponent label = new TranslationTextComponent("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
-				ITextComponent val = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
-				event.getToolTip().add(label.appendText(" ").appendSibling(val));
 			}
+
+			ITextComponent label = new TranslationTextComponent("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
+			ITextComponent val = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
+			event.getToolTip().add(label.appendText(" ").appendSibling(val));
 		}
 	}
 }

@@ -1,17 +1,18 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IAlchChestItem;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -19,8 +20,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nonnull;
 
 public class AlchChestTile extends TileEmc implements INamedContainerProvider
 {
@@ -118,9 +117,8 @@ public class AlchChestTile extends TileEmc implements INamedContainerProvider
 		for (int i = 0; i < inventory.getSlots(); i++)
 		{
 			ItemStack stack = inventory.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IAlchChestItem)
-			{
-				((IAlchChestItem) stack.getItem()).updateInAlchChest(world, pos, stack);
+			if (!stack.isEmpty()) {
+				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(world, pos, stack));
 			}
 		}
 	}

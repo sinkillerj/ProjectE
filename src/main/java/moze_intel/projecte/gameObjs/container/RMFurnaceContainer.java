@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -18,8 +19,6 @@ import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
 
 public class RMFurnaceContainer extends Container
 {
@@ -156,7 +155,7 @@ public class RMFurnaceContainer extends Container
 		else
 		{
 			
-			if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getItem() instanceof IItemEmc)
+			if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent())
 			{
 				if (!this.mergeItemStack(stack, 0, 1, false))
 				{

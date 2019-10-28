@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IItemCharge;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.MathUtils;
@@ -29,9 +31,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 {
-	public Zero(Properties props)
-	{
+	public Zero(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(new ChargeItemCapabilityWrapper());
 	}
 
 	@Override

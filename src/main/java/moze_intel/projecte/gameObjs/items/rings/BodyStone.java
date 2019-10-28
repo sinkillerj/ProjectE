@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
@@ -23,9 +24,9 @@ import net.minecraft.world.World;
 
 public class BodyStone extends PEToggleItem implements IPedestalItem
 {
-	public BodyStone(Properties props)
-	{
+	public BodyStone(Properties props) {
 		super(props);
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 	
 	@Override

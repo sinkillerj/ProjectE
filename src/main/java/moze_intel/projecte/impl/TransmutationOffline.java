@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;

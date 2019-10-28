@@ -1,4 +1,4 @@
-package moze_intel.projecte.impl;
+package moze_intel.projecte.impl.capability;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;

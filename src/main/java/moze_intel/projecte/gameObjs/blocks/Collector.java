@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -91,22 +93,16 @@ public class Collector extends BlockDirection
 		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty())
 		{
-			if (charging.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) charging.getItem());
-				long max = itemEmc.getMaximumEmc(charging);
-				long current = itemEmc.getStoredEmc(charging);
+			LazyOptional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				long max = emcHolder.getMaximumEmc(charging);
+				long current = emcHolder.getStoredEmc(charging);
 				return MathUtils.scaleToRedstone(current, max);
-			} else
-			{
-				long needed = tile.getEmcToNextGoal();
-				long current = tile.getStoredEmc();
-				return MathUtils.scaleToRedstone(current, needed);
 			}
-		} else
-		{
-			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaximumEmc());
+			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getEmcToNextGoal());
 		}
+		return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getMaximumEmc());
 	}
 
 	@Override

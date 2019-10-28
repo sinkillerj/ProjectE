@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;

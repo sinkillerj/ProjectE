@@ -1,9 +1,15 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IPedestalItem;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
+import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
+import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.rings.PEToggleItem;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -20,23 +26,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem
 {
 	public RepairTalisman(Properties props)
 	{
 		super(props);
+		addItemCapability(new AlchBagItemCapabilityWrapper());
+		addItemCapability(new AlchChestItemCapabilityWrapper());
+		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
 	@Override
@@ -81,8 +86,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		{
 			ItemStack invStack = inv.getStackInSlot(i);
 
-			if (invStack.isEmpty() || invStack.getItem() instanceof IModeChanger || !invStack.getItem().isRepairable(invStack))
-			{
+			if (invStack.isEmpty() || invStack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() || !invStack.isRepairable()) {
 				continue;
 			}
 

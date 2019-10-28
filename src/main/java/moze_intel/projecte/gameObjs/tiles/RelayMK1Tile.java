@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IItemEmc;
+import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -25,8 +27,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-
 public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider, INamedContainerProvider
 {
 	private final ItemStackHandler input;
@@ -48,18 +48,16 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			ItemStack stack = getStackInSlot(slot);
-			if (!stack.isEmpty() && stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc item = ((IItemEmc) stack.getItem());
-				if (item.getStoredEmc(stack) >= item.getMaximumEmc(stack))
-				{
-					return super.extractItem(slot, amount, simulate);
-				} else
-				{
+			if (!stack.isEmpty()) {
+				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					if (emcHolder.getStoredEmc(stack) >= emcHolder.getMaximumEmc(stack)) {
+						return super.extractItem(slot, amount, simulate);
+					}
 					return ItemStack.EMPTY;
 				}
 			}
-
 			return super.extractItem(slot, amount, simulate);
 		}
 	});
@@ -144,26 +142,21 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		
 		ItemStack stack = getBurn();
 		
-		if (!stack.isEmpty())
-		{
-			if(stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				long emcVal = itemEmc.getStoredEmc(stack);
+		if (!stack.isEmpty()) {
+			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				long emcVal = emcHolder.getStoredEmc(stack);
 				
-				if (emcVal > chargeRate)
-				{
+				if (emcVal > chargeRate) {
 					emcVal = chargeRate;
 				}
 			
-				if (emcVal > 0 && this.getStoredEmc() + emcVal <= this.getMaximumEmc())
-				{
+				if (emcVal > 0 && this.getStoredEmc() + emcVal <= this.getMaximumEmc()) {
 					this.addEMC(emcVal);
-					itemEmc.extractEmc(stack, emcVal);
+					emcHolder.extractEmc(stack, emcVal);
 				}
-			}
-			else
-			{
+			} else {
 				long emcVal = EMCHelper.getEmcSellValue(stack);
 				
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
@@ -176,9 +169,12 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		
 		ItemStack chargeable = getCharging();
 		
-		if (!chargeable.isEmpty() && this.getStoredEmc() > 0 && chargeable.getItem() instanceof IItemEmc)
+		if (!chargeable.isEmpty() && this.getStoredEmc() > 0)
 		{
-			chargeItem(chargeable);
+			LazyOptional<IItemEmcHolder> holderCapability = chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				chargeItem(holderCapability.orElse(null), chargeable);
+			}
 		}
 	}
 	
@@ -196,31 +192,31 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		}
 	}
 	
-	private void chargeItem(ItemStack chargeable)
+	private void chargeItem(IItemEmcHolder emcHolder, ItemStack chargeable)
 	{
-		IItemEmc itemEmc = ((IItemEmc) chargeable.getItem());
-		long starEmc = itemEmc.getStoredEmc(chargeable);
-		long maxStarEmc = itemEmc.getMaximumEmc(chargeable);
+		long starEmc = emcHolder.getStoredEmc(chargeable);
+		long maxStarEmc = emcHolder.getMaximumEmc(chargeable);
 		long toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
 			
-		if ((starEmc + toSend) <= maxStarEmc)
-		{
-			itemEmc.addEmc(chargeable, toSend);
+		if ((starEmc + toSend) <= maxStarEmc) {
+			emcHolder.addEmc(chargeable, toSend);
 			this.removeEMC(toSend);
-		}
-		else
-		{
+		} else {
 			toSend = maxStarEmc - starEmc;
-			itemEmc.addEmc(chargeable, toSend);
+			emcHolder.addEmc(chargeable, toSend);
 			this.removeEMC(toSend);
 		}
 	}
 
 	public double getItemChargeProportion()
 	{
-		if (!getCharging().isEmpty() && getCharging().getItem() instanceof IItemEmc)
-		{
-			return (double) ((IItemEmc) getCharging().getItem()).getStoredEmc(getCharging()) / ((IItemEmc) getCharging().getItem()).getMaximumEmc(getCharging());
+		ItemStack charging = getCharging();
+		if (!charging.isEmpty()) {
+			LazyOptional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				return (double) emcHolder.getStoredEmc(charging) / emcHolder.getMaximumEmc(charging);
+			}
 		}
 
 		return 0;
@@ -228,17 +224,18 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 
 	public double getInputBurnProportion()
 	{
-		if (getBurn().isEmpty())
+		ItemStack burn = getBurn();
+		if (burn.isEmpty())
 		{
 			return 0;
 		}
 
-		if (getBurn().getItem() instanceof IItemEmc)
-		{
-			return (double) ((IItemEmc) getBurn().getItem()).getStoredEmc(getBurn()) / ((IItemEmc) getBurn().getItem()).getMaximumEmc(getBurn());
+		LazyOptional<IItemEmcHolder> holderCapability = burn.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		if (holderCapability.isPresent()) {
+			IItemEmcHolder emcHolder = holderCapability.orElse(null);
+			return (double) emcHolder.getStoredEmc(burn) / emcHolder.getMaximumEmc(burn);
 		}
-
-		return getBurn().getCount() / (double) getBurn().getMaxStackSize();
+		return burn.getCount() / (double) burn.getMaxStackSize();
 	}
 	
 	@Override

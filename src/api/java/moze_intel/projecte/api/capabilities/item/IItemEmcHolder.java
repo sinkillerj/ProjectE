@@ -1,15 +1,21 @@
-package moze_intel.projecte.api.item;
+package moze_intel.projecte.api.capabilities.item;
 
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * This interface defines the contract for items that wish to expose their internal EMC storage for external manipulation
  *
+ * This is exposed through the Capability system.
+ *
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ *
  * @author williewillus
  */
-public interface IItemEmc
+public interface IItemEmcHolder
 {
 	/**
 	 * Adds EMC to the itemstack
@@ -38,6 +44,7 @@ public interface IItemEmc
 	 * Gets the maximum EMC that is allowed to be stored in this stack
 	 * @param stack The stack to query
 	 * @return The maximum amount of publicly-accessible EMC that can be stored in this stack
+	 * @implNote Must be greater than zero
 	 */
 	long getMaximumEmc(@Nonnull ItemStack stack);
 }

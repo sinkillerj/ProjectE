@@ -1,8 +1,15 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.item.IExtraFunction;
+import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
+import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -12,8 +19,8 @@ import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -35,12 +42,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
 {
 	public PhilosophersStone(Properties props)
@@ -49,6 +50,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
 
 	@Override
