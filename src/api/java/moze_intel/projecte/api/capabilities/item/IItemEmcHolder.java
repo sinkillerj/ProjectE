@@ -15,7 +15,6 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * @author williewillus
  */
-//TODO: Convert things over to simulating insertion/extraction?
 public interface IItemEmcHolder {
 
 	/**

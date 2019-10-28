@@ -134,19 +134,12 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				long emcVal = emcHolder.getStoredEmc(stack);
-
-				if (emcVal > chargeRate) {
-					emcVal = chargeRate;
-				}
-
-				if (emcVal > 0 && emcVal <= getNeededEmc()) {
-					forceInsertEmc(emcVal, EmcAction.EXECUTE);
-					emcHolder.extractEmc(stack, emcVal, EmcAction.EXECUTE);
+				long simulatedVal = forceInsertEmc(emcHolder.extractEmc(stack, chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
+				if (simulatedVal > 0) {
+					forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
 				}
 			} else {
 				long emcVal = EMCHelper.getEmcSellValue(stack);
-
 				if (emcVal > 0 && emcVal <= getNeededEmc()) {
 					forceInsertEmc(emcVal, EmcAction.EXECUTE);
 					getBurn().shrink(1);
@@ -157,10 +150,10 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		ItemStack chargeable = getCharging();
 
 		if (!chargeable.isEmpty() && this.getStoredEmc() > 0) {
-			LazyOptional<IItemEmcHolder> holderCapability = chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-			if (holderCapability.isPresent()) {
-				chargeItem(holderCapability.orElse(null), chargeable);
-			}
+			chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+				long actualSent = emcHolder.insertEmc(chargeable, Math.min(getStoredEmc(), chargeRate), EmcAction.EXECUTE);
+				forceExtractEmc(actualSent, EmcAction.EXECUTE);
+			});
 		}
 	}
 
@@ -173,20 +166,6 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 			this.sendToAllAcceptors(this.getStoredEmc());
 		} else {
 			this.sendToAllAcceptors(chargeRate);
-		}
-	}
-
-	private void chargeItem(IItemEmcHolder emcHolder, ItemStack chargeable) {
-		long neededStarEmc = emcHolder.getNeededEmc(chargeable);
-		long toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
-
-		if (toSend <= neededStarEmc) {
-			emcHolder.insertEmc(chargeable, toSend, EmcAction.EXECUTE);
-			forceExtractEmc(toSend, EmcAction.EXECUTE);
-		} else {
-			toSend = neededStarEmc;
-			emcHolder.insertEmc(chargeable, toSend, EmcAction.EXECUTE);
-			forceExtractEmc(toSend, EmcAction.EXECUTE);
 		}
 	}
 

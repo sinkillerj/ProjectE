@@ -3,13 +3,12 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 import java.math.BigInteger;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotInput extends SlotItemHandler {
@@ -47,22 +46,11 @@ public class SlotInput extends SlotItemHandler {
 
 		super.putStack(stack);
 
-		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-		if (holderCapability.isPresent()) {
-			IItemEmcHolder emcHolder = holderCapability.orElse(null);
-			long remainingEmc = emcHolder.getNeededEmc(stack);
-			BigInteger availableEMC = inv.getAvailableEMC();
-			BigInteger remainingBigInt = BigInteger.valueOf(remainingEmc);
-
-			if (availableEMC.compareTo(remainingBigInt) >= 0) {
-				emcHolder.insertEmc(stack, remainingEmc, EmcAction.EXECUTE);
-				inv.removeEmc(remainingBigInt);
-			} else {
-				//Can use longValueExact, as this should ALWAYS be less than max long, because we only get here if we have less than remainingEmc
-				emcHolder.insertEmc(stack, availableEMC.longValueExact(), EmcAction.EXECUTE);
-				inv.removeEmc(availableEMC);
-			}
-		}
+		stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+			long shrunkenAvailableEMC = MathUtils.clampToLong(inv.getAvailableEMC());
+			long actualInserted = emcHolder.insertEmc(stack, shrunkenAvailableEMC, EmcAction.EXECUTE);
+			inv.removeEmc(BigInteger.valueOf(actualInserted));
+		});
 
 		if (EMCHelper.doesItemHaveEmc(stack)) {
 			inv.handleKnowledge(stack.copy());

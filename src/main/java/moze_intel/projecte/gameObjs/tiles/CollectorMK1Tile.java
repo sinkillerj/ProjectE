@@ -182,19 +182,10 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
 			if (hasChargeableItem) {
-				long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
-				LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-
-					long neededItemEmc = emcHolder.getNeededEmc(upgrading);
-					if (toSend > neededItemEmc) {
-						toSend = neededItemEmc;
-					}
-
-					emcHolder.insertEmc(upgrading, toSend, EmcAction.EXECUTE);
-					forceExtractEmc(toSend, EmcAction.EXECUTE);
-				}
+				upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+					long actualInserted = emcHolder.insertEmc(upgrading, Math.min(getStoredEmc(), emcGen), EmcAction.EXECUTE);
+					forceExtractEmc(actualInserted, EmcAction.EXECUTE);
+				});
 			} else if (hasFuel) {
 				if (FuelMapper.getFuelUpgrade(upgrading).isEmpty()) {
 					auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);

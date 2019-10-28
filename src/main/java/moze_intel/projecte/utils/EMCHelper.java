@@ -43,10 +43,11 @@ public final class EMCHelper {
 			LazyOptional<IItemEmcHolder> holderCapability = offhand.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				if (emcHolder.getStoredEmc(offhand) >= minFuel) {
-					emcHolder.extractEmc(offhand, minFuel, EmcAction.EXECUTE);
+				long simulatedExtraction = emcHolder.extractEmc(offhand, minFuel, EmcAction.SIMULATE);
+				if (simulatedExtraction == minFuel) {
+					long actualExtracted = emcHolder.extractEmc(offhand, simulatedExtraction, EmcAction.EXECUTE);
 					player.openContainer.detectAndSendChanges();
-					return minFuel;
+					return actualExtracted;
 				}
 			}
 		}
@@ -60,10 +61,11 @@ public final class EMCHelper {
 			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				if (emcHolder.getStoredEmc(stack) >= minFuel) {
-					emcHolder.extractEmc(stack, minFuel, EmcAction.EXECUTE);
+				long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);
+				if (simulatedExtraction == minFuel) {
+					long actualExtracted = emcHolder.extractEmc(stack, simulatedExtraction, EmcAction.EXECUTE);
 					player.openContainer.detectAndSendChanges();
-					return minFuel;
+					return actualExtracted;
 				}
 			} else if (!metRequirement) {
 				if (FuelMapper.isStackFuel(stack)) {

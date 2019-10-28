@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import java.math.BigInteger;
 import java.util.Random;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
@@ -61,5 +62,14 @@ public final class MathUtils {
 
 	public static int secToTicks(double secs) {
 		return (int) Math.round(secs * 20.0D);
+	}
+
+	//Note: This does not clamp to negative so will error if a negative big int is passed that is out of long's bounds
+	public static long clampToLong(BigInteger bigInt) {
+		if (bigInt.compareTo(Constants.MAX_LONG) > 0) {
+			return Long.MAX_VALUE;
+		}
+		//Can use longValueExact, as this should ALWAYS be less than max long
+		return bigInt.longValueExact();
 	}
 }

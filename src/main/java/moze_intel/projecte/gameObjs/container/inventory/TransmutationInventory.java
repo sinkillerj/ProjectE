@@ -15,6 +15,7 @@ import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -281,17 +282,13 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-					long neededEmc = emcHolder.getNeededEmc(stack);
-					BigInteger neededBigInt = BigInteger.valueOf(neededEmc);
-					if (value.compareTo(neededBigInt) <= 0) {
-						//This item can store all of the amount being added
-						//Can use longValueExact, as this should ALWAYS be less than max long
-						emcHolder.insertEmc(stack, value.longValueExact(), EmcAction.EXECUTE);
+					long shrunkenValue = MathUtils.clampToLong(value);
+					long actualInserted = emcHolder.insertEmc(stack, shrunkenValue, EmcAction.EXECUTE);
+					value = value.subtract(BigInteger.valueOf(actualInserted));
+					if (value.compareTo(BigInteger.ZERO) == 0) {
+						//If we fit it all then exit
 						return;
 					}
-					//else more than this item can fit, so fill the item and then continue going
-					emcHolder.insertEmc(stack, neededEmc, EmcAction.EXECUTE);
-					value = value.subtract(neededBigInt);
 				}
 			}
 		}
@@ -336,18 +333,14 @@ public class TransmutationInventory extends CombinedInvWrapper {
 					LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 					if (holderCapability.isPresent()) {
 						IItemEmcHolder emcHolder = holderCapability.orElse(null);
-						long storedEmc = emcHolder.getStoredEmc(stack);
-						BigInteger storedEmcBigInt = BigInteger.valueOf(storedEmc);
-						if (toRemove.compareTo(storedEmcBigInt) <= 0) {
+						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
+						long actualExtracted = emcHolder.extractEmc(stack, shrunkenToRemove, EmcAction.EXECUTE);
+						toRemove = toRemove.subtract(BigInteger.valueOf(actualExtracted));
+						if (toRemove.compareTo(BigInteger.ZERO) == 0) {
 							//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
 							//Remove it and then stop checking other input slots as we were able to provide all that was needed
-							//Can use longValueExact, as this should ALWAYS be less than max long
-							emcHolder.extractEmc(stack, toRemove.longValueExact(), EmcAction.EXECUTE);
 							break;
 						}
-						//Removes all the emc from this item
-						emcHolder.extractEmc(stack, storedEmc, EmcAction.EXECUTE);
-						toRemove = toRemove.subtract(storedEmcBigInt);
 					}
 				}
 			}

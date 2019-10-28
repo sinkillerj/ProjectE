@@ -4,7 +4,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
@@ -187,14 +186,12 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider {
 			ItemHelper.compactInventory(inputInventory);
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
-				LazyOptional<IItemEmcHolder> holderCapability = fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-					if (emcHolder.getStoredEmc(fuelItem) >= EMC_CONSUMPTION) {
-						emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.EXECUTE);
-						forceInsertEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
+				fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+					long simulatedExtraction = emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.SIMULATE);
+					if (simulatedExtraction == EMC_CONSUMPTION) {
+						forceInsertEmc(emcHolder.extractEmc(fuelItem, simulatedExtraction, EmcAction.EXECUTE), EmcAction.EXECUTE);
 					}
-				}
+				});
 			}
 
 			if (this.getStoredEmc() >= EMC_CONSUMPTION) {
