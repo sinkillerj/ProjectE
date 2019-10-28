@@ -16,54 +16,47 @@ import net.minecraftforge.forgespi.language.IModInfo;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
-public class ThreadCheckUpdate extends Thread
-{
+public class ThreadCheckUpdate extends Thread {
+
 	private static final String curseURL = "https://minecraft.curseforge.com/projects/projecte/files";
 	private static volatile ComparableVersion target = null;
 	private static volatile boolean hasSentMessage = false;
-	
-	public ThreadCheckUpdate()
-	{
+
+	public ThreadCheckUpdate() {
 		this.setName("ProjectE Update Checker Notifier");
 	}
-	
+
 	@Override
-	public void run()
-	{
+	public void run() {
 		IModInfo info = ModList.get().getModContainerById(PECore.MODID).get().getModInfo();
 		VersionChecker.CheckResult result = null;
 
 		int tries = 0;
 		do {
 			VersionChecker.CheckResult res = VersionChecker.getResult(info);
-			if (res.status != VersionChecker.Status.PENDING)
-			{
+			if (res.status != VersionChecker.Status.PENDING) {
 				result = res;
 			}
-			try
-			{
+			try {
 				Thread.sleep(1000L);
-			} catch (InterruptedException ignored) {}
+			} catch (InterruptedException ignored) {
+			}
 			tries++;
 		} while (result == null && tries < 10);
 
-		if (result == null)
-		{
+		if (result == null) {
 			PECore.LOGGER.info("Update check failed.");
 			return;
 		}
 
-		if (result.status == VersionChecker.Status.OUTDATED)
-		{
+		if (result.status == VersionChecker.Status.OUTDATED) {
 			target = result.target;
 		}
 	}
 
 	@SubscribeEvent
-	public static void worldLoad(EntityJoinWorldEvent evt)
-	{
-		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage)
-		{
+	public static void worldLoad(EntityJoinWorldEvent evt) {
+		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage) {
 			hasSentMessage = true;
 			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.available", target));
 			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.getit"));

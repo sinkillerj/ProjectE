@@ -120,8 +120,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating and fixing simple values multiple recipes without inheriting")
-	void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes()
-	{
+	void testGenerateValuesSimpleFixedDoNotInheritMultiRecipes() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a1", "a1"));
 		mappingCollector.addConversion(1, "c", Arrays.asList("a1", "b"));
@@ -136,8 +135,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating simple values with a given min value")
-	void testGenerateValuesSimpleSelectMinValue()
-	{
+	void testGenerateValuesSimpleSelectMinValue() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.setValueBefore("b2", 2L);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a1", "a1"));
@@ -151,8 +149,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating simple values with a given min value, with dependency")
-	void testGenerateValuesSimpleSelectMinValueWithDependency()
-	{
+	void testGenerateValuesSimpleSelectMinValueWithDependency() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.setValueBefore("b2", 2L);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a1", "a1"));
@@ -168,8 +165,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating EMC values for a crafting table")
-	void testGenerateValuesSimpleWoodToWorkBench()
-	{
+	void testGenerateValuesSimpleWoodToWorkBench() {
 		mappingCollector.setValueBefore("planks", 1L);
 		mappingCollector.addConversion(4, "planks", Collections.singletonList("wood"));
 		mappingCollector.addConversion(1, "workbench", Arrays.asList("planks", "planks", "planks", "planks"));
@@ -183,8 +179,7 @@ class GraphMapperTest {
 	@Test
 	@DisplayName("Test generating EMC values for wood")
 	void testGenerateValuesWood() {
-		for (char i : "ABCD".toCharArray())
-		{
+		for (char i : "ABCD".toCharArray()) {
 			mappingCollector.setValueBefore("wood" + i, 32L);
 			mappingCollector.addConversion(4, "planks" + i, Collections.singletonList("wood" + i));
 		}
@@ -193,19 +188,25 @@ class GraphMapperTest {
 			mappingCollector.addConversion(4, "planks" + i, Collections.singletonList("wood"));
 		}
 
-		for (char i : "ABCD".toCharArray())
-			for (char j : "ABCD".toCharArray())
+		for (char i : "ABCD".toCharArray()) {
+			for (char j : "ABCD".toCharArray()) {
 				mappingCollector.addConversion(4, "stick", Arrays.asList("planks" + i, "planks" + j));
+			}
+		}
 		mappingCollector.addConversion(1, "crafting_table", Arrays.asList("planksA", "planksA", "planksA", "planksA"));
-		for (char i : "ABCD".toCharArray())
-			for (char j : "ABCD".toCharArray())
+		for (char i : "ABCD".toCharArray()) {
+			for (char j : "ABCD".toCharArray()) {
 				mappingCollector.addConversion(1, "wooden_hoe", Arrays.asList("stick", "stick", "planks" + i, "planks" + j));
+			}
+		}
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		for (char i : "ABCD".toCharArray())
+		for (char i : "ABCD".toCharArray()) {
 			Assertions.assertEquals(32, getValue(values, "wood" + i));
-		for (char i : "ABCD".toCharArray())
+		}
+		for (char i : "ABCD".toCharArray()) {
 			Assertions.assertEquals(8, getValue(values, "planks" + i));
+		}
 		Assertions.assertEquals(4, getValue(values, "stick"));
 		Assertions.assertEquals(32, getValue(values, "crafting_table"));
 		Assertions.assertEquals(24, getValue(values, "wooden_hoe"));
@@ -214,8 +215,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values with deep conversion")
-	void testGenerateValuesDeepConversions()
-	{
+	void testGenerateValuesDeepConversions() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b1", Collections.singletonList("a1"));
 		mappingCollector.addConversion(1, "c1", Collections.singletonList("b1"));
@@ -228,13 +228,11 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values with deep invalid conversion")
-	void testGenerateValuesDeepInvalidConversion()
-	{
+	void testGenerateValuesDeepInvalidConversion() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b", Arrays.asList("a1", "invalid1"));
 		mappingCollector.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
 		mappingCollector.addConversion(1, "invalid2", Arrays.asList("a1", "invalid3"));
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(1, getValue(values, "a1"));
@@ -246,13 +244,11 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values from multiple deep recipes with invalid conversion")
-	void testGenerateValuesMultiRecipeDeepInvalid()
-	{
+	void testGenerateValuesMultiRecipeDeepInvalid() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		mappingCollector.addConversion(1, "b2", Collections.singletonList("invalid1"));
 		mappingCollector.addConversion(1, "invalid1", Arrays.asList("a1", "invalid2"));
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(1, getValue(values, "a1"));
@@ -263,12 +259,10 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values from multiple deep recipes with invalid ingredient")
-	void testGenerateValuesMultiRecipesInvalidIngredient()
-	{
+	void testGenerateValuesMultiRecipesInvalidIngredient() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "b2", Arrays.asList("a1", "a1"));
 		mappingCollector.addConversion(1, "b2", Collections.singletonList("invalid"));
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(1, getValue(values, "a1"));
@@ -278,13 +272,11 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values from recipes that have a cycle")
-	void testGenerateValuesCycleRecipe()
-	{
+	void testGenerateValuesCycleRecipe() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
 		mappingCollector.addConversion(1, "cycle-2", Collections.singletonList("cycle-1"));
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("cycle-2"));
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(1, getValue(values, "a1"));
@@ -294,8 +286,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values from recipes that have a large cycle")
-	void testGenerateValuesBigCycleRecipe()
-	{
+	void testGenerateValuesBigCycleRecipe() {
 		mappingCollector.setValueBefore("a1", 1L);
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("a1"));
 		mappingCollector.addConversion(1, "cycle-2", Collections.singletonList("cycle-1"));
@@ -303,7 +294,6 @@ class GraphMapperTest {
 		mappingCollector.addConversion(1, "cycle-4", Collections.singletonList("cycle-3"));
 		mappingCollector.addConversion(1, "cycle-5", Collections.singletonList("cycle-4"));
 		mappingCollector.addConversion(1, "cycle-1", Collections.singletonList("cycle-5"));
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(1, getValue(values, "a1"));
@@ -359,7 +349,6 @@ class GraphMapperTest {
 		mappingCollector.addConversion(1, rMatter, Collections.singletonList(rMatterBlock));
 		mappingCollector.addConversion(4, rMatterBlock, Arrays.asList(rMatter, rMatter, rMatter, rMatter));
 
-
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(128, getValue(values, coal));
 		Assertions.assertEquals(512, getValue(values, aCoal));
@@ -380,8 +369,7 @@ class GraphMapperTest {
 	void testGenerateValuesWool() {
 		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
 		final int[] dyeValue = new int[]{864, 176, 48, 16};
-		for (int i = 0; i < dyes.length; i++)
-		{
+		for (int i = 0; i < dyes.length; i++) {
 			mappingCollector.setValueBefore("dye" + dyes[i], (long) dyeValue[i]);
 			mappingCollector.addConversion(1, "wool" + dyes[i], Arrays.asList("woolWhite", "dye" + dyes[i]));
 		}
@@ -417,8 +405,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values for arbitrary bucket")
-	void testGenerateValuesBucketRecipe()
-	{
+	void testGenerateValuesBucketRecipe() {
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
 		mappingCollector.setValueBefore("fluid", 17L);
@@ -442,8 +429,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating EMC value for water bucket")
-	void testGenerateValuesWaterBucketRecipe()
-	{
+	void testGenerateValuesWaterBucketRecipe() {
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
 		mappingCollector.setValueBefore("fluid", Constants.FREE_ARITHMETIC_VALUE);
@@ -467,8 +453,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating EMC from cyclic recipes with exploits")
-	void testGenerateValuesCycleRecipeExploit()
-	{
+	void testGenerateValuesCycleRecipeExploit() {
 		mappingCollector.setValueBefore("a1", 1L);
 		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
@@ -486,8 +471,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating EMC from cyclic recipes with delayed exploit")
-	void testGenerateValuesDelayedCycleRecipeExploit()
-	{
+	void testGenerateValuesDelayedCycleRecipeExploit() {
 		mappingCollector.setValueBefore("a1", 1L);
 		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable1", Collections.singletonList("a1"));
@@ -502,8 +486,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating EMC from cyclic recipes with exploits 2")
-	void testGenerateValuesCycleRecipeExploit2()
-	{
+	void testGenerateValuesCycleRecipeExploit2() {
 		mappingCollector.setValueBefore("a1", 1L);
 		//Exploitable Cycle Recipe
 		mappingCollector.addConversion(1, "exploitable", Collections.singletonList("a1"));
@@ -533,13 +516,11 @@ class GraphMapperTest {
 		mappingCollector.setValueBefore("gunpowder", 192L);
 		mappingCollector.setValueBefore("blazepowder", 768L);
 
-		for (String logType : logTypes)
-		{
+		for (String logType : logTypes) {
 			mappingCollector.setValueBefore(logType, 32L);
 			mappingCollector.addConversion(1, "log*", Collections.singletonList(logType));
 		}
-		for (String log2Type : log2Types)
-		{
+		for (String log2Type : log2Types) {
 			mappingCollector.setValueBefore(log2Type, 32L);
 			mappingCollector.addConversion(1, "log2*", Collections.singletonList(log2Type));
 		}
@@ -571,7 +552,6 @@ class GraphMapperTest {
 		m.put("coal*", 1);
 		mappingCollector.addConversion(7, "coal1", m);
 
-
 		//Smelting single coal ore
 		mappingCollector.addConversion(1, "coal0", Collections.singletonList("coalore"));
 		//Coal Block
@@ -596,8 +576,7 @@ class GraphMapperTest {
 
 		final String[] dyes = new String[]{"Blue", "Brown", "White", "Other"};
 		final int[] dyeValue = new int[]{864, 176, 48, 16};
-		for (int i = 0; i < dyes.length; i++)
-		{
+		for (int i = 0; i < dyes.length; i++) {
 			mappingCollector.setValueBefore("dye" + dyes[i], (long) dyeValue[i]);
 			mappingCollector.addConversion(8, "antiblock" + dyes[i], Arrays.asList(
 					"antiblock_all", "antiblock_all", "antiblock_all",
@@ -615,18 +594,18 @@ class GraphMapperTest {
 				stone, stone, stone));
 
 		Map<String, Long> values = valueGenerator.generateValues();
-		Assertions.assertEquals((8 + 384)/8, getValue(values, "antiblockWhite"));
+		Assertions.assertEquals((8 + 384) / 8, getValue(values, "antiblockWhite"));
 		for (int i = 0; i < dyes.length; i++) {
 			Assertions.assertEquals(dyeValue[i], getValue(values, "dye" + dyes[i]));
-			if (!dyes[i].equals("White"))
-				Assertions.assertEquals((dyeValue[i] + ((8 + 384)/8)*8)/8, getValue(values, "antiblock" + dyes[i]));
+			if (!dyes[i].equals("White")) {
+				Assertions.assertEquals((dyeValue[i] + ((8 + 384) / 8) * 8) / 8, getValue(values, "antiblock" + dyes[i]));
+			}
 		}
 	}
 
 	@Test
 	@DisplayName("Test generating values from a zero count ingredient")
-	void testGenerateValuesZeroCountIngredientDependency()
-	{
+	void testGenerateValuesZeroCountIngredientDependency() {
 		mappingCollector.setValueBefore("a", 2L);
 		mappingCollector.setValueBefore("b", 3L);
 		mappingCollector.setValueBefore("notConsume1", 1L);
@@ -638,7 +617,6 @@ class GraphMapperTest {
 		ingredients.remove("notConsume1");
 		ingredients.put("notConsume2", 0);
 		mappingCollector.addConversion(1, "c2", ingredients);
-
 
 		Map<String, Long> values = valueGenerator.generateValues();
 		Assertions.assertEquals(2, getValue(values, "a"));
@@ -652,8 +630,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values with a free alternative recipe")
-	void testGenerateValuesFreeAlternatives()
-	{
+	void testGenerateValuesFreeAlternatives() {
 		mappingCollector.setValueBefore("freeWater", Constants.FREE_ARITHMETIC_VALUE);
 		mappingCollector.setValueBefore("waterBottle", 0L);
 		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("freeWater"));
@@ -671,8 +648,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test generating values with a free alternative recipe, when we have a negative ingredient")
-	void testGenerateValuesFreeAlternativesWithNegativeIngredients()
-	{
+	void testGenerateValuesFreeAlternativesWithNegativeIngredients() {
 		mappingCollector.setValueBefore("bucket", 768L);
 		mappingCollector.setValueBefore("waterBucket", 768L);
 		mappingCollector.setValueBefore("waterBottle", 0L);
@@ -695,8 +671,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test overflow from recipe")
-	void testOverflowWithIngredients()
-	{
+	void testOverflowWithIngredients() {
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE / 2 + 1);
 		mappingCollector.setValueBefore("b", Long.MAX_VALUE / 2 + 1);
 		mappingCollector.addConversion(1, "c", Arrays.asList("a", "b"));
@@ -709,8 +684,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test overflow with an already set in range amount")
-	void testOverflowWithAmount()
-	{
+	void testOverflowWithAmount() {
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE / 2);
 		mappingCollector.addConversion(3, "a", Collections.singletonList("something"));
 
@@ -720,8 +694,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test extreme overflow")
-	void testLargeOverflow()
-	{
+	void testLargeOverflow() {
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
 		mappingCollector.addConversion(1, "b", Arrays.asList("a", "a", "a", "a", "a", "a", "a", "a", "a"));
 
@@ -731,8 +704,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test simple overflow hidden by result being within bounds")
-	void testHiddenOverflow()
-	{
+	void testHiddenOverflow() {
 		mappingCollector.setValueBefore("a", Long.MAX_VALUE);
 		mappingCollector.addConversion(2, "b", Arrays.asList("a", "a"));
 		mappingCollector.addConversion(5, "c", Arrays.asList("a", "a", "a", "a", "a"));
@@ -744,8 +716,7 @@ class GraphMapperTest {
 
 	@Test
 	@DisplayName("Test overwriting conversion with smaller value")
-	void testOverwriteConversions()
-	{
+	void testOverwriteConversions() {
 		mappingCollector.setValueBefore("a", 1L);
 		mappingCollector.setValueFromConversion(1, "b", Arrays.asList("a", "a", "a"));
 		mappingCollector.addConversion(1, "b", Collections.singletonList("a"));

@@ -1,31 +1,26 @@
 package moze_intel.projecte.gameObjs;
 
+import javax.annotation.Nonnull;
 import net.minecraft.util.IStringSerializable;
 
-import javax.annotation.Nonnull;
+public enum EnumMatterType implements IStringSerializable {
+	DARK_MATTER("dark_matter"),
+	RED_MATTER("red_matter");
 
-public enum EnumMatterType implements IStringSerializable
-{
-    DARK_MATTER("dark_matter"),
-    RED_MATTER("red_matter");
+	private final String name;
 
-    private final String name;
+	EnumMatterType(String name) {
+		this.name = name;
+	}
 
-    EnumMatterType(String name)
-    {
-        this.name = name;
-    }
+	@Nonnull
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Nonnull
-    @Override
-    public String getName()
-    {
-        return name;
-    }
-
-    @Override
-    public String toString()
-    {
-        return name;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 }

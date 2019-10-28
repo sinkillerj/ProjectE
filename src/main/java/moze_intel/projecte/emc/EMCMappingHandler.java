@@ -34,8 +34,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;
 
-public final class EMCMappingHandler
-{
+public final class EMCMappingHandler {
+
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
 	public static final Map<Item, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
@@ -52,11 +52,9 @@ public final class EMCMappingHandler
 		}
 	}
 
-	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue)
-	{
+	public static <T> T getOrSetDefault(CommentedFileConfig config, String key, String comment, T defaultValue) {
 		T val = config.get(key);
-		if (val == null)
-		{
+		if (val == null) {
 			val = defaultValue;
 			config.set(key, val);
 			config.setComment(key, comment);
@@ -64,8 +62,7 @@ public final class EMCMappingHandler
 		return val;
 	}
 
-	public static void map(IResourceManager resourceManager)
-	{
+	public static void map(IResourceManager resourceManager) {
 		//Ensure we load the EMC mappers
 		loadMappers();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
@@ -84,10 +81,10 @@ public final class EMCMappingHandler
 
 		boolean dumpToFile = getOrSetDefault(config, "general.dumpEverythingToFile", "Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json", false);
 		boolean shouldUsePregenerated = getOrSetDefault(config, "general.pregenerate", "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again" +
-				" when that file does not exist, this setting is set to false, or an error occurred parsing that file.", false);
+																					   " when that file does not exist, this setting is set to false, or an error occurred parsing that file.", false);
 		boolean logFoundExploits = getOrSetDefault(config, "general.logEMCExploits", "Log known EMC Exploits. This can not and will not find all possible exploits. " +
-				"This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
-				"Exploits that derive from conversions that are unknown to ProjectE will not be found.", true);
+																					 "This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. " +
+																					 "Exploits that derive from conversions that are unknown to ProjectE will not be found.", true);
 
 		if (dumpToFile) {
 			mappingCollector = new DumpToFileCollector<>(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
@@ -95,27 +92,20 @@ public final class EMCMappingHandler
 
 		File pregeneratedEmcFile = Paths.get("config", PECore.MODNAME, "pregenerated_emc.json").toFile();
 		Map<NormalizedSimpleStack, Long> graphMapperValues;
-		if (shouldUsePregenerated && pregeneratedEmcFile.canRead() && PregeneratedEMC.tryRead(pregeneratedEmcFile, graphMapperValues = new HashMap<>()))
-		{
+		if (shouldUsePregenerated && pregeneratedEmcFile.canRead() && PregeneratedEMC.tryRead(pregeneratedEmcFile, graphMapperValues = new HashMap<>())) {
 			PECore.LOGGER.info(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
-		}
-		else
-		{
+		} else {
 			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
 			PECore.debugLog("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : EMC_MAPPERS)
-			{
-				try
-				{
-					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable()))
-					{
+			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : EMC_MAPPERS) {
+				try {
+					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable())) {
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
 						emcMapper.addMappings(mappingCollector, config, resourceManager);
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
-				} catch (Exception e)
-				{
+				} catch (Exception e) {
 					PECore.LOGGER.fatal("Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName());
 					e.printStackTrace();
 				}
@@ -137,19 +127,16 @@ public final class EMCMappingHandler
 
 			if (shouldUsePregenerated) {
 				//Should have used pregenerated, but the file was not read => regenerate.
-				try
-				{
+				try {
 					PregeneratedEMC.write(pregeneratedEmcFile, graphMapperValues);
 					PECore.debugLog("Wrote Pregen-file!");
-				} catch (IOException e)
-				{
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 
-
-		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
+		for (Map.Entry<NormalizedSimpleStack, Long> entry : graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem) entry.getKey();
 			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.getResourceLocation());
 			if (obj != null) {
@@ -168,8 +155,7 @@ public final class EMCMappingHandler
 		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem) || ((NSSItem) e.getKey()).representsTag() || e.getValue() <= 0);
 	}
 
-	public static long getEmcValue(IItemProvider item)
-	{
+	public static long getEmcValue(IItemProvider item) {
 		return emc.get(item.asItem());
 	}
 

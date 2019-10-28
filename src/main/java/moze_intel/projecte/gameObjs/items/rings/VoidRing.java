@@ -24,8 +24,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.items.IItemHandler;
 
-public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction
-{
+public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction {
+
 	public VoidRing(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
@@ -33,44 +33,36 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld)
-	{
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, slot, isHeld);
 		ObjHandler.blackHole.inventoryTick(stack, world, entity, slot, isHeld);
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		((IPedestalItem) ObjHandler.blackHole).updateInPedestal(world, pos);
 	}
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		return ((IPedestalItem) ObjHandler.blackHole).getPedestalDescription();
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
-	{
-		if (player.getCooldownTracker().hasCooldown(this))
-		{
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+		if (player.getCooldownTracker().hasCooldown(this)) {
 			return false;
 		}
 
 		BlockPos c = PlayerHelper.getBlockLookingAt(player, 64);
-		if (c == null)
-		{
+		if (c == null) {
 			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
 		}
 
 		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
-		if (!MinecraftForge.EVENT_BUS.post(event))
-		{
-			if (player.isPassenger())
-			{
+		if (!MinecraftForge.EVENT_BUS.post(event)) {
+			if (player.isPassenger()) {
 				player.stopRiding();
 			}
 
@@ -85,15 +77,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack)
-	{
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
 		((IAlchBagItem) ObjHandler.blackHole).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
-	{
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
 		((IAlchChestItem) ObjHandler.blackHole).updateInAlchChest(world, pos, stack);
 	}

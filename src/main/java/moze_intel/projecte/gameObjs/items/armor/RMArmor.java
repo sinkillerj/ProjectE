@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -13,14 +15,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.function.Consumer;
-
 //TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
-public class RMArmor extends ArmorItem
-{
-	public RMArmor(EquipmentSlotType armorType, Properties props)
-	{
+public class RMArmor extends ArmorItem {
+
+	public RMArmor(EquipmentSlotType armorType, Properties props) {
 		super(RMArmorMaterial.INSTANCE, armorType, props);
 	}
 
@@ -31,10 +29,9 @@ public class RMArmor extends ArmorItem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getArmorTexture (ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
-	{
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
 		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
-		return PECore.MODID + ":textures/armor/redmatter_"+index+".png";
+		return PECore.MODID + ":textures/armor/redmatter_" + index + ".png";
 	}
 
 	private static class RMArmorMaterial implements IArmorMaterial {

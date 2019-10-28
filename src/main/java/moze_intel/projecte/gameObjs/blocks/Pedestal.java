@@ -25,144 +25,127 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class Pedestal extends Block
-{
-    private static final VoxelShape SHAPE = VoxelShapes.or(
-            Block.makeCuboidShape(3, 0, 3, 13, 2, 13),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(6, 2, 6, 10, 9, 10),
-                    Block.makeCuboidShape(5, 9, 5, 11, 10, 11)
-            )
-    );
+public class Pedestal extends Block {
 
-    public Pedestal(Properties props)
-    {
-        super(props);
-    }
+	private static final VoxelShape SHAPE = VoxelShapes.or(
+			Block.makeCuboidShape(3, 0, 3, 13, 2, 13),
+			VoxelShapes.or(
+					Block.makeCuboidShape(6, 2, 6, 10, 9, 10),
+					Block.makeCuboidShape(5, 9, 5, 11, 10, 11)
+			)
+	);
 
-    @Nonnull
-    @Override
-    @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx)
-    {
-        return SHAPE;
-    }
+	public Pedestal(Properties props) {
+		super(props);
+	}
 
-    private void dropItem(World world, BlockPos pos)
-    {
-        TileEntity te = world.getTileEntity(pos);
-        if (te instanceof DMPedestalTile)
-        {
-            DMPedestalTile tile = (DMPedestalTile) te;
-            ItemStack stack = tile.getInventory().getStackInSlot(0);
-            if (!stack.isEmpty())
-            {
-                tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
-                ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
-                ent.setItem(stack);
-                world.addEntity(ent);
-            }
-        }
-    }
+	@Nonnull
+	@Override
+	@Deprecated
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
+		return SHAPE;
+	}
 
-    @Override
-    @Deprecated
-    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
-    {
-        dropItem(world, pos);
-        super.onReplaced(state, world, pos, newState, isMoving);
-    }
+	private void dropItem(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof DMPedestalTile) {
+			DMPedestalTile tile = (DMPedestalTile) te;
+			ItemStack stack = tile.getInventory().getStackInSlot(0);
+			if (!stack.isEmpty()) {
+				tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
+				ent.setItem(stack);
+				world.addEntity(ent);
+			}
+		}
+	}
 
-    @Override
-    @Deprecated
-    public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player)
-    {
-        if (!world.isRemote)
-        {
-            dropItem(world, pos);
-            world.notifyBlockUpdate(pos, state, state, 8);
-        }
-    }
+	@Override
+	@Deprecated
+	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+		dropItem(world, pos);
+		super.onReplaced(state, world, pos, newState, isMoving);
+	}
 
-    @Override
-    @Deprecated
-    public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
-    {
-        if (!world.isRemote)
-        {
-            TileEntity te = world.getTileEntity(pos);
-            if (!(te instanceof DMPedestalTile))
-            {
-                return true;
-            }
+	@Override
+	@Deprecated
+	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+		if (!world.isRemote) {
+			dropItem(world, pos);
+			world.notifyBlockUpdate(pos, state, state, 8);
+		}
+	}
 
-            DMPedestalTile tile = ((DMPedestalTile) te);
-            ItemStack item = tile.getInventory().getStackInSlot(0);
-            ItemStack stack = player.getHeldItem(hand);
+	@Override
+	@Deprecated
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+		if (!world.isRemote) {
+			TileEntity te = world.getTileEntity(pos);
+			if (!(te instanceof DMPedestalTile)) {
+				return true;
+			}
 
-            if (stack.isEmpty() && !item.isEmpty()) {
-                item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-                    tile.setActive(!tile.getActive());
-                    world.notifyBlockUpdate(pos, state, state, 8);
-                });
-            } else if (!stack.isEmpty() && item.isEmpty()) {
-                tile.getInventory().setStackInSlot(0, stack.split(1));
-                if (stack.getCount() <= 0)
-                {
-                    player.setHeldItem(hand, ItemStack.EMPTY);
-                }
-                world.notifyBlockUpdate(pos, state, state, 8);
-            }
-        }
-        return true;
-    }
+			DMPedestalTile tile = ((DMPedestalTile) te);
+			ItemStack item = tile.getInventory().getStackInSlot(0);
+			ItemStack stack = player.getHeldItem(hand);
 
-    // [VanillaCopy] Adapted from BlockNote
-    @Override
-    @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving)
-    {
-        boolean flag = world.isBlockPowered(pos);
-        TileEntity te = world.getTileEntity(pos);
+			if (stack.isEmpty() && !item.isEmpty()) {
+				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+					tile.setActive(!tile.getActive());
+					world.notifyBlockUpdate(pos, state, state, 8);
+				});
+			} else if (!stack.isEmpty() && item.isEmpty()) {
+				tile.getInventory().setStackInSlot(0, stack.split(1));
+				if (stack.getCount() <= 0) {
+					player.setHeldItem(hand, ItemStack.EMPTY);
+				}
+				world.notifyBlockUpdate(pos, state, state, 8);
+			}
+		}
+		return true;
+	}
 
-        if (te instanceof DMPedestalTile)
-        {
-            DMPedestalTile ped = ((DMPedestalTile) te);
+	// [VanillaCopy] Adapted from BlockNote
+	@Override
+	@Deprecated
+	public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
+		boolean flag = world.isBlockPowered(pos);
+		TileEntity te = world.getTileEntity(pos);
 
-            if (ped.previousRedstoneState != flag)
-            {
-                if (flag) {
-                    ItemStack stack = ped.getInventory().getStackInSlot(0);
-                    if (!stack.isEmpty()) {
-                        stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-                            ped.setActive(!ped.getActive());
-                            world.notifyBlockUpdate(pos, state, state, 11);
-                        });
-                    }
-                }
+		if (te instanceof DMPedestalTile) {
+			DMPedestalTile ped = ((DMPedestalTile) te);
 
-                ped.previousRedstoneState = flag;
-            }
-        }
-    }
+			if (ped.previousRedstoneState != flag) {
+				if (flag) {
+					ItemStack stack = ped.getInventory().getStackInSlot(0);
+					if (!stack.isEmpty()) {
+						stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+							ped.setActive(!ped.getActive());
+							world.notifyBlockUpdate(pos, state, state, 11);
+						});
+					}
+				}
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+				ped.previousRedstoneState = flag;
+			}
+		}
+	}
 
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new DMPedestalTile();
-    }
+	@Override
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags)
-    {
-        tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip1"));
-        tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip2"));
-    }
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+		return new DMPedestalTile();
+	}
 
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags) {
+		tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip1"));
+		tooltip.add(new TranslationTextComponent("pe.pedestal.tooltip2"));
+	}
 }

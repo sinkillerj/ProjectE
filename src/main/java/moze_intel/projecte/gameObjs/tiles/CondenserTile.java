@@ -25,8 +25,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CondenserTile extends TileEmc implements INamedContainerProvider
-{
+public class CondenserTile extends TileEmc implements INamedContainerProvider {
+
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
 	private final LazyOptional<IItemHandler> automationInventory = LazyOptional.of(this::createAutomationInventory);
@@ -43,8 +43,7 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 		this(ObjHandler.CONDENSER_TILE);
 	}
 
-	CondenserTile(TileEntityType<?> type)
-	{
+	CondenserTile(TileEntityType<?> type) {
 		super(type);
 	}
 
@@ -58,55 +57,43 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 		return false;
 	}
 
-	public ItemStackHandler getLock()
-	{
+	public ItemStackHandler getLock() {
 		return lock;
 	}
 
-	public ItemStackHandler getInput()
-	{
+	public ItemStackHandler getInput() {
 		return inputInventory;
 	}
 
-	public ItemStackHandler getOutput()
-	{
+	public ItemStackHandler getOutput() {
 		return outputInventory;
 	}
 
-	protected ItemStackHandler createInput()
-	{
+	protected ItemStackHandler createInput() {
 		return new StackHandler(91);
 	}
 
-	protected ItemStackHandler createOutput()
-	{
+	protected ItemStackHandler createOutput() {
 		return inputInventory;
 	}
 
 	@Nonnull
-	protected IItemHandler createAutomationInventory()
-	{
-		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT)
-		{
+	protected IItemHandler createAutomationInventory() {
+		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT) {
 			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-			{
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
-						? super.insertItem(slot, stack, simulate)
-						: stack;
+					   ? super.insertItem(slot, stack, simulate)
+					   : stack;
 			}
 
 			@Nonnull
 			@Override
-			public ItemStack extractItem(int slot, int max, boolean simulate)
-			{
-				if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot)))
-				{
+			public ItemStack extractItem(int slot, int max, boolean simulate) {
+				if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot))) {
 					return super.extractItem(slot, max, simulate);
-				}
-				else
-				{
+				} else {
 					return ItemStack.EMPTY;
 				}
 			}
@@ -114,30 +101,25 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		super.remove();
 		automationInventory.invalidate();
 	}
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
-	{
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return automationInventory.cast();
 		}
 		return super.getCapability(cap, side);
 	}
 
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		updateChest();
 
-		if (this.getWorld().isRemote)
-		{
+		if (this.getWorld().isRemote) {
 			return;
 		}
 
@@ -145,34 +127,27 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 
 		displayEmc = this.getStoredEmc();
 
-		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0)
-		{
+		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0) {
 			condense();
 		}
 	}
 
-	private void checkLockAndUpdate()
-	{
-		if (lock.getStackInSlot(0).isEmpty())
-		{
+	private void checkLockAndUpdate() {
+		if (lock.getStackInSlot(0).isEmpty()) {
 			displayEmc = 0;
 			requiredEmc = 0;
 			this.isAcceptingEmc = false;
 			return;
 		}
 
-		if (EMCHelper.doesItemHaveEmc(lock.getStackInSlot(0)))
-		{
+		if (EMCHelper.doesItemHaveEmc(lock.getStackInSlot(0))) {
 			long lockEmc = EMCHelper.getEmcValue(lock.getStackInSlot(0));
 
-			if (requiredEmc != lockEmc)
-			{
+			if (requiredEmc != lockEmc) {
 				requiredEmc = lockEmc;
 				this.isAcceptingEmc = true;
 			}
-		}
-		else
-		{
+		} else {
 			lock.setStackInSlot(0, ItemStack.EMPTY);
 
 			displayEmc = 0;
@@ -181,14 +156,11 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 		}
 	}
 
-	protected void condense()
-	{
-		for (int i = 0; i < inputInventory.getSlots(); i++)
-		{
+	protected void condense() {
+		for (int i = 0; i < inputInventory.getSlots(); i++) {
 			ItemStack stack = inputInventory.getStackInSlot(i);
 
-			if (stack.isEmpty() || isStackEqualToLock(stack))
-			{
+			if (stack.isEmpty() || isStackEqualToLock(stack)) {
 				continue;
 			}
 
@@ -197,38 +169,31 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 			break;
 		}
 
-		if (this.getStoredEmc() >= requiredEmc && this.hasSpace())
-		{
+		if (this.getStoredEmc() >= requiredEmc && this.hasSpace()) {
 			forceExtractEmc(requiredEmc, EmcAction.EXECUTE);
 			pushStack();
 		}
 	}
 
-	protected void pushStack()
-	{
+	protected void pushStack() {
 		ItemStack lockCopy = lock.getStackInSlot(0).copy();
 
-		if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy))
-		{
+		if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy)) {
 			lockCopy.setTag(new CompoundNBT());
 		}
 
 		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
 	}
 
-	protected boolean hasSpace()
-	{
-		for (int i = 0; i < outputInventory.getSlots(); i++)
-		{
+	protected boolean hasSpace() {
+		for (int i = 0; i < outputInventory.getSlots(); i++) {
 			ItemStack stack = outputInventory.getStackInSlot(i);
 
-			if (stack.isEmpty())
-			{
+			if (stack.isEmpty()) {
 				return true;
 			}
 
-			if (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize())
-			{
+			if (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize()) {
 				return true;
 			}
 		}
@@ -236,15 +201,12 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 		return false;
 	}
 
-	public boolean isStackEqualToLock(ItemStack stack)
-	{
-		if (lock.getStackInSlot(0).isEmpty())
-		{
+	public boolean isStackEqualToLock(ItemStack stack) {
+		if (lock.getStackInSlot(0).isEmpty()) {
 			return false;
 		}
 
-		if (ItemHelper.shouldDupeWithNBT(lock.getStackInSlot(0)))
-		{
+		if (ItemHelper.shouldDupeWithNBT(lock.getStackInSlot(0))) {
 			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
 		}
 
@@ -252,8 +214,7 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt)
-	{
+	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lock.deserializeNBT(nbt.getCompound("LockSlot"));
@@ -261,8 +222,7 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.put("Input", inputInventory.serializeNBT());
 		nbt.put("LockSlot", lock.serializeNBT());
@@ -270,72 +230,59 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider
 	}
 
 	// TODO 1.13 recheck
-	private void updateChest()
-	{
-		if (++ticksSinceSync % 20 * 4 == 0)
-		{
+	private void updateChest() {
+		if (++ticksSinceSync % 20 * 4 == 0) {
 			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
 		float angleIncrement = 0.1F;
 
-		if (numPlayersUsing > 0 && lidAngle == 0.0F)
-		{
+		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
 			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
-		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
-		{
+		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
 			float var8 = lidAngle;
 
-			if (numPlayersUsing > 0)
-			{
+			if (numPlayersUsing > 0) {
 				lidAngle += angleIncrement;
-			}
-			else
-			{
+			} else {
 				lidAngle -= angleIncrement;
 			}
 
-			if (lidAngle > 1.0F)
-			{
+			if (lidAngle > 1.0F) {
 				lidAngle = 1.0F;
 			}
 
-			if (lidAngle < 0.5F && var8 >= 0.5F)
-			{
+			if (lidAngle < 0.5F && var8 >= 0.5F) {
 				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
-			if (lidAngle < 0.0F)
-			{
+			if (lidAngle < 0.0F) {
 				lidAngle = 0.0F;
 			}
 		}
 	}
 
 	@Override
-	public boolean receiveClientEvent(int number, int arg)
-	{
-		if (number == 1)
-		{
+	public boolean receiveClientEvent(int number, int arg) {
+		if (number == 1) {
 			numPlayersUsing = arg;
 			return true;
+		} else {
+			return super.receiveClientEvent(number, arg);
 		}
-		else return super.receiveClientEvent(number, arg);
 	}
 
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.condenser.getTranslationKey());
 	}
 }

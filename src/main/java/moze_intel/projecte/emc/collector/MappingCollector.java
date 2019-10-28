@@ -1,9 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
 import com.google.common.collect.Maps;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -11,19 +8,24 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 
-public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T, V, A>  {
+public abstract class MappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic<V>> extends AbstractMappingCollector<T, V, A> {
+
 	private static final boolean DEBUG_GRAPHMAPPER = false;
 
 	protected final A arithmetic;
+
 	protected MappingCollector(A arithmetic) {
 		super(arithmetic);
 		this.arithmetic = arithmetic;
 	}
 
 	protected static void debugFormat(String format, Object... args) {
-		if (DEBUG_GRAPHMAPPER)
+		if (DEBUG_GRAPHMAPPER) {
 			PECore.debugLog(format, args);
+		}
 	}
 
 	protected static void debugPrintln(String s) {
@@ -47,8 +49,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	private void addConversionToIngredientUsages(Conversion conversion) {
 		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
 			Set<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
-			if (ingredient.getValue() == null)
+			if (ingredient.getValue() == null) {
 				throw new IllegalArgumentException("ingredient amount value has to be != null");
+			}
 			usesForIngredient.add(conversion);
 		}
 	}
@@ -59,8 +62,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 			PECore.debugLog("Ignoring Recipe because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, output);
 			return;
 		}
-		if (outnumber <= 0)
+		if (outnumber <= 0) {
 			throw new IllegalArgumentException("outnumber has to be > 0!");
+		}
 		//Add the Conversions to the conversionsFor and usedIn Maps:
 		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount, arithmeticForConversion, arithmetic.getZero());
 		if (!getConversionsFor(output).add(conversion)) {
@@ -71,35 +75,41 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 
 	@Override
 	public void setValueBefore(T something, V value) {
-		if (something == null) return;
-		if (fixValueBeforeInherit.containsKey(something))
+		if (something == null) {
+			return;
+		}
+		if (fixValueBeforeInherit.containsKey(something)) {
 			PECore.debugLog("Overwriting fixValueBeforeInherit for {}:{} to {}", something, fixValueBeforeInherit.get(something), value);
+		}
 		fixValueBeforeInherit.put(something, value);
 		fixValueAfterInherit.remove(something);
 	}
 
 	@Override
 	public void setValueAfter(T something, V value) {
-		if (something == null) return;
-		if (fixValueAfterInherit.containsKey(something))
+		if (something == null) {
+			return;
+		}
+		if (fixValueAfterInherit.containsKey(something)) {
 			PECore.debugLog("Overwriting fixValueAfterInherit for {}:{} to {}", something, fixValueAfterInherit.get(something), value);
+		}
 		fixValueAfterInherit.put(something, value);
 	}
 
 	@Override
-	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
-	{
+	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount) {
 		if (something == null || ingredientsWithAmount.containsKey(null)) {
 			PECore.debugLog("Ignoring setValueFromConversion because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, something);
 			return;
 		}
-		if (outnumber <= 0)
+		if (outnumber <= 0) {
 			throw new IllegalArgumentException("outnumber has to be > 0!");
+		}
 		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount, this.arithmetic);
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
 			PECore.debugLog("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
-			for (T ingredient: ingredientsWithAmount.keySet()) {
+			for (T ingredient : ingredientsWithAmount.keySet()) {
 				getUsesFor(ingredient).remove(oldConversion);
 			}
 		}
@@ -108,6 +118,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 	}
 
 	protected class Conversion {
+
 		public final T output;
 
 		public final int outnumber;
@@ -133,21 +144,19 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 		}
 
 		private String ingredientsToString() {
-			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
-			return ingredientsWithAmount.entrySet().stream()
-					.map(e -> e.getValue() + "*" + e.getKey())
-					.collect(Collectors.joining(" + "));
+			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
+				return "nothing";
+			}
+			return ingredientsWithAmount.entrySet().stream().map(e -> e.getValue() + "*" + e.getKey()).collect(Collectors.joining(" + "));
 		}
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof MappingCollector.Conversion))
+			if (!(o instanceof MappingCollector.Conversion)) {
 				return false;
+			}
 			Conversion other = (Conversion) o;
-
-			return Objects.equals(output, other.output)
-					&& Objects.equals(value, other.value)
-					&& Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
+			return Objects.equals(output, other.output) && Objects.equals(value, other.value) && Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
 		}
 
 		@Override
@@ -155,5 +164,4 @@ public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IV
 			return Objects.hash(output, value, ingredientsWithAmount);
 		}
 	}
-
 }

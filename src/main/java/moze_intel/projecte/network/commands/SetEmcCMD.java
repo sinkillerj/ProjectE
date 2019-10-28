@@ -14,38 +14,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class SetEmcCMD
-{
-	public static LiteralArgumentBuilder<CommandSource> register()
-	{
+public class SetEmcCMD {
+
+	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("setemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
-					.then(Commands.argument("item", ItemArgument.item())
-						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
-						// todo 1.13 tag arg support?
-						.executes(ctx -> setEmc(ctx, LongArgumentType.getLong(ctx, "emc"), ItemArgument.getItem(ctx, "item").getItem())))
-					.executes(ctx -> {
-						ServerPlayerEntity player = ctx.getSource().asPlayer();
-						ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+						.then(Commands.argument("item", ItemArgument.item())
+								// todo 1.13 dropping nbt info, use a more restrictive arg parser?
+								// todo 1.13 tag arg support?
+								.executes(ctx -> setEmc(ctx, LongArgumentType.getLong(ctx, "emc"), ItemArgument.getItem(ctx, "item").getItem())))
+						.executes(ctx -> {
+							ServerPlayerEntity player = ctx.getSource().asPlayer();
+							ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
-						if (stack.isEmpty())
-						{
-							stack = player.getHeldItem(Hand.OFF_HAND);
-						}
+							if (stack.isEmpty()) {
+								stack = player.getHeldItem(Hand.OFF_HAND);
+							}
 
-						if (stack.isEmpty())
-						{
-							throw RemoveEmcCMD.EMPTY_STACK.create();
-						}
+							if (stack.isEmpty()) {
+								throw RemoveEmcCMD.EMPTY_STACK.create();
+							}
 
-						return setEmc(ctx, LongArgumentType.getLong(ctx, "emc"), stack.getItem());
-					}));
+							return setEmc(ctx, LongArgumentType.getLong(ctx, "emc"), stack.getItem());
+						}));
 
 	}
 
-	private static int setEmc(CommandContext<CommandSource> ctx, long emc, Item item)
-	{
+	private static int setEmc(CommandContext<CommandSource> ctx, long emc, Item item) {
 		CustomEMCParser.addToFile(item.getRegistryName().toString(), emc);
 		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.set.success", item.getRegistryName().toString(), emc), true);
 		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);

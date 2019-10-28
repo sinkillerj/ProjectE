@@ -13,51 +13,45 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-public class KleinStar extends ItemPE implements IItemEmcHolder
-{
+public class KleinStar extends ItemPE implements IItemEmcHolder {
+
 	public final EnumKleinTier tier;
-	public KleinStar(Properties props, EnumKleinTier tier)
-	{
+
+	public KleinStar(Properties props, EnumKleinTier tier) {
 		super(props);
 		this.tier = tier;
 		addItemCapability(new EmcHolderItemCapabilityWrapper());
 	}
-	
+
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return stack.hasTag();
 	}
-	
+
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
+	public double getDurabilityForDisplay(ItemStack stack) {
 		long starEmc = getEmc(stack);
-		
-		if (starEmc == 0)
-		{
+
+		if (starEmc == 0) {
 			return 1.0D;
 		}
-		
+
 		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
-	
+
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && PECore.DEV_ENVIRONMENT)
-		{
+		if (!world.isRemote && PECore.DEV_ENVIRONMENT) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
-		
+
 		return ActionResult.newResult(ActionResultType.PASS, stack);
 	}
-	
-	public enum EnumKleinTier
-	{
+
+	public enum EnumKleinTier {
 		EIN("ein"),
 		ZWEI("zwei"),
 		DREI("drei"),
@@ -66,8 +60,8 @@ public class KleinStar extends ItemPE implements IItemEmcHolder
 		OMEGA("omega");
 
 		public final String name;
-		EnumKleinTier(String name)
-		{
+
+		EnumKleinTier(String name) {
 			this.name = name;
 		}
 	}
@@ -100,14 +94,12 @@ public class KleinStar extends ItemPE implements IItemEmcHolder
 	}
 
 	@Override
-	public long getStoredEmc(@Nonnull ItemStack stack)
-	{
+	public long getStoredEmc(@Nonnull ItemStack stack) {
 		return ItemPE.getEmc(stack);
 	}
 
 	@Override
-	public long getMaximumEmc(@Nonnull ItemStack stack)
-	{
+	public long getMaximumEmc(@Nonnull ItemStack stack) {
 		return EMCHelper.getKleinStarMaxEmc(stack);
 	}
 }

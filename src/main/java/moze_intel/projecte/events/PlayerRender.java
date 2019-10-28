@@ -9,13 +9,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
-public class PlayerRender
-{
+public class PlayerRender {
+
 	@SubscribeEvent
-	public static void onFOVUpdateEvent(FOVUpdateEvent evt)
-	{
-		if (!evt.getEntity().getItemStackFromSlot(EquipmentSlotType.FEET).isEmpty() && evt.getEntity().getItemStackFromSlot(EquipmentSlotType.FEET).getItem() == ObjHandler.gemFeet)
-		{
+	public static void onFOVUpdateEvent(FOVUpdateEvent evt) {
+		if (!evt.getEntity().getItemStackFromSlot(EquipmentSlotType.FEET).isEmpty() && evt.getEntity().getItemStackFromSlot(EquipmentSlotType.FEET).getItem() == ObjHandler.gemFeet) {
 			evt.setNewfov(evt.getFov() - 0.4F);
 		}
 	}

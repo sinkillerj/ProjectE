@@ -104,8 +104,9 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		NSSFluid milkNSS = NSSFluid.createTag(new ResourceLocation("forge", "milk"));
 		mapper.addConversion(FluidAttributes.BUCKET_VOLUME, milkNSS, Collections.singletonList(fakeMilkFluid));
 
-		if (!(mapper instanceof IExtendedMappingCollector))
+		if (!(mapper instanceof IExtendedMappingCollector)) {
 			throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
+		}
 		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
 		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 

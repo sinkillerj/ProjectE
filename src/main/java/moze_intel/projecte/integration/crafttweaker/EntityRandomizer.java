@@ -10,11 +10,10 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name("mods.projecte.EntityRandomizer")
-public class EntityRandomizer
-{
+public class EntityRandomizer {
+
 	@ZenCodeType.Method
-	public static void addPeaceful(MCEntityType entityType)
-	{
+	public static void addPeaceful(MCEntityType entityType) {
 		EntityType<? extends MobEntity> living = getMob(entityType);
 		if (isMob(living)) {
 			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityType.getName(), true));
@@ -22,8 +21,7 @@ public class EntityRandomizer
 	}
 
 	@ZenCodeType.Method
-	public static void removePeaceful(MCEntityType entityType)
-	{
+	public static void removePeaceful(MCEntityType entityType) {
 		EntityType<? extends MobEntity> living = getMob(entityType);
 		if (isMob(living)) {
 			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityType.getName(), true));
@@ -31,14 +29,12 @@ public class EntityRandomizer
 	}
 
 	@ZenCodeType.Method
-	public static void clearPeacefuls()
-	{
+	public static void clearPeacefuls() {
 		CraftTweakerAPI.apply(new EntityRandomizerAction.Clear(true));
 	}
 
 	@ZenCodeType.Method
-	public static void addMob(MCEntityType entityType)
-	{
+	public static void addMob(MCEntityType entityType) {
 		EntityType<? extends MobEntity> living = getMob(entityType);
 		if (isMob(living)) {
 			CraftTweakerAPI.apply(new EntityRandomizerAction.Add(living, entityType.getName(), false));
@@ -46,8 +42,7 @@ public class EntityRandomizer
 	}
 
 	@ZenCodeType.Method
-	public static void removeMob(MCEntityType entityType)
-	{
+	public static void removeMob(MCEntityType entityType) {
 		EntityType<? extends MobEntity> living = getMob(entityType);
 		if (isMob(living)) {
 			CraftTweakerAPI.apply(new EntityRandomizerAction.Remove(living, entityType.getName(), false));
@@ -55,8 +50,7 @@ public class EntityRandomizer
 	}
 
 	@ZenCodeType.Method
-	public static void clearMobs()
-	{
+	public static void clearMobs() {
 		CraftTweakerAPI.apply(new EntityRandomizerAction.Clear(false));
 	}
 

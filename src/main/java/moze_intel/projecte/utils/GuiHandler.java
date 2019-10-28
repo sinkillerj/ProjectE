@@ -8,10 +8,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.DistExecutor;
 
-public class GuiHandler
-{
-	public static TileEntity getTeFromBuf(PacketBuffer buf)
-	{
+public class GuiHandler {
+
+	public static TileEntity getTeFromBuf(PacketBuffer buf) {
 		return DistExecutor.runForDist(() -> () -> {
 			BlockPos pos = buf.readBlockPos();
 			return Minecraft.getInstance().world.getTileEntity(pos);
@@ -20,8 +19,7 @@ public class GuiHandler
 		});
 	}
 
-	public static ItemStack getHeldFromBuf(PacketBuffer buf)
-	{
+	public static ItemStack getHeldFromBuf(PacketBuffer buf) {
 		return DistExecutor.runForDist(() -> () -> {
 			Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 			return Minecraft.getInstance().player.getHeldItem(hand);

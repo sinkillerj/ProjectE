@@ -21,8 +21,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class AlchChestTile extends TileEmc implements INamedContainerProvider
-{
+public class AlchChestTile extends TileEmc implements INamedContainerProvider {
+
 	private final ItemStackHandler inventory = new StackHandler(104);
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 	public float lidAngle;
@@ -30,121 +30,101 @@ public class AlchChestTile extends TileEmc implements INamedContainerProvider
 	public int numPlayersUsing;
 	private int ticksSinceSync;
 
-	public AlchChestTile()
-	{
+	public AlchChestTile() {
 		super(ObjHandler.ALCH_CHEST_TILE);
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		super.remove();
 		inventoryCap.invalidate();
 	}
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
-	{
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return inventoryCap.cast();
 		}
 		return super.getCapability(cap, side);
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt)
-	{
+	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		inventory.deserializeNBT(nbt);
 	}
-	
+
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.merge(inventory.serializeNBT());
 		return nbt;
 	}
-	
+
 	@Override
-	public void tick()
-	{
-		if (++ticksSinceSync % 20 * 4 == 0)
-		{
+	public void tick() {
+		if (++ticksSinceSync % 20 * 4 == 0) {
 			world.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
 		float angleIncrement = 0.1F;
 
-		if (numPlayersUsing > 0 && lidAngle == 0.0F)
-		{
+		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
 			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
-		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F)
-		{
+		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
 			float var8 = lidAngle;
 
-			if (numPlayersUsing > 0)
-			{
+			if (numPlayersUsing > 0) {
 				lidAngle += angleIncrement;
-			}
-			else
-			{
+			} else {
 				lidAngle -= angleIncrement;
 			}
 
-			if (lidAngle > 1.0F)
-			{
+			if (lidAngle > 1.0F) {
 				lidAngle = 1.0F;
 			}
 
-			if (lidAngle < 0.5F && var8 >= 0.5F)
-			{
+			if (lidAngle < 0.5F && var8 >= 0.5F) {
 				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
-			if (lidAngle < 0.0F)
-			{
+			if (lidAngle < 0.0F) {
 				lidAngle = 0.0F;
 			}
 		}
 
-		for (int i = 0; i < inventory.getSlots(); i++)
-		{
+		for (int i = 0; i < inventory.getSlots(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(world, pos, stack));
 			}
 		}
 	}
-	
+
 	@Override
-	public boolean receiveClientEvent(int number, int arg)
-	{
-		if (number == 1)
-		{
+	public boolean receiveClientEvent(int number, int arg) {
+		if (number == 1) {
 			numPlayersUsing = arg;
 			return true;
+		} else {
+			return super.receiveClientEvent(number, arg);
 		}
-		else return super.receiveClientEvent(number, arg);
 	}
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 		return new AlchChestContainer(windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.alchChest.getTranslationKey());
 	}
 }

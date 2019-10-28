@@ -11,43 +11,39 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container>
-{
+public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container> {
+
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/relay1.png");
 
-	public GUIRelayMK1(RelayMK1Container container, PlayerInventory invPlayer, ITextComponent title)
-	{
+	public GUIRelayMK1(RelayMK1Container container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);
 		this.xSize = 175;
 		this.ySize = 176;
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
-    {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
-    }
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int var1, int var2)
-	{
+	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
 		this.font.drawString(I18n.format("pe.relay.mk1"), 10, 6, 4210752);
 		this.font.drawString(Constants.EMC_FORMATTER.format(container.emc.get()), 88, 24, 4210752);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
+	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		
+
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
-		
+
 		this.blit(x, y, 0, 0, xSize, ySize);
-		
+
 		//Emc bar progress. Max is 102.
 		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * 102);
 		this.blit(x + 64, y + 6, 30, 177, progress, 10);
@@ -55,7 +51,7 @@ public class GUIRelayMK1 extends ContainerScreen<RelayMK1Container>
 		//Klein start bar progress. Max is 30.
 		progress = (int) (container.getKleinChargeProgress() * 30);
 		this.blit(x + 116, y + 67, 0, 177, progress, 10);
-		
+
 		//Burn Slot bar progress. Max is 30.
 		progress = (int) (container.getInputBurnProgress() * 30);
 		this.blit(x + 64, y + 67, 0, 177, progress, 10);

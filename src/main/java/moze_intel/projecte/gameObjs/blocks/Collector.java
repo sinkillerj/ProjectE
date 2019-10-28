@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
@@ -23,28 +25,21 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+public class Collector extends BlockDirection {
 
-public class Collector extends BlockDirection
-{
 	private final int tier;
-	
-	public Collector(int tier, Properties props)
-	{
+
+	public Collector(int tier, Properties props) {
 		super(props);
 		this.tier = tier;
 	}
-	
+
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit)
-	{
-		if (!world.isRemote)
-		{
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
+		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof CollectorMK1Tile)
-			{
+			if (te instanceof CollectorMK1Tile) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (CollectorMK1Tile) te, pos);
 			}
 		}
@@ -71,34 +66,33 @@ public class Collector extends BlockDirection
 	@Override
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
 		switch (tier) {
-			case 1: return new CollectorMK1Tile();
-			case 2: return new CollectorMK2Tile();
-			case 3: return new CollectorMK3Tile();
-			default: return null;
+			case 1:
+				return new CollectorMK1Tile();
+			case 2:
+				return new CollectorMK2Tile();
+			case 3:
+				return new CollectorMK3Tile();
+			default:
+				return null;
 		}
 	}
 
 	@Override
 	@Deprecated
-	public boolean hasComparatorInputOverride(@Nonnull BlockState state)
-	{
+	public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
-	{
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
 		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
-		if (!charging.isEmpty())
-		{
+		if (!charging.isEmpty()) {
 			LazyOptional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				long max = emcHolder.getMaximumEmc(charging);
-				long current = emcHolder.getStoredEmc(charging);
-				return MathUtils.scaleToRedstone(current, max);
+				return MathUtils.scaleToRedstone(emcHolder.getStoredEmc(charging), emcHolder.getMaximumEmc(charging));
 			}
 			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getEmcToNextGoal());
 		}
@@ -106,16 +100,12 @@ public class Collector extends BlockDirection
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
-	{
+	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		TileEntity ent = world.getTileEntity(pos);
-		if (ent != null)
-		{
+		if (ent != null) {
 			ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
-				for (int i = 0; i < handler.getSlots(); i++)
-				{
-					if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty())
-					{
+				for (int i = 0; i < handler.getSlots(); i++) {
+					if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty()) {
 						InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
 					}
 				}

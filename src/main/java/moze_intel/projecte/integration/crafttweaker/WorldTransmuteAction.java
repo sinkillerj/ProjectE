@@ -7,123 +7,115 @@ import net.minecraft.block.BlockState;
 
 abstract class WorldTransmuteAction implements IUndoableAction {
 
-    protected final BlockState input;
-    protected final BlockState output;
-    protected final BlockState sneakOutput;
+	protected final BlockState input;
+	protected final BlockState output;
+	protected final BlockState sneakOutput;
 
-    private WorldTransmuteAction(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
-    {
-        this(input.getInternal(), output.getInternal(), sneakOutput.getInternal());
-    }
+	private WorldTransmuteAction(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+		this(input.getInternal(), output.getInternal(), sneakOutput.getInternal());
+	}
 
-    private WorldTransmuteAction(BlockState input, BlockState output, BlockState sneakOutput)
-    {
-        this.input = input;
-        this.output = output;
-        this.sneakOutput = sneakOutput;
-    }
+	private WorldTransmuteAction(BlockState input, BlockState output, BlockState sneakOutput) {
+		this.input = input;
+		this.output = output;
+		this.sneakOutput = sneakOutput;
+	}
 
-    protected void apply(boolean add)
-    {
-        if (add) {
-            WorldTransmutations.register(this.input, this.output, this.sneakOutput);
-        } else {
-            WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.getOrigin() == this.input &&
-                    entry.getResult() == this.output && entry.getAltResult() == this.sneakOutput);
-        }
-    }
+	protected void apply(boolean add) {
+		if (add) {
+			WorldTransmutations.register(this.input, this.output, this.sneakOutput);
+		} else {
+			WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.getOrigin() == this.input &&
+																		   entry.getResult() == this.output && entry.getAltResult() == this.sneakOutput);
+		}
+	}
 
-    static class Add extends WorldTransmuteAction
-    {
-        Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
-        {
-            super(input, output, sneakOutput);
-        }
+	static class Add extends WorldTransmuteAction {
 
-        @Override
-        public void apply()
-        {
-            apply(true);
-        }
+		Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+			super(input, output, sneakOutput);
+		}
 
-        @Override
-        public String describe()
-        {
-            if (sneakOutput == null) {
-                return "Adding world transmutation recipe for: " + input + " with output: " + output;
-            }
-            return "Adding world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
-        }
+		@Override
+		public void apply() {
+			apply(true);
+		}
 
-        @Override
-        public void undo() {
-            apply(false);
-        }
+		@Override
+		public String describe() {
+			if (sneakOutput == null) {
+				return "Adding world transmutation recipe for: " + input + " with output: " + output;
+			}
+			return "Adding world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+		}
 
-        @Override
-        public String describeUndo() {
-            if (sneakOutput == null) {
-                return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output;
-            }
-            return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
-        }
-    }
+		@Override
+		public void undo() {
+			apply(false);
+		}
 
-    static class Remove extends WorldTransmuteAction
-    {
-        Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput)
-        {
-            super(input, output, sneakOutput);
-        }
+		@Override
+		public String describeUndo() {
+			if (sneakOutput == null) {
+				return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output;
+			}
+			return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+		}
+	}
 
-        @Override
-        public void apply()
-        {
-            apply(false);
-        }
+	static class Remove extends WorldTransmuteAction {
 
-        @Override
-        public String describe()
-        {
-            if (sneakOutput == null) {
-                return "Removing world transmutation recipe for: " + input + " with output: " + output;
-            }
-            return "Removing world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
-        }
+		Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+			super(input, output, sneakOutput);
+		}
 
-        @Override
-        public void undo() {
-            apply(true);
-        }
+		@Override
+		public void apply() {
+			apply(false);
+		}
 
-        @Override
-        public String describeUndo() {
-            if (sneakOutput == null) {
-                return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output;
-            }
-            return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
-        }
-    }
+		@Override
+		public String describe() {
+			if (sneakOutput == null) {
+				return "Removing world transmutation recipe for: " + input + " with output: " + output;
+			}
+			return "Removing world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+		}
 
-    static class RemoveAll implements IUndoableAction {
-        @Override
-        public void apply() {
-            WorldTransmutations.getWorldTransmutations().clear();
-        }
+		@Override
+		public void undo() {
+			apply(true);
+		}
 
-        @Override
-        public String describe() {
-            return "Removing all world transmutation recipes";
-        }
+		@Override
+		public String describeUndo() {
+			if (sneakOutput == null) {
+				return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output;
+			}
+			return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+		}
+	}
 
-        @Override
-        public void undo() {
-            WorldTransmutations.resetWorldTransmutations();
-        }
+	static class RemoveAll implements IUndoableAction {
 
-        @Override
-        public String describeUndo() {
-            return "Restored world transmutation recipes to default";
-        }
-    }
+		@Override
+		public void apply() {
+			WorldTransmutations.getWorldTransmutations().clear();
+		}
+
+		@Override
+		public String describe() {
+			return "Removing all world transmutation recipes";
+		}
+
+		@Override
+		public void undo() {
+			WorldTransmutations.resetWorldTransmutations();
+		}
+
+		@Override
+		public String describeUndo() {
+			return "Restored world transmutation recipes to default";
+		}
+	}
 }

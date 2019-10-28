@@ -37,281 +37,248 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public final class KnowledgeImpl {
 
-    public static void init() {
-        CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
-            @Override
-            public CompoundNBT writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side) {
-                return instance.serializeNBT();
-            }
+	public static void init() {
+		CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
+			@Override
+			public CompoundNBT writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side) {
+				return instance.serializeNBT();
+			}
 
-            @Override
-            public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side, INBT nbt) {
-                if (nbt instanceof CompoundNBT) {
-                    instance.deserializeNBT((CompoundNBT) nbt);
-                }
-            }
-        }, () -> new DefaultImpl(null));
-    }
+			@Override
+			public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side, INBT nbt) {
+				if (nbt instanceof CompoundNBT) {
+					instance.deserializeNBT((CompoundNBT) nbt);
+				}
+			}
+		}, () -> new DefaultImpl(null));
+	}
 
-    private static class DefaultImpl implements IKnowledgeProvider
-    {
-        @Nullable
-        private final PlayerEntity player;
-        private final List<ItemStack> knowledge = new ArrayList<>();
-        private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
-        private BigInteger emc = BigInteger.ZERO;
-        private boolean fullKnowledge = false;
+	private static class DefaultImpl implements IKnowledgeProvider {
 
-        private DefaultImpl(@Nullable PlayerEntity player) {
-            this.player = player;
-        }
+		@Nullable
+		private final PlayerEntity player;
+		private final List<ItemStack> knowledge = new ArrayList<>();
+		private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
+		private BigInteger emc = BigInteger.ZERO;
+		private boolean fullKnowledge = false;
 
-        private void fireChangedEvent()
-        {
-            if (player != null && !player.world.isRemote)
-            {
-                MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
-            }
-        }
+		private DefaultImpl(@Nullable PlayerEntity player) {
+			this.player = player;
+		}
 
-        @Override
-        public boolean hasFullKnowledge()
-        {
-            return fullKnowledge;
-        }
+		private void fireChangedEvent() {
+			if (player != null && !player.world.isRemote) {
+				MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
+			}
+		}
 
-        @Override
-        public void setFullKnowledge(boolean fullKnowledge)
-        {
-            boolean changed = this.fullKnowledge != fullKnowledge;
-            this.fullKnowledge = fullKnowledge;
-            if (changed)
-            {
-                fireChangedEvent();
-            }
-        }
+		@Override
+		public boolean hasFullKnowledge() {
+			return fullKnowledge;
+		}
 
-        @Override
-        public void clearKnowledge()
-        {
-            knowledge.clear();
-            fullKnowledge = false;
-            fireChangedEvent();
-        }
+		@Override
+		public void setFullKnowledge(boolean fullKnowledge) {
+			boolean changed = this.fullKnowledge != fullKnowledge;
+			this.fullKnowledge = fullKnowledge;
+			if (changed) {
+				fireChangedEvent();
+			}
+		}
 
-        @Override
-        public boolean hasKnowledge(@Nonnull ItemStack stack) {
-            if (stack.isEmpty())
-            {
-                return false;
-            }
+		@Override
+		public void clearKnowledge() {
+			knowledge.clear();
+			fullKnowledge = false;
+			fireChangedEvent();
+		}
 
-            if (fullKnowledge)
-            {
-                return true;
-            }
+		@Override
+		public boolean hasKnowledge(@Nonnull ItemStack stack) {
+			if (stack.isEmpty()) {
+				return false;
+			}
 
-            for (ItemStack s : knowledge)
-            {
-                if (s.getItem() == stack.getItem())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+			if (fullKnowledge) {
+				return true;
+			}
 
-        @Override
-        public boolean addKnowledge(@Nonnull ItemStack stack) {
-            if (fullKnowledge)
-            {
-                return false;
-            }
+			for (ItemStack s : knowledge) {
+				if (s.getItem() == stack.getItem()) {
+					return true;
+				}
+			}
+			return false;
+		}
 
-            if (stack.getItem() == ObjHandler.tome)
-            {
-                if (!hasKnowledge(stack))
-                {
-                    knowledge.add(stack);
-                }
-                fullKnowledge = true;
-                fireChangedEvent();
-                return true;
-            }
+		@Override
+		public boolean addKnowledge(@Nonnull ItemStack stack) {
+			if (fullKnowledge) {
+				return false;
+			}
 
-            if (!hasKnowledge(stack))
-            {
-                knowledge.add(stack);
-                fireChangedEvent();
-                return true;
-            }
+			if (stack.getItem() == ObjHandler.tome) {
+				if (!hasKnowledge(stack)) {
+					knowledge.add(stack);
+				}
+				fullKnowledge = true;
+				fireChangedEvent();
+				return true;
+			}
 
-            return false;
-        }
+			if (!hasKnowledge(stack)) {
+				knowledge.add(stack);
+				fireChangedEvent();
+				return true;
+			}
 
-        @Override
-        public boolean removeKnowledge(@Nonnull ItemStack stack) {
-            boolean removed = false;
+			return false;
+		}
 
-            if (stack.getItem() == ObjHandler.tome)
-            {
-                fullKnowledge = false;
-                removed = true;
-            }
+		@Override
+		public boolean removeKnowledge(@Nonnull ItemStack stack) {
+			boolean removed = false;
 
-            if (fullKnowledge)
-            {
-                return false;
-            }
+			if (stack.getItem() == ObjHandler.tome) {
+				fullKnowledge = false;
+				removed = true;
+			}
 
-            Iterator<ItemStack> iter = knowledge.iterator();
+			if (fullKnowledge) {
+				return false;
+			}
 
-            while (iter.hasNext())
-            {
-                if (stack.getItem() == iter.next().getItem())
-                {
-                    iter.remove();
-                    removed = true;
-                }
-            }
+			Iterator<ItemStack> iter = knowledge.iterator();
 
-            if (removed)
-            {
-                fireChangedEvent();
-            }
-            return removed;
-        }
+			while (iter.hasNext()) {
+				if (stack.getItem() == iter.next().getItem()) {
+					iter.remove();
+					removed = true;
+				}
+			}
 
-        @Override
-        public @Nonnull List<ItemStack> getKnowledge() {
-            return fullKnowledge ? Transmutation.getCachedTomeKnowledge() : Collections.unmodifiableList(knowledge);
-        }
+			if (removed) {
+				fireChangedEvent();
+			}
+			return removed;
+		}
 
-        @Override
-        public @Nonnull IItemHandlerModifiable getInputAndLocks() {
-            return inputLocks;
-        }
+		@Override
+		public @Nonnull
+		List<ItemStack> getKnowledge() {
+			return fullKnowledge ? Transmutation.getCachedTomeKnowledge() : Collections.unmodifiableList(knowledge);
+		}
 
-        @Override
-        public BigInteger getEmc() {
-            return emc;
-        }
+		@Override
+		public @Nonnull
+		IItemHandlerModifiable getInputAndLocks() {
+			return inputLocks;
+		}
 
-        @Override
-        public void setEmc(BigInteger emc) {
-            this.emc = emc;
-        }
+		@Override
+		public BigInteger getEmc() {
+			return emc;
+		}
 
-        @Override
-        public void sync(@Nonnull ServerPlayerEntity player)
-        {
-            PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
-        }
+		@Override
+		public void setEmc(BigInteger emc) {
+			this.emc = emc;
+		}
 
-        @Override
-        public CompoundNBT serializeNBT()
-        {
-            CompoundNBT properties = new CompoundNBT();
-            properties.putString("transmutationEmc", emc.toString());
+		@Override
+		public void sync(@Nonnull ServerPlayerEntity player) {
+			PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
+		}
 
-            ListNBT knowledgeWrite = new ListNBT();
-            for (ItemStack i : knowledge)
-            {
-                CompoundNBT tag = i.write(new CompoundNBT());
-                knowledgeWrite.add(tag);
-            }
+		@Override
+		public CompoundNBT serializeNBT() {
+			CompoundNBT properties = new CompoundNBT();
+			properties.putString("transmutationEmc", emc.toString());
 
-            properties.put("knowledge", knowledgeWrite);
-            properties.put("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
-            properties.putBoolean("fullknowledge", fullKnowledge);
-            return properties;
-        }
+			ListNBT knowledgeWrite = new ListNBT();
+			for (ItemStack i : knowledge) {
+				CompoundNBT tag = i.write(new CompoundNBT());
+				knowledgeWrite.add(tag);
+			}
 
-        @Override
-        public void deserializeNBT(CompoundNBT properties)
-        {
-            String transmutationEmc = properties.getString("transmutationEmc");
-            emc = transmutationEmc.isEmpty () ? BigInteger.ZERO : new BigInteger(transmutationEmc);
+			properties.put("knowledge", knowledgeWrite);
+			properties.put("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
+			properties.putBoolean("fullknowledge", fullKnowledge);
+			return properties;
+		}
 
-            ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++)
-            {
-                ItemStack item = ItemStack.read(list.getCompound(i));
-                if (!item.isEmpty())
-                {
-                    knowledge.add(item);
-                }
-            }
+		@Override
+		public void deserializeNBT(CompoundNBT properties) {
+			String transmutationEmc = properties.getString("transmutationEmc");
+			emc = transmutationEmc.isEmpty() ? BigInteger.ZERO : new BigInteger(transmutationEmc);
 
-            pruneStaleKnowledge();
-            pruneDuplicateKnowledge();
+			ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
+			for (int i = 0; i < list.size(); i++) {
+				ItemStack item = ItemStack.read(list.getCompound(i));
+				if (!item.isEmpty()) {
+					knowledge.add(item);
+				}
+			}
 
-            for (int i = 0; i < inputLocks.getSlots(); i++)
-            {
-                inputLocks.setStackInSlot(i, ItemStack.EMPTY);
-            }
+			pruneStaleKnowledge();
+			pruneDuplicateKnowledge();
 
-            CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getList("inputlock", Constants.NBT.TAG_COMPOUND));
-            fullKnowledge = properties.getBoolean("fullknowledge");
-        }
+			for (int i = 0; i < inputLocks.getSlots(); i++) {
+				inputLocks.setStackInSlot(i, ItemStack.EMPTY);
+			}
 
-        private void pruneDuplicateKnowledge()
-        {
-            ItemHelper.removeEmptyTags(knowledge);
-            ItemHelper.compactItemListNoStacksize(knowledge);
-            for (ItemStack s : knowledge)
-            {
-                if (s.getCount() > 1)
-                {
-                    s.setCount(1);
-                }
-            }
-        }
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getList("inputlock", Constants.NBT.TAG_COMPOUND));
+			fullKnowledge = properties.getBoolean("fullknowledge");
+		}
 
-        private void pruneStaleKnowledge()
-        {
-            knowledge.removeIf(stack -> !EMCHelper.doesItemHaveEmc(stack));
-        }
+		private void pruneDuplicateKnowledge() {
+			ItemHelper.removeEmptyTags(knowledge);
+			ItemHelper.compactItemListNoStacksize(knowledge);
+			for (ItemStack s : knowledge) {
+				if (s.getCount() > 1) {
+					s.setCount(1);
+				}
+			}
+		}
 
-    }
+		private void pruneStaleKnowledge() {
+			knowledge.removeIf(stack -> !EMCHelper.doesItemHaveEmc(stack));
+		}
 
-    public static class Provider implements ICapabilitySerializable<CompoundNBT>
-    {
-        public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
+	}
 
-        private final DefaultImpl impl;
-        private final LazyOptional<IKnowledgeProvider> cap;
+	public static class Provider implements ICapabilitySerializable<CompoundNBT> {
 
-        public Provider(PlayerEntity player)
-        {
-            impl = new DefaultImpl(player);
-            cap = LazyOptional.of(() -> impl);
-        }
+		public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
 
-        @Nonnull
-        @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-            if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY)
-            {
-                return cap.cast();
-            }
-            return LazyOptional.empty();
-        }
+		private final DefaultImpl impl;
+		private final LazyOptional<IKnowledgeProvider> cap;
 
-        @Override
-        public CompoundNBT serializeNBT()
-        {
-            return impl.serializeNBT();
-        }
+		public Provider(PlayerEntity player) {
+			impl = new DefaultImpl(player);
+			cap = LazyOptional.of(() -> impl);
+		}
 
-        @Override
-        public void deserializeNBT(CompoundNBT nbt)
-        {
-            impl.deserializeNBT(nbt);
-        }
+		@Nonnull
+		@Override
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+			if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY) {
+				return cap.cast();
+			}
+			return LazyOptional.empty();
+		}
 
-    }
+		@Override
+		public CompoundNBT serializeNBT() {
+			return impl.serializeNBT();
+		}
 
-    private KnowledgeImpl() {}
+		@Override
+		public void deserializeNBT(CompoundNBT nbt) {
+			impl.deserializeNBT(nbt);
+		}
+	}
 
+	private KnowledgeImpl() {
+	}
 }

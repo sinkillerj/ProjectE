@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
@@ -18,28 +20,21 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+public class Relay extends BlockDirection {
 
-public class Relay extends BlockDirection
-{
 	private final int tier;
-	
-	public Relay(int tier, Properties props)
-	{
+
+	public Relay(int tier, Properties props) {
 		super(props);
 		this.tier = tier;
 	}
-	
+
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr)
-	{
-		if (!world.isRemote)
-		{
+	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof RelayMK1Tile)
-			{
+			if (te instanceof RelayMK1Tile) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (RelayMK1Tile) te, pos);
 			}
 		}
@@ -53,31 +48,30 @@ public class Relay extends BlockDirection
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
-	{
-		switch (tier)
-		{
-			case 1: return new RelayMK1Tile();
-			case 2: return new RelayMK2Tile();
-			case 3: return new RelayMK3Tile();
-			default: return null;
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+		switch (tier) {
+			case 1:
+				return new RelayMK1Tile();
+			case 2:
+				return new RelayMK2Tile();
+			case 3:
+				return new RelayMK3Tile();
+			default:
+				return null;
 		}
 	}
 
 	@Override
 	@Deprecated
-	public boolean hasComparatorInputOverride(@Nonnull BlockState state)
-	{
+	public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos)
-	{
+	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof RelayMK1Tile)
-		{
+		if (te instanceof RelayMK1Tile) {
 			RelayMK1Tile relay = ((RelayMK1Tile) te);
 			return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 		}
@@ -85,15 +79,11 @@ public class Relay extends BlockDirection
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving)
-	{
+	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te != null)
-		{
-			te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN)
-					.ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
+		if (te != null) {
+			te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
-
 }

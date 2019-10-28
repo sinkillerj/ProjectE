@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
+import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
@@ -29,8 +29,8 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 @EMCMapper
-public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long>
-{
+public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(CustomConversion.class, new CustomConversionDeserializer())
 			.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer())
@@ -39,43 +39,36 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 			.create();
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "CustomConversionMapper";
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return "Loads json files within datapacks (data/<domain>/pe_custom_conversions/*.json) to add values and conversions";
 	}
 
 	@Override
-	public boolean isAvailable()
-	{
+	public boolean isAvailable() {
 		return true;
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager)
-	{
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> files = load(resourceManager);
-		for (CustomConversionFile file : files.values())
-		{
+		for (CustomConversionFile file : files.values()) {
 			addMappingsFromFile(file, mapper);
 		}
 	}
 
-	private static Map<ResourceLocation, CustomConversionFile> load(IResourceManager resourceManager)
-	{
+	private static Map<ResourceLocation, CustomConversionFile> load(IResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> loading = new HashMap<>();
 
 		String folder = "pe_custom_conversions";
 		String extension = ".json";
 
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (ResourceLocation file : resourceManager.getAllResourceLocations(folder, n -> n.endsWith(extension)))
-		{
+		for (ResourceLocation file : resourceManager.getAllResourceLocations(folder, n -> n.endsWith(extension))) {
 			// <domain>:foo/bar
 			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folder.length() + 1, file.getPath().length() - extension.length()));
 
@@ -83,8 +76,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
 			try {
-				for (IResource resource : resourceManager.getAllResources(file))
-				{
+				for (IResource resource : resourceManager.getAllResources(file)) {
 					CustomConversionFile result;
 					try {
 						result = parseJson(new InputStreamReader(resource.getInputStream()));
@@ -105,11 +97,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
-		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet())
-		{
+		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet()) {
 			PECore.debugLog("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);
-			for (CustomConversion conversion : entry.getValue().conversions)
-			{
+			for (CustomConversion conversion : entry.getValue().conversions) {
 				mapper.addConversion(conversion.count, conversion.output, conversion.ingredients);
 			}
 		}

@@ -2,26 +2,25 @@ package moze_intel.projecte.api.imc;
 
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
-public class CustomEMCRegistration
-{
-    private final NormalizedSimpleStack stack;
-    private final long value;
+public class CustomEMCRegistration {
 
-    /**
-     * @param stack Defines the stack to set the EMC for.
-     * @param value The EMC value to register for the given stack.
-     */
-    public CustomEMCRegistration(NormalizedSimpleStack stack, long value)
-    {
-        this.stack = stack;
-        this.value = value;
-    }
+	private final NormalizedSimpleStack stack;
+	private final long value;
 
-    public NormalizedSimpleStack getStack() {
-        return stack;
-    }
+	/**
+	 * @param stack Defines the stack to set the EMC for.
+	 * @param value The EMC value to register for the given stack.
+	 */
+	public CustomEMCRegistration(NormalizedSimpleStack stack, long value) {
+		this.stack = stack;
+		this.value = value;
+	}
 
-    public long getValue() {
-        return value;
-    }
+	public NormalizedSimpleStack getStack() {
+		return stack;
+	}
+
+	public long getValue() {
+		return value;
+	}
 }

@@ -15,13 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.InterModComms;
 
-public final class WorldTransmutations
-{
+public final class WorldTransmutations {
+
 	private static List<WorldTransmutationEntry> DEFAULT_ENTRIES = Collections.emptyList();
 	private static List<WorldTransmutationEntry> ENTRIES = Collections.emptyList();
 
-	public static void init()
-	{
+	public static void init() {
 		registerDefault(Blocks.STONE, Blocks.COBBLESTONE, Blocks.GRASS_BLOCK);
 		registerDefault(Blocks.COBBLESTONE, Blocks.STONE, Blocks.GRASS_BLOCK);
 		registerDefault(Blocks.GRASS_BLOCK, Blocks.SAND, Blocks.COBBLESTONE);
@@ -39,13 +38,13 @@ public final class WorldTransmutations
 		registerDefault(Blocks.DIORITE, Blocks.ANDESITE, Blocks.GRANITE);
 		registerDefault(Blocks.ANDESITE, Blocks.GRANITE, Blocks.DIORITE);
 
-		Block[] logs = { Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.SPRUCE_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG };
+		Block[] logs = {Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.SPRUCE_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG};
 		registerConsecutivePairs(logs);
 
-		Block[] leaves = { Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES };
+		Block[] leaves = {Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES};
 		registerConsecutivePairs(leaves);
 
-		Block[] saplings = { Blocks.OAK_SAPLING, Blocks.BIRCH_SAPLING, Blocks.SPRUCE_SAPLING, Blocks.JUNGLE_SAPLING, Blocks.ACACIA_SAPLING, Blocks.DARK_OAK_SAPLING };
+		Block[] saplings = {Blocks.OAK_SAPLING, Blocks.BIRCH_SAPLING, Blocks.SPRUCE_SAPLING, Blocks.JUNGLE_SAPLING, Blocks.ACACIA_SAPLING, Blocks.DARK_OAK_SAPLING};
 		registerConsecutivePairs(saplings);
 
 		Block[] wools = {
@@ -70,17 +69,13 @@ public final class WorldTransmutations
 		registerConsecutivePairs(carpets);
 	}
 
-	public static BlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking)
-	{
+	public static BlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking) {
 		return getWorldTransmutation(world.getBlockState(pos), isSneaking);
 	}
 
-	public static BlockState getWorldTransmutation(BlockState current, boolean isSneaking)
-	{
-		for (WorldTransmutationEntry e : ENTRIES)
-		{
-			if (e.getOrigin() == current)
-			{
+	public static BlockState getWorldTransmutation(BlockState current, boolean isSneaking) {
+		for (WorldTransmutationEntry e : ENTRIES) {
+			if (e.getOrigin() == current) {
 				return isSneaking ? e.getAltResult() : e.getResult();
 			}
 		}
@@ -88,37 +83,30 @@ public final class WorldTransmutations
 		return null;
 	}
 
-	public static List<WorldTransmutationEntry> getWorldTransmutations()
-	{
+	public static List<WorldTransmutationEntry> getWorldTransmutations() {
 		return ENTRIES;
 	}
 
-	public static void setWorldTransmutation(List<WorldTransmutationEntry> entries)
-	{
+	public static void setWorldTransmutation(List<WorldTransmutationEntry> entries) {
 		DEFAULT_ENTRIES = ImmutableList.copyOf(entries);
 		resetWorldTransmutations();
 	}
 
-	public static void resetWorldTransmutations()
-	{
+	public static void resetWorldTransmutations() {
 		//Make it so that ENTRIES are mutable so we can modify it with CraftTweaker
 		ENTRIES = new ArrayList<>(DEFAULT_ENTRIES);
 	}
 
-	public static void register(BlockState from, BlockState result, @Nullable BlockState altResult)
-	{
+	public static void register(BlockState from, BlockState result, @Nullable BlockState altResult) {
 		ENTRIES.add(new WorldTransmutationEntry(from, result, altResult));
 	}
 
-	private static void registerDefault(Block from, Block result, Block altResult)
-	{
+	private static void registerDefault(Block from, Block result, Block altResult) {
 		InterModComms.sendTo(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION, () -> new WorldTransmutationEntry(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState()));
 	}
 
-	private static void registerConsecutivePairs(Block[] blocks)
-	{
-		for (int i = 0; i < blocks.length; i++)
-		{
+	private static void registerConsecutivePairs(Block[] blocks) {
+		for (int i = 0; i < blocks.length; i++) {
 			Block prev = i == 0 ? blocks[blocks.length - 1] : blocks[i - 1];
 			Block cur = blocks[i];
 			Block next = i == blocks.length - 1 ? blocks[0] : blocks[i + 1];

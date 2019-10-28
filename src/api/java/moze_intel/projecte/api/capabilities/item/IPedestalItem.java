@@ -27,11 +27,12 @@ public interface IPedestalItem {
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside
 	 */
-    void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos);
+	void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
 	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
-	@Nonnull List<ITextComponent> getPedestalDescription();
+	@Nonnull
+	List<ITextComponent> getPedestalDescription();
 }

@@ -16,36 +16,30 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
-public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge
-{
+public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge {
+
 	public HyperkineticLens(Properties props) {
 		super(props);
 		addItemCapability(new ChargeItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
-	
+
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		
-		if (!world.isRemote)
-		{
+		if (!world.isRemote) {
 			shootProjectile(player, stack, hand);
 		}
-		
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
-	
+
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
-		
-		if (!consumeFuel(player, stack, requiredEmc, true))
-		{
+
+		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;
 		}
 
@@ -57,20 +51,17 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
+	public int getNumCharges(@Nonnull ItemStack stack) {
 		return 3;
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
+	public double getDurabilityForDisplay(ItemStack stack) {
 		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

@@ -21,152 +21,132 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
-public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry>
-{
-    public static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "world_transmutation");
-    private final IDrawable background;
-    private final IDrawable arrow;
-    private final IDrawable icon;
-    private final String localizedName;
+public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
 
-    public WorldTransmuteRecipeCategory(IGuiHelper guiHelper)
-    {
-        background = guiHelper.createBlankDrawable(135, 48);
-        arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
-                .setTextureSize(32, 32).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
-        localizedName = I18n.format("pe.jei.worldtransmute");
-    }
+	public static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "world_transmutation");
+	private final IDrawable background;
+	private final IDrawable arrow;
+	private final IDrawable icon;
+	private final String localizedName;
 
-    @Nonnull
-    @Override
-    public ResourceLocation getUid()
-    {
-        return UID;
-    }
+	public WorldTransmuteRecipeCategory(IGuiHelper guiHelper) {
+		background = guiHelper.createBlankDrawable(135, 48);
+		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
+				.setTextureSize(32, 32).build();
+		icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
+		localizedName = I18n.format("pe.jei.worldtransmute");
+	}
 
-    @Nonnull
-    @Override
-    public Class<WorldTransmuteEntry> getRecipeClass()
-    {
-        return WorldTransmuteEntry.class;
-    }
+	@Nonnull
+	@Override
+	public ResourceLocation getUid() {
+		return UID;
+	}
 
-    @Nonnull
-    @Override
-    public String getTitle()
-    {
-        return localizedName;
-    }
+	@Nonnull
+	@Override
+	public Class<WorldTransmuteEntry> getRecipeClass() {
+		return WorldTransmuteEntry.class;
+	}
 
-    @Nonnull
-    @Override
-    public IDrawable getBackground()
-    {
-        return background;
-    }
+	@Nonnull
+	@Override
+	public String getTitle() {
+		return localizedName;
+	}
 
-    @Nonnull
-    @Override
-    public IDrawable getIcon()
-    {
-        return icon;
-    }
+	@Nonnull
+	@Override
+	public IDrawable getBackground() {
+		return background;
+	}
 
-    @Override
-    public void draw(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY)
-    {
-        arrow.draw(55, 18);
-    }
+	@Nonnull
+	@Override
+	public IDrawable getIcon() {
+		return icon;
+	}
 
-    @Override
-    public void setIngredients(WorldTransmuteEntry recipe, @Nonnull IIngredients ingredients) {
-        recipe.setIngredients(ingredients);
-    }
+	@Override
+	public void draw(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+		arrow.draw(55, 18);
+	}
 
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull WorldTransmuteEntry recipeWrapper, @Nonnull IIngredients ingredients)
-    {
-        int itemSlots = 0;
-        int fluidSlots = 0;
+	@Override
+	public void setIngredients(WorldTransmuteEntry recipe, @Nonnull IIngredients ingredients) {
+		recipe.setIngredients(ingredients);
+	}
 
-        int xPos = 16;
-        for (List<FluidStack> s : ingredients.getInputs(VanillaTypes.FLUID))
-        {
-            recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
-            recipeLayout.getFluidStacks().set(fluidSlots, s);
-            fluidSlots++;
-            xPos += 16;
-        }
+	@Override
+	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull WorldTransmuteEntry recipeWrapper, @Nonnull IIngredients ingredients) {
+		int itemSlots = 0;
+		int fluidSlots = 0;
 
-        xPos = 16;
-        for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM))
-        {
-            recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
-            recipeLayout.getItemStacks().set(itemSlots, s);
-            itemSlots++;
-            xPos += 16;
-        }
+		int xPos = 16;
+		for (List<FluidStack> s : ingredients.getInputs(VanillaTypes.FLUID)) {
+			recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
+			recipeLayout.getFluidStacks().set(fluidSlots, s);
+			fluidSlots++;
+			xPos += 16;
+		}
 
-        xPos = 96;
-        for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM))
-        {
-            recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
-            recipeLayout.getItemStacks().set(itemSlots, stacks);
-            itemSlots++;
-            xPos += 16;
-        }
+		xPos = 16;
+		for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM)) {
+			recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
+			recipeLayout.getItemStacks().set(itemSlots, s);
+			itemSlots++;
+			xPos += 16;
+		}
 
-        xPos = 96;
-        for (List<FluidStack> stacks : ingredients.getOutputs(VanillaTypes.FLUID))
-        {
-            recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
-            recipeLayout.getFluidStacks().set(fluidSlots, stacks);
-            fluidSlots++;
-            xPos += 16;
-        }
+		xPos = 96;
+		for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM)) {
+			recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
+			recipeLayout.getItemStacks().set(itemSlots, stacks);
+			itemSlots++;
+			xPos += 16;
+		}
 
-    }
+		xPos = 96;
+		for (List<FluidStack> stacks : ingredients.getOutputs(VanillaTypes.FLUID)) {
+			recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
+			recipeLayout.getFluidStacks().set(fluidSlots, stacks);
+			fluidSlots++;
+			xPos += 16;
+		}
+	}
 
-    @Nonnull
-    @Override
-    public List<String> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
-        if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38)
-        {
-            return Collections.singletonList(I18n.format("pe.jei.worldtransmute.description"));
-        }
-        return Collections.emptyList();
-    }
+	@Nonnull
+	@Override
+	public List<String> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
+			return Collections.singletonList(I18n.format("pe.jei.worldtransmute.description"));
+		}
+		return Collections.emptyList();
+	}
 
-    public static List<WorldTransmuteEntry> getAllTransmutations()
-    {
-        List<WorldTransmutationEntry> allWorldTransmutations = WorldTransmutations.getWorldTransmutations();
-        //All the ones that have a block state that can be rendered in JEI.
-        //For example only render one pumpkin to melon transmutation
-        List<WorldTransmuteEntry> visible = new ArrayList<>();
-        allWorldTransmutations.forEach(entry -> {
-            WorldTransmuteEntry e = new WorldTransmuteEntry(entry);
-            if (e.isRenderable())
-            {
-                boolean alreadyHas;
-                FluidStack inputFluid = e.getInputFluid();
-                if (inputFluid != null)
-                {
-                    Fluid fluid = inputFluid.getFluid();
-                    alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> otherInputFluid != null && fluid == otherInputFluid.getFluid());
-                }
-                else
-                {
-                    ItemStack inputItem = e.getInputItem();
-                    alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.isItemEqual(otherEntry.getInputItem()));
-                }
-                if (!alreadyHas)
-                {
-                    //Only add items that we haven't already had.
-                    visible.add(e);
-                }
-            }
-        });
-        return visible;
-    }
+	public static List<WorldTransmuteEntry> getAllTransmutations() {
+		List<WorldTransmutationEntry> allWorldTransmutations = WorldTransmutations.getWorldTransmutations();
+		//All the ones that have a block state that can be rendered in JEI.
+		//For example only render one pumpkin to melon transmutation
+		List<WorldTransmuteEntry> visible = new ArrayList<>();
+		allWorldTransmutations.forEach(entry -> {
+			WorldTransmuteEntry e = new WorldTransmuteEntry(entry);
+			if (e.isRenderable()) {
+				boolean alreadyHas;
+				FluidStack inputFluid = e.getInputFluid();
+				if (inputFluid != null) {
+					Fluid fluid = inputFluid.getFluid();
+					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> otherInputFluid != null && fluid == otherInputFluid.getFluid());
+				} else {
+					ItemStack inputItem = e.getInputItem();
+					alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.isItemEqual(otherEntry.getInputItem()));
+				}
+				if (!alreadyHas) {
+					//Only add items that we haven't already had.
+					visible.add(e);
+				}
+			}
+		});
+		return visible;
+	}
 }

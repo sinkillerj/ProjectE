@@ -22,39 +22,32 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class BodyStone extends PEToggleItem implements IPedestalItem
-{
+public class BodyStone extends PEToggleItem implements IPedestalItem {
+
 	public BodyStone(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
-	
+
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
-	{
-		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
-		{
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		
+
 		super.inventoryTick(stack, world, entity, slot, held);
-		
+
 		PlayerEntity player = (PlayerEntity) entity;
 
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			long itemEmc = getEmc(stack);
-			
-			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false))
-			{
+
+			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
-			}
-			else
-			{
+			} else {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
-					if (player.getFoodStats().needFood() && timers.canFeed())
-					{
+					if (player.getFoodStats().needFood() && timers.canFeed()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.getFoodStats().addStats(2, 10);
 						removeEmc(stack, 64);
@@ -65,34 +58,26 @@ public class BodyStone extends PEToggleItem implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.body.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.body.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
+			if (tile.getActivityCooldown() == 0) {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 
-				for (ServerPlayerEntity player : players)
-				{
-					if (player.getFoodStats().needFood())
-					{
+				for (ServerPlayerEntity player : players) {
+					if (player.getFoodStats().needFood()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
 
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.body.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -100,11 +85,9 @@ public class BodyStone extends PEToggleItem implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.body.get() != -1)
-		{
+		if (ProjectEConfig.pedestalCooldown.body.get() != -1) {
 			list.add(new TranslationTextComponent("pe.body.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.body.get())).applyTextStyle(TextFormatting.BLUE));
 		}

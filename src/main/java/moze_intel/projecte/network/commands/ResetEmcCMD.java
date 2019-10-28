@@ -14,10 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class ResetEmcCMD
-{
-	public static LiteralArgumentBuilder<CommandSource> register()
-	{
+public class ResetEmcCMD {
+
+	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("resetemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
@@ -28,13 +27,11 @@ public class ResetEmcCMD
 					ServerPlayerEntity player = ctx.getSource().asPlayer();
 					ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
-					if (stack.isEmpty())
-					{
+					if (stack.isEmpty()) {
 						stack = player.getHeldItem(Hand.OFF_HAND);
 					}
 
-					if (stack.isEmpty())
-					{
+					if (stack.isEmpty()) {
 						throw RemoveEmcCMD.EMPTY_STACK.create();
 					}
 
@@ -42,16 +39,12 @@ public class ResetEmcCMD
 				});
 	}
 
-	private static int resetEmc(CommandContext<CommandSource> ctx, Item item)
-	{
-		if (CustomEMCParser.removeFromFile(item.getRegistryName().toString()))
-		{
+	private static int resetEmc(CommandContext<CommandSource> ctx, Item item) {
+		if (CustomEMCParser.removeFromFile(item.getRegistryName().toString())) {
 			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reset.success", item.getRegistryName().toString()), true);
 			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
 			return Command.SINGLE_SUCCESS;
-		}
-		else
-		{
+		} else {
 			throw new CommandException(new TranslationTextComponent("pe.command.remove.invaliditem", item.getRegistryName()));
 		}
 	}

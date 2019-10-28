@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -14,22 +15,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nonnull;
-
 /**
  * Composes a ShapelessRecipe to hide it from JEI and the book
  */
-public class RecipeShapelessHidden implements ICraftingRecipe
-{
+public class RecipeShapelessHidden implements ICraftingRecipe {
+
 	private final ShapelessRecipe compose;
 
-	public RecipeShapelessHidden(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients)
-	{
+	public RecipeShapelessHidden(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients) {
 		this.compose = new ShapelessRecipe(id, group, result, ingredients);
 	}
 
-	private RecipeShapelessHidden(ShapelessRecipe compose)
-	{
+	private RecipeShapelessHidden(ShapelessRecipe compose) {
 		this.compose = compose;
 	}
 
@@ -57,64 +54,55 @@ public class RecipeShapelessHidden implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
-	{
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
 		return compose.getRemainingItems(inv);
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<Ingredient> getIngredients()
-	{
+	public NonNullList<Ingredient> getIngredients() {
 		return compose.getIngredients();
 	}
 
 	@Override
-	public boolean isDynamic()
-	{
+	public boolean isDynamic() {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public String getGroup()
-	{
+	public String getGroup() {
 		return compose.getGroup();
 	}
 
 	@Nonnull
 	@Override
-	public ResourceLocation getId()
-	{
+	public ResourceLocation getId() {
 		return compose.getId();
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
-	{
+	public IRecipeSerializer<?> getSerializer() {
 		return ObjHandler.SHAPELESS_HIDDEN_SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessHidden>
-	{
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessHidden> {
+
 		@Nonnull
 		@Override
-		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
-		{
+		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
 			return new RecipeShapelessHidden(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
 		}
 
 		@Nonnull
 		@Override
-		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
-		{
+		public RecipeShapelessHidden read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
 			return new RecipeShapelessHidden(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
 		}
 
 		@Override
-		public void write(@Nonnull PacketBuffer buffer, @Nonnull RecipeShapelessHidden recipe)
-		{
+		public void write(@Nonnull PacketBuffer buffer, @Nonnull RecipeShapelessHidden recipe) {
 			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
 		}
 	}

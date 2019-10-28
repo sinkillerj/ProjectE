@@ -107,8 +107,8 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(PECore.MODID)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
-public class PECore
-{
+public class PECore {
+
 	public static final String MODID = ProjectEAPI.PROJECTE_MODID;
 	public static final String MODNAME = "ProjectE";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
@@ -118,19 +118,15 @@ public class PECore
 
 	public static final List<String> uuids = new ArrayList<>();
 
-	public static void debugLog(String msg, Object... args)
-	{
-		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging.get())
-		{
+	public static void debugLog(String msg, Object... args) {
+		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging.get()) {
 			LOGGER.info(msg, args);
-		} else
-		{
+		} else {
 			LOGGER.debug(msg, args);
 		}
 	}
 
-	public PECore()
-	{
+	public PECore() {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
@@ -145,10 +141,9 @@ public class PECore
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 	}
 
-	static class ClientHandler
-	{
-		static void clientSetup(FMLClientSetupEvent evt)
-		{
+	static class ClientHandler {
+
+		static void clientSetup(FMLClientSetupEvent evt) {
 			DeferredWorkQueue.runLater(() -> {
 				ClientKeyHelper.registerKeyBindings();
 			});
@@ -171,8 +166,7 @@ public class PECore
 			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
 		}
 
-		static void loadComplete(FMLLoadCompleteEvent evt)
-		{
+		static void loadComplete(FMLLoadCompleteEvent evt) {
 			// ClientSetup is too early to do this
 			DeferredWorkQueue.runLater(() -> {
 				Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
@@ -183,20 +177,17 @@ public class PECore
 			});
 		}
 
-		private static <T extends Entity & IRendersAsItem> IRenderFactory<T> createRenderFactoryForSnowball()
-		{
+		private static <T extends Entity & IRendersAsItem> IRenderFactory<T> createRenderFactoryForSnowball() {
 			return manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer());
 		}
 	}
 
-	private void commonSetup(FMLCommonSetupEvent event)
-	{
+	private void commonSetup(FMLCommonSetupEvent event) {
 		DEV_ENVIRONMENT = FMLLoader.getNameFunction("srg").isPresent();
 
 		CONFIG_DIR = new File(new File("config"), MODNAME);
 
-		if (!CONFIG_DIR.exists())
-		{
+		if (!CONFIG_DIR.exists()) {
 			CONFIG_DIR.mkdirs();
 		}
 
@@ -217,8 +208,7 @@ public class PECore
 		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IEmcStorage.class, new DummyIStorage<>(), EmcStorageDefaultImpl::new);
 
-		if (ModList.get().isLoaded("curios"))
-		{
+		if (ModList.get().isLoaded("curios")) {
 			FMLJavaModLoadingContext.get().getModEventBus().register(CuriosIntegration.class);
 			MinecraftForge.EVENT_BUS.register(CuriosIntegration.class);
 		}
@@ -232,16 +222,14 @@ public class PECore
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 		});
 	}
-	
-	private void imcQueue(InterModEnqueueEvent event)
-	{
+
+	private void imcQueue(InterModEnqueueEvent event) {
 		EntityRandomizerHelper.init();
 		WorldTransmutations.init();
 		NSSSerializer.init();
 	}
 
-	private void imcHandle(InterModProcessEvent event)
-	{
+	private void imcHandle(InterModProcessEvent event) {
 		IMCHandler.handleMessages();
 	}
 
@@ -256,8 +244,7 @@ public class PECore
 		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
 	}
 
-	private void serverStarting(FMLServerStartingEvent event)
-	{
+	private void serverStarting(FMLServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
 				.then(RemoveEmcCMD.register())
@@ -267,14 +254,12 @@ public class PECore
 
 		event.getCommandDispatcher().register(root);
 
-		if (!ThreadCheckUUID.hasRunServer())
-		{
+		if (!ThreadCheckUUID.hasRunServer()) {
 			new ThreadCheckUUID(true).start();
 		}
 	}
 
-	private void serverQuit(FMLServerStoppedEvent event)
-	{
+	private void serverQuit(FMLServerStoppedEvent event) {
 		TransmutationOffline.cleanAll();
 		Transmutation.clearCache();
 		EMCMappingHandler.clearMaps();

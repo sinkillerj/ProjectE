@@ -1,18 +1,16 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
+import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import javax.annotation.Nonnull;
+public class MercurialEyeInventory implements IItemHandlerModifiable {
 
-public class MercurialEyeInventory implements IItemHandlerModifiable
-{
 	public final ItemStack invItem;
 	private final IItemHandlerModifiable compose;
 
-	public MercurialEyeInventory(ItemStack stack)
-	{
+	public MercurialEyeInventory(ItemStack stack) {
 		this.invItem = stack;
 		this.compose = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 	}
@@ -36,9 +34,11 @@ public class MercurialEyeInventory implements IItemHandlerModifiable
 	@Nonnull
 	@Override
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if (stack == invItem)
+		if (stack == invItem) {
 			return stack; // Cannot put the bag into itself
-		else return compose.insertItem(slot, stack, simulate);
+		} else {
+			return compose.insertItem(slot, stack, simulate);
+		}
 	}
 
 	@Nonnull
@@ -48,8 +48,7 @@ public class MercurialEyeInventory implements IItemHandlerModifiable
 	}
 
 	@Override
-	public int getSlotLimit(int slot)
-	{
+	public int getSlotLimit(int slot) {
 		return compose.getSlotLimit(slot);
 	}
 

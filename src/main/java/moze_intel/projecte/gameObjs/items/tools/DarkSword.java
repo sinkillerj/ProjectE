@@ -17,69 +17,55 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-public class DarkSword extends PEToolBase implements IExtraFunction
-{
-	public DarkSword(Properties props)
-	{
-		super(props, (byte)2, new String[] {});
+public class DarkSword extends PEToolBase implements IExtraFunction {
+
+	public DarkSword(Properties props) {
+		super(props, (byte) 2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	// Only for RedSword to use
-	protected DarkSword(Properties props, byte numcharges, String[] modeDesc)
-	{
+	protected DarkSword(Properties props, byte numcharges, String[] modeDesc) {
 		super(props, numcharges, modeDesc);
 	}
 
 	@Override
-	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager)
-	{
+	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
-	{
-		if (state.getBlock() == Blocks.COBWEB)
-		{
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+		if (state.getBlock() == Blocks.COBWEB) {
 			return 15.0F;
-		}
-		else
-		{
+		} else {
 			Material material = state.getMaterial();
 			return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
 		}
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, @Nonnull BlockState state)
-	{
+	public boolean canHarvestBlock(ItemStack stack, @Nonnull BlockState state) {
 		return state.getBlock() == Blocks.COBWEB;
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
-	{
-		if (player.getCooledAttackStrength(0F) == 1)
-		{
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+		if (player.getCooledAttackStrength(0F) == 1) {
 			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
-	{
-		if (slot != EquipmentSlotType.MAINHAND)
-		{
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
 

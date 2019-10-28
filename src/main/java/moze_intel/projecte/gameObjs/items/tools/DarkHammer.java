@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.block.Block;
@@ -17,13 +18,10 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+public class DarkHammer extends PEToolBase {
 
-public class DarkHammer extends PEToolBase
-{
-	public DarkHammer(Properties props)
-	{
-		super(props, (byte)2, new String[] {});
+	public DarkHammer(Properties props) {
+		super(props, (byte) 2, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.IRON);
 		this.harvestMaterials.add(Material.ANVIL);
@@ -31,45 +29,38 @@ public class DarkHammer extends PEToolBase
 	}
 
 	// Only for RedHammer
-	protected DarkHammer(Properties props, byte numCharges, String[] modeDesc)
-	{
+	protected DarkHammer(Properties props, byte numCharges, String[] modeDesc) {
 		super(props, numCharges, modeDesc);
 	}
 
 	@Override
-	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager)
-	{
+	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		digAOE(stack, world, player, true, 0, hand);
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
-	
+
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state)
-	{
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff)
-		{
+		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff) {
 			return 1200000.0F;
 		}
-		
+
 		return super.getDestroySpeed(stack, state);
 	}
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
-	{
-		if (slot != EquipmentSlotType.MAINHAND)
-		{
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
 

@@ -1,6 +1,7 @@
 package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -13,20 +14,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-
 @OnlyIn(Dist.CLIENT)
-public class CondenserRenderer extends TileEntityRenderer<CondenserTile>
-{
+public class CondenserRenderer extends TileEntityRenderer<CondenserTile> {
+
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png");
 	private final ChestModel model = new ChestModel();
-	
+
 	@Override
-	public void render(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage)
-	{
+	public void render(@Nonnull CondenserTile condenser, double x, double y, double z, float partialTicks, int destroyStage) {
 		Direction direction = null;
-		if (condenser.getWorld() != null && !condenser.isRemoved())
-		{
+		if (condenser.getWorld() != null && !condenser.isRemoved()) {
 			BlockState state = condenser.getWorld().getBlockState(condenser.getPos());
 			direction = state.getBlock() == ObjHandler.condenser ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null;
 		}
@@ -41,14 +38,20 @@ public class CondenserRenderer extends TileEntityRenderer<CondenserTile>
 
 		short angle = 0;
 
-		if (direction != null)
-		{
-			switch (direction)
-			{
-				case NORTH: angle = 180; break;
-				case SOUTH: angle = 0; break;
-				case WEST: angle = 90; break;
-				case EAST: angle = -90; break;
+		if (direction != null) {
+			switch (direction) {
+				case NORTH:
+					angle = 180;
+					break;
+				case SOUTH:
+					angle = 0;
+					break;
+				case WEST:
+					angle = 90;
+					break;
+				case EAST:
+					angle = -90;
+					break;
 			}
 		}
 

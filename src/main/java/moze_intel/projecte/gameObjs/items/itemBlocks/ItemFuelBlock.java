@@ -6,28 +6,26 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
-public class ItemFuelBlock extends BlockItem
-{
+public class ItemFuelBlock extends BlockItem {
+
 	private final EnumFuelType type;
 
-	public ItemFuelBlock(Block block, Properties props, EnumFuelType type)
-	{
+	public ItemFuelBlock(Block block, Properties props, EnumFuelType type) {
 		super(block, props);
 		this.type = type;
 	}
-	
+
 	@Override
-	public int getBurnTime(ItemStack stack)
-	{
-		switch (type)
-		{
+	public int getBurnTime(ItemStack stack) {
+		switch (type) {
 			case ALCHEMICAL_COAL:
 				return Constants.ALCH_BURN_TIME * 9;
 			case MOBIUS_FUEL:
 				return Constants.MOBIUS_BURN_TIME * 9;
 			case AETERNALIS_FUEL:
 				return Constants.AETERNALIS_BURN_TIME * 9;
-			default: return -1;
+			default:
+				return -1;
 		}
 	}
 }

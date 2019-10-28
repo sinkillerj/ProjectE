@@ -1,9 +1,23 @@
 package moze_intel.projecte.network;
 
+import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.network.packets.*;
+import moze_intel.projecte.network.packets.CooldownResetPKT;
+import moze_intel.projecte.network.packets.KeyPressPKT;
+import moze_intel.projecte.network.packets.KnowledgeClearPKT;
+import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.LeftClickArchangelPKT;
+import moze_intel.projecte.network.packets.SearchUpdatePKT;
+import moze_intel.projecte.network.packets.SetFlyPKT;
+import moze_intel.projecte.network.packets.StepHeightPKT;
+import moze_intel.projecte.network.packets.SyncBagDataPKT;
+import moze_intel.projecte.network.packets.SyncCovalencePKT;
+import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
+import moze_intel.projecte.network.packets.UpdateGemModePKT;
+import moze_intel.projecte.network.packets.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.UpdateWindowLongPKT;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
@@ -15,10 +29,8 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.Map;
+public final class PacketHandler {
 
-public final class PacketHandler
-{
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(PECore.MODID, "main_channel"))
@@ -27,8 +39,7 @@ public final class PacketHandler
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)
 			.simpleChannel();
 
-	public static void register()
-	{
+	public static void register() {
 		int disc = 0;
 
 		HANDLER.registerMessage(disc++, SyncEmcPKT.class, SyncEmcPKT::encode, SyncEmcPKT::decode, SyncEmcPKT.Handler::handle);
@@ -47,50 +58,39 @@ public final class PacketHandler
 		HANDLER.registerMessage(disc++, SyncCovalencePKT.class, SyncCovalencePKT::encode, SyncCovalencePKT::decode, SyncCovalencePKT.Handler::handle);
 	}
 
-	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal)
-	{
-		if (listener instanceof ServerPlayerEntity)
-		{
+	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal) {
+		if (listener instanceof ServerPlayerEntity) {
 			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
-	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal)
-	{
-		if (listener instanceof ServerPlayerEntity)
-		{
+	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal) {
+		if (listener instanceof ServerPlayerEntity) {
 			sendTo(new UpdateWindowLongPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
-	public static void sendNonLocal(Object msg, ServerPlayerEntity player)
-	{
-		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner()))
-		{
+	public static void sendNonLocal(Object msg, ServerPlayerEntity player) {
+		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner())) {
 			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 
-	public static void sendFragmentedEmcPacket(ServerPlayerEntity player)
-	{
+	public static void sendFragmentedEmcPacket(ServerPlayerEntity player) {
 		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
 	}
 
-	public static void sendFragmentedEmcPacketToAll()
-	{
+	public static void sendFragmentedEmcPacketToAll() {
 		SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
-		for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-		{
+		for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 			sendNonLocal(pkt, player);
 		}
 	}
 
-	private static EmcPKTInfo[] serializeEmcData()
-	{
+	private static EmcPKTInfo[] serializeEmcData() {
 		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMappingHandler.emc.size()];
 		int i = 0;
-		for (Map.Entry<Item, Long> entry : EMCMappingHandler.emc.entrySet())
-		{
+		for (Map.Entry<Item, Long> entry : EMCMappingHandler.emc.entrySet()) {
 			int id = Item.getIdFromItem(entry.getKey());
 			ret[i] = new EmcPKTInfo(id, entry.getValue());
 			i++;
@@ -100,22 +100,17 @@ public final class PacketHandler
 	}
 
 	/**
-	 * Sends a packet to the server.<br>
-	 * Must be called Client side. 
+	 * Sends a packet to the server.<br> Must be called Client side.
 	 */
-	public static void sendToServer(Object msg)
-	{
+	public static void sendToServer(Object msg) {
 		HANDLER.sendToServer(msg);
 	}
-	
+
 	/**
-	 * Send a packet to a specific player.<br>
-	 * Must be called Server side. 
+	 * Send a packet to a specific player.<br> Must be called Server side.
 	 */
-	public static void sendTo(Object msg, ServerPlayerEntity player)
-	{
-		if (!(player instanceof FakePlayer))
-		{
+	public static void sendTo(Object msg, ServerPlayerEntity player) {
+		if (!(player instanceof FakePlayer)) {
 			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}

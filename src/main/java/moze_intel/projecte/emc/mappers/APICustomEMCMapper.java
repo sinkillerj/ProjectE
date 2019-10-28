@@ -25,7 +25,9 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private static final int PRIORITY_MIN_VALUE = 0;
 	private static final int PRIORITY_MAX_VALUE = 512;
 	private static final int PRIORITY_DEFAULT_VALUE = 1;
-	private APICustomEMCMapper() {}
+
+	private APICustomEMCMapper() {
+	}
 
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 
@@ -60,7 +62,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		Map<String, Integer> priorityMap = new HashMap<>();
 
-		for (String modId: customEMCforMod.keySet()) {
+		for (String modId : customEMCforMod.keySet()) {
 			String configKey = getName() + ".priority." + (modId == null ? "__no_modid" : modId);
 			int priority = EMCMappingHandler.getOrSetDefault(config, configKey, "Priority for this mod", PRIORITY_DEFAULT_VALUE);
 			priorityMap.put(modId, priority);
@@ -69,20 +71,15 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		List<String> modIds = new ArrayList<>(customEMCforMod.keySet());
 		modIds.sort(Comparator.comparingInt(priorityMap::get).reversed());
 
-		for(String modId : modIds) {
+		for (String modId : modIds) {
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;
-			if (customEMCforMod.containsKey(modId))
-			{
-				for (Map.Entry<NormalizedSimpleStack, Long> entry : customEMCforMod.get(modId).entrySet())
-				{
+			if (customEMCforMod.containsKey(modId)) {
+				for (Map.Entry<NormalizedSimpleStack, Long> entry : customEMCforMod.get(modId).entrySet()) {
 					NormalizedSimpleStack normStack = entry.getKey();
-					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
-					{
+					if (isAllowedToSet(modId, normStack, entry.getValue(), config)) {
 						mapper.setValueBefore(normStack, entry.getValue());
 						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
-					}
-					else
-					{
+					} else {
 						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
 					}
 				}
@@ -93,8 +90,8 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, CommentedFileConfig config) {
 		String itemName;
 		//TODO: Double check we are handling this right for when it represents a tag
-		if (stack instanceof NSSItem && !((NSSItem)stack).representsTag()) {
-			NSSItem item = (NSSItem)stack;
+		if (stack instanceof NSSItem && !((NSSItem) stack).representsTag()) {
+			NSSItem item = (NSSItem) stack;
 			itemName = item.getResourceLocation().toString();
 		} else {
 			itemName = "IntermediateFakeItemsUsedInRecipes:";
@@ -103,16 +100,12 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		String configPath = String.format("permissions.%s.%s", modId, modForItem);
 		String comment = String.format("Allow mod '%s' to set and or remove values for mod '%s'. Options: [both, set, remove, none]", modId, modForItem);
 		String permission = EMCMappingHandler.getOrSetDefault(config, configPath, comment, "both");
-		if (permission.equals("both"))
-		{
+		if (permission.equals("both")) {
 			return true;
 		}
-		if (value == 0)
-		{
+		if (value == 0) {
 			return permission.equals("remove");
-		}
-		else
-		{
+		} else {
 			return permission.equals("set");
 		}
 	}

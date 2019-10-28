@@ -35,51 +35,43 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter
-{
+public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter {
+
 	public Ignition(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 	}
-	
-	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int inventorySlot, boolean held)
-	{
-		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) return;
-		
-		super.inventoryTick(stack, world, entity, inventorySlot, held);
-		ServerPlayerEntity player = (ServerPlayerEntity)entity;
 
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
-			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false))
-			{
+	@Override
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int inventorySlot, boolean held) {
+		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) {
+			return;
+		}
+
+		super.inventoryTick(stack, world, entity, inventorySlot, held);
+		ServerPlayerEntity player = (ServerPlayerEntity) entity;
+
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
-			}
-			else 
-			{
+			} else {
 				WorldHelper.igniteNearby(world, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
-		}
-		else 
-		{
+		} else {
 			WorldHelper.extinguishNearby(world, player);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
-	{
+	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
 		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() instanceof TNTBlock)
-		{
-			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos))
-			{
+		if (state.getBlock() instanceof TNTBlock) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos)) {
 				// Ignite TNT or derivatives
 				// todo 1.14 doesn't work properly
 				((TNTBlock) state.getBlock()).explode(world, pos);
@@ -94,29 +86,22 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
+			if (tile.getActivityCooldown() == 0) {
 				List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
-				for (MobEntity living : list)
-				{
+				for (MobEntity living : list) {
 					living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
 					living.setFire(8);
 				}
 
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -124,34 +109,29 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.ignition.get() != -1)
-		{
+		if (ProjectEConfig.pedestalCooldown.ignition.get() != -1) {
 			list.add(new TranslationTextComponent("pe.ignition.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
-	
+
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		
-		if(world.isRemote) return false;
-		
+		if (world.isRemote) {
+			return false;
+		}
 		EntityFireProjectile fire = new EntityFireProjectile(player, world);
 		fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(fire);
-		
 		return true;
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
-	{
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
 		return true;
 	}
 }

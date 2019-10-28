@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -16,24 +17,18 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-import javax.annotation.Nonnull;
+public class CondenserMK2Tile extends CondenserTile {
 
-public class CondenserMK2Tile extends CondenserTile
-{
-	public CondenserMK2Tile()
-	{
+	public CondenserMK2Tile() {
 		super(ObjHandler.CONDENSER_MK2_TILE);
 	}
 
 	@Nonnull
-	protected IItemHandler createAutomationInventory()
-	{
-		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN)
-		{
+	protected IItemHandler createAutomationInventory() {
+		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN) {
 			@Nonnull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-			{
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
@@ -42,34 +37,27 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	protected ItemStackHandler createInput()
-	{
+	protected ItemStackHandler createInput() {
 		return new StackHandler(42);
 	}
 
 	@Override
-	protected ItemStackHandler createOutput()
-	{
+	protected ItemStackHandler createOutput() {
 		return new StackHandler(42);
 	}
 
 	@Override
-	protected void condense()
-	{
-		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc)
-		{
+	protected void condense() {
+		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc) {
 			pushStack();
 			forceExtractEmc(requiredEmc, EmcAction.EXECUTE);
 		}
 
-		if (this.hasSpace())
-		{
-			for (int i = 0; i < getInput().getSlots(); i++)
-			{
+		if (this.hasSpace()) {
+			for (int i = 0; i < getInput().getSlots(); i++) {
 				ItemStack stack = getInput().getStackInSlot(i);
 
-				if (stack.isEmpty())
-				{
+				if (stack.isEmpty()) {
 					continue;
 				}
 
@@ -81,31 +69,27 @@ public class CondenserMK2Tile extends CondenserTile
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt)
-	{
+	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		getOutput().deserializeNBT(nbt.getCompound("Output"));
 	}
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.put("Output", getOutput().serializeNBT());
 		return nbt;
 	}
 
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player) {
 		return new CondenserMK2Container(windowId, playerInv, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.condenserMk2.getTranslationKey());
 	}
 }

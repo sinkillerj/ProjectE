@@ -14,12 +14,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T>
-{
+public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T> {
+
 	protected final T container;
 
-	public AbstractCondenserScreen(T condenser, PlayerInventory playerInventory, ITextComponent title)
-	{
+	public AbstractCondenserScreen(T condenser, PlayerInventory playerInventory, ITextComponent title) {
 		super(condenser, playerInventory, title);
 		this.container = condenser;
 		this.xSize = 255;
@@ -29,31 +28,28 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected abstract ResourceLocation getTexture();
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
-    {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
-    }
-	
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
+	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
-		
+
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
-		
+
 		this.blit(x, y, 0, 0, xSize, ySize);
-		
+
 		int progress = container.getProgressScaled();
 		this.blit(x + 33, y + 10, 0, 235, progress, 10);
 	}
-	
+
 	@Override
-	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
-	{
+	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 		String emc = TransmutationEMCFormatter.formatEMC(toDisplay);
 		this.font.drawString(emc, 140, 10, 4210752);
@@ -81,30 +77,26 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 		}
 	}
 
-	public static class MK1 extends AbstractCondenserScreen<CondenserContainer>
-	{
-		public MK1(CondenserContainer condenser, PlayerInventory playerInventory, ITextComponent title)
-		{
+	public static class MK1 extends AbstractCondenserScreen<CondenserContainer> {
+
+		public MK1(CondenserContainer condenser, PlayerInventory playerInventory, ITextComponent title) {
 			super(condenser, playerInventory, title);
 		}
 
 		@Override
-		protected ResourceLocation getTexture()
-		{
+		protected ResourceLocation getTexture() {
 			return new ResourceLocation(PECore.MODID, "textures/gui/condenser.png");
 		}
 	}
 
-	public static class MK2 extends AbstractCondenserScreen<CondenserMK2Container>
-	{
-		public MK2(CondenserMK2Container condenser, PlayerInventory playerInventory, ITextComponent title)
-		{
+	public static class MK2 extends AbstractCondenserScreen<CondenserMK2Container> {
+
+		public MK2(CondenserMK2Container condenser, PlayerInventory playerInventory, ITextComponent title) {
 			super(condenser, playerInventory, title);
 		}
 
 		@Override
-		protected ResourceLocation getTexture()
-		{
+		protected ResourceLocation getTexture() {
 			return new ResourceLocation(PECore.MODID, "textures/gui/condenser_mk2.png");
 		}
 	}

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -23,21 +24,17 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import javax.annotation.Nonnull;
+public class ShowBagCMD {
 
-public class ShowBagCMD
-{
-	public static LiteralArgumentBuilder<CommandSource> register()
-	{
+	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("showbag")
 				.then(Commands.argument("color", new ColorArgument())
-					// todo 1.13 accept uuid for offline usage
-					.then(Commands.argument("target", EntityArgument.player())
-							.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target")))));
+						// todo 1.13 accept uuid for offline usage
+						.then(Commands.argument("target", EntityArgument.player())
+								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target")))));
 	}
 
-	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException
-	{
+	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException {
 		ServerPlayerEntity senderPlayer = ctx.getSource().asPlayer();
 		NetworkHooks.openGui(senderPlayer, createContainer(senderPlayer, player, color), b -> {
 			b.writeBoolean(false);
@@ -46,8 +43,7 @@ public class ShowBagCMD
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) throws CommandException
-	{
+	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) throws CommandException {
 		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
@@ -59,19 +55,15 @@ public class ShowBagCMD
 		return new INamedContainerProvider() {
 			@Nonnull
 			@Override
-			public ITextComponent getDisplayName()
-			{
+			public ITextComponent getDisplayName() {
 				return name;
 			}
 
 			@Override
-			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player)
-			{
-				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, false)
-				{
+			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player) {
+				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, false) {
 					@Override
-					public boolean canInteractWith(@Nonnull PlayerEntity player)
-					{
+					public boolean canInteractWith(@Nonnull PlayerEntity player) {
 						return target.isAlive() && !target.hasDisconnected();
 					}
 				};

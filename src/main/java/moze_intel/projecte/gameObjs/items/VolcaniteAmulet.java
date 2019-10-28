@@ -43,8 +43,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector
-{
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
+
 	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, AttributeModifier.Operation.ADDITION).setSaved(false);
 
 	public VolcaniteAmulet(Properties props) {
@@ -54,21 +54,18 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
-	{
+	public boolean hasContainerItem(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
-	{
+	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
-	{
+	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
@@ -76,16 +73,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		Direction sideHit = ctx.getFace();
 
 		if (!world.isRemote
-				&& PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), pos)
-				&& consumeFuel(player, stack, 32, true))
-		{
+			&& PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), pos)
+			&& consumeFuel(player, stack, 32, true)) {
 			TileEntity tile = world.getTileEntity(pos);
 
-			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent())
-			{
+			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
-			} else
-			{
+			} else {
 				placeLava(player, pos.offset(sideHit));
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
@@ -94,26 +88,21 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		return ActionResultType.SUCCESS;
 	}
 
-	private void placeLava(PlayerEntity player, BlockPos pos)
-	{
+	private void placeLava(PlayerEntity player, BlockPos pos) {
 		PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos, Blocks.LAVA.getDefaultState());
 	}
 
 	@Override
-	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player)
-	{
-		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
-		{
+	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
+		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 			player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 		}
 		return true;
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean par5)
-	{
-		if (invSlot > 8 || !(entity instanceof LivingEntity))
-		{
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean par5) {
+		if (invSlot > 8 || !(entity instanceof LivingEntity)) {
 			return;
 		}
 
@@ -124,32 +113,25 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
 
-		if (world.getBlockState(pos.down()).getBlock() == Blocks.LAVA && world.isAirBlock(pos))
-		{
-			if (!living.isSneaking())
-			{
+		if (world.getBlockState(pos.down()).getBlock() == Blocks.LAVA && world.isAirBlock(pos)) {
+			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
 			}
 
-			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
-			{
+			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
-		}
-		else if (!world.isRemote)
-		{
-			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST))
-			{
+		} else if (!world.isRemote) {
+			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
-	
+
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
@@ -159,8 +141,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, List<ITextComponent> list, @Nonnull ITooltipFlag flags)
-	{
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
 		list.add(new TranslationTextComponent("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		list.add(new TranslationTextComponent("pe.volcanite.tooltip2"));
 		list.add(new TranslationTextComponent("pe.volcanite.tooltip3"));
@@ -168,28 +149,22 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanite.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanite.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
+			if (tile.getActivityCooldown() == 0) {
 				world.getWorldInfo().setRainTime(0);
 				world.getWorldInfo().setThunderTime(0);
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
 
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanite.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -197,11 +172,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.volcanite.get() != -1)
-		{
+		if (ProjectEConfig.pedestalCooldown.volcanite.get() != -1) {
 			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
 		}
@@ -209,8 +182,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
-	{
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
 		return true;
 	}
 }

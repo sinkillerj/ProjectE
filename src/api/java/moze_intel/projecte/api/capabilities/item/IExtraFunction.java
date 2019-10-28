@@ -1,12 +1,11 @@
 package moze_intel.projecte.api.capabilities.item;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -16,13 +15,15 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
  */
-public interface IExtraFunction 
-{
+public interface IExtraFunction {
+
 	/**
 	 * Called serverside when the server receives a Extra Function key packet
-	 * @param stack The ItemStack performing this function
+	 *
+	 * @param stack  The ItemStack performing this function
 	 * @param player The player performing this function
-	 * @param hand The hand this stack was in, or null if the call was not from the player's hands
+	 * @param hand   The hand this stack was in, or null if the call was not from the player's hands
+	 *
 	 * @return Whether the operation succeeded
 	 */
 	boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nullable Hand hand);

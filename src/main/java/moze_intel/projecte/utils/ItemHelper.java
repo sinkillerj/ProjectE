@@ -1,10 +1,13 @@
 package moze_intel.projecte.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -15,38 +18,28 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary
- * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
+ * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
-public final class ItemHelper
-{
+public final class ItemHelper {
+
 	/**
 	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
 	 */
-	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
-	{
+	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
 		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
 	}
 
-	public static void compactInventory(IItemHandlerModifiable inventory)
-	{
+	public static void compactInventory(IItemHandlerModifiable inventory) {
 		List<ItemStack> temp = new ArrayList<>();
-		for (int i = 0; i < inventory.getSlots(); i++)
-		{
-			if (!inventory.getStackInSlot(i).isEmpty())
-			{
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			if (!inventory.getStackInSlot(i).isEmpty()) {
 				temp.add(inventory.getStackInSlot(i));
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
 
-		for (ItemStack s : temp)
-		{
+		for (ItemStack s : temp) {
 			ItemHandlerHelper.insertItemStacked(inventory, s, false);
 		}
 	}
@@ -54,18 +47,13 @@ public final class ItemHelper
 	/**
 	 * Compacts and sorts list of items, without regard for stack sizes
 	 */
-	public static void compactItemListNoStacksize(List<ItemStack> list)
-	{
-		for (int i = 0; i < list.size(); i++)
-		{
+	public static void compactItemListNoStacksize(List<ItemStack> list) {
+		for (int i = 0; i < list.size(); i++) {
 			ItemStack s = list.get(i);
-			if (!s.isEmpty())
-			{
-				for (int j = i + 1; j < list.size(); j++)
-				{
+			if (!s.isEmpty()) {
+				for (int j = i + 1; j < list.size(); j++) {
 					ItemStack s1 = list.get(j);
-					if (ItemHandlerHelper.canItemStacksStack(s, s1))
-					{
+					if (ItemHandlerHelper.canItemStacksStack(s, s1)) {
 						s.grow(s1.getCount());
 						list.set(j, ItemStack.EMPTY);
 					}
@@ -80,19 +68,15 @@ public final class ItemHelper
 	/**
 	 * Removes all empty tags from any items in the list.
 	 */
-	public static void removeEmptyTags(List<ItemStack> list)
-	{
-		for (ItemStack s : list)
-		{
-			if (!s.isEmpty() && s.hasTag() && s.getTag().isEmpty())
-			{
+	public static void removeEmptyTags(List<ItemStack> list) {
+		for (ItemStack s : list) {
+			if (!s.isEmpty() && s.hasTag() && s.getTag().isEmpty()) {
 				s.setTag(null);
 			}
 		}
 	}
 
-	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch)
-	{
+	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch) {
 		for (ItemStack stack : list) {
 			if (stack.isEmpty()) {
 				continue;
@@ -108,24 +92,19 @@ public final class ItemHelper
 	/**
 	 * Returns an ItemStack with stacksize 1.
 	 */
-	public static ItemStack getNormalizedStack(ItemStack stack)
-	{
+	public static ItemStack getNormalizedStack(ItemStack stack) {
 		ItemStack result = stack.copy();
 		result.setCount(1);
 		return result;
 	}
 
-	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack)
-	{
-		for (ItemStack invStack : inv)
-		{
-			if (invStack.isEmpty())
-			{
+	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack) {
+		for (ItemStack invStack : inv) {
+			if (invStack.isEmpty()) {
 				return true;
 			}
 
-			if (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize())
-			{
+			if (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize()) {
 				return true;
 			}
 		}
@@ -133,18 +112,16 @@ public final class ItemHelper
 		return false;
 	}
 
-	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy)
-	{
+	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy) {
 		final List<ItemStack> list = new ArrayList<>(toCopy.getSlots());
-		for (int i = 0; i < toCopy.getSlots(); i++)
-		{
+		for (int i = 0; i < toCopy.getSlots(); i++) {
 			list.add(toCopy.getStackInSlot(i));
 		}
 
-		return new IItemHandlerModifiable()
-		{
+		return new IItemHandlerModifiable() {
 			@Override
-			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {}
+			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+			}
 
 			@Override
 			public int getSlots() {
@@ -170,8 +147,7 @@ public final class ItemHelper
 			}
 
 			@Override
-			public int getSlotLimit(int slot)
-			{
+			public int getSlotLimit(int slot) {
 				return getStackInSlot(slot).getMaxStackSize();
 			}
 
@@ -182,37 +158,31 @@ public final class ItemHelper
 		};
 	}
 
-	public static boolean isDamageable(ItemStack stack)
-	{
+	public static boolean isDamageable(ItemStack stack) {
 		return stack.isDamageable();
 	}
 
 	private static final Tag<Block> FORGE_ORE_TAG = new BlockTags.Wrapper(new ResourceLocation("forge", "ores"));
-	public static boolean isOre(Block b)
-	{
+
+	public static boolean isOre(Block b) {
 		return FORGE_ORE_TAG.contains(b);
 	}
 
-	public static boolean isOre(Item i)
-	{
+	public static boolean isOre(Item i) {
 		return isOre(Block.getBlockFromItem(i));
 	}
 
-	public static BlockState stackToState(ItemStack stack)
-	{
-		if (stack.getItem() instanceof BlockItem)
-		{
+	public static BlockState stackToState(ItemStack stack) {
+		if (stack.getItem() instanceof BlockItem) {
 			return ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
 	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
-    public static boolean shouldDupeWithNBT(ItemStack stack)
-    {
-    	return NBT_WHITELIST_TAG.contains(stack.getItem());
-    }
+
+	public static boolean shouldDupeWithNBT(ItemStack stack) {
+		return NBT_WHITELIST_TAG.contains(stack.getItem());
+	}
 }

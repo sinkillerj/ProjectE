@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -14,30 +15,24 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
+public class TransmutationTablet extends ItemPE {
 
-public class TransmutationTablet extends ItemPE
-{
-	public TransmutationTablet(Properties props)
-	{
+	public TransmutationTablet(Properties props) {
 		super(props);
 	}
-	
+
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
-		if (!world.isRemote)
-		{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isRemote) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand), hand),
 					buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
 		}
-		
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
-	private static class ContainerProvider implements INamedContainerProvider
-	{
+	private static class ContainerProvider implements INamedContainerProvider {
+
 		private final ItemStack stack;
 		private final Hand hand;
 
@@ -47,15 +42,13 @@ public class TransmutationTablet extends ItemPE
 		}
 
 		@Override
-		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player)
-		{
+		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
 			return new TransmutationContainer(windowId, playerInventory, hand);
 		}
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName()
-		{
+		public ITextComponent getDisplayName() {
 			return stack.getDisplayName();
 		}
 	}

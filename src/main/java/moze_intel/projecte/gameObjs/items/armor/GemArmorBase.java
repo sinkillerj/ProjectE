@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -14,34 +16,24 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.function.Consumer;
+public abstract class GemArmorBase extends ArmorItem {
 
-public abstract class GemArmorBase extends ArmorItem
-{
-	public GemArmorBase(EquipmentSlotType armorType, Properties props)
-	{
+	public GemArmorBase(EquipmentSlotType armorType, Properties props) {
 		super(GemArmorMaterial.INSTANCE, armorType, props);
 	}
 
-	public static boolean hasAnyPiece(PlayerEntity player)
-	{
-		for (ItemStack i : player.inventory.armorInventory)
-		{
-			if (!i.isEmpty() && i.getItem() instanceof GemArmorBase)
-			{
+	public static boolean hasAnyPiece(PlayerEntity player) {
+		for (ItemStack i : player.inventory.armorInventory) {
+			if (!i.isEmpty() && i.getItem() instanceof GemArmorBase) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static boolean hasFullSet(PlayerEntity player)
-	{
-		for (ItemStack i : player.inventory.armorInventory)
-		{
-			if (!i.isEmpty() || !(i.getItem() instanceof GemArmorBase))
-			{
+	public static boolean hasFullSet(PlayerEntity player) {
+		for (ItemStack i : player.inventory.armorInventory) {
+			if (!i.isEmpty() || !(i.getItem() instanceof GemArmorBase)) {
 				return false;
 			}
 		}
@@ -55,8 +47,7 @@ public abstract class GemArmorBase extends ArmorItem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
-	{
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
 		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/gem_" + index + ".png";
 	}

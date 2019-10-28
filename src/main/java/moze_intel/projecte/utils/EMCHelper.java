@@ -20,19 +20,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 /**
- * Helper class for EMC.
- * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
+ * Helper class for EMC. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
-public final class EMCHelper
-{
+public final class EMCHelper {
+
 	/**
-	 * Consumes EMC from fuel items or Klein Stars
-	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
+	 * Consumes EMC from fuel items or Klein Stars Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
 	 */
-	public static long consumePlayerFuel(PlayerEntity player, long minFuel)
-	{
-		if (player.abilities.isCreativeMode)
-		{
+	public static long consumePlayerFuel(PlayerEntity player, long minFuel) {
+		if (player.abilities.isCreativeMode) {
 			return minFuel;
 		}
 
@@ -55,8 +51,7 @@ public final class EMCHelper
 			}
 		}
 
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
+		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 
 			if (stack.isEmpty()) {
@@ -71,24 +66,19 @@ public final class EMCHelper
 					return minFuel;
 				}
 			} else if (!metRequirement) {
-				if(FuelMapper.isStackFuel(stack))
-				{
+				if (FuelMapper.isStackFuel(stack)) {
 					long emc = getEmcValue(stack);
-					int toRemove = (int)Math.ceil((double) (minFuel - emcConsumed) / emc);
+					int toRemove = (int) Math.ceil((double) (minFuel - emcConsumed) / emc);
 
-					if (stack.getCount() >= toRemove)
-					{
+					if (stack.getCount() >= toRemove) {
 						map.put(i, toRemove);
 						emcConsumed += emc * toRemove;
 						metRequirement = true;
-					}
-					else
-					{
+					} else {
 						map.put(i, stack.getCount());
 						emcConsumed += emc * stack.getCount();
 
-						if (emcConsumed >= minFuel)
-						{
+						if (emcConsumed >= minFuel) {
 							metRequirement = true;
 						}
 					}
@@ -97,10 +87,8 @@ public final class EMCHelper
 			}
 		}
 
-		if (metRequirement)
-		{
-			for (Map.Entry<Integer, Integer> entry : map.entrySet())
-			{
+		if (metRequirement) {
+			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 				inv.extractItem(entry.getKey(), entry.getValue(), false);
 			}
 
@@ -111,46 +99,37 @@ public final class EMCHelper
 		return -1;
 	}
 
-	public static boolean doesItemHaveEmc(ItemStack stack)
-	{
+	public static boolean doesItemHaveEmc(ItemStack stack) {
 		return !stack.isEmpty() && doesItemHaveEmc(stack.getItem());
 	}
 
-	public static boolean doesItemHaveEmc(IItemProvider item)
-	{
+	public static boolean doesItemHaveEmc(IItemProvider item) {
 		return item != null && EMCMappingHandler.emc.containsKey(item.asItem());
 	}
 
-	public static long getEmcValue(IItemProvider item)
-	{
-		if (EMCMappingHandler.emc.containsKey(item.asItem()))
-		{
+	public static long getEmcValue(IItemProvider item) {
+		if (EMCMappingHandler.emc.containsKey(item.asItem())) {
 			return EMCMappingHandler.getEmcValue(item);
 		}
-
 		return 0;
 	}
 
 	/**
 	 * Does not consider stack size
 	 */
-	public static long getEmcValue(ItemStack stack)
-	{
-		if (stack.isEmpty() || !EMCMappingHandler.emc.containsKey(stack.getItem()))
-		{
+	public static long getEmcValue(ItemStack stack) {
+		if (stack.isEmpty() || !EMCMappingHandler.emc.containsKey(stack.getItem())) {
 			return 0;
 		}
 
-		if (ItemHelper.isDamageable(stack))
-		{
+		if (ItemHelper.isDamageable(stack)) {
 			long emc = EMCMappingHandler.getEmcValue(stack.getItem());
 
 			// maxDmg + 1 because vanilla lets you use the tool one more time
 			// when item damage == max damage (shows as Durability: 0 / max)
 			int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
 
-			if (relDamage <= 0)
-			{
+			if (relDamage <= 0) {
 				// This may happen when mods overflow their max damage or item damage.
 				// Don't use durability or enchants for emc calculation if this happens.
 				return emc;
@@ -158,8 +137,7 @@ public final class EMCHelper
 
 			long result = emc * relDamage;
 
-			if (result <= 0)
-			{
+			if (result <= 0) {
 				//Congratulations, big number is big.
 				return emc;
 			}
@@ -181,32 +159,25 @@ public final class EMCHelper
 				return emc;
 			}
 
-			if (result <= 0)
-			{
+			if (result <= 0) {
 				return 1;
 			}
 
 			return result;
-		}
-		else
-		{
+		} else {
 			return EMCMappingHandler.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
 		}
 	}
 
-	private static long getEnchantEmcBonus(ItemStack stack)
-	{
+	private static long getEnchantEmcBonus(ItemStack stack) {
 		long result = 0;
 
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
-		if (!enchants.isEmpty())
-		{
-			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet())
-			{
+		if (!enchants.isEmpty()) {
+			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
 				Enchantment ench = entry.getKey();
-				if (ench == null || ench.getRarity().getWeight() == 0)
-				{
+				if (ench == null || ench.getRarity().getWeight() == 0) {
 					continue;
 				}
 
@@ -217,25 +188,19 @@ public final class EMCHelper
 		return result;
 	}
 
-	public static long getEmcSellValue(ItemStack stack)
-	{
+	public static long getEmcSellValue(ItemStack stack) {
 		long originalValue = EMCHelper.getEmcValue(stack);
 
-		if (originalValue == 0)
-		{
+		if (originalValue == 0) {
 			return 0;
 		}
 
 		long emc = (long) Math.floor(originalValue * EMCMappingHandler.covalenceLoss);
 
-		if (emc < 1)
-		{
-			if (EMCMappingHandler.covalenceLossRounding)
-			{
+		if (emc < 1) {
+			if (EMCMappingHandler.covalenceLossRounding) {
 				emc = 1;
-			}
-			else
-			{
+			} else {
 				emc = 0;
 			}
 		}
@@ -243,10 +208,8 @@ public final class EMCHelper
 		return emc;
 	}
 
-	public static String getEmcSellString(ItemStack stack, int stackSize)
-	{
-		if (EMCMappingHandler.covalenceLoss == 1.0)
-		{
+	public static String getEmcSellString(ItemStack stack, int stackSize) {
+		if (EMCMappingHandler.covalenceLoss == 1.0) {
 			return " ";
 		}
 
@@ -255,10 +218,8 @@ public final class EMCHelper
 		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
-	public static long getKleinStarMaxEmc(ItemStack stack)
-	{
-		if (stack.getItem() instanceof KleinStar)
-		{
+	public static long getKleinStarMaxEmc(ItemStack stack) {
+		if (stack.getItem() instanceof KleinStar) {
 			return Constants.MAX_KLEIN_EMC[((KleinStar) stack.getItem()).tier.ordinal()];
 		}
 		return 0;
@@ -276,28 +237,29 @@ public final class EMCHelper
 	}
 
 	public static long getEMCPerDurability(ItemStack stack) {
-		if(stack.isEmpty())
+		if (stack.isEmpty()) {
 			return 0;
+		}
 
-		if(stack.isDamageable()){
+		if (stack.isDamageable()) {
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setDamage(0);
-			long emc = (long)Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
+			long emc = (long) Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;
 	}
 
 	/**
-	 * Adds the given amount to the amount of unprocessed EMC the stack has.
-	 * The amount returned should be used for figuring out how much EMC actually gets removed.
-	 * While the remaining fractional EMC will be stored in UnprocessedEMC.
-	 * @param stack The stack to set the UnprocessedEMC tag to.
+	 * Adds the given amount to the amount of unprocessed EMC the stack has. The amount returned should be used for figuring out how much EMC actually gets removed. While
+	 * the remaining fractional EMC will be stored in UnprocessedEMC.
+	 *
+	 * @param stack  The stack to set the UnprocessedEMC tag to.
 	 * @param amount The partial amount of EMC to add with the current UnprocessedEMC
+	 *
 	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
 	 */
-	public static long removeFractionalEMC(ItemStack stack, double amount)
-	{
+	public static long removeFractionalEMC(ItemStack stack, double amount) {
 		double unprocessedEMC = stack.getOrCreateTag().getDouble("UnprocessedEMC");
 		unprocessedEMC += amount;
 		long toRemove = (long) unprocessedEMC;

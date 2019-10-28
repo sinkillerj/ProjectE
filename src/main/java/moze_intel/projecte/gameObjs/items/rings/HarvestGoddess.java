@@ -30,98 +30,80 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 
-public class HarvestGoddess extends PEToggleItem implements IPedestalItem
-{
+public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
+
 	public HarvestGoddess(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
-	
+
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
-	{
-		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
-		{
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		
+
 		super.inventoryTick(stack, world, entity, slot, held);
-		
+
 		PlayerEntity player = (PlayerEntity) entity;
 
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			long storedEmc = getEmc(stack);
-			
-			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true))
-			{
+
+			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
-			}
-			else
-			{
+			} else {
 				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
-		}
-		else
-		{
+		} else {
 			WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
-	{
+	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
 
-		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem()))
-		{
+		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem())) {
 			return ActionResultType.FAIL;
 		}
-		
-		if (player.isSneaking())
-		{
+
+		if (player.isSneaking()) {
 			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.BONE_MEAL, 4);
 
-			if (obj == null) 
-			{
+			if (obj == null) {
 				return ActionResultType.FAIL;
 			}
-			
+
 			ItemStack boneMeal = (ItemStack) obj[1];
 
-			if (!boneMeal.isEmpty() && useBoneMeal(world, ctx.getPos()))
-			{
+			if (!boneMeal.isEmpty() && useBoneMeal(world, ctx.getPos())) {
 				player.inventory.decrStackSize((Integer) obj[0], 4);
 				player.container.detectAndSendChanges();
 				return ActionResultType.SUCCESS;
 			}
-			
+
 			return ActionResultType.FAIL;
 		}
-		
+
 		return plantSeeds(world, player, ctx.getPos()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
 	}
-	
-	private boolean useBoneMeal(World world, BlockPos pos)
-	{
+
+	private boolean useBoneMeal(World world, BlockPos pos) {
 		boolean result = false;
 
-		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15)))
-		{
+		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15))) {
 			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
-			if (crop instanceof IGrowable)
-			{
+			if (crop instanceof IGrowable) {
 				IGrowable growable = (IGrowable) crop;
 
-				if (growable.canUseBonemeal(world, world.rand, currentPos, state))
-				{
-					if (!result)
-					{
+				if (growable.canUseBonemeal(world, world.rand, currentPos, state)) {
+					if (!result) {
 						result = true;
 					}
 
@@ -131,56 +113,45 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem
 		}
 		return result;
 	}
-	
-	private boolean plantSeeds(World world, PlayerEntity player, BlockPos pos)
-	{
+
+	private boolean plantSeeds(World world, PlayerEntity player, BlockPos pos) {
 		boolean result = false;
-		
+
 		List<StackWithSlot> seeds = getAllSeeds(player.inventory.mainInventory);
-		
-		if (seeds.isEmpty())
-		{
+
+		if (seeds.isEmpty()) {
 			return false;
 		}
 
-		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-8, 0, -8), pos.add(8, 0, 8)))
-		{
+		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-8, 0, -8), pos.add(8, 0, 8))) {
 			BlockState state = world.getBlockState(currentPos);
 
-			if (world.isAirBlock(currentPos))
-			{
+			if (world.isAirBlock(currentPos)) {
 				continue;
 			}
 
-			for (int i = 0; i < seeds.size(); i++)
-			{
+			for (int i = 0; i < seeds.size(); i++) {
 				StackWithSlot s = seeds.get(i);
 				IPlantable plant;
 
-				if (s.stack.getItem() instanceof IPlantable)
-				{
+				if (s.stack.getItem() instanceof IPlantable) {
 					plant = (IPlantable) s.stack.getItem();
-				}
-				else
-				{
+				} else {
 					plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
 				}
 
-				if (state.getBlock().canSustainPlant(state, world, currentPos, Direction.UP, plant) && world.isAirBlock(currentPos.up()))
-				{
+				if (state.getBlock().canSustainPlant(state, world, currentPos, Direction.UP, plant) && world.isAirBlock(currentPos.up())) {
 					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
 					player.inventory.decrStackSize(s.slot, 1);
 					player.container.detectAndSendChanges();
 
 					s.stack.shrink(1);
 
-					if (s.stack.isEmpty())
-					{
+					if (s.stack.isEmpty()) {
 						seeds.remove(i);
 					}
 
-					if (!result)
-					{
+					if (!result) {
 						result = true;
 					}
 				}
@@ -188,73 +159,59 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem
 		}
 		return result;
 	}
-	
-	private List<StackWithSlot> getAllSeeds(NonNullList<ItemStack> inv)
-	{
+
+	private List<StackWithSlot> getAllSeeds(NonNullList<ItemStack> inv) {
 		List<StackWithSlot> result = new ArrayList<>();
-		
-		for (int i = 0; i < inv.size(); i++)
-		{
+
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.get(i);
-			
-			if (!stack.isEmpty())
-			{
-				if (stack.getItem() instanceof IPlantable)
-				{
+
+			if (!stack.isEmpty()) {
+				if (stack.getItem() instanceof IPlantable) {
 					result.add(new StackWithSlot(stack, i));
 					continue;
 				}
-				
+
 				Block block = Block.getBlockFromItem(stack.getItem());
-				
-				if (block instanceof IPlantable)
-				{
+
+				if (block instanceof IPlantable) {
 					result.add(new StackWithSlot(stack, i));
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
-	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int minAmount)
-	{
+
+	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int minAmount) {
 		Object[] obj = new Object[2];
-		
-		for (int i = 0; i < inv.size(); i++)
-		{
+
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.get(i);
-			
-			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item)
-			{
+
+			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item) {
 				obj[0] = i;
 				obj[1] = stack;
 				return obj;
 			}
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvest.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvest.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
+			if (tile.getActivityCooldown() == 0) {
 				WorldHelper.growNearbyRandomly(true, world, pos, null);
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.harvest.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -262,11 +219,9 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1)
-		{
+		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1) {
 			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())).applyTextStyle(TextFormatting.BLUE));
@@ -274,13 +229,12 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem
 		return list;
 	}
 
-	private static class StackWithSlot
-	{
+	private static class StackWithSlot {
+
 		public final int slot;
 		public final ItemStack stack;
-		
-		public StackWithSlot(ItemStack stack, int slot) 
-		{
+
+		public StackWithSlot(ItemStack stack, int slot) {
 			this.stack = stack.copy();
 			this.slot = slot;
 		}

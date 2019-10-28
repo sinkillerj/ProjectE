@@ -32,15 +32,13 @@ public interface IItemMode extends IModeChanger {
 	}
 
 	@Override
-	default byte getMode(@Nonnull ItemStack stack)
-	{
+	default byte getMode(@Nonnull ItemStack stack) {
 		//TODO: Should this just be stack.getOrCreateTag().getByte
 		return stack.hasTag() ? stack.getTag().getByte(getModeTag()) : 0;
 	}
 
 	@Override
-	default boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	default boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		byte numModes = getModeCount();
 		if (numModes < 2) {
 			//If we have no modes or we are set to the only mode fail
@@ -54,8 +52,7 @@ public interface IItemMode extends IModeChanger {
 		return true;
 	}
 
-	default ITextComponent getToolTip(ItemStack stack)
-	{
+	default ITextComponent getToolTip(ItemStack stack) {
 		ITextComponent root = new TranslationTextComponent("pe.item.mode");
 		ITextComponent mode = new TranslationTextComponent(getModeTranslationKey(stack)).setStyle(new Style().setColor(TextFormatting.AQUA));
 		return root.appendText(": ").appendSibling(mode);

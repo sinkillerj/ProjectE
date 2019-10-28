@@ -47,27 +47,23 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
-{
+public class RMFurnaceTile extends TileEmc implements INamedContainerProvider {
+
 	private static final long EMC_CONSUMPTION = 2;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
-	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN)
-	{
+	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-		{
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 			return !getSmeltingResult(stack).isEmpty() ? super.insertItem(slot, stack, simulate) : stack;
 		}
 	});
-	private final LazyOptional<IItemHandler> automationFuel = LazyOptional.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN)
-	{
+	private final LazyOptional<IItemHandler> automationFuel = LazyOptional.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN) {
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-		{
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 			return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 		}
 	});
@@ -89,14 +85,12 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
-	
-	public RMFurnaceTile()
-	{
+
+	public RMFurnaceTile() {
 		this(ObjHandler.RM_FURNACE_TILE, 3, 4);
 	}
 
-	RMFurnaceTile(TileEntityType<?> type, int ticksBeforeSmelt, int efficiencyBonus)
-	{
+	RMFurnaceTile(TileEntityType<?> type, int ticksBeforeSmelt, int efficiencyBonus) {
 		super(type, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
@@ -113,21 +107,18 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 	}
 
 	@Override
-	public void setPos(@Nonnull BlockPos pos)
-	{
+	public void setPos(@Nonnull BlockPos pos) {
 		super.setPos(pos);
 		dummyFurnace.setPos(pos);
 	}
 
 	@Override
-	public void setWorld(@Nonnull World world)
-	{
+	public void setWorld(@Nonnull World world) {
 		super.setWorld(world);
 		dummyFurnace.setWorld(world);
 	}
 
-	protected int getInvSize()
-	{
+	protected int getInvSize() {
 		return 13;
 	}
 
@@ -135,29 +126,24 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 		return 1F;
 	}
 
-	public IItemHandler getFuel()
-	{
+	public IItemHandler getFuel() {
 		return fuelInv;
 	}
-	
-	private ItemStack getFuelItem()
-	{
+
+	private ItemStack getFuelItem() {
 		return fuelInv.getStackInSlot(0);
 	}
 
-	public IItemHandler getInput()
-	{
+	public IItemHandler getInput() {
 		return inputInventory;
 	}
 
-	public IItemHandler getOutput()
-	{
+	public IItemHandler getOutput() {
 		return outputInventory;
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		super.remove();
 		automationInput.invalidate();
 		automationOutput.invalidate();
@@ -167,21 +153,18 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
-	{
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			if (side == null)
-			{
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			if (side == null) {
 				return joined.cast();
-			}
-			else
-			{
-				switch (side)
-				{
-					case UP: return automationInput.cast();
-					case DOWN: return automationOutput.cast();
-					default: return automationSides.cast();
+			} else {
+				switch (side) {
+					case UP:
+						return automationInput.cast();
+					case DOWN:
+						return automationOutput.cast();
+					default:
+						return automationSides.cast();
 				}
 			}
 		}
@@ -191,18 +174,15 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 
 	// todo 1.13 modernize vanillacopy
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		boolean flag = furnaceBurnTime > 0;
 		boolean flag1 = false;
-		
-		if (furnaceBurnTime > 0)
-		{
+
+		if (furnaceBurnTime > 0) {
 			--furnaceBurnTime;
 		}
-		
-		if (!this.getWorld().isRemote)
-		{
+
+		if (!this.getWorld().isRemote) {
 			pullFromInventories();
 			ItemHelper.compactInventory(inputInventory);
 			ItemStack fuelItem = getFuelItem();
@@ -216,59 +196,50 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 					}
 				}
 			}
-			
+
 			if (this.getStoredEmc() >= EMC_CONSUMPTION) {
 				furnaceBurnTime = 1;
 				forceExtractEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
 			}
-			
-			if (furnaceBurnTime == 0 && canSmelt())
-			{
+
+			if (furnaceBurnTime == 0 && canSmelt()) {
 				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(fuelItem);
-			
-				if (furnaceBurnTime > 0)
-				{
+
+				if (furnaceBurnTime > 0) {
 					flag1 = true;
-					
-					if (!fuelItem.isEmpty())
-					{
+
+					if (!fuelItem.isEmpty()) {
 						ItemStack copy = fuelItem.copy();
 
 						fuelItem.shrink(1);
 
-						if (fuelItem.isEmpty())
-						{
+						if (fuelItem.isEmpty()) {
 							fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
 						}
 					}
 				}
 			}
-		
-			if (furnaceBurnTime > 0 && canSmelt())
-			{
+
+			if (furnaceBurnTime > 0 && canSmelt()) {
 				++furnaceCookTime;
-			
-				if (furnaceCookTime == ticksBeforeSmelt)
-				{
+
+				if (furnaceCookTime == ticksBeforeSmelt) {
 					furnaceCookTime = 0;
 					smeltItem();
 					flag1 = true;
 				}
 			}
 
-			if (flag != furnaceBurnTime > 0)
-			{
+			if (flag != furnaceBurnTime > 0) {
 				flag1 = true;
 				BlockState state = world.getBlockState(pos);
-				
-				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace)
-				{
+
+				if (!this.getWorld().isRemote && state.getBlock() instanceof MatterFurnace) {
 					getWorld().setBlockState(pos, state.with(MatterFurnace.LIT, furnaceBurnTime > 0));
 				}
 			}
 
-			if (flag1)
-			{
+			if (flag1) {
 				markDirty();
 			}
 
@@ -276,139 +247,120 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 			pushToInventories();
 		}
 	}
-	
-	public boolean isBurning()
-	{
+
+	public boolean isBurning() {
 		return furnaceBurnTime > 0;
 	}
 
-	private void pullFromInventories()
-	{
+	private void pullFromInventories() {
 		TileEntity tile = this.getWorld().getTileEntity(pos.up());
-		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity)
+		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity) {
 			return;
+		}
 		LazyOptional<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
 		IItemHandler handler;
 
-		if (!handlerOpt.isPresent())
-		{
-			if (tile instanceof ISidedInventory)
-			{
+		if (!handlerOpt.isPresent()) {
+			if (tile instanceof ISidedInventory) {
 				handler = new SidedInvWrapper((ISidedInventory) tile, Direction.DOWN);
-			} else if (tile instanceof IInventory)
-			{
+			} else if (tile instanceof IInventory) {
 				handler = new InvWrapper((IInventory) tile);
-			} else
-			{
+			} else {
 				return;
 			}
-		} else
-		{
+		} else {
 			handler = handlerOpt.orElseThrow(NullPointerException::new);
 		}
 
-		for (int i = 0; i < handler.getSlots(); i++)
-		{
+		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
-			if (extractTest.isEmpty())
+			if (extractTest.isEmpty()) {
 				continue;
+			}
 
 			IItemHandler targetInv = extractTest.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent() || AbstractFurnaceTileEntity.isFuel(extractTest)
-					? fuelInv : inputInventory;
+									 ? fuelInv : inputInventory;
 
 			ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);
 			int successfullyTransferred = extractTest.getCount() - remainderTest.getCount();
 
-			if (successfullyTransferred > 0)
-			{
+			if (successfullyTransferred > 0) {
 				ItemStack toInsert = handler.extractItem(i, successfullyTransferred, false);
 				ItemStack result = ItemHandlerHelper.insertItemStacked(targetInv, toInsert, false);
 				assert result.isEmpty();
 			}
 		}
 	}
-	
-	private void pushToInventories()
-	{
+
+	private void pushToInventories() {
 		// todo push to others
 	}
 
-	public ItemStack getSmeltingResult(ItemStack in)
-	{
+	public ItemStack getSmeltingResult(ItemStack in) {
 		dummyFurnace.setInventorySlotContents(0, in);
 		Optional<FurnaceRecipe> recipe = getWorld().getRecipeManager().getRecipe(IRecipeType.SMELTING, dummyFurnace, world);
 		dummyFurnace.clear();
 
 		return recipe.map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
 	}
-	
-	private void smeltItem()
-	{
+
+	private void smeltItem() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
 
-		if (world.rand.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem()))
-		{
+		if (world.rand.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
 			smeltResult.grow(smeltResult.getCount());
 		}
 
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
-		
+
 		toSmelt.shrink(1);
 	}
-	
-	private boolean canSmelt() 
-	{
+
+	private boolean canSmelt() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
-		
-		if (toSmelt.isEmpty())
-		{
+
+		if (toSmelt.isEmpty()) {
 			return false;
 		}
-		
+
 		ItemStack smeltResult = getSmeltingResult(toSmelt);
-		if (smeltResult.isEmpty())
-		{
+		if (smeltResult.isEmpty()) {
 			return false;
 		}
-		
+
 		ItemStack currentSmelted = outputInventory.getStackInSlot(outputInventory.getSlots() - 1);
-		
-		if (currentSmelted.isEmpty())
-		{
+
+		if (currentSmelted.isEmpty()) {
 			return true;
 		}
-		if (!smeltResult.isItemEqual(currentSmelted))
-		{
+		if (!smeltResult.isItemEqual(currentSmelted)) {
 			return false;
 		}
-		
+
 		int result = currentSmelted.getCount() + smeltResult.getCount();
 		return result <= currentSmelted.getMaxStackSize();
 	}
-	
-	private int getItemBurnTime(ItemStack stack)
-	{
+
+	private int getItemBurnTime(ItemStack stack) {
 		return (ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt) / 200 * efficiencyBonus;
 	}
-	
-	public int getCookProgressScaled(int value)
-	{
+
+	public int getCookProgressScaled(int value) {
 		return (furnaceCookTime + (isBurning() && canSmelt() ? 1 : 0)) * value / ticksBeforeSmelt;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
-	public int getBurnTimeRemainingScaled(int value)
-	{
-		if (this.currentItemBurnTime == 0)
+	public int getBurnTimeRemainingScaled(int value) {
+		if (this.currentItemBurnTime == 0) {
 			this.currentItemBurnTime = ticksBeforeSmelt;
+		}
 
 		return furnaceBurnTime * value / currentItemBurnTime;
 	}
-	
+
 	@Override
-	public void read(@Nonnull CompoundNBT nbt)
-	{
+	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
@@ -417,11 +369,10 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 		fuelInv.deserializeNBT(nbt.getCompound("Fuel"));
 		currentItemBurnTime = getItemBurnTime(getFuelItem());
 	}
-	
+
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.putShort("BurnTime", (short) furnaceBurnTime);
 		nbt.putShort("CookTime", (short) furnaceCookTime);
@@ -433,15 +384,13 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 
 	@Nullable
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
 		return new RMFurnaceContainer(ObjHandler.RM_FURNACE_CONTAINER, windowId, inv, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.rmFurnaceOff.getTranslationKey());
 	}
 }

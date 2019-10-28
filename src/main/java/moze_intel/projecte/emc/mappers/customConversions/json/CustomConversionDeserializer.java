@@ -7,18 +7,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
-public class CustomConversionDeserializer implements JsonDeserializer<CustomConversion>
-{
+public class CustomConversionDeserializer implements JsonDeserializer<CustomConversion> {
+
 	@Override
-	public CustomConversion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-	{
+	public CustomConversion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		CustomConversion out = new CustomConversion();
 		JsonObject o = json.getAsJsonObject();
 		boolean foundOutput = false, foundIngredients = false;
@@ -26,8 +24,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 			JsonElement element = entry.getValue();
 			if ("count".equalsIgnoreCase(entry.getKey())) {
 				out.count = element.getAsInt();
-			}
-			else if ("output".equals(entry.getKey())) {
+			} else if ("output".equals(entry.getKey())) {
 				if (foundOutput) {
 					throw new JsonParseException("Multiple values for output field");
 				}
@@ -46,7 +43,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 					}
 					out.ingredients = outMap;
 				} else if (element.isJsonObject()) {
-					out.ingredients = CustomConversionMapper.GSON.fromJson(element, new TypeToken<Map<NormalizedSimpleStack, Integer>>(){}.getType());
+					out.ingredients = CustomConversionMapper.GSON.fromJson(element, new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType());
 				} else {
 					throw new JsonParseException("Could not parse ingredients!");
 				}

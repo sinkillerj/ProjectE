@@ -22,46 +22,38 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class LifeStone extends PEToggleItem implements IPedestalItem
-{
+public class LifeStone extends PEToggleItem implements IPedestalItem {
+
 	public LifeStone(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
-	
+
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
-	{
-		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity))
-		{
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		
+
 		super.inventoryTick(stack, world, entity, slot, held);
-		
+
 		PlayerEntity player = (PlayerEntity) entity;
 
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
-			if (!consumeFuel(player, stack, 2*64, false))
-			{
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+			if (!consumeFuel(player, stack, 2 * 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
-			}
-			else
-			{
+			} else {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
-					if (player.getFoodStats().needFood() && timers.canFeed())
-					{
+					if (player.getFoodStats().needFood() && timers.canFeed()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 						player.getFoodStats().addStats(2, 10);
 						removeEmc(stack, 64);
 					}
 
 					timers.activateHeal();
-					if (player.getHealth() < player.getMaxHealth() && timers.canHeal())
-					{
+					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
@@ -72,38 +64,29 @@ public class LifeStone extends PEToggleItem implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.life.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.life.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
+			if (tile.getActivityCooldown() == 0) {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 
-				for (ServerPlayerEntity player : players)
-				{
-					if (player.getHealth() < player.getMaxHealth())
-					{
+				for (ServerPlayerEntity player : players) {
+					if (player.getHealth() < player.getMaxHealth()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.heal(1.0F); // 1/2 heart
 					}
-					if (player.getFoodStats().needFood())
-					{
+					if (player.getFoodStats().needFood()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
 
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.life.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -111,11 +94,9 @@ public class LifeStone extends PEToggleItem implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.life.get() != -1)
-		{
+		if (ProjectEConfig.pedestalCooldown.life.get() != -1) {
 			list.add(new TranslationTextComponent("pe.life.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.life.get())).applyTextStyle(TextFormatting.BLUE));
 		}

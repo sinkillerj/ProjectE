@@ -1,7 +1,19 @@
 package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.blocks.*;
+import moze_intel.projecte.gameObjs.blocks.AlchemicalChest;
+import moze_intel.projecte.gameObjs.blocks.Collector;
+import moze_intel.projecte.gameObjs.blocks.Condenser;
+import moze_intel.projecte.gameObjs.blocks.CondenserMK2;
+import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
+import moze_intel.projecte.gameObjs.blocks.InterdictionTorchWall;
+import moze_intel.projecte.gameObjs.blocks.MatterBlock;
+import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
+import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
+import moze_intel.projecte.gameObjs.blocks.Pedestal;
+import moze_intel.projecte.gameObjs.blocks.Relay;
+import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -55,7 +67,6 @@ import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.MercurialEye;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.items.RepairTalisman;
-import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.items.TransmutationTablet;
 import moze_intel.projecte.gameObjs.items.VolcaniteAmulet;
@@ -76,6 +87,7 @@ import moze_intel.projecte.gameObjs.items.rings.LifeStone;
 import moze_intel.projecte.gameObjs.items.rings.MindStone;
 import moze_intel.projecte.gameObjs.items.rings.SWRG;
 import moze_intel.projecte.gameObjs.items.rings.SoulStone;
+import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.gameObjs.items.rings.Zero;
 import moze_intel.projecte.gameObjs.items.tools.DarkAxe;
@@ -112,9 +124,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
+import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
@@ -128,8 +146,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ObjHandler
-{
+public class ObjHandler {
+
 	private static final ItemGroup cTab = new ItemGroup(PECore.MODID) {
 		@Override
 		public ItemStack createIcon() {
@@ -257,9 +275,11 @@ public class ObjHandler
 	public static final Item everTide = new EvertideAmulet(ibNoStack()).setRegistryName(PECore.MODID, "evertide_amulet");
 	public static final Item volcanite = new VolcaniteAmulet(ibNoStack()).setRegistryName(PECore.MODID, "volcanite_amulet");
 	public static final Item eternalDensity = new GemEternalDensity(ibNoStack()).setRegistryName(PECore.MODID, "gem_of_eternal_density");
-	public static final Item dRod1 = new DiviningRod(ibNoStack(), new String[] { "pe.diving_rod.mode.range.3" }).setRegistryName(PECore.MODID, "divining_rod_1");
-	public static final Item dRod2 = new DiviningRod(ibNoStack(), new String[]{ "pe.diving_rod.mode.range.3", "pe.diving_rod.mode.range.16" }).setRegistryName(PECore.MODID, "divining_rod_2");
-	public static final Item dRod3 = new DiviningRod(ibNoStack(), new String[] { "pe.diving_rod.mode.range.3", "pe.diving_rod.mode.range.16", "pe.diving_rod.mode.range.64" }).setRegistryName(PECore.MODID, "divining_rod_3");
+	public static final Item dRod1 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3"}).setRegistryName(PECore.MODID, "divining_rod_1");
+	public static final Item dRod2 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3",
+																			   "pe.diving_rod.mode.range.16"}).setRegistryName(PECore.MODID, "divining_rod_2");
+	public static final Item dRod3 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3", "pe.diving_rod.mode.range.16",
+																			   "pe.diving_rod.mode.range.64"}).setRegistryName(PECore.MODID, "divining_rod_3");
 	public static final Item mercEye = new MercurialEye(ibNoStack()).setRegistryName(PECore.MODID, "mercurial_eye");
 	public static final Item voidRing = new VoidRing(ibNoStack()).setRegistryName(PECore.MODID, "void_ring");
 	public static final Item arcana = new Arcana(ibNoStack().rarity(Rarity.RARE)).setRegistryName(PECore.MODID, "arcana_ring");
@@ -361,19 +381,16 @@ public class ObjHandler
 	public static final ContainerType<CollectorMK3Container> COLLECTOR_MK3_CONTAINER = IForgeContainerType.create(CollectorMK3Container::fromNetwork);
 	public static final ContainerType<MercurialEyeContainer> MERCURIAL_EYE_CONTAINER = IForgeContainerType.create(MercurialEyeContainer::fromNetwork);
 
-	private static Item.Properties ib()
-	{
+	private static Item.Properties ib() {
 		return new Item.Properties().group(cTab);
 	}
-	
-	private static Item.Properties ibNoStack()
-	{
+
+	private static Item.Properties ibNoStack() {
 		return ib().maxStackSize(1);
 	}
 
 	@SubscribeEvent
-	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> evt)
-	{
+	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> evt) {
 		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
 		r.register(RM_FURNACE_CONTAINER.setRegistryName(rmFurnaceOff.getRegistryName()));
 		r.register(DM_FURNACE_CONTAINER.setRegistryName(dmFurnaceOff.getRegistryName()));
@@ -408,8 +425,7 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt)
-	{
+	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt) {
 		IForgeRegistry<IRecipeSerializer<?>> r = evt.getRegistry();
 		r.register(COVALENCE_REPAIR_RECIPE_SERIALIZER
 				.setRegistryName(new ResourceLocation(PECore.MODID, "covalence_repair")));
@@ -420,8 +436,7 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerBlocks(RegistryEvent.Register<Block> evt)
-	{
+	public static void registerBlocks(RegistryEvent.Register<Block> evt) {
 		IForgeRegistry<Block> r = evt.getRegistry();
 		r.register(alchChest);
 		r.register(collectorMK1);
@@ -448,8 +463,7 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> evt)
-	{
+	public static void registerItems(RegistryEvent.Register<Item> evt) {
 		IForgeRegistry<Item> r = evt.getRegistry();
 		registerObj(r, new BlockItem(alchChest, ib()), alchChest.getRegistryName());
 		registerObj(r, new BlockItem(collectorMK1, ib()), collectorMK1.getRegistryName());
@@ -474,10 +488,22 @@ public class ObjHandler
 		registerObj(r, new BlockItem(transmuteStone, ib()), transmuteStone.getRegistryName());
 
 		r.register(philosStone);
-		r.register(alchBagWhite); r.register(alchBagOrange); r.register(alchBagMagenta); r.register(alchBagLightBlue);
-		r.register(alchBagYellow); r.register(alchBagLime); r.register(alchBagPink); r.register(alchBagGray);
-		r.register(alchBagLightGray); r.register(alchBagCyan); r.register(alchBagPurple); r.register(alchBagBlue);
-		r.register(alchBagBrown); r.register(alchBagGreen); r.register(alchBagRed); r.register(alchBagBlack);
+		r.register(alchBagWhite);
+		r.register(alchBagOrange);
+		r.register(alchBagMagenta);
+		r.register(alchBagLightBlue);
+		r.register(alchBagYellow);
+		r.register(alchBagLime);
+		r.register(alchBagPink);
+		r.register(alchBagGray);
+		r.register(alchBagLightGray);
+		r.register(alchBagCyan);
+		r.register(alchBagPurple);
+		r.register(alchBagBlue);
+		r.register(alchBagBrown);
+		r.register(alchBagGreen);
+		r.register(alchBagRed);
+		r.register(alchBagBlack);
 		r.register(repairTalisman);
 		r.register(kleinStarEin);
 		r.register(kleinStarZwei);
@@ -567,8 +593,7 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt)
-	{
+	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt) {
 		evt.getRegistry().register(WATER_PROJECTILE.setRegistryName(PECore.MODID, "water_projectile"));
 		evt.getRegistry().register(LAVA_PROJECTILE.setRegistryName(PECore.MODID, "lava_projectile"));
 		evt.getRegistry().register(MOB_RANDOMIZER.setRegistryName(PECore.MODID, "mob_randomizer"));
@@ -581,8 +606,7 @@ public class ObjHandler
 	}
 
 	@SubscribeEvent
-	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt)
-	{
+	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> evt) {
 		evt.getRegistry().register(ALCH_CHEST_TILE);
 		evt.getRegistry().register(INTERDICTION_TORCH_TILE);
 		evt.getRegistry().register(CONDENSER_TILE);
@@ -598,32 +622,45 @@ public class ObjHandler
 		evt.getRegistry().register(DM_PEDESTAL_TILE);
 	}
 
-	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name)
-	{
+	private static <V extends IForgeRegistryEntry<V>> void registerObj(IForgeRegistry<V> registry, IForgeRegistryEntry<V> o, ResourceLocation name) {
 		registry.register(o.setRegistryName(name));
 	}
 
-	public static Item getBag(DyeColor color)
-	{
-		switch (color)
-		{
+	public static Item getBag(DyeColor color) {
+		switch (color) {
 			default:
-			case WHITE: return alchBagWhite;
-			case ORANGE: return alchBagOrange;
-			case MAGENTA: return alchBagMagenta;
-			case LIGHT_BLUE: return alchBagLightBlue;
-			case YELLOW: return alchBagYellow;
-			case LIME: return alchBagLime;
-			case PINK: return alchBagPink;
-			case GRAY: return alchBagGray;
-			case LIGHT_GRAY: return alchBagLightGray;
-			case CYAN: return alchBagCyan;
-			case PURPLE: return alchBagPurple;
-			case BLUE: return alchBagBlue;
-			case BROWN: return alchBagBrown;
-			case GREEN: return alchBagGreen;
-			case RED: return alchBagRed;
-			case BLACK: return alchBagBlack;
+			case WHITE:
+				return alchBagWhite;
+			case ORANGE:
+				return alchBagOrange;
+			case MAGENTA:
+				return alchBagMagenta;
+			case LIGHT_BLUE:
+				return alchBagLightBlue;
+			case YELLOW:
+				return alchBagYellow;
+			case LIME:
+				return alchBagLime;
+			case PINK:
+				return alchBagPink;
+			case GRAY:
+				return alchBagGray;
+			case LIGHT_GRAY:
+				return alchBagLightGray;
+			case CYAN:
+				return alchBagCyan;
+			case PURPLE:
+				return alchBagPurple;
+			case BLUE:
+				return alchBagBlue;
+			case BROWN:
+				return alchBagBrown;
+			case GREEN:
+				return alchBagGreen;
+			case RED:
+				return alchBagRed;
+			case BLACK:
+				return alchBagBlack;
 		}
 	}
 }

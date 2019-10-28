@@ -8,20 +8,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotOutput extends SlotItemHandler
-{
+public class SlotOutput extends SlotItemHandler {
+
 	private final TransmutationInventory inv;
-	
-	public SlotOutput(TransmutationInventory inv, int par2, int par3, int par4)
-	{
+
+	public SlotOutput(TransmutationInventory inv, int par2, int par3, int par4) {
 		super(inv, par2, par3, par4);
 		this.inv = inv;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack decrStackSize(int amount)
-	{
+	public ItemStack decrStackSize(int amount) {
 		ItemStack stack = getStack().copy();
 		stack.setCount(amount);
 		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack)).multiply(BigInteger.valueOf(amount));
@@ -33,19 +31,19 @@ public class SlotOutput extends SlotItemHandler
 		}
 		inv.removeEmc(emcValue);
 		inv.checkForUpdates();
-		
+
 		return stack;
 	}
-	
+
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {}
-	
+	public void putStack(@Nonnull ItemStack stack) {
+	}
+
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack)
-	{
+	public boolean isItemValid(@Nonnull ItemStack stack) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean canTakeStack(PlayerEntity player) {
 		return !getHasStack() || BigInteger.valueOf(EMCHelper.getEmcValue(getStack())).compareTo(inv.getAvailableEMC()) <= 0;

@@ -32,30 +32,29 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
-{
+public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider {
+
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
-	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN)
-	{
+	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-		{
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 			return SlotPredicates.COLLECTOR_INV.test(stack)
-					? super.insertItem(slot, stack, simulate)
-					: stack;
+				   ? super.insertItem(slot, stack, simulate)
+				   : stack;
 		}
 	});
 	private final LazyOptional<IItemHandler> automationAuxSlots = LazyOptional.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
 		@Nonnull
 		@Override
-		public ItemStack extractItem(int slot, int count, boolean simulate)
-		{
-			if (slot == UPGRADE_SLOT)
+		public ItemStack extractItem(int slot, int count, boolean simulate) {
+			if (slot == UPGRADE_SLOT) {
 				return super.extractItem(slot, count, simulate);
-			else return ItemStack.EMPTY;
+			} else {
+				return ItemStack.EMPTY;
+			}
 		}
 	});
 	public static final int UPGRADING_SLOT = 0;
@@ -68,14 +67,12 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	private long storedFuelEmc;
 	private double unprocessedEMC;
 
-	public CollectorMK1Tile()
-	{
+	public CollectorMK1Tile() {
 		super(ObjHandler.COLLECTOR_MK1_TILE, Constants.COLLECTOR_MK1_MAX);
 		emcGen = Constants.COLLECTOR_MK1_GEN;
 	}
-	
-	public CollectorMK1Tile(TileEntityType<?> type, long maxEmc, long emcGen)
-	{
+
+	public CollectorMK1Tile(TileEntityType<?> type, long maxEmc, long emcGen) {
 		super(type, maxEmc);
 		this.emcGen = emcGen;
 	}
@@ -86,19 +83,16 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		return hasFuel || hasChargeableItem;
 	}
 
-	public IItemHandler getInput()
-	{
+	public IItemHandler getInput() {
 		return input;
 	}
 
-	public IItemHandler getAux()
-	{
+	public IItemHandler getAux() {
 		return auxSlots;
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		super.remove();
 		automationInput.invalidate();
 		automationAuxSlots.invalidate();
@@ -107,44 +101,37 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			if (side != null && side.getAxis().isVertical())
-			{
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			if (side != null && side.getAxis().isVertical()) {
 				return automationAuxSlots.cast();
-			} else
-			{
+			} else {
 				return automationInput.cast();
 			}
 		}
 		return super.getCapability(cap, side);
 	}
 
-	protected int getInvSize()
-	{
+	protected int getInvSize() {
 		return 8;
 	}
 
-	private ItemStack getUpgraded()
-	{
+	private ItemStack getUpgraded() {
 		return auxSlots.getStackInSlot(UPGRADE_SLOT);
 	}
 
-	private ItemStack getLock()
-	{
+	private ItemStack getLock() {
 		return auxSlots.getStackInSlot(LOCK_SLOT);
 	}
 
-	private ItemStack getUpgrading()
-	{
+	private ItemStack getUpgrading() {
 		return auxSlots.getStackInSlot(UPGRADING_SLOT);
 	}
 
 	@Override
-	public void tick()
-	{
-		if (world.isRemote)
+	public void tick() {
+		if (world.isRemote) {
 			return;
+		}
 
 		ItemHelper.compactInventory(toSort);
 		checkFuelOrKlein();
@@ -152,8 +139,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		rotateUpgraded();
 	}
 
-	private void rotateUpgraded()
-	{
+	private void rotateUpgraded() {
 		ItemStack upgraded = getUpgraded();
 		if (!upgraded.isEmpty()) {
 			if (getLock().isEmpty() || upgraded.getItem() != getLock().getItem() || upgraded.getCount() >= upgraded.getMaxStackSize()) {
@@ -161,9 +147,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 			}
 		}
 	}
-	
-	private void checkFuelOrKlein()
-	{
+
+	private void checkFuelOrKlein() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
 			LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
@@ -184,9 +169,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 			hasChargeableItem = false;
 		}
 	}
-	
-	private void updateEmc()
-	{
+
+	private void updateEmc() {
 		if (!this.hasMaxedEmc()) {
 			unprocessedEMC += emcGen * (getSunLevel() / 320.0f);
 			if (unprocessedEMC >= 1) {
@@ -197,8 +181,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 
 		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
-			if (hasChargeableItem)
-			{
+			if (hasChargeableItem) {
 				long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 				LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 				if (holderCapability.isPresent()) {
@@ -212,11 +195,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 					emcHolder.insertEmc(upgrading, toSend, EmcAction.EXECUTE);
 					forceExtractEmc(toSend, EmcAction.EXECUTE);
 				}
-			}
-			else if (hasFuel)
-			{
-				if (FuelMapper.getFuelUpgrade(upgrading).isEmpty())
-				{
+			} else if (hasFuel) {
+				if (FuelMapper.getFuelUpgrade(upgrading).isEmpty()) {
 					auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				}
 
@@ -224,26 +204,20 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 
 				long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(upgrading);
 
-				if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost)
-				{
+				if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost) {
 					ItemStack upgrade = getUpgraded();
 
-					if (getUpgraded().isEmpty())
-					{
+					if (getUpgraded().isEmpty()) {
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 						upgrading.shrink(1);
-					}
-					else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize())
-					{
+					} else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize()) {
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						getUpgraded().grow(1);
 						upgrading.shrink(1);
 					}
 				}
-			}
-			else
-			{
+			} else {
 				//Only send EMC when we are not upgrading fuel or charging an item
 				long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
 				this.sendToAllAcceptors(toSend);
@@ -252,20 +226,15 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		}
 	}
 
-	public long getEmcToNextGoal()
-	{
-		if (!getLock().isEmpty())
-		{
+	public long getEmcToNextGoal() {
+		if (!getLock().isEmpty()) {
 			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
-		}
-		else
-		{
+		} else {
 			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 		}
 	}
 
-	public long getItemCharge()
-	{
+	public long getItemCharge() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
 			LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
@@ -276,8 +245,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		return -1;
 	}
 
-	public double getItemChargeProportion()
-	{
+	public double getItemChargeProportion() {
 		ItemStack upgrading = getUpgrading();
 		long charge = getItemCharge();
 		if (upgrading.isEmpty() || charge <= 0) {
@@ -289,77 +257,62 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		}
 
 		long max = holderCapability.orElse(null).getMaximumEmc(upgrading);
-		if (charge >= max)
-		{
+		if (charge >= max) {
 			return 1;
 		}
 
 		return (double) charge / max;
 	}
-	
-	public int getSunLevel()
-	{
-		if (world.dimension.doesWaterVaporize())
-		{
+
+	public int getSunLevel() {
+		if (world.dimension.doesWaterVaporize()) {
 			return 16;
 		}
 		return world.getLight(getPos().up()) + 1;
 	}
 
-	public double getFuelProgress()
-	{
-		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading()))
-		{
+	public double getFuelProgress() {
+		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading())) {
 			return 0;
 		}
 
 		long reqEmc;
 
-		if (!getLock().isEmpty())
-		{
+		if (!getLock().isEmpty()) {
 			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
 
-			if (reqEmc < 0)
-			{
+			if (reqEmc < 0) {
 				return 0;
 			}
-		}
-		else
-		{
-			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty())
-			{
+		} else {
+			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
 				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				return 0;
-			}
-			else
-			{
+			} else {
 				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 			}
 
 		}
 
-		if (getStoredEmc() >= reqEmc)
-		{
+		if (getStoredEmc() >= reqEmc) {
 			return 1;
 		}
 
 		return (double) getStoredEmc() / reqEmc;
 	}
-	
+
 	@Override
-	public void read(@Nonnull CompoundNBT nbt)
-	{
+	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
 		unprocessedEMC = nbt.getDouble("UnprocessedEMC");
 	}
-	
+
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.putLong("FuelEMC", storedFuelEmc);
 		nbt.put("Input", input.serializeNBT());
@@ -368,23 +321,16 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		return nbt;
 	}
 
-	private void sendRelayBonus()
-	{
-		for (Map.Entry<Direction, TileEntity> entry: WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet())
-		{
+	private void sendRelayBonus() {
+		for (Map.Entry<Direction, TileEntity> entry : WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet()) {
 			Direction dir = entry.getKey();
 			TileEntity tile = entry.getValue();
 
-			if (tile instanceof RelayMK3Tile)
-			{
+			if (tile instanceof RelayMK3Tile) {
 				((RelayMK3Tile) tile).addBonus(dir, 0.5);
-			}
-			else if (tile instanceof RelayMK2Tile)
-			{
+			} else if (tile instanceof RelayMK2Tile) {
 				((RelayMK2Tile) tile).addBonus(dir, 0.15);
-			}
-			else if (tile instanceof RelayMK1Tile)
-			{
+			} else if (tile instanceof RelayMK1Tile) {
 				((RelayMK1Tile) tile).addBonus(dir, 0.05);
 			}
 		}
@@ -392,15 +338,13 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
 		return new CollectorMK1Container(windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new StringTextComponent(getType().getRegistryName().toString());
 	}
 }

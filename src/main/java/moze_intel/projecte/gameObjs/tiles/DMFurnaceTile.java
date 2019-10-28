@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,18 +9,14 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import javax.annotation.Nonnull;
+public class DMFurnaceTile extends RMFurnaceTile {
 
-public class DMFurnaceTile extends RMFurnaceTile
-{
-	public DMFurnaceTile()
-	{
+	public DMFurnaceTile() {
 		super(ObjHandler.DM_FURNACE_TILE, 10, 3);
 	}
-	
+
 	@Override
-	protected int getInvSize()
-	{
+	protected int getInvSize() {
 		return 9;
 	}
 
@@ -29,22 +26,19 @@ public class DMFurnaceTile extends RMFurnaceTile
 	}
 
 	@Override
-	public int getCookProgressScaled(int value)
-	{
+	public int getCookProgressScaled(int value) {
 		return furnaceCookTime * value / ticksBeforeSmelt;
 	}
 
 	@Nonnull
 	@Override
-	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity playerIn)
-	{
+	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity playerIn) {
 		return new DMFurnaceContainer(windowId, playerInv, this);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName()
-	{
+	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.dmFurnaceOff.getTranslationKey());
 	}
 }

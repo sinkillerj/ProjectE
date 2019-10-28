@@ -1,5 +1,6 @@
 package moze_intel.projecte.integration.curios;
 
+import javax.annotation.Nullable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -8,25 +9,23 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import javax.annotation.Nullable;
+public class CuriosIntegration {
 
-public class CuriosIntegration
-{
-    @Nullable
-    public static IItemHandler getAll(LivingEntity living) {
-        return EmptyHandler.INSTANCE;
+	@Nullable
+	public static IItemHandler getAll(LivingEntity living) {
+		return EmptyHandler.INSTANCE;
         /*return CuriosAPI.getCuriosHandler(living).map(handler -> {
             IItemHandlerModifiable[] invs = handler.getCurioMap().values().toArray(new IItemHandlerModifiable[0]);
             return new CombinedInvWrapper(invs);
         }).orElse(null);*/
-    }
+	}
 
-    @SubscribeEvent
-    public static void enqueueImc(InterModEnqueueEvent evt) {
+	@SubscribeEvent
+	public static void enqueueImc(InterModEnqueueEvent evt) {
         /*InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("amulet"));
         InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("belt"));
         InterModComms.sendTo("curios", CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring"));*/
-    }
+	}
 
     /*private static class Provider implements ICapabilityProvider {
         private final LazyOptional<ICurio> curio;
@@ -42,8 +41,8 @@ public class CuriosIntegration
         }
     }*/
 
-    @SubscribeEvent
-    public static void attachCaps(AttachCapabilitiesEvent<ItemStack> evt) {
+	@SubscribeEvent
+	public static void attachCaps(AttachCapabilitiesEvent<ItemStack> evt) {
         /*ItemStack stack = evt.getObject();
         ResourceLocation key = new ResourceLocation(PECore.MODID, "curio");
         Set<Item> invTicking = ImmutableSet.of(
@@ -56,5 +55,5 @@ public class CuriosIntegration
         if(invTicking.contains(stack.getItem())) {
             evt.addCapability(key, new Provider(new DefaultCurio(stack)));
         }*/
-    }
+	}
 }

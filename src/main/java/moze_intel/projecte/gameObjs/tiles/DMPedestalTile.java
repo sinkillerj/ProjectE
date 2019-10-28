@@ -20,8 +20,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class DMPedestalTile extends TileEmc
-{
+public class DMPedestalTile extends TileEmc {
+
 	private static final int RANGE = 4;
 	private boolean isActive = false;
 	private ItemStackHandler inventory = new StackHandler(1);
@@ -31,50 +31,39 @@ public class DMPedestalTile extends TileEmc
 	public boolean previousRedstoneState = false;
 	public double centeredX, centeredY, centeredZ;
 
-	public DMPedestalTile()
-	{
+	public DMPedestalTile() {
 		super(ObjHandler.DM_PEDESTAL_TILE);
 	}
 
 	@Override
-	public void remove()
-	{
+	public void remove() {
 		super.remove();
 		automationInv.invalidate();
 	}
 
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
 		centeredZ = pos.getZ() + 0.5;
 
-		if (getActive())
-		{
+		if (getActive()) {
 			ItemStack stack = inventory.getStackInSlot(0);
-			if (!stack.isEmpty())
-			{
+			if (!stack.isEmpty()) {
 				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(world, getPos()));
-				if (particleCooldown <= 0)
-				{
+				if (particleCooldown <= 0) {
 					spawnParticleTypes();
 					particleCooldown = 10;
-				}
-				else
-				{
+				} else {
 					particleCooldown--;
 				}
-			}
-			else
-			{
+			} else {
 				setActive(false);
 			}
 		}
 	}
 
-	private void spawnParticleTypes()
-	{
+	private void spawnParticleTypes() {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -89,46 +78,40 @@ public class DMPedestalTile extends TileEmc
 		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
 
 		Random rand = world.rand;
-		for (int i = 0; i < 3; ++i)
-		{
+		for (int i = 0; i < 3; ++i) {
 			int j = rand.nextInt(2) * 2 - 1;
 			int k = rand.nextInt(2) * 2 - 1;
-			double d0 = (double)pos.getX() + 0.5D + 0.25D * (double)j;
-			double d1 = (float)pos.getY() + rand.nextFloat();
-			double d2 = (double)pos.getZ() + 0.5D + 0.25D * (double)k;
-			double d3 = rand.nextFloat() * (float)j;
-			double d4 = ((double)rand.nextFloat() - 0.5D) * 0.125D;
-			double d5 = rand.nextFloat() * (float)k;
+			double d0 = (double) pos.getX() + 0.5D + 0.25D * (double) j;
+			double d1 = (float) pos.getY() + rand.nextFloat();
+			double d2 = (double) pos.getZ() + 0.5D + 0.25D * (double) k;
+			double d3 = rand.nextFloat() * (float) j;
+			double d4 = ((double) rand.nextFloat() - 0.5D) * 0.125D;
+			double d5 = rand.nextFloat() * (float) k;
 			world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
-	public int getActivityCooldown()
-	{
+	public int getActivityCooldown() {
 		return activityCooldown;
 	}
 
-	public void setActivityCooldown(int i)
-	{
+	public void setActivityCooldown(int i) {
 		activityCooldown = i;
 	}
 
-	public void decrementActivityCooldown()
-	{
+	public void decrementActivityCooldown() {
 		activityCooldown--;
 	}
 
 	/**
 	 * @return Inclusive bounding box of all positions this pedestal should apply effects in
 	 */
-	public AxisAlignedBB getEffectBounds()
-	{
+	public AxisAlignedBB getEffectBounds() {
 		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE, RANGE, RANGE));
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT tag)
-	{
+	public void read(@Nonnull CompoundNBT tag) {
 		super.read(tag);
 		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
@@ -139,8 +122,7 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT tag)
-	{
+	public CompoundNBT write(@Nonnull CompoundNBT tag) {
 		tag = super.write(tag);
 		tag.merge(inventory.serializeNBT());
 		tag.putBoolean("isActive", getActive());
@@ -150,42 +132,32 @@ public class DMPedestalTile extends TileEmc
 	}
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket()
-	{
+	public SUpdateTileEntityPacket getUpdatePacket() {
 		return new SUpdateTileEntityPacket(pos, -1, getUpdateTag());
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet)
-	{
+	public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
 		read(packet.getNbtCompound());
 	}
 
-	public boolean getActive()
-	{
+	public boolean getActive() {
 		return isActive;
 	}
 
-	public void setActive(boolean newState)
-	{
-		if (newState != this.getActive() && world != null)
-		{
-			if (newState)
-			{
+	public void setActive(boolean newState) {
+		if (newState != this.getActive() && world != null) {
+			if (newState) {
 				world.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
-				{
+				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					this.getWorld().addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
-			}
-			else
-			{
+			} else {
 				world.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i)
-				{
+				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					this.getWorld().addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
@@ -198,10 +170,8 @@ public class DMPedestalTile extends TileEmc
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side)
-	{
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return automationInv.cast();
 		}
 		return super.getCapability(cap, side);
@@ -210,5 +180,4 @@ public class DMPedestalTile extends TileEmc
 	public IItemHandlerModifiable getInventory() {
 		return inventory;
 	}
-
 }

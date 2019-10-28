@@ -10,6 +10,7 @@ public interface NSSTag extends NormalizedSimpleStack {
 
 	/**
 	 * Checks if our {@link NormalizedSimpleStack} is representing a {@link Tag}
+	 *
 	 * @return True if this {@link NSSTag} object is representing a {@link Tag}, or false if we are really just a {@link NormalizedSimpleStack}.
 	 */
 	boolean representsTag();

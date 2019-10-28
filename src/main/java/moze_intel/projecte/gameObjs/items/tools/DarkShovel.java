@@ -1,12 +1,13 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -17,13 +18,10 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+public class DarkShovel extends PEToolBase {
 
-public class DarkShovel extends PEToolBase
-{
-	public DarkShovel(Properties props)
-	{
-		super(props, (byte)1, new String[]{});
+	public DarkShovel(Properties props) {
+		super(props, (byte) 1, new String[]{});
 		this.peToolMaterial = EnumMatterType.DARK_MATTER;
 		this.harvestMaterials.add(Material.ORGANIC);
 		this.harvestMaterials.add(Material.EARTH);
@@ -33,29 +31,22 @@ public class DarkShovel extends PEToolBase
 	}
 
 	// Only for RedShovel
-	protected DarkShovel(Properties props, byte numCharges, String[] modeDesc)
-	{
+	protected DarkShovel(Properties props, byte numCharges, String[] modeDesc) {
 		super(props, numCharges, modeDesc);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (world.isRemote)
-		{
+		if (world.isRemote) {
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
 
 		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-		if (mop instanceof BlockRayTraceResult
-				&& world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL)
-		{
+		if (mop instanceof BlockRayTraceResult && world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL) {
 			tryVeinMine(stack, player, (BlockRayTraceResult) mop);
-		}
-		else
-		{
+		} else {
 			digAOE(stack, world, player, false, 0, hand);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
@@ -63,9 +54,10 @@ public class DarkShovel extends PEToolBase
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
-	{
-		if (slot != EquipmentSlotType.MAINHAND) return super.getAttributeModifiers(slot, stack);
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+		if (slot != EquipmentSlotType.MAINHAND) {
+			return super.getAttributeModifiers(slot, stack);
+		}
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", this instanceof RedShovel ? 6 : 5, AttributeModifier.Operation.ADDITION));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, AttributeModifier.Operation.ADDITION));

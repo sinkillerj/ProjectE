@@ -1,21 +1,23 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-
-import javax.annotation.Nonnull;
-
 public class RecipeShapelessKleinStar implements ICraftingRecipe {
+
 	private final ShapelessRecipe compose;
 
 	public RecipeShapelessKleinStar(ShapelessRecipe compose) {
@@ -24,15 +26,13 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 
 	@Nonnull
 	@Override
-	public ResourceLocation getId()
-	{
+	public ResourceLocation getId() {
 		return compose.getId();
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
-	{
+	public IRecipeSerializer<?> getSerializer() {
 		return ObjHandler.KLEIN_RECIPE_SERIALIZER;
 	}
 
@@ -94,25 +94,22 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 		return compose.getGroup();
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessKleinStar>
-	{
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessKleinStar> {
+
 		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
-		{
+		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
 			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
 		}
 
 		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
-		{
+		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
 			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
 		}
 
 		@Override
-		public void write(@Nonnull PacketBuffer buffer, RecipeShapelessKleinStar recipe)
-		{
+		public void write(@Nonnull PacketBuffer buffer, RecipeShapelessKleinStar recipe) {
 			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
 		}
 	}

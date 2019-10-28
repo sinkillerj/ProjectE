@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -12,23 +13,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
+public class RelayMK3Container extends RelayMK1Container {
 
-public class RelayMK3Container extends RelayMK1Container
-{
-	public static RelayMK3Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
-	{
+	public static RelayMK3Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
 		return new RelayMK3Container(windowId, invPlayer, (RelayMK3Tile) GuiHandler.getTeFromBuf(buf));
 	}
 
-	public RelayMK3Container(int windowId, PlayerInventory invPlayer, RelayMK3Tile relay)
-	{
+	public RelayMK3Container(int windowId, PlayerInventory invPlayer, RelayMK3Tile relay) {
 		super(ObjHandler.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
 	}
 
 	@Override
-	void initSlots(PlayerInventory invPlayer)
-	{
+	void initSlots(PlayerInventory invPlayer) {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
 
@@ -37,63 +33,59 @@ public class RelayMK3Container extends RelayMK1Container
 
 		int counter = input.getSlots() - 1;
 		//Inventory Buffer
-		for (int i = 0; i <= 3; i++)
-			for (int j = 0; j <= 4; j++)
+		for (int i = 0; i <= 3; i++) {
+			for (int j = 0; j <= 4; j++) {
 				this.addSlot(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
+			}
+		}
 
 		//Klein star charge
 		this.addSlot(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));
 
 		//Main player inventory
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 9; j++) {
 				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 26 + j * 18, 113 + i * 18));
+			}
+		}
 
 		//Player hotbar
-		for (int i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++) {
 			this.addSlot(new Slot(invPlayer, i, 26 + i * 18, 171));
+		}
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
-	{
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack())
-		{
+		if (slot == null || !slot.getHasStack()) {
 			return ItemStack.EMPTY;
 		}
 
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 
-		if (slotIndex < 22)
-		{
-			if (!this.mergeItemStack(stack, 22, this.inventorySlots.size(), true))
+		if (slotIndex < 22) {
+			if (!this.mergeItemStack(stack, 22, this.inventorySlots.size(), true)) {
 				return ItemStack.EMPTY;
+			}
 			slot.onSlotChanged();
-		}
-		else if (!this.mergeItemStack(stack, 0, 21, false))
-		{
+		} else if (!this.mergeItemStack(stack, 0, 21, false)) {
 			return ItemStack.EMPTY;
 		}
-		if (stack.isEmpty())
-		{
+		if (stack.isEmpty()) {
 			slot.putStack(ItemStack.EMPTY);
-		}
-		else
-		{
+		} else {
 			slot.onSlotChanged();
 		}
-
 		return slot.onTake(player, newStack);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player)
-	{
+	public boolean canInteractWith(@Nonnull PlayerEntity player) {
 		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relayMK3
-				&& player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

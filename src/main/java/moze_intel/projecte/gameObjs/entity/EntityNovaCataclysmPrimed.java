@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
@@ -9,33 +10,27 @@ import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+public class EntityNovaCataclysmPrimed extends TNTEntity {
 
-public class EntityNovaCataclysmPrimed extends TNTEntity
-{
-	public EntityNovaCataclysmPrimed(EntityType<EntityNovaCataclysmPrimed> type, World world)
-	{
+	public EntityNovaCataclysmPrimed(EntityType<EntityNovaCataclysmPrimed> type, World world) {
 		super(type, world);
 		setFuse(20);
 	}
-	
-	public EntityNovaCataclysmPrimed(World world, double x, double y, double z, LivingEntity placer)
-	{
+
+	public EntityNovaCataclysmPrimed(World world, double x, double y, double z, LivingEntity placer) {
 		super(world, x, y, z, placer);
 		setFuse(20);
 	}
 
 	@Nonnull
 	@Override
-	public EntityType<?> getType()
-	{
+	public EntityType<?> getType() {
 		return ObjHandler.NOVA_CATACLYSM_PRIMED;
 	}
 
 	// [VanillaCopy] super need exact override to do our own explosion
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
@@ -61,8 +56,7 @@ public class EntityNovaCataclysmPrimed extends TNTEntity
 		}
 	}
 
-	private void explode()
-	{
+	private void explode() {
 		WorldHelper.createNovaExplosion(world, this, posX, posY, posZ, 48.0F);
 	}
 }

@@ -1,5 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -13,10 +15,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import java.util.function.Consumer;
-
 public class DMArmor extends ArmorItem {
+
 	public DMArmor(EquipmentSlotType armorPiece, Properties props) {
 		super(DMArmorMaterial.INSTANCE, armorPiece, props);
 	}

@@ -11,39 +11,31 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 // [VanillaCopy] MovingSoundMinecart
 @OnlyIn(Dist.CLIENT)
-public class MovingSoundSWRG extends TickableSound
-{
+public class MovingSoundSWRG extends TickableSound {
+
 	private final EntitySWRGProjectile swrgProjectile;
 	private float distance = 0.0F;
 
-	public MovingSoundSWRG(EntitySWRGProjectile swrgProjectile)
-	{
+	public MovingSoundSWRG(EntitySWRGProjectile swrgProjectile) {
 		super(PESounds.WIND, SoundCategory.WEATHER);
 		this.swrgProjectile = swrgProjectile;
 		this.volume = 0.6F;
 	}
 
 	@Override
-	public void tick()
-	{
-		if (!this.swrgProjectile.isAlive())
-		{
+	public void tick() {
+		if (!this.swrgProjectile.isAlive()) {
 			this.donePlaying = true;
-		}
-		else
-		{
+		} else {
 			this.x = (float) this.swrgProjectile.posX;
 			this.y = (float) this.swrgProjectile.posY;
 			this.z = (float) this.swrgProjectile.posZ;
 			float f = MathHelper.sqrt(Entity.horizontalMag(this.swrgProjectile.getMotion()));
 
-			if ((double) f >= 0.01D)
-			{
+			if ((double) f >= 0.01D) {
 				this.distance = MathHelper.clamp(this.distance + 0.0025F, 0.0F, 1.0F);
 				this.volume = 0.0F + MathHelper.clamp(f, 0.0F, 0.5F) * 0.7F;
-			}
-			else
-			{
+			} else {
 				this.distance = 0.0F;
 				this.volume = 0.0F;
 			}

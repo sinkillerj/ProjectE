@@ -34,21 +34,19 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Helper class for player-related methods.
- * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
+ * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
-public final class PlayerHelper
-{
+public final class PlayerHelper {
+
 	public final static ScoreCriteria SCOREBOARD_EMC = new ReadOnlyScoreCriteria(PECore.MODID + ":emc_score");
 
 	/**
 	 * Tries placing a block and fires an event for it.
+	 *
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state)
-	{
-		if (!hasEditPermission(player, pos))
-		{
+	public static boolean checkedPlaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state) {
+		if (!hasEditPermission(player, pos)) {
 			return false;
 		}
 		World world = player.getEntityWorld();
@@ -56,8 +54,7 @@ public final class PlayerHelper
 		world.setBlockState(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
-		if (evt.isCanceled())
-		{
+		if (evt.isCanceled()) {
 			world.restoringBlockSnapshots = true;
 			before.restore(true, false);
 			world.restoringBlockSnapshots = false;
@@ -68,17 +65,13 @@ public final class PlayerHelper
 		return true;
 	}
 
-	public static boolean checkedReplaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state)
-	{
+	public static boolean checkedReplaceBlock(ServerPlayerEntity player, BlockPos pos, BlockState state) {
 		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
 	}
 
-	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom)
-	{
-		for (ItemStack s : player.inventory.mainInventory)
-		{
-			if (!s.isEmpty() && s.getItem() == consumeFrom)
-			{
+	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom) {
+		for (ItemStack s : player.inventory.mainInventory) {
+			if (!s.isEmpty() && s.getItem() == consumeFrom) {
 				return s;
 			}
 		}
@@ -86,19 +79,15 @@ public final class PlayerHelper
 	}
 
 	@Nullable
-	public static IItemHandler getCurios(PlayerEntity player)
-	{
-		if (!ModList.get().isLoaded("curios"))
-		{
+	public static IItemHandler getCurios(PlayerEntity player) {
+		if (!ModList.get().isLoaded("curios")) {
 			return null;
-		} else
-		{
+		} else {
 			return CuriosIntegration.getAll(player);
 		}
 	}
 
-	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance)
-	{
+	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance) {
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
 		RayTraceContext ctx = new RayTraceContext(vecs.getLeft(), vecs.getRight(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
 		return player.getEntityWorld().rayTraceBlocks(ctx).getPos();
@@ -107,8 +96,7 @@ public final class PlayerHelper
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance)
-	{
+	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance) {
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
 		Vec3d playerPos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
@@ -117,23 +105,17 @@ public final class PlayerHelper
 		return ImmutablePair.of(src, dest);
 	}
 
-	public static boolean hasBreakPermission(ServerPlayerEntity player, BlockPos pos)
-	{
-		return hasEditPermission(player, pos)
-				&& ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
+	public static boolean hasBreakPermission(ServerPlayerEntity player, BlockPos pos) {
+		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
 	}
 
-	public static boolean hasEditPermission(ServerPlayerEntity player, BlockPos pos)
-	{
-		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected(player.getEntityWorld(), pos, player))
-		{
+	public static boolean hasEditPermission(ServerPlayerEntity player, BlockPos pos) {
+		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected(player.getEntityWorld(), pos, player)) {
 			return false;
 		}
 
-		for (Direction e : Direction.values())
-		{
-			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY))
-			{
+		for (Direction e : Direction.values()) {
+			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY)) {
 				return false;
 			}
 		}
@@ -141,34 +123,28 @@ public final class PlayerHelper
 		return true;
 	}
 
-	public static void resetCooldown(PlayerEntity player)
-	{
+	public static void resetCooldown(PlayerEntity player) {
 		player.resetCooldown();
 		PacketHandler.sendTo(new CooldownResetPKT(), (ServerPlayerEntity) player);
 	}
 
-	public static void swingItem(PlayerEntity player, Hand hand)
-	{
-		if (player.getEntityWorld() instanceof ServerWorld)
-		{
+	public static void swingItem(PlayerEntity player, Hand hand) {
+		if (player.getEntityWorld() instanceof ServerWorld) {
 			((ServerWorld) player.getEntityWorld()).getChunkProvider().sendToTrackingAndSelf(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
 		}
 	}
 
-	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying)
-	{
+	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying) {
 		updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.isFlying);
 	}
 
-	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying, boolean isFlying)
-	{
+	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying, boolean isFlying) {
 		PacketHandler.sendTo(new SetFlyPKT(allowFlying, isFlying), player);
 		player.abilities.allowFlying = allowFlying;
 		player.abilities.isFlying = isFlying;
 	}
 
-	public static void updateClientServerStepHeight(ServerPlayerEntity player, float value)
-	{
+	public static void updateClientServerStepHeight(ServerPlayerEntity player, float value) {
 		player.stepHeight = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
@@ -177,8 +153,7 @@ public final class PlayerHelper
 		updateScore(player, objective, value.compareTo(Constants.MAX_INTEGER) > 0 ? Integer.MAX_VALUE : value.intValueExact());
 	}
 
-	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value)
-	{
+	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value) {
 		// [VanillaCopy] EntityPlayerMP.updateScorePoints
 		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), obj -> obj.setScorePoints(value));
 	}

@@ -29,8 +29,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
-{
+public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
+
 	public Zero(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
@@ -38,24 +38,20 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
-	{
+	public boolean hasContainerItem(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
-	{
+	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
-	
+
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held)
-	{
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
 
-        if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8 || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
+		if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8 || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			return;
 		}
 
@@ -66,28 +62,22 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote)
-		{
+		if (!world.isRemote) {
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getBoundingBox().grow(offset);
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
-		
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zero.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.zero.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 			DMPedestalTile tile = (DMPedestalTile) te;
@@ -95,17 +85,13 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 				AxisAlignedBB aabb = tile.getEffectBounds();
 				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
 				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
-				for (Entity ent : list)
-				{
-					if (ent.isBurning())
-					{
+				for (Entity ent : list) {
+					if (ent.isBurning()) {
 						ent.extinguish();
 					}
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.zero.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -114,8 +100,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 	@Nonnull
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.zero.get() != -1) {
 			list.add(new TranslationTextComponent("pe.zero.pedestal1").applyTextStyle(TextFormatting.BLUE));
@@ -126,20 +111,17 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
+	public int getNumCharges(@Nonnull ItemStack stack) {
 		return 4;
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
+	public double getDurabilityForDisplay(ItemStack stack) {
 		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 }

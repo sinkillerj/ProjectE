@@ -45,35 +45,32 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchChestItem, IPedestalItem
-{
-	public BlackHoleBand(Properties props)
-	{
+public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchChestItem, IPedestalItem {
+
+	public BlackHoleBand(Properties props) {
 		super(props);
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
-	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack)
-	{
+	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
 		RayTraceResult rtr = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-		if (!(rtr instanceof BlockRayTraceResult))
+		if (!(rtr instanceof BlockRayTraceResult)) {
 			return ActionResultType.PASS;
+		}
 
 		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
 		BlockPos fluidPos = brtr.getPos();
 		BlockState state = world.getBlockState(fluidPos);
 
 		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack)
-				&& state.getBlock() instanceof IBucketPickupHandler)
-		{
+			&& state.getBlock() instanceof IBucketPickupHandler) {
 			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
-			if (fluid != Fluids.EMPTY)
-			{
+			if (fluid != Fluids.EMPTY) {
 				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ,
-					  fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				return ActionResultType.SUCCESS;
 			}
 		}
@@ -82,76 +79,60 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
-	{
-		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS)
-		{
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
-		
+
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
-	
+
 	@Override
-	public void inventoryTick(ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held)
-	{
-        if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE) || !(entity instanceof PlayerEntity))
-		{
+	public void inventoryTick(ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
+		if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE) || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		
+
 		PlayerEntity player = (PlayerEntity) entity;
 		AxisAlignedBB bBox = player.getBoundingBox().grow(7);
 		List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
-		
-		for (ItemEntity item : itemList)
-		{
-			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem()))
-			{
+
+		for (ItemEntity item : itemList) {
+			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem())) {
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 			}
 		}
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
-		if (tile != null)
-		{
+		if (tile != null) {
 			List<ItemEntity> list = world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds());
-			for (ItemEntity item : list)
-			{
+			for (ItemEntity item : list) {
 				WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && item.isAlive())
-				{
+				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && item.isAlive()) {
 					suckDumpItem(item, tile);
 				}
 			}
 		}
 	}
 
-	private void suckDumpItem(ItemEntity item, DMPedestalTile tile)
-	{
+	private void suckDumpItem(ItemEntity item, DMPedestalTile tile) {
 		Map<Direction, TileEntity> map = WorldHelper.getAdjacentTileEntitiesMapped(tile.getWorld(), tile);
-		for (Map.Entry<Direction, TileEntity> e : map.entrySet())
-		{
+		for (Map.Entry<Direction, TileEntity> e : map.entrySet()) {
 			IItemHandler inv = e.getValue().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey()).orElse(null);
 
-			if (inv == null && e.getValue() instanceof IInventory)
-			{
+			if (inv == null && e.getValue() instanceof IInventory) {
 				inv = new InvWrapper((IInventory) e.getValue());
 			}
 
 			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 
-			if (result.isEmpty())
-			{
+			if (result.isEmpty()) {
 				item.remove();
 				return;
-			}
-			else
-			{
+			} else {
 				item.setItem(result);
 			}
 		}
@@ -159,8 +140,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		return Lists.newArrayList(
 				new TranslationTextComponent("pe.bhb.pedestal1").applyTextStyle(TextFormatting.BLUE),
 				new TranslationTextComponent("pe.bhb.pedestal2").applyTextStyle(TextFormatting.BLUE)
@@ -168,35 +148,27 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack)
-	{
+	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof AlchChestTile))
-		{
+		if (!(te instanceof AlchChestTile)) {
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
 					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
 			double centeredX = tile.getPos().getX() + 0.5;
 			double centeredY = tile.getPos().getY() + 0.5;
 			double centeredZ = tile.getPos().getZ() + 0.5;
 
-			for (ItemEntity e : tile.getWorld().getEntitiesWithinAABB(ItemEntity.class, aabb))
-			{
+			for (ItemEntity e : tile.getWorld().getEntitiesWithinAABB(ItemEntity.class, aabb)) {
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21)
-				{
+				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21) {
 					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 						ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
-						if (!result.isEmpty())
-						{
+						if (!result.isEmpty()) {
 							e.setItem(result);
-						}
-						else
-						{
+						} else {
 							e.remove();
 						}
 					});
@@ -206,12 +178,9 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack)
-	{
-        if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
-			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5)))
-			{
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}
 		}

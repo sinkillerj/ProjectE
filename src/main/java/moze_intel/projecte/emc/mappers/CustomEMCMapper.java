@@ -11,6 +11,7 @@ import net.minecraft.resources.IResourceManager;
 
 @EMCMapper
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {

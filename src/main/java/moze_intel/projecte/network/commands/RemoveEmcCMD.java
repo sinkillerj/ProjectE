@@ -14,29 +14,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class RemoveEmcCMD
-{
+public class RemoveEmcCMD {
+
 	public static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TranslationTextComponent("pe.command.remove.noitem"));
 
-	public static LiteralArgumentBuilder<CommandSource> register()
-	{
+	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("removeemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("item", ItemArgument.item())
-					// todo 1.13 dropping nbt info, use a more restrictive arg parser?
-					.executes(ctx -> removeEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
+						// todo 1.13 dropping nbt info, use a more restrictive arg parser?
+						.executes(ctx -> removeEmc(ctx, ItemArgument.getItem(ctx, "item").getItem())))
 				// todo 1.13 tag arg support?
 				.executes(ctx -> {
 					ServerPlayerEntity player = ctx.getSource().asPlayer();
 					ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 
-					if (stack.isEmpty())
-					{
+					if (stack.isEmpty()) {
 						stack = player.getHeldItem(Hand.OFF_HAND);
 					}
 
-					if (stack.isEmpty())
-					{
+					if (stack.isEmpty()) {
 						throw EMPTY_STACK.create();
 					}
 
@@ -44,8 +41,7 @@ public class RemoveEmcCMD
 				});
 	}
 
-	private static int removeEmc(CommandContext<CommandSource> ctx, Item item)
-	{
+	private static int removeEmc(CommandContext<CommandSource> ctx, Item item) {
 		CustomEMCParser.addToFile(item.getRegistryName().toString(), 0);
 		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.remove.success", item.getRegistryName().toString()), true);
 		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);

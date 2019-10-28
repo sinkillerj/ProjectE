@@ -19,14 +19,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GUITransmutation extends ContainerScreen<TransmutationContainer>
-{
+public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
+
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/transmute.png");
 	private final TransmutationInventory inv;
 	private TextFieldWidget textBoxFilter;
 
-	public GUITransmutation(TransmutationContainer container, PlayerInventory invPlayer, ITextComponent title)
-	{
+	public GUITransmutation(TransmutationContainer container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);
 		this.inv = container.transmutationInventory;
 		this.xSize = 228;
@@ -34,16 +33,14 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
-    {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
-    }
-	
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+
 	@Override
-	public void init()
-	{
+	public void init() {
 		super.init();
 
 		int xLocation = (this.width - this.xSize) / 2;
@@ -53,16 +50,14 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 		this.textBoxFilter.setText(inv.filter);
 
 		this.buttons.add(new Button(xLocation + 125, yLocation + 100, 14, 14, "<", b -> {
-			if (inv.searchpage != 0)
-			{
+			if (inv.searchpage != 0) {
 				inv.searchpage--;
 			}
 			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
 			inv.updateClientTargets();
 		}));
 		this.buttons.add(new Button(xLocation + 193, yLocation + 100, 14, 14, ">", b -> {
-			if (!(inv.knowledge.size() <= 12))
-			{
+			if (!(inv.knowledge.size() <= 12)) {
 				inv.searchpage++;
 			}
 			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
@@ -71,17 +66,15 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-	{
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1F, 1F, 1F, 1F);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		this.textBoxFilter.render(mouseX, mouseY, partialTicks);
 	}
-	
+
 	@Override
-	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
-	{
+	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
 		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
 		BigInteger emcAmount = inv.getAvailableEMC();
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
@@ -89,8 +82,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 		String emc = TransmutationEMCFormatter.formatEMC(emcAmount);
 		this.font.drawString(emc, 6, this.ySize - 94, 4210752);
 
-		if (inv.learnFlag > 0)
-		{
+		if (inv.learnFlag > 0) {
 			this.font.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
@@ -99,12 +91,11 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 			this.font.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
-			
+
 			inv.learnFlag--;
 		}
 
-		if (inv.unlearnFlag > 0)
-		{
+		if (inv.unlearnFlag > 0) {
 			this.font.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
@@ -114,14 +105,13 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 			this.font.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
 			this.font.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
-			
+
 			inv.unlearnFlag--;
 		}
 	}
-	
+
 	@Override
-	public void tick()
-	{
+	public void tick() {
 		super.tick();
 		this.textBoxFilter.tick();
 	}
@@ -171,15 +161,13 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	}
 
 	@Override
-	public boolean mouseClicked(double x, double y, int mouseButton)
-	{
+	public boolean mouseClicked(double x, double y, int mouseButton) {
 		int minX = textBoxFilter.x;
 		int minY = textBoxFilter.y;
 		int maxX = minX + textBoxFilter.getWidth();
 		int maxY = minY + textBoxFilter.getHeight();
 
-		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY)
-		{
+		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY) {
 			inv.filter = "";
 			inv.searchpage = 0;
 			inv.updateClientTargets();
@@ -190,8 +178,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer>
 	}
 
 	@Override
-	public void onClose()
-	{
+	public void onClose() {
 		super.onClose();
 		inv.learnFlag = 0;
 		inv.unlearnFlag = 0;

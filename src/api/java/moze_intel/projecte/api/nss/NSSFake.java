@@ -1,13 +1,13 @@
 package moze_intel.projecte.api.nss;
 
 import com.google.common.base.Objects;
-
 import javax.annotation.Nonnull;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} for representing abstract objects, that do not actually exist.
  */
 public final class NSSFake implements NormalizedSimpleStack {
+
 	// We need this bit of global mutable state
 	// So we can distinguish fake NSS's originating from separate files, but have the same name
 	// For example, "FAKE|foo" from a.json and "FAKE|foo" from b.json should not have anything to do with each other,

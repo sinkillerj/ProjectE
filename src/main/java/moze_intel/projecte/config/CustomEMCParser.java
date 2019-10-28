@@ -16,43 +16,37 @@ import java.util.Iterator;
 import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nss.NSSItem;
-import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import moze_intel.projecte.emc.json.NSSSerializer;
 import net.minecraft.util.ResourceLocation;
 
-public final class CustomEMCParser
-{
+public final class CustomEMCParser {
+
 	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE).setPrettyPrinting().create();
 	private static final File CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.json");
 
-	public static class CustomEMCFile
-	{
+	public static class CustomEMCFile {
+
 		public final List<CustomEMCEntry> entries;
 
-		public CustomEMCFile(List<CustomEMCEntry> entries)
-		{
+		public CustomEMCFile(List<CustomEMCEntry> entries) {
 			this.entries = entries;
 		}
 	}
 
-	public static class CustomEMCEntry
-	{
+	public static class CustomEMCEntry {
+
 		public final NormalizedSimpleStack item;
 		public final long emc;
 
-		private CustomEMCEntry(NormalizedSimpleStack item, long emc)
-		{
+		private CustomEMCEntry(NormalizedSimpleStack item, long emc) {
 			this.item = item;
 			this.emc = emc;
 		}
 
 		@Override
-		public boolean equals(Object o)
-		{
-			return o == this ||
-					o instanceof CustomEMCEntry
-							&& item.equals(((CustomEMCEntry) o).item)
-							&& emc == ((CustomEMCEntry) o).emc;
+		public boolean equals(Object o) {
+			return o == this || o instanceof CustomEMCEntry && item.equals(((CustomEMCEntry) o).item) && emc == ((CustomEMCEntry) o).emc;
 		}
 
 		@Override
@@ -66,21 +60,15 @@ public final class CustomEMCParser
 	public static CustomEMCFile currentEntries;
 	private static boolean dirty = false;
 
-	public static void init()
-	{
+	public static void init() {
 		flush();
 
-		if (!CONFIG.exists())
-		{
-			try
-			{
-				if (CONFIG.createNewFile())
-				{
+		if (!CONFIG.exists()) {
+			try {
+				if (CONFIG.createNewFile()) {
 					writeDefaultFile();
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				PECore.LOGGER.fatal("Exception in file I/O: couldn't create custom configuration files.");
 			}
 		}
@@ -95,89 +83,67 @@ public final class CustomEMCParser
 		}
 	}
 
-	private static NormalizedSimpleStack getNss(String str)
-	{
-		if (str.startsWith("#"))
-		{
+	private static NormalizedSimpleStack getNss(String str) {
+		//TODO: Use the general NSS deserializer for this??
+		if (str.startsWith("#")) {
 			return NSSItem.createTag(new ResourceLocation(str.substring(1)));
 		}
-		else
-		{
-			return NSSItem.createItem(new ResourceLocation(str));
-		}
+		return NSSItem.createItem(new ResourceLocation(str));
 	}
 
-	public static void addToFile(String toAdd, long emc)
-	{
+	public static void addToFile(String toAdd, long emc) {
 		NormalizedSimpleStack nss = getNss(toAdd);
 		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
 
 		int setAt = -1;
 
-		for (int i = 0; i < currentEntries.entries.size(); i++)
-		{
-			if (currentEntries.entries.get(i).item.equals(nss))
-			{
+		for (int i = 0; i < currentEntries.entries.size(); i++) {
+			if (currentEntries.entries.get(i).item.equals(nss)) {
 				setAt = i;
 				break;
 			}
 		}
 
-		if (setAt == -1)
-		{
+		if (setAt == -1) {
 			currentEntries.entries.add(entry);
-		} else
-		{
+		} else {
 			currentEntries.entries.set(setAt, entry);
 		}
-
 		dirty = true;
 	}
 
-	public static boolean removeFromFile(String toRemove)
-	{
+	public static boolean removeFromFile(String toRemove) {
 		NormalizedSimpleStack nss = getNss(toRemove);
 		Iterator<CustomEMCEntry> iter = currentEntries.entries.iterator();
 
 		boolean removed = false;
-		while (iter.hasNext())
-		{
-			if (iter.next().item.equals(nss))
-			{
+		while (iter.hasNext()) {
+			if (iter.next().item.equals(nss)) {
 				iter.remove();
 				dirty = true;
 				removed = true;
 			}
 		}
-
 		return removed;
 	}
 
-	private static void flush()
-	{
-		if (dirty)
-		{
-			try
-			{
+	private static void flush() {
+		if (dirty) {
+			try {
 				Files.write(GSON.toJson(currentEntries), CONFIG, Charsets.UTF_8);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 			dirty = false;
 		}
 	}
 
-	private static void writeDefaultFile()
-	{
+	private static void writeDefaultFile() {
 		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<>()));
 		elem.add("__comment", new JsonPrimitive("Use the in-game commands to edit this file"));
-		try
-		{
+		try {
 			Files.write(GSON.toJson(elem), CONFIG, Charsets.UTF_8);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

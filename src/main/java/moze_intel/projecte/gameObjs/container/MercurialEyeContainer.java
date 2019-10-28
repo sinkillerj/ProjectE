@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
+import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
@@ -14,20 +15,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 
-import javax.annotation.Nonnull;
+public class MercurialEyeContainer extends Container {
 
-public class MercurialEyeContainer extends Container
-{
 	private final MercurialEyeInventory inventory;
 
-	public static MercurialEyeContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf)
-	{
+	public static MercurialEyeContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
 		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 		return new MercurialEyeContainer(windowId, invPlayer, hand);
 	}
 
-	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand)
-	{
+	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
 		super(ObjHandler.MERCURIAL_EYE_CONTAINER, windowId);
 		inventory = new MercurialEyeInventory(invPlayer.player.getHeldItem(hand));
 
@@ -36,48 +33,45 @@ public class MercurialEyeContainer extends Container
 
 		//Target
 		this.addSlot(new SlotGhost(inventory, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
-		
+
 		//Player inventory
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 9; j++)
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 9; j++) {
 				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 56 + i * 18));
-		
+			}
+		}
+
 		//Hotbar
-		for (int i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++) {
 			this.addSlot(new Slot(invPlayer, i, 6 + i * 18, 114));
+		}
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity var1)
-	{
+	public boolean canInteractWith(@Nonnull PlayerEntity var1) {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player)
-	{
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem)
-		{
+	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
+		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem) {
 			return ItemStack.EMPTY;
 		}
 
-		if (slot == 1 && !inventory.getStackInSlot(slot).isEmpty())
-		{
+		if (slot == 1 && !inventory.getStackInSlot(slot).isEmpty()) {
 			inventory.setStackInSlot(1, ItemStack.EMPTY);
 		}
-		
+
 		return super.slotClick(slot, button, flag, player);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex)
-	{
+	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack())
-		{
+		if (slot == null || !slot.getHasStack()) {
 			return ItemStack.EMPTY;
 		}
 
@@ -86,35 +80,26 @@ public class MercurialEyeContainer extends Container
 
 		if (slotIndex < 2) // Moving to player inventory
 		{
-			if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), true))
+			if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), true)) {
 				return ItemStack.EMPTY;
+			}
 			slot.onSlotChanged();
-		}
-		else // Moving from player inventory
+		} else // Moving from player inventory
 		{
-			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack().isEmpty())
-			{ // Is a valid klein star and the slot is empty?
+			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack().isEmpty()) { // Is a valid klein star and the slot is empty?
 				inventorySlots.get(0).putStack(stack.split(1));
-			}
-			else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack().isEmpty())
-			{ // Is a valid target block and the slot is empty?
+			} else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack().isEmpty()) { // Is a valid target block and the slot is empty?
 				inventorySlots.get(1).putStack(stack.split(1));
-			}
-			else // Is neither, ignore
+			} else // Is neither, ignore
 			{
 				return ItemStack.EMPTY;
 			}
-
 		}
-		if (stack.isEmpty())
-		{
+		if (stack.isEmpty()) {
 			slot.putStack(ItemStack.EMPTY);
-		}
-		else
-		{
+		} else {
 			slot.onSlotChanged();
 		}
-
 		return slot.onTake(player, newStack);
 	}
 }

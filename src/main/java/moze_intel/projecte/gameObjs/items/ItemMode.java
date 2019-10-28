@@ -13,13 +13,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge
-{
+public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge {
+
 	private final int numCharge;
 	private final String[] modes;
-	
-	public ItemMode(Properties props, int numCharge, String[] modeDescrp)
-	{
+
+	public ItemMode(Properties props, int numCharge, String[] modeDescrp) {
 		super(props);
 		this.numCharge = numCharge;
 		this.modes = modeDescrp;
@@ -31,30 +30,25 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge
 	public String[] getModeTranslationKeys() {
 		return modes;
 	}
-	
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced)
-	{
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced) {
 		list.add(getToolTip(stack));
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
+	public boolean showDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
+	public double getDurabilityForDisplay(ItemStack stack) {
 		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack)
-	{
+	public int getNumCharges(@Nonnull ItemStack stack) {
 		return numCharge;
 	}
 }
-

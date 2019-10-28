@@ -14,20 +14,19 @@ import java.util.Map;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.utils.Constants;
 
-public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
-{
+public class FixedValuesDeserializer implements JsonDeserializer<FixedValues> {
+
 	@Override
-	public FixedValues deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-	{
+	public FixedValues deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		FixedValues fixed = new FixedValues();
 		JsonObject o = json.getAsJsonObject();
-		for(Map.Entry<String, JsonElement> entry: o.entrySet()) {
+		for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
 			if (entry.getKey().equals("before")) {
 				fixed.setValueBefore = parseSetValueMap(entry.getValue().getAsJsonObject(), context);
 			} else if (entry.getKey().equals("after")) {
 				fixed.setValueAfter = parseSetValueMap(entry.getValue().getAsJsonObject(), context);
 			} else if (entry.getKey().equals("conversion")) {
-				fixed.conversion = context.deserialize(entry.getValue().getAsJsonArray(), new TypeToken<List<CustomConversion>>(){}.getType());
+				fixed.conversion = context.deserialize(entry.getValue().getAsJsonArray(), new TypeToken<List<CustomConversion>>() {}.getType());
 			} else {
 				throw new JsonParseException(String.format("Can not parse \"%s\":%s in fixedValues", entry.getKey(), entry.getValue()));
 			}
@@ -37,10 +36,10 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues>
 
 	private Map<NormalizedSimpleStack, Long> parseSetValueMap(JsonObject o, JsonDeserializationContext context) {
 		Map<NormalizedSimpleStack, Long> out = new HashMap<>();
-		for (Map.Entry<String, JsonElement> entry: o.entrySet()) {
+		for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
 			JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();
 			if (primitive.isNumber()) {
-				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class),  primitive.getAsLong());
+				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), primitive.getAsLong());
 				continue;
 			} else if (primitive.isString()) {
 				if (primitive.getAsString().toLowerCase().equals("free")) {

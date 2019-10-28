@@ -5,8 +5,8 @@ import java.util.Map;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 
-public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A>
-{
+public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A> {
+
 	private final A defaultArithmetic;
 
 	AbstractMappingCollector(A defaultArithmetic) {
@@ -32,8 +32,7 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 	}
 
 	@Override
-	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients)
-	{
+	public void setValueFromConversion(int outnumber, T something, Iterable<T> ingredients) {
 		this.setValueFromConversion(outnumber, something, listToMapOfCounts(ingredients));
 	}
 
@@ -46,13 +45,11 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
 	}
 
 	@Override
-	public A getArithmetic()
-	{
+	public A getArithmetic() {
 		return this.defaultArithmetic;
 	}
 
 	@Override
 	public void finishCollection() {
-
 	}
 }

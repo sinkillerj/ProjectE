@@ -36,74 +36,59 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 
-public class ArchangelSmite extends PEToggleItem implements IPedestalItem
-{
-	public ArchangelSmite(Properties props)
-	{
+public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
+
+	public ArchangelSmite(Properties props) {
 		super(props);
 		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
 		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 	}
 
-	public void fireVolley(ItemStack stack, PlayerEntity player)
-	{
-		for (int i = 0; i < 10; i++)
-		{
+	public void fireVolley(ItemStack stack, PlayerEntity player) {
+		for (int i = 0; i < 10; i++) {
 			fireArrow(stack, player.world, player, 4F);
 		}
 	}
 
-	private void emptyLeftClick(PlayerInteractEvent.LeftClickEmpty evt)
-	{
+	private void emptyLeftClick(PlayerInteractEvent.LeftClickEmpty evt) {
 		PacketHandler.sendToServer(new LeftClickArchangelPKT());
 	}
 
-	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
-	{
-		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY
-				&& !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this)
-		{
+	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt) {
+		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY && !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this) {
 			fireVolley(evt.getItemStack(), evt.getPlayer());
 		}
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity)
-	{
-		if (!player.world.isRemote)
-		{
+	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+		if (!player.world.isRemote) {
 			fireVolley(stack, player);
 		}
 		return super.onLeftClickEntity(stack, player, entity);
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5)
-	{
-		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity)
-		{
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5) {
+		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity) {
 			fireArrow(stack, world, ((LivingEntity) entity), 1F);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
-		if (!world.isRemote)
-		{
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isRemote) {
 			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
-	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy)
-	{
+	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 
-		if (!(shooter instanceof PlayerEntity) || consumeFuel(((PlayerEntity) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true))
-		{
+		if (!(shooter instanceof PlayerEntity) || consumeFuel(((PlayerEntity) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 			world.addEntity(arrow);
@@ -111,23 +96,17 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos)
-	{
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.archangel.get() != -1)
-		{
+	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+		if (!world.isRemote && ProjectEConfig.pedestalCooldown.archangel.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile))
-			{
+			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
 
 			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0)
-			{
-				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty())
-				{
-					for (int i = 0; i < 3; i++)
-					{
+			if (tile.getActivityCooldown() == 0) {
+				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
+					for (int i = 0; i < 3; i++) {
 						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((ServerWorld) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
@@ -138,9 +117,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem
 					}
 				}
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.archangel.get());
-			}
-			else
-			{
+			} else {
 				tile.decrementActivityCooldown();
 			}
 		}
@@ -148,8 +125,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription()
-	{
+	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.archangel.get() != -1) {
 			list.add(new TranslationTextComponent("pe.archangel.pedestal1").applyTextStyle(TextFormatting.BLUE));

@@ -42,11 +42,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction
-{
-	public PhilosophersStone(Properties props)
-	{
-		super(props, (byte)4, new String[] {
+public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
+
+	public PhilosophersStone(Properties props) {
+		super(props, (byte) 4, new String[]{
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
@@ -55,70 +54,60 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
-	{
+	public boolean hasContainerItem(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
-	{
+	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
 
-	public RayTraceResult getHitBlock(PlayerEntity player)
-	{
+	public RayTraceResult getHitBlock(PlayerEntity player) {
 		return rayTrace(player.getEntityWorld(), player, player.isSneaking() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
-	{
+	public ActionResultType onItemUse(ItemUseContext ctx) {
 		BlockPos pos = ctx.getPos();
 		Direction sideHit = ctx.getFace();
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
 		ItemStack stack = ctx.getItem();
 
-		if (world.isRemote)
-		{
+		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
 
 		RayTraceResult rtr = getHitBlock(player);
 
-		if (rtr instanceof BlockRayTraceResult && !((BlockRayTraceResult) rtr).getPos().equals(pos))
-		{
+		if (rtr instanceof BlockRayTraceResult && !((BlockRayTraceResult) rtr).getPos().equals(pos)) {
 			pos = ((BlockRayTraceResult) rtr).getPos();
 			sideHit = ((BlockRayTraceResult) rtr).getFace();
 		}
 
 		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
 
-		if (result != null)
-		{
+		if (result != null) {
 			int mode = this.getMode(stack);
 			int charge = this.getCharge(stack);
 
-			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge))
-			{
+			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge)) {
 				PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), currentPos, result);
-				if (world.rand.nextInt(8) == 0)
-				{
+				if (world.rand.nextInt(8) == 0) {
 					((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
 
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		}
-		
+
 		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
 		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
@@ -126,60 +115,47 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		world.addEntity(ent);
 		return true;
 	}
-	
+
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand)
-	{
-		if (!player.getEntityWorld().isRemote)
-		{
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+		if (!player.getEntityWorld().isRemote) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack));
 		}
 
 		return true;
 	}
-	
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags)
-	{
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
 		super.addInformation(stack, world, list, flags);
 		list.add(new TranslationTextComponent("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge)
-	{
+	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
 		Set<BlockPos> ret = new HashSet<>();
 		BlockState targeted = world.getBlockState(pos);
 		Stream<BlockPos> stream = null;
 
-		switch (mode)
-		{
+		switch (mode) {
 			case 0: // Cube
 				stream = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
 				break;
 			case 1: // Panel
-				if (sideHit == Direction.UP || sideHit == Direction.DOWN)
-				{
+				if (sideHit == Direction.UP || sideHit == Direction.DOWN) {
 					stream = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
-				}
-				else if (sideHit == Direction.EAST || sideHit == Direction.WEST)
-				{
+				} else if (sideHit == Direction.EAST || sideHit == Direction.WEST) {
 					stream = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
-				}
-				else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH)
-				{
+				} else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH) {
 					stream = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
 				}
 				break;
 			case 2: // Line
 				Direction playerFacing = player.getHorizontalFacing();
 
-				if (playerFacing.getAxis() == Direction.Axis.Z)
-				{
+				if (playerFacing.getAxis() == Direction.Axis.Z) {
 					stream = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
-				}
-				else if (playerFacing.getAxis() == Direction.Axis.X)
-				{
+				} else if (playerFacing.getAxis() == Direction.Axis.X) {
 					stream = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
 				}
 				break;
@@ -188,8 +164,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		if (stream != null) {
 			stream.forEach(currentPos ->
 			{
-				if (world.getBlockState(currentPos) == targeted)
-				{
+				if (world.getBlockState(currentPos) == targeted) {
 					ret.add(currentPos.toImmutable());
 				}
 			});
@@ -198,12 +173,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return ret;
 	}
 
-	private static class ContainerProvider implements INamedContainerProvider
-	{
+	private static class ContainerProvider implements INamedContainerProvider {
+
 		private final ItemStack stack;
 
-		private ContainerProvider(ItemStack stack)
-		{
+		private ContainerProvider(ItemStack stack) {
 			this.stack = stack;
 		}
 
@@ -215,8 +189,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName()
-		{
+		public ITextComponent getDisplayName() {
 			return stack.getDisplayName();
 		}
 	}

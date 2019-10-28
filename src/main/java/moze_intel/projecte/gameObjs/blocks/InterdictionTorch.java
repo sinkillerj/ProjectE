@@ -1,18 +1,16 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+public class InterdictionTorch extends TorchBlock {
 
-public class InterdictionTorch extends TorchBlock
-{
-	public InterdictionTorch(Properties props)
-	{
+	public InterdictionTorch(Properties props) {
 		super(props);
 	}
 
@@ -23,8 +21,7 @@ public class InterdictionTorch extends TorchBlock
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
-	{
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
 		return new InterdictionTile();
 	}
 }

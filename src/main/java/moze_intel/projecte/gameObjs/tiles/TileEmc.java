@@ -15,23 +15,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
-{
-	public TileEmc(TileEntityType<?> type)
-	{
+public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity {
+
+	public TileEmc(TileEntityType<?> type) {
 		super(type);
 		setMaximumEMC(Constants.TILE_MAX_EMC);
 	}
-	
-	public TileEmc(TileEntityType<?> type, long maxAmount)
-	{
+
+	public TileEmc(TileEntityType<?> type, long maxAmount) {
 		super(type);
 		setMaximumEMC(maxAmount);
 	}
 
 	@Override
-	public final CompoundNBT getUpdateTag()
-	{
+	public final CompoundNBT getUpdateTag() {
 		return write(new CompoundNBT());
 	}
 
@@ -39,6 +36,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 	 * The amount provided will be divided and evenly distributed as best as possible between adjacent IEmcStorage. This is limited also by our max extract limit
 	 *
 	 * @param emc The maximum combined emc to send to others
+	 *
 	 * @return The amount of Emc we actually sent
 	 */
 	protected long sendToAllAcceptors(long emc) {
@@ -87,16 +85,14 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 		return sentEmc;
 	}
 
-	class StackHandler extends ItemStackHandler
-	{
-		StackHandler(int size)
-		{
+	class StackHandler extends ItemStackHandler {
+
+		StackHandler(int size) {
 			super(size);
 		}
 
 		@Override
-		public void onContentsChanged(int slot)
-		{
+		public void onContentsChanged(int slot) {
 			TileEmc.this.markDirty();
 		}
 	}

@@ -11,12 +11,11 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
+
 	@SubscribeEvent
-	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
-	{
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		Minecraft mc = Minecraft.getInstance();
-		if (event.getEntity() instanceof EntitySWRGProjectile && mc.mouseHelper.isMouseGrabbed())
-		{
+		if (event.getEntity() instanceof EntitySWRGProjectile && mc.mouseHelper.isMouseGrabbed()) {
 			mc.getSoundHandler().play(new MovingSoundSWRG((EntitySWRGProjectile) event.getEntity()));
 		}
 	}

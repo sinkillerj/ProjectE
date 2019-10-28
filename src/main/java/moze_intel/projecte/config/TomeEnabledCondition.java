@@ -7,32 +7,32 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 public class TomeEnabledCondition implements ICondition {
-    private static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "tome_enabled");
 
-    @Override
-    public ResourceLocation getID() {
-        return ID;
-    }
+	private static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "tome_enabled");
 
-    @Override
-    public boolean test() {
-        return ProjectEConfig.difficulty.craftableTome.get();
-    }
+	@Override
+	public ResourceLocation getID() {
+		return ID;
+	}
 
-    public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {
-        @Override
-        public void write(JsonObject json, TomeEnabledCondition value) {
+	@Override
+	public boolean test() {
+		return ProjectEConfig.difficulty.craftableTome.get();
+	}
 
-        }
+	public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {
+		@Override
+		public void write(JsonObject json, TomeEnabledCondition value) {
+		}
 
-        @Override
-        public TomeEnabledCondition read(JsonObject json) {
-            return new TomeEnabledCondition();
-        }
+		@Override
+		public TomeEnabledCondition read(JsonObject json) {
+			return new TomeEnabledCondition();
+		}
 
-        @Override
-        public ResourceLocation getID() {
-            return ID;
-        }
-    };
+		@Override
+		public ResourceLocation getID() {
+			return ID;
+		}
+	};
 }

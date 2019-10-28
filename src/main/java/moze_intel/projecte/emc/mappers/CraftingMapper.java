@@ -31,6 +31,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+
 	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new RecipeStagesRecipeMapper());
 
 	@Override
@@ -41,18 +42,23 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		for (IRecipe recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (recipeOutput.isEmpty()) continue;
+			if (recipeOutput.isEmpty()) {
+				continue;
+			}
 			NormalizedSimpleStack recipeOutputNorm = NSSItem.createItem(recipeOutput);
 			for (IRecipeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
-				if (!EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true))
+				if (!EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), true)) {
 					continue;
+				}
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
 					for (CraftingIngredients variation : recipeMapper.getIngredientsFor(recipe)) {
 						IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 						for (ItemStack stack : variation.fixedIngredients) {
-							if (stack.isEmpty()) continue;
+							if (stack.isEmpty()) {
+								continue;
+							}
 							if (stack.getItem().hasContainerItem(stack)) {
 								ingredientMap.addIngredient(NSSItem.createItem(stack.getItem().getContainerItem(stack)), -1);
 							}
@@ -62,7 +68,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
 							ingredientMap.addIngredient(dummy, 1);
 							for (ItemStack stack : multiIngredient) {
-								if (stack.isEmpty()) continue;
+								if (stack.isEmpty()) {
+									continue;
+								}
 								IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
 								if (stack.getItem().hasContainerItem(stack)) {
 									groupIngredientMap.addIngredient(NSSItem.createItem(stack.getItem().getContainerItem(stack)), -1);
@@ -84,7 +92,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		}
 
 		PECore.debugLog("CraftingMapper Statistics:");
-		for (Map.Entry<ResourceLocation, Integer> entry: recipeCount.entrySet()) {
+		for (Map.Entry<ResourceLocation, Integer> entry : recipeCount.entrySet()) {
 			PECore.debugLog("Found {} Recipes of Type {}", entry.getValue(), entry.getKey());
 		}
 		for (Class<?> c : canNotMap) {
@@ -108,8 +116,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	public interface IRecipeMapper {
+
 		String getName();
+
 		String getDescription();
+
 		boolean canHandle(IRecipe recipe);
 
 		default Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
@@ -133,8 +144,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	private static class CraftingIngredients {
+
 		public final Iterable<ItemStack> fixedIngredients;
 		public final Iterable<Iterable<ItemStack>> multiIngredients;
+
 		public CraftingIngredients(Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
 			this.fixedIngredients = fixedIngredients;
 			this.multiIngredients = multiIngredients;

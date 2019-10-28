@@ -22,21 +22,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID)
-public class TickEvents
-{
+public class TickEvents {
+
 	@SubscribeEvent
-	public static void playerTick(TickEvent.PlayerTickEvent event)
-	{
-		if (event.phase == TickEvent.Phase.END)
-		{
+	public static void playerTick(TickEvent.PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.END) {
 			event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
 				Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
 
-				for (DyeColor color : getBagColorsPresent(event.player))
-				{
+				for (DyeColor color : getBagColorsPresent(event.player)) {
 					IItemHandler inv = provider.getBag(color);
-					for (int i = 0; i < inv.getSlots(); i++)
-					{
+					for (int i = 0; i < inv.getSlots(); i++) {
 						ItemStack current = inv.getStackInSlot(i);
 						if (!current.isEmpty()) {
 							current.getCapability(ProjectEAPI.ALCH_BAG_ITEM_CAPABILITY).ifPresent(alchBagItem -> {
@@ -48,67 +44,51 @@ public class TickEvents
 					}
 				}
 
-				for (DyeColor e : colorsChanged)
-				{
-					if (event.player.openContainer instanceof AlchBagContainer)
-					{
+				for (DyeColor e : colorsChanged) {
+					if (event.player.openContainer instanceof AlchBagContainer) {
 						ItemStack heldItem = event.player.getHeldItem(((AlchBagContainer) event.player.openContainer).hand);
 						if (heldItem.getItem() instanceof AlchemicalBag && ((AlchemicalBag) heldItem.getItem()).color == e)
-							// Do not sync if this color is open, the container system does it for us
-							// and we'll stay out of its way.
+						// Do not sync if this color is open, the container system does it for us
+						// and we'll stay out of its way.
+						{
 							continue;
+						}
 					}
 
 					provider.sync(e, (ServerPlayerEntity) event.player);
 				}
 			});
 
-			if (!event.player.getEntityWorld().isRemote)
-			{
+			if (!event.player.getEntityWorld().isRemote) {
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
-				if (event.player.isBurning() && shouldPlayerResistFire((ServerPlayerEntity) event.player))
-				{
+				if (event.player.isBurning() && shouldPlayerResistFire((ServerPlayerEntity) event.player)) {
 					event.player.extinguish();
 				}
 			}
 		}
 	}
 
-	public static boolean shouldPlayerResistFire(ServerPlayerEntity player)
-	{
-		for (ItemStack stack : player.inventory.armorInventory)
-		{
-			if (!stack.isEmpty()
-					&& stack.getItem() instanceof IFireProtector
-					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
-			{
+	public static boolean shouldPlayerResistFire(ServerPlayerEntity player) {
+		for (ItemStack stack : player.inventory.armorInventory) {
+			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
 		}
 
-		for (int i = 0; i <= 8; i++)
-		{
+		for (int i = 0; i <= 8; i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);
 
-			if (!stack.isEmpty()
-					&& stack.getItem() instanceof IFireProtector
-					&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
-			{
+			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
 		}
 
 		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null)
-		{
-			for (int i = 0; i < curios.getSlots(); i++)
-			{
+		if (curios != null) {
+			for (int i = 0; i < curios.getSlots(); i++) {
 				ItemStack stack = curios.getStackInSlot(i);
-				if (!stack.isEmpty()
-						&& stack.getItem() instanceof IFireProtector
-						&& ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player))
-				{
+				if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 					return true;
 				}
 			}
@@ -117,21 +97,16 @@ public class TickEvents
 		return false;
 	}
 
-	private static Set<DyeColor> getBagColorsPresent(PlayerEntity player)
-	{
+	private static Set<DyeColor> getBagColorsPresent(PlayerEntity player) {
 		Set<DyeColor> bagsPresent = EnumSet.noneOf(DyeColor.class);
-
 		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> {
-			for (int i = 0; i < inv.getSlots(); i++)
-			{
+			for (int i = 0; i < inv.getSlots(); i++) {
 				ItemStack stack = inv.getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag)
-				{
+				if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag) {
 					bagsPresent.add(((AlchemicalBag) stack.getItem()).color);
 				}
 			}
 		});
-
 		return bagsPresent;
 	}
 }

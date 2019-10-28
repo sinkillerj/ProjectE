@@ -42,17 +42,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter
-{
-	private final static String[] modes = new String[] {
-		  "pe.arcana.mode.0",
-		  "pe.arcana.mode.1",
-		  "pe.arcana.mode.2",
-		  "pe.arcana.mode.3"
+public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
+
+	private final static String[] modes = new String[]{
+			"pe.arcana.mode.0",
+			"pe.arcana.mode.1",
+			"pe.arcana.mode.2",
+			"pe.arcana.mode.3"
 	};
 
-	public Arcana(Properties props)
-	{
+	public Arcana(Properties props) {
 		super(props);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
@@ -62,27 +61,22 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
-	{
+	public boolean hasContainerItem(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
-	{
+	public ItemStack getContainerItem(ItemStack stack) {
 		return stack.copy();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> list)
-	{
-		if (isInGroup(group))
-		{
-			for (byte i = 0; i < getModeCount(); ++i)
-			{
+	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> list) {
+		if (isInGroup(group)) {
+			for (byte i = 0; i < getModeCount(); ++i) {
 				ItemStack stack = new ItemStack(this);
-                stack.getOrCreateTag().putByte(getModeTag(), i);
+				stack.getOrCreateTag().putByte(getModeTag(), i);
 				list.add(stack);
 			}
 		}
@@ -92,13 +86,10 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public String[] getModeTranslationKeys() {
 		return modes;
 	}
-	
-	private void tick(ItemStack stack, World world, ServerPlayerEntity player)
-	{
-        if(stack.getOrCreateTag().getBoolean(TAG_ACTIVE))
-		{
-			switch(getMode(stack))
-			{
+
+	private void tick(ItemStack stack, World world, ServerPlayerEntity player) {
+		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+			switch (getMode(stack)) {
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().grow(5), player, true);
 					break;
@@ -116,25 +107,20 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held)
-	{
-		if(world.isRemote || slot > 8 || !(entity instanceof ServerPlayerEntity)) return;
-		
-		tick(stack, world, (ServerPlayerEntity)entity);
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isRemote || slot > 8 || !(entity instanceof ServerPlayerEntity)) {
+			return;
+		}
+		tick(stack, world, (ServerPlayerEntity) entity);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags)
-	{
-		if(stack.hasTag())
-		{
-			if(!stack.getTag().getBoolean(TAG_ACTIVE))
-			{
+	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
+		if (stack.hasTag()) {
+			if (!stack.getTag().getBoolean(TAG_ACTIVE)) {
 				list.add(new TranslationTextComponent("pe.arcana.inactive").setStyle(new Style().setColor(TextFormatting.RED)));
-			}
-			else
-			{
+			} else {
 				list.add(getToolTip(stack));
 			}
 		}
@@ -142,15 +128,13 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
-	{
-		if(!world.isRemote)
-		{
-            CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isRemote) {
+			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
 
 			compound.putBoolean(TAG_ACTIVE, !compound.getBoolean(TAG_ACTIVE));
 		}
-		
+
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
@@ -158,33 +142,27 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) // GIANT FIRE ROW OF DEATH
 	{
 		World world = player.getEntityWorld();
-		
-		if(world.isRemote) return true;
 
-        switch(getMode(stack))
-		{
+		if (world.isRemote) {
+			return true;
+		}
+
+		switch (getMode(stack)) {
 			case 1: // ignition
-				switch(player.getHorizontalFacing())
-				{
+				switch (player.getHorizontalFacing()) {
 					case SOUTH: // fall through
-					case NORTH:
-					{
-						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3)))
-						{
-							if (world.isAirBlock(pos))
-							{
+					case NORTH: {
+						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3))) {
+							if (world.isAirBlock(pos)) {
 								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
 					}
 					case WEST: // fall through
-					case EAST:
-					{
-						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30)))
-						{
-							if (world.isAirBlock(pos))
-							{
+					case EAST: {
+						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30))) {
+							if (world.isAirBlock(pos)) {
 								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
@@ -199,14 +177,14 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand)
-	{
+	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		
-		if(world.isRemote) return false;
 
-        switch(getMode(stack))
-		{
+		if (world.isRemote) {
+			return false;
+		}
+
+		switch (getMode(stack)) {
 			case 0: // zero
 				SnowballEntity snowball = new SnowballEntity(world, player);
 				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
@@ -225,19 +203,17 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 				world.addEntity(lightning);
 				break;
 		}
-		
+
 		return true;
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player)
-	{
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
 		return true;
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player)
-	{
+	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player) {
 		return true;
 	}
 }
