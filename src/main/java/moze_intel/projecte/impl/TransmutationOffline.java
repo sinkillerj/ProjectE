@@ -2,6 +2,7 @@ package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.math.BigInteger;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -123,12 +124,12 @@ public class TransmutationOffline
             }
 
             @Override
-            public long getEmc() {
+            public BigInteger getEmc() {
                 return toCopy.getEmc();
             }
 
             @Override
-            public void setEmc(long emc) {}
+            public void setEmc(BigInteger emc) {}
 
             @Override
             public void sync(@Nonnull ServerPlayerEntity player) {
