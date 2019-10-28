@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import java.math.BigInteger;
-import moze_intel.projecte.api.item.IItemEmc;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
