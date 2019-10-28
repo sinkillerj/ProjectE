@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -26,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
+public class CondenserTile extends TileEmc implements INamedContainerProvider
 {
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
@@ -40,14 +39,23 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 	public int numPlayersUsing;
 	public long requiredEmc;
 
-	public CondenserTile()
-	{
+	public CondenserTile() {
 		this(ObjHandler.CONDENSER_TILE);
 	}
 
 	CondenserTile(TileEntityType<?> type)
 	{
 		super(type);
+	}
+
+	@Override
+	protected boolean canAcceptEmc() {
+		return isAcceptingEmc;
+	}
+
+	@Override
+	protected boolean canProvideEmc() {
+		return false;
 	}
 
 	public ItemStackHandler getLock()
@@ -185,13 +193,13 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 			}
 
 			inputInventory.extractItem(i, 1, false);
-			this.addEMC(EMCHelper.getEmcSellValue(stack));
+			forceInsertEmc(EMCHelper.getEmcSellValue(stack), EmcAction.EXECUTE);
 			break;
 		}
 
 		if (this.getStoredEmc() >= requiredEmc && this.hasSpace())
 		{
-			this.removeEMC(requiredEmc);
+			forceExtractEmc(requiredEmc, EmcAction.EXECUTE);
 			pushStack();
 		}
 	}
@@ -316,21 +324,6 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor, INamedContai
 			return true;
 		}
 		else return super.receiveClientEvent(number, arg);
-	}
-
-	@Override
-	public long acceptEMC(@Nonnull Direction side, long toAccept)
-	{
-		if (isAcceptingEmc)
-		{
-			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
-			addEMC(toAdd);
-			return toAdd;
-		}
-		else
-		{
-			return 0;
-		}
 	}
 
 	@Override

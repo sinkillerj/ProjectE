@@ -38,7 +38,7 @@ public class CollectorMK1Container extends PEContainer
 		this(ObjHandler.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
 	}
 
-	private CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
+	protected CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector)
 	{
 		super(type, windowId);
 		this.longFields.add(emc);

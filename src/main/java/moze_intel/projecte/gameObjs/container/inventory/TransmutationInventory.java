@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.emc.FuelMapper;
@@ -339,14 +340,14 @@ public class TransmutationInventory extends CombinedInvWrapper
 				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-					long neededEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
+					long neededEmc = emcHolder.getNeededEmc(stack);
 					if (value <= neededEmc) {
 						//This item can store all of the amount being added
-						emcHolder.addEmc(stack, value);
+						emcHolder.insertEmc(stack, value, EmcAction.EXECUTE);
 						return;
 					}
 					//else more than this item can fit, so fill the item and then continue going
-					emcHolder.addEmc(stack, neededEmc);
+					emcHolder.insertEmc(stack, neededEmc, EmcAction.EXECUTE);
 					value -= neededEmc;
 				}
 			}
@@ -363,8 +364,8 @@ public class TransmutationInventory extends CombinedInvWrapper
 				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-					long neededEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
-					emcHolder.addEmc(stack, Math.min(excessEMC, neededEmc));
+					long neededEmc = emcHolder.getNeededEmc(stack);
+					emcHolder.insertEmc(stack, Math.min(excessEMC, neededEmc), EmcAction.EXECUTE);
 				}
 			}
 		}
@@ -406,10 +407,10 @@ public class TransmutationInventory extends CombinedInvWrapper
 					long storedEmc = emcHolder.getStoredEmc(stack);
 					if (storedEmc >= value) {
 						//All of it can be removed from the lock item
-						emcHolder.extractEmc(stack, value);
+						emcHolder.extractEmc(stack, value, EmcAction.EXECUTE);
 						return;
 					}
-					emcHolder.extractEmc(stack, storedEmc);
+					emcHolder.extractEmc(stack, storedEmc, EmcAction.EXECUTE);
 					value -= storedEmc;
 				}
 			}
@@ -436,11 +437,11 @@ public class TransmutationInventory extends CombinedInvWrapper
 						if (toRemove <= storedEmc) {
 							//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
 							//Remove it and then
-							emcHolder.extractEmc(stack, toRemove);
+							emcHolder.extractEmc(stack, toRemove, EmcAction.EXECUTE);
 							break;
 						}
 						//Removes all the emc from this item
-						emcHolder.extractEmc(stack, storedEmc);
+						emcHolder.extractEmc(stack, storedEmc, EmcAction.EXECUTE);
 						toRemove -= storedEmc;
 					}
 				}

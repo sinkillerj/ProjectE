@@ -16,6 +16,7 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
@@ -44,6 +45,7 @@ import moze_intel.projecte.impl.capability.AlchBagItemDefaultImpl;
 import moze_intel.projecte.impl.capability.AlchChestItemDefaultImpl;
 import moze_intel.projecte.impl.capability.ChargeItemDefaultImpl;
 import moze_intel.projecte.impl.capability.EmcHolderItemDefaultImpl;
+import moze_intel.projecte.impl.capability.EmcStorageDefaultImpl;
 import moze_intel.projecte.impl.capability.ExtraFunctionItemDefaultImpl;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.impl.capability.ModeChangerItemDefaultImpl;
@@ -213,6 +215,7 @@ public class PECore
 		CapabilityManager.INSTANCE.register(IModeChanger.class, new DummyIStorage<>(), ModeChangerItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IPedestalItem.class, new DummyIStorage<>(), PedestalItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
+		CapabilityManager.INSTANCE.register(IEmcStorage.class, new DummyIStorage<>(), EmcStorageDefaultImpl::new);
 
 		if (ModList.get().isLoaded("curios"))
 		{

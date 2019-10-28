@@ -4,8 +4,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -34,7 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAcceptor, INamedContainerProvider
+public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 {
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
@@ -80,6 +78,12 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	{
 		super(type, maxEmc);
 		this.emcGen = emcGen;
+	}
+
+	@Override
+	protected boolean canAcceptEmc() {
+		//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise it sends it to providers
+		return hasFuel || hasChargeableItem;
 	}
 
 	public IItemHandler getInput()
@@ -150,12 +154,10 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 	private void rotateUpgraded()
 	{
-		if (!getUpgraded().isEmpty())
-		{
-			if (getLock().isEmpty()
-					|| getUpgraded().getItem() != getLock().getItem()
-					|| getUpgraded().getCount() >= getUpgraded().getMaxStackSize()) {
-				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, getUpgraded().copy(), false));
+		ItemStack upgraded = getUpgraded();
+		if (!upgraded.isEmpty()) {
+			if (getLock().isEmpty() || upgraded.getItem() != getLock().getItem() || upgraded.getCount() >= upgraded.getMaxStackSize()) {
+				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, upgraded.copy(), false));
 			}
 		}
 	}
@@ -167,7 +169,7 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 			LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				if (emcHolder.getStoredEmc(upgrading) != emcHolder.getMaximumEmc(upgrading)) {
+				if (emcHolder.getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
 					hasFuel = false;
 				} else {
@@ -185,21 +187,15 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	
 	private void updateEmc()
 	{
-		if (!this.hasMaxedEmc())
-		{
+		if (!this.hasMaxedEmc()) {
 			unprocessedEMC += emcGen * (getSunLevel() / 320.0f);
 			if (unprocessedEMC >= 1) {
-				long emcToAdd = (long) unprocessedEMC;
-				this.addEMC(emcToAdd);
-				unprocessedEMC -= emcToAdd;
+				//Force add the EMC regardless of if we can receive EMC from external sources
+				unprocessedEMC -= forceInsertEmc((long) unprocessedEMC, EmcAction.EXECUTE);
 			}
 		}
 
-		if (this.getStoredEmc() == 0)
-		{
-			return;
-		}
-		else {
+		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
 			if (hasChargeableItem)
 			{
@@ -208,15 +204,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
 
-					long itemEmc = emcHolder.getStoredEmc(upgrading);
-					long maxItemEmc = emcHolder.getMaximumEmc(upgrading);
-
-					if ((itemEmc + toSend) > maxItemEmc) {
-						toSend = maxItemEmc - itemEmc;
+					long neededItemEmc = emcHolder.getNeededEmc(upgrading);
+					if (toSend > neededItemEmc) {
+						toSend = neededItemEmc;
 					}
 
-					emcHolder.addEmc(upgrading, toSend);
-					this.removeEMC(toSend);
+					emcHolder.insertEmc(upgrading, toSend, EmcAction.EXECUTE);
+					forceExtractEmc(toSend, EmcAction.EXECUTE);
 				}
 			}
 			else if (hasFuel)
@@ -236,13 +230,13 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 
 					if (getUpgraded().isEmpty())
 					{
-						this.removeEMC(upgradeCost);
+						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 						upgrading.shrink(1);
 					}
 					else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize())
 					{
-						this.removeEMC(upgradeCost);
+						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						getUpgraded().grow(1);
 						upgrading.shrink(1);
 					}
@@ -396,14 +390,6 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 		}
 	}
 
-	@Override
-	public long provideEMC(@Nonnull Direction side, long toExtract)
-	{
-		long toRemove = Math.min(currentEMC, toExtract);
-		removeEMC(toRemove);
-		return toRemove;
-	}
-
 	@Nonnull
 	@Override
 	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn)
@@ -416,18 +402,5 @@ public class CollectorMK1Tile extends TileEmc implements IEmcProvider, IEmcAccep
 	public ITextComponent getDisplayName()
 	{
 		return new StringTextComponent(getType().getRegistryName().toString());
-	}
-
-	@Override
-	public long acceptEMC(@Nonnull Direction side, long toAccept)
-	{
-		if (hasFuel || hasChargeableItem)
-		{
-			//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise it sends it to providers
-			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
-			currentEMC += toAdd;
-			return toAdd;
-		}
-		return 0;
 	}
 }

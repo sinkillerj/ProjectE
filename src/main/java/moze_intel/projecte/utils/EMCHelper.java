@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.KleinStar;
@@ -47,7 +48,7 @@ public final class EMCHelper
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
 				if (emcHolder.getStoredEmc(offhand) >= minFuel) {
-					emcHolder.extractEmc(offhand, minFuel);
+					emcHolder.extractEmc(offhand, minFuel, EmcAction.EXECUTE);
 					player.openContainer.detectAndSendChanges();
 					return minFuel;
 				}
@@ -65,7 +66,7 @@ public final class EMCHelper
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.orElse(null);
 				if (emcHolder.getStoredEmc(stack) >= minFuel) {
-					emcHolder.extractEmc(stack, minFuel);
+					emcHolder.extractEmc(stack, minFuel, EmcAction.EXECUTE);
 					player.openContainer.detectAndSendChanges();
 					return minFuel;
 				}

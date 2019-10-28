@@ -10,6 +10,7 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,6 +26,12 @@ public final class ProjectEAPI
 	public static final String PROJECTE_MODID = "projecte";
 
 	private ProjectEAPI() {}
+
+	/**
+	 * The capability object for IEmcStorage
+	 */
+	@CapabilityInject(IEmcStorage.class)
+	public static Capability<IEmcStorage> EMC_STORAGE_CAPABILITY = null;
 
 	/**
 	 * The capability object for IAlchBagProvider

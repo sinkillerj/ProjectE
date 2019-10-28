@@ -25,7 +25,7 @@ public class CollectorMK3Container extends CollectorMK1Container
 
 	public CollectorMK3Container(int windowId, PlayerInventory invPlayer, CollectorMK3Tile collector)
 	{
-		super(windowId, invPlayer, collector);
+		super(ObjHandler.COLLECTOR_MK3_CONTAINER, windowId, invPlayer, collector);
 	}
 
 	@Override

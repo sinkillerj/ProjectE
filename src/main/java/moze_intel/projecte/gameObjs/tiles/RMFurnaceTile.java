@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
@@ -48,7 +47,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContainerProvider
+public class RMFurnaceTile extends TileEmc implements INamedContainerProvider
 {
 	private static final long EMC_CONSUMPTION = 2;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
@@ -101,6 +100,16 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		super(type, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
+	}
+
+	@Override
+	protected boolean canProvideEmc() {
+		return false;
+	}
+
+	@Override
+	protected long getEmcInsertLimit() {
+		return EMC_CONSUMPTION;
 	}
 
 	@Override
@@ -202,16 +211,15 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
 					if (emcHolder.getStoredEmc(fuelItem) >= EMC_CONSUMPTION) {
-						emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION);
-						this.addEMC(EMC_CONSUMPTION);
+						emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.EXECUTE);
+						forceInsertEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
 					}
 				}
 			}
 			
-			if (this.getStoredEmc() >= EMC_CONSUMPTION)
-			{
+			if (this.getStoredEmc() >= EMC_CONSUMPTION) {
 				furnaceBurnTime = 1;
-				this.removeEMC(EMC_CONSUMPTION);
+				forceExtractEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
 			}
 			
 			if (furnaceBurnTime == 0 && canSmelt())
@@ -421,19 +429,6 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor, INamedContai
 		nbt.put("Output", outputInventory.serializeNBT());
 		nbt.put("Fuel", fuelInv.serializeNBT());
 		return nbt;
-	}
-
-	@Override
-	public long acceptEMC(@Nonnull Direction side, long toAccept)
-	{
-		if (this.getStoredEmc() < EMC_CONSUMPTION)
-		{
-			long needed = EMC_CONSUMPTION - this.getStoredEmc();
-			long accept = Math.min(needed, toAccept);
-			this.addEMC(accept);
-			return accept;
-		}
-		return 0;
 	}
 
 	@Nullable

@@ -3,6 +3,7 @@ package moze_intel.projecte.capability;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,13 +16,13 @@ public class EmcHolderItemCapabilityWrapper extends ItemCapability<IItemEmcHolde
 	}
 
 	@Override
-	public long addEmc(@Nonnull ItemStack stack, long toAdd) {
-		return getItem().addEmc(stack, toAdd);
+	public long insertEmc(@Nonnull ItemStack stack, long toInsert, EmcAction action) {
+		return getItem().insertEmc(stack, toInsert, action);
 	}
 
 	@Override
-	public long extractEmc(@Nonnull ItemStack stack, long toRemove) {
-		return getItem().extractEmc(stack, toRemove);
+	public long extractEmc(@Nonnull ItemStack stack, long toExtract, EmcAction action) {
+		return getItem().extractEmc(stack, toExtract, action);
 	}
 
 	@Override

@@ -59,7 +59,7 @@ public class CondenserMK2Tile extends CondenserTile
 		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc)
 		{
 			pushStack();
-			this.removeEMC(requiredEmc);
+			forceExtractEmc(requiredEmc, EmcAction.EXECUTE);
 		}
 
 		if (this.hasSpace())
@@ -73,7 +73,7 @@ public class CondenserMK2Tile extends CondenserTile
 					continue;
 				}
 
-				this.addEMC(EMCHelper.getEmcSellValue(stack) * stack.getCount());
+				forceInsertEmc(EMCHelper.getEmcSellValue(stack) * stack.getCount(), EmcAction.EXECUTE);
 				getInput().setStackInSlot(i, ItemStack.EMPTY);
 				break;
 			}

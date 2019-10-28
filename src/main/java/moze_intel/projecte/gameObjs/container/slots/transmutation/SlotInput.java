@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
@@ -53,17 +54,17 @@ public class SlotInput extends SlotItemHandler
 		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.orElse(null);
-			long remainingEmc = emcHolder.getMaximumEmc(stack) - emcHolder.getStoredEmc(stack);
+			long remainingEmc = emcHolder.getNeededEmc(stack);
 			long availableEMC = inv.getAvailableEMC();
 
 			if (availableEMC >= remainingEmc)
 			{
-				emcHolder.addEmc(stack, remainingEmc);
+				emcHolder.insertEmc(stack, remainingEmc, EmcAction.EXECUTE);
 				inv.removeEmc(remainingEmc);
 			}
 			else
 			{
-				emcHolder.addEmc(stack, availableEMC);
+				emcHolder.insertEmc(stack, availableEMC, EmcAction.EXECUTE);
 				inv.removeEmc(availableEMC);
 			}
 		}

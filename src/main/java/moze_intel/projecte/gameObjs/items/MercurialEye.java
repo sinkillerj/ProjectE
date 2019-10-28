@@ -9,6 +9,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.utils.EMCHelper;
@@ -351,15 +352,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			{
 				//Drop the block because it doesn't have an emc value
 				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getServerWorld(), placePos, null));
-				emcHolder.extractEmc(klein, newEMC);
+				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			}
 			else if (oldEMC > newEMC)
 			{
-				emcHolder.addEmc(klein, oldEMC - newEMC);
+				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);
 			}
 			else if (oldEMC < newEMC)
 			{
-				emcHolder.extractEmc(klein, newEMC - oldEMC);
+				emcHolder.extractEmc(klein, newEMC - oldEMC, EmcAction.EXECUTE);
 			}
 			return true;
 		}

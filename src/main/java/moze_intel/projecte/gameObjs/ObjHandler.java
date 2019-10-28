@@ -145,8 +145,8 @@ public class ObjHandler
 	public static final Block transmuteStone = new TransmutationStone(Block.Properties.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
 	public static final Block condenser = new Condenser(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
-	public static final Block rmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final Block dmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final Block dmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final Block rmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
 	public static final Block dmPedestal = new Pedestal(Block.Properties.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
 	//TODO: 1.14, Check this again, in 1.12 this would have equivalently had a resistance of 6 not something in the millions
 	public static final Block dmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");

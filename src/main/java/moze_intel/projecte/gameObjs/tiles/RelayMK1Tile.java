@@ -3,8 +3,6 @@ package moze_intel.projecte.gameObjs.tiles;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -27,7 +25,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider, INamedContainerProvider
+public class RelayMK1Tile extends TileEmc implements INamedContainerProvider
 {
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
@@ -52,7 +50,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.orElse(null);
-					if (emcHolder.getStoredEmc(stack) >= emcHolder.getMaximumEmc(stack)) {
+					if (emcHolder.getNeededEmc(stack) == 0) {
 						return super.extractItem(slot, amount, simulate);
 					}
 					return ItemStack.EMPTY;
@@ -85,6 +83,11 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 			}
 		};
 		automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
+	}
+
+	@Override
+	public boolean isRelay() {
+		return true;
 	}
 
 	@Override
@@ -152,16 +155,16 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 					emcVal = chargeRate;
 				}
 			
-				if (emcVal > 0 && this.getStoredEmc() + emcVal <= this.getMaximumEmc()) {
-					this.addEMC(emcVal);
-					emcHolder.extractEmc(stack, emcVal);
+				if (emcVal > 0 && emcVal <= getNeededEmc()) {
+					forceInsertEmc(emcVal, EmcAction.EXECUTE);
+					emcHolder.extractEmc(stack, emcVal, EmcAction.EXECUTE);
 				}
 			} else {
 				long emcVal = EMCHelper.getEmcSellValue(stack);
 				
-				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
+				if (emcVal > 0 && emcVal <= getNeededEmc())
 				{
-					this.addEMC(emcVal);
+					forceInsertEmc(emcVal, EmcAction.EXECUTE);
 					getBurn().shrink(1);
 				}
 			}
@@ -194,17 +197,16 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 	
 	private void chargeItem(IItemEmcHolder emcHolder, ItemStack chargeable)
 	{
-		long starEmc = emcHolder.getStoredEmc(chargeable);
-		long maxStarEmc = emcHolder.getMaximumEmc(chargeable);
+		long neededStarEmc = emcHolder.getNeededEmc(chargeable);
 		long toSend = this.getStoredEmc() < chargeRate ? this.getStoredEmc() : chargeRate;
-			
-		if ((starEmc + toSend) <= maxStarEmc) {
-			emcHolder.addEmc(chargeable, toSend);
-			this.removeEMC(toSend);
+
+		if (toSend <= neededStarEmc) {
+			emcHolder.insertEmc(chargeable, toSend, EmcAction.EXECUTE);
+			forceExtractEmc(toSend, EmcAction.EXECUTE);
 		} else {
-			toSend = maxStarEmc - starEmc;
-			emcHolder.addEmc(chargeable, toSend);
-			this.removeEMC(toSend);
+			toSend = neededStarEmc;
+			emcHolder.insertEmc(chargeable, toSend, EmcAction.EXECUTE);
+			forceExtractEmc(toSend, EmcAction.EXECUTE);
 		}
 	}
 
@@ -258,21 +260,7 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		return nbt;
 	}
 
-	@Override
-	public long acceptEMC(@Nonnull Direction side, long toAccept)
-	{
-		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
-		{
-			return 0; // Do not accept from other relays - avoid infinite loop / thrashing
-		}
-		else
-		{
-			long toAdd = Math.min(maximumEMC - currentEMC, toAccept);
-			currentEMC += toAdd;
-			return toAdd;
-		}
-	}
-
+	//TODO: Clean this up
 	public void addBonus(@Nonnull Direction side, double bonus) {
 		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile)
 		{
@@ -280,18 +268,8 @@ public class RelayMK1Tile extends TileEmc implements IEmcAcceptor, IEmcProvider,
 		}
 		bonusEMC += bonus;
 		if (bonusEMC >= 1) {
-			long extraEMC = (long) bonusEMC;
-			bonusEMC -= extraEMC;
-			currentEMC += Math.min(maximumEMC - currentEMC, extraEMC);
+			bonusEMC -= forceInsertEmc((long) bonusEMC, EmcAction.EXECUTE);
 		}
-	}
-
-	@Override
-	public long provideEMC(@Nonnull Direction side, long toExtract)
-	{
-		long toRemove = Math.min(currentEMC, toExtract);
-		currentEMC -= toRemove;
-		return toRemove;
 	}
 
 	@Nonnull

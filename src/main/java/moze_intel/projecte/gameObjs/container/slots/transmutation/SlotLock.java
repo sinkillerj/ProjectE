@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
@@ -45,12 +46,12 @@ public class SlotLock extends SlotItemHandler
 			if (emcHolder.getStoredEmc(stack) >= remainEmc)
 			{
 				inv.addEmc(remainEmc);
-				emcHolder.extractEmc(stack, remainEmc);
+				emcHolder.extractEmc(stack, remainEmc, EmcAction.EXECUTE);
 			}
 			else
 			{
 				inv.addEmc(emcHolder.getStoredEmc(stack));
-				emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack));
+				emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);
 			}
 		}
 		
