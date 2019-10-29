@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -51,6 +52,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

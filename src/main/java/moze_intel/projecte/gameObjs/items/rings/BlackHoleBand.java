@@ -12,6 +12,7 @@ import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
@@ -50,6 +51,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {

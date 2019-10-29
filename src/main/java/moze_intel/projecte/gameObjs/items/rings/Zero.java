@@ -10,6 +10,7 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
@@ -35,6 +36,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

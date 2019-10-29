@@ -17,6 +17,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
@@ -46,6 +47,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private void tick(ItemStack stack, PlayerEntity player) {

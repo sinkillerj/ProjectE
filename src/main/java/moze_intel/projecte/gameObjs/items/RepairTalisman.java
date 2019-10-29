@@ -15,9 +15,10 @@ import moze_intel.projecte.gameObjs.items.rings.PEToggleItem;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.integration.curios.CuriosIntegration;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,7 +30,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -40,6 +40,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -59,12 +60,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	private void repairAllItems(PlayerEntity player) {
 		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairInv(inv, player));
-
-		if (ModList.get().isLoaded("curios")) {
-			IItemHandler curios = CuriosIntegration.getAll(player);
-			if (curios != null) {
-				repairInv(curios, player);
-			}
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null) {
+			repairInv(curios, player);
 		}
 	}
 

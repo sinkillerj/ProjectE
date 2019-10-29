@@ -80,11 +80,10 @@ public final class PlayerHelper {
 
 	@Nullable
 	public static IItemHandler getCurios(PlayerEntity player) {
-		if (!ModList.get().isLoaded("curios")) {
-			return null;
-		} else {
+		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 			return CuriosIntegration.getAll(player);
 		}
+		return null;
 	}
 
 	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance) {

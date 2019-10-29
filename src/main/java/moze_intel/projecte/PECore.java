@@ -71,6 +71,7 @@ import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
+import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -208,7 +209,7 @@ public class PECore {
 		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IEmcStorage.class, new DummyIStorage<>(), EmcStorageDefaultImpl::new);
 
-		if (ModList.get().isLoaded("curios")) {
+		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 			FMLJavaModLoadingContext.get().getModEventBus().register(CuriosIntegration.class);
 			MinecraftForge.EVENT_BUS.register(CuriosIntegration.class);
 		}

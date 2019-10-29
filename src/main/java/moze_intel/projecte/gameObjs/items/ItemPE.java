@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.ModList;
 
 public class ItemPE extends Item {
 
@@ -30,6 +32,12 @@ public class ItemPE extends Item {
 
 	protected <TYPE> void addItemCapability(ItemCapability<TYPE> capability) {
 		supportedCapabilities.add(capability);
+	}
+
+	protected <TYPE> void addItemCapability(String modid, Supplier<Supplier<ItemCapability<TYPE>>> capabilitySupplier) {
+		if (ModList.get().isLoaded(modid)) {
+			supportedCapabilities.add(capabilitySupplier.get().get());
+		}
 	}
 
 	@Override
