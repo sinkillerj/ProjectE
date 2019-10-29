@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -9,6 +10,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -34,9 +36,7 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.IITEMEMC.test(stack)
-				   ? super.insertItem(slot, stack, simulate)
-				   : stack;
+			return SlotPredicates.IITEMEMC.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 		}
 
 		@Nonnull
@@ -44,9 +44,9 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		public ItemStack extractItem(int slot, int amount, boolean simulate) {
 			ItemStack stack = getStackInSlot(slot);
 			if (!stack.isEmpty()) {
-				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					IItemEmcHolder emcHolder = holderCapability.get();
 					if (emcHolder.getNeededEmc(stack) == 0) {
 						return super.extractItem(slot, amount, simulate);
 					}
@@ -96,9 +96,8 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (side == Direction.DOWN) {
 				return automationOutput.cast();
-			} else {
-				return automationInput.cast();
 			}
+			return automationInput.cast();
 		}
 		return super.getCapability(cap, side);
 	}
@@ -131,9 +130,9 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		ItemStack stack = getBurn();
 
 		if (!stack.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				IItemEmcHolder emcHolder = holderCapability.get();
 				long simulatedVal = forceInsertEmc(emcHolder.extractEmc(stack, chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
 				if (simulatedVal > 0) {
 					forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
@@ -172,13 +171,12 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 	public double getItemChargeProportion() {
 		ItemStack charging = getCharging();
 		if (!charging.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				IItemEmcHolder emcHolder = holderCapability.get();
 				return (double) emcHolder.getStoredEmc(charging) / emcHolder.getMaximumEmc(charging);
 			}
 		}
-
 		return 0;
 	}
 
@@ -187,10 +185,9 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		if (burn.isEmpty()) {
 			return 0;
 		}
-
-		LazyOptional<IItemEmcHolder> holderCapability = burn.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(burn.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 		if (holderCapability.isPresent()) {
-			IItemEmcHolder emcHolder = holderCapability.orElse(null);
+			IItemEmcHolder emcHolder = holderCapability.get();
 			return (double) emcHolder.getStoredEmc(burn) / emcHolder.getMaximumEmc(burn);
 		}
 		return burn.getCount() / (double) burn.getMaxStackSize();

@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
@@ -15,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -40,9 +40,9 @@ public final class EMCHelper {
 		ItemStack offhand = player.getHeldItemOffhand();
 
 		if (!offhand.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = offhand.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(offhand.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				IItemEmcHolder emcHolder = holderCapability.get();
 				long simulatedExtraction = emcHolder.extractEmc(offhand, minFuel, EmcAction.SIMULATE);
 				if (simulatedExtraction == minFuel) {
 					long actualExtracted = emcHolder.extractEmc(offhand, simulatedExtraction, EmcAction.EXECUTE);
@@ -58,9 +58,9 @@ public final class EMCHelper {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				IItemEmcHolder emcHolder = holderCapability.get();
 				long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);
 				if (simulatedExtraction == minFuel) {
 					long actualExtracted = emcHolder.extractEmc(stack, simulatedExtraction, EmcAction.EXECUTE);
@@ -231,11 +231,7 @@ public final class EMCHelper {
 		if (stack.getOrCreateTag().contains("StoredEMC")) {
 			return stack.getTag().getLong("StoredEMC");
 		}
-		LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-		if (holderCapability.isPresent()) {
-			return holderCapability.orElse(null).getStoredEmc(stack);
-		}
-		return 0;
+		return LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY)).map(emcHolder -> emcHolder.getStoredEmc(stack)).orElse(0L);
 	}
 
 	public static long getEMCPerDurability(ItemStack stack) {

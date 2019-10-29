@@ -7,7 +7,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,6 +28,8 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -38,7 +43,10 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 /**
  * Helper class for anything that touches a World. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -125,8 +133,7 @@ public final class WorldHelper {
 
 				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0)) {
 					newState = Blocks.SNOW.getDefaultState();
-				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(SnowBlock.LAYERS) < 8
-						   && world.rand.nextInt(512) == 0) {
+				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(SnowBlock.LAYERS) < 8 && world.rand.nextInt(512) == 0) {
 					newState = stateUp.with(SnowBlock.LAYERS, stateUp.get(SnowBlock.LAYERS) + 1);
 				}
 
@@ -152,6 +159,22 @@ public final class WorldHelper {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Gets an ItemHandler of a specific tile from the given side. Falls back to using wrappers if the tile is an instance of an ISidedInventory/IInventory.
+	 */
+	@Nullable
+	public static IItemHandler getItemHandler(@Nonnull TileEntity tile, @Nullable Direction direction) {
+		Optional<IItemHandler> capability = LazyOptionalHelper.toOptional(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction));
+		if (capability.isPresent()) {
+			return capability.get();
+		} else if (tile instanceof ISidedInventory) {
+			return new SidedInvWrapper((ISidedInventory) tile, direction);
+		} else if (tile instanceof IInventory) {
+			return new InvWrapper((IInventory) tile);
+		}
+		return null;
 	}
 
 	/**

@@ -21,7 +21,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +42,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchChestItem, IPedestalItem {
 
@@ -121,14 +119,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	private void suckDumpItem(ItemEntity item, DMPedestalTile tile) {
 		Map<Direction, TileEntity> map = WorldHelper.getAdjacentTileEntitiesMapped(tile.getWorld(), tile);
 		for (Map.Entry<Direction, TileEntity> e : map.entrySet()) {
-			IItemHandler inv = e.getValue().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, e.getKey()).orElse(null);
-
-			if (inv == null && e.getValue() instanceof IInventory) {
-				inv = new InvWrapper((IInventory) e.getValue());
-			}
-
+			IItemHandler inv = WorldHelper.getItemHandler(e.getValue(), e.getKey());
 			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
-
 			if (result.isEmpty()) {
 				item.remove();
 				return;

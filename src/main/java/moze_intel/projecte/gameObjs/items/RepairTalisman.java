@@ -29,7 +29,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -59,10 +58,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	private void repairAllItems(PlayerEntity player) {
-		LazyOptional<IItemHandler> inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-		if (inv.isPresent()) {
-			repairInv(inv.orElseThrow(NullPointerException::new), player);
-		}
+		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairInv(inv, player));
 
 		if (ModList.get().isLoaded("curios")) {
 			IItemHandler curios = CuriosIntegration.getAll(player);

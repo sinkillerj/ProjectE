@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -12,6 +13,7 @@ import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,7 +27,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -153,9 +154,9 @@ public class ToolTipEvent {
 			if (current.getTag().contains("StoredEMC")) {
 				value = current.getTag().getLong("StoredEMC");
 			} else {
-				LazyOptional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 				if (holderCapability.isPresent()) {
-					value = holderCapability.orElse(null).getStoredEmc(current);
+					value = holderCapability.get().getStoredEmc(current);
 				} else {
 					return;
 				}

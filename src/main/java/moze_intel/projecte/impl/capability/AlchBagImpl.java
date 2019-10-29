@@ -103,7 +103,6 @@ public final class AlchBagImpl {
 			if (capability == ProjectEAPI.ALCH_BAG_CAPABILITY) {
 				return cap.cast();
 			}
-
 			return LazyOptional.empty();
 		}
 

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -11,6 +12,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,9 +43,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.COLLECTOR_INV.test(stack)
-				   ? super.insertItem(slot, stack, simulate)
-				   : stack;
+			return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 		}
 	});
 	private final LazyOptional<IItemHandler> automationAuxSlots = LazyOptional.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
@@ -52,9 +52,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		public ItemStack extractItem(int slot, int count, boolean simulate) {
 			if (slot == UPGRADE_SLOT) {
 				return super.extractItem(slot, count, simulate);
-			} else {
-				return ItemStack.EMPTY;
 			}
+			return ItemStack.EMPTY;
 		}
 	});
 	public static final int UPGRADING_SLOT = 0;
@@ -151,10 +150,9 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	private void checkFuelOrKlein() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
-				if (emcHolder.getNeededEmc(upgrading) > 0) {
+			Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+			if (emcHolder.isPresent()) {
+				if (emcHolder.get().getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
 					hasFuel = false;
 				} else {
@@ -228,10 +226,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	public long getItemCharge() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-			if (holderCapability.isPresent()) {
-				return holderCapability.orElse(null).getStoredEmc(upgrading);
-			}
+			return LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY)).map(emcHolder ->
+					emcHolder.getStoredEmc(upgrading)).orElse(-1L);
 		}
 		return -1;
 	}
@@ -242,17 +238,15 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		if (upgrading.isEmpty() || charge <= 0) {
 			return -1;
 		}
-		LazyOptional<IItemEmcHolder> holderCapability = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-		if (!holderCapability.isPresent()) {
-			return -1;
+		Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+		if (emcHolder.isPresent()) {
+			long max = emcHolder.get().getMaximumEmc(upgrading);
+			if (charge >= max) {
+				return 1;
+			}
+			return (double) charge / max;
 		}
-
-		long max = holderCapability.orElse(null).getMaximumEmc(upgrading);
-		if (charge >= max) {
-			return 1;
-		}
-
-		return (double) charge / max;
+		return -1;
 	}
 
 	public int getSunLevel() {

@@ -220,9 +220,8 @@ public final class InternalAbilities {
 		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
 			if (capability == CAPABILITY) {
 				return capInstance.cast();
-			} else {
-				return LazyOptional.empty();
 			}
+			return LazyOptional.empty();
 		}
 	}
 }

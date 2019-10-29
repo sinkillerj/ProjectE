@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -134,16 +136,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {
-		LazyOptional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		Optional<IItemHandler> inventoryCapability = LazyOptionalHelper.toOptional(eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
 		if (!inventoryCapability.isPresent()) {
 			return ActionResultType.FAIL;
 		}
-		IItemHandler inventory = inventoryCapability.orElse(null);
+		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
-		if (klein.isEmpty()) {
-			return ActionResultType.FAIL;
-		}
-		if (!klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+		if (klein.isEmpty() || !klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
 			return ActionResultType.FAIL;
 		}
 
@@ -272,16 +271,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private boolean doBlockPlace(PlayerEntity player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
-		LazyOptional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		Optional<IItemHandler> inventoryCapability = LazyOptionalHelper.toOptional(eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
 		if (!inventoryCapability.isPresent()) {
 			return false;
 		}
-		IItemHandler inventory = inventoryCapability.orElse(null);
+		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
 		if (klein.isEmpty()) {
 			return false;
 		}
-		LazyOptional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+		Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null) {
 			return false;
 		}
@@ -292,7 +291,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 
 		if (PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, placePos, newState)) {
-			IItemEmcHolder emcHolder = holderCapability.orElse(null);
+			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
 				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getServerWorld(), placePos, null));

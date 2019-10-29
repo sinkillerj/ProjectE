@@ -9,11 +9,10 @@ import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -43,8 +42,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 public class RMFurnaceTile extends TileEmc implements INamedContainerProvider {
 
@@ -156,18 +153,16 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (side == null) {
 				return joined.cast();
-			} else {
-				switch (side) {
-					case UP:
-						return automationInput.cast();
-					case DOWN:
-						return automationOutput.cast();
-					default:
-						return automationSides.cast();
-				}
+			}
+			switch (side) {
+				case UP:
+					return automationInput.cast();
+				case DOWN:
+					return automationOutput.cast();
+				default:
+					return automationSides.cast();
 			}
 		}
-
 		return super.getCapability(cap, side);
 	}
 
@@ -254,19 +249,9 @@ public class RMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity) {
 			return;
 		}
-		LazyOptional<IItemHandler> handlerOpt = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
-		IItemHandler handler;
-
-		if (!handlerOpt.isPresent()) {
-			if (tile instanceof ISidedInventory) {
-				handler = new SidedInvWrapper((ISidedInventory) tile, Direction.DOWN);
-			} else if (tile instanceof IInventory) {
-				handler = new InvWrapper((IInventory) tile);
-			} else {
-				return;
-			}
-		} else {
-			handler = handlerOpt.orElseThrow(NullPointerException::new);
+		IItemHandler handler = WorldHelper.getItemHandler(tile, Direction.DOWN);
+		if (handler == null) {
+			return;
 		}
 
 		for (int i = 0; i < handler.getSlots(); i++) {

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -7,6 +8,7 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -89,9 +90,9 @@ public class Collector extends BlockDirection {
 		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
 		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
-			LazyOptional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.orElse(null);
+				IItemEmcHolder emcHolder = holderCapability.get();
 				return MathUtils.scaleToRedstone(emcHolder.getStoredEmc(charging), emcHolder.getMaximumEmc(charging));
 			}
 			return MathUtils.scaleToRedstone(tile.getStoredEmc(), tile.getEmcToNextGoal());

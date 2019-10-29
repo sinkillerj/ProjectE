@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -15,13 +16,13 @@ import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -279,9 +280,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.orElse(null);
+					IItemEmcHolder emcHolder = holderCapability.get();
 					long shrunkenValue = MathUtils.clampToLong(value);
 					long actualInserted = emcHolder.insertEmc(stack, shrunkenValue, EmcAction.EXECUTE);
 					value = value.subtract(BigInteger.valueOf(actualInserted));
@@ -330,9 +331,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				}
 				ItemStack stack = inputLocks.getStackInSlot(i);
 				if (!stack.isEmpty()) {
-					LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
+					Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 					if (holderCapability.isPresent()) {
-						IItemEmcHolder emcHolder = holderCapability.orElse(null);
+						IItemEmcHolder emcHolder = holderCapability.get();
 						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
 						long actualExtracted = emcHolder.extractEmc(stack, shrunkenToRemove, EmcAction.EXECUTE);
 						toRemove = toRemove.subtract(BigInteger.valueOf(actualExtracted));
@@ -384,9 +385,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				LazyOptional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY);
-				if (holderCapability.isPresent()) {
-					emc = emc.add(BigInteger.valueOf(holderCapability.orElse(null).getStoredEmc(stack)));
+				Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+				if (emcHolder.isPresent()) {
+					emc = emc.add(BigInteger.valueOf(emcHolder.get().getStoredEmc(stack)));
 				}
 			}
 		}
