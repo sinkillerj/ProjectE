@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -47,17 +48,7 @@ public class CollectorMK2Container extends CollectorMK1Container {
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK2Tile.LOCK_SLOT, 169, 36, SlotPredicates.COLLECTOR_LOCK));
 
-		//Player inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 20 + j * 18, 84 + i * 18));
-			}
-		}
-
-		//Player hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 20 + i * 18, 142));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 20, 84);
 	}
 
 	@Nonnull

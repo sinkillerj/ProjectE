@@ -175,9 +175,8 @@ public final class ItemHelper {
 	public static BlockState stackToState(ItemStack stack) {
 		if (stack.getItem() instanceof BlockItem) {
 			return ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));

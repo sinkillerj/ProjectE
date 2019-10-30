@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,15 +35,7 @@ public class EternalDensityContainer extends Container {
 			}
 		}
 
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 9; ++j) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 93 + i * 18));
-			}
-		}
-
-		for (int i = 0; i < 9; ++i) {
-			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 151));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 8, 93);
 	}
 
 	@Nonnull
@@ -68,7 +61,6 @@ public class EternalDensityContainer extends Container {
 		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem) {
 			return ItemStack.EMPTY;
 		}
-
 		if (slot >= 0 && slot < 9) {
 			inventory.setStackInSlot(slot, ItemStack.EMPTY);
 		}

@@ -24,6 +24,7 @@ public class CondenserMK2Tile extends CondenserTile {
 	}
 
 	@Nonnull
+	@Override
 	protected IItemHandler createAutomationInventory() {
 		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN) {
 			@Nonnull

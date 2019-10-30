@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DiviningRod extends ItemPE implements IItemMode {
 
-	// Modes should be in the format depthx3x3
+	// Modes should be in the format pe.diving_rod.mode.range.depth
 	private final String[] modes;
 
 	public DiviningRod(Properties props, String[] modeDesc) {

@@ -36,7 +36,7 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.IITEMEMC.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 		}
 
 		@Nonnull
@@ -70,9 +70,7 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 			@Nonnull
 			@Override
 			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-				return SlotPredicates.RELAY_INV.test(stack)
-					   ? super.insertItem(slot, stack, simulate)
-					   : stack;
+				return SlotPredicates.RELAY_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
 		automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));

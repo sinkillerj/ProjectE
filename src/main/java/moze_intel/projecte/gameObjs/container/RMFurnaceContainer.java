@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -70,17 +71,7 @@ public class RMFurnaceContainer extends Container {
 			}
 		}
 
-		//Player Inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 24 + j * 18, 84 + i * 18));
-			}
-		}
-
-		//Player HotBar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 24 + i * 18, 142));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 24, 84);
 	}
 
 	@Override
@@ -152,19 +143,16 @@ public class RMFurnaceContainer extends Container {
 			if (!this.mergeItemStack(stack, 27, 63, false)) {
 				return ItemStack.EMPTY;
 			}
-		} else {
-
-			if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
-				if (!this.mergeItemStack(stack, 0, 1, false)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (!tile.getSmeltingResult(newStack).isEmpty()) {
-				if (!this.mergeItemStack(stack, 1, 14, false)) {
-					return ItemStack.EMPTY;
-				}
-			} else {
+		} else if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+			if (!this.mergeItemStack(stack, 0, 1, false)) {
 				return ItemStack.EMPTY;
 			}
+		} else if (!tile.getSmeltingResult(newStack).isEmpty()) {
+			if (!this.mergeItemStack(stack, 1, 14, false)) {
+				return ItemStack.EMPTY;
+			}
+		} else {
+			return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) {
 			slot.putStack(ItemStack.EMPTY);

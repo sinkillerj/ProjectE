@@ -56,6 +56,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		}
 	}
 
+	@Override
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
 		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {

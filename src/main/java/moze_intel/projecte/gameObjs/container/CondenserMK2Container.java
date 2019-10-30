@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,17 +49,7 @@ public class CondenserMK2Container extends CondenserContainer {
 			}
 		}
 
-		//Player Inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
-			}
-		}
-
-		//Player Hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 212));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 154);
 	}
 
 	@Nonnull

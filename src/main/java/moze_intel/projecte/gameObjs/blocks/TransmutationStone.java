@@ -40,9 +40,7 @@ public class TransmutationStone extends Block {
 	@Deprecated
 	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> {
-				b.writeBoolean(false);
-			});
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
 		return true;
 	}

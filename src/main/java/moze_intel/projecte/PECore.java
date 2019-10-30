@@ -145,9 +145,7 @@ public class PECore {
 	static class ClientHandler {
 
 		static void clientSetup(FMLClientSetupEvent evt) {
-			DeferredWorkQueue.runLater(() -> {
-				ClientKeyHelper.registerKeyBindings();
-			});
+			DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
 
 			//Tile Entity
 			ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());

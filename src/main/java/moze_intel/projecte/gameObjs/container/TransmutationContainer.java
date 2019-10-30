@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotOutput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotUnlearn;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,17 +70,7 @@ public class TransmutationContainer extends Container {
 		this.addSlot(new SlotOutput(transmutationInventory, 25, 158, 69));
 		this.addSlot(new SlotOutput(transmutationInventory, 26, 139, 50));
 
-		//Player Inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 35 + j * 18, 117 + i * 18));
-			}
-		}
-
-		//Player Hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 35 + i * 18, 175));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 35, 117);
 
 		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
 	}
@@ -101,11 +92,11 @@ public class TransmutationContainer extends Container {
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 
-		if (slotIndex <= 7) //Input Slots
-		{
+		if (slotIndex <= 7) {
+			//Input Slots
 			return ItemStack.EMPTY;
-		} else if (slotIndex >= 11 && slotIndex <= 26) // Output Slots
-		{
+		} else if (slotIndex >= 11 && slotIndex <= 26) {
+			// Output Slots
 			long emc = EMCHelper.getEmcValue(newStack);
 
 			int stackSize = 0;

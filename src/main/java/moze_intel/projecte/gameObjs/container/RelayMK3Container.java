@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -33,26 +34,16 @@ public class RelayMK3Container extends RelayMK1Container {
 
 		int counter = input.getSlots() - 1;
 		//Inventory Buffer
-		for (int i = 0; i <= 3; i++) {
-			for (int j = 0; j <= 4; j++) {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 5; j++) {
 				this.addSlot(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 			}
 		}
 
 		//Klein star charge
-		this.addSlot(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.IITEMEMC));
+		this.addSlot(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.EMC_HOLDER));
 
-		//Main player inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 26 + j * 18, 113 + i * 18));
-			}
-		}
-
-		//Player hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 26 + i * 18, 171));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 26, 113);
 	}
 
 	@Nonnull

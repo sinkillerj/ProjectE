@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class CondenserContainer extends PEContainer {
 
@@ -53,17 +55,7 @@ public class CondenserContainer extends PEContainer {
 			}
 		}
 
-		//Player Inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 154 + i * 18));
-			}
-		}
-
-		//Player Hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 212));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 154);
 	}
 
 	@Override
@@ -116,13 +108,15 @@ public class CondenserContainer extends PEContainer {
 	@Nonnull
 	@Override
 	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
-		if (slot == 0 && (!tile.getLock().getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack())))) {
-			if (!player.getEntityWorld().isRemote) {
-				tile.getLock().setStackInSlot(0, ItemStack.EMPTY);
-				this.detectAndSendChanges();
+		if (slot == 0) {
+			ItemStackHandler lock = tile.getLock();
+			if (!lock.getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack()))) {
+				if (!player.getEntityWorld().isRemote) {
+					lock.setStackInSlot(0, ItemStack.EMPTY);
+					this.detectAndSendChanges();
+				}
+				return ItemStack.EMPTY;
 			}
-
-			return ItemStack.EMPTY;
 		}
 		return super.slotClick(slot, button, flag, player);
 	}

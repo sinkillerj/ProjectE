@@ -10,6 +10,7 @@ import net.minecraft.resources.IResourceManager;
 
 public class TagMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
+	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
 		AbstractNSSTag.getAllCreatedTags().forEach(stack -> stack.forEachElement(normalizedSimpleStack -> {
 			mapper.addConversion(1, stack, Collections.singletonList(normalizedSimpleStack));

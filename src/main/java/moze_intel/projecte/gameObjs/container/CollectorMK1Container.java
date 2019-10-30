@@ -7,6 +7,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
+import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -55,8 +56,8 @@ public class CollectorMK1Container extends PEContainer {
 
 		int counter = main.getSlots() - 1;
 		//Fuel Upgrade storage
-		for (int i = 0; i <= 1; i++) {
-			for (int j = 0; j <= 3; j++) {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 4; j++) {
 				this.addSlot(new ValidatedSlot(main, counter--, 20 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 			}
 		}
@@ -67,28 +68,20 @@ public class CollectorMK1Container extends PEContainer {
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
 
-		//Player inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-			}
-		}
-
-		//Player hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 8 + i * 18, 142));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 8, 84);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
-		if (slot >= 0 && getSlot(slot) instanceof SlotGhost && !getSlot(slot).getStack().isEmpty()) {
-			getSlot(slot).putStack(ItemStack.EMPTY);
-			return ItemStack.EMPTY;
-		} else {
-			return super.slotClick(slot, button, flag, player);
+	public ItemStack slotClick(int slotID, int button, @Nonnull ClickType flag, PlayerEntity player) {
+		if (slotID >= 0) {
+			Slot slot = getSlot(slotID);
+			if (slot instanceof SlotGhost && !slot.getStack().isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
+				return ItemStack.EMPTY;
+			}
 		}
+		return super.slotClick(slotID, button, flag, player);
 	}
 
 	@Override

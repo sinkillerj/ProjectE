@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -14,7 +15,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-//TODO: Deduplicate container code
 public class AlchBagContainer extends Container {
 
 	public final Hand hand;
@@ -39,17 +39,7 @@ public class AlchBagContainer extends Container {
 			}
 		}
 
-		//Player Inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 48 + j * 18, 152 + i * 18));
-			}
-		}
-
-		//Player Hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 48 + i * 18, 210));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 152);
 
 		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
 	}

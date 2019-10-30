@@ -105,9 +105,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
 		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand), stack.getDisplayName());
-		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> {
-			b.writeBoolean(hand == Hand.MAIN_HAND);
-		});
+		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> b.writeBoolean(hand == Hand.MAIN_HAND));
 		return true;
 	}
 

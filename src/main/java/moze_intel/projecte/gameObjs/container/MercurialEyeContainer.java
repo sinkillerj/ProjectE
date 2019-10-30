@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.utils.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -29,22 +30,12 @@ public class MercurialEyeContainer extends Container {
 		inventory = new MercurialEyeInventory(invPlayer.player.getHeldItem(hand));
 
 		//Klein Star
-		this.addSlot(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.IITEMEMC));
+		this.addSlot(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.EMC_HOLDER));
 
 		//Target
 		this.addSlot(new SlotGhost(inventory, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
 
-		//Player inventory
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 9; j++) {
-				this.addSlot(new Slot(invPlayer, j + i * 9 + 9, 6 + j * 18, 56 + i * 18));
-			}
-		}
-
-		//Hotbar
-		for (int i = 0; i < 9; i++) {
-			this.addSlot(new Slot(invPlayer, i, 6 + i * 18, 114));
-		}
+		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 6, 56);
 	}
 
 	@Override
@@ -78,21 +69,25 @@ public class MercurialEyeContainer extends Container {
 		ItemStack stack = slot.getStack();
 		ItemStack newStack = stack.copy();
 
-		if (slotIndex < 2) // Moving to player inventory
-		{
+		if (slotIndex < 2) {
+			// Moving to player inventory
 			if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), true)) {
 				return ItemStack.EMPTY;
 			}
 			slot.onSlotChanged();
-		} else // Moving from player inventory
-		{
-			if (inventorySlots.get(0).isItemValid(stack) && inventorySlots.get(0).getStack().isEmpty()) { // Is a valid klein star and the slot is empty?
-				inventorySlots.get(0).putStack(stack.split(1));
-			} else if (inventorySlots.get(1).isItemValid(stack) && inventorySlots.get(1).getStack().isEmpty()) { // Is a valid target block and the slot is empty?
-				inventorySlots.get(1).putStack(stack.split(1));
-			} else // Is neither, ignore
-			{
-				return ItemStack.EMPTY;
+		} else {
+			// Moving from player inventory
+			Slot kleinSlot = inventorySlots.get(0);
+			if (kleinSlot.isItemValid(stack) && kleinSlot.getStack().isEmpty()) { // Is a valid klein star and the slot is empty?
+				kleinSlot.putStack(stack.split(1));
+			} else {
+				Slot targetSlot = inventorySlots.get(1);
+				if (targetSlot.isItemValid(stack) && targetSlot.getStack().isEmpty()) { // Is a valid target block and the slot is empty?
+					targetSlot.putStack(stack.split(1));
+				} else {
+					// Is neither, ignore
+					return ItemStack.EMPTY;
+				}
 			}
 		}
 		if (stack.isEmpty()) {
