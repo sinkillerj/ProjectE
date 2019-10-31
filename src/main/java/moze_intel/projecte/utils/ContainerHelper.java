@@ -7,16 +7,29 @@ import net.minecraft.inventory.container.Slot;
 public class ContainerHelper {
 
 	public static void addPlayerInventory(Consumer<Slot> addSlot, IInventory invPlayer, int xStart, int yStart) {
+		addPlayerInventory(addSlot, invPlayer, xStart, yStart, Slot::new);
+	}
+
+	public static void addPlayerInventory(Consumer<Slot> addSlot, IInventory invPlayer, int xStart, int yStart, SlotCreator slotCreator) {
+		int slotSize = 18;
 		int rows = 3;
 		int columns = 9;
+		//Main Inventory
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				addSlot.accept(new Slot(invPlayer, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+				addSlot.accept(slotCreator.create(invPlayer, j + i * 9 + 9, xStart + j * slotSize, yStart + i * slotSize));
 			}
 		}
-		yStart = yStart * rows + 4;
+		yStart = yStart + slotSize * rows + 4;
+		//Hot Bar
 		for (int i = 0; i < columns; i++) {
-			addSlot.accept(new Slot(invPlayer, i, xStart + i * 18, yStart));
+			addSlot.accept(slotCreator.create(invPlayer, i, xStart + i * slotSize, yStart));
 		}
+	}
+
+	@FunctionalInterface
+	public interface SlotCreator {
+
+		Slot create(IInventory inventory, int index, int x, int y);
 	}
 }

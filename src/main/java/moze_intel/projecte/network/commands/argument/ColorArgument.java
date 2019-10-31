@@ -1,4 +1,4 @@
-package moze_intel.projecte.network.commands;
+package moze_intel.projecte.network.commands.argument;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.item.DyeColor;
 
@@ -26,11 +25,10 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 				return c;
 			}
 		}
-
 		throw net.minecraft.command.arguments.ColorArgument.COLOR_INVALID.create(s);
 	}
 
-	public static DyeColor getColor(CommandContext<CommandSource> context, String name) {
+	public static <S> DyeColor getColor(CommandContext<S> context, String name) {
 		return context.getArgument(name, DyeColor.class);
 	}
 

@@ -191,7 +191,7 @@
     "pe.command.set.success": "Fixer la valeur EMC de %s à %s!",
 
     "pe.command.showbag.notplayer": "Impossible de montrer le contenu du sac à un non-joueur",
-    "pe.command.showbag.offline.uuid": "UUID malformé",
+    "pe.command.showbag.offline.uuid": "UUID malformé: %s",
     "pe.command.showbag.offline.notfound": "UUID %s n'a pas été trouvé dans playerdata/",
 
     "pe.darkpick.mode1": "Standard",

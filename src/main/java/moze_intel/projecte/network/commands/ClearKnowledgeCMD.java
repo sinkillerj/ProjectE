@@ -25,13 +25,14 @@ public class ClearKnowledgeCMD {
 	}
 
 	private static int execute(CommandContext<CommandSource> ctx, Collection<ServerPlayerEntity> targets) {
+		CommandSource source = ctx.getSource();
 		for (ServerPlayerEntity player : targets) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.clearknowledge.success", player.getDisplayName()), true);
+			source.sendFeedback(new TranslationTextComponent("pe.command.clearknowledge.success", player.getDisplayName()), true);
 
-			if (player != ctx.getSource().getEntity()) {
-				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", ctx.getSource().getDisplayName()).setStyle(new Style().setColor(TextFormatting.RED)));
+			if (player != source.getEntity()) {
+				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", source.getDisplayName()).setStyle(new Style().setColor(TextFormatting.RED)));
 			}
 		}
 		return targets.size();

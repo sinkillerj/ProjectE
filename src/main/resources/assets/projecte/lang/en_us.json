@@ -179,8 +179,8 @@
 
     "pe.command.reload.notice": "Restart or use \"/reload\" when all changes are complete.",
 
-    "pe.command.remove.noitem": "Please give an item to change",
-    "pe.command.remove.invaliditem": "Error: The item \"%s\" was not found!",
+    "pe.command.remove.noitem": "Please give an item or tag to change",
+    "pe.command.remove.invaliditem": "Error: The item or tag \"%s\" was not found!",
     "pe.command.remove.success": "Removed EMC value for %s.",
 
     "pe.command.reset.nochange": "The EMC value for %s:%s has not been modified!",
@@ -191,7 +191,7 @@
     "pe.command.set.success": "Set EMC value for %s to %s!",
 
     "pe.command.showbag.notplayer": "Cannot show bag contents to a non-player",
-    "pe.command.showbag.offline.uuid": "Malformed UUID",
+    "pe.command.showbag.offline.uuid": "Malformed UUID: %s",
     "pe.command.showbag.offline.notfound": "UUID %s not found in playerdata/",
 
     "pe.darkpick.mode1": "Standard",
