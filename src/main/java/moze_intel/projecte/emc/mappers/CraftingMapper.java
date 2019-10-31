@@ -2,7 +2,6 @@ package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +31,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	private final List<IRecipeMapper> recipeMappers = Arrays.asList(new VanillaRecipeMapper(), new RecipeStagesRecipeMapper());
+	private final List<IRecipeMapper> recipeMappers = Collections.singletonList(new VanillaRecipeMapper());
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {

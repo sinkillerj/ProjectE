@@ -55,7 +55,7 @@ public class IMCHandler {
 
 		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
 				.filter(msg -> msg.getMessageSupplier().get() instanceof CustomEMCRegistration)
-				.forEach(msg -> APICustomEMCMapper.instance.registerCustomEMC(msg.getSenderModId(), (CustomEMCRegistration) msg.getMessageSupplier().get()));
+				.forEach(msg -> APICustomEMCMapper.INSTANCE.registerCustomEMC(msg.getSenderModId(), (CustomEMCRegistration) msg.getMessageSupplier().get()));
 
 		//Note: It is first come first serve. If we already received a value for it we don't try to overwrite it, but we do log a warning
 		Map<String, NSSCreator> creators = new HashMap<>();

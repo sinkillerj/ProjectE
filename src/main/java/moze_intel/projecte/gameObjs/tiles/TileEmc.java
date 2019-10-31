@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity {
 
@@ -44,13 +43,10 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 			//If we cannot provide emc then just return
 			return 0;
 		}
-		//TODO: Given we do it this way, just directly reference ourself??
 		emc = Math.min(getEmcExtractLimit(), emc);
 		long sentEmc = 0;
 
-		//We use a list instead of a map as it is possible depending on implementation that our cap is the same for each side
-		// In fact for our default implementation, this is the case
-		List<Pair<IEmcStorage, IEmcStorage>> emcStoragePairings = new ArrayList<>();
+		List<IEmcStorage> targets = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
 			BlockPos neighboringPos = getPos().offset(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
@@ -58,27 +54,24 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 				TileEntity neighboringTile = world.getTileEntity(neighboringPos);
 				if (neighboringTile != null) {
 					neighboringTile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
-						//If they would be wiling to accept any Emc then we consider them to be an "acceptor"
-						if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {
-							getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir).ifPresent(ourEmcStorage -> {
-								if (!ourEmcStorage.isRelay() || !theirEmcStorage.isRelay()) {
-									//If they are both relays don't add the pairing so as to prevent thrashing
-									emcStoragePairings.add(Pair.of(ourEmcStorage, theirEmcStorage));
-								}
-							});
+						if (!isRelay() || !theirEmcStorage.isRelay()) {
+							//If they are both relays don't add the pairing so as to prevent thrashing
+							if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {
+								//If they would be wiling to accept any Emc then we consider them to be an "acceptor"
+								targets.add(theirEmcStorage);
+							}
 						}
 					});
 				}
 			}
 		}
 
-		if (!emcStoragePairings.isEmpty()) {
-			long emcPer = emc / emcStoragePairings.size();
-			for (Pair<IEmcStorage, IEmcStorage> entry : emcStoragePairings) {
-				IEmcStorage ourEmcStorage = entry.getLeft();
-				long emcCanProvide = ourEmcStorage.extractEmc(emcPer, EmcAction.SIMULATE);
-				long acceptedEmc = entry.getRight().insertEmc(emcCanProvide, EmcAction.EXECUTE);
-				ourEmcStorage.extractEmc(acceptedEmc, EmcAction.EXECUTE);
+		if (!targets.isEmpty()) {
+			long emcPer = emc / targets.size();
+			for (IEmcStorage target : targets) {
+				long emcCanProvide = extractEmc(emcPer, EmcAction.SIMULATE);
+				long acceptedEmc = target.insertEmc(emcCanProvide, EmcAction.EXECUTE);
+				extractEmc(acceptedEmc, EmcAction.EXECUTE);
 				sentEmc += acceptedEmc;
 			}
 		}

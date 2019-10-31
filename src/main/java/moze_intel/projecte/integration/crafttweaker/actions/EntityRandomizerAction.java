@@ -1,17 +1,17 @@
-package moze_intel.projecte.integration.crafttweaker;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 
-abstract class EntityRandomizerAction implements IUndoableAction {
+public abstract class EntityRandomizerAction implements IUndoableAction {
 
 	protected final EntityType<? extends MobEntity> entityType;
 	protected final String typeName;
 	protected final boolean peaceful;
 
-	EntityRandomizerAction(EntityType<? extends MobEntity> entityType, String typeName, boolean peaceful) {
+	private EntityRandomizerAction(EntityType<? extends MobEntity> entityType, String typeName, boolean peaceful) {
 		this.entityType = entityType;
 		this.typeName = typeName;
 		this.peaceful = peaceful;
@@ -33,9 +33,9 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 		}
 	}
 
-	static class Add extends EntityRandomizerAction {
+	public static class Add extends EntityRandomizerAction {
 
-		Add(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
+		public Add(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
 			super(living, typeName, peaceful);
 		}
 
@@ -60,9 +60,9 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 		}
 	}
 
-	static class Remove extends EntityRandomizerAction {
+	public static class Remove extends EntityRandomizerAction {
 
-		Remove(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
+		public Remove(EntityType<? extends MobEntity> living, String typeName, boolean peaceful) {
 			super(living, typeName, peaceful);
 		}
 
@@ -87,11 +87,11 @@ abstract class EntityRandomizerAction implements IUndoableAction {
 		}
 	}
 
-	static class Clear implements IUndoableAction {
+	public static class Clear implements IUndoableAction {
 
 		private boolean peaceful;
 
-		Clear(boolean peaceful) {
+		public Clear(boolean peaceful) {
 			this.peaceful = peaceful;
 		}
 

@@ -1,11 +1,11 @@
-package moze_intel.projecte.integration.crafttweaker;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import com.blamejared.crafttweaker.impl.blocks.MCBlockState;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 
-abstract class WorldTransmuteAction implements IUndoableAction {
+public abstract class WorldTransmuteAction implements IUndoableAction {
 
 	protected final BlockState input;
 	protected final BlockState output;
@@ -30,9 +30,9 @@ abstract class WorldTransmuteAction implements IUndoableAction {
 		}
 	}
 
-	static class Add extends WorldTransmuteAction {
+	public static class Add extends WorldTransmuteAction {
 
-		Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+		public Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 
@@ -63,9 +63,9 @@ abstract class WorldTransmuteAction implements IUndoableAction {
 		}
 	}
 
-	static class Remove extends WorldTransmuteAction {
+	public static class Remove extends WorldTransmuteAction {
 
-		Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+		public Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 
@@ -96,7 +96,7 @@ abstract class WorldTransmuteAction implements IUndoableAction {
 		}
 	}
 
-	static class RemoveAll implements IUndoableAction {
+	public static class RemoveAll implements IUndoableAction {
 
 		@Override
 		public void apply() {

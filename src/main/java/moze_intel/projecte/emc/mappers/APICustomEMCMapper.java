@@ -16,12 +16,11 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.resources.IResourceManager;
 
-//TODO: Make a mapper like this except for CraftTweaker that only loads when CraftTweaker is loaded, but lets people assign direct EMC values using CrT
 @EMCMapper
 public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@EMCMapper.Instance
-	public static final APICustomEMCMapper instance = new APICustomEMCMapper();
+	public static final APICustomEMCMapper INSTANCE = new APICustomEMCMapper();
 	private static final int PRIORITY_MIN_VALUE = 0;
 	private static final int PRIORITY_MAX_VALUE = 512;
 	private static final int PRIORITY_DEFAULT_VALUE = 1;
@@ -88,15 +87,14 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	}
 
 	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, CommentedFileConfig config) {
-		String itemName;
-		//TODO: Double check we are handling this right for when it represents a tag
-		if (stack instanceof NSSItem && !((NSSItem) stack).representsTag()) {
-			NSSItem item = (NSSItem) stack;
-			itemName = item.getResourceLocation().toString();
+		String resourceLocation;
+		if (stack instanceof NSSItem) {
+			//Allow both item names and tag locations
+			resourceLocation = ((NSSItem) stack).getResourceLocation().toString();
 		} else {
-			itemName = "IntermediateFakeItemsUsedInRecipes:";
+			resourceLocation = "IntermediateFakeItemsUsedInRecipes:";
 		}
-		String modForItem = itemName.substring(0, itemName.indexOf(':'));
+		String modForItem = resourceLocation.substring(0, resourceLocation.indexOf(':'));
 		String configPath = String.format("permissions.%s.%s", modId, modForItem);
 		String comment = String.format("Allow mod '%s' to set and or remove values for mod '%s'. Options: [both, set, remove, none]", modId, modForItem);
 		String permission = EMCMappingHandler.getOrSetDefault(config, configPath, comment, "both");
@@ -105,8 +103,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		}
 		if (value == 0) {
 			return permission.equals("remove");
-		} else {
-			return permission.equals("set");
 		}
+		return permission.equals("set");
 	}
 }
