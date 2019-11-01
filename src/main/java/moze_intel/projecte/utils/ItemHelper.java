@@ -30,11 +30,16 @@ public final class ItemHelper {
 		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
 	}
 
-	public static void compactInventory(IItemHandlerModifiable inventory) {
+	/**
+	 * Compacts an inventory and returns if the inventory is/was empty.
+	 * @return True if the inventory was empty.
+	 */
+	public static boolean compactInventory(IItemHandlerModifiable inventory) {
 		List<ItemStack> temp = new ArrayList<>();
 		for (int i = 0; i < inventory.getSlots(); i++) {
-			if (!inventory.getStackInSlot(i).isEmpty()) {
-				temp.add(inventory.getStackInSlot(i));
+			ItemStack stackInSlot = inventory.getStackInSlot(i);
+			if (!stackInSlot.isEmpty()) {
+				temp.add(stackInSlot);
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
@@ -42,6 +47,7 @@ public final class ItemHelper {
 		for (ItemStack s : temp) {
 			ItemHandlerHelper.insertItemStacked(inventory, s, false);
 		}
+		return temp.isEmpty();
 	}
 
 	/**

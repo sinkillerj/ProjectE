@@ -80,6 +80,11 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
+	private boolean outputEmpty = true;
+	/**
+	 * Used to make sure we don't have an infinite loop of mark dirty
+	 */
+	private boolean isCompacting;
 
 	public DMFurnaceTile() {
 		this(ObjHandler.DM_FURNACE_TILE, 10, 3);
@@ -192,7 +197,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 
 		if (!getWorld().isRemote) {
 			pullFromInventories();
-			ItemHelper.compactInventory(inputInventory);
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
 				fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
@@ -244,8 +248,21 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 				markDirty();
 			}
 
-			ItemHelper.compactInventory(outputInventory);
 			pushToInventories();
+		}
+	}
+
+	@Override
+	public void markDirty() {
+		if (!isCompacting) {
+			if (world != null && !world.isRemote) {
+				isCompacting = true;
+				ItemHelper.compactInventory(inputInventory);
+				outputEmpty = ItemHelper.compactInventory(outputInventory);
+				isCompacting = false;
+			}
+			//No need to mark it dirty if we are currently compacting as we will mark it when we are done compacting
+			super.markDirty();
 		}
 	}
 
@@ -274,6 +291,9 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	}
 
 	private void pushToInventories() {
+		if (outputEmpty) {
+			return;
+		}
 		TileEntity tile = this.getWorld().getTileEntity(pos.down());
 		if (tile == null || tile instanceof HopperTileEntity) {
 			return;
