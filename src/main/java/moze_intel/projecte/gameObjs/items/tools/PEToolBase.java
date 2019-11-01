@@ -16,7 +16,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -245,14 +244,9 @@ public abstract class PEToolBase extends ItemMode {
 			BlockState state = world.getBlockState(digPos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.AIR
-				&& state.getBlockHardness(world, digPos) != -1
-				&& (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
+			if (b != Blocks.AIR && state.getBlockHardness(world, digPos) != -1 && (canHarvestBlock(stack, state) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))
 				&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), digPos)) {
-				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
-				if (!(b instanceof ShulkerBoxBlock)) {
-					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, stack));
-				}
+				drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, stack));
 				world.removeBlock(digPos, false);
 			}
 		}
@@ -284,15 +278,9 @@ public abstract class PEToolBase extends ItemMode {
 			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1
-				&& canHarvestBlock(stack, state)
-				&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)
-				&& consumeFuel(player, stack, emcCost, true)
-			) {
-				// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
-				if (!(b instanceof ShulkerBoxBlock)) {
-					drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
-				}
+			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1 && canHarvestBlock(stack, state)
+				&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos) && consumeFuel(player, stack, emcCost, true)) {
+				drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
 				world.removeBlock(pos, false);
 			}
 		}
@@ -398,9 +386,7 @@ public abstract class PEToolBase extends ItemMode {
 
 				IShearable target = (IShearable) ent;
 
-				if (target.isShearable(stack, ent.getEntityWorld(), new BlockPos(ent))
-					&& consumeFuel(player, stack, emcCost, true)
-				) {
+				if (target.isShearable(stack, ent.getEntityWorld(), new BlockPos(ent)) && consumeFuel(player, stack, emcCost, true)) {
 					List<ItemStack> entDrops = target.onSheared(stack, ent.getEntityWorld(), new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 
 					if (!entDrops.isEmpty()) {

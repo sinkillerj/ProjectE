@@ -10,7 +10,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -64,9 +63,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 
 			if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
-				if (list != null && list.size() > 0
-					// shulker boxes are implemented stupidly and drop whenever we set it to air, so don't dupe
-					&& !(state.getBlock() instanceof ShulkerBoxBlock)) {
+				if (!list.isEmpty()) {
 					drops.addAll(list);
 				}
 
