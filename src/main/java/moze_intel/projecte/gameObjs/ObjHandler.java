@@ -9,9 +9,8 @@ import moze_intel.projecte.gameObjs.blocks.InterdictionTorch;
 import moze_intel.projecte.gameObjs.blocks.InterdictionTorchWall;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
-import moze_intel.projecte.gameObjs.blocks.NovaCataclysm;
-import moze_intel.projecte.gameObjs.blocks.NovaCatalyst;
 import moze_intel.projecte.gameObjs.blocks.Pedestal;
+import moze_intel.projecte.gameObjs.blocks.ProjectETNT;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.blocks.TransmutationStone;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -178,8 +177,8 @@ public class ObjHandler {
 	public static final Block relay = new Relay(1, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(7)).setRegistryName(PECore.MODID, "relay_mk1");
 	public static final Block relayMK2 = new Relay(2, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(11)).setRegistryName(PECore.MODID, "relay_mk2");
 	public static final Block relayMK3 = new Relay(3, Block.Properties.create(Material.ROCK).hardnessAndResistance(10).lightValue(15)).setRegistryName(PECore.MODID, "relay_mk3");
-	public static final Block novaCatalyst = new NovaCatalyst(Block.Properties.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_catalyst");
-	public static final Block novaCataclysm = new NovaCataclysm(Block.Properties.create(Material.TNT).hardnessAndResistance(0)).setRegistryName(PECore.MODID, "nova_cataclysm");
+	public static final Block novaCatalyst = new ProjectETNT(Block.Properties.create(Material.TNT).hardnessAndResistance(0), EntityNovaCatalystPrimed::new).setRegistryName(PECore.MODID, "nova_catalyst");
+	public static final Block novaCataclysm = new ProjectETNT(Block.Properties.create(Material.TNT).hardnessAndResistance(0), EntityNovaCataclysmPrimed::new).setRegistryName(PECore.MODID, "nova_cataclysm");
 
 	public static final Item philosStone = new PhilosophersStone(ibNoStack()).setRegistryName(PECore.MODID, "philosophers_stone");
 	public static final Item alchBagWhite = new AlchemicalBag(ibNoStack(), DyeColor.WHITE).setRegistryName(PECore.MODID, "white_alchemical_bag");
