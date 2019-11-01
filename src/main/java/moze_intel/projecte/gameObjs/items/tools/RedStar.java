@@ -52,6 +52,7 @@ public class RedStar extends PEToolBase {
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.TALL_PLANTS);
+		this.harvestMaterials.add(Material.BAMBOO);
 	}
 
 	@Override
@@ -74,36 +75,31 @@ public class RedStar extends PEToolBase {
 			if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
 				mineOreVeinsInAOE(stack, player, hand);
 			}
-
 			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-
 			if (!(mop instanceof BlockRayTraceResult)) {
 				return ActionResult.newResult(ActionResultType.FAIL, stack);
-			} else {
-				BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
-				BlockState state = world.getBlockState(rtr.getPos());
-				Block block = state.getBlock();
+			}
+			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
+			BlockState state = world.getBlockState(rtr.getPos());
+			Block block = state.getBlock();
 
-				if (block instanceof GravelBlock || block == Blocks.CLAY) {
-					if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-						digAOE(stack, world, player, false, 0, hand);
-					} else {
-						tryVeinMine(stack, player, rtr);
-					}
-				} else if (ItemHelper.isOre(state.getBlock())) {
-					if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-						tryVeinMine(stack, player, rtr);
-					}
-				} else if (block instanceof GrassBlock
-						   || BlockTags.SAND.contains(block)
-						   || BlockTags.getCollection().getOrCreate(new ResourceLocation("forge", "dirt")).contains(block)) {
+			if (block instanceof GravelBlock || block == Blocks.CLAY) {
+				if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
 					digAOE(stack, world, player, false, 0, hand);
 				} else {
-					digAOE(stack, world, player, true, 0, hand);
+					tryVeinMine(stack, player, rtr);
 				}
+			} else if (ItemHelper.isOre(state.getBlock())) {
+				if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+					tryVeinMine(stack, player, rtr);
+				}
+			} else if (block instanceof GrassBlock || BlockTags.SAND.contains(block)
+					   || BlockTags.getCollection().getOrCreate(new ResourceLocation("forge", "dirt")).contains(block)) {
+				digAOE(stack, world, player, false, 0, hand);
+			} else {
+				digAOE(stack, world, player, true, 0, hand);
 			}
 		}
-
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
@@ -111,9 +107,8 @@ public class RedStar extends PEToolBase {
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
 		if (block instanceof MatterBlock || block == ObjHandler.dmFurnace || block == ObjHandler.rmFurnace) {
-			return 1200000.0F;
+			return 1_200_000;
 		}
-
 		return super.getDestroySpeed(stack, state) + 48.0F;
 	}
 
@@ -123,10 +118,8 @@ public class RedStar extends PEToolBase {
 		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
-
 		int charge = getCharge(stack);
 		float damage = STAR_BASE_ATTACK + charge;
-
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, AttributeModifier.Operation.ADDITION));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, AttributeModifier.Operation.ADDITION));

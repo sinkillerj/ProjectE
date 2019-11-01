@@ -20,14 +20,14 @@ import net.minecraft.util.Hand;
 public class DarkSword extends PEToolBase implements IExtraFunction {
 
 	public DarkSword(Properties props) {
-		super(props, (byte) 2, new String[]{});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		this(props, (byte) 2, EnumMatterType.DARK_MATTER, new String[]{});
 	}
 
 	// Only for RedSword to use
-	protected DarkSword(Properties props, byte numcharges, String[] modeDesc) {
+	protected DarkSword(Properties props, byte numcharges, EnumMatterType matterType, String[] modeDesc) {
 		super(props, numcharges, modeDesc);
+		this.peToolMaterial = matterType;
+		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 	}
 
 	@Override
@@ -40,10 +40,9 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		if (state.getBlock() == Blocks.COBWEB) {
 			return 15.0F;
-		} else {
-			Material material = state.getMaterial();
-			return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
 		}
+		Material material = state.getMaterial();
+		return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
 	}
 
 	@Override
@@ -57,9 +56,8 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Nonnull
@@ -68,10 +66,8 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
-
 		int charge = getCharge(stack);
 		float damage = (this instanceof RedSword ? REDSWORD_BASE_ATTACK : DARKSWORD_BASE_ATTACK) + charge;
-
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, AttributeModifier.Operation.ADDITION));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, AttributeModifier.Operation.ADDITION));

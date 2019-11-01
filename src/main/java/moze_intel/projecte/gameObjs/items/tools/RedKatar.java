@@ -32,9 +32,7 @@ import net.minecraft.world.World;
 public class RedKatar extends PEToolBase implements IExtraFunction {
 
 	public RedKatar(Properties props) {
-		super(props, (byte) 4, new String[]{
-				"pe.katar.mode1", "pe.katar.mode2",
-				});
+		super(props, (byte) 4, new String[]{"pe.katar.mode1", "pe.katar.mode2"});
 		this.peToolMaterial = EnumMatterType.RED_MATTER;
 		this.harvestMaterials.add(Material.WOOD);
 		this.harvestMaterials.add(Material.WEB);
@@ -94,9 +92,8 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura.get().floatValue(), 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Nonnull
@@ -116,10 +113,8 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
-
 		int charge = getCharge(stack);
 		float damage = KATAR_BASE_ATTACK + charge; // Sword
-
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, AttributeModifier.Operation.ADDITION));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.4, AttributeModifier.Operation.ADDITION));

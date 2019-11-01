@@ -18,16 +18,17 @@ import net.minecraft.world.World;
 public class DarkAxe extends PEToolBase {
 
 	public DarkAxe(Properties props) {
-		super(props, (byte) 2, new String[]{});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
-		this.harvestMaterials.add(Material.WOOD);
-		this.harvestMaterials.add(Material.PLANTS);
-		this.harvestMaterials.add(Material.TALL_PLANTS);
+		this(props, (byte) 2, EnumMatterType.DARK_MATTER);
 	}
 
 	// Only for RedAxe
-	protected DarkAxe(Properties props, byte numCharges, String[] modeDesc) {
-		super(props, numCharges, modeDesc);
+	protected DarkAxe(Properties props, byte numCharges, EnumMatterType matterType) {
+		super(props, numCharges, new String[]{});
+		this.peToolMaterial = matterType;
+		this.harvestMaterials.add(Material.WOOD);
+		this.harvestMaterials.add(Material.PLANTS);
+		this.harvestMaterials.add(Material.TALL_PLANTS);
+		this.harvestMaterials.add(Material.BAMBOO);
 	}
 
 	@Nonnull

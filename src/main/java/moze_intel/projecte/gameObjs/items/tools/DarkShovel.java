@@ -21,18 +21,18 @@ import net.minecraft.world.World;
 public class DarkShovel extends PEToolBase {
 
 	public DarkShovel(Properties props) {
-		super(props, (byte) 1, new String[]{});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
+		this(props, (byte) 1, EnumMatterType.DARK_MATTER);
+	}
+
+	// Only for RedShovel
+	protected DarkShovel(Properties props, byte numCharges, EnumMatterType matterType) {
+		super(props, numCharges, new String[]{});
+		this.peToolMaterial = matterType;
 		this.harvestMaterials.add(Material.ORGANIC);
 		this.harvestMaterials.add(Material.EARTH);
 		this.harvestMaterials.add(Material.SAND);
 		this.harvestMaterials.add(Material.SNOW);
 		this.harvestMaterials.add(Material.CLAY);
-	}
-
-	// Only for RedShovel
-	protected DarkShovel(Properties props, byte numCharges, String[] modeDesc) {
-		super(props, numCharges, modeDesc);
 	}
 
 	@Nonnull
@@ -42,7 +42,6 @@ public class DarkShovel extends PEToolBase {
 		if (world.isRemote) {
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
-
 		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 		if (mop instanceof BlockRayTraceResult && world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL) {
 			tryVeinMine(stack, player, (BlockRayTraceResult) mop);

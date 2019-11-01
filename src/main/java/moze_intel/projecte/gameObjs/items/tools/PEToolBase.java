@@ -99,8 +99,7 @@ public abstract class PEToolBase extends ItemMode {
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
 
-		BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)).forEach(pos ->
-		{
+		BlockPos.getAllInBox(new BlockPos(player).add(-scaled1, -scaled2, -scaled1), new BlockPos(player).add(scaled1, scaled2, scaled1)).forEach(pos -> {
 			BlockState state = world.getBlockState(pos);
 
 			if (tag.contains(state.getBlock())) {
@@ -139,11 +138,8 @@ public abstract class PEToolBase extends ItemMode {
 			if (!stateAbove.isOpaqueCube(world, pos) && (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT)) {
 				if (!hasSoundPlayed) {
 					SoundType type = Blocks.FARMLAND.getDefaultState().getSoundType();
-					world.playSound(null, newPos,
-							type.getStepSound(),
-							SoundCategory.BLOCKS,
-							(type.getVolume() + 1.0F) / 2.0F,
-							type.getPitch() * 0.8F);
+					world.playSound(null, newPos, type.getStepSound(), SoundCategory.BLOCKS,
+							(type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
 					hasSoundPlayed = true;
 				}
 
@@ -161,8 +157,7 @@ public abstract class PEToolBase extends ItemMode {
 						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), newPos, Blocks.FARMLAND.getDefaultState());
 
 						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.TALL_PLANTS)
-							&& !(blockAbove.hasTileEntity(stateAbove)) // Just in case, you never know
-						) {
+							&& !(blockAbove.hasTileEntity(stateAbove))) {// Just in case, you never know
 							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos)) {
 								world.destroyBlock(newPos.up(), true);
 							}
@@ -191,8 +186,8 @@ public abstract class PEToolBase extends ItemMode {
 		PlayerEntity player = (PlayerEntity) living;
 		byte mode = this.getMode(stack);
 
-		if (mode == 0) // Standard
-		{
+		if (mode == 0) {
+			//Standard
 			return;
 		}
 
@@ -263,7 +258,6 @@ public abstract class PEToolBase extends ItemMode {
 		}
 
 		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-
 		if (!(mop instanceof BlockRayTraceResult)) {
 			return;
 		}
@@ -273,7 +267,6 @@ public abstract class PEToolBase extends ItemMode {
 										: WorldHelper.getFlatYBox(rtr.getPos(), this.getCharge(stack));
 
 		List<ItemStack> drops = new ArrayList<>();
-
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(box)) {
 			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
@@ -300,16 +293,13 @@ public abstract class PEToolBase extends ItemMode {
 		if (!(damager instanceof PlayerEntity) || damager.getEntityWorld().isRemote) {
 			return;
 		}
-
 		DamageSource dmg = DamageSource.causePlayerDamage((PlayerEntity) damager);
 		int charge = this.getCharge(stack);
 		float totalDmg = baseDmg;
-
 		if (charge > 0) {
 			dmg.setDamageBypassesArmor();
 			totalDmg += charge;
 		}
-
 		damaged.attackEntityFrom(dmg, totalDmg);
 	}
 
@@ -371,47 +361,36 @@ public abstract class PEToolBase extends ItemMode {
 		World world = player.getEntityWorld();
 		if (!world.isRemote) {
 			int charge = this.getCharge(stack);
-
 			int offset = ((int) Math.pow(2, 2 + charge));
 
 			AxisAlignedBB bBox = player.getBoundingBox().grow(offset, offset / 2, offset);
 			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
-
 			List<ItemStack> drops = new ArrayList<>();
-
 			for (Entity ent : list) {
 				if (!(ent instanceof IShearable)) {
 					continue;
 				}
-
 				IShearable target = (IShearable) ent;
-
 				if (target.isShearable(stack, ent.getEntityWorld(), new BlockPos(ent)) && consumeFuel(player, stack, emcCost, true)) {
 					List<ItemStack> entDrops = target.onSheared(stack, ent.getEntityWorld(), new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-
 					if (!entDrops.isEmpty()) {
 						for (ItemStack drop : entDrops) {
 							drop.grow(drop.getCount());
 						}
-
 						drops.addAll(entDrops);
 					}
 				}
 				if (Math.random() < 0.01) {
 					Entity e = ent.getType().create(world);
-
 					if (e != null) {
 						e.setPosition(ent.posX, ent.posY, ent.posZ);
 					}
-
 					if (e instanceof MobEntity) {
 						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(ent)), SpawnReason.EVENT, null, null);
 					}
-
 					if (e instanceof SheepEntity) {
 						((SheepEntity) e).setFleeceColor(DyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
 					}
-
 					if (e instanceof AgeableEntity) {
 						((AgeableEntity) e).setGrowingAge(-24000);
 					}
@@ -439,7 +418,6 @@ public abstract class PEToolBase extends ItemMode {
 		}
 
 		List<ItemStack> drops = new ArrayList<>();
-
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb)) {
 			BlockState state = player.getEntityWorld().getBlockState(pos);
 			if (target.getBlock() == state.getBlock()) {
@@ -472,7 +450,6 @@ public abstract class PEToolBase extends ItemMode {
 				WorldHelper.harvestVein(world, player, stack, pos, state.getBlock(), drops, 0);
 			}
 		}
-
 		if (!drops.isEmpty()) {
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 			PlayerHelper.swingItem(player, hand);

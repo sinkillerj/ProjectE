@@ -21,16 +21,16 @@ import net.minecraft.world.World;
 public class DarkHammer extends PEToolBase {
 
 	public DarkHammer(Properties props) {
-		super(props, (byte) 2, new String[]{});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
-		this.harvestMaterials.add(Material.IRON);
-		this.harvestMaterials.add(Material.ANVIL);
-		this.harvestMaterials.add(Material.ROCK);
+		this(props, (byte) 2, EnumMatterType.DARK_MATTER);
 	}
 
 	// Only for RedHammer
-	protected DarkHammer(Properties props, byte numCharges, String[] modeDesc) {
-		super(props, numCharges, modeDesc);
+	protected DarkHammer(Properties props, byte numCharges, EnumMatterType matterType) {
+		super(props, numCharges, new String[]{});
+		this.peToolMaterial = matterType;
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 	}
 
 	@Override
@@ -50,10 +50,9 @@ public class DarkHammer extends PEToolBase {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnace) {
-			return 1200000.0F;
+		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnace) {
+			return 1_200_000;
 		}
-
 		return super.getDestroySpeed(stack, state);
 	}
 
@@ -63,10 +62,8 @@ public class DarkHammer extends PEToolBase {
 		if (slot != EquipmentSlotType.MAINHAND) {
 			return super.getAttributeModifiers(slot, stack);
 		}
-
 		int charge = getCharge(stack);
 		float damage = HAMMER_BASE_ATTACK + charge;
-
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", damage, AttributeModifier.Operation.ADDITION));
 		multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -3, AttributeModifier.Operation.ADDITION));

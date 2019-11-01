@@ -11,11 +11,10 @@ import net.minecraft.util.Hand;
 public class RedSword extends DarkSword {
 
 	public RedSword(Properties props) {
-		super(props, (byte) 3, new String[]{
+		super(props, (byte) 3, EnumMatterType.RED_MATTER, new String[]{
 				"pe.redsword.mode1",
 				"pe.redsword.mode2"
 		});
-		this.peToolMaterial = EnumMatterType.RED_MATTER;
 	}
 
 	@Override

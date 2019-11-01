@@ -19,18 +19,20 @@ import net.minecraftforge.common.IShearable;
 public class DarkShears extends PEToolBase {
 
 	public DarkShears(Properties props) {
-		super(props, (byte) 2, new String[]{});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
+		this(props, (byte) 2, EnumMatterType.DARK_MATTER);
+	}
+
+	// Only for RedShears
+	protected DarkShears(Properties props, byte numCharges, EnumMatterType matterType) {
+		super(props, numCharges, new String[]{});
+		this.peToolMaterial = matterType;
 		this.harvestMaterials.add(Material.WEB);
 		this.harvestMaterials.add(Material.WOOL);
 		this.harvestMaterials.add(Material.PLANTS);
 		this.harvestMaterials.add(Material.LEAVES);
 		this.harvestMaterials.add(Material.TALL_PLANTS);
-	}
-
-	// Only for RedShears
-	protected DarkShears(Properties props, byte numCharges, String[] modeDesc) {
-		super(props, numCharges, modeDesc);
+		//TODO: Should this have miscellaneous it was in red shears before
+		this.harvestMaterials.add(Material.MISCELLANEOUS);
 	}
 
 	@Override
@@ -38,9 +40,8 @@ public class DarkShears extends PEToolBase {
 		Block block = state.getBlock();
 		if (state.getMaterial() != Material.LEAVES && block != Blocks.COBWEB && block != Blocks.TALL_GRASS && block != Blocks.VINE && block != Blocks.TRIPWIRE && !(block instanceof IShearable)) {
 			return super.onBlockDestroyed(stack, world, state, pos, ent);
-		} else {
-			return true;
 		}
+		return true;
 	}
 
 	@Override

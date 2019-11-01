@@ -27,18 +27,16 @@ import net.minecraft.world.World;
 public class DarkPick extends PEToolBase {
 
 	public DarkPick(Properties props) {
-		super(props, (byte) 2, new String[]{
-				"pe.darkpick.mode1", "pe.darkpick.mode2",
-				"pe.darkpick.mode3", "pe.darkpick.mode4"});
-		this.peToolMaterial = EnumMatterType.DARK_MATTER;
-		this.harvestMaterials.add(Material.IRON);
-		this.harvestMaterials.add(Material.ANVIL);
-		this.harvestMaterials.add(Material.ROCK);
+		this(props, (byte) 2, EnumMatterType.DARK_MATTER, new String[]{"pe.darkpick.mode1", "pe.darkpick.mode2", "pe.darkpick.mode3", "pe.darkpick.mode4"});
 	}
 
 	// Only for RedPick
-	protected DarkPick(Properties props, byte numCharges, String[] modeDesc) {
+	protected DarkPick(Properties props, byte numCharges, EnumMatterType matterType, String[] modeDesc) {
 		super(props, numCharges, modeDesc);
+		this.peToolMaterial = matterType;
+		this.harvestMaterials.add(Material.IRON);
+		this.harvestMaterials.add(Material.ANVIL);
+		this.harvestMaterials.add(Material.ROCK);
 	}
 
 	@Nonnull
@@ -48,7 +46,6 @@ public class DarkPick extends PEToolBase {
 		if (world.isRemote) {
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
-
 		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
 			mineOreVeinsInAOE(stack, player, hand);
 		} else {
@@ -59,7 +56,6 @@ public class DarkPick extends PEToolBase {
 				}
 			}
 		}
-
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
@@ -73,7 +69,7 @@ public class DarkPick extends PEToolBase {
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
 		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnace) {
-			return 1200000.0F;
+			return 1_200_000;
 		}
 		return super.getDestroySpeed(stack, state);
 	}
