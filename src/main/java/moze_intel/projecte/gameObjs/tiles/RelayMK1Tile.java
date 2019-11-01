@@ -209,14 +209,18 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		return nbt;
 	}
 
-	//TODO: Clean this up
-	public void addBonus(@Nonnull Direction side, double bonus) {
-		if (world.getTileEntity(pos.offset(side)) instanceof RelayMK1Tile) {
-			return; // Do not accept from other relays - avoid infinite loop / thrashing
-		}
-		bonusEMC += bonus;
+	protected double getBonusToAdd() {
+		return 0.05;
+	}
+
+	public void addBonus() {
+		bonusEMC += getBonusToAdd();
 		if (bonusEMC >= 1) {
-			bonusEMC -= forceInsertEmc((long) bonusEMC, EmcAction.EXECUTE);
+			long emcToInsert = (long) bonusEMC;
+			forceInsertEmc(emcToInsert, EmcAction.EXECUTE);
+			//Don't subtract the actual amount we managed to insert so that we do not continue to grow to
+			// an infinite amount of "bonus" emc if our buffer is full.
+			bonusEMC -= emcToInsert;
 		}
 	}
 

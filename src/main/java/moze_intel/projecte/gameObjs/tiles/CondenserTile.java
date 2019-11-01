@@ -83,9 +83,7 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 			@Nonnull
 			@Override
 			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack)
-					   ? super.insertItem(slot, stack, simulate)
-					   : stack;
+				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 
 			@Nonnull
@@ -93,9 +91,8 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 			public ItemStack extractItem(int slot, int max, boolean simulate) {
 				if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot))) {
 					return super.extractItem(slot, max, simulate);
-				} else {
-					return ItemStack.EMPTY;
 				}
+				return ItemStack.EMPTY;
 			}
 		};
 	}
@@ -188,16 +185,10 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 	protected boolean hasSpace() {
 		for (int i = 0; i < outputInventory.getSlots(); i++) {
 			ItemStack stack = outputInventory.getStackInSlot(i);
-
-			if (stack.isEmpty()) {
-				return true;
-			}
-
-			if (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize()) {
+			if (stack.isEmpty() || (isStackEqualToLock(stack) && stack.getCount() < stack.getMaxStackSize())) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -229,22 +220,18 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 		return nbt;
 	}
 
-	// TODO 1.13 recheck
 	private void updateChest() {
 		if (++ticksSinceSync % 20 * 4 == 0) {
 			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
 		}
-
-		prevLidAngle = lidAngle;
-		float angleIncrement = 0.1F;
 
 		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
 			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
-			float var8 = lidAngle;
-
+			prevLidAngle = lidAngle;
+			float angleIncrement = 0.1F;
 			if (numPlayersUsing > 0) {
 				lidAngle += angleIncrement;
 			} else {
@@ -255,7 +242,7 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 				lidAngle = 1.0F;
 			}
 
-			if (lidAngle < 0.5F && var8 >= 0.5F) {
+			if (lidAngle < 0.5F && prevLidAngle >= 0.5F) {
 				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
@@ -270,9 +257,8 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 		if (number == 1) {
 			numPlayersUsing = arg;
 			return true;
-		} else {
-			return super.receiveClientEvent(number, arg);
 		}
+		return super.receiveClientEvent(number, arg);
 	}
 
 	@Override

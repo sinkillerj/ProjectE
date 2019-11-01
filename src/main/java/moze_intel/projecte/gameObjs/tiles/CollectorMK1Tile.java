@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -13,7 +12,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -307,16 +305,11 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	}
 
 	private void sendRelayBonus() {
-		for (Map.Entry<Direction, TileEntity> entry : WorldHelper.getAdjacentTileEntitiesMapped(world, this).entrySet()) {
-			Direction dir = entry.getKey();
-			TileEntity tile = entry.getValue();
-
-			if (tile instanceof RelayMK3Tile) {
-				((RelayMK3Tile) tile).addBonus(dir, 0.5);
-			} else if (tile instanceof RelayMK2Tile) {
-				((RelayMK2Tile) tile).addBonus(dir, 0.15);
-			} else if (tile instanceof RelayMK1Tile) {
-				((RelayMK1Tile) tile).addBonus(dir, 0.05);
+		for (Direction dir : Direction.values()) {
+			TileEntity tile = world.getTileEntity(getPos().offset(dir));
+			if (tile instanceof RelayMK1Tile) {
+				//The other tiers of relay extend RelayMK1Tile and add the correct bonus
+				((RelayMK1Tile) tile).addBonus();
 			}
 		}
 	}

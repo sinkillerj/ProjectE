@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
@@ -119,14 +118,16 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	private void suckDumpItem(ItemEntity item, DMPedestalTile tile) {
-		Map<Direction, TileEntity> map = WorldHelper.getAdjacentTileEntitiesMapped(tile.getWorld(), tile);
-		for (Map.Entry<Direction, TileEntity> e : map.entrySet()) {
-			IItemHandler inv = WorldHelper.getItemHandler(e.getValue(), e.getKey());
-			ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
-			if (result.isEmpty()) {
-				item.remove();
-				return;
-			} else {
+		World world = tile.getWorld();
+		for (Direction dir : Direction.values()) {
+			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
+			if (candidate != null) {
+				IItemHandler inv = WorldHelper.getItemHandler(candidate, dir);
+				ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
+				if (result.isEmpty()) {
+					item.remove();
+					return;
+				}
 				item.setItem(result);
 			}
 		}
@@ -149,11 +150,14 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		}
 		AlchChestTile tile = (AlchChestTile) te;
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
-			AxisAlignedBB aabb = new AxisAlignedBB(tile.getPos().getX() - 5, tile.getPos().getY() - 5, tile.getPos().getZ() - 5,
-					tile.getPos().getX() + 5, tile.getPos().getY() + 5, tile.getPos().getZ() + 5);
-			double centeredX = tile.getPos().getX() + 0.5;
-			double centeredY = tile.getPos().getY() + 0.5;
-			double centeredZ = tile.getPos().getZ() + 0.5;
+			BlockPos tilePos = tile.getPos();
+			int tileX = tilePos.getX();
+			int tileY = tilePos.getY();
+			int tileZ = tilePos.getZ();
+			AxisAlignedBB aabb = new AxisAlignedBB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
+			double centeredX = tileX + 0.5;
+			double centeredY = tileY + 0.5;
+			double centeredZ = tileZ + 0.5;
 
 			for (ItemEntity e : tile.getWorld().getEntitiesWithinAABB(ItemEntity.class, aabb)) {
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);

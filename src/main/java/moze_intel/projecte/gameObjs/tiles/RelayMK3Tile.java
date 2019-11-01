@@ -27,4 +27,9 @@ public class RelayMK3Tile extends RelayMK1Tile {
 	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ObjHandler.relayMK3.getTranslationKey());
 	}
+
+	@Override
+	protected double getBonusToAdd() {
+		return 0.5;
+	}
 }

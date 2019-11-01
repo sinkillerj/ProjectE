@@ -3,10 +3,8 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -146,19 +144,6 @@ public final class WorldHelper {
 				}
 			}
 		}
-	}
-
-	public static Map<Direction, TileEntity> getAdjacentTileEntitiesMapped(final World world, final TileEntity tile) {
-		Map<Direction, TileEntity> ret = new EnumMap<>(Direction.class);
-
-		for (Direction dir : Direction.values()) {
-			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
-			if (candidate != null) {
-				ret.put(dir, candidate);
-			}
-		}
-
-		return ret;
 	}
 
 	/**
