@@ -294,14 +294,6 @@ public class ObjHandler {
 	public static final Item lifeStone = new LifeStone(ibNoStack()).setRegistryName(PECore.MODID, "life_stone");
 
 	public static final Item tome = new Tome(ibNoStack().rarity(Rarity.EPIC)).setRegistryName(PECore.MODID, "tome");
-
-	// TODO 1.13 get rid of these
-	public static final Item waterOrb = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "water_orb");
-	public static final Item lavaOrb = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "lava_orb");
-	public static final Item mobRandomizer = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "randomizer");
-	public static final Item lensExplosive = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "lens_explosive");
-	public static final Item fireProjectile = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "fire_projectile");
-	public static final Item windProjectile = new Item(new Item.Properties()).setRegistryName(PECore.MODID, "wind_projectile");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 
 	public static final EntityType<EntityFireProjectile> FIRE_PROJECTILE = EntityType.Builder
@@ -576,13 +568,6 @@ public class ObjHandler {
 
 		r.register(everTide);
 		r.register(volcanite);
-
-		r.register(waterOrb);
-		r.register(lavaOrb);
-		r.register(mobRandomizer);
-		r.register(lensExplosive);
-		r.register(fireProjectile);
-		r.register(windProjectile);
 
 		r.register(dCatalyst);
 		r.register(hyperLens);

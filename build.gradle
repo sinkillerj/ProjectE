@@ -147,7 +147,6 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
 
-    //TODO: Split this into a compileOnly runtimeOnly if CrT starts packing its API separately
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
@@ -219,18 +218,6 @@ reobf {
     }
 }
 
-// Dev jar (deobfuscated)
-task devJar(type: Jar) {
-    //TODO: What is the point of the dev jar, given we now have an API jar,
-    // and it being deobfuscated would make mappings have to match
-    from sourceSets.main.output
-    from sourceSets.api.output
-    classifier = 'dev'
-    version = "${project.version}"
-
-    println(defaultTasks)
-}
-
 task updateJSON {
 	doLast {
     	def updateJsonFile = file('update.json')
@@ -247,6 +234,5 @@ task updateJSON {
 }
 
 artifacts {
-    archives devJar
     archives apiJar
 }

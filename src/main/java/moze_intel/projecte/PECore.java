@@ -68,6 +68,12 @@ import moze_intel.projecte.rendering.LayerYue;
 import moze_intel.projecte.rendering.NovaCataclysmRenderer;
 import moze_intel.projecte.rendering.NovaCatalystRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
+import moze_intel.projecte.rendering.entity.ExplosiveLensRenderer;
+import moze_intel.projecte.rendering.entity.FireballRenderer;
+import moze_intel.projecte.rendering.entity.LavaOrbRenderer;
+import moze_intel.projecte.rendering.entity.LightningRenderer;
+import moze_intel.projecte.rendering.entity.RandomizerRenderer;
+import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
@@ -75,12 +81,9 @@ import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.SpriteRenderer;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -90,7 +93,6 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -154,12 +156,12 @@ public class PECore {
 			ClientRegistry.bindTileEntitySpecialRenderer(DMPedestalTile.class, new PedestalRenderer());
 
 			//Entities
-			RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, createRenderFactoryForSnowball());
-			RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, createRenderFactoryForSnowball());
-			RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, createRenderFactoryForSnowball());
-			RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, createRenderFactoryForSnowball());
-			RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, createRenderFactoryForSnowball());
-			RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, createRenderFactoryForSnowball());
+			RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, WaterOrbRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, LavaOrbRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, RandomizerRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, ExplosiveLensRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, FireballRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, LightningRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, NovaCatalystRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, NovaCataclysmRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
@@ -174,10 +176,6 @@ public class PECore {
 				render = skinMap.get("slim");
 				render.addLayer(new LayerYue(render));
 			});
-		}
-
-		private static <T extends Entity & IRendersAsItem> IRenderFactory<T> createRenderFactoryForSnowball() {
-			return manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer());
 		}
 	}
 
@@ -196,7 +194,6 @@ public class PECore {
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
-		//TODO: Evaluate if any should have storage
 		CapabilityManager.INSTANCE.register(IAlchBagItem.class, new DummyIStorage<>(), AlchBagItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IAlchChestItem.class, new DummyIStorage<>(), AlchChestItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IExtraFunction.class, new DummyIStorage<>(), ExtraFunctionItemDefaultImpl::new);

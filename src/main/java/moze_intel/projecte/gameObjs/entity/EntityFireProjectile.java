@@ -6,17 +6,17 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityFireProjectile extends ThrowableEntity implements IRendersAsItem {
+public class EntityFireProjectile extends ThrowableEntity {
 
 	public EntityFireProjectile(EntityType<EntityFireProjectile> type, World world) {
 		super(type, world);
@@ -66,7 +66,7 @@ public class EntityFireProjectile extends ThrowableEntity implements IRendersAsI
 
 	@Nonnull
 	@Override
-	public ItemStack getItem() {
-		return new ItemStack(ObjHandler.fireProjectile);
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

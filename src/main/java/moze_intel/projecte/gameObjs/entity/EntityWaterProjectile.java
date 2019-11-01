@@ -6,12 +6,11 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -20,8 +19,9 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityWaterProjectile extends ThrowableEntity implements IRendersAsItem {
+public class EntityWaterProjectile extends ThrowableEntity {
 
 	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, World world) {
 		super(type, world);
@@ -110,7 +110,7 @@ public class EntityWaterProjectile extends ThrowableEntity implements IRendersAs
 
 	@Nonnull
 	@Override
-	public ItemStack getItem() {
-		return new ItemStack(ObjHandler.waterOrb);
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

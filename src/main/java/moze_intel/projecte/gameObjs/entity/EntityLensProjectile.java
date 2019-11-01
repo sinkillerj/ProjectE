@@ -5,19 +5,19 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityLensProjectile extends ThrowableEntity implements IRendersAsItem {
+public class EntityLensProjectile extends ThrowableEntity {
 
 	private int charge;
 
@@ -81,7 +81,7 @@ public class EntityLensProjectile extends ThrowableEntity implements IRendersAsI
 
 	@Nonnull
 	@Override
-	public ItemStack getItem() {
-		return new ItemStack(ObjHandler.lensExplosive);
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }
