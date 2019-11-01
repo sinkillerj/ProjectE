@@ -375,7 +375,6 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	 * @return EMC available from the Provider + any klein stars in the input slots.
 	 */
 	public BigInteger getAvailableEMC() {
-		//TODO: Cache this value somehow, or at least cache which slots have IItemEMC in them?
 		BigInteger emc = provider.getEmc();
 		for (int i = 0; i < inputLocks.getSlots(); i++) {
 			if (i == LOCK_INDEX) {

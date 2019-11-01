@@ -101,6 +101,7 @@ public class Collector extends BlockDirection {
 	}
 
 	@Override
+	@Deprecated
 	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		TileEntity ent = world.getTileEntity(pos);
 		if (ent != null) {

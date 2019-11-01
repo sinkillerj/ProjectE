@@ -12,8 +12,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class Condenser extends AlchemicalChest {
 
@@ -28,6 +26,7 @@ public class Condenser extends AlchemicalChest {
 	}
 
 	@Override
+	@Deprecated
 	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
@@ -36,14 +35,5 @@ public class Condenser extends AlchemicalChest {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te != null) {
-			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
-		}
-		return 0;
 	}
 }

@@ -26,9 +26,8 @@ public class MatterBlock extends Block {
 		if (!stack.isEmpty()) {
 			if (matterType == EnumMatterType.RED_MATTER) {
 				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar || stack.getItem() == ObjHandler.rmHammer;
-			} else {
-				return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar || stack.getItem() == ObjHandler.dmHammer || stack.getItem() == ObjHandler.rmHammer;
 			}
+			return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick || stack.getItem() == ObjHandler.rmStar || stack.getItem() == ObjHandler.dmHammer || stack.getItem() == ObjHandler.rmHammer;
 		}
 		return false;
 	}

@@ -49,17 +49,11 @@ public abstract class BlockDirection extends Block {
 	@Override
 	@Deprecated
 	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
-		if (world.isRemote) {
-			return;
+		if (!world.isRemote) {
+			ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+			if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone) {
+				world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite()));
+			}
 		}
-
-		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-		if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone) {
-			setFacingMeta(world, pos, player);
-		}
-	}
-
-	private void setFacingMeta(World world, BlockPos pos, PlayerEntity player) {
-		world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.HORIZONTAL_FACING, player.getHorizontalFacing().getOpposite()));
 	}
 }

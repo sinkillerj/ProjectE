@@ -44,11 +44,6 @@ public final class Constants {
 	public static final long RELAY_MK2_MAX = 1_000_000;
 	public static final long RELAY_MK3_MAX = 10_000_000;
 
-	public static final int COAL_BURN_TIME = 1_600;
-	public static final int ALCH_BURN_TIME = COAL_BURN_TIME * 4;
-	public static final int MOBIUS_BURN_TIME = ALCH_BURN_TIME * 4;
-	public static final int AETERNALIS_BURN_TIME = MOBIUS_BURN_TIME * 4;
-
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 
 	public static final int MAX_VEIN_SIZE = 250;

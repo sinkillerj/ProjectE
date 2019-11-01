@@ -75,7 +75,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		if (state.getBlock() instanceof TNTBlock) {
 			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos)) {
 				// Ignite TNT or derivatives
-				// todo 1.14 doesn't work properly
+				//TODO: Fix this once https://github.com/MinecraftForge/MinecraftForge/pull/6290 is merged, make it use createExplosion
 				((TNTBlock) state.getBlock()).explode(world, pos);
 				world.removeBlock(pos, false);
 				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
