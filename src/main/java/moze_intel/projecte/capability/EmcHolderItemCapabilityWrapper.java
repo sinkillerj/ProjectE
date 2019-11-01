@@ -4,14 +4,13 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class EmcHolderItemCapabilityWrapper extends ItemCapability<IItemEmcHolder> implements IItemEmcHolder {
+public class EmcHolderItemCapabilityWrapper extends BasicItemCapability<IItemEmcHolder> implements IItemEmcHolder {
 
 	@Override
-	protected Capability<IItemEmcHolder> getCapability() {
+	public Capability<IItemEmcHolder> getCapability() {
 		return ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY;
 	}
 

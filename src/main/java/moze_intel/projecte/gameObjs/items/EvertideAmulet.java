@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
+import moze_intel.projecte.capability.BasicItemCapability;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -222,7 +222,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		return list;
 	}
 
-	private static class InfiniteFluidHandler extends ItemCapability<IFluidHandlerItem> implements IFluidHandlerItem {
+	private static class InfiniteFluidHandler extends BasicItemCapability<IFluidHandlerItem> implements IFluidHandlerItem {
 
 		@Nonnull
 		@Override
@@ -277,7 +277,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		}
 
 		@Override
-		protected Capability<IFluidHandlerItem> getCapability() {
+		public Capability<IFluidHandlerItem> getCapability() {
 			return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
 		}
 	}

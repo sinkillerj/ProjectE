@@ -4,16 +4,15 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class PedestalItemCapabilityWrapper extends ItemCapability<IPedestalItem> implements IPedestalItem {
+public class PedestalItemCapabilityWrapper extends BasicItemCapability<IPedestalItem> implements IPedestalItem {
 
 	@Override
-	protected Capability<IPedestalItem> getCapability() {
+	public Capability<IPedestalItem> getCapability() {
 		return ProjectEAPI.PEDESTAL_ITEM_CAPABILITY;
 	}
 

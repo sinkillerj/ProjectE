@@ -12,6 +12,8 @@ import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
+import moze_intel.projecte.capability.IItemCapabilitySerializable;
+import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -26,7 +28,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -40,9 +41,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -69,37 +67,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				"pe.pe_mercurial_eye.mode5",
 				"pe.pe_mercurial_eye.mode6"});
 		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
-	}
-
-	@Nonnull
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT prevCapNBT) {
-		//TODO: Switch this over to somehow using ItemCapabilityWrapper??
-		return new ICapabilitySerializable<CompoundNBT>() {
-			private final IItemHandler inv = new ItemStackHandler(2);
-			private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
-
-			@Override
-			public CompoundNBT serializeNBT() {
-				CompoundNBT ret = new CompoundNBT();
-				INBT nbtBase = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null);
-				if (nbtBase != null) {
-					ret.put("Items", nbtBase);
-				}
-				return ret;
-			}
-
-			@Override
-			public void deserializeNBT(CompoundNBT nbt) {
-				CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt.getList("Items", NBT.TAG_COMPOUND));
-			}
-
-			@Nonnull
-			@Override
-			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, invInst);
-			}
-		};
+		addItemCapability(new EyeInventoryHandler());
 	}
 
 	@Override
@@ -355,5 +323,36 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				break;
 		}
 		return new ImmutablePair<>(start, end);
+	}
+
+	private static class EyeInventoryHandler extends ItemCapability<IItemHandler> implements IItemCapabilitySerializable {
+
+		private final IItemHandler inv = new ItemStackHandler(2);
+		private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
+
+		@Override
+		public INBT serializeNBT() {
+			return getCapability().writeNBT(inv, null);
+		}
+
+		@Override
+		public void deserializeNBT(INBT nbt) {
+			getCapability().readNBT(inv, null, nbt);
+		}
+
+		@Override
+		public Capability<IItemHandler> getCapability() {
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+		}
+
+		@Override
+		public LazyOptional<IItemHandler> getLazyCapability() {
+			return invInst;
+		}
+
+		@Override
+		public String getStorageKey() {
+			return "EyeInventory";
+		}
 	}
 }

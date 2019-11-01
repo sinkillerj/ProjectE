@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
 import java.util.function.Supplier;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
+import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.integration.curios.CurioItemCapability;
 import top.theillusivec4.curios.api.capability.ICurio;
 

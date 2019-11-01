@@ -4,16 +4,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class ModeChangerItemCapabilityWrapper extends ItemCapability<IModeChanger> implements IModeChanger {
+public class ModeChangerItemCapabilityWrapper extends BasicItemCapability<IModeChanger> implements IModeChanger {
 
 	@Override
-	protected Capability<IModeChanger> getCapability() {
+	public Capability<IModeChanger> getCapability() {
 		return ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY;
 	}
 

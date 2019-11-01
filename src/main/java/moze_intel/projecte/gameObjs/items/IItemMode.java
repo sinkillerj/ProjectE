@@ -33,7 +33,6 @@ public interface IItemMode extends IModeChanger {
 
 	@Override
 	default byte getMode(@Nonnull ItemStack stack) {
-		//TODO: Should this just be stack.getOrCreateTag().getByte
 		return stack.hasTag() ? stack.getTag().getByte(getModeTag()) : 0;
 	}
 

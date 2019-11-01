@@ -4,16 +4,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
-import moze_intel.projecte.capability.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class ExtraFunctionItemCapabilityWrapper extends ItemCapability<IExtraFunction> implements IExtraFunction {
+public class ExtraFunctionItemCapabilityWrapper extends BasicItemCapability<IExtraFunction> implements IExtraFunction {
 
 	@Override
-	protected Capability<IExtraFunction> getCapability() {
+	public Capability<IExtraFunction> getCapability() {
 		return ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY;
 	}
 
