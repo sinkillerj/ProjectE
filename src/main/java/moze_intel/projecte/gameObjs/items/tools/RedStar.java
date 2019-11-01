@@ -110,7 +110,7 @@ public class RedStar extends PEToolBase {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if (block instanceof MatterBlock || block == ObjHandler.dmFurnaceOff || block == ObjHandler.rmFurnaceOff) {
+		if (block instanceof MatterBlock || block == ObjHandler.dmFurnace || block == ObjHandler.rmFurnace) {
 			return 1200000.0F;
 		}
 

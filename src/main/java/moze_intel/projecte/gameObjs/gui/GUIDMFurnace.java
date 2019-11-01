@@ -20,7 +20,7 @@ public class GUIDMFurnace extends ContainerScreen<DMFurnaceContainer> {
 		super(container, invPlayer, title);
 		this.xSize = 178;
 		this.ySize = 165;
-		this.tile = (DMFurnaceTile) container.tile;
+		this.tile = container.tile;
 	}
 
 	@Override

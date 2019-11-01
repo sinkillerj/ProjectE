@@ -10,35 +10,23 @@ import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-public class RMFurnaceContainer extends Container {
+public class RMFurnaceContainer extends DMFurnaceContainer {
 
-	public final RMFurnaceTile tile;
-	private int lastCookTime;
-	private int lastBurnTime;
-	private int lastItemBurnTime;
-
-	public RMFurnaceContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, RMFurnaceTile tile) {
-		super(type, windowId);
-		this.tile = tile;
-		initSlots(invPlayer);
+	public RMFurnaceContainer(int windowId, PlayerInventory invPlayer, RMFurnaceTile tile) {
+		super(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
 	public static RMFurnaceContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buffer) {
-		return new RMFurnaceContainer(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer,
-				(RMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
+		return new RMFurnaceContainer(windowId, invPlayer, (RMFurnaceTile) GuiHandler.getTeFromBuf(buffer));
 	}
 
+	@Override
 	void initSlots(PlayerInventory invPlayer) {
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
@@ -76,55 +64,8 @@ public class RMFurnaceContainer extends Container {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnaceOff
+		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnace
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
-	}
-
-	@Override
-	public void addListener(@Nonnull IContainerListener par1IContainerListener) {
-		super.addListener(par1IContainerListener);
-		par1IContainerListener.sendWindowProperty(this, 0, tile.furnaceCookTime);
-		par1IContainerListener.sendWindowProperty(this, 1, tile.furnaceBurnTime);
-		par1IContainerListener.sendWindowProperty(this, 2, tile.currentItemBurnTime);
-	}
-
-	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
-
-		for (IContainerListener crafter : this.listeners) {
-			if (lastCookTime != tile.furnaceCookTime) {
-				crafter.sendWindowProperty(this, 0, tile.furnaceCookTime);
-			}
-
-			if (lastBurnTime != tile.furnaceBurnTime) {
-				crafter.sendWindowProperty(this, 1, tile.furnaceBurnTime);
-			}
-
-			if (lastItemBurnTime != tile.currentItemBurnTime) {
-				crafter.sendWindowProperty(this, 2, tile.currentItemBurnTime);
-			}
-		}
-
-		lastCookTime = tile.furnaceCookTime;
-		lastBurnTime = tile.furnaceBurnTime;
-		lastItemBurnTime = tile.currentItemBurnTime;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBar(int par1, int par2) {
-		if (par1 == 0) {
-			tile.furnaceCookTime = par2;
-		}
-
-		if (par1 == 1) {
-			tile.furnaceBurnTime = par2;
-		}
-
-		if (par1 == 2) {
-			tile.currentItemBurnTime = par2;
-		}
 	}
 
 	@Nonnull

@@ -20,7 +20,7 @@ public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer> {
 		super(container, invPlayer, title);
 		this.xSize = 209;
 		this.ySize = 165;
-		this.tile = container.tile;
+		this.tile = (RMFurnaceTile) container.tile;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class RedHammer extends DarkHammer {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if ((block == ObjHandler.rmBlock) || block == ObjHandler.rmFurnaceOff) {
+		if ((block == ObjHandler.rmBlock) || block == ObjHandler.rmFurnace) {
 			return 1200000.0F;
 		}
 

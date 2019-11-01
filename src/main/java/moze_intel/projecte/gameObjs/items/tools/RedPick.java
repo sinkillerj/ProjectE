@@ -23,7 +23,7 @@ public class RedPick extends DarkPick {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block b = state.getBlock();
-		if (b == ObjHandler.rmBlock || b == ObjHandler.rmFurnaceOff) {
+		if (b == ObjHandler.rmBlock || b == ObjHandler.rmFurnace) {
 			return 1200000.0F;
 		}
 		return super.getDestroySpeed(stack, state);

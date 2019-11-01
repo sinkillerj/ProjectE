@@ -50,7 +50,7 @@ public class DarkHammer extends PEToolBase {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnaceOff) {
+		if ((block == ObjHandler.dmBlock) || block == ObjHandler.dmFurnace) {
 			return 1200000.0F;
 		}
 

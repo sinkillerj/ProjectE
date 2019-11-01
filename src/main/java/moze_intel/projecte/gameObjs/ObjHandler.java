@@ -162,8 +162,8 @@ public class ObjHandler {
 	public static final Block transmuteStone = new TransmutationStone(Block.Properties.create(Material.ROCK).hardnessAndResistance(10)).setRegistryName(PECore.MODID, "transmutation_table");
 	public static final Block condenser = new Condenser(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk1");
 	public static final Block condenserMk2 = new CondenserMK2(Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 6000000)).setRegistryName(PECore.MODID, "condenser_mk2");
-	public static final Block dmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final Block rmFurnaceOff = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final Block dmFurnace = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(1000000F).lightValue(14), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final Block rmFurnace = new MatterFurnace(Block.Properties.create(Material.ROCK).hardnessAndResistance(2000000F).lightValue(14), EnumMatterType.RED_MATTER).setRegistryName(PECore.MODID, "rm_furnace");
 	public static final Block dmPedestal = new Pedestal(Block.Properties.create(Material.ROCK).hardnessAndResistance(1).lightValue(12)).setRegistryName(PECore.MODID, "dm_pedestal");
 	//TODO: 1.14, Check this again, in 1.12 this would have equivalently had a resistance of 6 not something in the millions
 	public static final Block dmBlock = new MatterBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1000000), EnumMatterType.DARK_MATTER).setRegistryName(PECore.MODID, "dark_matter_block");
@@ -359,8 +359,8 @@ public class ObjHandler {
 	public static final TileEntityType<?> RELAY_MK1_TILE = TileEntityType.Builder.create(RelayMK1Tile::new, relay).build(null).setRegistryName(PECore.MODID, "relay_mk1");
 	public static final TileEntityType<?> RELAY_MK2_TILE = TileEntityType.Builder.create(RelayMK2Tile::new, relayMK2).build(null).setRegistryName(PECore.MODID, "relay_mk2");
 	public static final TileEntityType<?> RELAY_MK3_TILE = TileEntityType.Builder.create(RelayMK3Tile::new, relayMK3).build(null).setRegistryName(PECore.MODID, "relay_mk3");
-	public static final TileEntityType<?> DM_FURNACE_TILE = TileEntityType.Builder.create(DMFurnaceTile::new, dmFurnaceOff).build(null).setRegistryName(PECore.MODID, "dm_furnace");
-	public static final TileEntityType<?> RM_FURNACE_TILE = TileEntityType.Builder.create(RMFurnaceTile::new, rmFurnaceOff).build(null).setRegistryName(PECore.MODID, "rm_furnace");
+	public static final TileEntityType<?> DM_FURNACE_TILE = TileEntityType.Builder.create(DMFurnaceTile::new, dmFurnace).build(null).setRegistryName(PECore.MODID, "dm_furnace");
+	public static final TileEntityType<?> RM_FURNACE_TILE = TileEntityType.Builder.create(RMFurnaceTile::new, rmFurnace).build(null).setRegistryName(PECore.MODID, "rm_furnace");
 	public static final TileEntityType<?> INTERDICTION_TORCH_TILE = TileEntityType.Builder.create(InterdictionTile::new, interdictionTorch, interdictionTorchWall).build(null).setRegistryName(PECore.MODID, "interdiction_torch");
 	public static final TileEntityType<?> DM_PEDESTAL_TILE = TileEntityType.Builder.create(DMPedestalTile::new, dmPedestal).build(null).setRegistryName(PECore.MODID, "dm_pedestal");
 
@@ -391,8 +391,8 @@ public class ObjHandler {
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> evt) {
 		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
-		r.register(RM_FURNACE_CONTAINER.setRegistryName(rmFurnaceOff.getRegistryName()));
-		r.register(DM_FURNACE_CONTAINER.setRegistryName(dmFurnaceOff.getRegistryName()));
+		r.register(RM_FURNACE_CONTAINER.setRegistryName(rmFurnace.getRegistryName()));
+		r.register(DM_FURNACE_CONTAINER.setRegistryName(dmFurnace.getRegistryName()));
 		r.register(CONDENSER_CONTAINER.setRegistryName(condenser.getRegistryName()));
 		r.register(CONDENSER_MK2_CONTAINER.setRegistryName(condenserMk2.getRegistryName()));
 		r.register(ALCH_CHEST_CONTAINER.setRegistryName(alchChest.getRegistryName()));
@@ -443,7 +443,7 @@ public class ObjHandler {
 		r.register(collectorMK3);
 		r.register(condenser);
 		r.register(condenserMk2);
-		r.register(dmFurnaceOff);
+		r.register(dmFurnace);
 		r.register(dmPedestal);
 		r.register(alchemicalCoalBlock);
 		r.register(mobiusFuelBlock);
@@ -457,7 +457,7 @@ public class ObjHandler {
 		r.register(relay);
 		r.register(relayMK2);
 		r.register(relayMK3);
-		r.register(rmFurnaceOff);
+		r.register(rmFurnace);
 		r.register(transmuteStone);
 	}
 
@@ -470,7 +470,7 @@ public class ObjHandler {
 		registerObj(r, new BlockItem(collectorMK3, ib()), collectorMK3.getRegistryName());
 		registerObj(r, new BlockItem(condenser, ib()), condenser.getRegistryName());
 		registerObj(r, new BlockItem(condenserMk2, ib()), condenserMk2.getRegistryName());
-		registerObj(r, new BlockItem(dmFurnaceOff, ib()), dmFurnaceOff.getRegistryName());
+		registerObj(r, new BlockItem(dmFurnace, ib()), dmFurnace.getRegistryName());
 		registerObj(r, new BlockItem(dmPedestal, ib()), dmPedestal.getRegistryName());
 		registerObj(r, new ItemFuelBlock(alchemicalCoalBlock, ib(), EnumFuelType.ALCHEMICAL_COAL), alchemicalCoalBlock.getRegistryName());
 		registerObj(r, new ItemFuelBlock(mobiusFuelBlock, ib(), EnumFuelType.MOBIUS_FUEL), mobiusFuelBlock.getRegistryName());
@@ -483,7 +483,7 @@ public class ObjHandler {
 		registerObj(r, new BlockItem(relay, ib()), relay.getRegistryName());
 		registerObj(r, new BlockItem(relayMK2, ib()), relayMK2.getRegistryName());
 		registerObj(r, new BlockItem(relayMK3, ib()), relayMK3.getRegistryName());
-		registerObj(r, new BlockItem(rmFurnaceOff, ib()), rmFurnaceOff.getRegistryName());
+		registerObj(r, new BlockItem(rmFurnace, ib()), rmFurnace.getRegistryName());
 		registerObj(r, new BlockItem(transmuteStone, ib()), transmuteStone.getRegistryName());
 
 		r.register(philosStone);

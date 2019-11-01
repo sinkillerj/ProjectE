@@ -5,10 +5,10 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.network.IPacket;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityNovaCatalystPrimed extends TNTEntity {
 
