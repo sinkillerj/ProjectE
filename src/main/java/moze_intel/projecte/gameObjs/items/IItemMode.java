@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -52,8 +51,7 @@ public interface IItemMode extends IModeChanger {
 	}
 
 	default ITextComponent getToolTip(ItemStack stack) {
-		ITextComponent root = new TranslationTextComponent("pe.item.mode");
-		ITextComponent mode = new TranslationTextComponent(getModeTranslationKey(stack)).setStyle(new Style().setColor(TextFormatting.AQUA));
-		return root.appendText(": ").appendSibling(mode);
+		return new TranslationTextComponent("pe.item.mode").appendText(": ")
+				.appendSibling(new TranslationTextComponent(getModeTranslationKey(stack)).applyTextStyle(TextFormatting.AQUA));
 	}
 }

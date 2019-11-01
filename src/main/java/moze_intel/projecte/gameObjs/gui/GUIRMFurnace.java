@@ -53,7 +53,7 @@ public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(I18n.format("pe.rmfurnace.shortname"), 76, 5, 4210752);
-		this.font.drawString(I18n.format("container.inventory"), 76, ySize - 96 + 2, 4210752);
+		this.font.drawString(I18n.format("pe.rmfurnace.shortname"), 76, 5, 0x404040);
+		this.font.drawString(I18n.format("container.inventory"), 76, ySize - 96 + 2, 0x404040);
 	}
 }

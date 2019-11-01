@@ -18,7 +18,6 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -47,11 +46,8 @@ public class GemHelmet extends GemArmorBase {
 			helm.getTag().putBoolean("NightVision", false);
 			value = false;
 		}
-
-		TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
-		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
 		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
-				.appendSibling(new TranslationTextComponent(s).setStyle(new Style().setColor(e))));
+				.appendSibling(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(value ? TextFormatting.GREEN : TextFormatting.RED)));
 	}
 
 	@Override
@@ -62,10 +58,9 @@ public class GemHelmet extends GemArmorBase {
 		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt", Minecraft.getInstance().gameSettings.keyBindSneak.getTranslationKey(),
 				ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-		TextFormatting color = isNightVisionEnabled(stack) ? TextFormatting.GREEN : TextFormatting.RED;
-		TranslationTextComponent status = new TranslationTextComponent(isNightVisionEnabled(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
-		status.setStyle(new Style().setColor(color));
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ").appendSibling(status));
+		boolean enabled = isNightVisionEnabled(stack);
+		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
+				.appendSibling(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
 	}
 
 	@Override

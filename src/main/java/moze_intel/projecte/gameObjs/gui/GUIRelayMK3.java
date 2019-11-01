@@ -30,8 +30,8 @@ public class GUIRelayMK3 extends ContainerScreen<RelayMK3Container> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(I18n.format("pe.relay.mk3"), 38, 6, 4210752);
-		this.font.drawString(Constants.EMC_FORMATTER.format(container.emc.get()), 125, 39, 4210752);
+		this.font.drawString(I18n.format("pe.relay.mk3"), 38, 6, 0x404040);
+		this.font.drawString(Constants.EMC_FORMATTER.format(container.emc.get()), 125, 39, 0x404040);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class GUIRelayMK3 extends ContainerScreen<RelayMK3Container> {
 		this.blit(x, y, 0, 0, xSize, ySize);
 
 		//Emc bar progress
-		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * 102);
+		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
 		this.blit(x + 105, y + 6, 30, 195, progress, 10);
 
 		//Klein start bar progress. Max is 30.

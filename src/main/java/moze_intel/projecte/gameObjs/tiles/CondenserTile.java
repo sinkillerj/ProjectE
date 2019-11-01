@@ -14,8 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,25 +23,21 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CondenserTile extends TileEmc implements INamedContainerProvider {
+public class CondenserTile extends ChestTileEmc implements INamedContainerProvider {
 
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
 	private final LazyOptional<IItemHandler> automationInventory = LazyOptional.of(this::createAutomationInventory);
 	private final ItemStackHandler lock = new StackHandler(1);
 	private boolean isAcceptingEmc;
-	private int ticksSinceSync;
 	public long displayEmc;
-	public float lidAngle;
-	public float prevLidAngle;
-	public int numPlayersUsing;
 	public long requiredEmc;
 
 	public CondenserTile() {
 		this(ObjHandler.CONDENSER_TILE);
 	}
 
-	CondenserTile(TileEntityType<?> type) {
+	protected CondenserTile(TileEntityType<?> type) {
 		super(type);
 	}
 
@@ -115,17 +109,12 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 	@Override
 	public void tick() {
 		updateChest();
-
-		if (this.getWorld().isRemote) {
-			return;
-		}
-
-		checkLockAndUpdate();
-
-		displayEmc = this.getStoredEmc();
-
-		if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0) {
-			condense();
+		if (!getWorld().isRemote) {
+			checkLockAndUpdate();
+			displayEmc = this.getStoredEmc();
+			if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0) {
+				condense();
+			}
 		}
 	}
 
@@ -218,47 +207,6 @@ public class CondenserTile extends TileEmc implements INamedContainerProvider {
 		nbt.put("Input", inputInventory.serializeNBT());
 		nbt.put("LockSlot", lock.serializeNBT());
 		return nbt;
-	}
-
-	private void updateChest() {
-		if (++ticksSinceSync % 20 * 4 == 0) {
-			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
-		}
-
-		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
-			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-		}
-
-		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
-			prevLidAngle = lidAngle;
-			float angleIncrement = 0.1F;
-			if (numPlayersUsing > 0) {
-				lidAngle += angleIncrement;
-			} else {
-				lidAngle -= angleIncrement;
-			}
-
-			if (lidAngle > 1.0F) {
-				lidAngle = 1.0F;
-			}
-
-			if (lidAngle < 0.5F && prevLidAngle >= 0.5F) {
-				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-			}
-
-			if (lidAngle < 0.0F) {
-				lidAngle = 0.0F;
-			}
-		}
-	}
-
-	@Override
-	public boolean receiveClientEvent(int number, int arg) {
-		if (number == 1) {
-			numPlayersUsing = arg;
-			return true;
-		}
-		return super.receiveClientEvent(number, arg);
 	}
 
 	@Override

@@ -36,7 +36,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -121,7 +120,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
 		if (stack.hasTag()) {
 			if (!stack.getTag().getBoolean(TAG_ACTIVE)) {
-				list.add(new TranslationTextComponent("pe.arcana.inactive").setStyle(new Style().setColor(TextFormatting.RED)));
+				list.add(new TranslationTextComponent("pe.arcana.inactive").applyTextStyle(TextFormatting.RED));
 			} else {
 				list.add(getToolTip(stack));
 			}

@@ -5,10 +5,10 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
@@ -65,13 +65,12 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	private double unprocessedEMC;
 
 	public CollectorMK1Tile() {
-		super(ObjHandler.COLLECTOR_MK1_TILE, Constants.COLLECTOR_MK1_MAX);
-		emcGen = Constants.COLLECTOR_MK1_GEN;
+		this(ObjHandler.COLLECTOR_MK1_TILE, EnumCollectorTier.MK1);
 	}
 
-	public CollectorMK1Tile(TileEntityType<?> type, long maxEmc, long emcGen) {
-		super(type, maxEmc);
-		this.emcGen = emcGen;
+	public CollectorMK1Tile(TileEntityType<?> type, EnumCollectorTier tier) {
+		super(type, tier.getStorage());
+		this.emcGen = tier.getGenRate();
 	}
 
 	@Override

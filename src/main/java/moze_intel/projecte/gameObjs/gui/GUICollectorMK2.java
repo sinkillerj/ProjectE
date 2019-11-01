@@ -29,11 +29,11 @@ public class GUICollectorMK2 extends ContainerScreen<CollectorMK2Container> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(Long.toString(container.emc.get()), 75, 32, 4210752);
+		this.font.drawString(Long.toString(container.emc.get()), 75, 32, 0x404040);
 
 		long kleinCharge = container.kleinEmc.get();
 		if (kleinCharge > 0) {
-			this.font.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 4210752);
+			this.font.drawString(Constants.EMC_FORMATTER.format(kleinCharge), 75, 44, 0x404040);
 		}
 	}
 

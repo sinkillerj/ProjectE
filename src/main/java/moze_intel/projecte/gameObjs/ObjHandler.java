@@ -75,7 +75,9 @@ import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.gameObjs.items.armor.GemLegs;
 import moze_intel.projecte.gameObjs.items.armor.RMArmor;
+import moze_intel.projecte.gameObjs.items.blocks.CollectorItem;
 import moze_intel.projecte.gameObjs.items.blocks.ItemFuelBlock;
+import moze_intel.projecte.gameObjs.items.blocks.RelayItem;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
@@ -170,12 +172,12 @@ public class ObjHandler {
 	public static final Block alchemicalCoalBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F, 1.5F)).setRegistryName(PECore.MODID, "alchemical_coal_block");
 	public static final Block mobiusFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F, 1.5F)).setRegistryName(PECore.MODID, "mobius_fuel_block");
 	public static final Block aeternalisFuelBlock = new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.5F, 1.5F)).setRegistryName(PECore.MODID, "aeternalis_fuel_block");
-	public static final Block collectorMK1 = new Collector(1, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(7)).setRegistryName(PECore.MODID, "collector_mk1");
-	public static final Block collectorMK2 = new Collector(2, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(11)).setRegistryName(PECore.MODID, "collector_mk2");
-	public static final Block collectorMK3 = new Collector(3, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(15)).setRegistryName(PECore.MODID, "collector_mk3");
-	public static final Block relay = new Relay(1, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(7)).setRegistryName(PECore.MODID, "relay_mk1");
-	public static final Block relayMK2 = new Relay(2, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(11)).setRegistryName(PECore.MODID, "relay_mk2");
-	public static final Block relayMK3 = new Relay(3, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(15)).setRegistryName(PECore.MODID, "relay_mk3");
+	public static final Block collectorMK1 = new Collector(EnumCollectorTier.MK1, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(7)).setRegistryName(PECore.MODID, "collector_mk1");
+	public static final Block collectorMK2 = new Collector(EnumCollectorTier.MK2, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(11)).setRegistryName(PECore.MODID, "collector_mk2");
+	public static final Block collectorMK3 = new Collector(EnumCollectorTier.MK3, Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F, 0.9F).lightValue(15)).setRegistryName(PECore.MODID, "collector_mk3");
+	public static final Block relay = new Relay(EnumRelayTier.MK1, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(7)).setRegistryName(PECore.MODID, "relay_mk1");
+	public static final Block relayMK2 = new Relay(EnumRelayTier.MK2, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(11)).setRegistryName(PECore.MODID, "relay_mk2");
+	public static final Block relayMK3 = new Relay(EnumRelayTier.MK3, Block.Properties.create(Material.ROCK).hardnessAndResistance(10, 30).lightValue(15)).setRegistryName(PECore.MODID, "relay_mk3");
 	public static final Block novaCatalyst = new ProjectETNT(Block.Properties.create(Material.TNT).hardnessAndResistance(0), EntityNovaCatalystPrimed::new).setRegistryName(PECore.MODID, "nova_catalyst");
 	public static final Block novaCataclysm = new ProjectETNT(Block.Properties.create(Material.TNT).hardnessAndResistance(0), EntityNovaCataclysmPrimed::new).setRegistryName(PECore.MODID, "nova_cataclysm");
 
@@ -464,9 +466,9 @@ public class ObjHandler {
 	public static void registerItems(RegistryEvent.Register<Item> evt) {
 		IForgeRegistry<Item> r = evt.getRegistry();
 		registerObj(r, new BlockItem(alchChest, ib()), alchChest.getRegistryName());
-		registerObj(r, new BlockItem(collectorMK1, ib()), collectorMK1.getRegistryName());
-		registerObj(r, new BlockItem(collectorMK2, ib()), collectorMK2.getRegistryName());
-		registerObj(r, new BlockItem(collectorMK3, ib()), collectorMK3.getRegistryName());
+		registerObj(r, new CollectorItem((Collector) collectorMK1, ib()), collectorMK1.getRegistryName());
+		registerObj(r, new CollectorItem((Collector) collectorMK2, ib()), collectorMK2.getRegistryName());
+		registerObj(r, new CollectorItem((Collector) collectorMK3, ib()), collectorMK3.getRegistryName());
 		registerObj(r, new BlockItem(condenser, ib()), condenser.getRegistryName());
 		registerObj(r, new BlockItem(condenserMk2, ib()), condenserMk2.getRegistryName());
 		registerObj(r, new BlockItem(dmFurnace, ib()), dmFurnace.getRegistryName());
@@ -479,9 +481,9 @@ public class ObjHandler {
 		registerObj(r, new BlockItem(rmBlock, ib()), rmBlock.getRegistryName());
 		registerObj(r, new BlockItem(novaCatalyst, ib()), novaCatalyst.getRegistryName());
 		registerObj(r, new BlockItem(novaCataclysm, ib()), novaCataclysm.getRegistryName());
-		registerObj(r, new BlockItem(relay, ib()), relay.getRegistryName());
-		registerObj(r, new BlockItem(relayMK2, ib()), relayMK2.getRegistryName());
-		registerObj(r, new BlockItem(relayMK3, ib()), relayMK3.getRegistryName());
+		registerObj(r, new RelayItem((Relay) relay, ib()), relay.getRegistryName());
+		registerObj(r, new RelayItem((Relay) relayMK2, ib()), relayMK2.getRegistryName());
+		registerObj(r, new RelayItem((Relay) relayMK3, ib()), relayMK3.getRegistryName());
 		registerObj(r, new BlockItem(rmFurnace, ib()), rmFurnace.getRegistryName());
 		registerObj(r, new BlockItem(transmuteStone, ib()), transmuteStone.getRegistryName());
 

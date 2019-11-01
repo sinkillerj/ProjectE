@@ -17,7 +17,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -48,11 +47,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			boots.getTag().putBoolean("StepAssist", false);
 			value = false;
 		}
-
-		TextFormatting e = value ? TextFormatting.GREEN : TextFormatting.RED;
-		String s = value ? "pe.gem.enabled" : "pe.gem.disabled";
 		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
-				.appendSibling(new TranslationTextComponent(s).setStyle(new Style().setColor(e))));
+				.appendSibling(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(value ? TextFormatting.GREEN : TextFormatting.RED)));
 	}
 
 	private static boolean isJumpPressed() {
@@ -91,10 +87,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		tooltips.add(new TranslationTextComponent("pe.gem.feet.lorename"));
 		tooltips.add(new TranslationTextComponent("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-		TextFormatting color = canStep(stack) ? TextFormatting.GREEN : TextFormatting.RED;
-		TranslationTextComponent status = new TranslationTextComponent(canStep(stack) ? "pe.gem.enabled" : "pe.gem.disabled");
-		status.setStyle(new Style().setColor(color));
-		tooltips.add(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ").appendSibling(status));
+		boolean enabled = canStep(stack);
+		tooltips.add(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
+				.appendSibling(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
 	}
 
 	private boolean canStep(ItemStack stack) {

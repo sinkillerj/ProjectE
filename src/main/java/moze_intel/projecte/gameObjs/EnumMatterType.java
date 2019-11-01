@@ -21,6 +21,6 @@ public enum EnumMatterType implements IStringSerializable {
 
 	@Override
 	public String toString() {
-		return name;
+		return getName();
 	}
 }

@@ -75,36 +75,36 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 4210752);
+		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
-		this.font.drawString(emcLabel, 6, this.ySize - 104, 4210752);
+		this.font.drawString(emcLabel, 6, this.ySize - 104, 0x404040);
 		String emc = TransmutationEMCFormatter.formatEMC(emcAmount);
-		this.font.drawString(emc, 6, this.ySize - 94, 4210752);
+		this.font.drawString(emc, 6, this.ySize - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
-			this.font.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 0x404040);
 
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0) {
-			this.font.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 4210752);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 4210752);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 0x404040);
+			this.font.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 0x404040);
 
 			inv.unlearnFlag--;
 		}

@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
@@ -22,11 +23,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class Relay extends BlockDirection {
 
-	private final int tier;
+	private final EnumRelayTier tier;
 
-	public Relay(int tier, Properties props) {
+	public Relay(EnumRelayTier tier, Properties props) {
 		super(props);
 		this.tier = tier;
+	}
+
+	public EnumRelayTier getTier() {
+		return tier;
 	}
 
 	@Override
@@ -50,11 +55,11 @@ public class Relay extends BlockDirection {
 	@Override
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
 		switch (tier) {
-			case 1:
+			case MK1:
 				return new RelayMK1Tile();
-			case 2:
+			case MK2:
 				return new RelayMK2Tile();
-			case 3:
+			case MK3:
 				return new RelayMK3Tile();
 			default:
 				return null;

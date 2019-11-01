@@ -21,7 +21,6 @@ import net.minecraft.network.play.server.SCollectItemPacket;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -114,14 +113,10 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
 		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString()))) {
-			ITextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").setStyle(new Style().setColor(TextFormatting.BLUE));
-			ITextComponent playername = evt.getPlayer().getDisplayName().setStyle(new Style().setColor(TextFormatting.GOLD));
-			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").setStyle(new Style().setColor(TextFormatting.BLUE));
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(
-					prior.appendText(" ")
-							.appendSibling(playername)
-							.appendText(" ")
-							.appendSibling(latter));
+			ITextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").applyTextStyle(TextFormatting.BLUE);
+			ITextComponent playername = evt.getPlayer().getDisplayName().applyTextStyle(TextFormatting.GOLD);
+			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").applyTextStyle(TextFormatting.BLUE);
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(prior.appendText(" ").appendSibling(playername).appendText(" ").appendSibling(latter));
 		}
 	}
 

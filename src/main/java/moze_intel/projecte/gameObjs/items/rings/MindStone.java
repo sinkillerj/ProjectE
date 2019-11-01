@@ -19,7 +19,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -73,9 +72,8 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flags) {
 		if (stack.getTag() != null) {
-			ITextComponent label = new TranslationTextComponent("pe.misc.storedxp_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_GREEN));
-			ITextComponent value = new StringTextComponent(String.format("%,d", getStoredXP(stack))).setStyle(new Style().setColor(TextFormatting.GREEN));
-			tooltip.add(label.appendText(" ").appendSibling(value));
+			tooltip.add(new TranslationTextComponent("pe.misc.storedxp_tooltip").applyTextStyle(TextFormatting.DARK_GREEN).appendText(" ")
+					.appendSibling(new StringTextComponent(String.format("%,d", getStoredXP(stack))).applyTextStyle(TextFormatting.GREEN)));
 		}
 	}
 

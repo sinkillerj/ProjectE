@@ -29,21 +29,6 @@ public final class Constants {
 	public static final long FREE_ARITHMETIC_VALUE = Long.MIN_VALUE;
 	public static final long TILE_MAX_EMC = Long.MAX_VALUE;
 
-	public static final long COLLECTOR_MK1_MAX = 10_000;
-	public static final long COLLECTOR_MK2_MAX = 30_000;
-	public static final long COLLECTOR_MK3_MAX = 60_000;
-	public static final long COLLECTOR_MK1_GEN = 4;
-	public static final long COLLECTOR_MK2_GEN = 12;
-	public static final long COLLECTOR_MK3_GEN = 40;
-
-	public static final long RELAY_MK1_OUTPUT = 64;
-	public static final long RELAY_MK2_OUTPUT = 192;
-	public static final long RELAY_MK3_OUTPUT = 640;
-
-	public static final long RELAY_MK1_MAX = 100_000;
-	public static final long RELAY_MK2_MAX = 1_000_000;
-	public static final long RELAY_MK3_MAX = 10_000_000;
-
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 
 	public static final int MAX_VEIN_SIZE = 250;

@@ -1,6 +1,5 @@
 package moze_intel.projecte.integration.jei.collectors;
 
-import java.awt.Color;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
@@ -96,7 +95,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		String emc = recipe.getUpgradeEMC() + " EMC";
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.getStringWidth(emc);
-		fontRenderer.drawString(emc, (getBackground().getWidth() / 2F) - (stringWidth / 2F), 5, Color.GRAY.getRGB());
+		fontRenderer.drawString(emc, (getBackground().getWidth() / 2F) - (stringWidth / 2F), 5, 0x808080);
 		arrow.draw(55, 18);
 	}
 }

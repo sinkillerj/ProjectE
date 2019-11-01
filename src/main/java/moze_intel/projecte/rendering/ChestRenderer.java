@@ -57,7 +57,7 @@ public class ChestRenderer extends TileEntityRenderer<AlchChestTile> {
 
 		GlStateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
-		float adjustedLidAngle = chestTile.prevLidAngle + (chestTile.lidAngle - chestTile.prevLidAngle) * partialTicks;
+		float adjustedLidAngle = chestTile.getLidAngle(partialTicks);
 		adjustedLidAngle = 1.0F - adjustedLidAngle;
 		adjustedLidAngle = 1.0F - adjustedLidAngle * adjustedLidAngle * adjustedLidAngle;
 		model.getLid().rotateAngleX = -(adjustedLidAngle * (float) Math.PI / 2.0F);

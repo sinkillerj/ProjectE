@@ -51,7 +51,7 @@ public class GUIDMFurnace extends ContainerScreen<DMFurnaceContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(I18n.format("pe.dmfurnace.shortname"), 57, 5, 4210752);
-		this.font.drawString(I18n.format("container.inventory"), 57, ySize - 96 + 2, 4210752);
+		this.font.drawString(I18n.format("pe.dmfurnace.shortname"), 57, 5, 0x404040);
+		this.font.drawString(I18n.format("container.inventory"), 57, ySize - 96 + 2, 0x404040);
 	}
 }

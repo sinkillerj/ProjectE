@@ -8,13 +8,9 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.blocks.Collector;
-import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +19,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,7 +39,7 @@ public class ToolTipEvent {
 
 		if (ProjectEConfig.misc.pedestalToolTips.get()) {
 			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)).appendText(" "));
+				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" "));
 				List<ITextComponent> description = pedestalItem.getPedestalDescription();
 				if (description.isEmpty()) {
 					event.getToolTip().add(IPedestalItem.TOOLTIP_DISABLED);
@@ -78,74 +73,8 @@ public class ToolTipEvent {
 				}
 
 				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
-					event.getToolTip().add(new TranslationTextComponent("pe.emc.has_knowledge").setStyle(new Style().setColor(TextFormatting.YELLOW)));
+					event.getToolTip().add(new TranslationTextComponent("pe.emc.has_knowledge").applyTextStyle(TextFormatting.YELLOW));
 				}
-			}
-		}
-
-		if (ProjectEConfig.misc.statToolTips.get()) {
-			//TODO: Move these tooltips to the Block's items themselves?
-			Block currentBlock = Block.getBlockFromItem(current.getItem());
-
-			ITextComponent unit = new TranslationTextComponent("pe.emc.name");
-			ITextComponent rate = new TranslationTextComponent("pe.emc.rate");
-			/*
-			 * Collector ToolTips
-			 */
-			long genRate = 0;
-			long storage = 0;
-			if (currentBlock == ObjHandler.collectorMK1) {
-				genRate = Constants.COLLECTOR_MK1_GEN;
-				storage = Constants.COLLECTOR_MK1_MAX;
-			}
-
-			if (currentBlock == ObjHandler.collectorMK2) {
-				genRate = Constants.COLLECTOR_MK2_GEN;
-				storage = Constants.COLLECTOR_MK2_MAX;
-			}
-
-			if (currentBlock == ObjHandler.collectorMK3) {
-				genRate = Constants.COLLECTOR_MK3_GEN;
-				storage = Constants.COLLECTOR_MK3_MAX;
-			}
-
-			if (currentBlock instanceof Collector) {
-				ITextComponent label = new TranslationTextComponent("pe.emc.maxgenrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new StringTextComponent(Long.toString(genRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
-				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
-
-				label = new TranslationTextComponent("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new StringTextComponent(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
-				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
-			}
-
-			/*
-			 * Relay ToolTips
-			 */
-			long outRate = 0;
-			if (currentBlock == ObjHandler.relay) {
-				outRate = Constants.RELAY_MK1_OUTPUT;
-				storage = Constants.RELAY_MK1_MAX;
-			}
-
-			if (currentBlock == ObjHandler.relayMK2) {
-				outRate = Constants.RELAY_MK2_OUTPUT;
-				storage = Constants.RELAY_MK2_MAX;
-			}
-
-			if (currentBlock == ObjHandler.relayMK3) {
-				outRate = Constants.RELAY_MK3_OUTPUT;
-				storage = Constants.RELAY_MK3_MAX;
-			}
-
-			if (currentBlock instanceof Relay) {
-				ITextComponent label = new TranslationTextComponent("pe.emc.maxoutrate_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				ITextComponent val = new StringTextComponent(Long.toString(outRate)).setStyle(new Style().setColor(TextFormatting.BLUE));
-				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(rate));
-
-				label = new TranslationTextComponent("pe.emc.maxstorage_tooltip").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-				val = new StringTextComponent(Long.toString(storage)).setStyle(new Style().setColor(TextFormatting.BLUE));
-				event.getToolTip().add(label.appendText(" ").appendSibling(val).appendText(" ").appendSibling(unit));
 			}
 		}
 
@@ -162,9 +91,8 @@ public class ToolTipEvent {
 				}
 			}
 
-			ITextComponent label = new TranslationTextComponent("pe.emc.storedemc_tooltip").setStyle(new Style().setColor(TextFormatting.YELLOW));
-			ITextComponent val = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).setStyle(new Style().setColor(TextFormatting.RESET));
-			event.getToolTip().add(label.appendText(" ").appendSibling(val));
+			event.getToolTip().add(new TranslationTextComponent("pe.emc.storedemc_tooltip").applyTextStyle(TextFormatting.YELLOW).appendText(" ")
+					.appendSibling(new StringTextComponent(Constants.EMC_FORMATTER.format(value)).applyTextStyle(TextFormatting.RESET)));
 		}
 	}
 }

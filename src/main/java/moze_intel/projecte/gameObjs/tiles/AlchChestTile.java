@@ -11,8 +11,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,14 +19,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class AlchChestTile extends TileEmc implements INamedContainerProvider {
+public class AlchChestTile extends ChestTileEmc implements INamedContainerProvider {
 
 	private final ItemStackHandler inventory = new StackHandler(104);
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
-	public float lidAngle;
-	public float prevLidAngle;
-	public int numPlayersUsing;
-	private int ticksSinceSync;
 
 	public AlchChestTile() {
 		super(ObjHandler.ALCH_CHEST_TILE);
@@ -65,54 +59,13 @@ public class AlchChestTile extends TileEmc implements INamedContainerProvider {
 
 	@Override
 	public void tick() {
-		if (++ticksSinceSync % 20 * 4 == 0) {
-			world.addBlockEvent(getPos(), ObjHandler.alchChest, 1, numPlayersUsing);
-		}
-
-		prevLidAngle = lidAngle;
-		float angleIncrement = 0.1F;
-
-		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
-			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-		}
-
-		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
-			float var8 = lidAngle;
-
-			if (numPlayersUsing > 0) {
-				lidAngle += angleIncrement;
-			} else {
-				lidAngle -= angleIncrement;
-			}
-
-			if (lidAngle > 1.0F) {
-				lidAngle = 1.0F;
-			}
-
-			if (lidAngle < 0.5F && var8 >= 0.5F) {
-				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-			}
-
-			if (lidAngle < 0.0F) {
-				lidAngle = 0.0F;
-			}
-		}
+		updateChest();
 
 		for (int i = 0; i < inventory.getSlots(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(world, pos, stack));
 			}
-		}
-	}
-
-	@Override
-	public boolean receiveClientEvent(int number, int arg) {
-		if (number == 1) {
-			numPlayersUsing = arg;
-			return true;
-		} else {
-			return super.receiveClientEvent(number, arg);
 		}
 	}
 

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
@@ -28,11 +29,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class Collector extends BlockDirection {
 
-	private final int tier;
+	private final EnumCollectorTier tier;
 
-	public Collector(int tier, Properties props) {
+	public Collector(EnumCollectorTier tier, Properties props) {
 		super(props);
 		this.tier = tier;
+	}
+
+	public EnumCollectorTier getTier() {
+		return tier;
 	}
 
 	@Override
@@ -67,11 +72,11 @@ public class Collector extends BlockDirection {
 	@Override
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
 		switch (tier) {
-			case 1:
+			case MK1:
 				return new CollectorMK1Tile();
-			case 2:
+			case MK2:
 				return new CollectorMK2Tile();
-			case 3:
+			case MK3:
 				return new CollectorMK3Tile();
 			default:
 				return null;
