@@ -1,8 +1,10 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -18,11 +20,15 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
@@ -54,13 +60,23 @@ import net.minecraftforge.event.ForgeEventFactory;
 //TODO: Replace canHarvestBlock checks with ForgeHooks.canHarvestBlock ??
 public class ToolHelper {
 
-	//TODO: Remove this modifier
 	public static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
 	public static final ToolType TOOL_TYPE_HOE = ToolType.get("hoe");
 	public static final ToolType TOOL_TYPE_SHEARS = ToolType.get("shears");
 	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
 	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
+
+	public static Multimap<String, AttributeModifier> addChargeAttributeModifier(Multimap<String, AttributeModifier> currentModifiers, @Nonnull EquipmentSlotType slot, ItemStack stack) {
+		if (slot == EquipmentSlotType.MAINHAND) {
+			int charge = getCharge(stack);
+			if (charge > 0) {
+				//If we have any charge take it into account for calculating the damage
+				currentModifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(CHARGE_MODIFIER, "Charge modifier", charge, Operation.ADDITION));
+			}
+		}
+		return currentModifiers;
+	}
 
 	/**
 	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
@@ -111,18 +127,19 @@ public class ToolHelper {
 			//If on client NO-OP as the sound gets played from the server anyways
 			return ActionResultType.SUCCESS;
 		}
-		BlockState initialHoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(pos).getBlock());
-		boolean ignoreInitial = initialHoedState == null;
+		BlockState hoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(pos).getBlock());
+		if (hoedState == null) {
+			//Skip hoeing the block if the one we clicked cannot be hoed
+			return ActionResultType.PASS;
+		}
 		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		boolean hasAction = false;
 		for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge))) {
 			BlockState stateAbove = world.getBlockState(newPos.up());
 			if (!stateAbove.isOpaqueCube(world, newPos.up())) {
-				BlockState hoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(newPos).getBlock());
-				//Check to make sure the result we would get from hoeing the other block is the same as from our initial block
-				// If we did not have an initial state, then just make sure the state we found is not null
-				if (ignoreInitial ? hoedState != null : hoedState == initialHoedState) {
+				//Check to make sure the result we would get from hoeing the other block is the same as the one we got on the initial block we interacted with
+				if (hoedState == HoeItem.HOE_LOOKUP.get(world.getBlockState(newPos).getBlock())) {
 					//Some of the below methods don't behave properly when the blockpos is mutable, so now that we are onto ones where it may actually
 					// matter we make sure to get an immutable instance of newPos
 					BlockPos newPosImmutable = newPos.toImmutable();

@@ -15,9 +15,7 @@ import net.minecraft.block.GrassBlock;
 import net.minecraft.block.GravelBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -131,19 +129,9 @@ public class PEMorningStar extends PETool implements IItemMode {
 		return super.getDestroySpeed(stack, state) + 48.0F;
 	}
 
-	//TODO: Decide if this impl or the one in PESword is better
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		Multimap<String, AttributeModifier> attributes = super.getAttributeModifiers(slot, stack);
-		if (slot == EquipmentSlotType.MAINHAND) {
-			int charge = getCharge(stack);
-			if (charge > 0) {
-				//If we have any charge take it into account for calculating the damage
-				attributes.remove(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "DUMMY", 0, Operation.ADDITION));
-				attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", attackDamage + charge, Operation.ADDITION));
-			}
-		}
-		return attributes;
+		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }

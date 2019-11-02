@@ -13,16 +13,14 @@ import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.GrassBlock;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
@@ -143,13 +141,16 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState state = world.getBlockState(rtr.getPos());
 			Block blockHit = state.getBlock();
-			if (blockHit instanceof GrassBlock || blockHit == Blocks.DIRT) {
+			if (HoeItem.HOE_LOOKUP.get(blockHit) != null) {
 				// Hoe
-				//TODO: FIXME, when it gets hoed the block blinks
+				//TODO: Move to onItemUse
 				ToolHelper.tillAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
 			} else if (BlockTags.LOGS.contains(blockHit)) {
 				// Axe
 				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
+				//TODO: Make it so if this happens in onItemUse it instead does an AOE log stripping
+				// When should we make it clear logs? If we keep this code here, it will only happen if onItemUse does not succeed
+				// So it would basically start by stripping the logs and then remove them
 			} else if (BlockTags.LEAVES.contains(blockHit)) {
 				// Shear leaves
 				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
@@ -182,19 +183,9 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		return 72_000;
 	}
 
-	//TODO: Decide if this impl or the one in PESword is better
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		Multimap<String, AttributeModifier> attributes = super.getAttributeModifiers(slot, stack);
-		if (slot == EquipmentSlotType.MAINHAND) {
-			int charge = getCharge(stack);
-			if (charge > 0) {
-				//If we have any charge take it into account for calculating the damage
-				attributes.remove(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "DUMMY", 0, Operation.ADDITION));
-				attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", attackDamage + charge, Operation.ADDITION));
-			}
-		}
-		return attributes;
+		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }
