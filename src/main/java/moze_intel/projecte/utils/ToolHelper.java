@@ -11,7 +11,6 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -25,15 +24,18 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -45,9 +47,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 
 //TODO: If some of these are only used by one tool type inline them
 //TODO: Replace canHarvestBlock checks with ForgeHooks.canHarvestBlock ??
@@ -101,47 +102,61 @@ public class ToolHelper {
 	/**
 	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static void tillAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost) {
+	public static ActionResultType tillAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost) {
+		if (sidehit == Direction.DOWN) {
+			//Don't allow hoeing a block from underneath
+			return ActionResultType.PASS;
+		}
+		if (world.isRemote) {
+			//If on client NO-OP as the sound gets played from the server anyways
+			return ActionResultType.SUCCESS;
+		}
+		BlockState initialHoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(pos).getBlock());
+		boolean ignoreInitial = initialHoedState == null;
 		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		boolean hasAction = false;
-		boolean hasSoundPlayed = false;
-
 		for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge))) {
-			BlockState state = world.getBlockState(newPos);
 			BlockState stateAbove = world.getBlockState(newPos.up());
-			Block block = state.getBlock();
-			Block blockAbove = stateAbove.getBlock();
-
-			if (!stateAbove.isOpaqueCube(world, pos) && (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT)) {
-				if (!hasSoundPlayed) {
-					SoundType type = Blocks.FARMLAND.getDefaultState().getSoundType();
-					world.playSound(null, newPos, type.getStepSound(), SoundCategory.BLOCKS,
-							(type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-					hasSoundPlayed = true;
-				}
-
-				if (world.isRemote) {
-					return;
-				} else {
-					BlockRayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false);
-					ItemUseContext ctx = new ItemUseContext(player, hand, rtr);
-					if (MinecraftForge.EVENT_BUS.post(new UseHoeEvent(ctx))) {
+			if (!stateAbove.isOpaqueCube(world, newPos.up())) {
+				BlockState hoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(newPos).getBlock());
+				//Check to make sure the result we would get from hoeing the other block is the same as from our initial block
+				// If we did not have an initial state, then just make sure the state we found is not null
+				if (ignoreInitial ? hoedState != null : hoedState == initialHoedState) {
+					//Some of the below methods don't behave properly when the blockpos is mutable, so now that we are onto ones where it may actually
+					// matter we make sure to get an immutable instance of newPos
+					BlockPos newPosImmutable = newPos.toImmutable();
+					BlockRayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPosImmutable, false);
+					ItemUseContext context = new ItemUseContext(player, hand, rtr);
+					int hoeUseResult = ForgeEventFactory.onHoeUse(context);
+					if (hoeUseResult < 0) {
+						//We were denied from using the hoe so continue to the next block
 						continue;
-					}
-
+					} else if (hoeUseResult > 0) {
+						//Processing happened in the hook so we use our desired fuel amount if we are not at the initial position and continue
+						if (newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) {
+							ItemPE.consumeFuel(player, stack, emcCost, true);
+						}
+						hasAction = true;
+						continue;
+					} //else we are allowed to figure out how to use the hoe
 					// The initial block we target is always free
-					if ((newPos.getX() == pos.getX() && newPos.getZ() == pos.getZ()) || ItemPE.consumeFuel(player, stack, emcCost, true)) {
-						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), newPos, Blocks.FARMLAND.getDefaultState());
-
+					if ((newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) || ItemPE.consumeFuel(player, stack, emcCost, true)) {
+						//Replace the block. Note it just directly sets it (in the same way that HoeItem does), rather than using our
+						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
+						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use a hoe in this
+						// location and were told that we are allowed to use a hoe.
+						world.setBlockState(newPosImmutable, hoedState, 11);
 						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.TALL_PLANTS)
-							&& !(blockAbove.hasTileEntity(stateAbove))) {// Just in case, you never know
-							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos)) {
-								world.destroyBlock(newPos.up(), true);
+							&& !(stateAbove.getBlock().hasTileEntity(stateAbove))) {// Just in case, you never know
+							//Note: We do check for breaking the block above that we attempt to break it though, as we
+							// have not done any events that have told use we are allowed to break blocks in that spot.
+							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPosImmutable)) {
+								world.destroyBlock(newPosImmutable.up(), true);
 							}
 						}
-
 						if (!hasAction) {
+							world.playSound(null, newPosImmutable, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 							hasAction = true;
 						}
 					}
@@ -150,7 +165,9 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.PASS;
 	}
 
 	/**
@@ -323,7 +340,6 @@ public class ToolHelper {
 			if (target.isShearable(stack, player.getEntityWorld(), pos) && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				List<ItemStack> drops = target.onSheared(stack, player.getEntityWorld(), pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
-				stack.damageItem(1, player, p -> p.sendBreakAnimation(p.getActiveHand()));
 				player.addStat(Stats.BLOCK_MINED.get(block), 1);
 			}
 		}
