@@ -30,7 +30,7 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 	private final int numCharges;
 
 	public PEShovel(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, 3, -3, props);
+		super(matterType, 2, -3, props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}

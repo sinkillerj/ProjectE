@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -80,7 +81,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
+		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper(), new ModeChangerItemCapabilityWrapper());
 	}
 
 	@Nonnull

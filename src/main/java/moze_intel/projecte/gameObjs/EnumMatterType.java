@@ -50,9 +50,6 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 
 	@Override
 	public float getAttackDamage() {
-		//TODO
-		//Dark matter sword 9
-		//Red matter sword 12
 		return attackDamage;
 	}
 
