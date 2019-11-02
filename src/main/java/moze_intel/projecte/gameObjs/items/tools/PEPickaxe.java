@@ -8,7 +8,7 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
@@ -61,9 +61,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		//TODO: FIXME as this logic is overcomplicated and makes no sense
-		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnace ||
-			(matterType == EnumMatterType.RED_MATTER && (block == ObjHandler.rmBlock || block == ObjHandler.rmFurnace))) {
+		if (block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier()) {
 			return 1_200_000;
 		}
 		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));

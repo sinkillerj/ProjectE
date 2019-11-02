@@ -68,4 +68,8 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 	public Ingredient getRepairMaterial() {
 		return Ingredient.EMPTY;
 	}
+
+	public int getMatterTier() {
+		return ordinal();
+	}
 }

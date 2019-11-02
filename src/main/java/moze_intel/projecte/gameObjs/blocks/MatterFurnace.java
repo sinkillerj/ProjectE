@@ -17,7 +17,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class MatterFurnace extends AbstractFurnaceBlock {
+public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock {
 
 	private final EnumMatterType matterType;
 
@@ -51,5 +51,10 @@ public class MatterFurnace extends AbstractFurnaceBlock {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}
 		return 0;
+	}
+
+	@Override
+	public EnumMatterType getMatterType() {
+		return matterType;
 	}
 }

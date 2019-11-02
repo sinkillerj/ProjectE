@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -98,18 +100,23 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 		return false;
 	}
 
+	//TODO: Decide if this impl or the one in PEHammer is better
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		if (slot != EquipmentSlotType.MAINHAND) {
+		int charge;
+		if (slot != EquipmentSlotType.MAINHAND || (charge = getCharge(stack)) == 0) {
+			//If we are not in the correct hand OR we have no charge just fallback as the calculations are correct
 			return super.getAttributeModifiers(slot, stack);
 		}
-		int charge = getCharge(stack);
-		//TODO: FIXME doesn't seem to take into account the charge
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		//Take the charge into account for calculating the damage
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier",
-				getAttackDamage() + charge, AttributeModifier.Operation.ADDITION));
-		return multimap;
+		//We manually add both the proper attack damage and the attack speed so that we don't have to deal with removing the existing
+		// attack damage value each time this method gets called just to make the charge get taken into effect.
+		// NOTE: This has the side effect that if something adds a new modifier in a higher class it will not automatically be found
+		// but this is not a large deal and only really needs to be double checked between MC versions
+		Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+		attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier",
+				getAttackDamage() + charge, Operation.ADDITION));
+		attributes.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", attackSpeed, Operation.ADDITION));
+		return attributes;
 	}
 }

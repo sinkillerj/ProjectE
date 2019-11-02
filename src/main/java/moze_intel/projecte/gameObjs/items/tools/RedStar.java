@@ -4,8 +4,7 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.blocks.MatterBlock;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
@@ -108,7 +107,7 @@ public class RedStar extends PEToolBase {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if (block instanceof MatterBlock || block instanceof MatterFurnace) {
+		if (block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= peToolMaterial.getMatterTier()) {
 			return 1_200_000;
 		}
 		return super.getDestroySpeed(stack, state) + 48.0F;

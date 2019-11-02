@@ -6,11 +6,11 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import net.minecraft.item.ItemStack;
 
-public class RedSword extends PESword implements IItemMode {
+public class RedMatterSword extends PESword implements IItemMode {
 
 	private final String[] modeDesc;
 
-	public RedSword(Properties props) {
+	public RedMatterSword(Properties props) {
 		super(EnumMatterType.RED_MATTER, 3, 12, props);
 		modeDesc = new String[]{"pe.redsword.mode1", "pe.redsword.mode2"};
 		addItemCapability(new ModeChangerItemCapabilityWrapper());

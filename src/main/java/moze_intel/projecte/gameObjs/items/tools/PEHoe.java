@@ -22,7 +22,7 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	private final int numCharges;
 
 	public PEHoe(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, matterType.ordinal() + 1, props);
+		super(matterType, matterType.getMatterTier(), props.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel()));
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -55,6 +55,15 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
+	}
+
+	@Override
+	public boolean canHarvestBlock(BlockState state) {
+		if (state.getHarvestTool() == ToolHelper.TOOL_TYPE_HOE) {
+			//Patch HoeItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of a hoe
+			return getTier().getHarvestLevel() >= state.getHarvestLevel();
+		}
+		return super.canHarvestBlock(state);
 	}
 
 	@Nonnull

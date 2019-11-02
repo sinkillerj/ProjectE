@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -45,9 +46,21 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 
+//TODO: If some of these are only used by one tool type inline them
+//TODO: Replace canHarvestBlock checks with ForgeHooks.canHarvestBlock ??
 public class ToolHelper {
+
+	//TODO: Remove this modifier
+	public static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
+	public static final ToolType TOOL_TYPE_HOE = ToolType.get("hoe");
+	public static final ToolType TOOL_TYPE_SHEARS = ToolType.get("shears");
+	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
+	public static final ToolType TOOL_TYPE_CHISEL = ToolType.get("chisel");
+	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
+	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
 
 	/**
 	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.

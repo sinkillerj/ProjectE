@@ -91,17 +91,16 @@ import moze_intel.projecte.gameObjs.items.rings.SoulStone;
 import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.gameObjs.items.rings.Zero;
-import moze_intel.projecte.gameObjs.items.tools.DarkHammer;
 import moze_intel.projecte.gameObjs.items.tools.PEAxe;
+import moze_intel.projecte.gameObjs.items.tools.PEHammer;
 import moze_intel.projecte.gameObjs.items.tools.PEHoe;
 import moze_intel.projecte.gameObjs.items.tools.PEPickaxe;
 import moze_intel.projecte.gameObjs.items.tools.PEShears;
 import moze_intel.projecte.gameObjs.items.tools.PEShovel;
 import moze_intel.projecte.gameObjs.items.tools.PESword;
-import moze_intel.projecte.gameObjs.items.tools.RedHammer;
 import moze_intel.projecte.gameObjs.items.tools.RedKatar;
 import moze_intel.projecte.gameObjs.items.tools.RedStar;
-import moze_intel.projecte.gameObjs.items.tools.RedSword;
+import moze_intel.projecte.gameObjs.items.tools.RedMatterSword;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
@@ -115,6 +114,7 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
@@ -215,30 +215,22 @@ public class ObjHandler {
 	public static final Item dmSword = new PESword(EnumMatterType.DARK_MATTER, 2, 9, ibNoStack()).setRegistryName(PECore.MODID, "dm_sword");
 	public static final Item dmHoe = new PEHoe(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_hoe");
 	public static final Item dmShears = new PEShears(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_shears");
-	public static final Item dmHammer = new DarkHammer(ibNoStack()
-			.addToolType(ToolType.PICKAXE, 4)
-			.addToolType(ToolType.get("hammer"), 4)
-			.addToolType(ToolType.get("chisel"), 4))
-			.setRegistryName(PECore.MODID, "dm_hammer");
+	public static final Item dmHammer = new PEHammer(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_hammer");
 
 	public static final Item rmPick = new PEPickaxe(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_pick");
 	public static final Item rmAxe = new PEAxe(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_axe");
 	public static final Item rmShovel = new PEShovel(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shovel");
-	public static final Item rmSword = new RedSword(ibNoStack()).setRegistryName(PECore.MODID, "rm_sword");
+	public static final Item rmSword = new RedMatterSword(ibNoStack()).setRegistryName(PECore.MODID, "rm_sword");
 	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
 	public static final Item rmShears = new PEShears(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shears");
-	public static final Item rmHammer = new RedHammer(ibNoStack()
-			.addToolType(ToolType.PICKAXE, 5)
-			.addToolType(ToolType.get("hammer"), 5)
-			.addToolType(ToolType.get("chisel"), 5))
-			.setRegistryName(PECore.MODID, "rm_hammer");
+	public static final Item rmHammer = new PEHammer(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_hammer");
 	public static final Item rmKatar = new RedKatar(ibNoStack()
 			.addToolType(ToolType.AXE, 5)
-			.addToolType(ToolType.get("katar"), 5)
-			.addToolType(ToolType.get("shears"), 5))
+			.addToolType(ToolHelper.TOOL_TYPE_KATAR, 5)
+			.addToolType(ToolHelper.TOOL_TYPE_SHEARS, 5))
 			.setRegistryName(PECore.MODID, "rm_katar");
 	public static final Item rmStar = new RedStar(ibNoStack()
-			.addToolType(ToolType.get("morning_star"), 5)
+			.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, 5)
 			.addToolType(ToolType.PICKAXE, 5)
 			.addToolType(ToolType.SHOVEL, 5)
 			.addToolType(ToolType.AXE, 5))

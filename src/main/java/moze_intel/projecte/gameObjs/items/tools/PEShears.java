@@ -25,7 +25,7 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	private final int numCharges;
 
 	public PEShears(EnumMatterType matterType, int numCharges, Properties props) {
-		super(props);
+		super(props.addToolType(ToolHelper.TOOL_TYPE_SHEARS, matterType.getHarvestLevel()));
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -58,6 +58,15 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
+	}
+
+	@Override
+	public boolean canHarvestBlock(BlockState state) {
+		if (state.getHarvestTool() == ToolHelper.TOOL_TYPE_SHEARS) {
+			//Patch ShearsItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of shears
+			return matterType.getHarvestLevel() >= state.getHarvestLevel();
+		}
+		return super.canHarvestBlock(state);
 	}
 
 	@Nonnull

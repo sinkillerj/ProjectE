@@ -11,9 +11,6 @@ import net.minecraft.item.ItemStack;
 
 public abstract class PEToolBase extends ItemMode {
 
-	public static final float HAMMER_BASE_ATTACK = 13.0F;
-	public static final float DARKSWORD_BASE_ATTACK = 12.0F;
-	public static final float REDSWORD_BASE_ATTACK = 16.0F;
 	public static final float STAR_BASE_ATTACK = 20.0F;
 	public static final float KATAR_BASE_ATTACK = 23.0F;
 	protected EnumMatterType peToolMaterial;

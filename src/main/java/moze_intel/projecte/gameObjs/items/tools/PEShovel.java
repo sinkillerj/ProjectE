@@ -22,8 +22,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+//TODO: Allow mass creating grass paths?
 public class PEShovel extends ShovelItem implements IItemCharge {
 
 	private final EnumMatterType matterType;
@@ -65,6 +67,15 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
 	}
 
+	@Override
+	public boolean canHarvestBlock(BlockState state) {
+		if (state.getHarvestTool() == ToolType.SHOVEL) {
+			//Patch ShovelItem to return true for canHarvestBlock for more things than just snow
+			return getTier().getHarvestLevel() >= state.getHarvestLevel();
+		}
+		return super.canHarvestBlock(state);
+	}
+
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
@@ -76,7 +87,6 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 		if (mop instanceof BlockRayTraceResult && world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL) {
 			ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
 		} else {
-			//TODO: 1.14, Fix this
 			ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
