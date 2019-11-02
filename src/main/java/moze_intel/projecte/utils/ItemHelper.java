@@ -9,11 +9,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -168,10 +168,8 @@ public final class ItemHelper {
 		return stack.isDamageable();
 	}
 
-	private static final Tag<Block> FORGE_ORE_TAG = new BlockTags.Wrapper(new ResourceLocation("forge", "ores"));
-
 	public static boolean isOre(Block b) {
-		return FORGE_ORE_TAG.contains(b);
+		return Tags.Blocks.ORES.contains(b);
 	}
 
 	public static boolean isOre(Item i) {

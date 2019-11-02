@@ -58,7 +58,6 @@ public class ToolHelper {
 	public static final ToolType TOOL_TYPE_HOE = ToolType.get("hoe");
 	public static final ToolType TOOL_TYPE_SHEARS = ToolType.get("shears");
 	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
-	public static final ToolType TOOL_TYPE_CHISEL = ToolType.get("chisel");
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
 	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
 
@@ -318,18 +317,13 @@ public class ToolHelper {
 		if (player.getEntityWorld().isRemote) {
 			return;
 		}
-
 		Block block = player.getEntityWorld().getBlockState(pos).getBlock();
-
 		if (block instanceof IShearable) {
 			IShearable target = (IShearable) block;
-
 			if (target.isShearable(stack, player.getEntityWorld(), pos) && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				List<ItemStack> drops = target.onSheared(stack, player.getEntityWorld(), pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
-
-				stack.damageItem(1, player, p -> p.sendBreakAnimation(Hand.MAIN_HAND)); // todo 1.14 pass the hand in
+				stack.damageItem(1, player, p -> p.sendBreakAnimation(p.getActiveHand()));
 				player.addStat(Stats.BLOCK_MINED.get(block), 1);
 			}
 		}

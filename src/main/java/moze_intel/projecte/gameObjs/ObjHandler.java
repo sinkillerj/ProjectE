@@ -94,12 +94,12 @@ import moze_intel.projecte.gameObjs.items.rings.Zero;
 import moze_intel.projecte.gameObjs.items.tools.PEAxe;
 import moze_intel.projecte.gameObjs.items.tools.PEHammer;
 import moze_intel.projecte.gameObjs.items.tools.PEHoe;
+import moze_intel.projecte.gameObjs.items.tools.PEKatar;
+import moze_intel.projecte.gameObjs.items.tools.PEMorningStar;
 import moze_intel.projecte.gameObjs.items.tools.PEPickaxe;
 import moze_intel.projecte.gameObjs.items.tools.PEShears;
 import moze_intel.projecte.gameObjs.items.tools.PEShovel;
 import moze_intel.projecte.gameObjs.items.tools.PESword;
-import moze_intel.projecte.gameObjs.items.tools.RedKatar;
-import moze_intel.projecte.gameObjs.items.tools.RedStar;
 import moze_intel.projecte.gameObjs.items.tools.RedMatterSword;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
@@ -114,7 +114,6 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
@@ -133,7 +132,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -224,17 +222,8 @@ public class ObjHandler {
 	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
 	public static final Item rmShears = new PEShears(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shears");
 	public static final Item rmHammer = new PEHammer(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_hammer");
-	public static final Item rmKatar = new RedKatar(ibNoStack()
-			.addToolType(ToolType.AXE, 5)
-			.addToolType(ToolHelper.TOOL_TYPE_KATAR, 5)
-			.addToolType(ToolHelper.TOOL_TYPE_SHEARS, 5))
-			.setRegistryName(PECore.MODID, "rm_katar");
-	public static final Item rmStar = new RedStar(ibNoStack()
-			.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, 5)
-			.addToolType(ToolType.PICKAXE, 5)
-			.addToolType(ToolType.SHOVEL, 5)
-			.addToolType(ToolType.AXE, 5))
-			.setRegistryName(PECore.MODID, "rm_morning_star");
+	public static final Item rmKatar = new PEKatar(EnumMatterType.RED_MATTER, 4, ibNoStack()).setRegistryName(PECore.MODID, "rm_katar");
+	public static final Item rmStar = new PEMorningStar(EnumMatterType.RED_MATTER, 4, ibNoStack()).setRegistryName(PECore.MODID, "rm_morning_star");
 
 	public static final Item dmHelmet = new DMArmor(EquipmentSlotType.HEAD, ibNoStack()).setRegistryName(PECore.MODID, "dm_helmet");
 	public static final Item dmChest = new DMArmor(EquipmentSlotType.CHEST, ibNoStack()).setRegistryName(PECore.MODID, "dm_chestplate");

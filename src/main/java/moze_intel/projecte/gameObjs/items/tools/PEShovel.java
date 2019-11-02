@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: Allow mass creating grass paths?
+//TODO: Allow mass creating grass paths
 public class PEShovel extends ShovelItem implements IItemCharge {
 
 	private final EnumMatterType matterType;

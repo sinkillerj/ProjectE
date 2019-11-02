@@ -81,7 +81,6 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		//TODO: Re-evaluate this
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}

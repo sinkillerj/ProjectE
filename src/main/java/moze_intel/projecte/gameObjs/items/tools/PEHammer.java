@@ -27,8 +27,7 @@ public class PEHammer extends PETool {
 	public PEHammer(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 10, -3, numCharges, props
 				.addToolType(ToolType.PICKAXE, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_CHISEL, matterType.getHarvestLevel()));
+				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel()));
 	}
 
 	/**
@@ -41,13 +40,13 @@ public class PEHammer extends PETool {
 	 */
 	@Override
 	public boolean canHarvestBlock(BlockState state) {
+		//Note: These checks cover the need of overriding/shortcutting the destroy speed
 		Material material = state.getMaterial();
 		return material == Material.ROCK || material == Material.IRON || material == Material.ANVIL;
 	}
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		//TODO: Check this
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
@@ -79,8 +78,7 @@ public class PEHammer extends PETool {
 			if (charge > 0) {
 				//If we have any charge take it into account for calculating the damage
 				attributes.remove(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "DUMMY", 0, Operation.ADDITION));
-				attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
-						attackDamage + charge, Operation.ADDITION));
+				attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", attackDamage + charge, Operation.ADDITION));
 			}
 		}
 		return attributes;

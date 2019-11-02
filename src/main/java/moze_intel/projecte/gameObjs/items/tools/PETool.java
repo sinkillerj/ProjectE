@@ -19,6 +19,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+//TODO: Modernize some of the actions to only take place onItemUse instead of onRightClick
+// This should also include checking all of the usages of the different methods in ToolHelper
 public abstract class PETool extends ToolItem implements IItemCharge {
 
 	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();
@@ -53,7 +55,7 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
+		return ToolHelper.getDestroySpeed(getShortCutDestroySpeed(stack, state), matterType, getCharge(stack));
 	}
 
 	@Override
@@ -80,5 +82,14 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 			}
 		}
 		return super.canHarvestBlock(stack, state);
+	}
+
+	/**
+	 * Override this if we need to also include any "shortcuts" that specific vanilla tool types include for specific blocks/material types.
+	 *
+	 * For example: Axes are "effective" on all types of wood, but do not automatically allow HARVESTING of all types of wood.
+	 */
+	protected float getShortCutDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+		return super.getDestroySpeed(stack, state);
 	}
 }

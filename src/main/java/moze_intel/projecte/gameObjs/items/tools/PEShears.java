@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -75,5 +76,12 @@ public class PEShears extends ShearsItem implements IItemCharge {
 		ItemStack stack = player.getHeldItem(hand);
 		ToolHelper.shearEntityAOE(stack, player, 0, hand);
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+	}
+
+	@Override
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
+		//Shear the block instead of breaking it if it supports shearing
+		ToolHelper.shearBlock(stack, pos, player);
+		return false;
 	}
 }
