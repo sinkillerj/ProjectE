@@ -1,5 +1,6 @@
 package moze_intel.projecte.capability;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +19,12 @@ public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundNB
 	public ItemCapabilityWrapper(ItemStack stack, List<ItemCapability<?>> capabilities) {
 		itemStack = stack;
 		this.capabilities = capabilities;
+		this.capabilities.forEach(cap -> cap.setWrapper(this));
+	}
+
+	public ItemCapabilityWrapper(ItemStack stack, ItemCapability<?>... capabilities) {
+		itemStack = stack;
+		this.capabilities = Arrays.asList(capabilities);
 		this.capabilities.forEach(cap -> cap.setWrapper(this));
 	}
 

@@ -6,6 +6,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -14,6 +15,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -30,7 +32,6 @@ public class DarkPick extends PEToolBase {
 		this(props, (byte) 2, EnumMatterType.DARK_MATTER, new String[]{"pe.darkpick.mode1", "pe.darkpick.mode2", "pe.darkpick.mode3", "pe.darkpick.mode4"});
 	}
 
-	// Only for RedPick
 	protected DarkPick(Properties props, byte numCharges, EnumMatterType matterType, String[] modeDesc) {
 		super(props, numCharges, modeDesc);
 		this.peToolMaterial = matterType;
@@ -47,12 +48,12 @@ public class DarkPick extends PEToolBase {
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
 		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-			mineOreVeinsInAOE(stack, player, hand);
+			ToolHelper.mineOreVeinsInAOE(stack, player, hand);
 		} else {
 			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 			if (mop instanceof BlockRayTraceResult) {
 				if (ItemHelper.isOre(world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock())) {
-					tryVeinMine(stack, player, (BlockRayTraceResult) mop);
+					ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
 				}
 			}
 		}
@@ -61,7 +62,7 @@ public class DarkPick extends PEToolBase {
 
 	@Override
 	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving) {
-		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
+		ToolHelper.digBasedOnMode(stack, world, state.getBlock(), pos, eLiving, Item::rayTrace);
 		return true;
 	}
 

@@ -25,6 +25,17 @@ public interface IItemCharge {
 	int getNumCharges(@Nonnull ItemStack stack);
 
 	/**
+	 * Gets the current percent charge on the given ItemStack. Should be a value between 0 and 1 inclusive.
+	 *
+	 * @param stack Stack whose charge percent we want
+	 *
+	 * @return The percent charge on the stack
+	 */
+	default double getChargePercent(@Nonnull ItemStack stack) {
+		return (double) getCharge(stack) / getNumCharges(stack);
+	}
+
+	/**
 	 * Returns the current charge on the given ItemStack
 	 *
 	 * @param stack Stack whose charge we want

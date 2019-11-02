@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -12,6 +13,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -24,7 +26,6 @@ public class DarkHammer extends PEToolBase {
 		this(props, (byte) 2, EnumMatterType.DARK_MATTER);
 	}
 
-	// Only for RedHammer
 	protected DarkHammer(Properties props, byte numCharges, EnumMatterType matterType) {
 		super(props, numCharges, new String[]{});
 		this.peToolMaterial = matterType;
@@ -35,7 +36,7 @@ public class DarkHammer extends PEToolBase {
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -43,7 +44,7 @@ public class DarkHammer extends PEToolBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		digAOE(stack, world, player, true, 0, hand);
+		ToolHelper.digAOE(stack, world, player, true, 0, hand, Item::rayTrace);
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 

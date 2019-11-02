@@ -1,16 +1,27 @@
 package moze_intel.projecte.gameObjs;
 
 import javax.annotation.Nonnull;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IStringSerializable;
 
-public enum EnumMatterType implements IStringSerializable {
-	DARK_MATTER("dark_matter"),
-	RED_MATTER("red_matter");
+public enum EnumMatterType implements IStringSerializable, IItemTier {
+	//TODO: Harvest level
+	DARK_MATTER("dark_matter", 3, 14, 12, 0),
+	RED_MATTER("red_matter", 4, 16, 14, 0);
 
 	private final String name;
+	private final float attackDamage;
+	private final float efficiency;
+	private final float chargeModifier;
+	private final int harvestLevel;
 
-	EnumMatterType(String name) {
+	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel) {
 		this.name = name;
+		this.attackDamage = attackDamage;
+		this.efficiency = efficiency;
+		this.chargeModifier = chargeModifier;
+		this.harvestLevel = harvestLevel;
 	}
 
 	@Nonnull
@@ -22,5 +33,45 @@ public enum EnumMatterType implements IStringSerializable {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public int getMaxUses() {
+		return 0;
+	}
+
+	public float getChargeModifier() {
+		return chargeModifier;
+	}
+
+	@Override
+	public float getEfficiency() {
+		return efficiency;
+	}
+
+	@Override
+	public float getAttackDamage() {
+		//TODO
+		//pick 4
+		//Dark matter sword 9
+		//Red matter sword 12
+		return attackDamage;
+	}
+
+	@Override
+	public int getHarvestLevel() {
+		//TODO
+		return harvestLevel;
+	}
+
+	@Override
+	public int getEnchantability() {
+		return 0;
+	}
+
+	@Nonnull
+	@Override
+	public Ingredient getRepairMaterial() {
+		return Ingredient.EMPTY;
 	}
 }

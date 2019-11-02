@@ -44,7 +44,7 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - (double) getCharge(stack) / getNumCharges(stack);
+		return 1.0D - getChargePercent(stack);
 	}
 
 	@Override

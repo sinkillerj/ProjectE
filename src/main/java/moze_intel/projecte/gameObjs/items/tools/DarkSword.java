@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -23,7 +24,6 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 		this(props, (byte) 2, EnumMatterType.DARK_MATTER, new String[]{});
 	}
 
-	// Only for RedSword to use
 	protected DarkSword(Properties props, byte numcharges, EnumMatterType matterType, String[] modeDesc) {
 		super(props, numcharges, modeDesc);
 		this.peToolMaterial = matterType;
@@ -32,7 +32,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
@@ -53,7 +53,7 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
 		if (player.getCooledAttackStrength(0F) == 1) {
-			attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
+			ToolHelper.attackAOE(stack, player, false, DARKSWORD_BASE_ATTACK, 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}

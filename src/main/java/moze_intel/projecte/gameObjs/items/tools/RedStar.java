@@ -4,9 +4,10 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterBlock;
+import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,6 +19,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
@@ -57,13 +59,13 @@ public class RedStar extends PEToolBase {
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
 	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving) {
-		digBasedOnMode(stack, world, state.getBlock(), pos, eLiving);
+		ToolHelper.digBasedOnMode(stack, world, state.getBlock(), pos, eLiving, Item::rayTrace);
 		return true;
 	}
 
@@ -73,7 +75,7 @@ public class RedStar extends PEToolBase {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-				mineOreVeinsInAOE(stack, player, hand);
+				ToolHelper.mineOreVeinsInAOE(stack, player, hand);
 			}
 			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 			if (!(mop instanceof BlockRayTraceResult)) {
@@ -85,19 +87,19 @@ public class RedStar extends PEToolBase {
 
 			if (block instanceof GravelBlock || block == Blocks.CLAY) {
 				if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					digAOE(stack, world, player, false, 0, hand);
+					ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
 				} else {
-					tryVeinMine(stack, player, rtr);
+					ToolHelper.tryVeinMine(stack, player, rtr);
 				}
 			} else if (ItemHelper.isOre(state.getBlock())) {
 				if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					tryVeinMine(stack, player, rtr);
+					ToolHelper.tryVeinMine(stack, player, rtr);
 				}
 			} else if (block instanceof GrassBlock || BlockTags.SAND.contains(block)
 					   || BlockTags.getCollection().getOrCreate(new ResourceLocation("forge", "dirt")).contains(block)) {
-				digAOE(stack, world, player, false, 0, hand);
+				ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
 			} else {
-				digAOE(stack, world, player, true, 0, hand);
+				ToolHelper.digAOE(stack, world, player, true, 0, hand, Item::rayTrace);
 			}
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
@@ -106,7 +108,7 @@ public class RedStar extends PEToolBase {
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		Block block = state.getBlock();
-		if (block instanceof MatterBlock || block == ObjHandler.dmFurnace || block == ObjHandler.rmFurnace) {
+		if (block instanceof MatterBlock || block instanceof MatterFurnace) {
 			return 1_200_000;
 		}
 		return super.getDestroySpeed(stack, state) + 48.0F;

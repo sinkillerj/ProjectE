@@ -7,6 +7,7 @@ import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -45,14 +46,14 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 
 	@Override
 	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
-		attackWithCharge(stack, damaged, damager, 1.0F);
+		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		// Shear
-		shearBlock(stack, pos, player);
+		ToolHelper.shearBlock(stack, pos, player);
 		return false;
 	}
 
@@ -70,17 +71,17 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 			Block blockHit = state.getBlock();
 			if (blockHit instanceof GrassBlock || blockHit == Blocks.DIRT) {
 				// Hoe
-				tillAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
+				ToolHelper.tillAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
 			} else if (BlockTags.LOGS.contains(blockHit)) {
 				// Axe
-				clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
+				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
 			} else if (BlockTags.LEAVES.contains(blockHit)) {
 				// Shear leaves
-				clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
+				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
 			}
 		} else {
 			// Shear
-			shearEntityAOE(stack, player, 0, hand);
+			ToolHelper.shearEntityAOE(stack, player, 0, hand);
 		}
 
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
@@ -89,7 +90,7 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
 		if (player.getCooledAttackStrength(0F) == 1) {
-			attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura.get().floatValue(), 0, hand);
+			ToolHelper.attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura.get().floatValue(), 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}

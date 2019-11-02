@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,7 +23,6 @@ public class DarkShears extends PEToolBase {
 		this(props, (byte) 2, EnumMatterType.DARK_MATTER);
 	}
 
-	// Only for RedShears
 	protected DarkShears(Properties props, byte numCharges, EnumMatterType matterType) {
 		super(props, numCharges, new String[]{});
 		this.peToolMaterial = matterType;
@@ -53,13 +53,13 @@ public class DarkShears extends PEToolBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		shearEntityAOE(stack, player, 0, hand);
+		ToolHelper.shearEntityAOE(stack, player, 0, hand);
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-		shearBlock(stack, pos, player);
+		ToolHelper.shearBlock(stack, pos, player);
 		return false;
 	}
 }

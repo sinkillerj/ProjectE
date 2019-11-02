@@ -35,11 +35,10 @@ public class AlchemicalBag extends ItemPE {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand), hand),
-					buf -> {
-						buf.writeBoolean(hand == Hand.MAIN_HAND);
-						buf.writeBoolean(false);
-					});
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand), hand), buf -> {
+				buf.writeBoolean(hand == Hand.MAIN_HAND);
+				buf.writeBoolean(false);
+			});
 		}
 
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
