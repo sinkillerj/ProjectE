@@ -43,7 +43,7 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
+	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
 	}
 
@@ -60,7 +60,6 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
-		//TODO: Only return success if we tilled something?
 		ToolHelper.tillAOE(ctx.getHand(), ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getFace(), 0);
 		return ActionResultType.SUCCESS;
 	}

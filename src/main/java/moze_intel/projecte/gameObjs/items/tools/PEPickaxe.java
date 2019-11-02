@@ -5,32 +5,39 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.IItemMode;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class PEShovel extends ShovelItem implements IItemCharge {
+public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	private final EnumMatterType matterType;
+	private final String[] modeDesc;
 	private final int numCharges;
 
-	public PEShovel(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, 3, -3, props);
+	public PEPickaxe(EnumMatterType matterType, int numCharges, Properties props) {
+		super(matterType, 4, -2.8F, props);
+		this.modeDesc = new String[]{"pe.pick.mode1", "pe.pick.mode2", "pe.pick.mode3", "pe.pick.mode4"};
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -52,12 +59,23 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+		Block block = state.getBlock();
+		//TODO: FIXME as this logic is overcomplicated and makes no sense
+		if (block == ObjHandler.dmBlock || block == ObjHandler.dmFurnace ||
+			(matterType == EnumMatterType.RED_MATTER && (block == ObjHandler.rmBlock || block == ObjHandler.rmFurnace))) {
+			return 1_200_000;
+		}
 		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
 	}
 
 	@Override
 	public int getNumCharges(@Nonnull ItemStack stack) {
 		return numCharges;
+	}
+
+	@Override
+	public String[] getModeTranslationKeys() {
+		return modeDesc;
 	}
 
 	@Override
@@ -72,13 +90,22 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 		if (world.isRemote) {
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
-		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-		if (mop instanceof BlockRayTraceResult && world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL) {
-			ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
+		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+			ToolHelper.mineOreVeinsInAOE(stack, player, hand);
 		} else {
-			//TODO: 1.14, Fix this
-			ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
+			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+			if (mop instanceof BlockRayTraceResult) {
+				if (ItemHelper.isOre(world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock())) {
+					ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
+				}
+			}
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+	}
+
+	@Override
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving) {
+		ToolHelper.digBasedOnMode(stack, world, state.getBlock(), pos, eLiving, Item::rayTrace);
+		return true;
 	}
 }

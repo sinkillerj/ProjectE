@@ -92,17 +92,14 @@ import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.gameObjs.items.rings.Zero;
 import moze_intel.projecte.gameObjs.items.tools.DarkHammer;
-import moze_intel.projecte.gameObjs.items.tools.DarkPick;
-import moze_intel.projecte.gameObjs.items.tools.DarkShears;
 import moze_intel.projecte.gameObjs.items.tools.DarkSword;
 import moze_intel.projecte.gameObjs.items.tools.PEAxe;
 import moze_intel.projecte.gameObjs.items.tools.PEHoe;
+import moze_intel.projecte.gameObjs.items.tools.PEPickaxe;
+import moze_intel.projecte.gameObjs.items.tools.PEShears;
 import moze_intel.projecte.gameObjs.items.tools.PEShovel;
 import moze_intel.projecte.gameObjs.items.tools.RedHammer;
-import moze_intel.projecte.gameObjs.items.tools.RedHoe;
 import moze_intel.projecte.gameObjs.items.tools.RedKatar;
-import moze_intel.projecte.gameObjs.items.tools.RedPick;
-import moze_intel.projecte.gameObjs.items.tools.RedShears;
 import moze_intel.projecte.gameObjs.items.tools.RedStar;
 import moze_intel.projecte.gameObjs.items.tools.RedSword;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
@@ -212,24 +209,24 @@ public class ObjHandler {
 	public static final Item darkMatter = new Item(ib()).setRegistryName(PECore.MODID, "dark_matter");
 	public static final Item redMatter = new Item(ib()).setRegistryName(PECore.MODID, "red_matter");
 
-	public static final Item dmPick = new DarkPick(ibNoStack().addToolType(ToolType.PICKAXE, 4)).setRegistryName(PECore.MODID, "dm_pick");
-	public static final Item dmAxe = new PEAxe(EnumMatterType.DARK_MATTER, 2, ibNoStack().addToolType(ToolType.AXE, 4)).setRegistryName(PECore.MODID, "dm_axe");
-	public static final Item dmShovel = new PEShovel(EnumMatterType.DARK_MATTER, 2, ibNoStack().addToolType(ToolType.SHOVEL, 4)).setRegistryName(PECore.MODID, "dm_shovel");
+	public static final Item dmPick = new PEPickaxe(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_pick");
+	public static final Item dmAxe = new PEAxe(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_axe");
+	public static final Item dmShovel = new PEShovel(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_shovel");
 	public static final Item dmSword = new DarkSword(ibNoStack()).setRegistryName(PECore.MODID, "dm_sword");
-	public static final Item dmHoe = new PEHoe(EnumMatterType.DARK_MATTER, 2, ibNoStack().addToolType(ToolType.get("hoe"), 4)).setRegistryName(PECore.MODID, "dm_hoe");
-	public static final Item dmShears = new DarkShears(ibNoStack().addToolType(ToolType.get("shears"), 4)).setRegistryName(PECore.MODID, "dm_shears");
+	public static final Item dmHoe = new PEHoe(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_hoe");
+	public static final Item dmShears = new PEShears(EnumMatterType.DARK_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "dm_shears");
 	public static final Item dmHammer = new DarkHammer(ibNoStack()
 			.addToolType(ToolType.PICKAXE, 4)
 			.addToolType(ToolType.get("hammer"), 4)
 			.addToolType(ToolType.get("chisel"), 4))
 			.setRegistryName(PECore.MODID, "dm_hammer");
 
-	public static final Item rmPick = new RedPick(ibNoStack().addToolType(ToolType.PICKAXE, 5)).setRegistryName(PECore.MODID, "rm_pick");
-	public static final Item rmAxe = new PEAxe(EnumMatterType.RED_MATTER, 3, ibNoStack().addToolType(ToolType.AXE, 5)).setRegistryName(PECore.MODID, "rm_axe");
-	public static final Item rmShovel = new PEShovel(EnumMatterType.RED_MATTER, 3, ibNoStack().addToolType(ToolType.SHOVEL, 5)).setRegistryName(PECore.MODID, "rm_shovel");
+	public static final Item rmPick = new PEPickaxe(EnumMatterType.DARK_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_pick");
+	public static final Item rmAxe = new PEAxe(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_axe");
+	public static final Item rmShovel = new PEShovel(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shovel");
 	public static final Item rmSword = new RedSword(ibNoStack()).setRegistryName(PECore.MODID, "rm_sword");
-	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 2, ibNoStack().addToolType(ToolType.get("hoe"), 5)).setRegistryName(PECore.MODID, "rm_hoe");
-	public static final Item rmShears = new RedShears(ibNoStack().addToolType(ToolType.get("shears"), 5)).setRegistryName(PECore.MODID, "rm_shears");
+	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
+	public static final Item rmShears = new PEShears(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shears");
 	public static final Item rmHammer = new RedHammer(ibNoStack()
 			.addToolType(ToolType.PICKAXE, 5)
 			.addToolType(ToolType.get("hammer"), 5)

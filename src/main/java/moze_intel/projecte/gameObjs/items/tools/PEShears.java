@@ -10,23 +10,22 @@ import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class PEAxe extends AxeItem implements IItemCharge {
+public class PEShears extends ShearsItem implements IItemCharge {
 
 	private final EnumMatterType matterType;
 	private final int numCharges;
 
-	public PEAxe(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, 5, -3, props);
+	public PEShears(EnumMatterType matterType, int numCharges, Properties props) {
+		super(props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -65,8 +64,7 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
-		ToolHelper.clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
+		ToolHelper.shearEntityAOE(stack, player, 0, hand);
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 }

@@ -194,10 +194,10 @@
     "pe.command.showbag.offline.uuid": "Malformed UUID: %s",
     "pe.command.showbag.offline.notfound": "UUID %s not found in playerdata/",
 
-    "pe.darkpick.mode1": "Standard",
-    "pe.darkpick.mode2": "3x Tallshot",
-    "pe.darkpick.mode3": "3x Wideshot",
-    "pe.darkpick.mode4": "3x Longshot",
+    "pe.pick.mode1": "Standard",
+    "pe.pick.mode2": "3x Tallshot",
+    "pe.pick.mode3": "3x Wideshot",
+    "pe.pick.mode4": "3x Longshot",
 
     "pe.divining.avgemc": "Average EMC for %s blocks: %s",
     "pe.divining.maxemc": "Max EMC: %s",
@@ -325,11 +325,6 @@
     "pe.diving_rod.mode.range.3": "3x3x3",
     "pe.diving_rod.mode.range.16": "16x3x3",
     "pe.diving_rod.mode.range.64": "64x3x3",
-
-    "pe.redpick.mode1": "Standard",
-    "pe.redpick.mode2": "3x Tallshot",
-    "pe.redpick.mode3": "3x Wideshot",
-    "pe.redpick.mode4": "3x Longshot",
 
     "pe.redsword.mode1": "Slay Hostile",
     "pe.redsword.mode2": "Slay All",

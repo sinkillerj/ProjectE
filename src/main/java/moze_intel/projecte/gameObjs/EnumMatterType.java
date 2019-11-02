@@ -6,9 +6,8 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumMatterType implements IStringSerializable, IItemTier {
-	//TODO: Harvest level
-	DARK_MATTER("dark_matter", 3, 14, 12, 0),
-	RED_MATTER("red_matter", 4, 16, 14, 0);
+	DARK_MATTER("dark_matter", 3, 14, 12, 4),
+	RED_MATTER("red_matter", 4, 16, 14, 5);
 
 	private final String name;
 	private final float attackDamage;
@@ -52,7 +51,6 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 	@Override
 	public float getAttackDamage() {
 		//TODO
-		//pick 4
 		//Dark matter sword 9
 		//Red matter sword 12
 		return attackDamage;
@@ -60,7 +58,6 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 
 	@Override
 	public int getHarvestLevel() {
-		//TODO
 		return harvestLevel;
 	}
 

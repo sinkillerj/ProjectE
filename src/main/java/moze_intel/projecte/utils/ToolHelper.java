@@ -227,7 +227,7 @@ public class ToolHelper {
 			return;
 		}
 
-		RayTraceResult mop = tracePointer.rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+		RayTraceResult mop = tracePointer.rayTrace(world, player, FluidMode.NONE);
 		if (!(mop instanceof BlockRayTraceResult)) {
 			return;
 		}
