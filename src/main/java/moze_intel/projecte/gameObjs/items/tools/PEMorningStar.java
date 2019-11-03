@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 
+//TODO: Allow for tilling as a shovel
 public class PEMorningStar extends PETool implements IItemMode {
 
 	private final String[] modeDesc;

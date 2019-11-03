@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+//TODO: Allow for mass stripping of logs
 public class PEAxe extends AxeItem implements IItemCharge {
 
 	private final EnumMatterType matterType;

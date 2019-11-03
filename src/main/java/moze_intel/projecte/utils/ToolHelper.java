@@ -3,7 +3,10 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -33,6 +36,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.Tag;
@@ -41,6 +45,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -78,9 +83,31 @@ public class ToolHelper {
 		return currentModifiers;
 	}
 
+	public static ActionResultType performActions(ActionResultType firstAction, ActionSupplier... secondaryActions) {
+		if (firstAction == ActionResultType.SUCCESS) {
+			return ActionResultType.SUCCESS;
+		}
+		ActionResultType result = firstAction;
+		boolean hasFailed = result == ActionResultType.FAIL;
+		for (Supplier<ActionResultType> secondaryAction : secondaryActions) {
+			result = secondaryAction.get();
+			if (result == ActionResultType.SUCCESS) {
+				//If we were sucessful
+				return ActionResultType.SUCCESS;
+			}
+			hasFailed |= result == ActionResultType.FAIL;
+		}
+		if (hasFailed) {
+			//If at least one step failed, consider ourselves unsuccessful
+			return ActionResultType.FAIL;
+		}
+		return result;
+	}
+
 	/**
 	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
+	//TODO: Evaluate/modernize
 	public static void clearTagAOE(World world, ItemStack stack, PlayerEntity player, Tag<Block> tag, long emcCost, Hand hand) {
 		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
 			return;
@@ -116,66 +143,83 @@ public class ToolHelper {
 	}
 
 	/**
-	 * Tills in an AOE. Charge affects the AOE. Optional per-block EMC cost.
+	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static ActionResultType tillAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sidehit, long emcCost) {
-		if (sidehit == Direction.DOWN) {
-			//Don't allow hoeing a block from underneath
+	public static ActionResultType tillHoeAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sideHit, long emcCost) {
+		return tillAOE(hand, player, world, pos, sideHit, emcCost, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL);
+	}
+
+	/**
+	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
+	 */
+	public static ActionResultType tillShovelAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sideHit, long emcCost) {
+		//TODO: ForgeEventFactory::onShovelUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
+		// For now it just pretends it is always valid
+		return tillAOE(hand, player, world, pos, sideHit, emcCost, ShovelItem.field_195955_e, context -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
+	}
+
+	/**
+	 * Tills in an AOE using the specified lookup map and tester. Charge affects the AOE. Optional per-block EMC cost.
+	 */
+	public static ActionResultType tillAOE(Hand hand, PlayerEntity player, World world, BlockPos pos, Direction sideHit, long emcCost, Map<Block, BlockState> lookup,
+			ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound) {
+		if (sideHit == Direction.DOWN) {
+			//Don't allow tilling a block from underneath
+			return ActionResultType.PASS;
+		}
+		BlockState tilledState = lookup.get(world.getBlockState(pos).getBlock());
+		if (tilledState == null) {
+			//Skip tilling the block if the one we clicked cannot be tilled
 			return ActionResultType.PASS;
 		}
 		if (world.isRemote) {
 			//If on client NO-OP as the sound gets played from the server anyways
+			//TODO: Re-evaluate this as we may want to return pass if nothing happened?
 			return ActionResultType.SUCCESS;
-		}
-		BlockState hoedState = HoeItem.HOE_LOOKUP.get(world.getBlockState(pos).getBlock());
-		if (hoedState == null) {
-			//Skip hoeing the block if the one we clicked cannot be hoed
-			return ActionResultType.PASS;
 		}
 		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		boolean hasAction = false;
 		for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge))) {
 			BlockState stateAbove = world.getBlockState(newPos.up());
-			if (!stateAbove.isOpaqueCube(world, newPos.up())) {
-				//Check to make sure the result we would get from hoeing the other block is the same as the one we got on the initial block we interacted with
-				if (hoedState == HoeItem.HOE_LOOKUP.get(world.getBlockState(newPos).getBlock())) {
-					//Some of the below methods don't behave properly when the blockpos is mutable, so now that we are onto ones where it may actually
-					// matter we make sure to get an immutable instance of newPos
-					BlockPos newPosImmutable = newPos.toImmutable();
-					BlockRayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPosImmutable, false);
-					ItemUseContext context = new ItemUseContext(player, hand, rtr);
-					int hoeUseResult = ForgeEventFactory.onHoeUse(context);
-					if (hoeUseResult < 0) {
-						//We were denied from using the hoe so continue to the next block
-						continue;
-					} else if (hoeUseResult > 0) {
-						//Processing happened in the hook so we use our desired fuel amount if we are not at the initial position and continue
-						if (newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) {
-							ItemPE.consumeFuel(player, stack, emcCost, true);
+			//Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
+			// the same as the one we got on the initial block we interacted with
+			if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == lookup.get(world.getBlockState(newPos).getBlock())) {
+				//Some of the below methods don't behave properly when the blockpos is mutable, so now that we are onto ones where it may actually
+				// matter we make sure to get an immutable instance of newPos
+				BlockPos newPosImmutable = newPos.toImmutable();
+				ItemUseContext context = new ItemUseContext(player, hand, new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPosImmutable, false));
+				int useResult = onItemUse.applyAsInt(context);
+				if (useResult < 0) {
+					//We were denied from using the item so continue to the next block
+					continue;
+				} else if (useResult > 0) {
+					//Processing happened in the hook so we use our desired fuel amount if we are not at the initial position and continue
+					if (newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) {
+						ItemPE.consumeFuel(player, stack, emcCost, true);
+					}
+					hasAction = true;
+					continue;
+				} //else we are allowed to use the item
+				// The initial block we target is always free
+				if ((newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) || ItemPE.consumeFuel(player, stack, emcCost, true)) {
+					//Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do), rather than using our
+					// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
+					// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
+					// location and were told that we are allowed to use our item.
+					world.setBlockState(newPosImmutable, tilledState, 11);
+					Material aboveMaterial = stateAbove.getMaterial();
+					if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !stateAbove.getBlock().hasTileEntity(stateAbove)) {
+						//If the block above the one we tilled is a plant (and not a tile entity because you never know), then we try to remove it
+						//Note: We do check for breaking the block above that we attempt to break it though, as we
+						// have not done any events that have told use we are allowed to break blocks in that spot.
+						if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPosImmutable)) {
+							world.destroyBlock(newPosImmutable.up(), true);
 						}
+					}
+					if (!hasAction) {
+						world.playSound(null, newPosImmutable, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
 						hasAction = true;
-						continue;
-					} //else we are allowed to figure out how to use the hoe
-					// The initial block we target is always free
-					if ((newPosImmutable.getX() == pos.getX() && newPosImmutable.getZ() == pos.getZ()) || ItemPE.consumeFuel(player, stack, emcCost, true)) {
-						//Replace the block. Note it just directly sets it (in the same way that HoeItem does), rather than using our
-						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
-						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use a hoe in this
-						// location and were told that we are allowed to use a hoe.
-						world.setBlockState(newPosImmutable, hoedState, 11);
-						if ((stateAbove.getMaterial() == Material.PLANTS || stateAbove.getMaterial() == Material.TALL_PLANTS)
-							&& !(stateAbove.getBlock().hasTileEntity(stateAbove))) {// Just in case, you never know
-							//Note: We do check for breaking the block above that we attempt to break it though, as we
-							// have not done any events that have told use we are allowed to break blocks in that spot.
-							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPosImmutable)) {
-								world.destroyBlock(newPosImmutable.up(), true);
-							}
-						}
-						if (!hasAction) {
-							world.playSound(null, newPosImmutable, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-							hasAction = true;
-						}
 					}
 				}
 			}
@@ -190,6 +234,7 @@ public class ToolHelper {
 	/**
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
+	//TODO: Evaluate/modernize
 	public static void digBasedOnMode(ItemStack stack, World world, Block block, BlockPos pos, LivingEntity living, RayTracePointer tracePointer) {
 		if (world.isRemote || !(living instanceof PlayerEntity)) {
 			return;
@@ -264,18 +309,20 @@ public class ToolHelper {
 	/**
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
-	public static void digAOE(ItemStack stack, World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
+	//TODO: Evaluate/modernize
+	public static ActionResultType digAOE(ItemStack stack, World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
 		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
-			return;
+			return ActionResultType.PASS;
 		}
 		int charge = getCharge(stack);
 		if (charge == 0) {
-			return;
+			return ActionResultType.PASS;
 		}
 
 		RayTraceResult mop = tracePointer.rayTrace(world, player, FluidMode.NONE);
 		if (!(mop instanceof BlockRayTraceResult)) {
-			return;
+			//TODO: Evaluate if this is needed if we can just get this via the ItemUseContext
+			return ActionResultType.PASS;
 		}
 
 		BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
@@ -292,18 +339,19 @@ public class ToolHelper {
 				world.removeBlock(pos, false);
 			}
 		}
-
-		WorldHelper.createLootDrop(drops, world, rtr.getPos());
-		PlayerHelper.swingItem(player, hand);
-
 		if (!drops.isEmpty()) {
+			WorldHelper.createLootDrop(drops, world, rtr.getPos());
+			PlayerHelper.swingItem(player, hand);
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.PASS;
 	}
 
 	/**
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
+	//TODO: Evaluate/modernize
 	public static void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg) {
 		if (!(damager instanceof PlayerEntity) || damager.getEntityWorld().isRemote) {
 			return;
@@ -321,6 +369,7 @@ public class ToolHelper {
 	/**
 	 * Attacks in an AOE. Charge affects AOE, not damage (intentional). Optional per-entity EMC cost.
 	 */
+	//TODO: Evaluate/modernize
 	public static void attackAOE(ItemStack stack, PlayerEntity player, boolean slayAll, float damage, long emcCost, Hand hand) {
 		if (player.getEntityWorld().isRemote) {
 			return;
@@ -347,6 +396,7 @@ public class ToolHelper {
 	/**
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
+	//TODO: Evaluate/modernize
 	public static void shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		if (player.getEntityWorld().isRemote) {
 			return;
@@ -365,6 +415,7 @@ public class ToolHelper {
 	/**
 	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
+	//TODO: Evaluate/modernize
 	public static void shearEntityAOE(ItemStack stack, PlayerEntity player, long emcCost, Hand hand) {
 		World world = player.getEntityWorld();
 		if (!world.isRemote) {
@@ -414,36 +465,47 @@ public class ToolHelper {
 	/**
 	 * Scans and harvests an ore vein.
 	 */
-	public static void tryVeinMine(ItemStack stack, PlayerEntity player, BlockRayTraceResult mop) {
+	//TODO: Evaluate/modernize
+	@Deprecated //Replace this with the below method
+	public static ActionResultType tryVeinMine(ItemStack stack, PlayerEntity player, BlockRayTraceResult mop) {
+		return tryVeinMine(stack, player, mop.getPos(), mop.getFace());
+	}
+
+	/**
+	 * Scans and harvests an ore vein.
+	 */
+	//TODO: Evaluate/modernize
+	public static ActionResultType tryVeinMine(ItemStack stack, PlayerEntity player, BlockPos pos, Direction sideHit) {
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
-			return;
+			return ActionResultType.PASS;
 		}
 
-		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(mop.getPos(), mop.getFace(), getCharge(stack));
-		BlockState target = player.getEntityWorld().getBlockState(mop.getPos());
-		if (target.getBlockHardness(player.getEntityWorld(), mop.getPos()) <= -1 ||
-			!(stack.canHarvestBlock(target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), mop.getPos(), stack))) {
-			return;
+		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack));
+		BlockState target = player.getEntityWorld().getBlockState(pos);
+		if (target.getBlockHardness(player.getEntityWorld(), pos) <= -1 ||
+			!(stack.canHarvestBlock(target) || ForgeHooks.canToolHarvestBlock(player.getEntityWorld(), pos, stack))) {
+			return ActionResultType.FAIL;
 		}
 
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(aabb)) {
-			BlockState state = player.getEntityWorld().getBlockState(pos);
+		for (BlockPos newPos : WorldHelper.getPositionsFromBox(aabb)) {
+			BlockState state = player.getEntityWorld().getBlockState(newPos);
 			if (target.getBlock() == state.getBlock()) {
-				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, pos, state.getBlock(), drops, 0);
+				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, newPos, state.getBlock(), drops, 0);
 			}
 		}
-
-		WorldHelper.createLootDrop(drops, player.getEntityWorld(), mop.getPos());
 		if (!drops.isEmpty()) {
+			WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.PASS;
 	}
-
 
 	/**
 	 * Mines all ore veins in a Box around the player.
 	 */
+	//TODO: Evaluate/modernize
 	public static void mineOreVeinsInAOE(ItemStack stack, PlayerEntity player, Hand hand) {
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
 			return;
@@ -486,5 +548,9 @@ public class ToolHelper {
 	public interface RayTracePointer {
 
 		RayTraceResult rayTrace(World world, PlayerEntity player, FluidMode fluidMode);
+	}
+
+	//Helper interface to remove warnings of varargs of generics
+	public interface ActionSupplier extends Supplier<ActionResultType> {
 	}
 }

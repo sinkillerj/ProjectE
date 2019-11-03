@@ -144,7 +144,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			if (HoeItem.HOE_LOOKUP.get(blockHit) != null) {
 				// Hoe
 				//TODO: Move to onItemUse
-				ToolHelper.tillAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
+				ToolHelper.tillHoeAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
 			} else if (BlockTags.LOGS.contains(blockHit)) {
 				// Axe
 				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);

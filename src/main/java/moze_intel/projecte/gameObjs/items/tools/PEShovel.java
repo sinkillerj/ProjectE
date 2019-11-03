@@ -8,24 +8,22 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: Allow mass creating grass paths
 public class PEShovel extends ShovelItem implements IItemCharge {
 
 	private final EnumMatterType matterType;
@@ -78,17 +76,21 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+	public ActionResultType onItemUse(ItemUseContext ctx) {
+		Hand hand = ctx.getHand();
+		PlayerEntity player = ctx.getPlayer();
+		World world = ctx.getWorld();
+		BlockPos pos = ctx.getPos();
+		Direction sideHit = ctx.getFace();
+		ActionResultType result = ToolHelper.tillShovelAOE(hand, player, world, pos, sideHit, 0);
+		if (player == null) {
+			return result;
 		}
-		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-		if (mop instanceof BlockRayTraceResult && world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock() == Blocks.GRAVEL) {
-			ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
-		} else {
-			ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
-		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ToolHelper.performActions(result, () -> {
+			if (world.getBlockState(pos).isIn(Tags.Blocks.GRAVEL)) {
+				return ToolHelper.tryVeinMine(player.getHeldItem(hand), player, pos, sideHit);
+			}
+			return ActionResultType.PASS;
+		}, () -> ToolHelper.digAOE(player.getHeldItem(hand), world, player, false, 0, hand, Item::rayTrace));
 	}
 }
