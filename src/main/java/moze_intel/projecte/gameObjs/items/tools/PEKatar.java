@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -15,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +36,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
@@ -55,6 +60,12 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Override
 	public String[] getModeTranslationKeys() {
 		return modeDesc;
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
+		list.add(getToolTip(stack));
 	}
 
 	/**
@@ -124,9 +135,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-		//Shear the block instead of breaking it if it supports shearing
-		ToolHelper.shearBlock(stack, pos, player);
-		return false;
+		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
+		return ToolHelper.shearBlock(stack, pos, player) == ActionResultType.SUCCESS;
 	}
 
 	@Nonnull
@@ -157,7 +167,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			}
 		} else {
 			// Shear
-			ToolHelper.shearEntityAOE(stack, player, 0, hand);
+			ToolHelper.shearEntityAOE(player, hand, 0);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
@@ -188,4 +198,6 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
 		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
+
+	//TODO: overwrite itemInteractionForEntity??
 }

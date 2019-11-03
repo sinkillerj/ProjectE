@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
@@ -12,6 +13,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -63,6 +65,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 //TODO: If some of these are only used by one tool type inline them
 //TODO: Replace canHarvestBlock checks with ForgeHooks.canHarvestBlock ??
+//TODO: Go through and improve the results these return (especially for when we are on the client side)
+// This includes figuring out if we should be just returning pass or success on the client of if we can do any processing
 public class ToolHelper {
 
 	public static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
@@ -71,6 +75,8 @@ public class ToolHelper {
 	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
 	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
+
+	private static final Predicate<Entity> SHEARABLE_NOT_SPECTATING = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
 	public static Multimap<String, AttributeModifier> addChargeAttributeModifier(Multimap<String, AttributeModifier> currentModifiers, @Nonnull EquipmentSlotType slot, ItemStack stack) {
 		if (slot == EquipmentSlotType.MAINHAND) {
@@ -89,14 +95,15 @@ public class ToolHelper {
 		}
 		ActionResultType result = firstAction;
 		boolean hasFailed = result == ActionResultType.FAIL;
-		for (Supplier<ActionResultType> secondaryAction : secondaryActions) {
+		for (ActionSupplier secondaryAction : secondaryActions) {
 			result = secondaryAction.get();
 			if (result == ActionResultType.SUCCESS) {
-				//If we were sucessful
+				//If we were successful
 				return ActionResultType.SUCCESS;
 			}
 			hasFailed |= result == ActionResultType.FAIL;
 		}
+		//TODO: Decide if this should only be fail if ALL of them failed
 		if (hasFailed) {
 			//If at least one step failed, consider ourselves unsuccessful
 			return ActionResultType.FAIL;
@@ -108,13 +115,13 @@ public class ToolHelper {
 	 * Clears the given tag name in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	//TODO: Evaluate/modernize
-	public static void clearTagAOE(World world, ItemStack stack, PlayerEntity player, Tag<Block> tag, long emcCost, Hand hand) {
+	public static ActionResultType clearTagAOE(World world, ItemStack stack, PlayerEntity player, Tag<Block> tag, long emcCost, Hand hand) {
 		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
-			return;
+			return ActionResultType.PASS;
 		}
 		int charge = getCharge(stack);
 		if (charge == 0) {
-			return;
+			return ActionResultType.PASS;
 		}
 
 		List<ItemStack> drops = new ArrayList<>();
@@ -140,6 +147,7 @@ public class ToolHelper {
 
 		WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 		PlayerHelper.swingItem(player, hand);
+		return ActionResultType.SUCCESS;
 	}
 
 	/**
@@ -251,6 +259,7 @@ public class ToolHelper {
 		RayTraceResult mop = tracePointer.rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 
 		if (!(mop instanceof BlockRayTraceResult)) {
+			//TODO: Evaluate if this is needed if we can just get this via the ItemUseContext
 			return;
 		}
 
@@ -310,37 +319,46 @@ public class ToolHelper {
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
 	//TODO: Evaluate/modernize
-	public static ActionResultType digAOE(ItemStack stack, World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
-		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
-			return ActionResultType.PASS;
-		}
-		int charge = getCharge(stack);
-		if (charge == 0) {
-			return ActionResultType.PASS;
-		}
-
+	@Deprecated //Replace usages with other method
+	public static ActionResultType digAOE(World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
 		RayTraceResult mop = tracePointer.rayTrace(world, player, FluidMode.NONE);
 		if (!(mop instanceof BlockRayTraceResult)) {
 			//TODO: Evaluate if this is needed if we can just get this via the ItemUseContext
 			return ActionResultType.PASS;
 		}
-
 		BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
-		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(rtr.getPos(), rtr.getFace(), charge) : WorldHelper.getFlatYBox(rtr.getPos(), charge);
+		return digAOE(world, player, hand, rtr.getPos(), rtr.getFace(), affectDepth, emcCost);
+	}
+
+	/**
+	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
+	 */
+	//TODO: Evaluate/modernize
+	public static ActionResultType digAOE(World world, PlayerEntity player, Hand hand, BlockPos pos, Direction sideHit, boolean affectDepth, long emcCost) {
+		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
+			return ActionResultType.PASS;
+		}
+		ItemStack stack = player.getHeldItem(hand);
+		int charge = getCharge(stack);
+		if (charge == 0) {
+			return ActionResultType.PASS;
+		}
+
+		AxisAlignedBB box = affectDepth ? WorldHelper.getBroadDeepBox(pos, sideHit, charge) : WorldHelper.getFlatYBox(pos, charge);
 
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(box)) {
-			BlockState state = world.getBlockState(pos);
+		for (BlockPos newPos : WorldHelper.getPositionsFromBox(box)) {
+			BlockState state = world.getBlockState(newPos);
 			Block b = state.getBlock();
 
-			if (b != Blocks.AIR && state.getBlockHardness(world, pos) != -1 && stack.canHarvestBlock(state)
-				&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos) && ItemPE.consumeFuel(player, stack, emcCost, true)) {
-				drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
-				world.removeBlock(pos, false);
+			if (b != Blocks.AIR && state.getBlockHardness(world, newPos) != -1 && stack.canHarvestBlock(state)
+				&& PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos) && ItemPE.consumeFuel(player, stack, emcCost, true)) {
+				drops.addAll(Block.getDrops(state, (ServerWorld) world, newPos, world.getTileEntity(newPos), player, stack));
+				world.removeBlock(newPos, false);
 			}
 		}
 		if (!drops.isEmpty()) {
-			WorldHelper.createLootDrop(drops, world, rtr.getPos());
+			WorldHelper.createLootDrop(drops, world, pos);
 			PlayerHelper.swingItem(player, hand);
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
@@ -397,58 +415,68 @@ public class ToolHelper {
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
 	//TODO: Evaluate/modernize
-	public static void shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player) {
+	public static ActionResultType shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		if (player.getEntityWorld().isRemote) {
-			return;
+			return ActionResultType.PASS;
 		}
 		Block block = player.getEntityWorld().getBlockState(pos).getBlock();
 		if (block instanceof IShearable) {
 			IShearable target = (IShearable) block;
 			if (target.isShearable(stack, player.getEntityWorld(), pos) && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				List<ItemStack> drops = target.onSheared(stack, player.getEntityWorld(), pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-				WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
-				player.addStat(Stats.BLOCK_MINED.get(block), 1);
+				if (!drops.isEmpty()) {
+					WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
+					player.addStat(Stats.BLOCK_MINED.get(block), 1);
+					return ActionResultType.SUCCESS;
+				}
 			}
 		}
+		return ActionResultType.PASS;
 	}
 
 	/**
 	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
-	//TODO: Evaluate/modernize
-	public static void shearEntityAOE(ItemStack stack, PlayerEntity player, long emcCost, Hand hand) {
+	public static ActionResultType shearEntityAOE(PlayerEntity player, Hand hand, long emcCost) {
 		World world = player.getEntityWorld();
-		if (!world.isRemote) {
-			int charge = getCharge(stack);
-			int offset = ((int) Math.pow(2, 2 + charge));
-
-			AxisAlignedBB bBox = player.getBoundingBox().grow(offset, offset / 2, offset);
-			List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox);
-			List<ItemStack> drops = new ArrayList<>();
-			for (Entity ent : list) {
-				if (!(ent instanceof IShearable)) {
-					continue;
+		if (world.isRemote) {
+			return ActionResultType.PASS;
+		}
+		ItemStack stack = player.getHeldItem(hand);
+		int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+		int offset = (int) Math.pow(2, 2 + getCharge(stack));
+		//Note: There is no division issue here as we are a power of 2
+		AxisAlignedBB bBox = player.getBoundingBox().grow(offset, offset / 2, offset);
+		//Get all entities also making sure that they are shearable
+		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, bBox, SHEARABLE_NOT_SPECTATING);
+		boolean hasAction = false;
+		List<ItemStack> drops = new ArrayList<>();
+		for (Entity ent : list) {
+			BlockPos entityPosition = ent.getPosition();
+			IShearable target = (IShearable) ent;
+			if (target.isShearable(stack, world, entityPosition) && ItemPE.consumeFuel(player, stack, emcCost, true)) {
+				List<ItemStack> entDrops = target.onSheared(stack, world, entityPosition, fortune);
+				if (!entDrops.isEmpty()) {
+					//Double all drops (just add them all twice because we compact the list later anyways)
+					//Note: The reason we don't grow the stacks like we used to is to ensure if a modded mob drops
+					// items with over half their max stack size, we don't end up potentially messing up the logic
+					// in the stack/trying to spawn in overly full stacks
+					drops.addAll(entDrops);
+					drops.addAll(entDrops);
 				}
-				IShearable target = (IShearable) ent;
-				if (target.isShearable(stack, ent.getEntityWorld(), new BlockPos(ent)) && ItemPE.consumeFuel(player, stack, emcCost, true)) {
-					List<ItemStack> entDrops = target.onSheared(stack, ent.getEntityWorld(), new BlockPos(ent), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-					if (!entDrops.isEmpty()) {
-						for (ItemStack drop : entDrops) {
-							drop.grow(drop.getCount());
-						}
-						drops.addAll(entDrops);
-					}
+				if (!hasAction) {
+					hasAction = true;
 				}
-				if (Math.random() < 0.01) {
-					Entity e = ent.getType().create(world);
-					if (e != null) {
-						e.setPosition(ent.posX, ent.posY, ent.posZ);
-					}
+			}
+			if (Math.random() < 0.01) {
+				Entity e = ent.getType().create(world);
+				if (e != null) {
+					e.setPosition(ent.posX, ent.posY, ent.posZ);
 					if (e instanceof MobEntity) {
-						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(ent)), SpawnReason.EVENT, null, null);
+						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(entityPosition), SpawnReason.EVENT, null, null);
 					}
 					if (e instanceof SheepEntity) {
-						((SheepEntity) e).setFleeceColor(DyeColor.values()[MathUtils.randomIntInRange(0, 15)]);
+						((SheepEntity) e).setFleeceColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
 					}
 					if (e instanceof AgeableEntity) {
 						((AgeableEntity) e).setGrowingAge(-24000);
@@ -456,10 +484,13 @@ public class ToolHelper {
 					world.addEntity(e);
 				}
 			}
-
+		}
+		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 			PlayerHelper.swingItem(player, hand);
+			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.PASS;
 	}
 
 	/**
@@ -467,19 +498,19 @@ public class ToolHelper {
 	 */
 	//TODO: Evaluate/modernize
 	@Deprecated //Replace this with the below method
-	public static ActionResultType tryVeinMine(ItemStack stack, PlayerEntity player, BlockRayTraceResult mop) {
-		return tryVeinMine(stack, player, mop.getPos(), mop.getFace());
+	public static ActionResultType tryVeinMine(Hand hand, PlayerEntity player, BlockRayTraceResult mop) {
+		return tryVeinMine(hand, player, mop.getPos(), mop.getFace());
 	}
 
 	/**
 	 * Scans and harvests an ore vein.
 	 */
 	//TODO: Evaluate/modernize
-	public static ActionResultType tryVeinMine(ItemStack stack, PlayerEntity player, BlockPos pos, Direction sideHit) {
+	public static ActionResultType tryVeinMine(Hand hand, PlayerEntity player, BlockPos pos, Direction sideHit) {
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
-
+		ItemStack stack = player.getHeldItem(hand);
 		AxisAlignedBB aabb = WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack));
 		BlockState target = player.getEntityWorld().getBlockState(pos);
 		if (target.getBlockHardness(player.getEntityWorld(), pos) <= -1 ||
@@ -487,14 +518,19 @@ public class ToolHelper {
 			return ActionResultType.FAIL;
 		}
 
+		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos newPos : WorldHelper.getPositionsFromBox(aabb)) {
 			BlockState state = player.getEntityWorld().getBlockState(newPos);
 			if (target.getBlock() == state.getBlock()) {
-				WorldHelper.harvestVein(player.getEntityWorld(), player, stack, newPos, state.getBlock(), drops, 0);
+				if (WorldHelper.harvestVein(player.getEntityWorld(), player, stack, newPos, state.getBlock(), drops, 0) > 0) {
+					if (!hasAction) {
+						hasAction = true;
+					}
+				}
 			}
 		}
-		if (!drops.isEmpty()) {
+		if (hasAction) {
 			WorldHelper.createLootDrop(drops, player.getEntityWorld(), pos);
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
@@ -506,9 +542,9 @@ public class ToolHelper {
 	 * Mines all ore veins in a Box around the player.
 	 */
 	//TODO: Evaluate/modernize
-	public static void mineOreVeinsInAOE(ItemStack stack, PlayerEntity player, Hand hand) {
+	public static ActionResultType mineOreVeinsInAOE(ItemStack stack, PlayerEntity player, Hand hand) {
 		if (player.getEntityWorld().isRemote || ProjectEConfig.items.disableAllRadiusMining.get()) {
-			return;
+			return ActionResultType.PASS;
 		}
 		int offset = getCharge(stack) + 3;
 		AxisAlignedBB box = player.getBoundingBox().grow(offset);
@@ -525,7 +561,9 @@ public class ToolHelper {
 		if (!drops.isEmpty()) {
 			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
 			PlayerHelper.swingItem(player, hand);
+			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.PASS;
 	}
 
 	public static float getDestroySpeed(float parentDestroySpeed, EnumMatterType matterType, int charge) {
@@ -534,6 +572,10 @@ public class ToolHelper {
 			return parentDestroySpeed;
 		}
 		return parentDestroySpeed + matterType.getChargeModifier() * charge;
+	}
+
+	public static boolean canMatterMine(EnumMatterType matterType, Block block) {
+		return block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier();
 	}
 
 	private static int getCharge(ItemStack stack) {

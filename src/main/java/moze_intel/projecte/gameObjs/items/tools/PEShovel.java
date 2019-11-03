@@ -10,7 +10,6 @@ import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
@@ -76,21 +75,20 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
-		Hand hand = ctx.getHand();
-		PlayerEntity player = ctx.getPlayer();
-		World world = ctx.getWorld();
-		BlockPos pos = ctx.getPos();
-		Direction sideHit = ctx.getFace();
-		ActionResultType result = ToolHelper.tillShovelAOE(hand, player, world, pos, sideHit, 0);
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
 		if (player == null) {
-			return result;
+			return ActionResultType.PASS;
 		}
-		return ToolHelper.performActions(result, () -> {
+		Hand hand = context.getHand();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Direction sideHit = context.getFace();
+		return ToolHelper.performActions(ToolHelper.tillShovelAOE(hand, player, world, pos, sideHit, 0), () -> {
 			if (world.getBlockState(pos).isIn(Tags.Blocks.GRAVEL)) {
-				return ToolHelper.tryVeinMine(player.getHeldItem(hand), player, pos, sideHit);
+				return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
 			}
 			return ActionResultType.PASS;
-		}, () -> ToolHelper.digAOE(player.getHeldItem(hand), world, player, false, 0, hand, Item::rayTrace));
+		}, () -> ToolHelper.digAOE(world, player, hand, pos, sideHit, false, 0));
 	}
 }

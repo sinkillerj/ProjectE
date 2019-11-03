@@ -7,6 +7,7 @@ import java.util.List;
 import moze_intel.projecte.PECore;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+//TODO: Fix config, it does not seem to obey changes made to the file and overwrites them when loading
 public final class ProjectEConfig {
 
 	public static void load() {

@@ -68,12 +68,13 @@ public final class WorldHelper {
 	}
 
 	public static void createLootDrop(List<ItemStack> drops, World world, double x, double y, double z) {
-		ItemHelper.compactItemListNoStacksize(drops);
-
-		for (ItemStack drop : drops) {
-			ItemEntity ent = new ItemEntity(world, x, y, z);
-			ent.setItem(drop);
-			world.addEntity(ent);
+		if (!drops.isEmpty()) {
+			ItemHelper.compactItemListNoStacksize(drops);
+			for (ItemStack drop : drops) {
+				ItemEntity ent = new ItemEntity(world, x, y, z);
+				ent.setItem(drop);
+				world.addEntity(ent);
+			}
 		}
 	}
 

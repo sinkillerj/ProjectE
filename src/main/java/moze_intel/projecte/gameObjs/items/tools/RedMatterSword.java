@@ -1,10 +1,16 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class RedMatterSword extends PESword implements IItemMode {
 
@@ -24,5 +30,11 @@ public class RedMatterSword extends PESword implements IItemMode {
 	@Override
 	public String[] getModeTranslationKeys() {
 		return modeDesc;
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
+		list.add(getToolTip(stack));
 	}
 }

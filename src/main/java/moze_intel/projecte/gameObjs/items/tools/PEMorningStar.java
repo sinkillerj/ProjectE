@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
+import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
@@ -14,6 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.GrassBlock;
 import net.minecraft.block.GravelBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +29,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 
@@ -49,6 +53,12 @@ public class PEMorningStar extends PETool implements IItemMode {
 	@Override
 	public String[] getModeTranslationKeys() {
 		return modeDesc;
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
+		list.add(getToolTip(stack));
 	}
 
 	/**
@@ -104,18 +114,18 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 			if (block instanceof GravelBlock || block == Blocks.CLAY) {
 				if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
+					ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);
 				} else {
-					ToolHelper.tryVeinMine(stack, player, rtr);
+					ToolHelper.tryVeinMine(hand, player, rtr);
 				}
 			} else if (ItemHelper.isOre(state.getBlock())) {
 				if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					ToolHelper.tryVeinMine(stack, player, rtr);
+					ToolHelper.tryVeinMine(hand, player, rtr);
 				}
 			} else if (block instanceof GrassBlock || BlockTags.SAND.contains(block) || Tags.Blocks.DIRT.contains(block)) {
-				ToolHelper.digAOE(stack, world, player, false, 0, hand, Item::rayTrace);
+				ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);
 			} else {
-				ToolHelper.digAOE(stack, world, player, true, 0, hand, Item::rayTrace);
+				ToolHelper.digAOE(world, player, true, 0, hand, Item::rayTrace);
 			}
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
@@ -123,8 +133,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		Block block = state.getBlock();
-		if (block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier()) {
+		if (ToolHelper.canMatterMine(matterType, state.getBlock())) {
 			return 1_200_000;
 		}
 		return super.getDestroySpeed(stack, state) + 48.0F;

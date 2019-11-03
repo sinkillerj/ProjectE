@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
@@ -8,26 +9,26 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
@@ -60,8 +61,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		Block block = state.getBlock();
-		if (block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier()) {
+		if (ToolHelper.canMatterMine(matterType, state.getBlock())) {
 			return 1_200_000;
 		}
 		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
@@ -78,6 +78,12 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
+		list.add(getToolTip(stack));
+	}
+
+	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper(), new ModeChangerItemCapabilityWrapper());
 	}
@@ -86,20 +92,27 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
-		}
 		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-			ToolHelper.mineOreVeinsInAOE(stack, player, hand);
-		} else {
-			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-			if (mop instanceof BlockRayTraceResult) {
-				if (ItemHelper.isOre(world.getBlockState(((BlockRayTraceResult) mop).getPos()).getBlock())) {
-					ToolHelper.tryVeinMine(stack, player, (BlockRayTraceResult) mop);
-				}
-			}
+			//If we are supposed to mine in an AOE then attempt to do so
+			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(stack, player, hand), stack);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+	}
+
+	@Nonnull
+	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null || ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+			//If we don't have a player or the config says we should mine in an AOE (this happens when right clicking air as well)
+			// Then we just pass so that it can be processed in onItemRightClick
+			return ActionResultType.PASS;
+		}
+		BlockPos pos = context.getPos();
+		if (ItemHelper.isOre(context.getWorld().getBlockState(pos).getBlock())) {
+			return ToolHelper.tryVeinMine(context.getHand(), player, pos, context.getFace());
+		}
+		return ActionResultType.PASS;
 	}
 
 	@Override

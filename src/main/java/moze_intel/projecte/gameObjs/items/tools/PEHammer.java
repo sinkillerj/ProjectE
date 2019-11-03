@@ -3,21 +3,16 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 public class PEHammer extends PETool {
@@ -49,26 +44,24 @@ public class PEHammer extends PETool {
 		return true;
 	}
 
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		ToolHelper.digAOE(stack, world, player, true, 0, hand, Item::rayTrace);
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
-	}
-
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		Block block = state.getBlock();
-		if (block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier()) {
-			return 1_200_000;
-		}
-		return super.getDestroySpeed(stack, state);
+		return ToolHelper.canMatterMine(matterType, state.getBlock()) ? 1_200_000 : super.getDestroySpeed(stack, state);
 	}
 
 	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
 		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+	}
+
+	@Nonnull
+	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null) {
+			return ActionResultType.PASS;
+		}
+		return ToolHelper.digAOE(context.getWorld(), player, context.getHand(), context.getPos(), context.getFace(), true, 0);
 	}
 }

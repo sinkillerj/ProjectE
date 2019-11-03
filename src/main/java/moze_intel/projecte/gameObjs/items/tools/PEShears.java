@@ -73,15 +73,12 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		ToolHelper.shearEntityAOE(stack, player, 0, hand);
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.newResult(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
 	}
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-		//Shear the block instead of breaking it if it supports shearing
-		ToolHelper.shearBlock(stack, pos, player);
-		return false;
+		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
+		return ToolHelper.shearBlock(stack, pos, player) == ActionResultType.SUCCESS;
 	}
 }
