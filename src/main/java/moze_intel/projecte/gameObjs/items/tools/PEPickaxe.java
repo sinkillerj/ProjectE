@@ -94,7 +94,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 		ItemStack stack = player.getHeldItem(hand);
 		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
-			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(stack, player, hand), stack);
+			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
@@ -109,15 +109,15 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 			return ActionResultType.PASS;
 		}
 		BlockPos pos = context.getPos();
-		if (ItemHelper.isOre(context.getWorld().getBlockState(pos).getBlock())) {
+		if (ItemHelper.isOre(context.getWorld().getBlockState(pos))) {
 			return ToolHelper.tryVeinMine(context.getHand(), player, pos, context.getFace());
 		}
 		return ActionResultType.PASS;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving) {
-		ToolHelper.digBasedOnMode(stack, world, state.getBlock(), pos, eLiving, Item::rayTrace);
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::rayTrace);
 		return true;
 	}
 }

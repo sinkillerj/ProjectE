@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
@@ -15,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -75,9 +75,6 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
-		ToolHelper.clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.newResult(ToolHelper.clearTagAOE(world, player, hand, 0, Arrays.asList(BlockTags.LOGS, BlockTags.LEAVES)), player.getHeldItem(hand));
 	}
 }

@@ -150,20 +150,19 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState state = world.getBlockState(rtr.getPos());
-			Block blockHit = state.getBlock();
-			if (HoeItem.HOE_LOOKUP.get(blockHit) != null) {
+			if (HoeItem.HOE_LOOKUP.get(state.getBlock()) != null) {
 				// Hoe
 				//TODO: Move to onItemUse
 				ToolHelper.tillHoeAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
-			} else if (BlockTags.LOGS.contains(blockHit)) {
+			} else if (state.isIn(BlockTags.LOGS)) {
 				// Axe
-				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LOGS, 0, hand);
+				ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
 				//TODO: Make it so if this happens in onItemUse it instead does an AOE log stripping
 				// When should we make it clear logs? If we keep this code here, it will only happen if onItemUse does not succeed
 				// So it would basically start by stripping the logs and then remove them
-			} else if (BlockTags.LEAVES.contains(blockHit)) {
+			} else if (state.isIn(BlockTags.LEAVES)) {
 				// Shear leaves
-				ToolHelper.clearTagAOE(world, stack, player, BlockTags.LEAVES, 0, hand);
+				ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
 			}
 		} else {
 			// Shear

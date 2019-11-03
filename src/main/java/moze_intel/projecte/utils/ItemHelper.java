@@ -168,6 +168,10 @@ public final class ItemHelper {
 		return stack.isDamageable();
 	}
 
+	public static boolean isOre(BlockState state) {
+		return state.isIn(Tags.Blocks.ORES);
+	}
+
 	public static boolean isOre(Block b) {
 		return Tags.Blocks.ORES.contains(b);
 	}

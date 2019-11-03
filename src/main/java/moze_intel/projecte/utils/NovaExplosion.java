@@ -86,7 +86,7 @@ public class NovaExplosion extends Explosion {
 						blockstate.spawnAdditionalDrops(world, blockpos, ItemStack.EMPTY);
 					}
 
-					this.world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 3);
+					this.world.setBlockState(blockpos, Blocks.AIR.getDefaultState());
 					block.onExplosionDestroy(this.world, blockpos, this);
 				}
 			}

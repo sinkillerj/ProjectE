@@ -91,8 +91,8 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity eLiving) {
-		ToolHelper.digBasedOnMode(stack, world, state.getBlock(), pos, eLiving, Item::rayTrace);
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::rayTrace);
 		return true;
 	}
 
@@ -102,7 +102,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-				ToolHelper.mineOreVeinsInAOE(stack, player, hand);
+				ToolHelper.mineOreVeinsInAOE(player, hand);
 			}
 			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 			if (!(mop instanceof BlockRayTraceResult)) {
@@ -116,11 +116,11 @@ public class PEMorningStar extends PETool implements IItemMode {
 				if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
 					ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);
 				} else {
-					ToolHelper.tryVeinMine(hand, player, rtr);
+					ToolHelper.tryVeinMine(hand, player, rtr.getPos(), rtr.getFace());
 				}
-			} else if (ItemHelper.isOre(state.getBlock())) {
+			} else if (ItemHelper.isOre(state)) {
 				if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					ToolHelper.tryVeinMine(hand, player, rtr);
+					ToolHelper.tryVeinMine(hand, player, rtr.getPos(), rtr.getFace());
 				}
 			} else if (block instanceof GrassBlock || BlockTags.SAND.contains(block) || Tags.Blocks.DIRT.contains(block)) {
 				ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);

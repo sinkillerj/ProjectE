@@ -218,8 +218,16 @@ public final class WorldHelper {
 	 * Wrapper around BlockPos.getAllInBox() with an AABB Note that this is inclusive of all positions in the AABB!
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(AxisAlignedBB box) {
-		return () -> BlockPos.getAllInBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ)).iterator();
+		return getPositionsFromBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
 	}
+
+	/**
+	 * Wrapper around BlockPos.getAllInBox()
+	 */
+	public static Iterable<BlockPos> getPositionsFromBox(BlockPos corner1, BlockPos corner2) {
+		return () -> BlockPos.getAllInBox(corner1, corner2).iterator();
+	}
+
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox) {
 		List<TileEntity> list = new ArrayList<>();
@@ -340,16 +348,13 @@ public final class WorldHelper {
 
 		for (BlockPos currentPos : getPositionsFromBox(b)) {
 			BlockState currentState = world.getBlockState(currentPos);
-
-			if (currentState.getBlock() == target) {
+			if (currentState.getBlock() == target && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
 				numMined++;
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
-					currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, world.getTileEntity(currentPos), player, stack));
-					world.removeBlock(currentPos, false);
-					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
-					if (numMined >= Constants.MAX_VEIN_SIZE) {
-						break;
-					}
+				currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, world.getTileEntity(currentPos), player, stack));
+				world.removeBlock(currentPos, false);
+				numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
+				if (numMined >= Constants.MAX_VEIN_SIZE) {
+					break;
 				}
 			}
 		}
