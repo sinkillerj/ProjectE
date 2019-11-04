@@ -60,6 +60,9 @@ import moze_intel.projecte.network.commands.RemoveEmcCMD;
 import moze_intel.projecte.network.commands.ResetEmcCMD;
 import moze_intel.projecte.network.commands.SetEmcCMD;
 import moze_intel.projecte.network.commands.ShowBagCMD;
+import moze_intel.projecte.network.commands.argument.ColorArgument;
+import moze_intel.projecte.network.commands.argument.NSSItemArgument;
+import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
@@ -84,6 +87,8 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -216,6 +221,9 @@ public class PECore {
 
 			// internals unsafe
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
+			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new ArgumentSerializer<>(UUIDArgument::new));
+			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new ArgumentSerializer<>(ColorArgument::new));
+			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new ArgumentSerializer<>(NSSItemArgument::new));
 		});
 	}
 

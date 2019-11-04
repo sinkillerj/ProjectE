@@ -16,10 +16,6 @@ public class NSSItemArgument implements ArgumentType<NSSItemResult> {
 
 	private static final Collection<String> EXAMPLES = Arrays.asList("stick", "minecraft:stick", "#stick");
 
-	public static NSSItemArgument itemArgument() {
-		return new NSSItemArgument();
-	}
-
 	@Override
 	public NSSItemResult parse(StringReader reader) throws CommandSyntaxException {
 		return new NSSItemParser(reader).parse().getResult();

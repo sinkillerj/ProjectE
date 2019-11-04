@@ -16,7 +16,7 @@ public class ResetEmcCMD {
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("resetemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
-				.then(Commands.argument("item", NSSItemArgument.itemArgument())
+				.then(Commands.argument("item", new NSSItemArgument())
 						.executes(ctx -> resetEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> resetEmc(ctx, RemoveEmcCMD.getHeldStack(ctx)));
 	}

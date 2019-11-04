@@ -50,7 +50,7 @@ public class ShowBagCMD {
 				.then(Commands.argument("color", new ColorArgument())
 						.then(Commands.argument("target", EntityArgument.player())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))))
-						.then(Commands.argument("uuid", UUIDArgument.uuid())
+						.then(Commands.argument("uuid", new UUIDArgument())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), UUIDArgument.getUUID(ctx, "uuid")))));
 	}
 

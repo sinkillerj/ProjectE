@@ -13,10 +13,6 @@ public class UUIDArgument implements ArgumentType<UUID> {
 	private static final DynamicCommandExceptionType MALFORMED_UUID = new DynamicCommandExceptionType((uuid) ->
 			new TranslationTextComponent("pe.command.showbag.offline.uuid", uuid));
 
-	public static UUIDArgument uuid() {
-		return new UUIDArgument();
-	}
-
 	@Override
 	public UUID parse(StringReader reader) throws CommandSyntaxException {
 		String s = reader.readUnquotedString();

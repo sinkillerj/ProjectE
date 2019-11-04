@@ -17,7 +17,7 @@ public class SetEmcCMD {
 		return Commands.literal("setemc")
 				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
-						.then(Commands.argument("item", NSSItemArgument.itemArgument())
+						.then(Commands.argument("item", new NSSItemArgument())
 								.executes(ctx -> setEmc(ctx, NSSItemArgument.getNSS(ctx, "item"), LongArgumentType.getLong(ctx, "emc"))))
 						.executes(ctx -> setEmc(ctx, RemoveEmcCMD.getHeldStack(ctx), LongArgumentType.getLong(ctx, "emc"))));
 
