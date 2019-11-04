@@ -4,8 +4,10 @@ import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.ItemInfo;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -19,10 +21,10 @@ public class SyncEmcPKT {
 
 	public static void encode(SyncEmcPKT pkt, PacketBuffer buf) {
 		buf.writeVarInt(pkt.data.length);
-
 		for (EmcPKTInfo info : pkt.data) {
-			buf.writeVarInt(info.getId());
-			buf.writeLong(info.getEmc());
+			buf.writeRegistryId(info.getItem());
+			buf.writeCompoundTag(info.getNbt());
+			buf.writeVarLong(info.getEmc());
 		}
 	}
 
@@ -30,7 +32,7 @@ public class SyncEmcPKT {
 		int size = buf.readVarInt();
 		EmcPKTInfo[] data = new EmcPKTInfo[size];
 		for (int i = 0; i < size; i++) {
-			data[i] = new EmcPKTInfo(buf.readVarInt(), buf.readLong());
+			data[i] = new EmcPKTInfo(buf.readRegistryId(), buf.readCompoundTag(), buf.readVarLong());
 		}
 		return new SyncEmcPKT(data);
 	}
@@ -43,8 +45,7 @@ public class SyncEmcPKT {
 				EMCMappingHandler.emc.clear();
 
 				for (EmcPKTInfo info : pkt.data) {
-					Item i = Item.getItemById(info.getId());
-					EMCMappingHandler.emc.put(i, info.getEmc());
+					EMCMappingHandler.emc.put(new ItemInfo(info.getItem(), info.getNbt()), info.getEmc());
 				}
 
 				Transmutation.cacheFullKnowledge();
@@ -56,20 +57,26 @@ public class SyncEmcPKT {
 
 	public static class EmcPKTInfo {
 
-		private int id;
+		private Item item;
 		private long emc;
+		private CompoundNBT nbt;
 
-		public EmcPKTInfo(int id, long emc) {
-			this.id = id;
+		public EmcPKTInfo(Item item, CompoundNBT nbt, long emc) {
+			this.item = item;
 			this.emc = emc;
+			this.nbt = nbt;
 		}
 
-		public int getId() {
-			return id;
+		public Item getItem() {
+			return item;
 		}
 
 		public long getEmc() {
 			return emc;
+		}
+
+		public CompoundNBT getNbt() {
+			return nbt;
 		}
 	}
 }

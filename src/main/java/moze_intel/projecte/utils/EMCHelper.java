@@ -9,6 +9,7 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.ItemInfo;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -101,47 +102,50 @@ public final class EMCHelper {
 		return -1;
 	}
 
+	public static boolean doesItemHaveEmc(ItemInfo info) {
+		return EMCMappingHandler.emc.containsKey(info);
+	}
+
 	public static boolean doesItemHaveEmc(ItemStack stack) {
-		return !stack.isEmpty() && doesItemHaveEmc(stack.getItem());
+		return !stack.isEmpty() && doesItemHaveEmc(new ItemInfo(stack));
 	}
 
 	public static boolean doesItemHaveEmc(IItemProvider item) {
-		return item != null && EMCMappingHandler.emc.containsKey(item.asItem());
+		return item != null && doesItemHaveEmc(new ItemInfo(item.asItem(), null));
 	}
 
 	public static long getEmcValue(IItemProvider item) {
-		if (EMCMappingHandler.emc.containsKey(item.asItem())) {
-			return EMCMappingHandler.getEmcValue(item);
-		}
-		return 0;
+		return doesItemHaveEmc(item) ? EMCMappingHandler.getEmcValue(item) : 0;
 	}
 
 	/**
 	 * Does not consider stack size
 	 */
 	public static long getEmcValue(ItemStack stack) {
-		if (stack.isEmpty() || !EMCMappingHandler.emc.containsKey(stack.getItem())) {
+		if (!doesItemHaveEmc(stack)) {
 			return 0;
 		}
+		//TODO: TEST-ME
+		long baseEMC = EMCMappingHandler.getEmcValue(new ItemInfo(stack));
 
 		if (ItemHelper.isDamageable(stack)) {
-			long emc = EMCMappingHandler.getEmcValue(stack.getItem());
-
 			// maxDmg + 1 because vanilla lets you use the tool one more time
 			// when item damage == max damage (shows as Durability: 0 / max)
-			int relDamage = (stack.getMaxDamage() + 1 - stack.getDamage());
+			int relDamage = (stack.getMaxDamage() - stack.getDamage() + 1);
 
 			if (relDamage <= 0) {
 				// This may happen when mods overflow their max damage or item damage.
 				// Don't use durability or enchants for emc calculation if this happens.
-				return emc;
+				return baseEMC;
 			}
 
-			long result = emc * relDamage;
+			long result = baseEMC * relDamage;
 
 			if (result <= 0) {
 				//Congratulations, big number is big.
-				return emc;
+				//TODO: Why can't we divide the relDamage first by max stack size.
+				// That should make it *never* overflow
+				return baseEMC;
 			}
 
 			result /= stack.getMaxDamage();
@@ -150,7 +154,8 @@ public final class EMCHelper {
 
 			//If it was positive and then became negative that means it overflowed
 			if (positive && result < 0) {
-				return emc;
+				//TODO: We should return the baseEMC * relDamage / stack.getMaxDamage
+				return baseEMC;
 			}
 
 			positive = result > 0;
@@ -158,7 +163,8 @@ public final class EMCHelper {
 
 			//If it was positive and then became negative that means it overflowed
 			if (positive && result < 0) {
-				return emc;
+				//TODO: We should return baseEMC * relDamage + enchant bonus
+				return baseEMC;
 			}
 
 			if (result <= 0) {
@@ -166,9 +172,18 @@ public final class EMCHelper {
 			}
 
 			return result;
-		} else {
-			return EMCMappingHandler.getEmcValue(stack.getItem()) + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
 		}
+		return baseEMC + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
+	}
+
+	/**
+	 * Does not consider stack size
+	 */
+	public static long getEmcValue(ItemInfo info) {
+		if (!doesItemHaveEmc(info)) {
+			return 0;
+		}
+		return EMCMappingHandler.getEmcValue(info);
 	}
 
 	private static long getEnchantEmcBonus(ItemStack stack) {

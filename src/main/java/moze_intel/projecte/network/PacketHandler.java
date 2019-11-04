@@ -1,8 +1,10 @@
 package moze_intel.projecte.network;
 
+import io.netty.buffer.Unpooled;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.emc.ItemInfo;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
@@ -21,7 +23,7 @@ import moze_intel.projecte.network.packets.UpdateWindowLongPKT;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.Item;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -90,12 +92,17 @@ public final class PacketHandler {
 	private static EmcPKTInfo[] serializeEmcData() {
 		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMappingHandler.emc.size()];
 		int i = 0;
-		for (Map.Entry<Item, Long> entry : EMCMappingHandler.emc.entrySet()) {
-			int id = Item.getIdFromItem(entry.getKey());
-			ret[i] = new EmcPKTInfo(id, entry.getValue());
+		for (Map.Entry<ItemInfo, Long> entry : EMCMappingHandler.emc.entrySet()) {
+			ItemInfo info = entry.getKey();
+			ret[i] = new EmcPKTInfo(info.getItem(), info.getNBT(), entry.getValue());
 			i++;
 		}
-		PECore.debugLog("EMC data size: {} bytes", ret.length * (4 + 8));
+		//Simulate encoding the EMC packet to get an accurate size
+		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+		int index = buf.writerIndex();
+		SyncEmcPKT.encode(new SyncEmcPKT(ret), buf);
+		PECore.debugLog("EMC data size: {} bytes", (buf.writerIndex() - index));
+		buf.release();
 		return ret;
 	}
 

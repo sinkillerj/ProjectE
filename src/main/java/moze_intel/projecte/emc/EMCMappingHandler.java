@@ -27,17 +27,16 @@ import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.AnnotationHelper;
-import net.minecraft.item.Item;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.math3.fraction.BigFraction;
 
 public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
-	public static final Map<Item, Long> emc = new LinkedHashMap<>();
+	//TODO: Evaluate LinkedHashMap vs HashMap
+	public static final Map<ItemInfo, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
 
@@ -138,7 +137,7 @@ public final class EMCMappingHandler {
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : graphMapperValues.entrySet()) {
 			NSSItem normStackItem = (NSSItem) entry.getKey();
-			Item obj = ForgeRegistries.ITEMS.getValue(normStackItem.getResourceLocation());
+			ItemInfo obj = ItemInfo.fromNSS(normStackItem);
 			if (obj != null) {
 				emc.put(obj, entry.getValue());
 			} else {
@@ -156,7 +155,11 @@ public final class EMCMappingHandler {
 	}
 
 	public static long getEmcValue(IItemProvider item) {
-		return emc.get(item.asItem());
+		return getEmcValue(new ItemInfo(item.asItem(), null));
+	}
+
+	public static long getEmcValue(ItemInfo info) {
+		return emc.get(info);
 	}
 
 	public static void clearMaps() {

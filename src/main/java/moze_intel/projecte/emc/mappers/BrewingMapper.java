@@ -5,31 +5,35 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.Item;
+import moze_intel.projecte.emc.ItemInfo;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//@EMCMapper//TODO: Uncomment once we have support for NBT based normalized simple stacks
+@EMCMapper//TODO: Uncomment once we have support for NBT based normalized simple stacks
 public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	//Note: We don't bother keeping track of the output field as we query the recipe to see if it is valid
@@ -120,9 +124,16 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		if (!mapAllReagents()) {
 			//Something failed so stop the mapping we printed the error when it failed
+			//TODO: We still probably want to map the BrewingRecipes
 			return;
 		}
 		mapAllInputs();
+
+		//Add conversion for empty bottle + water to water bottle
+		Map<NormalizedSimpleStack, Integer> waterIngredients = new HashMap<>();
+		waterIngredients.put(NSSItem.createItem(Items.GLASS_BOTTLE), 1);
+		waterIngredients.put(NSSFluid.createTag(FluidTags.WATER), FluidAttributes.BUCKET_VOLUME / 3);
+		mapper.addConversion(1, NSSItem.createItem(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.WATER)), waterIngredients);
 
 		Set<Class> canNotMap = new HashSet<>();
 		int recipeCount = 0;
@@ -196,64 +207,4 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		return true;
 	}
 
-	private static class ItemInfo {
-
-		private final Item item;
-		private final CompoundNBT nbt;
-
-		private ItemInfo(ItemStack stack) {
-			this(stack.getItem(), stack.getTag());
-		}
-
-		private ItemInfo(Item item, CompoundNBT nbt) {
-			this.item = item;
-			this.nbt = nbt;
-		}
-
-		public ItemStack createStack() {
-			ItemStack stack = new ItemStack(item);
-			stack.setTag(nbt);
-			return stack;
-		}
-
-		@Override
-		public int hashCode() {
-			int code = item.hashCode();
-			if (nbt != null) {
-				code = 31 * code + nbt.hashCode();
-			}
-			return code;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o == this) {
-				return true;
-			}
-			if (o instanceof ItemInfo) {
-				ItemInfo other = (ItemInfo) o;
-				return item == other.item && Objects.equals(nbt, other.nbt);
-			}
-			return false;
-		}
-
-		//Version of PotionUtils.addPotionToItemStack except without boxing ItemInfo into an out of an ItemStack
-		private ItemInfo makeWithPotion(Potion potion) {
-			CompoundNBT nbt = this.nbt == null ? null : this.nbt.copy();
-			if (potion == Potions.EMPTY) {
-				if (nbt != null && nbt.contains("Potion")) {
-					nbt.remove("Potion");
-					if (nbt.isEmpty()) {
-						nbt = null;
-					}
-				}
-			} else {
-				if (nbt == null) {
-					nbt = new CompoundNBT();
-				}
-				nbt.putString("Potion", potion.getRegistryName().toString());
-			}
-			return new ItemInfo(item, nbt);
-		}
-	}
 }
