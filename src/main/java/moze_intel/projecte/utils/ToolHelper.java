@@ -60,12 +60,10 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.ForgeEventFactory;
 
-//TODO: Replace canHarvestBlock checks with ForgeHooks.canHarvestBlock ?? (Also evaluate usages of ForgeHooks.canToolHarvestBlock
 public class ToolHelper {
 
 	public static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
@@ -361,7 +359,7 @@ public class ToolHelper {
 				continue;
 			}
 			BlockState state = world.getBlockState(digPos);
-			if (state.getBlockHardness(world, digPos) != -1 && (stack.canHarvestBlock(state) || ForgeHooks.canToolHarvestBlock(world, digPos, stack))) {
+			if (state.getBlockHardness(world, digPos) != -1 && stack.canHarvestBlock(state)) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				digPos = digPos.toImmutable();
 				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), digPos)) {
@@ -380,7 +378,6 @@ public class ToolHelper {
 	public static ActionResultType digAOE(World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
 		RayTraceResult mop = tracePointer.rayTrace(world, player, FluidMode.NONE);
 		if (!(mop instanceof BlockRayTraceResult)) {
-			//TODO: Evaluate if this is needed if we can just get this via the ItemUseContext
 			return ActionResultType.PASS;
 		}
 		BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
@@ -573,7 +570,7 @@ public class ToolHelper {
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(hand);
 		BlockState target = world.getBlockState(pos);
-		if (target.getBlockHardness(world, pos) <= -1 || !(stack.canHarvestBlock(target) || ForgeHooks.canToolHarvestBlock(world, pos, stack))) {
+		if (target.getBlockHardness(world, pos) <= -1 || !stack.canHarvestBlock(target)) {
 			return ActionResultType.FAIL;
 		}
 		boolean hasAction = false;
@@ -616,7 +613,7 @@ public class ToolHelper {
 				continue;
 			}
 			BlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlockHardness(world, pos) != -1 && (stack.canHarvestBlock(state) || ForgeHooks.canToolHarvestBlock(world, pos, stack))) {
+			if (ItemHelper.isOre(state) && state.getBlockHardness(world, pos) != -1 && stack.canHarvestBlock(state)) {
 				if (world.isRemote) {
 					return ActionResultType.SUCCESS;
 				}

@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GrassBlock;
-import net.minecraft.block.GravelBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -21,14 +20,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 
-//TODO: Allow for tilling as a shovel
 public class PEMorningStar extends PETool implements IItemMode {
 
 	private final String[] modeDesc;
@@ -98,37 +95,44 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Nonnull
 	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null) {
+			return ActionResultType.PASS;
+		}
+		Hand hand = context.getHand();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Direction sideHit = context.getFace();
+		BlockState state = world.getBlockState(pos);
+		//Order that it attempts to use the item:
+		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
+		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
+				() -> {
+					if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+						if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+							return ToolHelper.digAOE(world, player, hand, pos, sideHit, false, 0);
+						}
+						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
+					}
+					return ActionResultType.PASS;
+				}, () -> {
+					if (ItemHelper.isOre(state) && !ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
+					}
+					return ActionResultType.PASS;
+				}, () -> ToolHelper.digAOE(world, player, hand, pos, sideHit,
+						!(state.getBlock() instanceof GrassBlock) && !state.isIn(BlockTags.SAND) && !state.isIn(Tags.Blocks.DIRT), 0));
+	}
+
+	@Nonnull
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
-			if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-				ToolHelper.mineOreVeinsInAOE(player, hand);
-			}
-			RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-			if (!(mop instanceof BlockRayTraceResult)) {
-				return ActionResult.newResult(ActionResultType.FAIL, stack);
-			}
-			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
-			BlockState state = world.getBlockState(rtr.getPos());
-			Block block = state.getBlock();
-
-			if (block instanceof GravelBlock || block == Blocks.CLAY) {
-				if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);
-				} else {
-					ToolHelper.tryVeinMine(hand, player, rtr.getPos(), rtr.getFace());
-				}
-			} else if (ItemHelper.isOre(state)) {
-				if (!ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
-					ToolHelper.tryVeinMine(hand, player, rtr.getPos(), rtr.getFace());
-				}
-			} else if (block instanceof GrassBlock || BlockTags.SAND.contains(block) || Tags.Blocks.DIRT.contains(block)) {
-				ToolHelper.digAOE(world, player, false, 0, hand, Item::rayTrace);
-			} else {
-				ToolHelper.digAOE(world, player, true, 0, hand, Item::rayTrace);
-			}
+		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.PASS, stack);
 	}
 
 	@Override

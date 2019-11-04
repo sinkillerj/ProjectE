@@ -50,8 +50,8 @@ public class EntityWaterProjectile extends ThrowableEntity {
 
 				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
 					IFluidState state = this.getEntityWorld().getFluidState(pos);
-
 					if (state.isTagged(FluidTags.LAVA)) {
+						pos = pos.toImmutable();
 						if (state.isSource()) {
 							PlayerHelper.checkedReplaceBlock(player, pos, Blocks.OBSIDIAN.getDefaultState());
 						} else {

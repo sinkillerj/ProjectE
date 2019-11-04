@@ -106,8 +106,8 @@ public final class WorldHelper {
 	}
 
 	public static void extinguishNearby(World world, PlayerEntity player) {
-		BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)).forEach(pos ->
-		{
+		BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)).forEach(pos -> {
+			pos = pos.toImmutable();
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				world.removeBlock(pos, false);
 			}
@@ -260,8 +260,8 @@ public final class WorldHelper {
 	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, PlayerEntity player) {
 		int chance = harvest ? 16 : 32;
 
-		BlockPos.getAllInBox(pos.add(-5, -3, -5), pos.add(5, 3, 5)).forEach(currentPos ->
-		{
+		for (BlockPos currentPos : WorldHelper.getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
+			currentPos = currentPos.toImmutable();
 			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
@@ -276,8 +276,7 @@ public final class WorldHelper {
 			else if (crop instanceof IGrowable) {
 				IGrowable growable = ((IGrowable) crop);
 				if (!growable.canGrow(world, currentPos, state, false)) {
-					if (harvest
-						&& crop != Blocks.MELON_STEM && crop != Blocks.PUMPKIN_STEM
+					if (harvest && crop != Blocks.MELON_STEM && crop != Blocks.PUMPKIN_STEM
 						&& (player == null || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos))) {
 						world.destroyBlock(currentPos, true);
 					}
@@ -332,7 +331,7 @@ public final class WorldHelper {
 					}
 				}
 			}
-		});
+		}
 	}
 
 	/**

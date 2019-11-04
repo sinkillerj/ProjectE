@@ -42,8 +42,8 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	public void tick() {
 		super.tick();
 
-		if (!this.getEntityWorld().isRemote) {
-			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
+		if (!world.isRemote) {
+			if (ticksExisted > 400 || !world.isBlockLoaded(new BlockPos(this))) {
 				this.remove();
 				return;
 			}
@@ -51,18 +51,19 @@ public class EntityLavaProjectile extends ThrowableEntity {
 			if (getThrower() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = ((ServerPlayerEntity) getThrower());
 				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
-					Block block = this.getEntityWorld().getBlockState(pos).getBlock();
+					Block block = world.getBlockState(pos).getBlock();
 					if (block == Blocks.WATER) {
+						pos = pos.toImmutable();
 						if (PlayerHelper.hasBreakPermission(player, pos)) {
-							this.getEntityWorld().removeBlock(pos, false);
-							this.getEntityWorld().playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
+							world.removeBlock(pos, false);
+							world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 						}
 					}
 				});
 			}
 
 			if (this.posY > 128) {
-				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
+				WorldInfo worldInfo = world.getWorldInfo();
 				worldInfo.setRaining(false);
 				this.remove();
 			}
@@ -76,7 +77,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (!this.getEntityWorld().isRemote || getThrower() instanceof PlayerEntity) {
+		if (!world.isRemote || getThrower() instanceof PlayerEntity) {
 			PlayerEntity player = ((PlayerEntity) getThrower());
 			ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {

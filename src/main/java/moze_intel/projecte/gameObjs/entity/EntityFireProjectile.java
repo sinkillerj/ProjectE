@@ -40,17 +40,15 @@ public class EntityFireProjectile extends ThrowableEntity {
 			if (block == Blocks.OBSIDIAN) {
 				world.setBlockState(pos, Blocks.LAVA.getDefaultState());
 			} else if (block == Blocks.SAND) {
-				BlockPos.getAllInBox(pos.add(-2, -2, -2), pos.add(2, 2, 2)).forEach(currentPos ->
-				{
+				BlockPos.getAllInBox(pos.add(-2, -2, -2), pos.add(2, 2, 2)).forEach(currentPos -> {
 					if (world.getBlockState(currentPos).getBlock() == Blocks.SAND) {
-						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), pos, Blocks.GLASS.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), pos.toImmutable(), Blocks.GLASS.getDefaultState());
 					}
 				});
 			} else {
-				BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1)).forEach(currentPos ->
-				{
+				BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1)).forEach(currentPos -> {
 					if (world.isAirBlock(currentPos)) {
-						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), currentPos, Blocks.FIRE.getDefaultState());
+						PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), currentPos.toImmutable(), Blocks.FIRE.getDefaultState());
 					}
 				});
 			}

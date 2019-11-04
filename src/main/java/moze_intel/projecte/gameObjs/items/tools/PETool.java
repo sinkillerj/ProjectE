@@ -19,10 +19,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: Modernize some of the actions to only take place onItemUse instead of onRightClick
-// This should also include checking all of the usages of the different methods in ToolHelper
-//TODO: Re-evaluate enchantability of PE tools/weapons. They currently (and also in 1.12) seem to support enchanting only
-// via enchanted book + anvil, but they also support things like unbreaking which does not make any sense for them
 public abstract class PETool extends ToolItem implements IItemCharge {
 
 	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();

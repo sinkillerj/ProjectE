@@ -8,6 +8,7 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -84,8 +85,9 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		Direction sideHit = context.getFace();
+		BlockState state = world.getBlockState(pos);
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0), () -> {
-			if (world.getBlockState(pos).isIn(Tags.Blocks.GRAVEL)) {
+			if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 				return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
 			}
 			return ActionResultType.PASS;

@@ -1,8 +1,9 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
@@ -133,7 +134,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
-		Set<BlockPos> ret = new HashSet<>();
 		BlockState targeted = world.getBlockState(pos);
 		Stream<BlockPos> stream = null;
 
@@ -161,16 +161,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				break;
 		}
 
-		if (stream != null) {
-			stream.forEach(currentPos ->
-			{
-				if (world.getBlockState(currentPos) == targeted) {
-					ret.add(currentPos.toImmutable());
-				}
-			});
+		if (stream == null) {
+			return Collections.emptySet();
 		}
-
-		return ret;
+		return stream.filter(currentPos -> world.getBlockState(currentPos) == targeted).map(BlockPos::toImmutable).collect(Collectors.toSet());
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {

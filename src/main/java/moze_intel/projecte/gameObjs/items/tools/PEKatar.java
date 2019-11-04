@@ -121,13 +121,13 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 					if (state.isIn(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
 						//Note: We already tried to strip the log in an earlier action
-						ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
 					}
 					return ActionResultType.PASS;
 				}, () -> {
 					if (state.isIn(BlockTags.LEAVES)) {
 						//Mass clear (acting as shears)
-						ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
+						return ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
 					}
 					return ActionResultType.PASS;
 				});

@@ -96,7 +96,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 			//If we are supposed to mine in an AOE then attempt to do so
 			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.newResult(ActionResultType.PASS, stack);
 	}
 
 	@Nonnull
