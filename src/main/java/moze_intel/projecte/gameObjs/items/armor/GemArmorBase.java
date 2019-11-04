@@ -8,8 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class GemArmorBase extends PEArmor {
 
@@ -83,8 +81,8 @@ public abstract class GemArmorBase extends PEArmor {
 
 		@Nonnull
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public String getName() {
+			//Only used on the client
 			return "gem_armor";
 		}
 

@@ -27,8 +27,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 
@@ -100,9 +98,9 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	}
 
 	@Nonnull
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
+		//Only used on the client
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.pedestalCooldown.zero.get() != -1) {
 			list.add(new TranslationTextComponent("pe.zero.pedestal1").applyTextStyle(TextFormatting.BLUE));

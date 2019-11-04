@@ -11,10 +11,8 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+//Only used on the client
 public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPrimed> {
 
 	public NovaCataclysmRenderer(EntityRendererManager manager) {

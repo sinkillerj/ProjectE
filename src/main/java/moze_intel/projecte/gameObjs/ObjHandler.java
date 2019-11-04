@@ -132,9 +132,11 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -375,32 +377,31 @@ public class ObjHandler {
 		r.register(COLLECTOR_MK2_CONTAINER.setRegistryName(collectorMK2.getRegistryName()));
 		r.register(COLLECTOR_MK3_CONTAINER.setRegistryName(collectorMK3.getRegistryName()));
 		r.register(MERCURIAL_EYE_CONTAINER.setRegistryName(mercEye.getRegistryName()));
-		ScreenManager.registerFactory(RM_FURNACE_CONTAINER, GUIRMFurnace::new);
-		ScreenManager.registerFactory(DM_FURNACE_CONTAINER, GUIDMFurnace::new);
-		ScreenManager.registerFactory(CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
-		ScreenManager.registerFactory(CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
-		ScreenManager.registerFactory(ALCH_CHEST_CONTAINER, AlchChestScreen::new);
-		ScreenManager.registerFactory(ALCH_BAG_CONTAINER, AlchBagScreen::new);
-		ScreenManager.registerFactory(ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
-		ScreenManager.registerFactory(TRANSMUTATION_CONTAINER, GUITransmutation::new);
-		ScreenManager.registerFactory(RELAY_MK1_CONTAINER, GUIRelayMK1::new);
-		ScreenManager.registerFactory(RELAY_MK2_CONTAINER, GUIRelayMK2::new);
-		ScreenManager.registerFactory(RELAY_MK3_CONTAINER, GUIRelayMK3::new);
-		ScreenManager.registerFactory(COLLECTOR_MK1_CONTAINER, GUICollectorMK1::new);
-		ScreenManager.registerFactory(COLLECTOR_MK2_CONTAINER, GUICollectorMK2::new);
-		ScreenManager.registerFactory(COLLECTOR_MK3_CONTAINER, GUICollectorMK3::new);
-		ScreenManager.registerFactory(MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			ScreenManager.registerFactory(RM_FURNACE_CONTAINER, GUIRMFurnace::new);
+			ScreenManager.registerFactory(DM_FURNACE_CONTAINER, GUIDMFurnace::new);
+			ScreenManager.registerFactory(CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
+			ScreenManager.registerFactory(CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
+			ScreenManager.registerFactory(ALCH_CHEST_CONTAINER, AlchChestScreen::new);
+			ScreenManager.registerFactory(ALCH_BAG_CONTAINER, AlchBagScreen::new);
+			ScreenManager.registerFactory(ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
+			ScreenManager.registerFactory(TRANSMUTATION_CONTAINER, GUITransmutation::new);
+			ScreenManager.registerFactory(RELAY_MK1_CONTAINER, GUIRelayMK1::new);
+			ScreenManager.registerFactory(RELAY_MK2_CONTAINER, GUIRelayMK2::new);
+			ScreenManager.registerFactory(RELAY_MK3_CONTAINER, GUIRelayMK3::new);
+			ScreenManager.registerFactory(COLLECTOR_MK1_CONTAINER, GUICollectorMK1::new);
+			ScreenManager.registerFactory(COLLECTOR_MK2_CONTAINER, GUICollectorMK2::new);
+			ScreenManager.registerFactory(COLLECTOR_MK3_CONTAINER, GUICollectorMK3::new);
+			ScreenManager.registerFactory(MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
+		});
 	}
 
 	@SubscribeEvent
 	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt) {
 		IForgeRegistry<IRecipeSerializer<?>> r = evt.getRegistry();
-		r.register(COVALENCE_REPAIR_RECIPE_SERIALIZER
-				.setRegistryName(new ResourceLocation(PECore.MODID, "covalence_repair")));
-		r.register(SHAPELESS_HIDDEN_SERIALIZER
-				.setRegistryName(new ResourceLocation(PECore.MODID, "shapeless_recipe_hidden")));
-		r.register(KLEIN_RECIPE_SERIALIZER
-				.setRegistryName(new ResourceLocation(PECore.MODID, "crafting_shapeless_kleinstar")));
+		r.register(COVALENCE_REPAIR_RECIPE_SERIALIZER.setRegistryName(new ResourceLocation(PECore.MODID, "covalence_repair")));
+		r.register(SHAPELESS_HIDDEN_SERIALIZER.setRegistryName(new ResourceLocation(PECore.MODID, "shapeless_recipe_hidden")));
+		r.register(KLEIN_RECIPE_SERIALIZER.setRegistryName(new ResourceLocation(PECore.MODID, "crafting_shapeless_kleinstar")));
 	}
 
 	@SubscribeEvent

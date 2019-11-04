@@ -9,8 +9,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class PEArmor extends ArmorItem {
 
@@ -31,8 +29,8 @@ public abstract class PEArmor extends ArmorItem {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+		//Only used on the client
 		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
 		return PECore.MODID + ":textures/armor/" + getNameForLocation() + "_" + index + ".png";
 	}

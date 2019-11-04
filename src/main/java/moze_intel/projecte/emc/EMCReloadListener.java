@@ -1,19 +1,18 @@
 package moze_intel.projecte.emc;
 
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.PacketHandler;
 import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraft.resources.IResourceManagerReloadListener;
 
-public class EMCReloadListener implements ISelectiveResourceReloadListener {
+//Note: Has to be IResourceManagerReloadListener, so that it works properly on servers
+public class EMCReloadListener implements IResourceManagerReloadListener {
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate) {
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
 		long start = System.currentTimeMillis();
 
 		//Clear the cached created tags

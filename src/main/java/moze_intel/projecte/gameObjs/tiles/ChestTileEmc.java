@@ -5,10 +5,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(value = Dist.CLIENT, _interface = IChestLid.class)
 public abstract class ChestTileEmc extends TileEmc implements IChestLid {
 
 	private int ticksSinceSync;
@@ -62,8 +59,8 @@ public abstract class ChestTileEmc extends TileEmc implements IChestLid {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public float getLidAngle(float partialTicks) {
+		//Only used on the client
 		return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
 	}
 }

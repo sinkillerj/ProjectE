@@ -6,11 +6,9 @@ import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 // [VanillaCopy] MovingSoundMinecart
-@OnlyIn(Dist.CLIENT)
+//Only used on the client
 public class MovingSoundSWRG extends TickableSound {
 
 	private final EntitySWRGProjectile swrgProjectile;

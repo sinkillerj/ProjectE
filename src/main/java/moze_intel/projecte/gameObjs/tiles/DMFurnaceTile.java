@@ -30,8 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -367,8 +365,8 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		return (ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt) / 200 * efficiencyBonus;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public int getBurnTimeRemainingScaled(int value) {
+		//Only used on the client
 		if (this.currentItemBurnTime == 0) {
 			this.currentItemBurnTime = ticksBeforeSmelt;
 		}

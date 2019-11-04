@@ -17,8 +17,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 public class DMFurnaceContainer extends Container {
@@ -151,18 +149,13 @@ public class DMFurnaceContainer extends Container {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void updateProgressBar(int par1, int par2) {
-		if (par1 == 0) {
-			tile.furnaceCookTime = par2;
-		}
-
-		if (par1 == 1) {
-			tile.furnaceBurnTime = par2;
-		}
-
-		if (par1 == 2) {
-			tile.currentItemBurnTime = par2;
+	public void updateProgressBar(int id, int data) {
+		if (id == 0) {
+			tile.furnaceCookTime = data;
+		} else if (id == 1) {
+			tile.furnaceBurnTime = data;
+		} else if (id == 2) {
+			tile.currentItemBurnTime = data;
 		}
 	}
 }

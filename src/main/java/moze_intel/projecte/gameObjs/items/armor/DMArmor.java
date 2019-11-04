@@ -6,8 +6,6 @@ import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DMArmor extends PEArmor {
 
@@ -63,8 +61,8 @@ public class DMArmor extends PEArmor {
 
 		@Nonnull
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public String getName() {
+			//Only used on the client
 			return "dark_matter";
 		}
 

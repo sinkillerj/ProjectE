@@ -212,7 +212,7 @@ public class PECore {
 		new ThreadCheckUpdate().start();
 
 		DeferredWorkQueue.runLater(() -> {
-			PacketHandler.register(); // NetworkRegistry.createInstance
+			PacketHandler.register();
 
 			// internals unsafe
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);

@@ -6,8 +6,6 @@ import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
 public class RMArmor extends PEArmor {
@@ -64,8 +62,8 @@ public class RMArmor extends PEArmor {
 
 		@Nonnull
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public String getName() {
+			//Only used on the client
 			return "red_matter";
 		}
 

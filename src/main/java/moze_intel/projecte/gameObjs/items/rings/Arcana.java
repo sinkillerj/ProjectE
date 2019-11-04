@@ -71,9 +71,9 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		return stack.copy();
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> list) {
+		//Only used on the client
 		if (isInGroup(group)) {
 			for (byte i = 0; i < getModeCount(); ++i) {
 				ItemStack stack = new ItemStack(this);

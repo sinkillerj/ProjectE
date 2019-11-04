@@ -11,10 +11,8 @@ import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+//Only used on the client
 public class ChestRenderer extends TileEntityRenderer<AlchChestTile> {
 
 	private final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png");

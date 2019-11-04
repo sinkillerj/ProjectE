@@ -5,9 +5,11 @@ import moze_intel.projecte.gameObjs.container.PEContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-// Version of SPacketWindowProperty that supports long values
+// Version of SWindowPropertyPacket that supports long values
 public class UpdateWindowLongPKT {
 
 	private final short windowId;
@@ -33,13 +35,17 @@ public class UpdateWindowLongPKT {
 	public static class Handler {
 
 		public static void handle(final UpdateWindowLongPKT msg, Supplier<NetworkEvent.Context> ctx) {
-			ctx.get().enqueueWork(() -> {
-				PlayerEntity player = Minecraft.getInstance().player;
-				if (player.openContainer instanceof PEContainer && player.openContainer.windowId == msg.windowId) {
-					((PEContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
-				}
-			});
+			ctx.get().enqueueWork(() -> handleClient(msg));
 			ctx.get().setPacketHandled(true);
+		}
+
+		//Needed to make the server be able to resolve registering the packet
+		@OnlyIn(Dist.CLIENT)
+		private static void handleClient(final UpdateWindowLongPKT msg) {
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player.openContainer instanceof PEContainer && player.openContainer.windowId == msg.windowId) {
+				((PEContainer) player.openContainer).updateProgressBarLong(msg.propId, msg.propVal);
+			}
 		}
 	}
 }
