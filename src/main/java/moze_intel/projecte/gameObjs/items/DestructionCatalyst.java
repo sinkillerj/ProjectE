@@ -17,7 +17,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -42,44 +41,35 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 		ItemStack stack = ctx.getItem();
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
-
-		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), --numRows);
-
 		List<ItemStack> drops = new ArrayList<>();
-
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(box)) {
-			BlockState state = world.getBlockState(pos);
-			float hardness = state.getBlockHardness(world, pos);
-
-			if (world.isAirBlock(pos) || hardness >= 50.0F || hardness == -1.0F) {
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), --numRows))) {
+			if (world.isAirBlock(pos)) {
 				continue;
 			}
-
+			BlockState state = world.getBlockState(pos);
+			float hardness = state.getBlockHardness(world, pos);
+			if (hardness == -1.0F || hardness >= 50.0F) {
+				continue;
+			}
 			if (!consumeFuel(player, stack, 8, true)) {
 				break;
 			}
-
 			hasAction = true;
-
+			//Ensure we are immutable so that changing blocks doesn't act weird
+			pos = pos.toImmutable();
 			if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
 				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
-				if (!list.isEmpty()) {
-					drops.addAll(list);
-				}
-
+				drops.addAll(list);
 				world.removeBlock(pos, false);
-
 				if (world.rand.nextInt(8) == 0) {
 					((ServerWorld) world).spawnParticle(world.rand.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}
-
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, ctx.getPos());
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
-
 		return ActionResultType.SUCCESS;
 	}
 

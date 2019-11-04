@@ -11,8 +11,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -80,5 +82,19 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
 		return ToolHelper.shearBlock(stack, pos, player) == ActionResultType.SUCCESS;
+	}
+
+	@Nonnull
+	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
+		if (player != null) {
+			World world = context.getWorld();
+			if (world.getBlockState(context.getPos()).isIn(BlockTags.LEAVES)) {
+				//Mass clear leaves
+				ToolHelper.clearTagAOE(world, player, context.getHand(), 0, BlockTags.LEAVES);
+			}
+		}
+		return ActionResultType.PASS;
 	}
 }

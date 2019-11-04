@@ -165,7 +165,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
 			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight()))) {
 				BlockState placedState = world.getBlockState(pos);
-				if (placedState == startingState && doBlockPlace(player, placedState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops)) {
+				//Ensure we are immutable so that removal/placing doesn't act weird
+				if (placedState == startingState && doBlockPlace(player, placedState, pos.toImmutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
 					hitTargets++;
 				}
 			}
@@ -281,7 +282,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				if (placeState.getMaterial().isReplaceable()) {
 					//Only replace replaceable blocks
 					long placeBlockEmc = EMCHelper.getEmcValue(placeState.getBlock());
-					if (doBlockPlace(player, placeState, pos, newState, eye, placeBlockEmc, newBlockEmc, drops)) {
+					//Ensure we are immutable so that changing blocks doesn't act weird
+					if (doBlockPlace(player, placeState, pos.toImmutable(), newState, eye, placeBlockEmc, newBlockEmc, drops)) {
 						hitTargets++;
 					}
 				}

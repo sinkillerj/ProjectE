@@ -55,19 +55,14 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth);
 
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
-			BlockState state = world.getBlockState(digPos);
-
 			if (world.isAirBlock(digPos)) {
 				continue;
 			}
-
-			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos,
-					world.getTileEntity(digPos), player, ctx.getItem());
-
+			BlockState state = world.getBlockState(digPos);
+			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, ctx.getItem());
 			if (drops.isEmpty()) {
 				continue;
 			}
-
 			ItemStack blockStack = drops.get(0);
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
 
@@ -83,7 +78,6 @@ public class DiviningRod extends ItemPE implements IItemMode {
 						if (!emcValues.contains(currentValue)) {
 							emcValues.add(currentValue);
 						}
-
 						totalEmc += currentValue;
 					}
 				}
@@ -91,10 +85,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				if (!emcValues.contains(blockEmc)) {
 					emcValues.add(blockEmc);
 				}
-
 				totalEmc += blockEmc;
 			}
-
 			numBlocks++;
 		}
 

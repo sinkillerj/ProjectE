@@ -167,8 +167,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
-		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
-		{
+		if (bBox == null || bonusTicks == 0) {
+			// Sanity check the box for chunk unload weirdness
 			return;
 		}
 
@@ -176,13 +176,11 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			for (int i = 0; i < bonusTicks; i++) {
 				BlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.ticksRandomly()
-					&& !BLOCK_BLACKLIST_TAG.contains(block)
+				if (state.ticksRandomly() && !BLOCK_BLACKLIST_TAG.contains(block)
 					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
-					&& !(block instanceof IGrowable)
-					&& !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
+					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.randomTick(world, pos, random);
+					state.randomTick(world, pos.toImmutable(), random);
 				}
 			}
 		}

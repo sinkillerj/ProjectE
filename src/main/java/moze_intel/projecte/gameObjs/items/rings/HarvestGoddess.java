@@ -124,12 +124,10 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		}
 
 		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-8, 0, -8), pos.add(8, 0, 8))) {
-			BlockState state = world.getBlockState(currentPos);
-
 			if (world.isAirBlock(currentPos)) {
 				continue;
 			}
-
+			BlockState state = world.getBlockState(currentPos);
 			for (int i = 0; i < seeds.size(); i++) {
 				StackWithSlot s = seeds.get(i);
 				IPlantable plant;
@@ -140,6 +138,8 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 					plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
 				}
 
+				//Ensure we are immutable so that changing blocks doesn't act weird
+				currentPos = currentPos.toImmutable();
 				if (state.getBlock().canSustainPlant(state, world, currentPos, Direction.UP, plant) && world.isAirBlock(currentPos.up())) {
 					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
 					player.inventory.decrStackSize(s.slot, 1);

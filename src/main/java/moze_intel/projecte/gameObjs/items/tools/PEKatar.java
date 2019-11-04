@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -14,11 +15,13 @@ import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
@@ -30,16 +33,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.ToolType;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
@@ -107,24 +106,31 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
-		//TODO: Allow for mass stripping of logs
-		//Copied from AxeItem#onItemUse
-		World world = context.getWorld();
-		BlockPos blockpos = context.getPos();
-		BlockState blockstate = world.getBlockState(blockpos);
-		Block block = AxeItem.BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
-		if (block == null) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		PlayerEntity playerentity = context.getPlayer();
-		world.playSound(playerentity, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-		if (!world.isRemote) {
-			world.setBlockState(blockpos, block.getDefaultState().with(RotatedPillarBlock.AXIS, blockstate.get(RotatedPillarBlock.AXIS)), 11);
-			if (playerentity != null) {
-				context.getItem().damageItem(1, playerentity, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
-			}
-		}
-		return ActionResultType.SUCCESS;
+		Hand hand = context.getHand();
+		World world = context.getWorld();
+		BlockState state = world.getBlockState(context.getPos());
+		//Order that it attempts to use the item:
+		// Strip logs, hoe ground, AOE remove logs, AOE remove leaves
+		return ToolHelper.performActions(AxeItem.BLOCK_STRIPPING_MAP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
+				() -> HoeItem.HOE_LOOKUP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
+				() -> {
+					if (state.isIn(BlockTags.LOGS)) {
+						//Mass clear (acting as an axe)
+						//Note: We already tried to strip the log in an earlier action
+						ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
+					}
+					return ActionResultType.PASS;
+				}, () -> {
+					if (state.isIn(BlockTags.LEAVES)) {
+						//Mass clear (acting as shears)
+						ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
+					}
+					return ActionResultType.PASS;
+				});
 	}
 
 	@Override
@@ -142,33 +148,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
-		}
-		RayTraceResult mop = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
-		if (mop instanceof BlockRayTraceResult) {
-			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
-			BlockState state = world.getBlockState(rtr.getPos());
-			if (HoeItem.HOE_LOOKUP.get(state.getBlock()) != null) {
-				// Hoe
-				//TODO: Move to onItemUse
-				ToolHelper.tillHoeAOE(hand, player, world, rtr.getPos(), rtr.getFace(), 0);
-			} else if (state.isIn(BlockTags.LOGS)) {
-				// Axe
-				ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
-				//TODO: Make it so if this happens in onItemUse it instead does an AOE log stripping
-				// When should we make it clear logs? If we keep this code here, it will only happen if onItemUse does not succeed
-				// So it would basically start by stripping the logs and then remove them
-			} else if (state.isIn(BlockTags.LEAVES)) {
-				// Shear leaves
-				ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
-			}
-		} else {
-			// Shear
-			ToolHelper.shearEntityAOE(player, hand, 0);
-		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		//Shear entities
+		return ActionResult.newResult(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
 	}
 
 	@Override
@@ -198,5 +179,28 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 
-	//TODO: overwrite itemInteractionForEntity??
+	/**
+	 * Copy of {@link net.minecraft.item.ShearsItem#itemInteractionForEntity(ItemStack, PlayerEntity, LivingEntity, Hand)}
+	 */
+	@Override
+	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
+		if (entity.world.isRemote) {
+			return false;
+		}
+		if (entity instanceof IShearable) {
+			IShearable target = (IShearable) entity;
+			BlockPos pos = entity.getPosition();
+			if (target.isShearable(stack, entity.world, pos)) {
+				List<ItemStack> drops = target.onSheared(stack, entity.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+				Random rand = new Random();
+				drops.forEach(d -> {
+					ItemEntity ent = entity.entityDropItem(d, 1.0F);
+					ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
+							(rand.nextFloat() - rand.nextFloat()) * 0.1F));
+				});
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -118,7 +118,8 @@ public final class WorldHelper {
 		for (BlockPos pos : getPositionsFromBox(box)) {
 			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
-
+			//Ensure we are immutable so that changing blocks doesn't act weird
+			pos = pos.toImmutable();
 			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0)) {
 				if (player != null) {
 					PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), pos, Blocks.ICE.getDefaultState());
@@ -231,14 +232,12 @@ public final class WorldHelper {
 
 	public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox) {
 		List<TileEntity> list = new ArrayList<>();
-
 		for (BlockPos pos : getPositionsFromBox(bBox)) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile != null) {
 				list.add(tile);
 			}
 		}
-
 		return list;
 	}
 
@@ -348,13 +347,17 @@ public final class WorldHelper {
 
 		for (BlockPos currentPos : getPositionsFromBox(b)) {
 			BlockState currentState = world.getBlockState(currentPos);
-			if (currentState.getBlock() == target && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
-				numMined++;
-				currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, world.getTileEntity(currentPos), player, stack));
-				world.removeBlock(currentPos, false);
-				numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
-				if (numMined >= Constants.MAX_VEIN_SIZE) {
-					break;
+			if (currentState.getBlock() == target) {
+				//Ensure we are immutable so that changing blocks doesn't act weird
+				currentPos = currentPos.toImmutable();
+				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
+					numMined++;
+					currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, world.getTileEntity(currentPos), player, stack));
+					world.removeBlock(currentPos, false);
+					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
+					if (numMined >= Constants.MAX_VEIN_SIZE) {
+						break;
+					}
 				}
 			}
 		}

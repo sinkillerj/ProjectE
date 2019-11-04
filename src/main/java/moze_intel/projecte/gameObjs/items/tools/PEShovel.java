@@ -84,7 +84,7 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		Direction sideHit = context.getFace();
-		return ToolHelper.performActions(ToolHelper.tillShovelAOE(hand, player, world, pos, sideHit, 0), () -> {
+		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0), () -> {
 			if (world.getBlockState(pos).isIn(Tags.Blocks.GRAVEL)) {
 				return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
 			}

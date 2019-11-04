@@ -69,6 +69,6 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
-		return ToolHelper.tillHoeAOE(context.getHand(), context.getPlayer(), context.getWorld(), context.getPos(), context.getFace(), 0);
+		return ToolHelper.tillHoeAOE(context, 0);
 	}
 }

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
@@ -13,15 +12,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: Allow for mass stripping of logs
 public class PEAxe extends AxeItem implements IItemCharge {
 
 	private final EnumMatterType matterType;
@@ -74,7 +72,23 @@ public class PEAxe extends AxeItem implements IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		return ActionResult.newResult(ToolHelper.clearTagAOE(world, player, hand, 0, Arrays.asList(BlockTags.LOGS, BlockTags.LEAVES)), player.getHeldItem(hand));
+	public ActionResultType onItemUse(ItemUseContext context) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null) {
+			return ActionResultType.PASS;
+		}
+		World world = context.getWorld();
+		BlockState state = world.getBlockState(context.getPos());
+		//Order that it attempts to use the item:
+		// Strip logs, AOE remove logs
+		return ToolHelper.performActions(AxeItem.BLOCK_STRIPPING_MAP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
+				() -> {
+					if (state.isIn(BlockTags.LOGS)) {
+						//Mass clear
+						//Note: We already tried to strip the log in an earlier action
+						ToolHelper.clearTagAOE(world, player, context.getHand(), 0, BlockTags.LOGS);
+					}
+					return ActionResultType.PASS;
+				});
 	}
 }
