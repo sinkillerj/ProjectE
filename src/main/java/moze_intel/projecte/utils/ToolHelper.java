@@ -46,6 +46,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -66,13 +67,13 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class ToolHelper {
 
-	public static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
 	public static final ToolType TOOL_TYPE_HOE = ToolType.get("hoe");
 	public static final ToolType TOOL_TYPE_SHEARS = ToolType.get("shears");
 	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
 	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
 
+	private static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
 	//Note: These all also do the check that super did before of making sure the entity is not spectating
 	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 	private static final Predicate<Entity> SLAY_MOB = entity -> !entity.isSpectator() && entity instanceof IMob;
@@ -177,13 +178,13 @@ public class ToolHelper {
 	public static ActionResultType tillShovelAOE(ItemUseContext context, long emcCost) {
 		//TODO: ForgeEventFactory::onShovelUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
 		// For now it just pretends it is always valid
-		return tillAOE(context, emcCost, ShovelItem.field_195955_e, ctx -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
+		return tillAOE(context, emcCost, ShovelItem.field_195955_e, /*ForgeEventFactory::onShovelUse*/ctx -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
 	}
 
 	/**
 	 * Tills in an AOE using the specified lookup map and tester. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static ActionResultType tillAOE(ItemUseContext context, long emcCost, Map<Block, BlockState> lookup, ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound) {
+	private static ActionResultType tillAOE(ItemUseContext context, long emcCost, Map<Block, BlockState> lookup, ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
@@ -197,7 +198,7 @@ public class ToolHelper {
 		BlockPos pos = context.getPos();
 		BlockState tilledState = lookup.get(world.getBlockState(pos).getBlock());
 		if (tilledState == null) {
-			//Skip tilling the block if the one we clicked cannot be tilled
+			//Skip tilling the blocks if the one we clicked cannot be tilled
 			return ActionResultType.PASS;
 		}
 		BlockPos abovePos = pos.up();
@@ -280,24 +281,81 @@ public class ToolHelper {
 	}
 
 	/**
-	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
+	 * Strips logs in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	//TODO: Implement this properly to allow for mass stripping of logs. (currently is just a copy of AxeItem#onItemUse)
 	public static ActionResultType stripLogsAOE(ItemUseContext context, long emcCost) {
-		//TODO: ForgeEventFactory::onAxeUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
-		// For now it just pretends it is always valid
-		//Copied from AxeItem#onItemUse
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		BlockState state = world.getBlockState(pos);
-		Block block = AxeItem.BLOCK_STRIPPING_MAP.get(state.getBlock());
-		if (block == null) {
+		PlayerEntity player = context.getPlayer();
+		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		world.playSound(context.getPlayer(), pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-		if (!world.isRemote) {
-			world.setBlockState(pos, block.getDefaultState().with(RotatedPillarBlock.AXIS, state.get(RotatedPillarBlock.AXIS)), 11);
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Map<Block, Block> lookup = AxeItem.BLOCK_STRIPPING_MAP;
+		BlockState clickedState = world.getBlockState(pos);
+		Block strippedBlock = lookup.get(clickedState.getBlock());
+		if (strippedBlock == null) {
+			//Skip stripping the blocks if the one we clicked cannot be stipped
+			return ActionResultType.PASS;
 		}
+		//TODO: ForgeEventFactory::onAxeUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
+		// For now it just pretends it is always valid
+		ToIntFunction<ItemUseContext> onItemUse = ctx -> 0;//ForgeEventFactory::onAxeUse;
+		int useResult = onItemUse.applyAsInt(context);
+		if (useResult < 0) {
+			return ActionResultType.PASS;
+		} else if (world.isRemote) {
+			return ActionResultType.SUCCESS;
+		}
+		Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
+		BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
+		if (useResult == 0) {
+			//Processing did not happen in the hook so we need to process it
+			//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
+			world.setBlockState(pos, strippedState, 11);
+			world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		}
+		Hand hand = context.getHand();
+		ItemStack stack = player.getHeldItem(hand);
+		int charge = getCharge(stack);
+		if (charge > 0) {
+			for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, context.getFace(), charge))) {
+				if (pos.equals(newPos)) {
+					//Skip the source position as it is free and we manually handled it before the loop
+					continue;
+				}
+				//Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
+				// Also make sure that it is on the same axis as the block we initially clicked
+				BlockState state = world.getBlockState(newPos);
+				if (strippedBlock == lookup.get(state.getBlock()) && axis == state.get(RotatedPillarBlock.AXIS)) {
+					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
+					// matter we make sure to get an immutable instance of newPos
+					newPos = newPos.toImmutable();
+					useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false)));
+					if (useResult < 0) {
+						//We were denied from using the item so continue to the next block
+						continue;
+					} else if (useResult > 0) {
+						//Processing happened in the hook so we use our desired fuel amount
+						if (!ItemPE.consumeFuel(player, stack, emcCost, true)) {
+							//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
+							break;
+						}
+						continue;
+					} //else we are allowed to use the item
+					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
+						//Replace the block. Note it just directly sets it (in the same way that AxeItem does), rather than using our
+						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
+						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
+						// location and were told that we are allowed to use our item.
+						world.setBlockState(newPos, strippedState, 11);
+					} else {
+						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
+						break;
+					}
+				}
+			}
+		}
+		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -369,19 +427,6 @@ public class ToolHelper {
 			}
 		}
 		WorldHelper.createLootDrop(drops, world, pos);
-	}
-
-	/**
-	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
-	 */
-	@Deprecated //TODO: Replace usages with other method
-	public static ActionResultType digAOE(World world, PlayerEntity player, boolean affectDepth, long emcCost, Hand hand, RayTracePointer tracePointer) {
-		RayTraceResult mop = tracePointer.rayTrace(world, player, FluidMode.NONE);
-		if (!(mop instanceof BlockRayTraceResult)) {
-			return ActionResultType.PASS;
-		}
-		BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
-		return digAOE(world, player, hand, rtr.getPos(), rtr.getFace(), affectDepth, emcCost);
 	}
 
 	/**

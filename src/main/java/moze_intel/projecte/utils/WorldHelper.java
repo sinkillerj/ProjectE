@@ -209,6 +209,25 @@ public final class WorldHelper {
 	}
 
 	/**
+	 * Returns in AABB that is always a single block deep but is size x size orthogonal to the side hit
+	 */
+	public static AxisAlignedBB getBroadBox(BlockPos pos, Direction direction, int size) {
+		switch (direction) {
+			case EAST:
+			case WEST:
+				return new AxisAlignedBB(pos.getX(), pos.getY() - size, pos.getZ() - size, pos.getX(), pos.getY() + size, pos.getZ() + size);
+			case UP:
+			case DOWN:
+				return new AxisAlignedBB(pos.getX() - size, pos.getY(), pos.getZ() - size, pos.getX() + size, pos.getY(), pos.getZ() + size);
+			case SOUTH:
+			case NORTH:
+				return new AxisAlignedBB(pos.getX() - size, pos.getY() - size, pos.getZ(), pos.getX() + size, pos.getY() + size, pos.getZ());
+			default:
+				return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+		}
+	}
+
+	/**
 	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant. As such, a direction hit is unneeded.
 	 */
 	public static AxisAlignedBB getFlatYBox(BlockPos pos, int offset) {

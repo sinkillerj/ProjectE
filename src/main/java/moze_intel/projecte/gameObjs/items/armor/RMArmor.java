@@ -1,14 +1,8 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -16,22 +10,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
-public class RMArmor extends ArmorItem {
+public class RMArmor extends PEArmor {
 
 	public RMArmor(EquipmentSlotType armorType, Properties props) {
 		super(RMArmorMaterial.INSTANCE, armorType, props);
 	}
 
 	@Override
-	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-		return 0;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
-		return PECore.MODID + ":textures/armor/redmatter_" + index + ".png";
+	protected String getNameForLocation() {
+		return "redmatter";
 	}
 
 	private static class RMArmorMaterial implements IArmorMaterial {
