@@ -42,7 +42,6 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static List<Object> typeConversions;
 	private static Class mixPredicateClass;
 
-	//Note: We cache this value as while technically Mix Predicates can be added at any time, there is no way to
 	private static boolean mapAllReagents() {
 		if (itemConversions == null || typeConversions == null) {
 			//Get references to the lists of Mixing Predicates if either of our references is null
@@ -144,7 +143,9 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						Map<NormalizedSimpleStack, Integer> ingredientsWithAmount = new HashMap<>();
 						ingredientsWithAmount.put(nssInput, 3);
 						ingredientsWithAmount.put(NSSItem.createItem(validReagent), validReagent.getCount());
-						mapper.addConversion(output.getCount(), nssOut, ingredientsWithAmount);
+						//Add the conversion, 3 input + x reagent = 3 y output as strictly speaking the only one of the three parts
+						// in the recipe that are required to be one in stack size is the input
+						mapper.addConversion(3 * output.getCount(), nssOut, ingredientsWithAmount);
 						recipeCount++;
 					}
 				}
@@ -161,8 +162,9 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						if (!output.isEmpty()) {
 							Map<NormalizedSimpleStack, Integer> ingredientsWithAmount = new HashMap<>();
 							ingredientsWithAmount.put(nssInput, 3);
-							ingredientsWithAmount.put(NSSItem.createItem(validReagent), validReagent.getCount());
-							mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientsWithAmount);
+							ingredientsWithAmount.put(NSSItem.createItem(validReagent), 1);
+							//Add the conversion, 3 input + reagent = 3 y output as the output technically could be stacked
+							mapper.addConversion(3 * output.getCount(), NSSItem.createItem(output), ingredientsWithAmount);
 							recipeCount++;
 						}
 					}
