@@ -34,6 +34,11 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	}
 
 	@Override
+	public boolean isBookEnchantable(@Nonnull ItemStack stack, @Nonnull ItemStack book) {
+		return false;
+	}
+
+	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
 		return 0;
 	}
