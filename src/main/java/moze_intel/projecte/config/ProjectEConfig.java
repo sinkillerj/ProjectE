@@ -5,13 +5,17 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.PECore;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-//TODO: Fix config, it does not seem to obey changes made to the file and overwrites them when loading
 public final class ProjectEConfig {
 
 	public static void load() {
-		SPEC.setConfig(CommentedFileConfig.builder(Paths.get("config", PECore.MODNAME, PECore.MODID + ".toml")).build());
+		CommentedFileConfig configData = CommentedFileConfig.builder(Paths.get("config", PECore.MODNAME, PECore.MODID + ".toml")).build();
+		//Load the data from file
+		configData.load();
+		SPEC.setConfig(configData);
 	}
 
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -80,7 +84,7 @@ public final class ProjectEConfig {
 
 		public final ForgeConfigSpec.IntValue timePedBonus;
 		public final ForgeConfigSpec.DoubleValue timePedMobSlowness;
-		public final ForgeConfigSpec.ConfigValue<List<String>> timeWatchTEBlacklist;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> timeWatchTEBlacklist;
 		public final ForgeConfigSpec.BooleanValue interdictionMode;
 
 		Effects() {
@@ -93,7 +97,16 @@ public final class ProjectEConfig {
 					.defineInRange("timePedMobSlowness", 0.10, 0, 1);
 			timeWatchTEBlacklist = BUILDER
 					.comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
-					.define("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"));
+					.defineList("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"), element -> {
+						if (element instanceof String) {
+							try {
+								new ResourceLocation((String) element);
+								return true;
+							} catch (ResourceLocationException ignored) {
+							}
+						}
+						return false;
+					});
 			interdictionMode = BUILDER
 					.comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 					.define("interdictionMode", true);
