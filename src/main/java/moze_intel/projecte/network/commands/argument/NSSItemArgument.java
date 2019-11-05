@@ -14,7 +14,7 @@ import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 
 public class NSSItemArgument implements ArgumentType<NSSItemResult> {
 
-	private static final Collection<String> EXAMPLES = Arrays.asList("stick", "minecraft:stick", "#stick");
+	private static final Collection<String> EXAMPLES = Arrays.asList("stick", "minecraft:stick", "#stick", "#stick{foo=bar}");
 
 	@Override
 	public NSSItemResult parse(StringReader reader) throws CommandSyntaxException {

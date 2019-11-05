@@ -36,12 +36,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	 */
 	@Nonnull
 	public static NSSItem createItem(@Nonnull IItemProvider itemProvider) {
-		Item item = itemProvider.asItem();
-		if (item == Items.AIR) {
-			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
-		}
-		//This should never be null or it would have crashed on being registered
-		return createItem(item.getRegistryName());
+		return createItem(itemProvider, null);
 	}
 
 	/**

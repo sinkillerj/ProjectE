@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
@@ -19,6 +20,7 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
 import net.minecraftforge.fml.InterModComms;
@@ -29,37 +31,49 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 
 	public static final NSSCreator fakeCreator = NSSFake::create;
 
-	public static final NSSCreator itemCreator = string -> {
+	public static final NSSCreator itemCreator = itemName -> {
 		//TODO: Should we verify that the item/item tag exists?
-		if (string.startsWith("#")) {
-			try {
-				return NSSItem.createTag(new ResourceLocation(string.substring(1)));
-			} catch (ResourceLocationException ex) {
-				throw new JsonParseException("Malformed item tag ID", ex);
-			}
+		if (itemName.startsWith("#")) {
+			return NSSItem.createTag(getResourceLocation(itemName.substring(1), "item tag"));
 		}
+		int nbtStart = itemName.indexOf('{');
+		ResourceLocation resourceLocation = getResourceLocation(nbtStart == -1 ? itemName : itemName.substring(0, nbtStart), "item");
+		if (nbtStart == -1) {
+			return NSSItem.createItem(resourceLocation);
+		}
+		String nbtAsString = itemName.substring(nbtStart);
 		try {
-			return NSSItem.createItem(new ResourceLocation(string));
-		} catch (ResourceLocationException e) {
-			throw new JsonParseException("Malformed item ID", e);
+			return NSSItem.createItem(resourceLocation, JsonToNBT.getTagFromJson(nbtAsString));
+		} catch (CommandSyntaxException e) {
+			throw new JsonParseException("Malformed NBT compound", e);
 		}
 	};
 
 	public static final NSSCreator fluidCreator = fluidName -> {
 		//TODO: Should we verify that the fluid/fluid tag exists?
 		if (fluidName.startsWith("#")) {
-			try {
-				return NSSFluid.createTag(new ResourceLocation(fluidName.substring(1)));
-			} catch (ResourceLocationException ex) {
-				throw new JsonParseException("Malformed fluid tag ID", ex);
-			}
+			return NSSFluid.createTag(getResourceLocation(fluidName.substring(1), "fluid tag"));
 		}
+		int nbtStart = fluidName.indexOf('{');
+		ResourceLocation resourceLocation = getResourceLocation(nbtStart == -1 ? fluidName : fluidName.substring(0, nbtStart), "fluid");
+		if (nbtStart == -1) {
+			return NSSFluid.createFluid(resourceLocation);
+		}
+		String nbtAsString = fluidName.substring(nbtStart);
 		try {
-			return NSSFluid.createFluid(new ResourceLocation(fluidName));
-		} catch (ResourceLocationException e) {
-			throw new JsonParseException("Malformed fluid ID", e);
+			return NSSFluid.createFluid(resourceLocation, JsonToNBT.getTagFromJson(nbtAsString));
+		} catch (CommandSyntaxException e) {
+			throw new JsonParseException("Malformed NBT compound", e);
 		}
 	};
+
+	private static ResourceLocation getResourceLocation(String s, String type) throws JsonParseException {
+		try {
+			return new ResourceLocation(s);
+		} catch (ResourceLocationException e) {
+			throw new JsonParseException("Malformed " + type + " ID", e);
+		}
+	}
 
 	private Map<String, NSSCreator> creators = Collections.emptyMap();
 

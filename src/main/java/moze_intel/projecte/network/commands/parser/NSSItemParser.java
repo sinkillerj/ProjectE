@@ -14,6 +14,7 @@ import net.minecraft.command.arguments.ItemParser;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -73,11 +74,10 @@ public class NSSItemParser {
 				throw ItemParser.ITEM_BAD_ID.createWithContext(this.reader, itemId);
 			}
 			this.suggestionsBuilder = this::suggestItem;
-			//TODO: Allow setting EMC values for items with NBT
-			/*if (this.reader.canRead() && this.reader.peek() == '{') {
+			if (this.reader.canRead() && this.reader.peek() == '{') {
 				this.suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
 				this.nbt = new JsonToNBT(this.reader).readStruct();
-			}*/
+			}
 		}
 		return this;
 	}
@@ -88,10 +88,9 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder builder) {
-		//TODO: Allow setting EMC values for items with NBT
-		/*if (builder.getRemaining().isEmpty()) {
+		if (builder.getRemaining().isEmpty()) {
 			builder.suggest(String.valueOf('{'));
-		}*/
+		}
 		return builder.buildFuture();
 	}
 
@@ -146,7 +145,10 @@ public class NSSItemParser {
 			if (item == null) {
 				return "#" + tagId;
 			}
-			return item.getRegistryName().toString();
+			if (nbt == null) {
+				return item.getRegistryName().toString();
+			}
+			return item.getRegistryName().toString() + nbt;
 		}
 	}
 }
