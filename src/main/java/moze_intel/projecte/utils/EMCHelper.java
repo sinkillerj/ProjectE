@@ -103,30 +103,46 @@ public final class EMCHelper {
 	}
 
 	public static boolean doesItemHaveEmc(ItemInfo info) {
-		return EMCMappingHandler.emc.containsKey(info);
+		return getEmcValue(info) > 0;
 	}
 
 	public static boolean doesItemHaveEmc(ItemStack stack) {
-		return !stack.isEmpty() && doesItemHaveEmc(new ItemInfo(stack));
+		return getEmcValue(stack) > 0;
 	}
 
 	public static boolean doesItemHaveEmc(IItemProvider item) {
-		return item != null && doesItemHaveEmc(new ItemInfo(item.asItem(), null));
+		return getEmcValue(item) > 0;
 	}
 
 	public static long getEmcValue(IItemProvider item) {
-		return doesItemHaveEmc(item) ? EMCMappingHandler.getEmcValue(item) : 0;
+		if (item == null) {
+			return 0;
+		}
+		return getEmcValue(new ItemInfo(item.asItem(), null));
 	}
 
 	/**
 	 * Does not consider stack size
 	 */
 	public static long getEmcValue(ItemStack stack) {
-		if (!doesItemHaveEmc(stack)) {
+		if (stack.isEmpty()) {
 			return 0;
 		}
+		//TODO: If this isn't contained check if we have one for the item with no NBT?
+		// Currently we have this check in the stack variants of things
 		//TODO: TEST-ME
-		long baseEMC = EMCMappingHandler.getEmcValue(new ItemInfo(stack));
+		ItemInfo itemInfo = new ItemInfo(stack);
+		long baseEMC = getEmcValue(itemInfo);
+		if (baseEMC <= 0) {
+			if (stack.hasTag()) {
+				baseEMC = getEmcValue(new ItemInfo(stack.getItem(), null));
+				if (baseEMC <= 0) {
+					return 0;
+				}
+			} else {
+				return 0;
+			}
+		}
 
 		if (ItemHelper.isDamageable(stack)) {
 			// maxDmg + 1 because vanilla lets you use the tool one more time
@@ -180,12 +196,14 @@ public final class EMCHelper {
 	 * Does not consider stack size
 	 */
 	public static long getEmcValue(ItemInfo info) {
-		if (!doesItemHaveEmc(info)) {
+		if (!EMCMappingHandler.emc.containsKey(info)) {
 			return 0;
 		}
 		return EMCMappingHandler.getEmcValue(info);
 	}
 
+	//TODO: Should we do fireworks/firework stars in a similar way to how we do this? Given from the item we can reverse engineer the items that went into it
+	// but calculating all the combinations does not make sense to do
 	private static long getEnchantEmcBonus(ItemStack stack) {
 		long result = 0;
 

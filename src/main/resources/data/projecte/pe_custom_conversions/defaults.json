@@ -64,6 +64,43 @@
           "ingredients": {
             "minecraft:gold_ingot": 7
           }
+        },
+        {
+          "output": "minecraft:suspicious_stew",
+          "ingredients": [
+            "minecraft:bowl",
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom",
+            "#minecraft:small_flowers"
+          ]
+        },
+        {
+          "output": "minecraft:pufferfish_bucket",
+          "ingredients": [
+            "minecraft:water_bucket",
+            "minecraft:pufferfish"
+          ]
+        },
+        {
+          "output": "minecraft:salmon_bucket",
+          "ingredients": [
+            "minecraft:water_bucket",
+            "minecraft:salmon"
+          ]
+        },
+        {
+          "output": "minecraft:cod_bucket",
+          "ingredients": [
+            "minecraft:water_bucket",
+            "minecraft:cod"
+          ]
+        },
+        {
+          "output": "minecraft:tropical_fish_bucket",
+          "ingredients": [
+            "minecraft:water_bucket",
+            "minecraft:tropical_fish"
+          ]
         }
       ]
     },
@@ -222,13 +259,17 @@
       "minecraft:dead_bubble_coral_fan": 1,
       "minecraft:dead_fire_coral_fan": 1,
       "minecraft:dead_horn_coral_fan": 1,
-
+      "minecraft:dead_tube_coral": 1,
+      "minecraft:dead_brain_coral": 1,
+      "minecraft:dead_bubble_coral": 1,
+      "minecraft:dead_fire_coral": 1,
+      "minecraft:dead_horn_coral": 1,
 
       "minecraft:chorus_plant": 64,
       "minecraft:chorus_flower": 96,
       "minecraft:wheat_seeds": 16,
       "minecraft:beetroot_seeds": 16,
-      "minecraft:melon": 16,
+      "minecraft:melon_slice": 16,
       "minecraft:sweet_berries": 16,
       "minecraft:wheat": 24,
       "minecraft:nether_wart": 24,
@@ -260,14 +301,17 @@
       "minecraft:spider_eye": 128,
       "minecraft:phantom_membrane": 192,
       "minecraft:gunpowder": 192,
+      "minecraft:skeleton_skull": 256,
+      "minecraft:zombie_head": 256,
+      "minecraft:creeper_head": 256,
       "minecraft:ender_pearl": 1024,
       "minecraft:nautilus_shell": 1024,
-      "minecraft:heart_of_the_sea": 32768,
       "minecraft:blaze_rod": 1536,
       "minecraft:shulker_shell": 2048,
       "minecraft:ghast_tear": 4096,
+      "minecraft:trident": 16398,
+      "minecraft:heart_of_the_sea": 32768,
       "minecraft:dragon_egg": 262144,
-      "minecraft:potion": 0,
 
       "minecraft:saddle": 192,
       "minecraft:name_tag": 192,

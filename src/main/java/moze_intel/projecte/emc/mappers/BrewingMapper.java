@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessF
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@EMCMapper//TODO: Uncomment once we have support for NBT based normalized simple stacks
+@EMCMapper
 public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	//Note: We don't bother keeping track of the output field as we query the recipe to see if it is valid
@@ -122,12 +122,10 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
-		if (!mapAllReagents()) {
-			//Something failed so stop the mapping we printed the error when it failed
-			//TODO: We still probably want to map the BrewingRecipes
-			return;
+		boolean vanillaRetrieved = mapAllReagents();
+		if (vanillaRetrieved) {
+			mapAllInputs();
 		}
-		mapAllInputs();
 
 		//Add conversion for empty bottle + water to water bottle
 		Map<NormalizedSimpleStack, Integer> waterIngredients = new HashMap<>();
@@ -161,6 +159,11 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 					}
 				}
 			} else if (recipe instanceof VanillaBrewingRecipe) {
+				if (!vanillaRetrieved) {
+					//Skip doing vanilla recipes because we failed to get them properly
+					canNotMap.add(recipe.getClass());
+					continue;
+				}
 				//Check all known valid inputs and reagents to see which ones create valid inputs
 				// Note: Getting the list of outputs while getting reagents will cause things to be missed
 				// As the PotionBrewing class does not contain all valid mappings (For example: Potion of luck + gunpowder -> splash potion of luck)

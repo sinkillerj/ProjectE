@@ -53,6 +53,7 @@ public final class KnowledgeImpl {
 		}, () -> new DefaultImpl(null));
 	}
 
+	//TODO: Fix learning items with NBT
 	private static class DefaultImpl implements IKnowledgeProvider {
 
 		@Nullable
