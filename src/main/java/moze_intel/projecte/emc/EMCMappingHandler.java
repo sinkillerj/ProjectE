@@ -7,9 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
@@ -36,9 +37,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
-	//TODO: Evaluate LinkedHashMap vs HashMap (I don't believe these is any reason this needs to be linked?)
-	// Also make this be private
-	public static final Map<ItemInfo, Long> emc = new LinkedHashMap<>();
+	private static final Map<ItemInfo, Long> emc = new HashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
 
@@ -174,10 +173,17 @@ public final class EMCMappingHandler {
 		emc.clear();
 	}
 
+	/**
+	 * Returns a modifiable set of all the mapped {@link ItemInfo}
+	 */
+	public static Set<ItemInfo> getMappedItems() {
+		return new HashSet<>(emc.keySet());
+	}
+
 	public static void fromPacket(EmcPKTInfo[] data) {
 		emc.clear();
 		for (EmcPKTInfo info : data) {
-			EMCMappingHandler.emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
+			emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
 		}
 	}
 

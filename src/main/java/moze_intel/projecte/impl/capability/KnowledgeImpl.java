@@ -150,9 +150,10 @@ public final class KnowledgeImpl {
 		@Override
 		public Set<ItemInfo> getKnowledge() {
 			if (fullKnowledge) {
-				//TODO: FIXME - This "full knowledge cache" does not include anything that was post calculated??
-				//So items that were learned with enchants or stuff won't show
-				return Collections.unmodifiableSet(EMCMappingHandler.emc.keySet());
+				Set<ItemInfo> allKnowledge = EMCMappingHandler.getMappedItems();
+				//Make sure we include any extra items they have learned such as various enchanted items.
+				allKnowledge.addAll(knowledge);
+				return Collections.unmodifiableSet(allKnowledge);
 			}
 			return Collections.unmodifiableSet(knowledge);
 		}
