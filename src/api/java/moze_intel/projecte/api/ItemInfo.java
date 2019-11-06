@@ -11,8 +11,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Document
-public class ItemInfo {
+/**
+ * Class used for keeping track of a combined {@link Item} and {@link CompoundNBT}. Unlike {@link ItemStack} this class does not keep track of count, and overrides {@link
+ * #equals(Object)} and {@link #hashCode()} so that it can be used properly in a {@link java.util.Set}.
+ *
+ * @implNote If the {@link CompoundNBT} this {@link ItemInfo} is given is empty, then it converts it to being null.
+ * @apiNote {@link ItemInfo} and the data it stores is Immutable
+ */
+public final class ItemInfo {
 
 	@Nonnull
 	private final Item item;
@@ -24,20 +30,40 @@ public class ItemInfo {
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
 
+	/**
+	 * Creates an {@link ItemInfo} object from a given {@link Item} with an optional {@link CompoundNBT} attached.
+	 *
+	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
+	 */
 	public static ItemInfo fromItem(@Nonnull Item item, @Nullable CompoundNBT nbt) {
 		return new ItemInfo(item, nbt);
 	}
 
+	/**
+	 * Creates an {@link ItemInfo} object from a given {@link Item} with no {@link CompoundNBT} attached.
+	 *
+	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
+	 */
 	public static ItemInfo fromItem(@Nonnull Item item) {
 		return fromItem(item, null);
 	}
 
+	/**
+	 * Creates an {@link ItemInfo} object from a given {@link ItemStack}.
+	 *
+	 * @apiNote While it is not required that the stack is not empty, it is expected to check yourself to make sure it is not empty.
+	 */
 	public static ItemInfo fromStack(@Nonnull ItemStack stack) {
 		return fromItem(stack.getItem(), stack.getTag());
 	}
 
+	/**
+	 * Creates an {@link ItemInfo} object from a given {@link NSSItem}.
+	 *
+	 * @return An {@link ItemInfo} object from a given {@link NSSItem}, or null if the given {@link NSSItem} represents a tag or the item it represents is not registered
+	 */
 	@Nullable
-	public static ItemInfo fromNSS(NSSItem stack) {
+	public static ItemInfo fromNSS(@Nonnull NSSItem stack) {
 		if (stack.representsTag()) {
 			return null;
 		}
@@ -48,8 +74,15 @@ public class ItemInfo {
 		return fromItem(item, stack.getNBT());
 	}
 
+	/**
+	 * Reads an {@link ItemInfo} from the given {@link CompoundNBT}.
+	 *
+	 * @param nbt {@link CompoundNBT} representing a {@link ItemInfo}
+	 *
+	 * @return An {@link ItemInfo} that is represented by the given {@link CompoundNBT}, or null if no {@link ItemInfo} is stored or the item is not registered.
+	 */
 	@Nullable
-	public static ItemInfo read(CompoundNBT nbt) {
+	public static ItemInfo read(@Nonnull CompoundNBT nbt) {
 		if (nbt.contains("item", NBT.TAG_STRING)) {
 			ResourceLocation registryName = ResourceLocation.tryCreate(nbt.getString("item"));
 			if (registryName == null) {
@@ -67,23 +100,47 @@ public class ItemInfo {
 		return null;
 	}
 
+	/**
+	 * @return The {@link Item} stored in this {@link ItemInfo}.
+	 */
 	@Nonnull
 	public Item getItem() {
 		return item;
 	}
 
+	/**
+	 * @return The {@link CompoundNBT} stored in this {@link ItemInfo}, or null if there is no nbt data stored.
+	 *
+	 * @apiNote The returned {@link CompoundNBT} is a copy so as to ensure that this {@link ItemInfo} is not accidentally modified via modifying the returned {@link
+	 * CompoundNBT}. This means it is safe to modify the returned {@link CompoundNBT}
+	 */
 	@Nullable
 	public CompoundNBT getNBT() {
-		return nbt;
+		return nbt == null ? null : nbt.copy();
 	}
 
+	/**
+	 * Checks if this {@link ItemInfo} has an associated {@link CompoundNBT}.
+	 *
+	 * @return True if this {@link ItemInfo} has an associated {@link CompoundNBT}, false otherwise.
+	 */
+	public boolean hasNBT() {
+		return nbt != null;
+	}
+
+	/**
+	 * @return A new {@link ItemStack} created from the stored {@link Item} and {@link CompoundNBT}
+	 */
 	public ItemStack createStack() {
 		ItemStack stack = new ItemStack(item);
-		stack.setTag(nbt);
+		stack.setTag(getNBT());
 		return stack;
 	}
 
-	public CompoundNBT write(CompoundNBT nbt) {
+	/**
+	 * Writes the item and nbt fields to a NBT object.
+	 */
+	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt.putString("item", item.getRegistryName().toString());
 		if (this.nbt != null) {
 			nbt.put("nbt", this.nbt);

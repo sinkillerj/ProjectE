@@ -53,7 +53,7 @@ public class ItemInfoHelper {
 	 * Based on {@link net.minecraft.potion.PotionUtils#addPotionToItemStack(ItemStack, Potion)} except without requiring boxing ItemInfo into an out of an ItemStack
 	 */
 	public static ItemInfo makeWithPotion(ItemInfo info, Potion potion) {
-		CompoundNBT nbt = info.getNBT() == null ? null : info.getNBT().copy();
+		CompoundNBT nbt = info.getNBT();
 		if (potion == Potions.EMPTY) {
 			if (nbt != null && nbt.contains("Potion")) {
 				nbt.remove("Potion");

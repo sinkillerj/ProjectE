@@ -1,10 +1,8 @@
 package moze_intel.projecte.network;
 
 import io.netty.buffer.Unpooled;
-import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
@@ -90,20 +88,14 @@ public final class PacketHandler {
 	}
 
 	private static EmcPKTInfo[] serializeEmcData() {
-		EmcPKTInfo[] ret = new EmcPKTInfo[EMCMappingHandler.emc.size()];
-		int i = 0;
-		for (Map.Entry<ItemInfo, Long> entry : EMCMappingHandler.emc.entrySet()) {
-			ItemInfo info = entry.getKey();
-			ret[i] = new EmcPKTInfo(info.getItem(), info.getNBT(), entry.getValue());
-			i++;
-		}
+		EmcPKTInfo[] data = EMCMappingHandler.createPacketData();
 		//Simulate encoding the EMC packet to get an accurate size
 		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 		int index = buf.writerIndex();
-		SyncEmcPKT.encode(new SyncEmcPKT(ret), buf);
+		SyncEmcPKT.encode(new SyncEmcPKT(data), buf);
 		PECore.debugLog("EMC data size: {} bytes", (buf.writerIndex() - index));
 		buf.release();
-		return ret;
+		return data;
 	}
 
 	/**

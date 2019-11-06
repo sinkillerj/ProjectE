@@ -21,7 +21,7 @@ public final class FuelMapper {
 	public static void loadMap() {
 		FUEL_MAP.clear();
 		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
-		FUEL_MAP.sort(Comparator.comparing(EMCMappingHandler::getEmcValue));
+		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}
 
 	public static boolean isStackFuel(ItemStack stack) {

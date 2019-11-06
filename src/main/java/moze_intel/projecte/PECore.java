@@ -266,6 +266,6 @@ public class PECore {
 
 	private void serverQuit(FMLServerStoppedEvent event) {
 		TransmutationOffline.cleanAll();
-		EMCMappingHandler.clearMaps();
+		EMCMappingHandler.clearEmcMap();
 	}
 }

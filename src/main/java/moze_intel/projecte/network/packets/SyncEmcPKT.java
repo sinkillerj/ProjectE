@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -41,12 +40,7 @@ public class SyncEmcPKT {
 		public static void handle(final SyncEmcPKT pkt, Supplier<NetworkEvent.Context> ctx) {
 			ctx.get().enqueueWork(() -> {
 				PECore.LOGGER.info("Receiving EMC data from server.");
-				EMCMappingHandler.emc.clear();
-
-				for (EmcPKTInfo info : pkt.data) {
-					EMCMappingHandler.emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
-				}
-
+				EMCMappingHandler.fromPacket(pkt.data);
 				FuelMapper.loadMap();
 			});
 			ctx.get().setPacketHandled(true);

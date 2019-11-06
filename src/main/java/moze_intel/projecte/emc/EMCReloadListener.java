@@ -21,7 +21,7 @@ public class EMCReloadListener implements IResourceManagerReloadListener {
 
 		try {
 			EMCMappingHandler.map(resourceManager);
-			PECore.LOGGER.info("Registered " + EMCMappingHandler.emc.size() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+			PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
 			PacketHandler.sendFragmentedEmcPacketToAll();
 		} catch (Throwable t) {
 			PECore.LOGGER.error("Error calculating EMC values", t);

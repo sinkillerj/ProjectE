@@ -107,7 +107,7 @@ public final class KnowledgeImpl {
 				return false;
 			}
 			if (info.getItem() == ObjHandler.tome) {
-				if (info.getNBT() != null) {
+				if (info.hasNBT()) {
 					//Make sure we don't have any NBT as it doesn't have any effect for the tome
 					info = ItemInfo.fromItem(info.getItem());
 				}

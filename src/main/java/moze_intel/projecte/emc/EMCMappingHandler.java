@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.EMCRemapEvent;
@@ -26,9 +27,9 @@ import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
+import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
 import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.math3.fraction.BigFraction;
 
@@ -36,6 +37,7 @@ public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
 	//TODO: Evaluate LinkedHashMap vs HashMap (I don't believe these is any reason this needs to be linked?)
+	// Also make this be private
 	public static final Map<ItemInfo, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
@@ -153,15 +155,40 @@ public final class EMCMappingHandler {
 		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem) || ((NSSItem) e.getKey()).representsTag() || e.getValue() <= 0);
 	}
 
-	public static long getEmcValue(IItemProvider item) {
-		return getEmcValue(ItemInfo.fromItem(item.asItem()));
+	public static int getEmcMapSize() {
+		return emc.size();
 	}
 
-	public static long getEmcValue(ItemInfo info) {
-		return emc.get(info);
+	public static boolean hasEmcValue(@Nonnull ItemInfo info) {
+		return emc.containsKey(info);
 	}
 
-	public static void clearMaps() {
+	/**
+	 * Gets the stored emc value or zero if there is no entry in the map for the given value.
+	 */
+	public static long getStoredEmcValue(@Nonnull ItemInfo info) {
+		return emc.getOrDefault(info, 0L);
+	}
+
+	public static void clearEmcMap() {
 		emc.clear();
+	}
+
+	public static void fromPacket(EmcPKTInfo[] data) {
+		emc.clear();
+		for (EmcPKTInfo info : data) {
+			EMCMappingHandler.emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
+		}
+	}
+
+	public static EmcPKTInfo[] createPacketData() {
+		EmcPKTInfo[] ret = new EmcPKTInfo[emc.size()];
+		int i = 0;
+		for (Map.Entry<ItemInfo, Long> entry : emc.entrySet()) {
+			ItemInfo info = entry.getKey();
+			ret[i] = new EmcPKTInfo(info.getItem(), info.getNBT(), entry.getValue());
+			i++;
+		}
+		return ret;
 	}
 }

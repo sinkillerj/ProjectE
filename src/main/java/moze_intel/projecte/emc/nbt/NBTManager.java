@@ -9,6 +9,7 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ItemTags;
@@ -28,45 +29,32 @@ public class NBTManager {
 		}
 	}
 
-	//TODO: Figure out what happens if more cleaners get added since someone learns an item so then it doesn't find a match when trying to
-	// remove the "overly" cleaned stack
+	//TODO: Figure out what happens if more processors get added since someone learns an item, so then it doesn't find a match
+	// when trying to remove an item because the NBT it gets the item down to has more information than the one they are trying
+	// to remove the learned item. Is this even an issue because they theoretically could take the item out from the table
+	// with the proper "reduced" info and then unlearn it directly like that
 
 	public static ItemInfo getPersistentInfo(ItemInfo info) {
-		if (info.getNBT() == null || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.emc.containsKey(info)) {
+		if (!info.hasNBT() || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}
 
 		//Cleans up the tag in info to reduce it as much as possible
 		List<CompoundNBT> persistentNBT = processors.stream().map(processor -> processor.getPersistentNBT(info)).filter(Objects::nonNull).collect(Collectors.toList());
-		if (persistentNBT.isEmpty()) {
-			return ItemInfo.fromItem(info.getItem());
-		}
-		//TODO: TEST-ME
-		CompoundNBT combinedNBT = persistentNBT.get(0);
-		for (int i = 1; i < persistentNBT.size(); i++) {
-			combinedNBT = combinedNBT.merge(persistentNBT.get(i));
-		}
-		return ItemInfo.fromItem(info.getItem(), combinedNBT);
+		return ItemInfo.fromItem(info.getItem(), ItemHelper.recombineNBT(persistentNBT));
 	}
 
-	//TODO: Would a good way to handle support for items that have a NBT in their value but then have extra NBT also be to
-	// make each registered NSS that has NBT also get registered into a custom INBTProcessor so that we can do some sort of partial NBT match??
-
 	public static long getEmcValue(ItemInfo info) {
-		//TODO: think about - if there is no EMC value matching the nbt exactly then try to get it without the NBT
-		// And then it can process any extra NBT it has through the processors
-		// Otherwise if it has an exact match already take it.
-		// This doesn't catch the edge case that we have an exact match and then there is random added NBT on top of it
-		// but that can be thought about more once we have the first pass complete.
-		long emcValue = EMCMappingHandler.emc.getOrDefault(info, 0L);
-		if (info.getNBT() == null) {
+		//TODO: Fix this, as it does not catch the edge case that we have an exact match and then there is random added NBT on top of it
+		// but that can be thought about more once we have the first pass complete. For example if someone put an enchantment on a potion
+		long emcValue = EMCMappingHandler.getStoredEmcValue(info);
+		if (!info.hasNBT()) {
 			//If our info has no NBT anyways just return based on the
 			return emcValue;
-		}
-		if (emcValue == 0) {
+		} else if (emcValue == 0) {
 			//Try getting a base emc value from the NBT less variant if we don't have one matching our NBT
-			emcValue = EMCMappingHandler.emc.getOrDefault(ItemInfo.fromItem(info.getItem()), 0L);
+			emcValue = EMCMappingHandler.getStoredEmcValue(ItemInfo.fromItem(info.getItem()));
 			if (emcValue == 0) {
 				//The base item doesn't have an EMC value either so just exit
 				return 0;

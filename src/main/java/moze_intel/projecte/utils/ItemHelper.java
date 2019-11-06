@@ -3,11 +3,13 @@ package moze_intel.projecte.utils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -65,30 +67,6 @@ public final class ItemHelper {
 
 		list.removeIf(ItemStack::isEmpty);
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
-	}
-
-	/**
-	 * Removes all empty tags from any items in the list.
-	 */
-	public static void removeEmptyTags(List<ItemStack> list) {
-		for (ItemStack s : list) {
-			if (!s.isEmpty() && s.hasTag() && s.getTag().isEmpty()) {
-				s.setTag(null);
-			}
-		}
-	}
-
-	public static boolean containsItemStack(List<ItemStack> list, ItemStack toSearch) {
-		for (ItemStack stack : list) {
-			if (stack.isEmpty()) {
-				continue;
-			}
-
-			if (stack.getItem() == toSearch.getItem()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -174,6 +152,18 @@ public final class ItemHelper {
 
 	public static boolean isOre(Item i) {
 		return isOre(Block.getBlockFromItem(i));
+	}
+
+	@Nullable
+	public static CompoundNBT recombineNBT(List<CompoundNBT> pieces) {
+		if (pieces.isEmpty()) {
+			return null;
+		}
+		CompoundNBT combinedNBT = pieces.get(0);
+		for (int i = 1; i < pieces.size(); i++) {
+			combinedNBT = combinedNBT.merge(pieces.get(i));
+		}
+		return combinedNBT;
 	}
 
 	public static BlockState stackToState(ItemStack stack) {
