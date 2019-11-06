@@ -49,6 +49,10 @@
           "ingredients": [ "minecraft:pumpkin" ]
         },
         {
+          "output": "minecraft:enchanted_book",
+          "ingredients": [ "minecraft:book" ]
+        },
+        {
           "output": "minecraft:enchanted_golden_apple",
           "ingredients": {
             "minecraft:apple": 1,
@@ -100,6 +104,13 @@
           "ingredients": [
             "minecraft:water_bucket",
             "minecraft:tropical_fish"
+          ]
+        },
+        {
+          "output": "minecraft:dragon_breath",
+          "ingredients": [
+            "minecraft:glass_bottle",
+            "FAKE|single_emc"
           ]
         }
       ]
@@ -176,13 +187,12 @@
   },
   "values": {
     "before": {
+      "FAKE|single_emc": 1,
+
       "minecraft:cobblestone": 1,
-      "minecraft:stone": 1,
       "minecraft:granite": 16,
       "minecraft:diorite": 16,
       "minecraft:andesite": 16,
-      "minecraft:cracked_stone_bricks": 1,
-      "minecraft:chiseled_stone_bricks": 1,
       "minecraft:end_stone": 1,
       "minecraft:netherrack": 1,
       "minecraft:dirt": 1,
@@ -207,22 +217,6 @@
       "minecraft:bamboo": 32,
       "minecraft:soul_sand": 49,
       "minecraft:obsidian": 64,
-      "minecraft:white_terracotta": 64,
-      "minecraft:orange_terracotta": 64,
-      "minecraft:magenta_terracotta": 64,
-      "minecraft:light_blue_terracotta": 64,
-      "minecraft:yellow_terracotta": 64,
-      "minecraft:lime_terracotta": 64,
-      "minecraft:pink_terracotta": 64,
-      "minecraft:gray_terracotta": 64,
-      "minecraft:light_gray_terracotta": 64,
-      "minecraft:cyan_terracotta": 64,
-      "minecraft:purple_terracotta": 64,
-      "minecraft:blue_terracotta": 64,
-      "minecraft:brown_terracotta": 64,
-      "minecraft:green_terracotta": 64,
-      "minecraft:red_terracotta": 64,
-      "minecraft:black_terracotta": 64,
       "minecraft:sponge": 128,
       "minecraft:grass": 1,
       "minecraft:seagrass": 1,
@@ -267,12 +261,12 @@
 
       "minecraft:chorus_plant": 64,
       "minecraft:chorus_flower": 96,
-      "minecraft:wheat_seeds": 16,
-      "minecraft:beetroot_seeds": 16,
+      "#forge:seeds/wheat": 16,
+      "#forge:seeds/beetroot": 16,
       "minecraft:melon_slice": 16,
       "minecraft:sweet_berries": 16,
-      "minecraft:wheat": 24,
-      "minecraft:nether_wart": 24,
+      "#forge:crops/wheat": 24,
+      "#forge:crops/nether_wart": 24,
       "minecraft:apple": 128,
       "minecraft:pumpkin": 144,
       "minecraft:porkchop": 64,
@@ -284,9 +278,9 @@
       "minecraft:salmon": 64,
       "minecraft:tropical_fish": 64,
       "minecraft:pufferfish": 64,
-      "minecraft:carrot": 64,
-      "minecraft:beetroot": 64,
-      "minecraft:potato": 64,
+      "#forge:crops/carrot": 64,
+      "#forge:crops/beetroot": 64,
+      "#forge:crops/potato": 64,
       "minecraft:poisonous_potato": 64,
       "minecraft:chorus_fruit": 192,
 
@@ -323,9 +317,8 @@
       "minecraft:prismarine_shard": 256,
       "minecraft:prismarine_crystals": 512,
       "minecraft:ink_sac": 16,
-      "minecraft:cocoa_beans": 128,
+      "minecraft:cocoa_beans": 64,
       "minecraft:lapis_lazuli": 864,
-      "minecraft:enchanted_book": 2048,
       "minecraft:emerald": 16384,
       "minecraft:nether_star": 139264,
       "minecraft:clay_ball": 16,
