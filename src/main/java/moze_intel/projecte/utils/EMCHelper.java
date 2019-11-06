@@ -124,22 +124,16 @@ public final class EMCHelper {
 		return stack.isEmpty() ? 0 : getEmcValue(ItemInfo.fromStack(stack));
 	}
 
-	/**
-	 * Does not consider stack size
-	 */
 	public static long getEmcValue(ItemInfo info) {
 		return NBTManager.getEmcValue(info);
 	}
 
 	public static long getEmcSellValue(ItemStack stack) {
 		long originalValue = getEmcValue(stack);
-
 		if (originalValue == 0) {
 			return 0;
 		}
-
 		long emc = (long) Math.floor(originalValue * EMCMappingHandler.covalenceLoss);
-
 		if (emc < 1) {
 			if (EMCMappingHandler.covalenceLossRounding) {
 				emc = 1;
@@ -147,7 +141,6 @@ public final class EMCHelper {
 				emc = 0;
 			}
 		}
-
 		return emc;
 	}
 

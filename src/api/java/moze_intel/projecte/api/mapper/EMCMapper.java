@@ -25,7 +25,5 @@ public @interface EMCMapper {
 	 */
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
-	@interface Instance {
-
-	}
+	@interface Instance {}
 }

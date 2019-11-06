@@ -22,6 +22,7 @@ import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -217,6 +218,7 @@ public class PECore {
 
 		DeferredWorkQueue.runLater(() -> {
 			PacketHandler.register();
+			NBTManager.loadProcessors();
 
 			// internals unsafe
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);

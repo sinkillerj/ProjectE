@@ -4,14 +4,18 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.api.nbt.INBTProcessor;
+import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.utils.ItemInfoHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
+@NBTProcessor
 public class EnchantmentProcessor implements INBTProcessor {
+
+	private static final long ENCH_EMC_BONUS = 5_000;
 
 	@Nullable
 	@Override
@@ -37,11 +41,14 @@ public class EnchantmentProcessor implements INBTProcessor {
 		for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
 			int rarityWeight = entry.getKey().getRarity().getWeight();
 			if (rarityWeight > 0) {
-				//TODO: Do we also partially want to take into account the level compared to the max level for the enchantment?
-				// So that we can get a wider range of "rarity" based on the specific enchant/level. (It sort of already does this)
-				currentEMC = Math.addExact(currentEMC, Math.multiplyExact(Constants.ENCH_EMC_BONUS / rarityWeight, entry.getValue()));
+				currentEMC = Math.addExact(currentEMC, Math.multiplyExact(ENCH_EMC_BONUS / rarityWeight, entry.getValue()));
 			}
 		}
 		return currentEMC;
+	}
+
+	@Override
+	public String getName() {
+		return "EnchantmentProcessor";
 	}
 }

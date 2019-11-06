@@ -4,12 +4,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.nbt.INBTProcessor;
+import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -19,6 +24,29 @@ import org.objectweb.asm.Type;
 public class AnnotationHelper {
 
 	private static final Type MAPPER_TYPE = Type.getType(EMCMapper.class);
+	private static final Type NBT_PROCESSOR_TYPE = Type.getType(NBTProcessor.class);
+
+	public static List<INBTProcessor> getNBTProcessors() {
+		ModList modList = ModList.get();
+		List<INBTProcessor> nbtProcessors = new ArrayList<>();
+		Map<INBTProcessor, Integer> priorities = new HashMap<>();
+		for (ModFileScanData scanData : modList.getAllScanData()) {
+			for (AnnotationData data : scanData.getAnnotations()) {
+				if (NBT_PROCESSOR_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
+					//If all the mods were loaded then attempt to get the processor
+					INBTProcessor processor = getNBTProcessor(data.getMemberName());
+					if (processor != null) {
+						int priority = getPriority(data);
+						nbtProcessors.add(processor);
+						priorities.put(processor, priority);
+						PECore.LOGGER.info("Found and loaded NBT Processor: {}, with priority {}", processor.getName(), priority);
+					}
+				}
+			}
+		}
+		nbtProcessors.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
+		return nbtProcessors;
+	}
 
 	//Note: We don't bother caching this value because EMCMappingHandler#loadMappers caches our processed result
 	public static List<IEMCMapper<NormalizedSimpleStack, Long>> getEMCMappers() {
@@ -26,16 +54,7 @@ public class AnnotationHelper {
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = new ArrayList<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
-				if (MAPPER_TYPE.equals(data.getAnnotationType())) {
-					Map<String, Object> annotationData = data.getAnnotationData();
-					if (annotationData.containsKey("requiredMods")) {
-						//Check if all the mods the EMCMapper wants to be loaded are loaded
-						List<String> requiredMods = (List<String>) annotationData.get("requiredMods");
-						if (requiredMods.stream().anyMatch(modid -> !modList.isLoaded(modid))) {
-							PECore.debugLog("Skipped checking class {}, as its required mods ({}) are not loaded.", data.getMemberName(), Arrays.toString(requiredMods.toArray()));
-							continue;
-						}
-					}
+				if (MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
 					//If all the mods were loaded then attempt to get the mapper
 					IEMCMapper mapper = getEMCMapper(data.getMemberName());
 					if (mapper != null) {
@@ -52,6 +71,7 @@ public class AnnotationHelper {
 		return emcMappers;
 	}
 
+	//TODO: Try to deduplicate the duplicate code between getEMCMapper and getNBTProcessor
 	@Nullable
 	private static IEMCMapper getEMCMapper(String className) {
 		//Try to create an instance of the class
@@ -68,20 +88,74 @@ public class AnnotationHelper {
 							PECore.debugLog("Found specified EMC Mapper instance for: {}. Using it rather than creating a new instance.", mapper.getName());
 							return mapper;
 						} else {
-							PECore.LOGGER.error("EMCMapperInstance annotation found on non IEMCMapper field: {}", field);
+							PECore.LOGGER.error("EMCMapper.Instance annotation found on non IEMCMapper field: {}", field);
 							return null;
 						}
 					} else {
-						PECore.LOGGER.error("EMCMapperInstance annotation found on non static field: {}", field);
+						PECore.LOGGER.error("EMCMapper.Instance annotation found on non static field: {}", field);
 						return null;
 					}
 				}
 			}
-			//If we don't have any fields that have the EMCMapperInstance annotation, then try to create a new instance of the class
+			//If we don't have any fields that have the EMCMapper.Instance annotation, then try to create a new instance of the class
 			return subClass.newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError e) {
 			PECore.LOGGER.error("Failed to load: {}", className, e);
 		}
 		return null;
+	}
+
+	@Nullable
+	private static INBTProcessor getNBTProcessor(String className) {
+		//Try to create an instance of the class
+		try {
+			Class<? extends INBTProcessor> subClass = Class.forName(className).asSubclass(INBTProcessor.class);
+			//First try looking at the fields of the class to see if one of them is specified as the instance
+			Field[] fields = subClass.getDeclaredFields();
+			for (Field field : fields) {
+				if (field.isAnnotationPresent(NBTProcessor.Instance.class)) {
+					if (Modifier.isStatic(field.getModifiers())) {
+						Object fieldValue = field.get(null);
+						if (fieldValue instanceof INBTProcessor) {
+							INBTProcessor processor = (INBTProcessor) fieldValue;
+							PECore.debugLog("Found specified NBT Processor instance for: {}. Using it rather than creating a new instance.", processor.getName());
+							return processor;
+						} else {
+							PECore.LOGGER.error("NBTProcessor.Instance annotation found on non INBTProcessor field: {}", field);
+							return null;
+						}
+					} else {
+						PECore.LOGGER.error("NBTProcessor.Instance annotation found on non static field: {}", field);
+						return null;
+					}
+				}
+			}
+			//If we don't have any fields that have the NBTProcessor.Instance annotation, then try to create a new instance of the class
+			return subClass.newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError e) {
+			PECore.LOGGER.error("Failed to load: {}", className, e);
+		}
+		return null;
+	}
+
+	private static boolean checkRequiredMods(AnnotationData data) {
+		Map<String, Object> annotationData = data.getAnnotationData();
+		if (annotationData.containsKey("requiredMods")) {
+			//Check if all the mods the EMCMapper wants to be loaded are loaded
+			List<String> requiredMods = (List<String>) annotationData.get("requiredMods");
+			if (requiredMods.stream().anyMatch(modid -> !ModList.get().isLoaded(modid))) {
+				PECore.debugLog("Skipped checking class {}, as its required mods ({}) are not loaded.", data.getMemberName(), Arrays.toString(requiredMods.toArray()));
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static int getPriority(AnnotationData data) {
+		Map<String, Object> annotationData = data.getAnnotationData();
+		if (annotationData.containsKey("priority")) {
+			return (int) annotationData.get("priority");
+		}
+		return 0;
 	}
 }

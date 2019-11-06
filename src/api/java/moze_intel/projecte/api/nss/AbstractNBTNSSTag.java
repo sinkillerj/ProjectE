@@ -28,10 +28,7 @@ public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> imple
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
 
-	public boolean hasNBT() {
-		return nbt != null;
-	}
-
+	@Nullable
 	@Override
 	public CompoundNBT getNBT() {
 		return nbt;

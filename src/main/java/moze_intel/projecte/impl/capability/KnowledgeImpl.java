@@ -53,8 +53,6 @@ public final class KnowledgeImpl {
 		}, () -> new DefaultImpl(null));
 	}
 
-	//TODO: Fix learning items with NBT
-	//TODO: Make the knowledge provider be for ItemInfo??
 	private static class DefaultImpl implements IKnowledgeProvider {
 
 		@Nullable
@@ -100,7 +98,6 @@ public final class KnowledgeImpl {
 			if (fullKnowledge) {
 				return true;
 			}
-			//TODO: Is there some easy way to check if the info is already cleaned?
 			return knowledge.contains(NBTManager.getPersistentInfo(info));
 		}
 
@@ -109,8 +106,6 @@ public final class KnowledgeImpl {
 			if (fullKnowledge) {
 				return false;
 			}
-			//TODO: Should we clean the item info up here?
-
 			if (info.getItem() == ObjHandler.tome) {
 				if (info.getNBT() != null) {
 					//Make sure we don't have any NBT as it doesn't have any effect for the tome
@@ -137,14 +132,12 @@ public final class KnowledgeImpl {
 		@Override
 		public boolean removeKnowledge(@Nonnull ItemInfo info) {
 			if (info.getItem() == ObjHandler.tome) {
-				fullKnowledge = false;
-				fireChangedEvent();
+				setFullKnowledge(false);
 				return true;
 			}
 			if (fullKnowledge) {
 				return false;
 			}
-
 			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
 			if (knowledge.remove(cleanedInfo)) {
 				fireChangedEvent();
@@ -211,7 +204,6 @@ public final class KnowledgeImpl {
 			for (int i = 0; i < list.size(); i++) {
 				ItemInfo info = ItemInfo.read(list.getCompound(i));
 				if (info != null) {
-					//TODO: Should we run the info through NBTManager.cleanupInfo
 					knowledge.add(info);
 				}
 			}

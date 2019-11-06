@@ -71,14 +71,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 
 	public void handleKnowledge(ItemInfo info) {
 		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
-		//TODO: Can/should we make the "cleaner" also clean the damage?
 		if (!provider.hasKnowledge(cleanedInfo)) {
-			//TODO: Re-evaluate
-			// all items handle with NBT now. Empty tags get transformed into nulls by the ItemNBTFilter
-			/*if (filtered.hasTag() && !ItemHelper.shouldDupeWithNBT(filtered)) {
-				filtered.setTag(null);
-			}*/
-
 			//Pass both stacks to the Attempt Learn Event in case a mod cares about the NBT/damage difference when comparing
 			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
 				//Only show the "learned" text if the knowledge was added
@@ -133,66 +126,42 @@ public class TransmutationInventory extends CombinedInvWrapper {
 
 		knowledge.clear();
 		knowledge.addAll(provider.getKnowledge());
+		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 
 		for (int i = 0; i < outputs.getSlots(); i++) {
 			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
 
+		int pagecounter = 0;
+		int desiredPage = searchpage * 12;
 		ItemInfo lockInfo = null;
-
-		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty()) {
 			lockInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(inputLocks.getStackInSlot(LOCK_INDEX)));
+			//Note: We look up using only the persistent information here, instead of all the data as
+			// we cannot replicate the extra data anyways since it cannot be learned. So we need to make
+			// sure that we only go off of the data that can be matched
 			long reqEmc = EMCHelper.getEmcValue(lockInfo);
-
 			if (getAvailableEMC().compareTo(BigInteger.valueOf(reqEmc)) < 0) {
 				return;
 			}
 
 			Iterator<ItemInfo> iter = knowledge.iterator();
-			int pagecounter = 0;
-
 			while (iter.hasNext()) {
 				ItemInfo info = iter.next();
-
-				if (EMCHelper.getEmcValue(info) > reqEmc) {
+				if (EMCHelper.getEmcValue(info) > reqEmc || info.equals(lockInfo) || !doesItemMatchFilter(info)) {
 					iter.remove();
-					continue;
-				}
-
-				if (info.equals(lockInfo)) {
-					iter.remove();
-					continue;
-				}
-
-				if (!doesItemMatchFilter(info)) {
-					iter.remove();
-					continue;
-				}
-
-				if (pagecounter < (searchpage * 12)) {
+				} else if (pagecounter < desiredPage) {
 					pagecounter++;
 					iter.remove();
 				}
 			}
 		} else {
 			Iterator<ItemInfo> iter = knowledge.iterator();
-			int pagecounter = 0;
-
 			while (iter.hasNext()) {
 				ItemInfo info = iter.next();
-
-				if (getAvailableEMC().compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(info))) < 0) {
+				if (getAvailableEMC().compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(info))) < 0 || !doesItemMatchFilter(info)) {
 					iter.remove();
-					continue;
-				}
-
-				if (!doesItemMatchFilter(info)) {
-					iter.remove();
-					continue;
-				}
-
-				if (pagecounter < (searchpage * 12)) {
+				} else if (pagecounter < desiredPage) {
 					pagecounter++;
 					iter.remove();
 				}
@@ -218,15 +187,11 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			if (FuelMapper.isStackFuel(stack)) {
 				if (fuelCounter < 4) {
 					outputs.setStackInSlot(FUEL_START + fuelCounter, stack);
-
 					fuelCounter++;
 				}
-			} else {
-				if (matterCounter < 12) {
-					outputs.setStackInSlot(matterCounter, stack);
-
-					matterCounter++;
-				}
+			} else if (matterCounter < 12) {
+				outputs.setStackInSlot(matterCounter, stack);
+				matterCounter++;
 			}
 		}
 	}

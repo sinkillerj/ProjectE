@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Document, and figure out a good spot for this
+//TODO: Document
 public class ItemInfo {
 
 	@Nonnull
@@ -32,7 +32,6 @@ public class ItemInfo {
 		return fromItem(item, null);
 	}
 
-	//TODO: Nullable if empty??
 	public static ItemInfo fromStack(@Nonnull ItemStack stack) {
 		return fromItem(stack.getItem(), stack.getTag());
 	}

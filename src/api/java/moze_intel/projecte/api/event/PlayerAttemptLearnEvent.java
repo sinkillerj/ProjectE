@@ -16,7 +16,6 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class PlayerAttemptLearnEvent extends Event {
 
-	//TODO: Update docs
 	private final PlayerEntity player;
 	private final ItemInfo sourceInfo;
 	private final ItemInfo reducedInfo;
@@ -36,9 +35,7 @@ public class PlayerAttemptLearnEvent extends Event {
 	}
 
 	/**
-	 * @return The stack that the player is trying to learn.
-	 *
-	 * @apiNote The returned stack can be safely modified.
+	 * @return The {@link ItemInfo} that the player is trying to learn.
 	 */
 	@Nonnull
 	public ItemInfo getSourceInfo() {
@@ -46,11 +43,9 @@ public class PlayerAttemptLearnEvent extends Event {
 	}
 
 	/**
-	 * Gets the "cleaned" stack that the player is trying to learn. This stack has a size of one, no damage, and may have reduced NBT information.
+	 * Gets the "cleaned" {@link ItemInfo} that the player is trying to learn. This {@link ItemInfo} may have reduced NBT information.
 	 *
-	 * @return The "cleaned" stack that the player is trying to learn.
-	 *
-	 * @apiNote The returned stack can be safely modified.
+	 * @return The "cleaned" {@link ItemInfo} that the player is trying to learn.
 	 */
 	@Nonnull
 	public ItemInfo getReducedInfo() {

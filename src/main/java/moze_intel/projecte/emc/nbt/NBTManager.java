@@ -6,11 +6,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.emc.nbt.processor.DamageProcessor;
-import moze_intel.projecte.emc.nbt.processor.EnchantmentProcessor;
-import moze_intel.projecte.emc.nbt.processor.INBTProcessor;
-import moze_intel.projecte.emc.nbt.processor.StoredEMCProcessor;
+import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ItemTags;
@@ -20,25 +18,19 @@ import net.minecraft.util.ResourceLocation;
 public class NBTManager {
 
 	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
-	//TODO: Add a map for keeping track of cached "extra" values that have been found this lookup from querying
-	// but do not have actually values added into the actual map
-	// NOTE: We still need to figure out how to best handle it so that we don't spam the map with values of things
-	// like different damage values
-	// This is where the least significant NBT part of the processor comes in
-	// Note: unsure how well that will work due to the damage NBT actually being *most* significant
-	private static List<INBTProcessor> processors = new ArrayList<>();
+	private static final List<INBTProcessor> processors = new ArrayList<>();
+	//TODO: Eventually maybe add some form of cache for calculated EMC values. There isn't a great way to do it memory wise
+	// for how long we should keep it in memory so for now we don't bother.
 
-	static {
-		//TODO: Allow these to be registered via annotations. Also make sure they have some sort of priority system
-		processors.add(new DamageProcessor());
-		processors.add(new EnchantmentProcessor());
-		processors.add(new StoredEMCProcessor());
+	public static void loadProcessors() {
+		if (processors.isEmpty()) {
+			processors.addAll(AnnotationHelper.getNBTProcessors());
+		}
 	}
 
 	//TODO: Figure out what happens if more cleaners get added since someone learns an item so then it doesn't find a match when trying to
 	// remove the "overly" cleaned stack
 
-	//TODO: Go back through this, because it actually will give the "incorrect" information because it will trim out things like damage/stored emc
 	public static ItemInfo getPersistentInfo(ItemInfo info) {
 		if (info.getNBT() == null || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.emc.containsKey(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
@@ -88,6 +80,10 @@ public class NBTManager {
 			} catch (ArithmeticException e) {
 				//Return the last successfully calculated EMC value
 				return emcValue;
+			}
+			if (emcValue <= 0) {
+				//Exit if it gets to zero (also safety check for less than zero in case a mod didn't bother sanctifying their data)
+				return 0;
 			}
 		}
 		return emcValue;
