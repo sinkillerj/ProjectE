@@ -1,11 +1,12 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -162,13 +163,8 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	protected void pushStack() {
-		ItemStack lockCopy = lock.getStackInSlot(0).copy();
-
-		//TODO: Use cleaned version of NBT
-		if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy)) {
-			lockCopy.setTag(new CompoundNBT());
-		}
-
+		//TODO: Optimize this so that it just stores the ItemInfo in the lock instead of a stack??
+		ItemStack lockCopy = NBTManager.getPersistentInfo(ItemInfo.fromStack(lock.getStackInSlot(0))).createStack();
 		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
 	}
 
@@ -186,13 +182,10 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 		if (lock.getStackInSlot(0).isEmpty()) {
 			return false;
 		}
-
-		//TODO: Use cleaned version of NBT
-		if (ItemHelper.shouldDupeWithNBT(lock.getStackInSlot(0))) {
-			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
-		}
-
-		return lock.getStackInSlot(0).getItem() == stack.getItem();
+		//TODO: Optimize this so that it just stores the ItemInfo in the lock instead of a stack??
+		ItemInfo lockInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(lock.getStackInSlot(0)));
+		ItemInfo stackInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(stack));
+		return stackInfo.equals(lockInfo);
 	}
 
 	@Override

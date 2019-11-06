@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO: Figure out why the condenser seems to have some minor sync issues in terms of which stacks it shows things are in
 public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T> {
 
 	protected final T container;

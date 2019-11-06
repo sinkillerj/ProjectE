@@ -3,16 +3,12 @@ package moze_intel.projecte.utils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -185,12 +181,5 @@ public final class ItemHelper {
 			return ((BlockItem) stack.getItem()).getBlock().getDefaultState();
 		}
 		return null;
-	}
-
-	public static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
-
-	//TODO: Remove this??
-	public static boolean shouldDupeWithNBT(ItemStack stack) {
-		return NBT_WHITELIST_TAG.contains(stack.getItem());
 	}
 }
