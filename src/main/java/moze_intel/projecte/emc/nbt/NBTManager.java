@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.processor.DamageProcessor;
 import moze_intel.projecte.emc.nbt.processor.EnchantmentProcessor;
 import moze_intel.projecte.emc.nbt.processor.INBTProcessor;
 import moze_intel.projecte.emc.nbt.processor.StoredEMCProcessor;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 public class NBTManager {
 
+	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
 	//TODO: Add a map for keeping track of cached "extra" values that have been found this lookup from querying
 	// but do not have actually values added into the actual map
 	// NOTE: We still need to figure out how to best handle it so that we don't spam the map with values of things
@@ -34,9 +40,8 @@ public class NBTManager {
 
 	//TODO: Go back through this, because it actually will give the "incorrect" information because it will trim out things like damage/stored emc
 	public static ItemInfo getPersistentInfo(ItemInfo info) {
-		if (info.getNBT() == null || EMCMappingHandler.emc.containsKey(info)) {
-			//If we have no NBT or we have an exact match to a stored value
-			// just go with it
+		if (info.getNBT() == null || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.emc.containsKey(info)) {
+			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}
 
