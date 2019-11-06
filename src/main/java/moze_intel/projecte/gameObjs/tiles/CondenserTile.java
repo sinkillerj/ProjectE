@@ -164,6 +164,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	protected void pushStack() {
 		ItemStack lockCopy = lock.getStackInSlot(0).copy();
 
+		//TODO: Use cleaned version of NBT
 		if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy)) {
 			lockCopy.setTag(new CompoundNBT());
 		}
@@ -186,6 +187,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 			return false;
 		}
 
+		//TODO: Use cleaned version of NBT
 		if (ItemHelper.shouldDupeWithNBT(lock.getStackInSlot(0))) {
 			return ItemHelper.areItemStacksEqual(lock.getStackInSlot(0), stack);
 		}

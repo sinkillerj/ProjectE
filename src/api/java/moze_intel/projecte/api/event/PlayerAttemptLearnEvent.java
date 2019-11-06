@@ -1,8 +1,8 @@
 package moze_intel.projecte.api.event;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -16,12 +16,15 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class PlayerAttemptLearnEvent extends Event {
 
+	//TODO: Update docs
 	private final PlayerEntity player;
-	private final ItemStack stack;
+	private final ItemInfo sourceInfo;
+	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptLearnEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemStack stack) {
+	public PlayerAttemptLearnEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
 		player = entityPlayer;
-		this.stack = stack;
+		this.sourceInfo = sourceInfo;
+		this.reducedInfo = reducedInfo;
 	}
 
 	/**
@@ -34,9 +37,23 @@ public class PlayerAttemptLearnEvent extends Event {
 
 	/**
 	 * @return The stack that the player is trying to learn.
+	 *
+	 * @apiNote The returned stack can be safely modified.
 	 */
 	@Nonnull
-	public ItemStack getStack() {
-		return stack;
+	public ItemInfo getSourceInfo() {
+		return sourceInfo;
+	}
+
+	/**
+	 * Gets the "cleaned" stack that the player is trying to learn. This stack has a size of one, no damage, and may have reduced NBT information.
+	 *
+	 * @return The "cleaned" stack that the player is trying to learn.
+	 *
+	 * @apiNote The returned stack can be safely modified.
+	 */
+	@Nonnull
+	public ItemInfo getReducedInfo() {
+		return reducedInfo;
 	}
 }

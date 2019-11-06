@@ -41,24 +41,21 @@ public class GUICollectorMK1 extends ContainerScreen<CollectorMK1Container> {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-
-		this.blit(x, y, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		//Light Level. Max is 12
 		int progress = (int) (container.sunLevel.get() * 12.0 / 16);
-		this.blit(x + 126, y + 49 - progress, 177, 13 - progress, 12, progress);
+		this.blit(guiLeft + 126,  guiTop+ 49 - progress, 177, 13 - progress, 12, progress);
 
 		//EMC storage. Max is 48
-		this.blit(x + 64, y + 18, 0, 166, (int) (container.emc.get() / container.tile.getMaximumEmc() * 48), 10);
+		this.blit(guiLeft + 64, guiTop + 18, 0, 166, (int) (container.emc.get() / container.tile.getMaximumEmc() * 48), 10);
 
 		//Klein Star Charge Progress. Max is 48
 		progress = (int) (container.getKleinChargeProgress() * 48);
-		this.blit(x + 64, y + 58, 0, 166, progress, 10);
+		this.blit(guiLeft + 64, guiTop + 58, 0, 166, progress, 10);
 
 		//Fuel Progress. Max is 24.
 		progress = (int) (container.getFuelProgress() * 24);
-		this.blit(x + 138, y + 55 - progress, 176, 38 - progress, 10, progress + 1);
+		this.blit(guiLeft + 138, guiTop + 55 - progress, 176, 38 - progress, 10, progress + 1);
 	}
 }

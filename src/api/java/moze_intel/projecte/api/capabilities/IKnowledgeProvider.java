@@ -1,8 +1,9 @@
 package moze_intel.projecte.api.capabilities;
 
 import java.math.BigInteger;
-import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,27 +39,42 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
 	 *
 	 * @return Whether the player has transmutation knowledge for this stack
 	 */
-	boolean hasKnowledge(@Nonnull ItemStack stack);
+	default boolean hasKnowledge(@Nonnull ItemStack stack) {
+		//TODO: Remove??
+		return !stack.isEmpty() && hasKnowledge(ItemInfo.fromStack(stack));
+	}
+
+	boolean hasKnowledge(@Nonnull ItemInfo info);
 
 	/**
 	 * @param stack The stack to add to knowledge
 	 *
 	 * @return Whether the operation was successful
 	 */
-	boolean addKnowledge(@Nonnull ItemStack stack);
+	default boolean addKnowledge(@Nonnull ItemStack stack) {
+		//TODO: Remove??
+		return !stack.isEmpty() && addKnowledge(ItemInfo.fromStack(stack));
+	}
+
+	boolean addKnowledge(@Nonnull ItemInfo info);
 
 	/**
 	 * @param stack The stack to remove from knowledge
 	 *
 	 * @return Whether the operation was successful
 	 */
-	boolean removeKnowledge(@Nonnull ItemStack stack);
+	default boolean removeKnowledge(@Nonnull ItemStack stack) {
+		//TODO: Remove??
+		return !stack.isEmpty() && removeKnowledge(ItemInfo.fromStack(stack));
+	}
+
+	boolean removeKnowledge(@Nonnull ItemInfo info);
 
 	/**
 	 * @return An unmodifiable but live view of the knowledge list.
 	 */
 	@Nonnull
-	List<ItemStack> getKnowledge();
+	Set<ItemInfo> getKnowledge();
 
 	/**
 	 * @return The player's input and lock slots

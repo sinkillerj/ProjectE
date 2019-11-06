@@ -1,23 +1,23 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.server.MinecraftServer;
@@ -78,7 +78,7 @@ public class TransmutationOffline {
 
 	private static IKnowledgeProvider immutableCopy(final IKnowledgeProvider toCopy) {
 		return new IKnowledgeProvider() {
-			final List<ItemStack> immutableKnowledge = ImmutableList.copyOf(toCopy.getKnowledge());
+			final Set<ItemInfo> immutableKnowledge = ImmutableSet.copyOf(toCopy.getKnowledge());
 			final IItemHandlerModifiable immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
 
 			@Override
@@ -95,23 +95,23 @@ public class TransmutationOffline {
 			}
 
 			@Override
-			public boolean hasKnowledge(@Nonnull ItemStack stack) {
-				return toCopy.hasKnowledge(stack);
+			public boolean hasKnowledge(@Nonnull ItemInfo info) {
+				return toCopy.hasKnowledge(info);
 			}
 
 			@Override
-			public boolean addKnowledge(@Nonnull ItemStack stack) {
+			public boolean addKnowledge(@Nonnull ItemInfo info) {
 				return false;
 			}
 
 			@Override
-			public boolean removeKnowledge(@Nonnull ItemStack stack) {
+			public boolean removeKnowledge(@Nonnull ItemInfo info) {
 				return false;
 			}
 
 			@Nonnull
 			@Override
-			public List<ItemStack> getKnowledge() {
+			public Set<ItemInfo> getKnowledge() {
 				return immutableKnowledge;
 			}
 

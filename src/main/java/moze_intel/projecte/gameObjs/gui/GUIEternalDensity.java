@@ -31,10 +31,7 @@ public class GUIEternalDensity extends ContainerScreen<EternalDensityContainer> 
 	@Override
 	public void init() {
 		super.init();
-
-		this.buttons.add(new Button((width - xSize) / 2 + 62, (height - ySize) / 2 + 4,
-				52, 20,
-				container.inventory.isWhitelistMode() ? "Whitelist" : "Blacklist", b -> {
+		addButton(new Button(guiLeft + 62, guiTop + 4, 52, 20, container.inventory.isWhitelistMode() ? "Whitelist" : "Blacklist", b -> {
 			container.inventory.changeMode();
 			b.setMessage(I18n.format(container.inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist"));
 		}));
@@ -44,6 +41,6 @@ public class GUIEternalDensity extends ContainerScreen<EternalDensityContainer> 
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		this.blit((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 }

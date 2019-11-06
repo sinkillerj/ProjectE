@@ -33,5 +33,6 @@ public final class Constants {
 
 	public static final int MAX_VEIN_SIZE = 250;
 
+	//TODO: Move this into the EnchantmentProcessor?
 	public static final long ENCH_EMC_BONUS = 5_000;
 }

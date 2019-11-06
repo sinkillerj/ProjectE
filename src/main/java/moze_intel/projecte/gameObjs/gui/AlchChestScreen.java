@@ -30,6 +30,6 @@ public class AlchChestScreen extends ContainerScreen<AlchChestContainer> {
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		this.blit((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 }

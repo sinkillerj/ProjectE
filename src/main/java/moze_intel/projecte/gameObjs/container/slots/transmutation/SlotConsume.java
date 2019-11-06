@@ -25,7 +25,7 @@ public class SlotConsume extends SlotItemHandler {
 
 		inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
 		this.onSlotChanged();
-		inv.handleKnowledge(stack.copy());
+		inv.handleKnowledge(stack);
 	}
 
 	@Override

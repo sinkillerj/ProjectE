@@ -13,7 +13,8 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.ItemInfo;
+import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.utils.ItemInfoHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -87,7 +88,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			try {
 				Ingredient reagent = (Ingredient) ObfuscationReflectionHelper.getPrivateValue(mixPredicateClass, conversion, "field_185199_b");
 				for (ItemStack r : reagent.getMatchingStacks()) {
-					allReagents.add(new ItemInfo(r));
+					allReagents.add(ItemInfo.fromStack(r));
 				}
 			} catch (Exception ex) {
 				PECore.LOGGER.error("Brewing mapper: could not find field: {}", ex.getMessage());
@@ -109,12 +110,12 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		Set<ItemInfo> inputs = new HashSet<>();
 		for (Ingredient potionItem : PotionBrewing.POTION_ITEMS) {
 			for (ItemStack input : potionItem.getMatchingStacks()) {
-				inputs.add(new ItemInfo(input));
+				inputs.add(ItemInfo.fromStack(input));
 			}
 		}
 		for (Potion potion : ForgeRegistries.POTION_TYPES.getValues()) {
 			for (ItemInfo input : inputs) {
-				allInputs.add(input.makeWithPotion(potion));
+				allInputs.add(ItemInfoHelper.makeWithPotion(input, potion));
 			}
 		}
 		totalPotionItems = count;

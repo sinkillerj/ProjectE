@@ -43,21 +43,18 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 	public void init() {
 		super.init();
 
-		int xLocation = (this.width - this.xSize) / 2;
-		int yLocation = (this.height - this.ySize) / 2;
-
-		this.textBoxFilter = new TextFieldWidget(this.font, xLocation + 88, yLocation + 8, 45, 10, "");
+		this.textBoxFilter = new TextFieldWidget(this.font, guiLeft + 88, guiTop + 8, 45, 10, "");
 		this.textBoxFilter.setText(inv.filter);
 
-		this.buttons.add(new Button(xLocation + 125, yLocation + 100, 14, 14, "<", b -> {
+		addButton(new Button(guiLeft + 125, guiTop + 100, 14, 14, "<", b -> {
 			if (inv.searchpage != 0) {
 				inv.searchpage--;
 			}
 			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
 			inv.updateClientTargets();
 		}));
-		this.buttons.add(new Button(xLocation + 193, yLocation + 100, 14, 14, ">", b -> {
-			if (!(inv.knowledge.size() <= 12)) {
+		addButton(new Button(guiLeft + 193, guiTop + 100, 14, 14, ">", b -> {
+			if (inv.getKnowledgeSize() > 12) {
 				inv.searchpage++;
 			}
 			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
@@ -167,14 +164,16 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 		int maxX = minX + textBoxFilter.getWidth();
 		int maxY = minY + textBoxFilter.getHeight();
 
-		if (mouseButton == 1 && x >= minX && x <= maxX && y <= maxY) {
-			inv.filter = "";
-			inv.searchpage = 0;
-			inv.updateClientTargets();
-			this.textBoxFilter.setText("");
+		if (x >= minX && x <= maxX && y <= maxY) {
+			if (mouseButton == 1) {
+				inv.filter = "";
+				inv.searchpage = 0;
+				inv.updateClientTargets();
+				this.textBoxFilter.setText("");
+			}
+			return this.textBoxFilter.mouseClicked(x, y, mouseButton);
 		}
-
-		return this.textBoxFilter.mouseClicked(x, y, mouseButton) || super.mouseClicked(x, y, mouseButton);
+		return super.mouseClicked(x, y, mouseButton);
 	}
 
 	@Override
@@ -193,9 +192,9 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 			return;
 		}
 
-		int emcLeft = (this.width - this.xSize) / 2;
+		int emcLeft = guiLeft;
 		int emcRight = emcLeft + 82;
-		int emcTop = 95 + (this.height - this.ySize) / 2;
+		int emcTop = 95 + guiTop;
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {

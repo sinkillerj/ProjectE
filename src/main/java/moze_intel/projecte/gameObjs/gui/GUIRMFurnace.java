@@ -35,20 +35,17 @@ public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer> {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-
-		this.blit(x, y, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int progress;
 
 		if (tile.isBurning()) {
 			progress = tile.getBurnTimeRemainingScaled(12);
-			this.blit(x + 66, y + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
+			this.blit(guiLeft + 66, guiTop + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
 		}
 
 		progress = tile.getCookProgressScaled(24);
-		this.blit(x + 88, y + 35, 210, 14, progress, 17);
+		this.blit(guiLeft + 88, guiTop + 35, 210, 14, progress, 17);
 	}
 
 	@Override

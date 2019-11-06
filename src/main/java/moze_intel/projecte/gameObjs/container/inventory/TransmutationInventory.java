@@ -8,14 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -41,7 +42,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	public final List<ItemStack> knowledge = new ArrayList<>();
+	private final List<ItemInfo> knowledge = new ArrayList<>();
 
 	public TransmutationInventory(PlayerEntity player) {
 		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
@@ -59,25 +60,31 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
+	/**
+	 * @implNote The passed stack will not be directly modified by this method.
+	 */
 	public void handleKnowledge(ItemStack stack) {
-		if (stack.getCount() > 1) {
-			stack.setCount(1);
+		if (!stack.isEmpty()) {
+			handleKnowledge(ItemInfo.fromStack(stack));
 		}
+	}
 
-		if (ItemHelper.isDamageable(stack)) {
-			stack.setDamage(0);
-		}
+	public void handleKnowledge(ItemInfo info) {
+		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+		//TODO: Can/should we make the "cleaner" also clean the damage?
+		if (!provider.hasKnowledge(cleanedInfo)) {
+			//TODO: Re-evaluate
+			// all items handle with NBT now. Empty tags get transformed into nulls by the ItemNBTFilter
+			/*if (filtered.hasTag() && !ItemHelper.shouldDupeWithNBT(filtered)) {
+				filtered.setTag(null);
+			}*/
 
-		if (!provider.hasKnowledge(stack)) {
-			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack)) {
-				stack.setTag(null);
-			}
-
-			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, stack))) //Only show the "learned" text if the knowledge was added
-			{
+			//Pass both stacks to the Attempt Learn Event in case a mod cares about the NBT/damage difference when comparing
+			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
+				//Only show the "learned" text if the knowledge was added
 				learnFlag = 300;
 				unlearnFlag = 0;
-				provider.addKnowledge(stack);
+				provider.addKnowledge(cleanedInfo);
 			}
 
 			if (!player.getEntityWorld().isRemote) {
@@ -87,25 +94,21 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		updateClientTargets();
 	}
 
+	/**
+	 * @implNote The passed stack will not be directly modified by this method.
+	 */
 	public void handleUnlearn(ItemStack stack) {
-		if (stack.getCount() > 1) {
-			stack.setCount(1);
+		if (!stack.isEmpty()) {
+			handleUnlearn(ItemInfo.fromStack(stack));
 		}
+	}
 
-		if (ItemHelper.isDamageable(stack)) {
-			stack.setDamage(0);
-		}
-
-		if (provider.hasKnowledge(stack)) {
+	public void handleUnlearn(ItemInfo info) {
+		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+		if (provider.hasKnowledge(cleanedInfo)) {
 			unlearnFlag = 300;
 			learnFlag = 0;
-
-			if (stack.hasTag() && !ItemHelper.shouldDupeWithNBT(stack)) {
-				stack.setTag(null);
-			}
-
-			provider.removeKnowledge(stack);
-
+			provider.removeKnowledge(cleanedInfo);
 			if (!player.getEntityWorld().isRemote) {
 				provider.sync(((ServerPlayerEntity) player));
 			}
@@ -135,43 +138,34 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
 
-		ItemStack lockCopy = ItemStack.EMPTY;
+		ItemInfo lockInfo = null;
 
 		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
 		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty()) {
-			lockCopy = ItemHelper.getNormalizedStack(inputLocks.getStackInSlot(LOCK_INDEX));
-
-			if (ItemHelper.isDamageable(lockCopy)) {
-				lockCopy.setDamage(0);
-			}
-
-			long reqEmc = EMCHelper.getEmcValue(inputLocks.getStackInSlot(LOCK_INDEX));
+			lockInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(inputLocks.getStackInSlot(LOCK_INDEX)));
+			long reqEmc = EMCHelper.getEmcValue(lockInfo);
 
 			if (getAvailableEMC().compareTo(BigInteger.valueOf(reqEmc)) < 0) {
 				return;
 			}
 
-			if (lockCopy.hasTag() && !ItemHelper.shouldDupeWithNBT(lockCopy)) {
-				lockCopy.setTag(null);
-			}
-
-			Iterator<ItemStack> iter = knowledge.iterator();
+			Iterator<ItemInfo> iter = knowledge.iterator();
 			int pagecounter = 0;
 
 			while (iter.hasNext()) {
-				ItemStack stack = iter.next();
+				ItemInfo info = iter.next();
 
-				if (EMCHelper.getEmcValue(stack) > reqEmc) {
+				if (EMCHelper.getEmcValue(info) > reqEmc) {
 					iter.remove();
 					continue;
 				}
 
-				if (lockCopy.getItem() == stack.getItem()) {
+				if (info.equals(lockInfo)) {
 					iter.remove();
 					continue;
 				}
 
-				if (!doesItemMatchFilter(stack)) {
+				if (!doesItemMatchFilter(info)) {
 					iter.remove();
 					continue;
 				}
@@ -182,18 +176,18 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				}
 			}
 		} else {
-			Iterator<ItemStack> iter = knowledge.iterator();
+			Iterator<ItemInfo> iter = knowledge.iterator();
 			int pagecounter = 0;
 
 			while (iter.hasNext()) {
-				ItemStack stack = iter.next();
+				ItemInfo info = iter.next();
 
-				if (getAvailableEMC().compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(stack))) < 0) {
+				if (getAvailableEMC().compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(info))) < 0) {
 					iter.remove();
 					continue;
 				}
 
-				if (!doesItemMatchFilter(stack)) {
+				if (!doesItemMatchFilter(info)) {
 					iter.remove();
 					continue;
 				}
@@ -208,17 +202,19 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		int matterCounter = 0;
 		int fuelCounter = 0;
 
-		if (!lockCopy.isEmpty() && provider.hasKnowledge(lockCopy)) {
-			if (FuelMapper.isStackFuel(lockCopy)) {
-				outputs.setStackInSlot(FUEL_START, lockCopy);
+		if (lockInfo != null && provider.hasKnowledge(lockInfo)) {
+			ItemStack lockStack = lockInfo.createStack();
+			if (FuelMapper.isStackFuel(lockStack)) {
+				outputs.setStackInSlot(FUEL_START, lockStack);
 				fuelCounter++;
 			} else {
-				outputs.setStackInSlot(0, lockCopy);
+				outputs.setStackInSlot(0, lockStack);
 				matterCounter++;
 			}
 		}
 
-		for (ItemStack stack : knowledge) {
+		for (ItemInfo info : knowledge) {
+			ItemStack stack = info.createStack();
 			if (FuelMapper.isStackFuel(stack)) {
 				if (fuelCounter < 4) {
 					outputs.setStackInSlot(FUEL_START + fuelCounter, stack);
@@ -235,27 +231,20 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
-	private boolean doesItemMatchFilter(ItemStack stack) {
-		String displayName;
-
+	private boolean doesItemMatchFilter(ItemInfo info) {
+		if (filter.isEmpty()) {
+			return true;
+		}
 		try {
-			displayName = stack.getDisplayName().getUnformattedComponentText().toLowerCase(Locale.ROOT);
+			return info.createStack().getDisplayName().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//From old code... Not sure if intended to not remove items that crash on getDisplayName
 			return true;
 		}
-
-		if (displayName == null) {
-			return false;
-		} else if (filter.length() > 0 && !displayName.contains(filter)) {
-			return false;
-		}
-		return true;
 	}
 
 	public void writeIntoOutputSlot(int slot, ItemStack item) {
-
 		if (EMCHelper.doesItemHaveEmc(item) && BigInteger.valueOf(EMCHelper.getEmcValue(item)).compareTo(getAvailableEMC()) <= 0 && provider.hasKnowledge(item)) {
 			outputs.setStackInSlot(slot, item);
 		} else {
@@ -391,5 +380,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 		}
 		return emc;
+	}
+
+	public int getKnowledgeSize() {
+		return knowledge.size();
 	}
 }

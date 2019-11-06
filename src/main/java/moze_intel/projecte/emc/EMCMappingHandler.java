@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -25,7 +26,6 @@ import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
-import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.IItemProvider;
@@ -35,7 +35,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
-	//TODO: Evaluate LinkedHashMap vs HashMap
+	//TODO: Evaluate LinkedHashMap vs HashMap (I don't believe these is any reason this needs to be linked?)
 	public static final Map<ItemInfo, Long> emc = new LinkedHashMap<>();
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
@@ -146,7 +146,6 @@ public final class EMCMappingHandler {
 		}
 
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
-		Transmutation.cacheFullKnowledge();
 		FuelMapper.loadMap();
 	}
 
@@ -155,7 +154,7 @@ public final class EMCMappingHandler {
 	}
 
 	public static long getEmcValue(IItemProvider item) {
-		return getEmcValue(new ItemInfo(item.asItem(), null));
+		return getEmcValue(ItemInfo.fromItem(item.asItem()));
 	}
 
 	public static long getEmcValue(ItemInfo info) {

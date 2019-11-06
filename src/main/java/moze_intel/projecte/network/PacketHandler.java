@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.emc.ItemInfo;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;

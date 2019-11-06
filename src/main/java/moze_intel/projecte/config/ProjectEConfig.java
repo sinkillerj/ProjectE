@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class ProjectEConfig {
@@ -97,16 +96,8 @@ public final class ProjectEConfig {
 					.defineInRange("timePedMobSlowness", 0.10, 0, 1);
 			timeWatchTEBlacklist = BUILDER
 					.comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
-					.defineList("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"), element -> {
-						if (element instanceof String) {
-							try {
-								new ResourceLocation((String) element);
-								return true;
-							} catch (ResourceLocationException ignored) {
-							}
-						}
-						return false;
-					});
+					.defineList("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"),
+							element -> element instanceof String && ResourceLocation.tryCreate((String) element) != null);
 			interdictionMode = BUILDER
 					.comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 					.define("interdictionMode", true);

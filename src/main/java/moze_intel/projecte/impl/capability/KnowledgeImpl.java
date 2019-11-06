@@ -1,22 +1,22 @@
 package moze_intel.projecte.impl.capability;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
+import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -54,11 +54,12 @@ public final class KnowledgeImpl {
 	}
 
 	//TODO: Fix learning items with NBT
+	//TODO: Make the knowledge provider be for ItemInfo??
 	private static class DefaultImpl implements IKnowledgeProvider {
 
 		@Nullable
 		private final PlayerEntity player;
-		private final List<ItemStack> knowledge = new ArrayList<>();
+		private final Set<ItemInfo> knowledge = new HashSet<>();
 		private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
 		private BigInteger emc = BigInteger.ZERO;
 		private boolean fullKnowledge = false;
@@ -95,40 +96,37 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public boolean hasKnowledge(@Nonnull ItemStack stack) {
-			if (stack.isEmpty()) {
-				return false;
-			}
-
+		public boolean hasKnowledge(@Nonnull ItemInfo info) {
 			if (fullKnowledge) {
 				return true;
 			}
-
-			for (ItemStack s : knowledge) {
-				if (s.getItem() == stack.getItem()) {
-					return true;
-				}
-			}
-			return false;
+			//TODO: Is there some easy way to check if the info is already cleaned?
+			return knowledge.contains(NBTManager.getPersistentInfo(info));
 		}
 
 		@Override
-		public boolean addKnowledge(@Nonnull ItemStack stack) {
+		public boolean addKnowledge(@Nonnull ItemInfo info) {
 			if (fullKnowledge) {
 				return false;
 			}
+			//TODO: Should we clean the item info up here?
 
-			if (stack.getItem() == ObjHandler.tome) {
-				if (!hasKnowledge(stack)) {
-					knowledge.add(stack);
+			if (info.getItem() == ObjHandler.tome) {
+				if (info.getNBT() != null) {
+					//Make sure we don't have any NBT as it doesn't have any effect for the tome
+					info = ItemInfo.fromItem(info.getItem());
+				}
+				if (!hasKnowledge(info)) {
+					knowledge.add(info);
 				}
 				fullKnowledge = true;
 				fireChangedEvent();
 				return true;
 			}
 
-			if (!hasKnowledge(stack)) {
-				knowledge.add(stack);
+			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+			if (!hasKnowledge(cleanedInfo)) {
+				knowledge.add(cleanedInfo);
 				fireChangedEvent();
 				return true;
 			}
@@ -137,42 +135,38 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public boolean removeKnowledge(@Nonnull ItemStack stack) {
-			boolean removed = false;
-
-			if (stack.getItem() == ObjHandler.tome) {
+		public boolean removeKnowledge(@Nonnull ItemInfo info) {
+			if (info.getItem() == ObjHandler.tome) {
 				fullKnowledge = false;
-				removed = true;
+				fireChangedEvent();
+				return true;
 			}
-
 			if (fullKnowledge) {
 				return false;
 			}
 
-			Iterator<ItemStack> iter = knowledge.iterator();
-
-			while (iter.hasNext()) {
-				if (stack.getItem() == iter.next().getItem()) {
-					iter.remove();
-					removed = true;
-				}
-			}
-
-			if (removed) {
+			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+			if (knowledge.remove(cleanedInfo)) {
 				fireChangedEvent();
+				return true;
 			}
-			return removed;
+			return false;
 		}
 
+		@Nonnull
 		@Override
-		public @Nonnull
-		List<ItemStack> getKnowledge() {
-			return fullKnowledge ? Transmutation.getCachedTomeKnowledge() : Collections.unmodifiableList(knowledge);
+		public Set<ItemInfo> getKnowledge() {
+			if (fullKnowledge) {
+				//TODO: FIXME - This "full knowledge cache" does not include anything that was post calculated??
+				//So items that were learned with enchants or stuff won't show
+				return Collections.unmodifiableSet(EMCMappingHandler.emc.keySet());
+			}
+			return Collections.unmodifiableSet(knowledge);
 		}
 
+		@Nonnull
 		@Override
-		public @Nonnull
-		IItemHandlerModifiable getInputAndLocks() {
+		public IItemHandlerModifiable getInputAndLocks() {
 			return inputLocks;
 		}
 
@@ -197,7 +191,7 @@ public final class KnowledgeImpl {
 			properties.putString("transmutationEmc", emc.toString());
 
 			ListNBT knowledgeWrite = new ListNBT();
-			for (ItemStack i : knowledge) {
+			for (ItemInfo i : knowledge) {
 				CompoundNBT tag = i.write(new CompoundNBT());
 				knowledgeWrite.add(tag);
 			}
@@ -215,14 +209,14 @@ public final class KnowledgeImpl {
 
 			ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
 			for (int i = 0; i < list.size(); i++) {
-				ItemStack item = ItemStack.read(list.getCompound(i));
-				if (!item.isEmpty()) {
-					knowledge.add(item);
+				ItemInfo info = ItemInfo.read(list.getCompound(i));
+				if (info != null) {
+					//TODO: Should we run the info through NBTManager.cleanupInfo
+					knowledge.add(info);
 				}
 			}
 
 			pruneStaleKnowledge();
-			pruneDuplicateKnowledge();
 
 			for (int i = 0; i < inputLocks.getSlots(); i++) {
 				inputLocks.setStackInSlot(i, ItemStack.EMPTY);
@@ -232,20 +226,9 @@ public final class KnowledgeImpl {
 			fullKnowledge = properties.getBoolean("fullknowledge");
 		}
 
-		private void pruneDuplicateKnowledge() {
-			ItemHelper.removeEmptyTags(knowledge);
-			ItemHelper.compactItemListNoStacksize(knowledge);
-			for (ItemStack s : knowledge) {
-				if (s.getCount() > 1) {
-					s.setCount(1);
-				}
-			}
-		}
-
 		private void pruneStaleKnowledge() {
-			knowledge.removeIf(stack -> !EMCHelper.doesItemHaveEmc(stack));
+			knowledge.removeIf(info -> !EMCHelper.doesItemHaveEmc(info));
 		}
-
 	}
 
 	public static class Provider implements ICapabilitySerializable<CompoundNBT> {

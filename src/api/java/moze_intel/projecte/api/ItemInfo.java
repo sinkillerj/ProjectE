@@ -1,4 +1,4 @@
-package moze_intel.projecte.emc;
+package moze_intel.projecte.api;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -7,11 +7,11 @@ import moze_intel.projecte.api.nss.NSSItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.Potions;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Document
+//TODO: Document, and figure out a good spot for this
 public class ItemInfo {
 
 	@Nonnull
@@ -19,14 +19,22 @@ public class ItemInfo {
 	@Nullable
 	private final CompoundNBT nbt;
 
-	//TODO: Replace with a static fromStack method
-	public ItemInfo(ItemStack stack) {
-		this(stack.getItem(), stack.getTag());
-	}
-
-	public ItemInfo(@Nonnull Item item, @Nullable CompoundNBT nbt) {
+	private ItemInfo(@Nonnull Item item, @Nullable CompoundNBT nbt) {
 		this.item = item;
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
+	}
+
+	public static ItemInfo fromItem(@Nonnull Item item, @Nullable CompoundNBT nbt) {
+		return new ItemInfo(item, nbt);
+	}
+
+	public static ItemInfo fromItem(@Nonnull Item item) {
+		return fromItem(item, null);
+	}
+
+	//TODO: Nullable if empty??
+	public static ItemInfo fromStack(@Nonnull ItemStack stack) {
+		return fromItem(stack.getItem(), stack.getTag());
 	}
 
 	@Nullable
@@ -38,7 +46,26 @@ public class ItemInfo {
 		if (item == null) {
 			return null;
 		}
-		return new ItemInfo(item, stack.getNBT());
+		return fromItem(item, stack.getNBT());
+	}
+
+	@Nullable
+	public static ItemInfo read(CompoundNBT nbt) {
+		if (nbt.contains("item", NBT.TAG_STRING)) {
+			ResourceLocation registryName = ResourceLocation.tryCreate(nbt.getString("item"));
+			if (registryName == null) {
+				return null;
+			}
+			Item item = ForgeRegistries.ITEMS.getValue(registryName);
+			if (item == null) {
+				return null;
+			}
+			if (nbt.contains("nbt", NBT.TAG_COMPOUND)) {
+				return fromItem(item, nbt.getCompound("nbt"));
+			}
+			return fromItem(item, null);
+		}
+		return null;
 	}
 
 	@Nonnull
@@ -55,6 +82,14 @@ public class ItemInfo {
 		ItemStack stack = new ItemStack(item);
 		stack.setTag(nbt);
 		return stack;
+	}
+
+	public CompoundNBT write(CompoundNBT nbt) {
+		nbt.putString("item", item.getRegistryName().toString());
+		if (this.nbt != null) {
+			nbt.put("nbt", this.nbt);
+		}
+		return nbt;
 	}
 
 	@Override
@@ -84,24 +119,5 @@ public class ItemInfo {
 			return item.getRegistryName() + " " + nbt;
 		}
 		return item.getRegistryName().toString();
-	}
-
-	//Version of PotionUtils.addPotionToItemStack except without boxing ItemInfo into an out of an ItemStack
-	public ItemInfo makeWithPotion(Potion potion) {
-		CompoundNBT nbt = this.nbt == null ? null : this.nbt.copy();
-		if (potion == Potions.EMPTY) {
-			if (nbt != null && nbt.contains("Potion")) {
-				nbt.remove("Potion");
-				if (nbt.isEmpty()) {
-					nbt = null;
-				}
-			}
-		} else {
-			if (nbt == null) {
-				nbt = new CompoundNBT();
-			}
-			nbt.putString("Potion", potion.getRegistryName().toString());
-		}
-		return new ItemInfo(item, nbt);
 	}
 }

@@ -4,8 +4,7 @@ import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.emc.ItemInfo;
-import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -45,10 +44,9 @@ public class SyncEmcPKT {
 				EMCMappingHandler.emc.clear();
 
 				for (EmcPKTInfo info : pkt.data) {
-					EMCMappingHandler.emc.put(new ItemInfo(info.getItem(), info.getNbt()), info.getEmc());
+					EMCMappingHandler.emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
 				}
 
-				Transmutation.cacheFullKnowledge();
 				FuelMapper.loadMap();
 			});
 			ctx.get().setPacketHandled(true);

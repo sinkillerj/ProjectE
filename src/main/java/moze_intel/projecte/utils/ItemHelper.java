@@ -187,8 +187,9 @@ public final class ItemHelper {
 		return null;
 	}
 
-	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
+	public static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
 
+	//TODO: Remove this??
 	public static boolean shouldDupeWithNBT(ItemStack stack) {
 		return NBT_WHITELIST_TAG.contains(stack.getItem());
 	}

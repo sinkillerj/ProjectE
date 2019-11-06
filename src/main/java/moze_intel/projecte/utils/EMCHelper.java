@@ -4,15 +4,14 @@ import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.emc.ItemInfo;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -115,116 +114,25 @@ public final class EMCHelper {
 	}
 
 	public static long getEmcValue(IItemProvider item) {
-		if (item == null) {
-			return 0;
-		}
-		return getEmcValue(new ItemInfo(item.asItem(), null));
+		return item == null ? 0 : getEmcValue(ItemInfo.fromItem(item.asItem()));
 	}
 
 	/**
 	 * Does not consider stack size
 	 */
 	public static long getEmcValue(ItemStack stack) {
-		if (stack.isEmpty()) {
-			return 0;
-		}
-		//TODO: If this isn't contained check if we have one for the item with no NBT?
-		// Currently we have this check in the stack variants of things
-		//TODO: TEST-ME
-		ItemInfo itemInfo = new ItemInfo(stack);
-		long baseEMC = getEmcValue(itemInfo);
-		if (baseEMC <= 0) {
-			if (stack.hasTag()) {
-				baseEMC = getEmcValue(new ItemInfo(stack.getItem(), null));
-				if (baseEMC <= 0) {
-					return 0;
-				}
-			} else {
-				return 0;
-			}
-		}
-
-		if (ItemHelper.isDamageable(stack)) {
-			// maxDmg + 1 because vanilla lets you use the tool one more time
-			// when item damage == max damage (shows as Durability: 0 / max)
-			int relDamage = (stack.getMaxDamage() - stack.getDamage() + 1);
-
-			if (relDamage <= 0) {
-				// This may happen when mods overflow their max damage or item damage.
-				// Don't use durability or enchants for emc calculation if this happens.
-				return baseEMC;
-			}
-
-			long result = baseEMC * relDamage;
-
-			if (result <= 0) {
-				//Congratulations, big number is big.
-				//TODO: Why can't we divide the relDamage first by max stack size.
-				// That should make it *never* overflow
-				return baseEMC;
-			}
-
-			result /= stack.getMaxDamage();
-			boolean positive = result > 0;
-			result += getEnchantEmcBonus(stack);
-
-			//If it was positive and then became negative that means it overflowed
-			if (positive && result < 0) {
-				//TODO: We should return the baseEMC * relDamage / stack.getMaxDamage
-				return baseEMC;
-			}
-
-			positive = result > 0;
-			result += getStoredEMCBonus(stack);
-
-			//If it was positive and then became negative that means it overflowed
-			if (positive && result < 0) {
-				//TODO: We should return baseEMC * relDamage + enchant bonus
-				return baseEMC;
-			}
-
-			if (result <= 0) {
-				return 1;
-			}
-
-			return result;
-		}
-		return baseEMC + getEnchantEmcBonus(stack) + getStoredEMCBonus(stack);
+		return stack.isEmpty() ? 0 : getEmcValue(ItemInfo.fromStack(stack));
 	}
 
 	/**
 	 * Does not consider stack size
 	 */
 	public static long getEmcValue(ItemInfo info) {
-		if (!EMCMappingHandler.emc.containsKey(info)) {
-			return 0;
-		}
-		return EMCMappingHandler.getEmcValue(info);
-	}
-
-	//TODO: Should we do fireworks/firework stars in a similar way to how we do this? Given from the item we can reverse engineer the items that went into it
-	// but calculating all the combinations does not make sense to do
-	private static long getEnchantEmcBonus(ItemStack stack) {
-		long result = 0;
-
-		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
-
-		if (!enchants.isEmpty()) {
-			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-				Enchantment ench = entry.getKey();
-				if (ench == null || ench.getRarity().getWeight() == 0) {
-					continue;
-				}
-
-				result += Constants.ENCH_EMC_BONUS / ench.getRarity().getWeight() * entry.getValue();
-			}
-		}
-
-		return result;
+		return NBTManager.getEmcValue(info);
 	}
 
 	public static long getEmcSellValue(ItemStack stack) {
-		long originalValue = EMCHelper.getEmcValue(stack);
+		long originalValue = getEmcValue(stack);
 
 		if (originalValue == 0) {
 			return 0;

@@ -39,13 +39,10 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-
-		this.blit(x, y, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int progress = container.getProgressScaled();
-		this.blit(x + 33, y + 10, 0, 235, progress, 10);
+		this.blit(guiLeft + 33, guiTop + 10, 0, 235, progress, 10);
 	}
 
 	@Override
@@ -64,9 +61,9 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 			return;
 		}
 
-		int emcLeft = 140 + (this.width - this.xSize) / 2;
+		int emcLeft = 140 + guiLeft;
 		int emcRight = emcLeft + 110;
-		int emcTop = 6 + (this.height - this.ySize) / 2;
+		int emcTop = 6 + guiTop;
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {

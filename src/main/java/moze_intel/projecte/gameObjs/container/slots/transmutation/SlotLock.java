@@ -38,7 +38,7 @@ public class SlotLock extends SlotItemHandler {
 		});
 
 		if (EMCHelper.doesItemHaveEmc(stack)) {
-			inv.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack);
 		}
 	}
 

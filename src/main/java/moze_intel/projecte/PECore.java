@@ -63,7 +63,6 @@ import moze_intel.projecte.network.commands.ShowBagCMD;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
-import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.CondenserMK2Renderer;
 import moze_intel.projecte.rendering.CondenserRenderer;
@@ -265,7 +264,6 @@ public class PECore {
 
 	private void serverQuit(FMLServerStoppedEvent event) {
 		TransmutationOffline.cleanAll();
-		Transmutation.clearCache();
 		EMCMappingHandler.clearMaps();
 	}
 }

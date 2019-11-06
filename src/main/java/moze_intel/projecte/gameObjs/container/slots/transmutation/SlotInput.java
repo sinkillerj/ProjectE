@@ -53,7 +53,7 @@ public class SlotInput extends SlotItemHandler {
 		});
 
 		if (EMCHelper.doesItemHaveEmc(stack)) {
-			inv.handleKnowledge(stack.copy());
+			inv.handleKnowledge(stack);
 		}
 	}
 

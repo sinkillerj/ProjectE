@@ -39,21 +39,18 @@ public class GUIRelayMK2 extends ContainerScreen<RelayMK2Container> {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-
-		this.blit(x, y, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		//Emc bar progress
 		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
-		this.blit(x + 86, y + 6, 30, 183, progress, 10);
+		this.blit(guiLeft + 86, guiTop + 6, 30, 183, progress, 10);
 
 		//Klein start bar progress. Max is 30.
 		progress = (int) (container.getKleinChargeProgress() * 30);
-		this.blit(x + 133, y + 68, 0, 183, progress, 10);
+		this.blit(guiLeft + 133, guiTop + 68, 0, 183, progress, 10);
 
 		//Burn Slot bar progress. Max is 30.
 		progress = (int) (container.getInputBurnProgress() * 30);
-		blit(x + 81, y + 68, 0, 183, progress, 10);
+		blit(guiLeft + 81, guiTop + 68, 0, 183, progress, 10);
 	}
 }
