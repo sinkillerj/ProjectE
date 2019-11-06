@@ -1,13 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
+import javax.annotation.Nullable;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
@@ -16,18 +19,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class CondenserContainer extends PEContainer {
 
 	protected final CondenserTile tile;
 	public final BoxedLong displayEmc = new BoxedLong();
 	public final BoxedLong requiredEmc = new BoxedLong();
+	protected final BoxedItemInfo boxedLockInfo = new BoxedItemInfo();
 
 	public CondenserContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
 		super(type, windowId);
@@ -43,7 +46,7 @@ public class CondenserContainer extends PEContainer {
 	}
 
 	protected void initSlots(PlayerInventory invPlayer) {
-		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
+		this.addSlot(new SlotCondenserLock(boxedLockInfo, 0, 12, 6));
 
 		IItemHandler handler = tile.getInput();
 
@@ -60,8 +63,14 @@ public class CondenserContainer extends PEContainer {
 
 	@Override
 	public void detectAndSendChanges() {
+		this.boxedLockInfo.set(tile.getLockInfo());
 		this.displayEmc.set(tile.displayEmc);
 		this.requiredEmc.set(tile.requiredEmc);
+		if (boxedLockInfo.isDirty()) {
+			for (IContainerListener listener : listeners) {
+				PacketHandler.sendLockSlotUpdate(listener, this, boxedLockInfo.get());
+			}
+		}
 		super.detectAndSendChanges();
 	}
 
@@ -109,14 +118,10 @@ public class CondenserContainer extends PEContainer {
 	@Override
 	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
 		if (slot == 0) {
-			ItemStackHandler lock = tile.getLock();
-			if (!lock.getStackInSlot(0).isEmpty() || MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, player.inventory.getItemStack()))) {
-				if (!player.getEntityWorld().isRemote) {
-					lock.setStackInSlot(0, ItemStack.EMPTY);
-					this.detectAndSendChanges();
-				}
-				return ItemStack.EMPTY;
+			if (tile.attemptCondenserSet(player)) {
+				this.detectAndSendChanges();
 			}
+			return ItemStack.EMPTY;
 		}
 		return super.slotClick(slot, button, flag, player);
 	}
@@ -129,5 +134,34 @@ public class CondenserContainer extends PEContainer {
 			return Constants.MAX_CONDENSER_PROGRESS;
 		}
 		return (int) (Constants.MAX_CONDENSER_PROGRESS * ((double) displayEmc.get() / requiredEmc.get()));
+	}
+
+	public void updateLockInfo(@Nullable ItemInfo lockInfo) {
+		boxedLockInfo.set(lockInfo);
+	}
+
+	public static class BoxedItemInfo {
+
+		@Nullable
+		private ItemInfo inner;
+		private boolean dirty = false;
+
+		@Nullable
+		public ItemInfo get() {
+			return inner;
+		}
+
+		public void set(@Nullable ItemInfo v) {
+			if (!Objects.equals(inner, v)) {
+				inner = v;
+				dirty = true;
+			}
+		}
+
+		public boolean isDirty() {
+			boolean ret = dirty;
+			dirty = false;
+			return ret;
+		}
 	}
 }

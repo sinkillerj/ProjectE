@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+//TODO: Add checks/helpers that do this via ItemInfo
 public class EMCProxyImpl implements IEMCProxy {
 
 	public static final EMCProxyImpl instance = new EMCProxyImpl();

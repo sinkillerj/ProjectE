@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
@@ -17,6 +19,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -29,7 +32,8 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
 	private final LazyOptional<IItemHandler> automationInventory = LazyOptional.of(this::createAutomationInventory);
-	private final ItemStackHandler lock = new StackHandler(1);
+	@Nullable
+	private ItemInfo lockInfo;
 	private boolean isAcceptingEmc;
 	public long displayEmc;
 	public long requiredEmc;
@@ -52,8 +56,9 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 		return false;
 	}
 
-	public ItemStackHandler getLock() {
-		return lock;
+	@Nullable
+	public ItemInfo getLockInfo() {
+		return lockInfo;
 	}
 
 	public ItemStackHandler getInput() {
@@ -113,30 +118,28 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 		if (!getWorld().isRemote) {
 			checkLockAndUpdate();
 			displayEmc = this.getStoredEmc();
-			if (!lock.getStackInSlot(0).isEmpty() && requiredEmc != 0) {
+			if (lockInfo != null && requiredEmc != 0) {
 				condense();
 			}
 		}
 	}
 
 	private void checkLockAndUpdate() {
-		if (lock.getStackInSlot(0).isEmpty()) {
+		if (lockInfo == null) {
 			displayEmc = 0;
 			requiredEmc = 0;
 			this.isAcceptingEmc = false;
 			return;
 		}
 
-		if (EMCHelper.doesItemHaveEmc(lock.getStackInSlot(0))) {
-			long lockEmc = EMCHelper.getEmcValue(lock.getStackInSlot(0));
-
+		long lockEmc = EMCHelper.getEmcValue(lockInfo);
+		if (lockEmc > 0) {
 			if (requiredEmc != lockEmc) {
 				requiredEmc = lockEmc;
 				this.isAcceptingEmc = true;
 			}
 		} else {
-			lock.setStackInSlot(0, ItemStack.EMPTY);
-
+			lockInfo = null;
 			displayEmc = 0;
 			requiredEmc = 0;
 			this.isAcceptingEmc = false;
@@ -163,9 +166,9 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	protected void pushStack() {
-		//TODO: Optimize this so that it just stores the ItemInfo in the lock instead of a stack??
-		ItemStack lockCopy = NBTManager.getPersistentInfo(ItemInfo.fromStack(lock.getStackInSlot(0))).createStack();
-		ItemHandlerHelper.insertItemStacked(outputInventory, lockCopy, false);
+		if (lockInfo != null) {
+			ItemHandlerHelper.insertItemStacked(outputInventory, lockInfo.createStack(), false);
+		}
 	}
 
 	protected boolean hasSpace() {
@@ -179,20 +182,40 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	public boolean isStackEqualToLock(ItemStack stack) {
-		if (lock.getStackInSlot(0).isEmpty()) {
+		if (lockInfo == null || stack.isEmpty()) {
 			return false;
 		}
-		//TODO: Optimize this so that it just stores the ItemInfo in the lock instead of a stack??
-		ItemInfo lockInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(lock.getStackInSlot(0)));
-		ItemInfo stackInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(stack));
-		return stackInfo.equals(lockInfo);
+		//Compare our lock to the persistent info that the stack would have
+		return lockInfo.equals(NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)));
+	}
+
+	public boolean attemptCondenserSet(PlayerEntity player) {
+		if (world == null || world.isRemote) {
+			return false;
+		}
+		if (lockInfo == null) {
+			ItemStack stack = player.inventory.getItemStack();
+			if (!stack.isEmpty()) {
+				ItemInfo sourceInfo = ItemInfo.fromStack(stack);
+				ItemInfo reducedInfo = NBTManager.getPersistentInfo(sourceInfo);
+				if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo))) {
+					lockInfo = reducedInfo;
+					markDirty();
+					return true;
+				}
+			}
+			return false;
+		}
+		lockInfo = null;
+		markDirty();
+		return true;
 	}
 
 	@Override
 	public void read(@Nonnull CompoundNBT nbt) {
 		super.read(nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
-		lock.deserializeNBT(nbt.getCompound("LockSlot"));
+		lockInfo = ItemInfo.read(nbt.getCompound("LockInfo"));
 	}
 
 	@Nonnull
@@ -200,7 +223,9 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
 		nbt = super.write(nbt);
 		nbt.put("Input", inputInventory.serializeNBT());
-		nbt.put("LockSlot", lock.serializeNBT());
+		if (lockInfo != null) {
+			nbt.put("LockInfo", lockInfo.write(new CompoundNBT()));
+		}
 		return nbt;
 	}
 

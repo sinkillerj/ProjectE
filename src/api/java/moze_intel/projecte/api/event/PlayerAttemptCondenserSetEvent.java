@@ -1,13 +1,13 @@
 package moze_intel.projecte.api.event;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * This event is fired on both the server and client when a player is attempting to place an item in the condenser.
+ * This event is fired on the server when a player is attempting to place an item in the condenser.
  *
  * This event is cancelable
  *
@@ -17,11 +17,13 @@ import net.minecraftforge.eventbus.api.Event;
 public class PlayerAttemptCondenserSetEvent extends Event {
 
 	private final PlayerEntity player;
-	private final ItemStack stack;
+	private final ItemInfo sourceInfo;
+	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptCondenserSetEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemStack stack) {
+	public PlayerAttemptCondenserSetEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
 		player = entityPlayer;
-		this.stack = stack;
+		this.sourceInfo = sourceInfo;
+		this.reducedInfo = reducedInfo;
 	}
 
 	/**
@@ -33,10 +35,20 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	}
 
 	/**
-	 * @return The stack that the player is trying to learn.
+	 * @return The {@link ItemInfo} that the player is trying to condense.
 	 */
 	@Nonnull
-	public ItemStack getStack() {
-		return stack;
+	public ItemInfo getSourceInfo() {
+		return sourceInfo;
+	}
+
+	/**
+	 * Gets the "cleaned" {@link ItemInfo} that the player is trying to condense. This {@link ItemInfo} may have reduced NBT information.
+	 *
+	 * @return The "cleaned" {@link ItemInfo} that the player is trying to learn.
+	 */
+	@Nonnull
+	public ItemInfo getReducedInfo() {
+		return reducedInfo;
 	}
 }

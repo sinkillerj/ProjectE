@@ -23,13 +23,12 @@ public class CondenserMK2Container extends CondenserContainer {
 	}
 
 	public static CondenserMK2Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new CondenserMK2Container(windowId, invPlayer,
-				(CondenserMK2Tile) GuiHandler.getTeFromBuf(buf));
+		return new CondenserMK2Container(windowId, invPlayer, (CondenserMK2Tile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	@Override
 	protected void initSlots(PlayerInventory invPlayer) {
-		this.addSlot(new SlotCondenserLock(tile.getLock(), 0, 12, 6));
+		this.addSlot(new SlotCondenserLock(boxedLockInfo, 0, 12, 6));
 
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
