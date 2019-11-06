@@ -271,8 +271,6 @@ public class ObjHandler {
 	public static final Item mindStone = new MindStone(ibNoStack()).setRegistryName(PECore.MODID, "mind_stone");
 	public static final Item lifeStone = new LifeStone(ibNoStack()).setRegistryName(PECore.MODID, "life_stone");
 
-	//TODO: Create a "trashable" tag that items can be added to, to signify they can be put in the transmutation table even if they don't have an emc value
-	// The tome could then use it instead of having its special handling logic
 	public static final Item tome = new Tome(ibNoStack().rarity(Rarity.EPIC)).setRegistryName(PECore.MODID, "tome");
 	public static final Item transmutationTablet = new TransmutationTablet(ibNoStack()).setRegistryName(PECore.MODID, "transmutation_tablet");
 

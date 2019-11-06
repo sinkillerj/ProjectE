@@ -129,7 +129,11 @@ public final class EMCHelper {
 	}
 
 	public static long getEmcSellValue(ItemStack stack) {
-		long originalValue = getEmcValue(stack);
+		return stack.isEmpty() ? 0 : getEmcSellValue(ItemInfo.fromStack(stack));
+	}
+
+	public static long getEmcSellValue(ItemInfo info) {
+		long originalValue = getEmcValue(info);
 		if (originalValue == 0) {
 			return 0;
 		}
@@ -149,7 +153,7 @@ public final class EMCHelper {
 			return " ";
 		}
 
-		BigInteger emc = BigInteger.valueOf(EMCHelper.getEmcSellValue(stack));
+		BigInteger emc = BigInteger.valueOf(getEmcSellValue(stack));
 
 		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
@@ -176,7 +180,7 @@ public final class EMCHelper {
 		if (stack.isDamageable()) {
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setDamage(0);
-			long emc = (long) Math.ceil(EMCHelper.getEmcValue(stackCopy) / (double) stack.getMaxDamage());
+			long emc = (long) Math.ceil(getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return emc > 1 ? emc : 1;
 		}
 		return 1;

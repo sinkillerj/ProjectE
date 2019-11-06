@@ -210,7 +210,8 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	}
 
 	public void writeIntoOutputSlot(int slot, ItemStack item) {
-		if (EMCHelper.doesItemHaveEmc(item) && BigInteger.valueOf(EMCHelper.getEmcValue(item)).compareTo(getAvailableEMC()) <= 0 && provider.hasKnowledge(item)) {
+		long emcValue = EMCHelper.getEmcValue(item);
+		if (emcValue > 0 && BigInteger.valueOf(emcValue).compareTo(getAvailableEMC()) <= 0 && provider.hasKnowledge(item)) {
 			outputs.setStackInSlot(slot, item);
 		} else {
 			outputs.setStackInSlot(slot, ItemStack.EMPTY);

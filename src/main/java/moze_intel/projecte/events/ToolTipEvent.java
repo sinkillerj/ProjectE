@@ -56,9 +56,8 @@ public class ToolTipEvent {
 		}
 
 		if (ProjectEConfig.misc.emcToolTips.get()) {
-			if (EMCHelper.doesItemHaveEmc(current)) {
-				long value = EMCHelper.getEmcValue(current);
-
+			long value = EMCHelper.getEmcValue(current);
+			if (value > 0) {
 				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
 				ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).applyTextStyle(TextFormatting.WHITE);
 				ITextComponent sell = new StringTextComponent(EMCHelper.getEmcSellString(current, 1)).applyTextStyle(TextFormatting.BLUE);

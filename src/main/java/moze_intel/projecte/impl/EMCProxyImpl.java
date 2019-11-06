@@ -1,14 +1,11 @@
 package moze_intel.projecte.impl;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
-//TODO: Add checks/helpers that do this via ItemInfo
 public class EMCProxyImpl implements IEMCProxy {
 
 	public static final EMCProxyImpl instance = new EMCProxyImpl();
@@ -17,44 +14,12 @@ public class EMCProxyImpl implements IEMCProxy {
 	}
 
 	@Override
-	public boolean hasValue(@Nonnull Block block) {
-		Preconditions.checkNotNull(block);
-		return EMCHelper.doesItemHaveEmc(block);
+	public long getValue(@Nonnull ItemInfo info) {
+		return EMCHelper.getEmcValue(Objects.requireNonNull(info));
 	}
 
 	@Override
-	public boolean hasValue(@Nonnull Item item) {
-		Preconditions.checkNotNull(item);
-		return EMCHelper.doesItemHaveEmc(item);
-	}
-
-	@Override
-	public boolean hasValue(@Nonnull ItemStack stack) {
-		Preconditions.checkNotNull(stack);
-		return EMCHelper.doesItemHaveEmc(stack);
-	}
-
-	@Override
-	public long getValue(@Nonnull Block block) {
-		Preconditions.checkNotNull(block);
-		return EMCHelper.getEmcValue(block);
-	}
-
-	@Override
-	public long getValue(@Nonnull Item item) {
-		Preconditions.checkNotNull(item);
-		return EMCHelper.getEmcValue(item);
-	}
-
-	@Override
-	public long getValue(@Nonnull ItemStack stack) {
-		Preconditions.checkNotNull(stack);
-		return EMCHelper.getEmcValue(stack);
-	}
-
-	@Override
-	public long getSellValue(@Nonnull ItemStack stack) {
-		Preconditions.checkNotNull(stack);
-		return EMCHelper.getEmcSellValue(stack);
+	public long getSellValue(@Nonnull ItemInfo info) {
+		return EMCHelper.getEmcSellValue(Objects.requireNonNull(info));
 	}
 }

@@ -96,11 +96,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack s = inv.getStackInSlot(i);
+			if (s.isEmpty() || s.getMaxStackSize() == 1) {
+				continue;
+			}
 
-			if (s.isEmpty()
-				|| !EMCHelper.doesItemHaveEmc(s) || s.getMaxStackSize() == 1
-				|| EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)
-				|| inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty()) {
+			long emcValue = EMCHelper.getEmcValue(s);
+			if (emcValue <= 0 || emcValue >= EMCHelper.getEmcValue(target) || inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty()) {
 				continue;
 			}
 

@@ -30,6 +30,8 @@ public class SlotConsume extends SlotItemHandler {
 
 	@Override
 	public boolean isItemValid(@Nonnull ItemStack stack) {
+		//TODO: Create a "trashable" tag that items can be added to, to signify they can be put in the transmutation table even if they don't have an emc value
+		// The tome could then use it instead of having its special handling logic
 		return EMCHelper.doesItemHaveEmc(stack) || stack.getItem() == ObjHandler.tome;
 	}
 }
