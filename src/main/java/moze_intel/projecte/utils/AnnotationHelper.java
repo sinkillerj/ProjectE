@@ -1,5 +1,6 @@
 package moze_intel.projecte.utils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -62,7 +64,7 @@ public class AnnotationHelper {
 							emcMappers.add((IEMCMapper<NormalizedSimpleStack, Long>) mapper);
 							PECore.LOGGER.info("Found and loaded EMC mapper: {}", mapper.getName());
 						} catch (ClassCastException e) {
-							PECore.LOGGER.error("{}: Is not a mapper for {}}, to {}", mapper.getClass(), NormalizedSimpleStack.class, Long.class, e);
+							PECore.LOGGER.error("{}: Is not a mapper for {}, to {}", mapper.getClass(), NormalizedSimpleStack.class, Long.class, e);
 						}
 					}
 				}
@@ -71,66 +73,48 @@ public class AnnotationHelper {
 		return emcMappers;
 	}
 
-	//TODO: Try to deduplicate the duplicate code between getEMCMapper and getNBTProcessor
 	@Nullable
 	private static IEMCMapper getEMCMapper(String className) {
-		//Try to create an instance of the class
-		try {
-			Class<? extends IEMCMapper> subClass = Class.forName(className).asSubclass(IEMCMapper.class);
-			//First try looking at the fields of the class to see if one of them is specified as the instance
-			Field[] fields = subClass.getDeclaredFields();
-			for (Field field : fields) {
-				if (field.isAnnotationPresent(EMCMapper.Instance.class)) {
-					if (Modifier.isStatic(field.getModifiers())) {
-						Object fieldValue = field.get(null);
-						if (fieldValue instanceof IEMCMapper) {
-							IEMCMapper mapper = (IEMCMapper) fieldValue;
-							PECore.debugLog("Found specified EMC Mapper instance for: {}. Using it rather than creating a new instance.", mapper.getName());
-							return mapper;
-						} else {
-							PECore.LOGGER.error("EMCMapper.Instance annotation found on non IEMCMapper field: {}", field);
-							return null;
-						}
-					} else {
-						PECore.LOGGER.error("EMCMapper.Instance annotation found on non static field: {}", field);
-						return null;
-					}
-				}
-			}
-			//If we don't have any fields that have the EMCMapper.Instance annotation, then try to create a new instance of the class
-			return subClass.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError e) {
-			PECore.LOGGER.error("Failed to load: {}", className, e);
-		}
-		return null;
+		return createOrGetInstance(className, IEMCMapper.class, EMCMapper.Instance.class, IEMCMapper::getName);
 	}
 
 	@Nullable
 	private static INBTProcessor getNBTProcessor(String className) {
+		return createOrGetInstance(className, INBTProcessor.class, NBTProcessor.Instance.class, INBTProcessor::getName);
+	}
+
+	@Nullable
+	private static <T> T createOrGetInstance(String className, Class<T> baseClass, Class<? extends Annotation> instanceAnnotation, Function<T, String> nameFunction) {
 		//Try to create an instance of the class
 		try {
-			Class<? extends INBTProcessor> subClass = Class.forName(className).asSubclass(INBTProcessor.class);
+			Class<? extends T> subClass = Class.forName(className).asSubclass(baseClass);
 			//First try looking at the fields of the class to see if one of them is specified as the instance
 			Field[] fields = subClass.getDeclaredFields();
 			for (Field field : fields) {
-				if (field.isAnnotationPresent(NBTProcessor.Instance.class)) {
+				if (field.isAnnotationPresent(instanceAnnotation)) {
 					if (Modifier.isStatic(field.getModifiers())) {
-						Object fieldValue = field.get(null);
-						if (fieldValue instanceof INBTProcessor) {
-							INBTProcessor processor = (INBTProcessor) fieldValue;
-							PECore.debugLog("Found specified NBT Processor instance for: {}. Using it rather than creating a new instance.", processor.getName());
-							return processor;
-						} else {
-							PECore.LOGGER.error("NBTProcessor.Instance annotation found on non INBTProcessor field: {}", field);
+						try {
+							Object fieldValue = field.get(null);
+							if (baseClass.isInstance(fieldValue)) {
+								T instance = (T) fieldValue;
+								PECore.debugLog("Found specified {} instance for: {}. Using it rather than creating a new instance.", baseClass.getSimpleName(),
+										nameFunction.apply(instance));
+								return instance;
+							} else {
+								PECore.LOGGER.error("{} annotation found on non {} field: {}", instanceAnnotation.getSimpleName(), baseClass.getSimpleName(), field);
+								return null;
+							}
+						} catch (IllegalAccessException e) {
+							PECore.LOGGER.error("{} annotation found on inaccessible field: {}", instanceAnnotation.getSimpleName(), field);
 							return null;
 						}
 					} else {
-						PECore.LOGGER.error("NBTProcessor.Instance annotation found on non static field: {}", field);
+						PECore.LOGGER.error("{} annotation found on non static field: {}", instanceAnnotation.getSimpleName(), field);
 						return null;
 					}
 				}
 			}
-			//If we don't have any fields that have the NBTProcessor.Instance annotation, then try to create a new instance of the class
+			//If we don't have any fields that have the Instance annotation, then try to create a new instance of the class
 			return subClass.newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError e) {
 			PECore.LOGGER.error("Failed to load: {}", className, e);

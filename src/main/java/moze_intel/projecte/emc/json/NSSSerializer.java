@@ -32,7 +32,6 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 	public static final NSSCreator fakeCreator = NSSFake::create;
 
 	public static final NSSCreator itemCreator = itemName -> {
-		//TODO: Should we verify that the item/item tag exists?
 		if (itemName.startsWith("#")) {
 			return NSSItem.createTag(getResourceLocation(itemName.substring(1), "item tag"));
 		}
@@ -50,7 +49,6 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 	};
 
 	public static final NSSCreator fluidCreator = fluidName -> {
-		//TODO: Should we verify that the fluid/fluid tag exists?
 		if (fluidName.startsWith("#")) {
 			return NSSFluid.createTag(getResourceLocation(fluidName.substring(1), "fluid tag"));
 		}
@@ -88,7 +86,6 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 	}
 
 	public NormalizedSimpleStack deserialize(String s) {
-		//TODO: Add tests to support the different ones we add
 		if (s.contains("|")) {
 			String[] parts = s.split("\\|");
 			String key = parts[0];
