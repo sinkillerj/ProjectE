@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 
@@ -18,6 +19,29 @@ public class DMArmor extends PEArmor {
 		return "darkmatter";
 	}
 
+	@Override
+	public float getFullSetBaseReduction() {
+		return 0.8F;
+	}
+
+	@Override
+	public float getMaxDamageAbsorb(EquipmentSlotType slot, DamageSource source) {
+		if (source.isExplosion()) {
+			return 350;
+		}
+		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
+			return 5 / getPieceEffectiveness(slot);
+		}
+		if (source.isUnblockable()) {
+			return 0;
+		}
+		//If the source is not unblockable, allow our piece to block a certain amount of damage
+		if (slot == EquipmentSlotType.HEAD || slot == EquipmentSlotType.FEET) {
+			return 100;
+		}
+		return 150;
+	}
+
 	private static class DMArmorMaterial implements IArmorMaterial {
 
 		private static final DMArmorMaterial INSTANCE = new DMArmorMaterial();
@@ -29,7 +53,6 @@ public class DMArmor extends PEArmor {
 
 		@Override
 		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
-			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
 			if (slot == EquipmentSlotType.FEET) {
 				return 3;
 			} else if (slot == EquipmentSlotType.LEGS) {
@@ -68,7 +91,6 @@ public class DMArmor extends PEArmor {
 
 		@Override
 		public float getToughness() {
-			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
 			return 2;
 		}
 	}

@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.armor.PEArmor;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.TransmutationOffline;
@@ -13,11 +14,14 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SCollectItemPacket;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -28,6 +32,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -151,12 +156,47 @@ public class PlayerEvents {
 		event.setCanceled(true);
 	}
 
+	//This event is called when the entity first is about to take damage, if it gets cancelled it is as if they never got hit/damaged
 	@SubscribeEvent
-	public static void onHurt(LivingAttackEvent evt) {
-		if (evt.getEntity() instanceof ServerPlayerEntity
-			&& evt.getSource().isFireDamage()
-			&& TickEvents.shouldPlayerResistFire((ServerPlayerEntity) evt.getEntity())) {
+	public static void onAttacked(LivingAttackEvent evt) {
+		if (evt.getEntity() instanceof ServerPlayerEntity && evt.getSource().isFireDamage() && TickEvents.shouldPlayerResistFire((ServerPlayerEntity) evt.getEntity())) {
 			evt.setCanceled(true);
 		}
+	}
+
+	//This event gets called when calculating how much damage to do to the entity, even if it is canceled the entity will still get "hit"
+	@SubscribeEvent
+	public static void onLivingHurt(LivingHurtEvent evt) {
+		float damage = evt.getAmount();
+		if (damage > 0) {
+			LivingEntity entityLiving = evt.getEntityLiving();
+			DamageSource source = evt.getSource();
+			float totalPercentReduced = getReductionForSlot(entityLiving, source, EquipmentSlotType.HEAD, damage) +
+										getReductionForSlot(entityLiving, source, EquipmentSlotType.CHEST, damage) +
+										getReductionForSlot(entityLiving, source, EquipmentSlotType.LEGS, damage) +
+										getReductionForSlot(entityLiving, source, EquipmentSlotType.FEET, damage);
+			float damageAfter = totalPercentReduced >= 1 ? 0 : damage - damage * totalPercentReduced;
+			if (damageAfter <= 0) {
+				evt.setCanceled(true);
+			} else if (damage != damageAfter) {
+				evt.setAmount(damageAfter);
+			}
+		}
+	}
+
+	private static float getReductionForSlot(LivingEntity entityLiving, DamageSource source, EquipmentSlotType slot, float damage) {
+		ItemStack armorStack = entityLiving.getItemStackFromSlot(slot);
+		if (armorStack.getItem() instanceof PEArmor) {
+			PEArmor armorItem = (PEArmor) armorStack.getItem();
+			EquipmentSlotType type = armorItem.getEquipmentSlot();
+			if (type != slot) {
+				//If the armor slot does not match the slot this piece of armor is for then it shouldn't be providing any reduction
+				return 0;
+			}
+			//We return the max of this piece's base reduction (in relation to the full set), and the
+			// max damage an item can absorb for a given source
+			return Math.max(armorItem.getFullSetBaseReduction(), armorItem.getMaxDamageAbsorb(type, source) / damage) * armorItem.getPieceEffectiveness(type);
+		}
+		return 0;
 	}
 }

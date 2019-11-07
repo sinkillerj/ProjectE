@@ -4,11 +4,12 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 
+//TODO: Should gem armor be made to require full klein stars again?
 public abstract class GemArmorBase extends PEArmor {
 
 	public GemArmorBase(EquipmentSlotType armorType, Properties props) {
@@ -20,22 +21,35 @@ public abstract class GemArmorBase extends PEArmor {
 		return "gem";
 	}
 
-	public static boolean hasAnyPiece(PlayerEntity player) {
-		for (ItemStack i : player.inventory.armorInventory) {
-			if (!i.isEmpty() && i.getItem() instanceof GemArmorBase) {
-				return true;
-			}
+	@Override
+	public float getFullSetBaseReduction() {
+		return 0.9F;
+	}
+
+	@Override
+	public float getMaxDamageAbsorb(EquipmentSlotType slot, DamageSource source) {
+		if (source.isExplosion()) {
+			return 750;
 		}
-		return false;
+		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
+			return 15 / getPieceEffectiveness(slot);
+		}
+		if (source.isUnblockable()) {
+			return 0;
+		}
+		//If the source is not unblockable, allow our piece to block a certain amount of damage
+		if (slot == EquipmentSlotType.HEAD || slot == EquipmentSlotType.FEET) {
+			return 400;
+		}
+		return 500;
+	}
+
+	public static boolean hasAnyPiece(PlayerEntity player) {
+		return player.inventory.armorInventory.stream().anyMatch(i -> !i.isEmpty() && i.getItem() instanceof GemArmorBase);
 	}
 
 	public static boolean hasFullSet(PlayerEntity player) {
-		for (ItemStack i : player.inventory.armorInventory) {
-			if (!i.isEmpty() || !(i.getItem() instanceof GemArmorBase)) {
-				return false;
-			}
-		}
-		return true;
+		return player.inventory.armorInventory.stream().noneMatch(i -> i.isEmpty() || !(i.getItem() instanceof GemArmorBase));
 	}
 
 	private static class GemArmorMaterial implements IArmorMaterial {
@@ -49,7 +63,6 @@ public abstract class GemArmorBase extends PEArmor {
 
 		@Override
 		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
-			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
 			if (slot == EquipmentSlotType.FEET) {
 				return 3;
 			} else if (slot == EquipmentSlotType.LEGS) {
@@ -88,7 +101,6 @@ public abstract class GemArmorBase extends PEArmor {
 
 		@Override
 		public float getToughness() {
-			//TODO: 1.14, go through and fix damage values better. These were taken from the 1.12 shown stats on the item
 			return 2;
 		}
 	}
