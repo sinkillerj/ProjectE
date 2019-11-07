@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundNBT;
 /**
  * An extension of {@link NormalizedSimpleStack} that allows for representing stacks that are both "simple" and can have a {@link CompoundNBT} attached.
  */
-public interface NSSNBT extends NormalizedSimpleStack {//TODO: Add tests for NBT based stuff
+public interface NSSNBT extends NormalizedSimpleStack {
 
 	/**
 	 * Gets the {@link CompoundNBT} that this {@link NSSNBT} has.
