@@ -31,6 +31,8 @@ public class DMArmor extends PEArmor {
 		}
 		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
 			return 5 / getPieceEffectiveness(slot);
+		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
+			return 5 / getPieceEffectiveness(slot);
 		}
 		if (source.isUnblockable()) {
 			return 0;

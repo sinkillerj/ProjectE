@@ -33,6 +33,8 @@ public abstract class GemArmorBase extends PEArmor {
 		}
 		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
 			return 15 / getPieceEffectiveness(slot);
+		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
+			return 15 / getPieceEffectiveness(slot);
 		}
 		if (source.isUnblockable()) {
 			return 0;

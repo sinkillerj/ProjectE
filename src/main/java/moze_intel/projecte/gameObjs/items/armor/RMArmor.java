@@ -32,6 +32,8 @@ public class RMArmor extends PEArmor {
 		}
 		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
 			return 10 / getPieceEffectiveness(slot);
+		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
+			return 10 / getPieceEffectiveness(slot);
 		}
 		if (source.isUnblockable()) {
 			return 0;
