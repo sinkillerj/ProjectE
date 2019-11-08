@@ -79,7 +79,6 @@ public final class EMCHelper {
 					} else {
 						map.put(i, stack.getCount());
 						emcConsumed += emc * stack.getCount();
-
 						if (emcConsumed >= minFuel) {
 							metRequirement = true;
 						}
@@ -93,11 +92,9 @@ public final class EMCHelper {
 			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 				inv.extractItem(entry.getKey(), entry.getValue(), false);
 			}
-
 			player.openContainer.detectAndSendChanges();
 			return emcConsumed;
 		}
-
 		return -1;
 	}
 
@@ -176,7 +173,6 @@ public final class EMCHelper {
 		if (stack.isEmpty()) {
 			return 0;
 		}
-
 		if (stack.isDamageable()) {
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setDamage(0);

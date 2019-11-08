@@ -34,15 +34,12 @@ public abstract class ChestTileEmc extends TileEmc implements IChestLid {
 			} else {
 				lidAngle -= angleIncrement;
 			}
-
 			if (lidAngle > 1.0F) {
 				lidAngle = 1.0F;
 			}
-
 			if (lidAngle < 0.5F && prevLidAngle >= 0.5F) {
 				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 			}
-
 			if (lidAngle < 0.0F) {
 				lidAngle = 0.0F;
 			}

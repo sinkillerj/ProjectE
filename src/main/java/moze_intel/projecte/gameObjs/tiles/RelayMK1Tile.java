@@ -121,12 +121,9 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		if (world.isRemote) {
 			return;
 		}
-
 		sendEmc();
 		ItemHelper.compactInventory(input);
-
 		ItemStack stack = getBurn();
-
 		if (!stack.isEmpty()) {
 			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {
@@ -143,9 +140,7 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 				}
 			}
 		}
-
 		ItemStack chargeable = getCharging();
-
 		if (!chargeable.isEmpty() && this.getStoredEmc() > 0) {
 			chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 				long actualSent = emcHolder.insertEmc(chargeable, Math.min(getStoredEmc(), chargeRate), EmcAction.EXECUTE);
@@ -158,7 +153,6 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 		if (this.getStoredEmc() == 0) {
 			return;
 		}
-
 		if (this.getStoredEmc() <= chargeRate) {
 			this.sendToAllAcceptors(this.getStoredEmc());
 		} else {

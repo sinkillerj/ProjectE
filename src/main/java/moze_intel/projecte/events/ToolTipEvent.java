@@ -36,7 +36,6 @@ public class ToolTipEvent {
 			return;
 		}
 		PlayerEntity clientPlayer = Minecraft.getInstance().player;
-
 		if (ProjectEConfig.misc.pedestalToolTips.get()) {
 			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" "));
@@ -89,7 +88,6 @@ public class ToolTipEvent {
 					return;
 				}
 			}
-
 			event.getToolTip().add(new TranslationTextComponent("pe.emc.storedemc_tooltip").applyTextStyle(TextFormatting.YELLOW).appendText(" ")
 					.appendSibling(new StringTextComponent(Constants.EMC_FORMATTER.format(value)).applyTextStyle(TextFormatting.RESET)));
 		}

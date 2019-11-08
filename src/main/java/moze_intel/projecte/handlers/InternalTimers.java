@@ -55,7 +55,6 @@ public class InternalTimers {
 			repair.shouldUpdate = false;
 			return true;
 		}
-
 		return false;
 	}
 
@@ -65,7 +64,6 @@ public class InternalTimers {
 			heal.shouldUpdate = false;
 			return true;
 		}
-
 		return false;
 	}
 
@@ -75,7 +73,6 @@ public class InternalTimers {
 			feed.shouldUpdate = false;
 			return true;
 		}
-
 		return false;
 	}
 

@@ -34,9 +34,8 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (mode == WriteMode.IN || mode == WriteMode.IN_OUT) {
 			return compose.insertItem(slot, stack, simulate);
-		} else {
-			return stack;
 		}
+		return stack;
 	}
 
 	@Nonnull
@@ -44,9 +43,8 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		if (mode == WriteMode.OUT || mode == WriteMode.IN_OUT) {
 			return compose.extractItem(slot, amount, simulate);
-		} else {
-			return ItemStack.EMPTY;
 		}
+		return ItemStack.EMPTY;
 	}
 
 	@Override

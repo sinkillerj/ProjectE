@@ -46,7 +46,6 @@ public class DMPedestalTile extends TileEmc {
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
 		centeredZ = pos.getZ() + 0.5;
-
 		if (getActive()) {
 			ItemStack stack = inventory.getStackInSlot(0);
 			if (!stack.isEmpty()) {
@@ -67,7 +66,6 @@ public class DMPedestalTile extends TileEmc {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
-
 		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
 		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
 		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
@@ -76,7 +74,6 @@ public class DMPedestalTile extends TileEmc {
 		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
 		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
 		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
-
 		Random rand = world.rand;
 		for (int i = 0; i < 3; ++i) {
 			int j = rand.nextInt(2) * 2 - 1;

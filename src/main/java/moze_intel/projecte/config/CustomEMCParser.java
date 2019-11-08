@@ -89,16 +89,13 @@ public final class CustomEMCParser {
 	public static void addToFile(String toAdd, long emc) {
 		NormalizedSimpleStack nss = getNss(toAdd);
 		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
-
 		int setAt = -1;
-
 		for (int i = 0; i < currentEntries.entries.size(); i++) {
 			if (currentEntries.entries.get(i).item.equals(nss)) {
 				setAt = i;
 				break;
 			}
 		}
-
 		if (setAt == -1) {
 			currentEntries.entries.add(entry);
 		} else {
@@ -110,7 +107,6 @@ public final class CustomEMCParser {
 	public static boolean removeFromFile(String toRemove) {
 		NormalizedSimpleStack nss = getNss(toRemove);
 		Iterator<CustomEMCEntry> iter = currentEntries.entries.iterator();
-
 		boolean removed = false;
 		while (iter.hasNext()) {
 			if (iter.next().item.equals(nss)) {

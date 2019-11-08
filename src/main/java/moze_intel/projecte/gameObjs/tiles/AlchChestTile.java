@@ -60,7 +60,6 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 	@Override
 	public void tick() {
 		updateChest();
-
 		for (int i = 0; i < inventory.getSlots(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {

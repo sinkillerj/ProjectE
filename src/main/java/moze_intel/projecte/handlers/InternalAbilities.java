@@ -77,7 +77,6 @@ public final class InternalAbilities {
 				if (player.abilities.allowFlying) {
 					PlayerHelper.updateClientServerFlight(player, false);
 				}
-
 				hadFlightItem = false;
 			}
 			wasFlyingGamemode = false;
@@ -87,7 +86,6 @@ public final class InternalAbilities {
 				if (!player.abilities.allowFlying) {
 					PlayerHelper.updateClientServerFlight(player, true);
 				}
-
 				hadFlightItem = true;
 			} else if (wasFlyingGamemode && !isFlyingGamemode) {
 				//Player was in a gamemode that allowed flight, but no longer is but they still should be allowed to fly
@@ -98,15 +96,12 @@ public final class InternalAbilities {
 			wasFlyingGamemode = isFlyingGamemode;
 			wasFlying = player.abilities.isFlying;
 		}
-
 		if (!shouldPlayerStep()) {
 			if (player.stepHeight > 0.6F) {
 				PlayerHelper.updateClientServerStepHeight(player, 0.6F);
 			}
-		} else {
-			if (player.stepHeight < 1.0F) {
-				PlayerHelper.updateClientServerStepHeight(player, 1.0F);
-			}
+		} else if (player.stepHeight < 1.0F) {
+			PlayerHelper.updateClientServerStepHeight(player, 1.0F);
 		}
 	}
 
@@ -120,26 +115,21 @@ public final class InternalAbilities {
 		if (!hasSwrg()) {
 			disableSwrgFlightOverride();
 		}
-
 		isFlyingGamemode = player.abilities.isCreativeMode || player.isSpectator();
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}
-
 		for (ItemStack stack : player.inventory.armorInventory) {
 			if (!stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
 				return true;
 			}
 		}
-
 		for (int i = 0; i <= 8; i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);
-
 			if (!stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
 				return true;
 			}
 		}
-
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {
@@ -149,7 +139,6 @@ public final class InternalAbilities {
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -159,15 +148,12 @@ public final class InternalAbilities {
 				return true;
 			}
 		}
-
 		for (int i = 0; i <= 8; i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);
-
 			if (!stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
 				return true;
 			}
 		}
-
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {
@@ -177,7 +163,6 @@ public final class InternalAbilities {
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -187,7 +172,6 @@ public final class InternalAbilities {
 				return true;
 			}
 		}
-
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {

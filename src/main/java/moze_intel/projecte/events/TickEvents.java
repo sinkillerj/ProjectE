@@ -29,7 +29,6 @@ public class TickEvents {
 		if (event.phase == TickEvent.Phase.END) {
 			event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
 				Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
-
 				for (DyeColor color : getBagColorsPresent(event.player)) {
 					IItemHandler inv = provider.getBag(color);
 					for (int i = 0; i < inv.getSlots(); i++) {
@@ -47,14 +46,12 @@ public class TickEvents {
 				for (DyeColor e : colorsChanged) {
 					if (event.player.openContainer instanceof AlchBagContainer) {
 						ItemStack heldItem = event.player.getHeldItem(((AlchBagContainer) event.player.openContainer).hand);
-						if (heldItem.getItem() instanceof AlchemicalBag && ((AlchemicalBag) heldItem.getItem()).color == e)
-						// Do not sync if this color is open, the container system does it for us
-						// and we'll stay out of its way.
-						{
+						if (heldItem.getItem() instanceof AlchemicalBag && ((AlchemicalBag) heldItem.getItem()).color == e) {
+							// Do not sync if this color is open, the container system does it for us
+							// and we'll stay out of its way.
 							continue;
 						}
 					}
-
 					provider.sync(e, (ServerPlayerEntity) event.player);
 				}
 			});
@@ -75,15 +72,12 @@ public class TickEvents {
 				return true;
 			}
 		}
-
 		for (int i = 0; i <= 8; i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);
-
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
 		}
-
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {
@@ -93,7 +87,6 @@ public class TickEvents {
 				}
 			}
 		}
-
 		return false;
 	}
 

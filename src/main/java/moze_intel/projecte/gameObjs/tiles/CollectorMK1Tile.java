@@ -100,9 +100,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (side != null && side.getAxis().isVertical()) {
 				return automationAuxSlots.cast();
-			} else {
-				return automationInput.cast();
 			}
+			return automationInput.cast();
 		}
 		return super.getCapability(cap, side);
 	}
@@ -125,14 +124,12 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 
 	@Override
 	public void tick() {
-		if (world.isRemote) {
-			return;
+		if (!world.isRemote) {
+			ItemHelper.compactInventory(toSort);
+			checkFuelOrKlein();
+			updateEmc();
+			rotateUpgraded();
 		}
-
-		ItemHelper.compactInventory(toSort);
-		checkFuelOrKlein();
-		updateEmc();
-		rotateUpgraded();
 	}
 
 	private void rotateUpgraded() {
@@ -215,9 +212,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	public long getEmcToNextGoal() {
 		if (!getLock().isEmpty()) {
 			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
-		} else {
-			return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 		}
+		return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 	}
 
 	public long getItemCharge() {
@@ -257,12 +253,9 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading())) {
 			return 0;
 		}
-
 		long reqEmc;
-
 		if (!getLock().isEmpty()) {
 			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
-
 			if (reqEmc < 0) {
 				return 0;
 			}
@@ -270,16 +263,12 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
 				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				return 0;
-			} else {
-				reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 			}
-
+			reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
 		}
-
 		if (getStoredEmc() >= reqEmc) {
 			return 1;
 		}
-
 		return (double) getStoredEmc() / reqEmc;
 	}
 

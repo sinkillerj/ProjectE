@@ -93,10 +93,8 @@ public final class WorldHelper {
 		if (inv == null) {
 			return;
 		}
-
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
-
 			if (!stack.isEmpty()) {
 				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ());
 				ent.setItem(stack);
@@ -136,7 +134,6 @@ public final class WorldHelper {
 				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(SnowBlock.LAYERS) < 8 && world.rand.nextInt(512) == 0) {
 					newState = stateUp.with(SnowBlock.LAYERS, stateUp.get(SnowBlock.LAYERS) + 1);
 				}
-
 				if (newState != null) {
 					if (player != null) {
 						PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, up, newState);
@@ -278,7 +275,6 @@ public final class WorldHelper {
 
 	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, PlayerEntity player) {
 		int chance = harvest ? 16 : 32;
-
 		for (BlockPos currentPos : WorldHelper.getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
 			currentPos = currentPos.toImmutable();
 			BlockState state = world.getBlockState(currentPos);
@@ -360,9 +356,7 @@ public final class WorldHelper {
 		if (numMined >= Constants.MAX_VEIN_SIZE) {
 			return numMined;
 		}
-
 		AxisAlignedBB b = new AxisAlignedBB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-
 		for (BlockPos currentPos : getPositionsFromBox(b)) {
 			BlockState currentState = world.getBlockState(currentPos);
 			if (currentState.getBlock() == target) {
@@ -395,7 +389,6 @@ public final class WorldHelper {
 	 */
 	public static void repelEntitiesInAABBFromPoint(World world, AxisAlignedBB effectBounds, double x, double y, double z, boolean isSWRG) {
 		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, effectBounds);
-
 		for (Entity ent : list) {
 			if ((isSWRG && !swrgBlacklist.contains(ent.getType())) || (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
 				if (ent instanceof MobEntity || ent instanceof IProjectile) {
@@ -406,9 +399,7 @@ public final class WorldHelper {
 						Vec3d p = new Vec3d(x, y, z);
 						Vec3d t = new Vec3d(ent.posX, ent.posY, ent.posZ);
 						double distance = p.distanceTo(t) + 0.1D;
-
 						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
-
 						ent.setMotion(ent.getMotion().add(r.scale(1 / 1.5D * 1 / distance)));
 					}
 				}

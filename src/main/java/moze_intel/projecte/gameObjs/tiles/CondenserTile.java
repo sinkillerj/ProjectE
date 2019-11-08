@@ -131,7 +131,6 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 			this.isAcceptingEmc = false;
 			return;
 		}
-
 		long lockEmc = EMCHelper.getEmcValue(lockInfo);
 		if (lockEmc > 0) {
 			if (requiredEmc != lockEmc) {
@@ -149,16 +148,12 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	protected void condense() {
 		for (int i = 0; i < inputInventory.getSlots(); i++) {
 			ItemStack stack = inputInventory.getStackInSlot(i);
-
-			if (stack.isEmpty() || isStackEqualToLock(stack)) {
-				continue;
+			if (!stack.isEmpty() && !isStackEqualToLock(stack)) {
+				inputInventory.extractItem(i, 1, false);
+				forceInsertEmc(EMCHelper.getEmcSellValue(stack), EmcAction.EXECUTE);
+				break;
 			}
-
-			inputInventory.extractItem(i, 1, false);
-			forceInsertEmc(EMCHelper.getEmcSellValue(stack), EmcAction.EXECUTE);
-			break;
 		}
-
 		if (this.getStoredEmc() >= requiredEmc && this.hasSpace()) {
 			forceExtractEmc(requiredEmc, EmcAction.EXECUTE);
 			pushStack();

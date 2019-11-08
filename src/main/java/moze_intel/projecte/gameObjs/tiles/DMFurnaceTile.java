@@ -212,7 +212,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 
 			if (furnaceBurnTime == 0 && canSmelt()) {
 				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(fuelItem);
-
 				if (isBurning()) {
 					shouldSave = true;
 					if (!fuelItem.isEmpty()) {
@@ -233,7 +232,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 					shouldSave = true;
 				}
 			}
-
 			if (wasBurning != isBurning()) {
 				shouldSave = true;
 				BlockState state = getWorld().getBlockState(getPos());
@@ -241,11 +239,9 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 					getWorld().setBlockState(getPos(), state.with(MatterFurnace.LIT, isBurning()));
 				}
 			}
-
 			if (shouldSave) {
 				markDirty();
 			}
-
 			pushToInventories();
 		}
 	}
@@ -277,7 +273,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		if (handler == null) {
 			return;
 		}
-
 		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
 			if (!extractTest.isEmpty()) {
@@ -300,7 +295,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		if (targetInv == null) {
 			return;
 		}
-
 		for (int i = 0; i < outputInventory.getSlots(); i++) {
 			ItemStack extractTest = outputInventory.extractItem(i, Integer.MAX_VALUE, true);
 			if (!extractTest.isEmpty()) {
@@ -312,7 +306,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	private void transferItem(IItemHandler targetInv, int i, ItemStack extractTest, IItemHandler outputInventory) {
 		ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);
 		int successfullyTransferred = extractTest.getCount() - remainderTest.getCount();
-
 		if (successfullyTransferred > 0) {
 			ItemStack toInsert = outputInventory.extractItem(i, successfullyTransferred, false);
 			ItemStack result = ItemHandlerHelper.insertItemStacked(targetInv, toInsert, false);
@@ -339,18 +332,14 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 
 	protected boolean canSmelt() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
-
 		if (toSmelt.isEmpty()) {
 			return false;
 		}
-
 		ItemStack smeltResult = getSmeltingResult(toSmelt);
 		if (smeltResult.isEmpty()) {
 			return false;
 		}
-
 		ItemStack currentSmelted = outputInventory.getStackInSlot(outputInventory.getSlots() - 1);
-
 		if (currentSmelted.isEmpty()) {
 			return true;
 		}

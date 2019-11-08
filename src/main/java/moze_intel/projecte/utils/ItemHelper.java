@@ -41,7 +41,6 @@ public final class ItemHelper {
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
-
 		for (ItemStack s : temp) {
 			ItemHandlerHelper.insertItemStacked(inventory, s, false);
 		}
@@ -64,7 +63,6 @@ public final class ItemHelper {
 				}
 			}
 		}
-
 		list.removeIf(ItemStack::isEmpty);
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
 	}
@@ -80,15 +78,10 @@ public final class ItemHelper {
 
 	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack) {
 		for (ItemStack invStack : inv) {
-			if (invStack.isEmpty()) {
-				return true;
-			}
-
-			if (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize()) {
+			if (invStack.isEmpty() || (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize())) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -97,7 +90,6 @@ public final class ItemHelper {
 		for (int i = 0; i < toCopy.getSlots(); i++) {
 			list.add(toCopy.getStackInSlot(i));
 		}
-
 		return new IItemHandlerModifiable() {
 			@Override
 			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {

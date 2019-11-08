@@ -11,15 +11,11 @@ import net.minecraft.client.resources.I18n;
 public final class MathUtils {
 
 	public static int parseInteger(String string) {
-		int value;
-
 		try {
-			value = Integer.parseInt(string);
+			return Integer.parseInt(string);
 		} catch (NumberFormatException e) {
 			return -1;
 		}
-
-		return value;
 	}
 
 	public static int randomIntInRange(int min, int max) {

@@ -139,12 +139,8 @@ public class PlayerEvents {
 		if (bag.isEmpty()) {
 			return;
 		}
-
-		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
-				.orElseThrow(NullPointerException::new)
-				.getBag(((AlchemicalBag) bag.getItem()).color);
+		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(((AlchemicalBag) bag.getItem()).color);
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
-
 		if (remainder.isEmpty()) {
 			event.getItem().remove();
 			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
@@ -152,7 +148,6 @@ public class PlayerEvents {
 		} else {
 			event.getItem().setItem(remainder);
 		}
-
 		event.setCanceled(true);
 	}
 

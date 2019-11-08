@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
@@ -70,12 +71,7 @@ public final class PlayerHelper {
 	}
 
 	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom) {
-		for (ItemStack s : player.inventory.mainInventory) {
-			if (!s.isEmpty() && s.getItem() == consumeFrom) {
-				return s;
-			}
-		}
-		return ItemStack.EMPTY;
+		return player.inventory.mainInventory.stream().filter(s -> !s.isEmpty() && s.getItem() == consumeFrom).findFirst().orElse(ItemStack.EMPTY);
 	}
 
 	@Nullable
@@ -112,14 +108,7 @@ public final class PlayerHelper {
 		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected(player.getEntityWorld(), pos, player)) {
 			return false;
 		}
-
-		for (Direction e : Direction.values()) {
-			if (!player.canPlayerEdit(pos, e, ItemStack.EMPTY)) {
-				return false;
-			}
-		}
-
-		return true;
+		return Arrays.stream(Direction.values()).allMatch(e -> player.canPlayerEdit(pos, e, ItemStack.EMPTY));
 	}
 
 	public static void resetCooldown(PlayerEntity player) {

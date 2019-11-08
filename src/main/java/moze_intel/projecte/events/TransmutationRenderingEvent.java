@@ -60,10 +60,8 @@ public class TransmutationRenderingEvent {
 					Tessellator.getInstance().draw();
 				} else {
 					RenderHelper.enableStandardItemLighting();
-
 					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
 					mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock(), 1), 0, 0, model);
-
 					RenderHelper.disableStandardItemLighting();
 				}
 			}
@@ -75,11 +73,9 @@ public class TransmutationRenderingEvent {
 		PlayerEntity player = mc.player;
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-
 		if (stack.isEmpty()) {
 			stack = player.getHeldItem(Hand.OFF_HAND);
 		}
-
 		if (stack.isEmpty() || stack.getItem() != ObjHandler.philosStone) {
 			transmutationResult = null;
 			return;
@@ -100,13 +96,11 @@ public class TransmutationRenderingEvent {
 				List<AxisAlignedBB> renderList = new ArrayList<>(1);
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
-
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
 					for (AxisAlignedBB bb : world.getBlockState(pos).getShape(world, pos).toBoundingBoxList()) {
 						renderList.add(bb.grow(0.01).offset(pos.getX() - playerX, pos.getY() - playerY, pos.getZ() - playerZ));
 					}
 				}
-
 				drawAll(renderList);
 			}
 		} else {

@@ -12,13 +12,11 @@ public final class CollectionHelper {
 			return toExclude;
 		}
 		T obj;
-
 		do {
 			int random = MathUtils.randomIntInRange(0, list.size() - 1);
 			obj = list.get(random);
 		}
 		while (obj.equals(toExclude));
-
 		return obj;
 	}
 }
