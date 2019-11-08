@@ -36,14 +36,10 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		super.inventoryTick(stack, world, entity, slot, held);
-
 		PlayerEntity player = (PlayerEntity) entity;
-
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			long itemEmc = getEmc(stack);
-
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
 			} else {
@@ -66,18 +62,15 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
-
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
-
 				for (ServerPlayerEntity player : players) {
 					if (player.getFoodStats().needFood()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
-
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.body.get());
 			} else {
 				tile.decrementActivityCooldown();

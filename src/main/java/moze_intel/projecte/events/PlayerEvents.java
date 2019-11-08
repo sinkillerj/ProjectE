@@ -117,7 +117,7 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
-		if (PECore.uuids.contains((evt.getPlayer().getUniqueID().toString()))) {
+		if (PECore.uuids.contains(evt.getPlayer().getUniqueID().toString())) {
 			ITextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").applyTextStyle(TextFormatting.BLUE);
 			ITextComponent playername = evt.getPlayer().getDisplayName().applyTextStyle(TextFormatting.GOLD);
 			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").applyTextStyle(TextFormatting.BLUE);

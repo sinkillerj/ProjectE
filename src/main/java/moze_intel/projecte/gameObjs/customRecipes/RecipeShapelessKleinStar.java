@@ -52,7 +52,6 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 				storedEMC += KleinStar.getEmc(stack);
 			}
 		}
-
 		if (storedEMC != 0 && result.getItem() instanceof KleinStar) {
 			KleinStar.setEmc(result, storedEMC);
 		}

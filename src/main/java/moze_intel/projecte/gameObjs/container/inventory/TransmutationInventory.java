@@ -47,14 +47,11 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	public TransmutationInventory(PlayerEntity player) {
 		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
-
 		this.player = player;
 		this.provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
-
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];
 		this.outputs = itemHandler[2];
-
 		if (player.getEntityWorld().isRemote) {
 			updateClientTargets();
 		}
@@ -79,9 +76,8 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				unlearnFlag = 0;
 				provider.addKnowledge(cleanedInfo);
 			}
-
 			if (!player.getEntityWorld().isRemote) {
-				provider.sync(((ServerPlayerEntity) player));
+				provider.sync((ServerPlayerEntity) player);
 			}
 		}
 		updateClientTargets();
@@ -103,17 +99,15 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			learnFlag = 0;
 			provider.removeKnowledge(cleanedInfo);
 			if (!player.getEntityWorld().isRemote) {
-				provider.sync(((ServerPlayerEntity) player));
+				provider.sync((ServerPlayerEntity) player);
 			}
 		}
-
 		updateClientTargets();
 	}
 
 	public void checkForUpdates() {
 		long matterEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(0));
 		long fuelEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(FUEL_START));
-
 		if (BigInteger.valueOf(Math.max(matterEmc, fuelEmc)).compareTo(getAvailableEMC()) > 0) {
 			updateClientTargets();
 		}
@@ -123,11 +117,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		if (!this.player.getEntityWorld().isRemote) {
 			return;
 		}
-
 		knowledge.clear();
 		knowledge.addAll(provider.getKnowledge());
 		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
-
 		for (int i = 0; i < outputs.getSlots(); i++) {
 			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}
@@ -322,7 +314,6 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				slot -= h.getSlots();
 			}
 		}
-
 		return slot;
 	}
 

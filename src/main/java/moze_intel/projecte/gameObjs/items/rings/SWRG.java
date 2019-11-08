@@ -114,7 +114,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		if (invSlot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		tick(stack, ((PlayerEntity) entity));
+		tick(stack, (PlayerEntity) entity);
 	}
 
 	@Nonnull
@@ -123,7 +123,6 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			int newMode = 0;
-
 			switch (stack.getOrCreateTag().getInt(TAG_MODE)) {
 				case 0:
 					newMode = 2;
@@ -138,7 +137,6 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					newMode = 1;
 					break;
 			}
-
 			changeMode(player, stack, newMode);
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);

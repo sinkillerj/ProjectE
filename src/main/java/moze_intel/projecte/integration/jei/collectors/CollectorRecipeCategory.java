@@ -95,7 +95,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		String emc = recipe.getUpgradeEMC() + " EMC";
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.getStringWidth(emc);
-		fontRenderer.drawString(emc, (getBackground().getWidth() / 2F) - (stringWidth / 2F), 5, 0x808080);
+		fontRenderer.drawString(emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(55, 18);
 	}
 }

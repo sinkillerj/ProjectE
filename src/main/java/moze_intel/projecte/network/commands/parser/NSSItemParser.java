@@ -27,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class NSSItemParser {
 
 	//This error message is a copy of ItemPredicateArgument.UNKNOWN_TAG
-	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType((tagId) -> new TranslationTextComponent("arguments.item.tag.unknown", tagId));
+	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType(tagId -> new TranslationTextComponent("arguments.item.tag.unknown", tagId));
 	private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = SuggestionsBuilder::buildFuture;
 
 	private final StringReader reader;

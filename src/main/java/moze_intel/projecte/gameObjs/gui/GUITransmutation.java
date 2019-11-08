@@ -10,7 +10,6 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -19,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
+public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/transmute.png");
 	private final TransmutationInventory inv;
@@ -30,13 +29,6 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 		this.inv = container.transmutationInventory;
 		this.xSize = 228;
 		this.ySize = 196;
-	}
-
-	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
@@ -66,7 +58,7 @@ public class GUITransmutation extends ContainerScreen<TransmutationContainer> {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1F, 1F, 1F, 1F);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		this.textBoxFilter.render(mouseX, mouseY, partialTicks);
 	}
 

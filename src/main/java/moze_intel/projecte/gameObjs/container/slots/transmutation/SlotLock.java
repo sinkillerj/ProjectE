@@ -30,13 +30,11 @@ public class SlotLock extends SlotItemHandler {
 		if (stack.isEmpty()) {
 			return;
 		}
-
 		super.putStack(stack);
 		stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 			long actualExtracted = emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);
 			inv.addEmc(BigInteger.valueOf(actualExtracted));
 		});
-
 		if (EMCHelper.doesItemHaveEmc(stack)) {
 			inv.handleKnowledge(stack);
 		}

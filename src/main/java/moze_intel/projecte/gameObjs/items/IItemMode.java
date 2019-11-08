@@ -44,7 +44,6 @@ public interface IItemMode extends IModeChanger {
 		}
 		//Update the mode
 		stack.getOrCreateTag().putByte(getModeTag(), (byte) ((getMode(stack) + 1) % numModes));
-
 		TranslationTextComponent modeName = new TranslationTextComponent(getModeTranslationKey(stack));
 		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName));
 		return true;

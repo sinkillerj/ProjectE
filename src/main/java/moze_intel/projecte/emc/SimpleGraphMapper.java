@@ -21,11 +21,11 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	}
 
 	private static <K, V extends Comparable<V>> boolean hasSmallerOrEqual(Map<K, V> m, K key, V value) {
-		return (m.containsKey(key) && m.get(key).compareTo(value) <= 0);
+		return m.containsKey(key) && m.get(key).compareTo(value) <= 0;
 	}
 
 	private static <K, V extends Comparable<V>> boolean hasSmaller(Map<K, V> m, K key, V value) {
-		return (m.containsKey(key) && m.get(key).compareTo(value) < 0);
+		return m.containsKey(key) && m.get(key).compareTo(value) < 0;
 	}
 
 	static void setLogFoundExploits(boolean log) {

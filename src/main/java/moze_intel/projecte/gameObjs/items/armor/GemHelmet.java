@@ -25,25 +25,26 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
 public class GemHelmet extends GemArmorBase {
+
+	private static final String NIGHT_VISION = "NightVision";
 
 	public GemHelmet(Properties props) {
 		super(EquipmentSlotType.HEAD, props);
 	}
 
 	public static boolean isNightVisionEnabled(ItemStack helm) {
-		return helm.hasTag() && helm.getTag().contains("NightVision") && helm.getTag().getBoolean("NightVision");
+		return helm.hasTag() && helm.getTag().contains(NIGHT_VISION) && helm.getTag().getBoolean(NIGHT_VISION);
 	}
 
 	public static void toggleNightVision(ItemStack helm, PlayerEntity player) {
 		boolean value;
 
-		if (helm.getOrCreateTag().contains("NightVision")) {
-			helm.getTag().putBoolean("NightVision", !helm.getTag().getBoolean("NightVision"));
-			value = helm.getTag().getBoolean("NightVision");
+		if (helm.getOrCreateTag().contains(NIGHT_VISION)) {
+			helm.getTag().putBoolean(NIGHT_VISION, !helm.getTag().getBoolean(NIGHT_VISION));
+			value = helm.getTag().getBoolean(NIGHT_VISION);
 		} else {
-			helm.getTag().putBoolean("NightVision", false);
+			helm.getTag().putBoolean(NIGHT_VISION, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")

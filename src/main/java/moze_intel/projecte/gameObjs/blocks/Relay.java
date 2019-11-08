@@ -77,7 +77,7 @@ public class Relay extends BlockDirection {
 	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof RelayMK1Tile) {
-			RelayMK1Tile relay = ((RelayMK1Tile) te);
+			RelayMK1Tile relay = (RelayMK1Tile) te;
 			return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 		}
 		return 0;

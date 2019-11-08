@@ -38,16 +38,13 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (!this.getEntityWorld().isRemote) {
 			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
 				this.remove();
 				return;
 			}
-
 			if (getThrower() instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = ((ServerPlayerEntity) getThrower());
-
+				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
 				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
 					IFluidState state = this.getEntityWorld().getFluidState(pos);
 					if (state.isTagged(FluidTags.LAVA)) {
@@ -61,11 +58,9 @@ public class EntityWaterProjectile extends ThrowableEntity {
 					}
 				});
 			}
-
 			if (this.isInWater()) {
 				this.remove();
 			}
-
 			if (this.posY > 128) {
 				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
@@ -84,27 +79,22 @@ public class EntityWaterProjectile extends ThrowableEntity {
 		if (this.getEntityWorld().isRemote) {
 			return;
 		}
-
 		if (!(getThrower() instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
-
 		if (mop instanceof BlockRayTraceResult) {
 			BlockPos pos = ((BlockRayTraceResult) mop).getPos().offset(((BlockRayTraceResult) mop).getFace());
 			if (world.isAirBlock(pos)) {
-				PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), pos, Blocks.WATER.getDefaultState());
+				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), pos, Blocks.WATER.getDefaultState());
 			}
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
-
 			if (ent.isBurning()) {
 				ent.extinguish();
 			}
-
 			ent.addVelocity(this.getMotion().getX() * 2, this.getMotion().getY() * 2, this.getMotion().getZ() * 2);
 		}
-
 		remove();
 	}
 

@@ -36,9 +36,8 @@ public class MercurialEyeInventory implements IItemHandlerModifiable {
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (stack == invItem) {
 			return stack; // Cannot put the bag into itself
-		} else {
-			return compose.insertItem(slot, stack, simulate);
 		}
+		return compose.insertItem(slot, stack, simulate);
 	}
 
 	@Nonnull

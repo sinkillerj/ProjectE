@@ -72,7 +72,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5) {
 		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity) {
-			fireArrow(stack, world, ((LivingEntity) entity), 1F);
+			fireArrow(stack, world, (LivingEntity) entity, 1F);
 		}
 	}
 
@@ -87,8 +87,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
-
-		if (!(shooter instanceof PlayerEntity) || consumeFuel(((PlayerEntity) shooter), ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
+		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 			world.addEntity(arrow);
@@ -102,12 +101,11 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
-
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
 					for (int i = 0; i < 3; i++) {
-						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get(((ServerWorld) world), PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.posX = tile.centeredX;
 						arrow.posY = tile.centeredY + 2;
 						arrow.posZ = tile.centeredZ;

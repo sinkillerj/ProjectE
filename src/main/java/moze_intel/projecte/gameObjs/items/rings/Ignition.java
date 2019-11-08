@@ -50,10 +50,8 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
 		ServerPlayerEntity player = (ServerPlayerEntity) entity;
-
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
@@ -73,17 +71,15 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		BlockPos pos = ctx.getPos();
 		BlockState state = world.getBlockState(pos);
 		if (state.getBlock() instanceof TNTBlock) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) ctx.getPlayer()), pos)) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) ctx.getPlayer(), pos)) {
 				// Ignite TNT or derivatives
 				//TODO: Fix this once https://github.com/MinecraftForge/MinecraftForge/pull/6290 is merged, make it use createExplosion
 				((TNTBlock) state.getBlock()).explode(world, pos);
 				world.removeBlock(pos, false);
 				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
-
 			return ActionResultType.SUCCESS;
 		}
-
 		return ActionResultType.PASS;
 	}
 
@@ -101,7 +97,6 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 					living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
 					living.setFire(8);
 				}
-
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition.get());
 			} else {
 				tile.decrementActivityCooldown();

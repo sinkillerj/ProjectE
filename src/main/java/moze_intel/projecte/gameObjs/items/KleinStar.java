@@ -31,11 +31,9 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack) {
 		long starEmc = getEmc(stack);
-
 		if (starEmc == 0) {
 			return 1.0D;
 		}
-
 		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
 	}
 
@@ -47,7 +45,6 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
 			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 		}
-
 		return ActionResult.newResult(ActionResultType.PASS, stack);
 	}
 

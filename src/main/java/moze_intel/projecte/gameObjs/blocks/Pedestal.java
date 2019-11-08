@@ -84,11 +84,9 @@ public class Pedestal extends Block {
 			if (!(te instanceof DMPedestalTile)) {
 				return true;
 			}
-
-			DMPedestalTile tile = ((DMPedestalTile) te);
+			DMPedestalTile tile = (DMPedestalTile) te;
 			ItemStack item = tile.getInventory().getStackInSlot(0);
 			ItemStack stack = player.getHeldItem(hand);
-
 			if (stack.isEmpty() && !item.isEmpty()) {
 				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 					tile.setActive(!tile.getActive());
@@ -111,10 +109,8 @@ public class Pedestal extends Block {
 	public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
 		boolean flag = world.isBlockPowered(pos);
 		TileEntity te = world.getTileEntity(pos);
-
 		if (te instanceof DMPedestalTile) {
-			DMPedestalTile ped = ((DMPedestalTile) te);
-
+			DMPedestalTile ped = (DMPedestalTile) te;
 			if (ped.previousRedstoneState != flag) {
 				if (flag) {
 					ItemStack stack = ped.getInventory().getStackInSlot(0);
@@ -125,7 +121,6 @@ public class Pedestal extends Block {
 						});
 					}
 				}
-
 				ped.previousRedstoneState = flag;
 			}
 		}

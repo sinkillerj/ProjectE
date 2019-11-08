@@ -39,11 +39,8 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		super.inventoryTick(stack, world, entity, slot, held);
-
 		PlayerEntity player = (PlayerEntity) entity;
-
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			if (getXP(player) > 0) {
 				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
@@ -59,12 +56,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && !stack.getOrCreateTag().getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
-
 			if (toAdd > 0) {
 				addXP(player, toAdd);
 			}
 		}
-
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
 	}
 
@@ -80,7 +75,6 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	private void removeXP(PlayerEntity player, int amount) {
 		int experiencetotal = getXP(player) - amount;
-
 		if (experiencetotal < 0) {
 			player.experienceTotal = 0;
 			player.experienceLevel = 0;
@@ -100,7 +94,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private int getXP(PlayerEntity player) {
-		return (int) (getXPForLvl(player.experienceLevel) + (player.experience * player.xpBarCap()));
+		return (int) (getXPForLvl(player.experienceLevel) + player.experience * player.xpBarCap());
 	}
 
 	// Math referenced from the MC wiki
@@ -114,10 +108,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 
 		if (level <= 31) {
-			return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
+			return (int) (level * level * 2.5D - 40.5D * level + 360.0D);
 		}
 
-		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
+		return (int) (level * level * 4.5D - 162.5D * level + 2220.0D);
 	}
 
 	private int getLvlForXP(int totalXP) {
@@ -139,12 +133,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) {
-		long result = getStoredXP(stack) + XP;
-
+		long result = (long) getStoredXP(stack) + XP;
 		if (result > Integer.MAX_VALUE) {
 			result = Integer.MAX_VALUE;
 		}
-
 		setStoredXP(stack, (int) result);
 	}
 
@@ -185,7 +177,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	private void suckXP(ExperienceOrbEntity orb, ItemStack mindStone) {
 		long l = getStoredXP(mindStone);
 		if (l + orb.xpValue > Integer.MAX_VALUE) {
-			orb.xpValue = ((int) (l + orb.xpValue - Integer.MAX_VALUE));
+			orb.xpValue = (int) (l + orb.xpValue - Integer.MAX_VALUE);
 			setStoredXP(mindStone, Integer.MAX_VALUE);
 		} else {
 			addStoredXP(mindStone, orb.xpValue);

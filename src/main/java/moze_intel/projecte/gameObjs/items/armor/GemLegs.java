@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import com.google.common.base.Predicates;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +43,7 @@ public class GemLegs extends GemArmorBase {
 	}
 
 	private boolean jumpedRecently(PlayerEntity player) {
-		return lastJumpTracker.containsKey(player.getEntityId())
-			   && player.getEntityWorld().getGameTime() - lastJumpTracker.get(player.getEntityId()) < 5;
+		return lastJumpTracker.containsKey(player.getEntityId()) && player.getEntityWorld().getGameTime() - lastJumpTracker.get(player.getEntityId()) < 5;
 	}
 
 	@Override
@@ -55,16 +53,12 @@ public class GemLegs extends GemArmorBase {
 				player.setMotion(player.getMotion().add(0, -0.32F, 0));
 			}
 		}
-
 		if (player.isSneaking()) {
 			AxisAlignedBB box = new AxisAlignedBB(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
 			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
-
 			if (!world.isRemote && player.getMotion().getY() < -0.08) {
-				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player,
-						player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
-						Predicates.instanceOf(LivingEntity.class));
-
+				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player, player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
+						entity -> entity instanceof LivingEntity);
 				for (Entity e : entities) {
 					if (e.canBeCollidedWith()) {
 						e.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) -player.getMotion().getY() * 6F);

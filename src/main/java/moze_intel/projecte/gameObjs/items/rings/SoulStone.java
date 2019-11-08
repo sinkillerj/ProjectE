@@ -36,11 +36,8 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		super.inventoryTick(stack, world, entity, slot, held);
-
 		PlayerEntity player = (PlayerEntity) entity;
-
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
@@ -67,14 +64,12 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
-
 				for (ServerPlayerEntity player : players) {
 					if (player.getHealth() < player.getMaxHealth()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart
 					}
 				}
-
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.soul.get());
 			} else {
 				tile.decrementActivityCooldown();

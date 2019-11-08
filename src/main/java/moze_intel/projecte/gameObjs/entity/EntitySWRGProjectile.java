@@ -41,7 +41,6 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (!world.isRemote && ticksExisted > 400) {
 			remove();
 			return;
@@ -50,7 +49,6 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		// Undo the 0.99 (0.8 in water) drag applied in superclass
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 		this.setMotion(this.getMotion().scale(inverse));
-
 		if (!world.isRemote && isAlive() && posY > world.getHeight() && world.isRaining()) {
 			world.getWorldInfo().setThundering(true);
 			remove();
@@ -67,15 +65,12 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		if (world.isRemote) {
 			return;
 		}
-
 		if (!(getThrower() instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
-
-		PlayerEntity player = ((PlayerEntity) getThrower());
+		PlayerEntity player = (PlayerEntity) getThrower();
 		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
-
 		if (mop instanceof BlockRayTraceResult) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
 				BlockPos pos = ((BlockRayTraceResult) mop).getPos();
@@ -93,7 +88,6 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		} else if (mop instanceof EntityRayTraceResult) {
 			if (((EntityRayTraceResult) mop).getEntity() instanceof LivingEntity && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
 				LivingEntity e = (LivingEntity) ((EntityRayTraceResult) mop).getEntity();
-
 				// Minor damage so we count as the attacker for launching the mob
 				e.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
 

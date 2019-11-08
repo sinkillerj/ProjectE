@@ -50,13 +50,11 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
-
 		if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8 || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			return;
 		}
-
 		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
-		WorldHelper.freezeInBoundingBox(world, box, ((PlayerEntity) entity), true);
+		WorldHelper.freezeInBoundingBox(world, box, (PlayerEntity) entity, true);
 	}
 
 

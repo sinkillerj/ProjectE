@@ -40,12 +40,10 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.AbstractCondenserScreen;
 import moze_intel.projecte.gameObjs.gui.AlchBagScreen;
 import moze_intel.projecte.gameObjs.gui.AlchChestScreen;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK1;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK2;
-import moze_intel.projecte.gameObjs.gui.GUICollectorMK3;
 import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIEternalDensity;
 import moze_intel.projecte.gameObjs.gui.GUIMercurialEye;
@@ -389,9 +387,9 @@ public class ObjHandler {
 			ScreenManager.registerFactory(RELAY_MK1_CONTAINER, GUIRelayMK1::new);
 			ScreenManager.registerFactory(RELAY_MK2_CONTAINER, GUIRelayMK2::new);
 			ScreenManager.registerFactory(RELAY_MK3_CONTAINER, GUIRelayMK3::new);
-			ScreenManager.registerFactory(COLLECTOR_MK1_CONTAINER, GUICollectorMK1::new);
-			ScreenManager.registerFactory(COLLECTOR_MK2_CONTAINER, GUICollectorMK2::new);
-			ScreenManager.registerFactory(COLLECTOR_MK3_CONTAINER, GUICollectorMK3::new);
+			ScreenManager.registerFactory(COLLECTOR_MK1_CONTAINER, AbstractCollectorScreen.MK1::new);
+			ScreenManager.registerFactory(COLLECTOR_MK2_CONTAINER, AbstractCollectorScreen.MK2::new);
+			ScreenManager.registerFactory(COLLECTOR_MK3_CONTAINER, AbstractCollectorScreen.MK3::new);
 			ScreenManager.registerFactory(MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
 		});
 	}

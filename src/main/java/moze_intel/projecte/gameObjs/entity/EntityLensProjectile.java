@@ -37,16 +37,13 @@ public class EntityLensProjectile extends ThrowableEntity {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (this.getEntityWorld().isRemote) {
 			return;
 		}
-
 		if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
 			this.remove();
 			return;
 		}
-
 		if (this.isInWater()) {
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
 			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, posX, posY, posZ, 2, 0, 0, 0, 0);

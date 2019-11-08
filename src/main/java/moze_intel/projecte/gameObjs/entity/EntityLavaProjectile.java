@@ -41,15 +41,13 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (!world.isRemote) {
 			if (ticksExisted > 400 || !world.isBlockLoaded(new BlockPos(this))) {
 				this.remove();
 				return;
 			}
-
 			if (getThrower() instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = ((ServerPlayerEntity) getThrower());
+				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
 				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
 					Block block = world.getBlockState(pos).getBlock();
 					if (block == Blocks.WATER) {
@@ -61,7 +59,6 @@ public class EntityLavaProjectile extends ThrowableEntity {
 					}
 				});
 			}
-
 			if (this.posY > 128) {
 				WorldInfo worldInfo = world.getWorldInfo();
 				worldInfo.setRaining(false);
@@ -78,12 +75,12 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
 		if (!world.isRemote || getThrower() instanceof PlayerEntity) {
-			PlayerEntity player = ((PlayerEntity) getThrower());
+			PlayerEntity player = (PlayerEntity) getThrower();
 			ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				if (mop instanceof BlockRayTraceResult) {
 					BlockRayTraceResult brtr = (BlockRayTraceResult) mop;
-					PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) getThrower()), brtr.getPos().offset(brtr.getFace()), Blocks.LAVA.getDefaultState());
+					PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), brtr.getPos().offset(brtr.getFace()), Blocks.LAVA.getDefaultState());
 				} else if (mop instanceof EntityRayTraceResult) {
 					Entity ent = ((EntityRayTraceResult) mop).getEntity();
 					ent.setFire(5);
@@ -91,7 +88,6 @@ public class EntityLavaProjectile extends ThrowableEntity {
 				}
 			}
 		}
-
 		if (!world.isRemote) {
 			remove();
 		}

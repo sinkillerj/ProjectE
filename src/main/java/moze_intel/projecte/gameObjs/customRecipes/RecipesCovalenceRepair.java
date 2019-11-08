@@ -28,14 +28,11 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
 		boolean foundItem = false;
-
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack input = inv.getStackInSlot(i);
-
 			if (input.isEmpty()) {
 				continue;
 			}
-
 			if (input.isDamageable()) {
 				if (!foundItem) {
 					tool = input;
@@ -51,7 +48,6 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 				return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
 			}
 		}
-
 		return new Tuple<>(tool, dust);
 	}
 
@@ -61,13 +57,11 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 		if (ingredients.getA().isEmpty() || ingredients.getB().isEmpty()) {
 			return false;
 		}
-
 		long emcPerDurability = EMCHelper.getEMCPerDurability(ingredients.getA());
 		long dustEmc = 0;
 		for (ItemStack stack : ingredients.getB()) {
 			dustEmc += EMCHelper.getEmcValue(stack);
 		}
-
 		return dustEmc >= emcPerDurability;
 	}
 
@@ -80,9 +74,8 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 		for (ItemStack stack : ingredients.getB()) {
 			dustEmc += EMCHelper.getEmcValue(stack);
 		}
-
 		ItemStack output = ingredients.getA().copy();
-		output.setDamage((int) Math.max(output.getDamage() - (dustEmc / emcPerDurability), 0));
+		output.setDamage((int) Math.max(output.getDamage() - dustEmc / emcPerDurability, 0));
 		return output;
 	}
 

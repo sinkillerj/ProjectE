@@ -54,25 +54,21 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		if (player.getCooldownTracker().hasCooldown(this)) {
 			return false;
 		}
-
 		BlockPos c = PlayerHelper.getBlockLookingAt(player, 64);
 		if (c == null) {
 			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
 		}
-
 		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
 		if (!MinecraftForge.EVENT_BUS.post(event)) {
 			if (player.isPassenger()) {
 				player.stopRiding();
 			}
-
 			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			player.getCooldownTracker().setCooldown(this, 10);
 			return true;
 		}
-
 		return false;
 	}
 

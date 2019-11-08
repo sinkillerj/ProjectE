@@ -142,7 +142,7 @@ public class ToolHelper {
 				}
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				pos = pos.toImmutable();
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
+				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
 						world.removeBlock(pos, false);
@@ -220,7 +220,7 @@ public class ToolHelper {
 			world.setBlockState(pos, tilledState, 11);
 			Material aboveMaterial = aboveState.getMaterial();
 			if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !aboveState.getBlock().hasTileEntity(aboveState)) {
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), abovePos)) {
+				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, abovePos)) {
 					world.destroyBlock(abovePos, true);
 				}
 			}
@@ -265,7 +265,7 @@ public class ToolHelper {
 							//If the block above the one we tilled is a plant (and not a tile entity because you never know), then we try to remove it
 							//Note: We do check for breaking the block above that we attempt to break it though, as we
 							// have not done any events that have told use we are allowed to break blocks in that spot.
-							if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos.up())) {
+							if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos.up())) {
 								world.destroyBlock(newPos.up(), true);
 							}
 						}
@@ -420,7 +420,7 @@ public class ToolHelper {
 			if (state.getBlockHardness(world, digPos) != -1 && stack.canHarvestBlock(state)) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				digPos = digPos.toImmutable();
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), digPos)) {
+				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, digPos)) {
 					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, stack));
 					world.removeBlock(digPos, false);
 				}
@@ -455,7 +455,7 @@ public class ToolHelper {
 				}
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				newPos = newPos.toImmutable();
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), newPos)) {
+				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						drops.addAll(Block.getDrops(state, (ServerWorld) world, newPos, world.getTileEntity(newPos), player, stack));
 						world.removeBlock(newPos, false);
@@ -479,7 +479,6 @@ public class ToolHelper {
 	/**
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
-	//TODO: Double check intended workings of this method
 	public static void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg) {
 		if (!(damager instanceof PlayerEntity) || damager.getEntityWorld().isRemote) {
 			return;
@@ -529,7 +528,7 @@ public class ToolHelper {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof IShearable) {
 			IShearable target = (IShearable) block;
-			if (target.isShearable(stack, world, pos) && (world.isRemote || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos))) {
+			if (target.isShearable(stack, world, pos) && (world.isRemote || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos))) {
 				List<ItemStack> drops = target.onSheared(stack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 				if (!drops.isEmpty()) {
 					if (!world.isRemote) {
@@ -553,8 +552,7 @@ public class ToolHelper {
 		int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
 		int offset = (int) Math.pow(2, 2 + getCharge(stack));
 		//Get all entities also making sure that they are shearable
-		//Note: There is no division issue here as we are a power of 2
-		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(offset, offset / 2, offset), SHEARABLE);
+		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(offset, offset / 2.0, offset), SHEARABLE);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (Entity ent : list) {

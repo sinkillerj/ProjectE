@@ -8,13 +8,12 @@ import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends ContainerScreen<T> {
+public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends PEContainerScreen<T> {
 
 	protected final T container;
 
@@ -28,21 +27,14 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected abstract ResourceLocation getTexture();
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int progress = container.getProgressScaled();
-		this.blit(guiLeft + 33, guiTop + 10, 0, 235, progress, 10);
+		blit(guiLeft + 33, guiTop + 10, 0, 235, progress, 10);
 	}
 
 	@Override

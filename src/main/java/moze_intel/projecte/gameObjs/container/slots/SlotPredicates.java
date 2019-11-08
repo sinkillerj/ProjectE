@@ -31,7 +31,7 @@ public final class SlotPredicates {
 			return false;
 		}
 		BlockState state = ItemHelper.stackToState(input);
-		return state != null && !(state.getBlock().hasTileEntity(state)) && EMCHelper.doesItemHaveEmc(input);
+		return state != null && !state.getBlock().hasTileEntity(state) && EMCHelper.doesItemHaveEmc(input);
 	};
 
 	private SlotPredicates() {

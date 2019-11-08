@@ -36,11 +36,8 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		super.inventoryTick(stack, world, entity, slot, held);
-
 		PlayerEntity player = (PlayerEntity) entity;
-
 		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			if (!consumeFuel(player, stack, 2 * 64, false)) {
 				stack.getTag().putBoolean(TAG_ACTIVE, false);
@@ -52,7 +49,6 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 						player.getFoodStats().addStats(2, 10);
 						removeEmc(stack, 64);
 					}
-
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
@@ -74,7 +70,6 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
-
 				for (ServerPlayerEntity player : players) {
 					if (player.getHealth() < player.getMaxHealth()) {
 						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
@@ -85,7 +80,6 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
-
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.life.get());
 			} else {
 				tile.decrementActivityCooldown();

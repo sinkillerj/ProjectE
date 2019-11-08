@@ -43,15 +43,12 @@ public class SlotInput extends SlotItemHandler {
 		if (stack.isEmpty()) {
 			return;
 		}
-
 		super.putStack(stack);
-
 		stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 			long shrunkenAvailableEMC = MathUtils.clampToLong(inv.getAvailableEMC());
 			long actualInserted = emcHolder.insertEmc(stack, shrunkenAvailableEMC, EmcAction.EXECUTE);
 			inv.removeEmc(BigInteger.valueOf(actualInserted));
 		});
-
 		if (EMCHelper.doesItemHaveEmc(stack)) {
 			inv.handleKnowledge(stack);
 		}

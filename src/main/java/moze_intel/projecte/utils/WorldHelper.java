@@ -108,7 +108,7 @@ public final class WorldHelper {
 	public static void extinguishNearby(World world, PlayerEntity player) {
 		BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)).forEach(pos -> {
 			pos = pos.toImmutable();
-			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
+			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				world.removeBlock(pos, false);
 			}
 		});
@@ -122,7 +122,7 @@ public final class WorldHelper {
 			pos = pos.toImmutable();
 			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0)) {
 				if (player != null) {
-					PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), pos, Blocks.ICE.getDefaultState());
+					PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, pos, Blocks.ICE.getDefaultState());
 				} else {
 					world.setBlockState(pos, Blocks.ICE.getDefaultState());
 				}
@@ -139,7 +139,7 @@ public final class WorldHelper {
 
 				if (newState != null) {
 					if (player != null) {
-						PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), up, newState);
+						PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, up, newState);
 					} else {
 						world.setBlockState(up, newState);
 					}
@@ -293,10 +293,10 @@ public final class WorldHelper {
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof IGrowable) {
-				IGrowable growable = ((IGrowable) crop);
+				IGrowable growable = (IGrowable) crop;
 				if (!growable.canGrow(world, currentPos, state, false)) {
 					if (harvest && crop != Blocks.MELON_STEM && crop != Blocks.PUMPKIN_STEM
-						&& (player == null || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos))) {
+						&& (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos))) {
 						world.destroyBlock(currentPos, true);
 					}
 				} else if (world.rand.nextInt(chance) == 0) {
@@ -316,7 +316,7 @@ public final class WorldHelper {
 
 				if (harvest) {
 					if (crop instanceof FlowerBlock) {
-						if (player == null || PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
+						if (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos)) {
 							world.destroyBlock(currentPos, true);
 						}
 					}
@@ -332,7 +332,7 @@ public final class WorldHelper {
 
 						if (shouldHarvest) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								if (player != null && PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos.up(i))) {
+								if (player != null && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos.up(i))) {
 									world.destroyBlock(currentPos.up(i), true);
 								} else if (player == null) {
 									world.destroyBlock(currentPos.up(i), true);
@@ -368,7 +368,7 @@ public final class WorldHelper {
 			if (currentState.getBlock() == target) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				currentPos = currentPos.toImmutable();
-				if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), currentPos)) {
+				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos)) {
 					numMined++;
 					currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, world.getTileEntity(currentPos), player, stack));
 					world.removeBlock(currentPos, false);
@@ -385,7 +385,7 @@ public final class WorldHelper {
 	public static void igniteNearby(World world, PlayerEntity player) {
 		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8))) {
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos)) {
-				PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.toImmutable(), Blocks.FIRE.getDefaultState());
 			}
 		}
 	}
@@ -397,10 +397,9 @@ public final class WorldHelper {
 		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, effectBounds);
 
 		for (Entity ent : list) {
-			if ((isSWRG && !swrgBlacklist.contains(ent.getType()))
-				|| (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
-				if ((ent instanceof MobEntity) || (ent instanceof IProjectile)) {
-					if (isSWRG || !ProjectEConfig.effects.interdictionMode.get() || (ent instanceof IMob || ent instanceof IProjectile)) {
+			if ((isSWRG && !swrgBlacklist.contains(ent.getType())) || (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
+				if (ent instanceof MobEntity || ent instanceof IProjectile) {
+					if (isSWRG || !ProjectEConfig.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
 						if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround) {
 							continue;
 						}

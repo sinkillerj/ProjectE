@@ -132,59 +132,50 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
 			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
-
 			compound.putBoolean(TAG_ACTIVE, !compound.getBoolean(TAG_ACTIVE));
 		}
-
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) // GIANT FIRE ROW OF DEATH
-	{
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+		//GIANT FIRE ROW OF DEATH
 		World world = player.getEntityWorld();
-
 		if (world.isRemote) {
 			return true;
 		}
-
 		switch (getMode(stack)) {
 			case 1: // ignition
 				switch (player.getHorizontalFacing()) {
 					case SOUTH: // fall through
-					case NORTH: {
+					case NORTH:
 						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-30, -5, -3), player.getPosition().add(30, 5, 3))) {
 							if (world.isAirBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
-					}
 					case WEST: // fall through
-					case EAST: {
+					case EAST:
 						for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -5, -30), player.getPosition().add(3, 5, 30))) {
 							if (world.isAirBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos.toImmutable(), Blocks.FIRE.getDefaultState());
+								PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.toImmutable(), Blocks.FIRE.getDefaultState());
 							}
 						}
 						break;
-					}
 				}
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
-
 		return true;
 	}
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-
 		if (world.isRemote) {
 			return false;
 		}
-
 		switch (getMode(stack)) {
 			case 0: // zero
 				SnowballEntity snowball = new SnowballEntity(world, player);
@@ -204,7 +195,6 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 				world.addEntity(lightning);
 				break;
 		}
-
 		return true;
 	}
 

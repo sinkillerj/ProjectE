@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PrimitiveIterator;
@@ -16,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -41,19 +43,16 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
-		PlayerEntity player = ctx.getPlayer();
-
 		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
-
+		PlayerEntity player = ctx.getPlayer();
 		List<Long> emcValues = new ArrayList<>();
 		long totalEmc = 0;
 		int numBlocks = 0;
-
 		int depth = getDepthFromMode(ctx.getItem());
 		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth);
-
+		Collection<IRecipe<?>> recipes = world.getRecipeManager().getRecipes();
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
 			if (world.isAirBlock(digPos)) {
 				continue;
@@ -67,7 +66,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
 
 			if (blockEmc == 0) {
-				PrimitiveIterator.OfLong iter = world.getRecipeManager().getRecipes().stream()
+				PrimitiveIterator.OfLong iter = recipes.stream()
 						.filter(r -> r instanceof FurnaceRecipe && r.getIngredients().get(0).test(blockStack))
 						.mapToLong(r -> EMCHelper.getEmcValue(r.getRecipeOutput()))
 						.iterator();
@@ -108,17 +107,14 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			maxValues[i] = emcValues.get(i);
 		}
 
-		player.sendMessage(new TranslationTextComponent("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
-
+		player.sendMessage(new TranslationTextComponent("pe.divining.avgemc", numBlocks, totalEmc / numBlocks));
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3) {
 			player.sendMessage(new TranslationTextComponent("pe.divining.maxemc", maxValues[0]));
 		}
-
 		if (this == ObjHandler.dRod3) {
 			player.sendMessage(new TranslationTextComponent("pe.divining.secondmax", maxValues[1]));
 			player.sendMessage(new TranslationTextComponent("pe.divining.thirdmax", maxValues[2]));
 		}
-
 		return ActionResultType.SUCCESS;
 	}
 

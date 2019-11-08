@@ -39,7 +39,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 	 * @return The amount of Emc we actually sent
 	 */
 	protected long sendToAllAcceptors(long emc) {
-		if (!canProvideEmc()) {
+		if (world == null || !canProvideEmc()) {
 			//If we cannot provide emc then just return
 			return 0;
 		}

@@ -16,6 +16,7 @@ public class NSSCrT {
 		this.internal = stack;
 	}
 
+	@Nonnull
 	public NormalizedSimpleStack getInternal() {
 		return internal;
 	}

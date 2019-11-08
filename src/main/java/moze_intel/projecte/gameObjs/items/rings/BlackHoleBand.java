@@ -55,17 +55,13 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
 		RayTraceResult rtr = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-
 		if (!(rtr instanceof BlockRayTraceResult)) {
 			return ActionResultType.PASS;
 		}
-
 		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
 		BlockPos fluidPos = brtr.getPos();
 		BlockState state = world.getBlockState(fluidPos);
-
-		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack)
-			&& state.getBlock() instanceof IBucketPickupHandler) {
+		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
 			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
 			if (fluid != Fluids.EMPTY) {
 				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ,
@@ -82,7 +78,6 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
-
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 
@@ -91,11 +86,9 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE) || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		PlayerEntity player = (PlayerEntity) entity;
 		AxisAlignedBB bBox = player.getBoundingBox().grow(7);
 		List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
-
 		for (ItemEntity item : itemList) {
 			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem())) {
 				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
@@ -105,7 +98,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+		DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
 		if (tile != null) {
 			List<ItemEntity> list = world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds());
 			for (ItemEntity item : list) {
@@ -136,10 +129,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Nonnull
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(
-				new TranslationTextComponent("pe.bhb.pedestal1").applyTextStyle(TextFormatting.BLUE),
-				new TranslationTextComponent("pe.bhb.pedestal2").applyTextStyle(TextFormatting.BLUE)
-		);
+		return Lists.newArrayList(new TranslationTextComponent("pe.bhb.pedestal1").applyTextStyle(TextFormatting.BLUE),
+				new TranslationTextComponent("pe.bhb.pedestal2").applyTextStyle(TextFormatting.BLUE));
 	}
 
 	@Override
@@ -158,7 +149,6 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			double centeredX = tileX + 0.5;
 			double centeredY = tileY + 0.5;
 			double centeredZ = tileZ + 0.5;
-
 			for (ItemEntity e : tile.getWorld().getEntitiesWithinAABB(ItemEntity.class, aabb)) {
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21) {

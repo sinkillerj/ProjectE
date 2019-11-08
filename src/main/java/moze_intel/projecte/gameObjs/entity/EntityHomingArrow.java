@@ -131,7 +131,7 @@ public class EntityHomingArrow extends ArrowEntity {
 	}
 
 	private MobEntity getTarget() {
-		return ((MobEntity) world.getEntityByID(dataManager.get(DW_TARGET_ID)));
+		return (MobEntity) world.getEntityByID(dataManager.get(DW_TARGET_ID));
 	}
 
 	private boolean hasTarget() {
@@ -140,15 +140,12 @@ public class EntityHomingArrow extends ArrowEntity {
 
 	private double wrap180Radian(double radian) {
 		radian %= 2 * Math.PI;
-
 		while (radian >= Math.PI) {
 			radian -= 2 * Math.PI;
 		}
-
 		while (radian < -Math.PI) {
 			radian += 2 * Math.PI;
 		}
-
 		return radian;
 	}
 
@@ -161,7 +158,6 @@ public class EntityHomingArrow extends ArrowEntity {
 				param = Math.abs(maxMagnitude);
 			}
 		}
-
 		return param;
 	}
 

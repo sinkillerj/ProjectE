@@ -48,7 +48,6 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (world.isRemote || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-
 		PlayerEntity player = (PlayerEntity) entity;
 		player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 			timers.activateRepair();
@@ -69,16 +68,13 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	private void repairInv(IItemHandler inv, PlayerEntity player) {
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack invStack = inv.getStackInSlot(i);
-
 			if (invStack.isEmpty() || invStack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() || !invStack.isRepairable()) {
 				continue;
 			}
-
 			if (invStack == player.getItemStackFromSlot(EquipmentSlotType.MAINHAND) && player.isSwingInProgress) {
 				//Don't repair item that is currently used by the player.
 				continue;
 			}
-
 			if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
 				invStack.setDamage(invStack.getDamage() - 1);
 			}
@@ -88,7 +84,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repair.get() != -1) {
-			DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(pos));
+			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
 			if (tile.getActivityCooldown() == 0) {
 				world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repair.get());
@@ -114,37 +110,29 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (world.isRemote) {
 			return;
 		}
-
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof AlchChestTile)) {
 			return;
 		}
-		AlchChestTile tile = ((AlchChestTile) te);
-
+		AlchChestTile tile = (AlchChestTile) te;
 		byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
-
 		if (coolDown > 0) {
 			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
-
 			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 			for (int i = 0; i < inv.getSlots(); i++) {
 				ItemStack invStack = inv.getStackInSlot(i);
-
 				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
 					continue;
 				}
-
 				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
 					invStack.setDamage(invStack.getDamage() - 1);
-
 					if (!hasAction) {
 						hasAction = true;
 					}
 				}
 			}
-
 			if (hasAction) {
 				stack.getTag().putByte("Cooldown", (byte) 19);
 				tile.markDirty();
@@ -157,30 +145,23 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (player.getEntityWorld().isRemote) {
 			return false;
 		}
-
 		byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
-
 		if (coolDown > 0) {
 			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
-
 			for (int i = 0; i < inv.getSlots(); i++) {
 				ItemStack invStack = inv.getStackInSlot(i);
-
 				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
 					continue;
 				}
-
 				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
 					invStack.setDamage(invStack.getDamage() - 1);
-
 					if (!hasAction) {
 						hasAction = true;
 					}
 				}
 			}
-
 			if (hasAction) {
 				stack.getTag().putByte("Cooldown", (byte) 19);
 				return true;

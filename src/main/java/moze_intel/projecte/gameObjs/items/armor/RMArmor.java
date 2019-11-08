@@ -8,7 +8,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 
-//TODO: When/If Thaumcraft gets ported add back in the abilities of the goggles of revealing
 public class RMArmor extends PEArmor {
 
 	public RMArmor(EquipmentSlotType armorType, Properties props) {

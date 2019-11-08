@@ -26,7 +26,6 @@ public class SlotUnlearn extends SlotItemHandler {
 		if (!stack.isEmpty()) {
 			inv.handleUnlearn(stack.copy());
 		}
-
 		super.putStack(stack);
 	}
 

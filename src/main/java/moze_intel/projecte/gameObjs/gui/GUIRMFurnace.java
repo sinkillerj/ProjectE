@@ -5,13 +5,12 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer> {
+public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/rmfurnace.png");
 	private final RMFurnaceTile tile;
@@ -24,28 +23,19 @@ public class GUIRMFurnace extends ContainerScreen<RMFurnaceContainer> {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int progress;
-
 		if (tile.isBurning()) {
 			progress = tile.getBurnTimeRemainingScaled(12);
-			this.blit(guiLeft + 66, guiTop + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
+			blit(guiLeft + 66, guiTop + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
 		}
-
 		progress = tile.getCookProgressScaled(24);
-		this.blit(guiLeft + 88, guiTop + 35, 210, 14, progress, 17);
+		blit(guiLeft + 88, guiTop + 35, 210, 14, progress, 17);
 	}
 
 	@Override

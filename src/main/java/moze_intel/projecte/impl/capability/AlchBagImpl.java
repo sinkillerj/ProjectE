@@ -35,7 +35,7 @@ public final class AlchBagImpl {
 			@Override
 			public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, Direction side, INBT nbt) {
 				if (nbt instanceof CompoundNBT) {
-					instance.deserializeNBT(((CompoundNBT) nbt));
+					instance.deserializeNBT((CompoundNBT) nbt);
 				}
 			}
 		}, DefaultImpl::new);

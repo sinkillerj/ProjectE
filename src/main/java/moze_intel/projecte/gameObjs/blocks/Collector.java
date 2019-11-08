@@ -58,7 +58,7 @@ public class Collector extends BlockDirection {
 	public INamedContainerProvider getContainer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof CollectorMK1Tile) {
-			return ((CollectorMK1Tile) te);
+			return (CollectorMK1Tile) te;
 		}
 		return null;
 	}
@@ -92,7 +92,7 @@ public class Collector extends BlockDirection {
 	@Override
 	@Deprecated
 	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		CollectorMK1Tile tile = ((CollectorMK1Tile) world.getTileEntity(pos));
+		CollectorMK1Tile tile = (CollectorMK1Tile) world.getTileEntity(pos);
 		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
 			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));

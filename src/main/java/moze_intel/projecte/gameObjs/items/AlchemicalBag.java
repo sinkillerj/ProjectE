@@ -46,17 +46,12 @@ public class AlchemicalBag extends ItemPE {
 
 	public static ItemStack getFirstBagWithSuctionItem(PlayerEntity player, NonNullList<ItemStack> inventory) {
 		for (ItemStack stack : inventory) {
-			if (stack.isEmpty()) {
-				continue;
-			}
-
-			if (stack.getItem() instanceof AlchemicalBag) {
+			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag) {
 				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 						.orElseThrow(NullPointerException::new)
 						.getBag(((AlchemicalBag) stack.getItem()).color);
 				for (int i = 0; i < inv.getSlots(); i++) {
 					ItemStack ring = inv.getStackInSlot(i);
-
 					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {
 						if (ring.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 							return stack;
@@ -65,7 +60,6 @@ public class AlchemicalBag extends ItemPE {
 				}
 			}
 		}
-
 		return ItemStack.EMPTY;
 	}
 

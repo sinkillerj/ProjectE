@@ -31,7 +31,6 @@ public class SlotOutput extends SlotItemHandler {
 		}
 		inv.removeEmc(emcValue);
 		inv.checkForUpdates();
-
 		return stack;
 	}
 

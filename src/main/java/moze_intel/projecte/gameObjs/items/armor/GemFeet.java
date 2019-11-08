@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister {
 
+	private static final String STEP_ASSIST = "StepAssist";
 	private static final UUID MODIFIER = UUID.randomUUID();
 
 	public GemFeet(Properties props) {
@@ -33,18 +35,16 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	public static boolean isStepAssistEnabled(ItemStack boots) {
-		return !boots.hasTag() || !boots.getTag().contains("StepAssist") || boots.getTag().getBoolean("StepAssist");
-
+		return !boots.hasTag() || !boots.getTag().contains(STEP_ASSIST) || boots.getTag().getBoolean(STEP_ASSIST);
 	}
 
 	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
 		boolean value;
-
-		if (boots.getOrCreateTag().contains("StepAssist")) {
-			boots.getTag().putBoolean("StepAssist", !boots.getTag().getBoolean("StepAssist"));
-			value = boots.getTag().getBoolean("StepAssist");
+		if (boots.getOrCreateTag().contains(STEP_ASSIST)) {
+			boots.getTag().putBoolean(STEP_ASSIST, !boots.getTag().getBoolean(STEP_ASSIST));
+			value = boots.getTag().getBoolean(STEP_ASSIST);
 		} else {
-			boots.getTag().putBoolean("StepAssist", false);
+			boots.getTag().putBoolean(STEP_ASSIST, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
@@ -52,20 +52,18 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	private static boolean isJumpPressed() {
-		return DistExecutor.runForDist(() -> () -> Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown(),
-				() -> () -> false);
+		return DistExecutor.runForDist(() -> () -> Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown(), () -> () -> false);
 	}
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (!world.isRemote) {
-			ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
+			ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
 			playerMP.fallDistance = 0;
 		} else {
 			if (!player.abilities.isFlying && isJumpPressed()) {
 				player.setMotion(player.getMotion().add(0, 0.1, 0));
 			}
-
 			if (!player.onGround) {
 				if (player.getMotion().getY() <= 0) {
 					player.setMotion(player.getMotion().mul(1, 0.9, 1));
@@ -93,7 +91,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	private boolean canStep(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains("StepAssist") && stack.getTag().getBoolean("StepAssist");
+		return stack.getTag() != null && stack.getTag().contains(STEP_ASSIST) && stack.getTag().getBoolean(STEP_ASSIST);
 	}
 
 	@Nonnull
@@ -102,9 +100,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		if (slot != EquipmentSlotType.FEET) {
 			return super.getAttributeModifiers(slot, stack);
 		}
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, AttributeModifier.Operation.MULTIPLY_TOTAL).setSaved(false));
-		return multimap;
+		Multimap<String, AttributeModifier> attributes = super.getAttributeModifiers(slot, stack);
+		attributes.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(MODIFIER, "Armor modifier", 1.0, Operation.MULTIPLY_TOTAL).setSaved(false));
+		return attributes;
 	}
 
 	@Override

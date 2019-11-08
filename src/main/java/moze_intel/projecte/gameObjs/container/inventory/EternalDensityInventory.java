@@ -71,7 +71,6 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
-
 		writeToNBT(invItem.getTag());
 	}
 

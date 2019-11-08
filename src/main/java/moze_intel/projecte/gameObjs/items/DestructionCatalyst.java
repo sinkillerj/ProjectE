@@ -32,12 +32,10 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
-		PlayerEntity player = ctx.getPlayer();
-
 		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
-
+		PlayerEntity player = ctx.getPlayer();
 		ItemStack stack = ctx.getItem();
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
@@ -57,7 +55,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 			hasAction = true;
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			pos = pos.toImmutable();
-			if (PlayerHelper.hasBreakPermission(((ServerPlayerEntity) player), pos)) {
+			if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
 				drops.addAll(list);
 				world.removeBlock(pos, false);
@@ -79,8 +77,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 			return 1;
 		}
 		if (this instanceof CataliticLens) {
-			return 8 + (charge * 8);
-
+			return 8 + 8 * charge;
 		}
 		return (int) Math.pow(2, 1 + charge);
 	}

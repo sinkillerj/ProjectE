@@ -9,7 +9,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 
-//TODO: Should gem armor be made to require full klein stars again?
 public abstract class GemArmorBase extends PEArmor {
 
 	public GemArmorBase(EquipmentSlotType armorType, Properties props) {

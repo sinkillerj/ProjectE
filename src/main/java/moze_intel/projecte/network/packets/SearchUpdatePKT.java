@@ -30,7 +30,7 @@ public class SearchUpdatePKT {
 		public static void handle(final SearchUpdatePKT pkt, Supplier<NetworkEvent.Context> ctx) {
 			ctx.get().enqueueWork(() -> {
 				if (ctx.get().getSender().openContainer instanceof TransmutationContainer) {
-					TransmutationContainer container = ((TransmutationContainer) ctx.get().getSender().openContainer);
+					TransmutationContainer container = (TransmutationContainer) ctx.get().getSender().openContainer;
 					container.transmutationInventory.writeIntoOutputSlot(pkt.slot, pkt.itemStack);
 				}
 			});

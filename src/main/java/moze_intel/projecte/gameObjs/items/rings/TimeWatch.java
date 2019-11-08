@@ -66,11 +66,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
 				return ActionResult.newResult(ActionResultType.FAIL, stack);
 			}
-
 			byte current = getTimeBoost(stack);
-
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
-
 			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()));
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
@@ -79,44 +76,35 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
-
 		if (!(entity instanceof PlayerEntity) || invSlot > 8) {
 			return;
 		}
-
 		if (!ProjectEConfig.items.enableTimeWatch.get()) {
 			return;
 		}
-
 		byte timeControl = getTimeBoost(stack);
-
 		if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			if (timeControl == 1) {
-				world.setDayTime(Math.min(world.getDayTime() + ((getCharge(stack) + 1) * 4), Long.MAX_VALUE));
+				world.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4, Long.MAX_VALUE));
 			} else if (timeControl == 2) {
-				if (world.getDayTime() - ((getCharge(stack) + 1) * 4) < 0) {
+				if (world.getDayTime() - (getCharge(stack) + 1) * 4 < 0) {
 					world.setDayTime(0);
 				} else {
-					world.setDayTime((world.getDayTime() - ((getCharge(stack) + 1) * 4)));
+					world.setDayTime(world.getDayTime() - (getCharge(stack) + 1) * 4);
 				}
 			}
 		}
-
 		if (world.isRemote || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
 			return;
 		}
-
 		PlayerEntity player = (PlayerEntity) entity;
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
-
 		if (!consumeFuel(player, stack, reqEmc, true)) {
 			return;
 		}
-
 		int charge = this.getCharge(stack);
 		int bonusTicks;
 		float mobSlowdown;
-
 		if (charge == 0) {
 			bonusTicks = 8;
 			mobSlowdown = 0.25F;
@@ -127,17 +115,15 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-
 		AxisAlignedBB bBox = player.getBoundingBox().grow(8);
-
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);
 		slowMobs(world, bBox, mobSlowdown);
 	}
 
 	private void slowMobs(World world, AxisAlignedBB bBox, double mobSlowdown) {
-		if (bBox == null) // Sanity check for chunk unload weirdness
-		{
+		if (bBox == null) {
+			// Sanity check for chunk unload weirdness
 			return;
 		}
 		for (MobEntity ent : world.getEntitiesWithinAABB(MobEntity.class, bBox)) {
@@ -146,19 +132,16 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox) {
-		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
-		{
+		if (bBox == null || bonusTicks == 0) {
+			// Sanity check the box for chunk unload weirdness
 			return;
 		}
 
-		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist.get().stream()
-				.map(ResourceLocation::new)
-				.collect(Collectors.toSet());
+		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toSet());
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++) {
 			for (TileEntity tile : list) {
-				if (!tile.isRemoved() && tile instanceof ITickableTileEntity
-					&& !internalBlacklist.contains(tile.getType())
+				if (!tile.isRemoved() && tile instanceof ITickableTileEntity && !internalBlacklist.contains(tile.getType())
 					&& !blacklist.contains(tile.getType().getRegistryName())) {
 					((ITickableTileEntity) tile).tick();
 				}
@@ -171,7 +154,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
-
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
 			for (int i = 0; i < bonusTicks; i++) {
 				BlockState state = world.getBlockState(pos);
@@ -209,8 +191,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	public double getEmcPerTick(int charge) {
-		int actualCharge = charge + 2;
-		return (10.0D * actualCharge) / 20.0D;
+		return (charge + 2) / 2.0D;
 	}
 
 	@Override
@@ -218,7 +199,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
 		list.add(new TranslationTextComponent("pe.timewatch.tooltip1"));
 		list.add(new TranslationTextComponent("pe.timewatch.tooltip2"));
-
 		if (stack.hasTag()) {
 			list.add(new TranslationTextComponent("pe.timewatch.mode").appendSibling(new TranslationTextComponent(getTimeName(stack))));
 		}
@@ -227,7 +207,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-
 		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch.get()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof DMPedestalTile) {
@@ -236,7 +215,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
 					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
 				}
-
 				if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F) {
 					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness.get());
 				}

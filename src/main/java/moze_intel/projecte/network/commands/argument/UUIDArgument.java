@@ -10,7 +10,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class UUIDArgument implements ArgumentType<UUID> {
 
-	private static final DynamicCommandExceptionType MALFORMED_UUID = new DynamicCommandExceptionType((uuid) ->
+	private static final DynamicCommandExceptionType MALFORMED_UUID = new DynamicCommandExceptionType(uuid ->
 			new TranslationTextComponent("pe.command.showbag.offline.uuid", uuid));
 
 	@Override

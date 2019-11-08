@@ -110,7 +110,7 @@ public final class PacketHandler {
 		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 		int index = buf.writerIndex();
 		SyncEmcPKT.encode(new SyncEmcPKT(data), buf);
-		PECore.debugLog("EMC data size: {} bytes", (buf.writerIndex() - index));
+		PECore.debugLog("EMC data size: {} bytes", buf.writerIndex() - index);
 		buf.release();
 		return data;
 	}

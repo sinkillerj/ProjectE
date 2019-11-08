@@ -95,7 +95,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			int charge = this.getCharge(stack);
 
 			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge)) {
-				PlayerHelper.checkedReplaceBlock(((ServerPlayerEntity) player), currentPos, result);
+				PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, currentPos, result);
 				if (world.rand.nextInt(8) == 0) {
 					((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
@@ -122,7 +122,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		if (!player.getEntityWorld().isRemote) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack));
 		}
-
 		return true;
 	}
 
@@ -152,7 +151,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				break;
 			case 2: // Line
 				Direction playerFacing = player.getHorizontalFacing();
-
 				if (playerFacing.getAxis() == Direction.Axis.Z) {
 					stream = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
 				} else if (playerFacing.getAxis() == Direction.Axis.X) {
@@ -160,7 +158,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				}
 				break;
 		}
-
 		if (stream == null) {
 			return Collections.emptySet();
 		}

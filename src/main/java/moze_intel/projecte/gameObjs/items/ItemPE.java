@@ -79,11 +79,9 @@ public class ItemPE extends Item {
 
 	public static void removeEmc(ItemStack stack, long amount) {
 		long result = getEmc(stack) - amount;
-
 		if (result < 0) {
 			result = 0;
 		}
-
 		setEmc(stack, result);
 	}
 
@@ -91,19 +89,14 @@ public class ItemPE extends Item {
 		if (amount <= 0) {
 			return true;
 		}
-
 		long current = getEmc(stack);
-
 		if (current < amount) {
 			long consume = EMCHelper.consumePlayerFuel(player, amount - current);
-
 			if (consume == -1) {
 				return false;
 			}
-
 			addEmcToStack(stack, consume);
 		}
-
 		if (shouldRemove) {
 			removeEmc(stack, amount);
 		}

@@ -80,7 +80,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
 
-		if (!world.isRemote && PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), ctx.getPos())) {
+		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, ctx.getPos())) {
 			TileEntity tile = world.getTileEntity(ctx.getPos());
 
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ctx.getFace()).isPresent()) {
@@ -116,7 +116,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				world.destroyBlock(pos, true);
 			}
 			world.setBlockState(pos, Blocks.WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos, Blocks.WATER.getDefaultState());
+			PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos, Blocks.WATER.getDefaultState());
 		}
 
 	}
@@ -192,21 +192,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertide.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-
-			DMPedestalTile tile = ((DMPedestalTile) te);
-
-			if (tile.getActivityCooldown() == 0) {
-				int i = (300 + world.rand.nextInt(600)) * 20;
-				world.getWorldInfo().setRainTime(i);
-				world.getWorldInfo().setThunderTime(i);
-				world.getWorldInfo().setRaining(true);
-
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide.get());
-			} else {
-				tile.decrementActivityCooldown();
+			if (te instanceof DMPedestalTile) {
+				DMPedestalTile tile = (DMPedestalTile) te;
+				if (tile.getActivityCooldown() == 0) {
+					int i = (300 + world.rand.nextInt(600)) * 20;
+					world.getWorldInfo().setRainTime(i);
+					world.getWorldInfo().setThunderTime(i);
+					world.getWorldInfo().setRaining(true);
+					tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide.get());
+				} else {
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
@@ -255,9 +251,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		public int fill(FluidStack resource, FluidAction action) {
 			if (resource.getFluid() == Fluids.WATER) {
 				return resource.getAmount();
-			} else {
-				return 0;
 			}
+			return 0;
 		}
 
 		@Nonnull
@@ -265,9 +260,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		public FluidStack drain(FluidStack resource, FluidAction action) {
 			if (resource.getFluid() == Fluids.WATER) {
 				return resource;
-			} else {
-				return FluidStack.EMPTY;
 			}
+			return FluidStack.EMPTY;
 		}
 
 		@Nonnull

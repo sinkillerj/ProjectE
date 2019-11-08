@@ -362,7 +362,7 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	}
 
 	private int getItemBurnTime(ItemStack stack) {
-		return (ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt) / 200 * efficiencyBonus;
+		return ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt / 200 * efficiencyBonus;
 	}
 
 	public int getBurnTimeRemainingScaled(int value) {

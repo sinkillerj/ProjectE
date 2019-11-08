@@ -73,12 +73,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		BlockPos pos = ctx.getPos();
 		ItemStack stack = ctx.getItem();
 		Direction sideHit = ctx.getFace();
-
-		if (!world.isRemote
-			&& PlayerHelper.hasEditPermission(((ServerPlayerEntity) player), pos)
-			&& consumeFuel(player, stack, 32, true)) {
+		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
 			TileEntity tile = world.getTileEntity(pos);
-
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
 			} else {
@@ -91,7 +87,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	private void placeLava(PlayerEntity player, BlockPos pos) {
-		PlayerHelper.checkedPlaceBlock(((ServerPlayerEntity) player), pos, Blocks.LAVA.getDefaultState());
+		PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos, Blocks.LAVA.getDefaultState());
 	}
 
 	@Override
@@ -107,21 +103,17 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		if (invSlot > 8 || !(entity instanceof LivingEntity)) {
 			return;
 		}
-
 		LivingEntity living = (LivingEntity) entity;
-
 		int x = (int) Math.floor(living.posX);
 		int y = (int) (living.posY - living.getYOffset());
 		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
-
 		if (world.getBlockState(pos.down()).getBlock() == Blocks.LAVA && world.isAirBlock(pos)) {
 			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
 			}
-
 			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
@@ -157,14 +149,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			if (!(te instanceof DMPedestalTile)) {
 				return;
 			}
-
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				world.getWorldInfo().setRainTime(0);
 				world.getWorldInfo().setThunderTime(0);
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
-
 				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanite.get());
 			} else {
 				tile.decrementActivityCooldown();
