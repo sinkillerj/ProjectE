@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.imc.IMCMethods;
+import moze_intel.projecte.api.imc.IRecipeMapper;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -26,18 +30,36 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	private final List<IRecipeMapper> recipeMappers = Collections.singletonList(new VanillaRecipeMapper());
+	@EMCMapper.Instance
+	public static final CraftingMapper INSTANCE = new CraftingMapper();
+
+	private List<IRecipeMapper> recipeMappers = Collections.emptyList();
+
+	public static void init() {
+		//Note: Does not just directly support IRecipe, as mods may extend it for "random" things and have more input types required than just items
+		registerDefault("CraftingRecipe", "Maps crafting table recipes", recipe -> recipe instanceof ICraftingRecipe);
+		registerDefault("CookingRecipe", "Maps cooking recipes", recipe -> recipe instanceof AbstractCookingRecipe);
+		registerDefault("SingleItemRecipe", "Maps stone cutter recipes", recipe -> recipe instanceof SingleItemRecipe);
+	}
+
+	private static void registerDefault(String name, String description, Predicate<IRecipe> supportedRecipePredicate) {
+		InterModComms.sendTo(PECore.MODID, IMCMethods.REGISTER_MAPPABLE_IRECIPE, () -> new IRecipeMapper(name, description, supportedRecipePredicate));
+	}
+
+	public static void setRecipeMappers(List<IRecipeMapper> mappableIRecipes) {
+		INSTANCE.recipeMappers = ImmutableList.copyOf(mappableIRecipes);
+	}
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
 		Map<ResourceLocation, Integer> recipeCount = new HashMap<>();
 		Set<Class> canNotMap = new HashSet<>();
-
 		for (IRecipe recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes()) {
 			boolean handled = false;
 			ItemStack recipeOutput = recipe.getRecipeOutput();
@@ -52,7 +74,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				}
 				if (recipeMapper.canHandle(recipe)) {
 					handled = true;
-					for (CraftingIngredients variation : recipeMapper.getIngredientsFor(recipe)) {
+					for (CraftingIngredients variation : getIngredientsFor(recipe)) {
 						IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 						for (ItemStack stack : variation.fixedIngredients) {
 							if (stack.isEmpty()) {
@@ -114,32 +136,23 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		return true;
 	}
 
-	public interface IRecipeMapper {
-
-		String getName();
-
-		String getDescription();
-
-		boolean canHandle(IRecipe recipe);
-
-		default Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
-			List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
-			List<ItemStack> fixedInputs = new ArrayList<>();
-			for (Object i : recipe.getIngredients()) {
-				Ingredient recipeItem = (Ingredient) i;
-				ItemStack[] matches = recipeItem.getMatchingStacks();
-				if (matches.length == 1) {
-					fixedInputs.add(matches[0].copy());
-				} else if (matches.length > 0) {
-					List<ItemStack> recipeItemOptions = new LinkedList<>();
-					for (ItemStack option : matches) {
-						recipeItemOptions.add(option.copy());
-					}
-					variableInputs.add(recipeItemOptions);
+	private Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
+		List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
+		List<ItemStack> fixedInputs = new ArrayList<>();
+		for (Object i : recipe.getIngredients()) {
+			Ingredient recipeItem = (Ingredient) i;
+			ItemStack[] matches = recipeItem.getMatchingStacks();
+			if (matches.length == 1) {
+				fixedInputs.add(matches[0].copy());
+			} else if (matches.length > 0) {
+				List<ItemStack> recipeItemOptions = new LinkedList<>();
+				for (ItemStack option : matches) {
+					recipeItemOptions.add(option.copy());
 				}
+				variableInputs.add(recipeItemOptions);
 			}
-			return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
 		}
+		return Collections.singletonList(new CraftingIngredients(fixedInputs, variableInputs));
 	}
 
 	private static class CraftingIngredients {
@@ -150,26 +163,6 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		public CraftingIngredients(Iterable<ItemStack> fixedIngredients, Iterable<Iterable<ItemStack>> multiIngredients) {
 			this.fixedIngredients = fixedIngredients;
 			this.multiIngredients = multiIngredients;
-		}
-	}
-
-	private static class VanillaRecipeMapper implements IRecipeMapper {
-
-		@Override
-		public String getName() {
-			return "VanillaRecipeMapper";
-		}
-
-		@Override
-		public String getDescription() {
-			return "Maps crafting table, cooking, and stone cutter recipes";
-		}
-
-		@Override
-		public boolean canHandle(IRecipe recipe) {
-			//Note: Does not just directly support IRecipe, as mods may extend it for "random" things and have more input types
-			// required than just items
-			return recipe instanceof ICraftingRecipe || recipe instanceof AbstractCookingRecipe || recipe instanceof SingleItemRecipe;
 		}
 	}
 }

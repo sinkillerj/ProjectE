@@ -22,6 +22,7 @@ import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
@@ -231,6 +232,7 @@ public class PECore {
 		EntityRandomizerHelper.init();
 		WorldTransmutations.init();
 		NSSSerializer.init();
+		CraftingMapper.init();
 	}
 
 	private void imcHandle(InterModProcessEvent event) {

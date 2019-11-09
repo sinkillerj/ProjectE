@@ -2,18 +2,20 @@ package moze_intel.projecte.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.imc.IMCMethods;
+import moze_intel.projecte.api.imc.IRecipeMapper;
 import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -26,31 +28,53 @@ import net.minecraftforge.fml.InterModComms;
 public class IMCHandler {
 
 	public static void handleMessages() {
-		Set<EntityType<?>> interd = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_INTERDICTION::equals)
+		Set<EntityType<?>> interd = new HashSet<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_INTERDICTION::equals)
 				.filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
-				.map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
-				.collect(Collectors.toSet());
+				.forEach(msg -> {
+					EntityType<?> entityType = (EntityType<?>) msg.getMessageSupplier().get();
+					interd.add(entityType);
+					PECore.debugLog("Mod: '{}' registered Interdiction Torch Blacklist for EntityType: '{}'", msg.getSenderModId(), entityType.getRegistryName());
+				});
 		WorldHelper.setInterdictionBlacklist(interd);
 
-		Set<EntityType<?>> swrg = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_SWRG::equals)
+		Set<EntityType<?>> swrg = new HashSet<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_SWRG::equals)
 				.filter(msg -> msg.getMessageSupplier().get() instanceof EntityType)
-				.map(msg -> (EntityType<?>) msg.getMessageSupplier().get())
-				.collect(Collectors.toSet());
+				.forEach(msg -> {
+					EntityType<?> entityType = (EntityType<?>) msg.getMessageSupplier().get();
+					swrg.add(entityType);
+					PECore.debugLog("Mod: '{}' registered Swiftwolf Rending Gale Blacklist for EntityType: '{}'", msg.getSenderModId(), entityType.getRegistryName());
+				});
 		WorldHelper.setSwrgBlacklist(swrg);
 
-		Set<TileEntityType<?>> timeWatch = InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_TIMEWATCH::equals)
+		Set<TileEntityType<?>> timeWatch = new HashSet<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.BLACKLIST_TIMEWATCH::equals)
 				.filter(msg -> msg.getMessageSupplier().get() instanceof TileEntityType)
-				.map(msg -> (TileEntityType<?>) msg.getMessageSupplier().get())
-				.collect(Collectors.toSet());
+				.forEach(msg -> {
+					TileEntityType<?> tileEntityType = (TileEntityType<?>) msg.getMessageSupplier().get();
+					timeWatch.add(tileEntityType);
+					PECore.debugLog("Mod: '{}' registered Time Watch Blacklist for TileEntityType: '{}'", msg.getSenderModId(), tileEntityType.getRegistryName());
+				});
 		TimeWatch.setInternalBlacklist(timeWatch);
 
 		EntityRandomizerHelper.setDefaultPeacefulRandomizers(getRandomizerEntities(true));
 		EntityRandomizerHelper.setDefaultHostileRandomizers(getRandomizerEntities(false));
 
-		List<WorldTransmutationEntry> entries = InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
+		List<WorldTransmutationEntry> entries = new ArrayList<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
 				.filter(msg -> msg.getMessageSupplier().get() instanceof WorldTransmutationEntry)
-				.map(msg -> (WorldTransmutationEntry) msg.getMessageSupplier().get())
-				.collect(Collectors.toList());
+				.forEach(msg -> {
+					WorldTransmutationEntry transmutationEntry = (WorldTransmutationEntry) msg.getMessageSupplier().get();
+					entries.add(transmutationEntry);
+					if (transmutationEntry.getAltResult() == null) {
+						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}'", msg.getSenderModId(),
+								transmutationEntry.getOrigin(), transmutationEntry.getResult());
+					} else {
+						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}', with sneak output of: '{}'", msg.getSenderModId(),
+								transmutationEntry.getOrigin(), transmutationEntry.getResult(), transmutationEntry.getAltResult());
+					}
+				});
 		WorldTransmutations.setWorldTransmutation(entries);
 
 		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
@@ -72,6 +96,16 @@ public class IMCHandler {
 					}
 				});
 		NSSSerializer.INSTANCE.setCreators(creators);
+
+		List<IRecipeMapper> irecipeMappers = new ArrayList<>();
+		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_MAPPABLE_IRECIPE::equals)
+				.filter(msg -> msg.getMessageSupplier().get() instanceof IRecipeMapper)
+				.forEach(msg -> {
+					IRecipeMapper iRecipeMapper = (IRecipeMapper) msg.getMessageSupplier().get();
+					irecipeMappers.add(iRecipeMapper);
+					PECore.debugLog("Mod: '{}' registered an IRecipeMapper with the name: '{}'", msg.getSenderModId(), iRecipeMapper.getName());
+				});
+		CraftingMapper.setRecipeMappers(irecipeMappers);
 	}
 
 	private static List<EntityType<? extends MobEntity>> getRandomizerEntities(boolean peaceful) {

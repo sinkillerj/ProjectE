@@ -62,4 +62,12 @@ public class IMCMethods {
 	 * The Object sent must be an instance of {@link NSSCreatorInfo}, or else the message is ignored.
 	 */
 	public static final String REGISTER_NSS_SERIALIZER = "register_nss_serializer";
+
+	/**
+	 * Declares information needed to add a wrapper mapper for custom {@link net.minecraft.item.crafting.IRecipe} that fit within the normal spec of {@link
+	 * net.minecraft.item.crafting.IRecipe}, and does not include extra state specific/non item components.
+	 *
+	 * The Object sent must be an instance of {@link IRecipeMapper}, or else the message is ignored.
+	 */
+	public static final String REGISTER_MAPPABLE_IRECIPE = "register_mappable_irecipe";
 }

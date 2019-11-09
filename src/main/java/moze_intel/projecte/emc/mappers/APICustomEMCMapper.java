@@ -39,6 +39,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		if (emcValue < 0) {
 			emcValue = 0;
 		}
+		PECore.debugLog("Mod: '{}' registered a custom EMC value of: '{}' for the NormalizedSimpleStack: '{}'", modid, emcValue, stack);
 		customEMCforMod.computeIfAbsent(modid, k -> new HashMap<>()).put(stack, emcValue);
 	}
 
