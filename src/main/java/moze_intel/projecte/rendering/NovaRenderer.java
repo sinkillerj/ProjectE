@@ -1,27 +1,31 @@
 package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 //Only used on the client
-public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPrimed> {
+public class NovaRenderer<T extends TNTEntity> extends EntityRenderer<T> {
 
-	public NovaCataclysmRenderer(EntityRendererManager manager) {
+	private final Supplier<BlockState> stateSupplier;
+
+	public NovaRenderer(EntityRendererManager manager, Supplier<BlockState> stateSupplier) {
 		super(manager);
+		this.stateSupplier = stateSupplier;
 		this.shadowSize = 0.5F;
 	}
 
 	@Override
-	public void doRender(@Nonnull EntityNovaCataclysmPrimed entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void doRender(@Nonnull T entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
 		GlStateManager.translatef((float) x, (float) y + 0.5F, (float) z);
@@ -39,7 +43,7 @@ public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPri
 		f2 = (1.0F - ((float) entity.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
 		this.bindEntityTexture(entity);
 		GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
-		blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCataclysm.getDefaultState(), entity.getBrightness());
+		blockrendererdispatcher.renderBlockBrightness(stateSupplier.get(), entity.getBrightness());
 		GlStateManager.translatef(0.0F, 0.0F, 1.0F);
 
 		if (entity.getFuse() / 5 % 2 == 0) {
@@ -50,7 +54,7 @@ public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPri
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, f2);
 			GlStateManager.polygonOffset(-3.0F, -3.0F);
 			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlockBrightness(ObjHandler.novaCataclysm.getDefaultState(), 1.0F);
+			blockrendererdispatcher.renderBlockBrightness(stateSupplier.get(), 1.0F);
 			GlStateManager.polygonOffset(0.0F, 0.0F);
 			GlStateManager.disablePolygonOffset();
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -65,7 +69,7 @@ public class NovaCataclysmRenderer extends EntityRenderer<EntityNovaCataclysmPri
 
 	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull EntityNovaCataclysmPrimed entity) {
+	protected ResourceLocation getEntityTexture(@Nonnull T entity) {
 		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

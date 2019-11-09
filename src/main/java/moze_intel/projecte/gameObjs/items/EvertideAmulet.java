@@ -244,12 +244,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 		@Override
 		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-			return stack.getFluid() == Fluids.WATER;
+			return stack.getFluid().isIn(FluidTags.WATER);
 		}
 
 		@Override
 		public int fill(FluidStack resource, FluidAction action) {
-			if (resource.getFluid() == Fluids.WATER) {
+			if (resource.getFluid().isIn(FluidTags.WATER)) {
 				return resource.getAmount();
 			}
 			return 0;
@@ -258,7 +258,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		@Nonnull
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction action) {
-			if (resource.getFluid() == Fluids.WATER) {
+			if (resource.getFluid().isIn(FluidTags.WATER)) {
 				return resource;
 			}
 			return FluidStack.EMPTY;

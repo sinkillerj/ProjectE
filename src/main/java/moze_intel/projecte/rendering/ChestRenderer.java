@@ -1,10 +1,10 @@
 package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.gameObjs.tiles.ChestTileEmc;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.model.ChestModel;
@@ -13,17 +13,23 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 //Only used on the client
-public class ChestRenderer extends TileEntityRenderer<AlchChestTile> {
+public class ChestRenderer extends TileEntityRenderer<ChestTileEmc> {
 
-	private final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png");
 	private final ChestModel model = new ChestModel();
+	private final Predicate<Block> blockChecker;
+	private final ResourceLocation texture;
+
+	public ChestRenderer(ResourceLocation texture, Predicate<Block> blockChecker) {
+		this.texture = texture;
+		this.blockChecker = blockChecker;
+	}
 
 	@Override
-	public void render(@Nonnull AlchChestTile chestTile, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(@Nonnull ChestTileEmc chestTile, double x, double y, double z, float partialTicks, int destroyStage) {
 		Direction direction = null;
 		if (chestTile.getWorld() != null && !chestTile.isRemoved()) {
 			BlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
-			direction = state.getBlock() == ObjHandler.alchChest ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null;
+			direction = blockChecker.test(state.getBlock()) ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null;
 		}
 
 		this.bindTexture(texture);

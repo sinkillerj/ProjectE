@@ -23,6 +23,7 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -65,11 +66,8 @@ import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.rendering.ChestRenderer;
-import moze_intel.projecte.rendering.CondenserMK2Renderer;
-import moze_intel.projecte.rendering.CondenserRenderer;
 import moze_intel.projecte.rendering.LayerYue;
-import moze_intel.projecte.rendering.NovaCataclysmRenderer;
-import moze_intel.projecte.rendering.NovaCatalystRenderer;
+import moze_intel.projecte.rendering.NovaRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.rendering.entity.ExplosiveLensRenderer;
 import moze_intel.projecte.rendering.entity.FireballRenderer;
@@ -89,6 +87,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -155,9 +154,9 @@ public class PECore {
 			DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
 
 			//Tile Entity
-			ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer());
-			ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new CondenserRenderer());
-			ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new CondenserMK2Renderer());
+			ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == ObjHandler.alchChest));
+			ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == ObjHandler.condenser));
+			ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == ObjHandler.condenserMk2));
 			ClientRegistry.bindTileEntitySpecialRenderer(DMPedestalTile.class, new PedestalRenderer());
 
 			//Entities
@@ -167,8 +166,8 @@ public class PECore {
 			RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, ExplosiveLensRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, FireballRenderer::new);
 			RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, LightningRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, NovaCatalystRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, NovaCataclysmRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, manager -> new NovaRenderer<>(manager, ObjHandler.novaCatalyst::getDefaultState));
+			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, manager -> new NovaRenderer<>(manager, ObjHandler.novaCataclysm::getDefaultState));
 			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
 		}
 
