@@ -18,27 +18,27 @@ import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -54,7 +54,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem {
 
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, AttributeModifier.Operation.ADDITION).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION).setSaved(false);
 
 	public EvertideAmulet(Properties props) {
 		super(props);
@@ -79,46 +79,26 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
-
-		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, ctx.getPos())) {
-			TileEntity tile = world.getTileEntity(ctx.getPos());
-
-			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ctx.getFace()).isPresent()) {
-				FluidHelper.tryFillTank(tile, Fluids.WATER, ctx.getFace(), FluidAttributes.BUCKET_VOLUME);
+		BlockPos pos = ctx.getPos();
+		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos)) {
+			TileEntity tile = world.getTileEntity(pos);
+			Direction sideHit = ctx.getFace();
+			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
+				FluidHelper.tryFillTank(tile, Fluids.WATER, sideHit, FluidAttributes.BUCKET_VOLUME);
 			} else {
-				BlockState state = world.getBlockState(ctx.getPos());
+				BlockState state = world.getBlockState(pos);
 				if (state.getBlock() == Blocks.CAULDRON) {
 					int waterLevel = state.get(CauldronBlock.LEVEL);
 					if (waterLevel < 3) {
-						((CauldronBlock) state.getBlock()).setWaterLevel(world, ctx.getPos(), state, waterLevel + 1);
+						((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 					}
 				} else {
+					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER);
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					placeWater(world, player, ctx.getPos().offset(ctx.getFace()));
 				}
 			}
 		}
-
 		return ActionResultType.SUCCESS;
-	}
-
-	private void placeWater(World world, PlayerEntity player, BlockPos pos) {
-		Material material = world.getBlockState(pos).getMaterial();
-
-		if (world.dimension.doesWaterVaporize()) {
-			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-
-			for (int l = 0; l < 8; ++l) {
-				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
-			}
-		} else {
-			if (!world.isRemote && !material.isSolid() && !material.isLiquid()) {
-				world.destroyBlock(pos, true);
-			}
-			world.setBlockState(pos, Blocks.WATER.getDefaultState());
-			PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos, Blocks.WATER.getDefaultState());
-		}
-
 	}
 
 	@Override
@@ -134,21 +114,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		if (invSlot > 8 || !(entity instanceof LivingEntity)) {
 			return;
 		}
-
 		LivingEntity living = (LivingEntity) entity;
-
 		int x = (int) Math.floor(living.posX);
 		int y = (int) (living.posY - living.getYOffset());
 		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
-
 		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos)) {
 			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
 			}
-
 			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
 			}
@@ -156,7 +132,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			if (living.isInWater()) {
 				living.setAir(300);
 			}
-
 			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
 				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
@@ -166,7 +141,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-
 		if (!world.dimension.doesWaterVaporize()) {
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
@@ -174,7 +148,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			world.addEntity(ent);
 			return true;
 		}
-
 		return false;
 	}
 
@@ -182,7 +155,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
 		list.add(new TranslationTextComponent("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-
 		list.add(new TranslationTextComponent("pe.evertide.tooltip2"));
 		list.add(new TranslationTextComponent("pe.evertide.tooltip3"));
 		list.add(new TranslationTextComponent("pe.evertide.tooltip4"));

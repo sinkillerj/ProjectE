@@ -8,7 +8,6 @@ import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
@@ -50,14 +49,13 @@ public class KeyPressPKT {
 				if (message.key == PEKeybind.ARMOR_TOGGLE) {
 					if (player.isSneaking()) {
 						ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-						if (!helm.isEmpty() && helm.getItem() == ObjHandler.gemHelmet) {
+						if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
 							GemHelmet.toggleNightVision(helm, player);
 						}
 					} else {
 						ItemStack boots = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-
-						if (!boots.isEmpty() && boots.getItem() == ObjHandler.gemFeet) {
-							((GemFeet) ObjHandler.gemFeet).toggleStepAssist(boots, player);
+						if (!boots.isEmpty() && boots.getItem() instanceof GemFeet) {
+							((GemFeet) boots.getItem()).toggleStepAssist(boots, player);
 						}
 					}
 					return;
@@ -73,12 +71,10 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty())) {
-								if (GemArmorBase.hasAnyPiece(player)) {
-									internalAbilities.setGemState(!internalAbilities.getGemState());
-									player.sendMessage(new TranslationTextComponent(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
-									return;
-								}
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && GemArmorBase.hasAnyPiece(player)) {
+								internalAbilities.setGemState(!internalAbilities.getGemState());
+								player.sendMessage(new TranslationTextComponent(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
+								return;
 							}
 							break;
 						case EXTRA_FUNCTION:
@@ -88,15 +84,12 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty())) {
-								if (internalAbilities.getGemState()
-									&& !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()
-									&& player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == ObjHandler.gemChest) {
-									if (internalAbilities.getGemCooldown() <= 0) {
-										((GemChest) ObjHandler.gemChest).doExplode(player);
-										internalAbilities.resetGemCooldown();
-										return;
-									}
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
+								ItemStack chestplate = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+								if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest && internalAbilities.getGemCooldown() <= 0) {
+									((GemChest) chestplate.getItem()).doExplode(player);
+									internalAbilities.resetGemCooldown();
+									return;
 								}
 							}
 							break;
@@ -109,11 +102,10 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty())) {
-								if (internalAbilities.getGemState()
-									&& !player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty()
-									&& player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() == ObjHandler.gemHelmet) {
-									((GemHelmet) ObjHandler.gemHelmet).doZap(player);
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
+								ItemStack helmet = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+								if (!helmet.isEmpty() && helmet.getItem() instanceof GemHelmet) {
+									((GemHelmet) helmet.getItem()).doZap(player);
 									return;
 								}
 							}

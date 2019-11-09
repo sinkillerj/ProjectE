@@ -15,8 +15,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.IGrowable;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.SnowBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
@@ -26,15 +28,22 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
@@ -142,6 +151,51 @@ public final class WorldHelper {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Checks if a block is a {@link ILiquidContainer} that supports a specific fluid type.
+	 */
+	public static boolean isLiquidContainerForFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid) {
+		return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+	}
+
+	/**
+	 * Attempts to place a fluid in a specific spot if the spot is a {@link ILiquidContainer} that supports the fluid otherwise try to place it in the block that is on
+	 * the given side of the clicked block.
+	 */
+	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, Direction sideHit, FlowingFluid fluid) {
+		if (isLiquidContainerForFluid(world, pos, world.getBlockState(pos), fluid)) {
+			//If the spot can be logged with our fluid then try using the position directly
+			placeFluid(player, world, pos, fluid);
+		} else {
+			//Otherwise offset it because we clicked against the block
+			placeFluid(player, world, pos.offset(sideHit), fluid);
+		}
+	}
+
+	/**
+	 * Attempts to place a fluid in a specific spot, if the spot is a {@link ILiquidContainer} that supports the fluid, insert it instead.
+	 *
+	 * @apiNote Call this from the server side
+	 */
+	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid) {
+		BlockState blockState = world.getBlockState(pos);
+		//TODO: Should we allow the evertide amulet to place water in the nether like it did in EE2 (Also check the projcetile)
+		if (world.dimension.doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
+			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+			for (int l = 0; l < 8; ++l) {
+				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+			}
+		} else if (isLiquidContainerForFluid(world, pos, blockState, fluid)) {
+			((ILiquidContainer) blockState.getBlock()).receiveFluid(world, pos, blockState, fluid.getStillFluidState(false));
+		} else {
+			Material material = blockState.getMaterial();
+			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
+				world.destroyBlock(pos, true);
+			}
+			PlayerHelper.checkedPlaceBlock(player, pos, fluid.getDefaultState().getBlockState());
 		}
 	}
 
@@ -275,7 +329,7 @@ public final class WorldHelper {
 
 	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, PlayerEntity player) {
 		int chance = harvest ? 16 : 32;
-		for (BlockPos currentPos : WorldHelper.getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
+		for (BlockPos currentPos : getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
 			currentPos = currentPos.toImmutable();
 			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();

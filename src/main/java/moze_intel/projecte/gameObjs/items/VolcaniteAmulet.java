@@ -18,17 +18,19 @@ import moze_intel.projecte.utils.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.block.Blocks;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -46,7 +48,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
 
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, AttributeModifier.Operation.ADDITION).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION).setSaved(false);
 
 	public VolcaniteAmulet(Properties props) {
 		super(props);
@@ -72,22 +74,18 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
 		ItemStack stack = ctx.getItem();
-		Direction sideHit = ctx.getFace();
 		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
 			TileEntity tile = world.getTileEntity(pos);
+			Direction sideHit = ctx.getFace();
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
 			} else {
-				placeLava(player, pos.offset(sideHit));
+				WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA);
 				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 
 		return ActionResultType.SUCCESS;
-	}
-
-	private void placeLava(PlayerEntity player, BlockPos pos) {
-		PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos, Blocks.LAVA.getDefaultState());
 	}
 
 	@Override
@@ -108,7 +106,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		int y = (int) (living.posY - living.getYOffset());
 		int z = (int) Math.floor(living.posZ);
 		BlockPos pos = new BlockPos(x, y, z);
-		if (world.getBlockState(pos.down()).getBlock() == Blocks.LAVA && world.isAirBlock(pos)) {
+		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
 			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;

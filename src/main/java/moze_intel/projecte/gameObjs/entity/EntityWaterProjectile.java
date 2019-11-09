@@ -3,12 +3,14 @@ package moze_intel.projecte.gameObjs.entity;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.network.IPacket;
 import net.minecraft.tags.FluidTags;
@@ -76,7 +78,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (this.getEntityWorld().isRemote) {
+		if (world.isRemote) {
 			return;
 		}
 		if (!(getThrower() instanceof PlayerEntity)) {
@@ -84,10 +86,8 @@ public class EntityWaterProjectile extends ThrowableEntity {
 			return;
 		}
 		if (mop instanceof BlockRayTraceResult) {
-			BlockPos pos = ((BlockRayTraceResult) mop).getPos().offset(((BlockRayTraceResult) mop).getFace());
-			if (world.isAirBlock(pos)) {
-				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), pos, Blocks.WATER.getDefaultState());
-			}
+			BlockRayTraceResult result = (BlockRayTraceResult) mop;
+			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER);
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
 			if (ent.isBurning()) {

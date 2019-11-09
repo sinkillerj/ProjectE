@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -11,6 +12,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
@@ -74,23 +76,26 @@ public class EntityLavaProjectile extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (!world.isRemote || getThrower() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) getThrower();
-			ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
-			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
-				if (mop instanceof BlockRayTraceResult) {
-					BlockRayTraceResult brtr = (BlockRayTraceResult) mop;
-					PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), brtr.getPos().offset(brtr.getFace()), Blocks.LAVA.getDefaultState());
-				} else if (mop instanceof EntityRayTraceResult) {
-					Entity ent = ((EntityRayTraceResult) mop).getEntity();
-					ent.setFire(5);
-					ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
-				}
+		if (world.isRemote) {
+			return;
+		}
+		if (!(getThrower() instanceof PlayerEntity)) {
+			remove();
+			return;
+		}
+		PlayerEntity player = (PlayerEntity) getThrower();
+		ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
+		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
+			if (mop instanceof BlockRayTraceResult) {
+				BlockRayTraceResult result = (BlockRayTraceResult) mop;
+				WorldHelper.placeFluid((ServerPlayerEntity) player, world, result.getPos(), result.getFace(), Fluids.LAVA);
+			} else if (mop instanceof EntityRayTraceResult) {
+				Entity ent = ((EntityRayTraceResult) mop).getEntity();
+				ent.setFire(5);
+				ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
 			}
 		}
-		if (!world.isRemote) {
-			remove();
-		}
+		remove();
 	}
 
 	@Nonnull
