@@ -7,6 +7,10 @@ import java.util.List;
 import moze_intel.projecte.PECore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public final class ProjectEConfig {
 
@@ -23,11 +27,11 @@ public final class ProjectEConfig {
 
 	public static class Difficulty {
 
-		public final ForgeConfigSpec.BooleanValue craftableTome;
-		public final ForgeConfigSpec.BooleanValue offensiveAbilities;
-		public final ForgeConfigSpec.DoubleValue katarDeathAura;
-		public final ForgeConfigSpec.DoubleValue covalenceLoss;
-		public final ForgeConfigSpec.BooleanValue covalenceLossRounding;
+		public final BooleanValue craftableTome;
+		public final BooleanValue offensiveAbilities;
+		public final DoubleValue katarDeathAura;
+		public final DoubleValue covalenceLoss;
+		public final BooleanValue covalenceLossRounding;
 
 		Difficulty() {
 			BUILDER.push("difficulty");
@@ -54,10 +58,11 @@ public final class ProjectEConfig {
 
 	public static class Items {
 
-		public final ForgeConfigSpec.BooleanValue pickaxeAoeVeinMining;
-		public final ForgeConfigSpec.BooleanValue harvBandGrass;
-		public final ForgeConfigSpec.BooleanValue disableAllRadiusMining;
-		public final ForgeConfigSpec.BooleanValue enableTimeWatch;
+		public final BooleanValue pickaxeAoeVeinMining;
+		public final BooleanValue harvBandGrass;
+		public final BooleanValue disableAllRadiusMining;
+		public final BooleanValue enableTimeWatch;
+		public final BooleanValue opEvertide;
 
 		Items() {
 			BUILDER.push("items");
@@ -73,6 +78,9 @@ public final class ProjectEConfig {
 			enableTimeWatch = BUILDER
 					.comment("Enable Watch of Flowing Time")
 					.define("enableTimeWatch", true);
+			opEvertide = BUILDER
+					.comment("Allow the Evertide amulet to place water in dimensions that water evaporates. For example: The Nether.")
+					.define("opEvertide", false);
 			BUILDER.pop();
 		}
 	}
@@ -81,10 +89,10 @@ public final class ProjectEConfig {
 
 	public static class Effects {
 
-		public final ForgeConfigSpec.IntValue timePedBonus;
-		public final ForgeConfigSpec.DoubleValue timePedMobSlowness;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> timeWatchTEBlacklist;
-		public final ForgeConfigSpec.BooleanValue interdictionMode;
+		public final IntValue timePedBonus;
+		public final DoubleValue timePedMobSlowness;
+		public final ConfigValue<List<? extends String>> timeWatchTEBlacklist;
+		public final BooleanValue interdictionMode;
 
 		Effects() {
 			BUILDER.push("effects");
@@ -109,15 +117,15 @@ public final class ProjectEConfig {
 
 	public static class Misc {
 
-		public final ForgeConfigSpec.BooleanValue debugLogging;
-		public final ForgeConfigSpec.BooleanValue tagToolTips;
-		public final ForgeConfigSpec.BooleanValue emcToolTips;
-		public final ForgeConfigSpec.BooleanValue statToolTips;
-		public final ForgeConfigSpec.BooleanValue pedestalToolTips;
-		public final ForgeConfigSpec.BooleanValue pulsatingOverlay;
-		public final ForgeConfigSpec.BooleanValue unsafeKeyBinds;
-		public final ForgeConfigSpec.IntValue projectileCooldown;
-		public final ForgeConfigSpec.IntValue gemChestCooldown;
+		public final BooleanValue debugLogging;
+		public final BooleanValue tagToolTips;
+		public final BooleanValue emcToolTips;
+		public final BooleanValue statToolTips;
+		public final BooleanValue pedestalToolTips;
+		public final BooleanValue pulsatingOverlay;
+		public final BooleanValue unsafeKeyBinds;
+		public final IntValue projectileCooldown;
+		public final IntValue gemChestCooldown;
 
 		Misc() {
 			BUILDER.push("misc");
@@ -156,17 +164,17 @@ public final class ProjectEConfig {
 
 	public static class PedestalCooldown {
 
-		public final ForgeConfigSpec.IntValue archangel;
-		public final ForgeConfigSpec.IntValue body;
-		public final ForgeConfigSpec.IntValue evertide;
-		public final ForgeConfigSpec.IntValue harvest;
-		public final ForgeConfigSpec.IntValue ignition;
-		public final ForgeConfigSpec.IntValue life;
-		public final ForgeConfigSpec.IntValue repair;
-		public final ForgeConfigSpec.IntValue swrg;
-		public final ForgeConfigSpec.IntValue soul;
-		public final ForgeConfigSpec.IntValue volcanite;
-		public final ForgeConfigSpec.IntValue zero;
+		public final IntValue archangel;
+		public final IntValue body;
+		public final IntValue evertide;
+		public final IntValue harvest;
+		public final IntValue ignition;
+		public final IntValue life;
+		public final IntValue repair;
+		public final IntValue swrg;
+		public final IntValue soul;
+		public final IntValue volcanite;
+		public final IntValue zero;
 
 		PedestalCooldown() {
 			BUILDER.comment("Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.",

@@ -88,7 +88,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 			if (mop instanceof BlockRayTraceResult) {
 				BlockRayTraceResult result = (BlockRayTraceResult) mop;
-				WorldHelper.placeFluid((ServerPlayerEntity) player, world, result.getPos(), result.getFace(), Fluids.LAVA);
+				WorldHelper.placeFluid((ServerPlayerEntity) player, world, result.getPos(), result.getFace(), Fluids.LAVA, false);
 			} else if (mop instanceof EntityRayTraceResult) {
 				Entity ent = ((EntityRayTraceResult) mop).getEntity();
 				ent.setFire(5);

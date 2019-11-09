@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -87,7 +88,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 		}
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult result = (BlockRayTraceResult) mop;
-			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER);
+			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.items.opEvertide.get());
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
 			if (ent.isBurning()) {

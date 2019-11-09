@@ -165,13 +165,13 @@ public final class WorldHelper {
 	 * Attempts to place a fluid in a specific spot if the spot is a {@link ILiquidContainer} that supports the fluid otherwise try to place it in the block that is on
 	 * the given side of the clicked block.
 	 */
-	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, Direction sideHit, FlowingFluid fluid) {
+	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
 		if (isLiquidContainerForFluid(world, pos, world.getBlockState(pos), fluid)) {
 			//If the spot can be logged with our fluid then try using the position directly
-			placeFluid(player, world, pos, fluid);
+			placeFluid(player, world, pos, fluid, checkWaterVaporize);
 		} else {
 			//Otherwise offset it because we clicked against the block
-			placeFluid(player, world, pos.offset(sideHit), fluid);
+			placeFluid(player, world, pos.offset(sideHit), fluid, checkWaterVaporize);
 		}
 	}
 
@@ -180,10 +180,9 @@ public final class WorldHelper {
 	 *
 	 * @apiNote Call this from the server side
 	 */
-	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid) {
+	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = world.getBlockState(pos);
-		//TODO: Should we allow the evertide amulet to place water in the nether like it did in EE2 (Also check the projcetile)
-		if (world.dimension.doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
+		if (checkWaterVaporize && world.dimension.doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 			for (int l = 0; l < 8; ++l) {
 				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);

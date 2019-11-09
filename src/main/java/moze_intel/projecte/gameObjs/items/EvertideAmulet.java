@@ -93,7 +93,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 						((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 					}
 				} else {
-					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER);
+					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.items.opEvertide.get());
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				}
 			}
@@ -141,7 +141,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		if (!world.dimension.doesWaterVaporize()) {
+		if (ProjectEConfig.items.opEvertide.get() || !world.dimension.doesWaterVaporize()) {
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
 			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
