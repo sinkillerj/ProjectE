@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.utils.EMCHelper;
 
 public class EMCProxyImpl implements IEMCProxy {
@@ -21,5 +22,11 @@ public class EMCProxyImpl implements IEMCProxy {
 	@Override
 	public long getSellValue(@Nonnull ItemInfo info) {
 		return EMCHelper.getEmcSellValue(Objects.requireNonNull(info));
+	}
+
+	@Nonnull
+	@Override
+	public ItemInfo getPersistentInfo(@Nonnull ItemInfo info) {
+		return NBTManager.getPersistentInfo(info);
 	}
 }

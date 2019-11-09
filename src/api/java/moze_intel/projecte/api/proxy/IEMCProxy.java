@@ -161,4 +161,15 @@ public interface IEMCProxy {
 	 * @return EMC the stack should yield when burned by transmutation, condensers, or relays
 	 */
 	long getSellValue(@Nonnull ItemInfo info);
+
+	/**
+	 * Gets an {@link ItemInfo} with the {@link net.minecraft.nbt.CompoundNBT} reduced to what will be saved to knowledge/used for condensing.
+	 *
+	 * @param info The ItemInfo we want to trim to the data that will be used for persistence.
+	 *
+	 * @return An {@link ItemInfo} for the same item as the input info, but with a potentially reduced {@link net.minecraft.nbt.CompoundNBT}, containing whatever data is
+	 * persistent/matters.
+	 */
+	@Nonnull
+	ItemInfo getPersistentInfo(@Nonnull ItemInfo info);
 }
