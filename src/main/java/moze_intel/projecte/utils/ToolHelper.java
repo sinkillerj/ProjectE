@@ -120,7 +120,7 @@ public class ToolHelper {
 	 * Clears the given tag in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType clearTagAOE(World world, PlayerEntity player, Hand hand, long emcCost, Tag<Block> tag) {
-		if (ProjectEConfig.items.disableAllRadiusMining.get()) {
+		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
 		ItemStack stack = player.getHeldItem(hand);
@@ -363,7 +363,7 @@ public class ToolHelper {
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
 	public static void digBasedOnMode(ItemStack stack, World world, BlockPos pos, LivingEntity living, RayTracePointer tracePointer) {
-		if (world.isRemote || ProjectEConfig.items.disableAllRadiusMining.get() || !(living instanceof PlayerEntity)) {
+		if (world.isRemote || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof PlayerEntity)) {
 			return;
 		}
 		byte mode = getMode(stack);
@@ -433,7 +433,7 @@ public class ToolHelper {
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType digAOE(World world, PlayerEntity player, Hand hand, BlockPos pos, Direction sideHit, boolean affectDepth, long emcCost) {
-		if (ProjectEConfig.items.disableAllRadiusMining.get()) {
+		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
 		ItemStack stack = player.getHeldItem(hand);
@@ -607,7 +607,7 @@ public class ToolHelper {
 	 * Scans and harvests an ore vein.
 	 */
 	public static ActionResultType tryVeinMine(Hand hand, PlayerEntity player, BlockPos pos, Direction sideHit) {
-		if (ProjectEConfig.items.disableAllRadiusMining.get()) {
+		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
 		World world = player.getEntityWorld();
@@ -644,7 +644,7 @@ public class ToolHelper {
 	 * Mines all ore veins in a Box around the player.
 	 */
 	public static ActionResultType mineOreVeinsInAOE(PlayerEntity player, Hand hand) {
-		if (ProjectEConfig.items.disableAllRadiusMining.get()) {
+		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
 		World world = player.getEntityWorld();

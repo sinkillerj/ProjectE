@@ -39,7 +39,7 @@ public final class InternalAbilities {
 	}
 
 	public void resetProjectileCooldown() {
-		projectileCooldown = ProjectEConfig.misc.projectileCooldown.get();
+		projectileCooldown = ProjectEConfig.server.cooldown.player.projectile.get();
 	}
 
 	public int getProjectileCooldown() {
@@ -47,7 +47,7 @@ public final class InternalAbilities {
 	}
 
 	public void resetGemCooldown() {
-		gemChestCooldown = ProjectEConfig.misc.gemChestCooldown.get();
+		gemChestCooldown = ProjectEConfig.server.cooldown.player.gemChest.get();
 	}
 
 	public int getGemCooldown() {

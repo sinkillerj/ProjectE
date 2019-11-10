@@ -2,7 +2,6 @@ package moze_intel.projecte.events;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -11,7 +10,6 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -100,8 +98,6 @@ public class PlayerEvents {
 		});
 
 		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
-
-		PacketHandler.sendTo(new SyncCovalencePKT(ProjectEConfig.difficulty.covalenceLoss.get(), ProjectEConfig.difficulty.covalenceLossRounding.get()), player);
 
 		PECore.debugLog("Sent knowledge and bag data to {}", player.getName());
 	}

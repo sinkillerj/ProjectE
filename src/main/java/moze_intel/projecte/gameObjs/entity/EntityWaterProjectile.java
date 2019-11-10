@@ -88,7 +88,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 		}
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult result = (BlockRayTraceResult) mop;
-			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.items.opEvertide.get());
+			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
 			if (ent.isBurning()) {

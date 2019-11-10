@@ -110,14 +110,14 @@ public class PEMorningStar extends PETool implements IItemMode {
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
 				() -> {
 					if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
-						if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 							return ToolHelper.digAOE(world, player, hand, pos, sideHit, false, 0);
 						}
 						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
 					}
 					return ActionResultType.PASS;
 				}, () -> {
-					if (ItemHelper.isOre(state) && !ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+					if (ItemHelper.isOre(state) && !ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
 					}
 					return ActionResultType.PASS;
@@ -129,7 +129,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (ProjectEConfig.items.pickaxeAoeVeinMining.get()) {
+		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
 		return ActionResult.newResult(ActionResultType.PASS, stack);

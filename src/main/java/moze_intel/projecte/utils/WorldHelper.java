@@ -349,7 +349,7 @@ public final class WorldHelper {
 						world.destroyBlock(currentPos, true);
 					}
 				} else if (world.rand.nextInt(chance) == 0) {
-					if (ProjectEConfig.items.harvBandGrass.get() || !crop.getTranslationKey().toLowerCase(Locale.ROOT).contains("grass")) {
+					if (ProjectEConfig.server.items.harvBandGrass.get() || !crop.getTranslationKey().toLowerCase(Locale.ROOT).contains("grass")) {
 						growable.grow(world, world.rand, currentPos, state);
 					}
 				}
@@ -445,7 +445,7 @@ public final class WorldHelper {
 		for (Entity ent : list) {
 			if ((isSWRG && !swrgBlacklist.contains(ent.getType())) || (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
 				if (ent instanceof MobEntity || ent instanceof IProjectile) {
-					if (isSWRG || !ProjectEConfig.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
+					if (isSWRG || !ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
 						if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround) {
 							continue;
 						}

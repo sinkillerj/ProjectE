@@ -83,11 +83,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.repair.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
 			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
 			if (tile.getActivityCooldown() == 0) {
 				world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.repair.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -98,9 +98,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.repair.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
 			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.repair.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.repair.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

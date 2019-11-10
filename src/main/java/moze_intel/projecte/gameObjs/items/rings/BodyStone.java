@@ -57,7 +57,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.body.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
 				return;
@@ -71,7 +71,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.body.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.body.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -82,9 +82,9 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.body.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
 			list.add(new TranslationTextComponent("pe.body.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.body.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

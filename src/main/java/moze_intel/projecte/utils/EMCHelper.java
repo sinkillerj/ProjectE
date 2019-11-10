@@ -8,7 +8,7 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
-import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
@@ -134,9 +134,9 @@ public final class EMCHelper {
 		if (originalValue == 0) {
 			return 0;
 		}
-		long emc = (long) Math.floor(originalValue * EMCMappingHandler.covalenceLoss);
+		long emc = (long) Math.floor(originalValue * ProjectEConfig.server.difficulty.covalenceLoss.get());
 		if (emc < 1) {
-			if (EMCMappingHandler.covalenceLossRounding) {
+			if (ProjectEConfig.server.difficulty.covalenceLossRounding.get()) {
 				emc = 1;
 			} else {
 				emc = 0;
@@ -146,7 +146,7 @@ public final class EMCHelper {
 	}
 
 	public static String getEmcSellString(ItemStack stack, int stackSize) {
-		if (EMCMappingHandler.covalenceLoss == 1.0) {
+		if (ProjectEConfig.server.difficulty.covalenceLoss.get() == 1.0) {
 			return " ";
 		}
 

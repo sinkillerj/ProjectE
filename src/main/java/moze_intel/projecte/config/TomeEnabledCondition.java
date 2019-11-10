@@ -17,7 +17,7 @@ public class TomeEnabledCondition implements ICondition {
 
 	@Override
 	public boolean test() {
-		return ProjectEConfig.difficulty.craftableTome.get();
+		return ProjectEConfig.server.difficulty.craftableTome.get();
 	}
 
 	public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {

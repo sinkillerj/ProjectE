@@ -71,7 +71,7 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && GemArmorBase.hasAnyPiece(player)) {
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.server.misc.unsafeKeyBinds.get() || stack.isEmpty()) && GemArmorBase.hasAnyPiece(player)) {
 								internalAbilities.setGemState(!internalAbilities.getGemState());
 								player.sendMessage(new TranslationTextComponent(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"));
 								return;
@@ -84,9 +84,9 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.server.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
 								ItemStack chestplate = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-								if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest && internalAbilities.getGemCooldown() <= 0) {
+								if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest && internalAbilities.getGemCooldown() == 0) {
 									((GemChest) chestplate.getItem()).doExplode(player);
 									internalAbilities.resetGemCooldown();
 									return;
@@ -94,7 +94,7 @@ public class KeyPressPKT {
 							}
 							break;
 						case FIRE_PROJECTILE:
-							if (!stack.isEmpty() && internalAbilities.getProjectileCooldown() <= 0) {
+							if (!stack.isEmpty() && internalAbilities.getProjectileCooldown() == 0) {
 								Optional<IProjectileShooter> projectileShooterCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.PROJECTILE_SHOOTER_ITEM_CAPABILITY));
 								if (projectileShooterCapability.isPresent() && projectileShooterCapability.get().shootProjectile(player, stack, hand)) {
 									PlayerHelper.swingItem(player, hand);
@@ -102,7 +102,7 @@ public class KeyPressPKT {
 									return;
 								}
 							}
-							if (hand == Hand.MAIN_HAND && (ProjectEConfig.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
+							if (hand == Hand.MAIN_HAND && (ProjectEConfig.server.misc.unsafeKeyBinds.get() || stack.isEmpty()) && internalAbilities.getGemState()) {
 								ItemStack helmet = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 								if (!helmet.isEmpty() && helmet.getItem() instanceof GemHelmet) {
 									((GemHelmet) helmet.getItem()).doZap(player);

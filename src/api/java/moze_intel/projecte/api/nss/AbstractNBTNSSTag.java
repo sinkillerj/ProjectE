@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
  * - Type -> Tag
  *
  * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
-*
+ *
  * @implNote This does not handle NBT on Tags.
  */
 public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> implements NSSNBT {

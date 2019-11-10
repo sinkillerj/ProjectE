@@ -142,7 +142,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.volcanite.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
 				return;
@@ -153,7 +153,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				world.getWorldInfo().setThunderTime(0);
 				world.getWorldInfo().setRaining(false);
 				world.getWorldInfo().setThundering(false);
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.volcanite.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -164,9 +164,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.volcanite.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
 			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

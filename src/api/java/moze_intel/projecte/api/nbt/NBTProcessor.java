@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
 public @interface NBTProcessor {
 
 	/**
-	 * Gets the priority of this {@link NBTProcessor}. This is used when loading the list of processors. The higher this number is
-	 * the sooner it gets ran.
+	 * Gets the priority of this {@link NBTProcessor}. This is used when loading the list of processors. The higher this number is the sooner it gets ran.
+	 *
 	 * @return Sort priority of this {@link NBTProcessor}
 	 */
 	int priority() default 0;

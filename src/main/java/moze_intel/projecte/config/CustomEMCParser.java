@@ -22,7 +22,7 @@ import moze_intel.projecte.emc.json.NSSSerializer;
 public final class CustomEMCParser {
 
 	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE).setPrettyPrinting().create();
-	private static final File CONFIG = new File(PECore.CONFIG_DIR, "custom_emc.json");
+	private static final File CONFIG = ProjectEConfig.CONFIG_DIR.resolve("custom_emc.json").toFile();
 
 	public static class CustomEMCFile {
 

@@ -56,7 +56,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.soul.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
 				return;
@@ -70,7 +70,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 						player.heal(1.0F); // 1/2 heart
 					}
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.soul.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.soul.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -81,9 +81,9 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.soul.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
 			list.add(new TranslationTextComponent("pe.soul.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.soul.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

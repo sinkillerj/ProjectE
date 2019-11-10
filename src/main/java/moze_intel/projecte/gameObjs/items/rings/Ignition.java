@@ -85,7 +85,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.ignition.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
 				return;
@@ -97,7 +97,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 					living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
 					living.setFire(8);
 				}
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.ignition.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.ignition.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -108,9 +108,9 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.ignition.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			list.add(new TranslationTextComponent("pe.ignition.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.ignition.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

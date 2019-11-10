@@ -30,7 +30,7 @@ public class RelayItem extends BlockItem {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-		if (ProjectEConfig.misc.statToolTips.get()) {
+		if (ProjectEConfig.client.statToolTips.get()) {
 			tooltip.add(new TranslationTextComponent("pe.emc.maxoutrate_tooltip").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" ")
 					.appendSibling(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getChargeRate())).applyTextStyle(TextFormatting.BLUE))
 					.appendText(" ").appendSibling(new TranslationTextComponent("pe.emc.rate")));

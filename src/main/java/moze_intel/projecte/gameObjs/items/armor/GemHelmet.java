@@ -101,7 +101,7 @@ public class GemHelmet extends GemArmorBase {
 	}
 
 	public void doZap(PlayerEntity player) {
-		if (ProjectEConfig.difficulty.offensiveAbilities.get()) {
+		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
 			BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
 			if (strikePos != null) {
 				((ServerWorld) player.getEntityWorld()).addLightningBolt(new LightningBoltEntity(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));

@@ -38,8 +38,6 @@ public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
 	private static final Map<ItemInfo, Long> emc = new HashMap<>();
-	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss.get();
-	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding.get();
 
 	private static void loadMappers() {
 		//If we don't have any mappers loaded try to load them
@@ -69,7 +67,7 @@ public final class EMCMappingHandler {
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 
-		Path path = Paths.get("config", PECore.MODNAME, "mapping.toml");
+		Path path = ProjectEConfig.CONFIG_DIR.resolve("mapping.toml");
 		try {
 			path.toFile().createNewFile();
 		} catch (IOException ex) {
@@ -87,7 +85,7 @@ public final class EMCMappingHandler {
 																					 "Exploits that derive from conversions that are unknown to ProjectE will not be found.", true);
 
 		if (dumpToFile) {
-			mappingCollector = new DumpToFileCollector<>(new File(PECore.CONFIG_DIR, "mappingdump.json"), mappingCollector);
+			mappingCollector = new DumpToFileCollector<>(ProjectEConfig.CONFIG_DIR.resolve("mappingdump.json").toFile(), mappingCollector);
 		}
 
 		File pregeneratedEmcFile = Paths.get("config", PECore.MODNAME, "pregenerated_emc.json").toFile();

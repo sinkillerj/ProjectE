@@ -16,7 +16,6 @@ import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
 import moze_intel.projecte.network.packets.StepHeightPKT;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
-import moze_intel.projecte.network.packets.SyncCovalencePKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
 import moze_intel.projecte.network.packets.UpdateCondenserLockPKT;
@@ -56,7 +55,6 @@ public final class PacketHandler {
 		registerMessage(SetFlyPKT.class, SetFlyPKT::encode, SetFlyPKT::decode, SetFlyPKT.Handler::handle);
 		registerMessage(StepHeightPKT.class, StepHeightPKT::encode, StepHeightPKT::decode, StepHeightPKT.Handler::handle);
 		registerMessage(SyncBagDataPKT.class, SyncBagDataPKT::encode, SyncBagDataPKT::decode, SyncBagDataPKT.Handler::handle);
-		registerMessage(SyncCovalencePKT.class, SyncCovalencePKT::encode, SyncCovalencePKT::decode, SyncCovalencePKT.Handler::handle);
 		registerMessage(SyncEmcPKT.class, SyncEmcPKT::encode, SyncEmcPKT::decode, SyncEmcPKT.Handler::handle);
 		registerMessage(UpdateCondenserLockPKT.class, UpdateCondenserLockPKT::encode, UpdateCondenserLockPKT::decode, UpdateCondenserLockPKT.Handler::handle);
 		registerMessage(UpdateGemModePKT.class, UpdateGemModePKT::encode, UpdateGemModePKT::decode, UpdateGemModePKT.Handler::handle);

@@ -36,7 +36,7 @@ public class ToolTipEvent {
 			return;
 		}
 		PlayerEntity clientPlayer = Minecraft.getInstance().player;
-		if (ProjectEConfig.misc.pedestalToolTips.get()) {
+		if (ProjectEConfig.client.pedestalToolTips.get()) {
 			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" "));
 				List<ITextComponent> description = pedestalItem.getPedestalDescription();
@@ -48,13 +48,13 @@ public class ToolTipEvent {
 			});
 		}
 
-		if (ProjectEConfig.misc.tagToolTips.get()) {
+		if (ProjectEConfig.client.tagToolTips.get()) {
 			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem())) {
 				event.getToolTip().add(new StringTextComponent("#" + tag.toString()));
 			}
 		}
 
-		if (ProjectEConfig.misc.emcToolTips.get()) {
+		if (ProjectEConfig.client.emcToolTips.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
 			long value = EMCHelper.getEmcValue(current);
 			if (value > 0) {
 				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");

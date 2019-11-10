@@ -155,7 +155,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
 		if (player.getCooledAttackStrength(0F) == 1) {
-			ToolHelper.attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.difficulty.katarDeathAura.get().floatValue(), 0, hand);
+			ToolHelper.attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.server.difficulty.katarDeathAura.get().floatValue(), 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}

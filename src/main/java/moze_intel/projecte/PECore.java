@@ -2,7 +2,6 @@ package moze_intel.projecte;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +96,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -120,14 +120,13 @@ public class PECore {
 	public static final String MODID = ProjectEAPI.PROJECTE_MODID;
 	public static final String MODNAME = "ProjectE";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
-	public static File CONFIG_DIR;
 	public static boolean DEV_ENVIRONMENT;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static final List<String> uuids = new ArrayList<>();
 
 	public static void debugLog(String msg, Object... args) {
-		if (DEV_ENVIRONMENT || ProjectEConfig.misc.debugLogging.get()) {
+		if (DEV_ENVIRONMENT || ProjectEConfig.common.debugLogging.get()) {
 			LOGGER.info(msg, args);
 		} else {
 			LOGGER.debug(msg, args);
@@ -147,6 +146,9 @@ public class PECore {
 		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
+
+		//Register our config files
+		ProjectEConfig.register(ModLoadingContext.get());
 	}
 
 	static class ClientHandler {
@@ -186,14 +188,6 @@ public class PECore {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		DEV_ENVIRONMENT = FMLLoader.getNameFunction("srg").isPresent();
-
-		CONFIG_DIR = new File(new File("config"), MODNAME);
-
-		if (!CONFIG_DIR.exists()) {
-			CONFIG_DIR.mkdirs();
-		}
-
-		ProjectEConfig.load();
 
 		AlchBagImpl.init();
 		KnowledgeImpl.init();

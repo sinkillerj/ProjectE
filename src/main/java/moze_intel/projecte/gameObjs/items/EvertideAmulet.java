@@ -93,7 +93,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 						((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 					}
 				} else {
-					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.items.opEvertide.get());
+					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 					world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				}
 			}
@@ -141,7 +141,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		if (ProjectEConfig.items.opEvertide.get() || !world.dimension.doesWaterVaporize()) {
+		if (ProjectEConfig.server.items.opEvertide.get() || !world.dimension.doesWaterVaporize()) {
 			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
 			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
@@ -162,7 +162,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.evertide.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof DMPedestalTile) {
 				DMPedestalTile tile = (DMPedestalTile) te;
@@ -171,7 +171,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 					world.getWorldInfo().setRainTime(i);
 					world.getWorldInfo().setThunderTime(i);
 					world.getWorldInfo().setRaining(true);
-					tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.evertide.get());
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.evertide.get());
 				} else {
 					tile.decrementActivityCooldown();
 				}
@@ -183,9 +183,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.evertide.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			list.add(new TranslationTextComponent("pe.evertide.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.evertide.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

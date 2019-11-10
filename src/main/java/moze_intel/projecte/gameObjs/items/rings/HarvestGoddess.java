@@ -170,7 +170,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.pedestalCooldown.harvest.get() != -1) {
+		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
 				return;
@@ -178,7 +178,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
 				WorldHelper.growNearbyRandomly(true, world, pos, null);
-				tile.setActivityCooldown(ProjectEConfig.pedestalCooldown.harvest.get());
+				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
 			} else {
 				tile.decrementActivityCooldown();
 			}
@@ -189,10 +189,10 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.pedestalCooldown.harvest.get() != -1) {
+		if (ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
 			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.pedestalCooldown.harvest.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

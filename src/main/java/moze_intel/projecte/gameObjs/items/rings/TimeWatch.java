@@ -62,7 +62,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
-			if (!ProjectEConfig.items.enableTimeWatch.get()) {
+			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
 				return ActionResult.newResult(ActionResultType.FAIL, stack);
 			}
@@ -79,7 +79,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (!(entity instanceof PlayerEntity) || invSlot > 8) {
 			return;
 		}
-		if (!ProjectEConfig.items.enableTimeWatch.get()) {
+		if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
@@ -137,7 +137,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 
-		Set<ResourceLocation> blacklist = ProjectEConfig.effects.timeWatchTEBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toSet());
+		Set<ResourceLocation> blacklist = ProjectEConfig.server.effects.timeWatchTEBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toSet());
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++) {
 			for (TileEntity tile : list) {
@@ -207,16 +207,16 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-		if (!world.isRemote && ProjectEConfig.items.enableTimeWatch.get()) {
+		if (!world.isRemote && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof DMPedestalTile) {
 				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
-				if (ProjectEConfig.effects.timePedBonus.get() > 0) {
-					speedUpTileEntities(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
-					speedUpRandomTicks(world, ProjectEConfig.effects.timePedBonus.get(), bBox);
+				if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
+					speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
+					speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
 				}
-				if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F) {
-					slowMobs(world, bBox, ProjectEConfig.effects.timePedMobSlowness.get());
+				if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
+					slowMobs(world, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
 				}
 			}
 		}
@@ -226,11 +226,11 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
-		if (ProjectEConfig.effects.timePedBonus.get() > 0) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
+		if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.server.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
 		}
-		if (ProjectEConfig.effects.timePedMobSlowness.get() < 1.0F) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
+		if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.server.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
