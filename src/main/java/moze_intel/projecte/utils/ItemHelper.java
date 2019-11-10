@@ -10,6 +10,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -30,6 +31,7 @@ public final class ItemHelper {
 
 	/**
 	 * Compacts an inventory and returns if the inventory is/was empty.
+	 *
 	 * @return True if the inventory was empty.
 	 */
 	public static boolean compactInventory(IItemHandlerModifiable inventory) {
@@ -65,6 +67,31 @@ public final class ItemHelper {
 		}
 		list.removeIf(ItemStack::isEmpty);
 		list.sort(Comparators.ITEMSTACK_ASCENDING);
+	}
+
+	/**
+	 * Copies the nbt compound similar to how {@link CompoundNBT#copy()} does, except it just skips the desired key instead of having to copy a potentially large value
+	 * which may be expensive, and then remove it from the copy.
+	 *
+	 * @implNote If the input {@link CompoundNBT} only contains the key we want to skip, we return null instead of an empty {@link CompoundNBT}.
+	 */
+	@Nullable
+	public static CompoundNBT copyNBTSkipKey(@Nonnull CompoundNBT nbt, @Nonnull String keyToSkip) {
+		CompoundNBT copiedNBT = new CompoundNBT();
+		for (String key : nbt.keySet()) {
+			if (keyToSkip.equals(key)) {
+				continue;
+			}
+			INBT innerNBT = nbt.get(key);
+			if (innerNBT != null) {
+				//Shouldn't be null but double check
+				copiedNBT.put(key, innerNBT.copy());
+			}
+		}
+		if (copiedNBT.isEmpty()) {
+			return null;
+		}
+		return copiedNBT;
 	}
 
 	/**

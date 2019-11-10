@@ -52,6 +52,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
+	private static final String CONSUMED_KEY = "Consumed";
 	private final String[] modes;
 
 	public GemEternalDensity(Properties props) {
@@ -181,12 +182,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			s.write(nbt);
 			tList.add(nbt);
 		}
-		stack.getOrCreateTag().put("Consumed", tList);
+		stack.getOrCreateTag().put(CONSUMED_KEY, tList);
 	}
 
 	private static List<ItemStack> getItems(ItemStack stack) {
 		List<ItemStack> list = new ArrayList<>();
-		ListNBT tList = stack.getOrCreateTag().getList("Consumed", NBT.TAG_COMPOUND);
+		ListNBT tList = stack.getOrCreateTag().getList(CONSUMED_KEY, NBT.TAG_COMPOUND);
 		for (int i = 0; i < tList.size(); i++) {
 			list.add(ItemStack.read(tList.getCompound(i)));
 		}
@@ -217,6 +218,22 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!hasFound) {
 			list.add(stack);
 		}
+	}
+
+	@Nullable
+	@Override
+	public CompoundNBT getShareTag(ItemStack stack) {
+		if (stack.getItem() instanceof GemEternalDensity) {
+			//Double check it is actually a stack of the correct type
+			CompoundNBT nbt = stack.getTag();
+			if (nbt == null || !nbt.contains(CONSUMED_KEY, NBT.TAG_LIST)) {
+				//If we don't have any NBT or already don't have the key just return the NBT as is
+				return nbt;
+			}
+			//Don't sync the list of consumed stacks to the client to make sure it doesn't overflow the packet
+			return ItemHelper.copyNBTSkipKey(nbt, CONSUMED_KEY);
+		}
+		return super.getShareTag(stack);
 	}
 
 	private static boolean isWhitelistMode(ItemStack stack) {
