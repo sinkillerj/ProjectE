@@ -20,8 +20,6 @@ public class NBTManager {
 
 	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
 	private static final List<INBTProcessor> processors = new ArrayList<>();
-	//TODO: Eventually maybe add some form of cache for calculated EMC values. There isn't a great way to do it memory wise
-	// for how long we should keep it in memory so for now we don't bother.
 
 	public static void loadProcessors() {
 		if (processors.isEmpty()) {
@@ -29,17 +27,11 @@ public class NBTManager {
 		}
 	}
 
-	//TODO: Figure out what happens if more processors get added since someone learns an item, so then it doesn't find a match
-	// when trying to remove an item because the NBT it gets the item down to has more information than the one they are trying
-	// to remove the learned item. Is this even an issue because they theoretically could take the item out from the table
-	// with the proper "reduced" info and then unlearn it directly like that
-
 	public static ItemInfo getPersistentInfo(ItemInfo info) {
 		if (!info.hasNBT() || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}
-
 		//Cleans up the tag in info to reduce it as much as possible
 		List<CompoundNBT> persistentNBT = processors.stream().map(processor -> processor.getPersistentNBT(info)).filter(Objects::nonNull).collect(Collectors.toList());
 		return ItemInfo.fromItem(info.getItem(), ItemHelper.recombineNBT(persistentNBT));

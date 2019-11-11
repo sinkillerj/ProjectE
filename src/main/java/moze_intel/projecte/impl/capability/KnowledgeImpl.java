@@ -1,8 +1,10 @@
 package moze_intel.projecte.impl.capability;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -220,7 +222,26 @@ public final class KnowledgeImpl {
 		}
 
 		private void pruneStaleKnowledge() {
-			knowledge.removeIf(info -> !EMCHelper.doesItemHaveEmc(info));
+			List<ItemInfo> toRemove = new ArrayList<>();
+			List<ItemInfo> toAdd = new ArrayList<>();
+			for (ItemInfo info : knowledge) {
+				ItemInfo persistentInfo = NBTManager.getPersistentInfo(info);
+				if (!info.equals(persistentInfo)) {
+					//If something about the persistence changed and the item we have is no longer directly learnable
+					// we remove it from our knowledge
+					toRemove.add(info);
+					//If the new persistent variant has an EMC value though we add it because that is what they would have learned
+					// had they tried to consume the item now instead of before
+					if (EMCHelper.doesItemHaveEmc(persistentInfo)) {
+						toAdd.add(persistentInfo);
+					}
+				} else if (!EMCHelper.doesItemHaveEmc(info)) {
+					//If the items do match but it just no longer has an EMC value, then we remove it as well
+					toRemove.add(info);
+				}
+			}
+			knowledge.removeAll(toRemove);
+			knowledge.addAll(toAdd);
 		}
 	}
 
