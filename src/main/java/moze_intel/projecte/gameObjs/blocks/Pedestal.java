@@ -60,7 +60,10 @@ public class Pedestal extends Block implements IWaterLoggable {
 		return SHAPE;
 	}
 
-	private void dropItem(World world, BlockPos pos) {
+	/**
+	 * @return True if there was an item and it got dropped, false otherwise.
+	 */
+	private boolean dropItem(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof DMPedestalTile) {
 			DMPedestalTile tile = (DMPedestalTile) te;
@@ -70,8 +73,10 @@ public class Pedestal extends Block implements IWaterLoggable {
 				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
 				ent.setItem(stack);
 				world.addEntity(ent);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
@@ -88,6 +93,18 @@ public class Pedestal extends Block implements IWaterLoggable {
 			dropItem(world, pos);
 			world.notifyBlockUpdate(pos, state, state, 8);
 		}
+	}
+
+	@Override
+	public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid) {
+		if (player.isCreative() && dropItem(world, pos)) {
+			//If the player is creative, try to drop the item, and if we succeeded return false to cancel removing the pedestal
+			// Note: we notify the block of an update to make sure that it re-appears visually on the client instead of having there
+			// be a desync
+			world.notifyBlockUpdate(pos, state, state, 8);
+			return false;
+		}
+		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
 	}
 
 	@Override
