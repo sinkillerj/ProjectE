@@ -83,43 +83,54 @@ public class TransmutationContainer extends Container {
 	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
-		Slot slot = this.getSlot(slotIndex);
-
-		if (slot == null || !slot.getHasStack()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stack = slot.getStack();
-		ItemStack newStack = stack.copy();
-
 		if (slotIndex <= 7) {
 			//Input Slots
 			return ItemStack.EMPTY;
-		} else if (slotIndex >= 11 && slotIndex <= 26) {
+		}
+		Slot slot = this.getSlot(slotIndex);
+		if (slot == null || !slot.getHasStack()) {
+			return ItemStack.EMPTY;
+		}
+		ItemStack stack = slot.getStack();
+		ItemStack newStack = stack.copy();
+		if (slotIndex >= 11 && slotIndex <= 26) {
 			// Output Slots
-			long emc = EMCHelper.getEmcValue(newStack);
-
-			int stackSize = 0;
-
-			IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
-
-			BigInteger emcBigInt = BigInteger.valueOf(emc);
-			//Note: While it may be possible to remove multiple at once rather than re-getting available EMC,
-			// it is likely to have a bigger performance impact worst case, due to division for massive numbers being inefficient.
-			while (transmutationInventory.getAvailableEMC().compareTo(emcBigInt) >= 0 && stackSize < newStack.getMaxStackSize() && ItemHelper.hasSpace(player.inventory.mainInventory, newStack)) {
-				transmutationInventory.removeEmc(emcBigInt);
-				ItemHandlerHelper.insertItemStacked(inv, ItemHelper.getNormalizedStack(stack), false);
-				stackSize++;
+			long itemEmc = EMCHelper.getEmcValue(newStack);
+			//Double check the item actually has Emc and something didn't just go terribly wrong
+			if (itemEmc > 0) {
+				//Note: We can just set the size here as newStack is a copy stack used for modifications
+				newStack.setCount(newStack.getMaxStackSize());
+				//Check how much we can fit of the stack
+				int stackSize = newStack.getCount() - ItemHelper.simulateFit(player.inventory.mainInventory, newStack);
+				if (stackSize > 0) {
+					BigInteger availableEMC = transmutationInventory.getAvailableEMC();
+					BigInteger emc = BigInteger.valueOf(itemEmc);
+					BigInteger totalEmc = emc.multiply(BigInteger.valueOf(stackSize));
+					if (totalEmc.compareTo(availableEMC) > 0) {
+						//We need more EMC than we have available so we have to calculate how much we actually can produce
+						//Note: We first multiply then compare, as the larger the numbers are the less efficient division becomes
+						BigInteger numOperations = availableEMC.divide(emc);
+						//Note: Uses intValueExact as we already compared to a multiplication of an int times the number we divided by,
+						// so it should fit into an int
+						stackSize = numOperations.intValueExact();
+						totalEmc = emc.multiply(numOperations);
+						if (stackSize <= 0) {
+							return ItemStack.EMPTY;
+						}
+					}
+					//Set the stack size to what we found the max value is we have room for (capped at the stack's own max size)
+					newStack.setCount(stackSize);
+					IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
+					transmutationInventory.removeEmc(totalEmc);
+					ItemHandlerHelper.insertItemStacked(inv, newStack, false);
+					transmutationInventory.updateClientTargets();
+				}
 			}
-
-			transmutationInventory.updateClientTargets();
 		} else if (slotIndex > 26) {
 			long emc = EMCHelper.getEmcSellValue(stack);
-
 			if (emc == 0 && stack.getItem() != ObjHandler.tome) {
 				return ItemStack.EMPTY;
 			}
-
 			BigInteger emcBigInt = BigInteger.valueOf(emc);
 			transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stack.getCount())));
 			transmutationInventory.handleKnowledge(newStack);

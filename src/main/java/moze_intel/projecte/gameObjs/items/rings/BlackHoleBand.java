@@ -89,7 +89,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			AxisAlignedBB bBox = player.getBoundingBox().grow(7);
 			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
 			for (ItemEntity item : itemList) {
-				if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem())) {
+				if (ItemHelper.simulateFit(player.inventory.mainInventory, item.getItem()) < item.getItem().getCount()) {
 					WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
 				}
 			}

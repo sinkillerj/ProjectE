@@ -103,15 +103,6 @@ public final class ItemHelper {
 		return result;
 	}
 
-	public static boolean hasSpace(NonNullList<ItemStack> inv, ItemStack stack) {
-		for (ItemStack invStack : inv) {
-			if (invStack.isEmpty() || (areItemStacksEqual(stack, invStack) && invStack.getCount() < invStack.getMaxStackSize())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy) {
 		final List<ItemStack> list = new ArrayList<>(toCopy.getSlots());
 		for (int i = 0; i < toCopy.getSlots(); i++) {
@@ -171,6 +162,32 @@ public final class ItemHelper {
 
 	public static boolean isOre(Item i) {
 		return isOre(Block.getBlockFromItem(i));
+	}
+
+	/**
+	 * @return The amount of the given stack that could not fit. If it all fit, zero is returned
+	 */
+	public static int simulateFit(NonNullList<ItemStack> inv, ItemStack stack) {
+		int remainder = stack.getCount();
+		for (ItemStack invStack : inv) {
+			if (invStack.isEmpty()) {
+				//Slot is empty, just put it all there
+				return 0;
+			}
+			if (ItemHandlerHelper.canItemStacksStack(stack, invStack)) {
+				int amountSlotNeeds = invStack.getMaxStackSize() - invStack.getCount();
+				//Double check we don't have an over sized stack
+				if (amountSlotNeeds > 0) {
+					if (remainder <= amountSlotNeeds) {
+						//If the slot can accept it all, return it all fit
+						return 0;
+					}
+					//Otherwise take that many items out and
+					remainder -= amountSlotNeeds;
+				}
+			}
+		}
+		return remainder;
 	}
 
 	@Nullable
