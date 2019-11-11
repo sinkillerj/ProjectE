@@ -5,6 +5,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,7 +54,7 @@ public class AlchemicalBag extends ItemPE {
 				for (int i = 0; i < inv.getSlots(); i++) {
 					ItemStack ring = inv.getStackInSlot(i);
 					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {
-						if (ring.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+						if (ring.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 							return stack;
 						}
 					}

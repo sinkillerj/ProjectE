@@ -2,6 +2,7 @@ package moze_intel.projecte.network.packets;
 
 import java.util.function.Supplier;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -32,7 +33,7 @@ public class UpdateGemModePKT {
 					stack = ctx.get().getSender().getHeldItem(Hand.OFF_HAND);
 				}
 				if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing)) {
-					stack.getTag().putBoolean("Whitelist", pkt.mode);
+					stack.getTag().putBoolean(Constants.NBT_KEY_GEM_WHITELIST, pkt.mode);
 				}
 			});
 			ctx.get().setPacketHandled(true);

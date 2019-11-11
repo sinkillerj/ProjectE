@@ -199,11 +199,11 @@ public final class EMCHelper {
 	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
 	 */
 	public static long removeFractionalEMC(ItemStack stack, double amount) {
-		double unprocessedEMC = stack.getOrCreateTag().getDouble("UnprocessedEMC");
+		double unprocessedEMC = stack.getOrCreateTag().getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
 		unprocessedEMC += amount;
 		long toRemove = (long) unprocessedEMC;
 		unprocessedEMC -= toRemove;
-		stack.getTag().putDouble("UnprocessedEMC", unprocessedEMC);
+		stack.getTag().putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);
 		return toRemove;
 	}
 }

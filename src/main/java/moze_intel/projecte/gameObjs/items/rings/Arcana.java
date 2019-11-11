@@ -16,6 +16,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Blocks;
@@ -77,7 +78,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		if (isInGroup(group)) {
 			for (byte i = 0; i < getModeCount(); ++i) {
 				ItemStack stack = new ItemStack(this);
-				stack.getOrCreateTag().putByte(getModeTag(), i);
+				stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
 				list.add(stack);
 			}
 		}
@@ -89,7 +90,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	private void tick(ItemStack stack, World world, ServerPlayerEntity player) {
-		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			switch (getMode(stack)) {
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().grow(5), player, true);
@@ -119,7 +120,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
 		if (stack.hasTag()) {
-			if (!stack.getTag().getBoolean(TAG_ACTIVE)) {
+			if (!stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 				list.add(new TranslationTextComponent("pe.arcana.inactive").applyTextStyle(TextFormatting.RED));
 			} else {
 				list.add(getToolTip(stack));
@@ -132,7 +133,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
 			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
-			compound.putBoolean(TAG_ACTIVE, !compound.getBoolean(TAG_ACTIVE));
+			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}

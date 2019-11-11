@@ -7,6 +7,7 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -44,10 +45,10 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			long storedEmc = getEmc(stack);
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
-				stack.getTag().putBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
 				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));

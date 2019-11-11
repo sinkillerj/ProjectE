@@ -4,6 +4,7 @@ import java.util.List;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
@@ -27,24 +28,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class GemHelmet extends GemArmorBase {
 
-	private static final String NIGHT_VISION = "NightVision";
-
 	public GemHelmet(Properties props) {
 		super(EquipmentSlotType.HEAD, props);
 	}
 
 	public static boolean isNightVisionEnabled(ItemStack helm) {
-		return helm.hasTag() && helm.getTag().contains(NIGHT_VISION) && helm.getTag().getBoolean(NIGHT_VISION);
+		return helm.hasTag() && helm.getTag().contains(Constants.NBT_KEY_NIGHT_VISION) && helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION);
 	}
 
 	public static void toggleNightVision(ItemStack helm, PlayerEntity player) {
 		boolean value;
 
-		if (helm.getOrCreateTag().contains(NIGHT_VISION)) {
-			helm.getTag().putBoolean(NIGHT_VISION, !helm.getTag().getBoolean(NIGHT_VISION));
-			value = helm.getTag().getBoolean(NIGHT_VISION);
+		if (helm.getOrCreateTag().contains(Constants.NBT_KEY_NIGHT_VISION)) {
+			helm.getTag().putBoolean(Constants.NBT_KEY_NIGHT_VISION, !helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION));
+			value = helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION);
 		} else {
-			helm.getTag().putBoolean(NIGHT_VISION, false);
+			helm.getTag().putBoolean(Constants.NBT_KEY_NIGHT_VISION, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")

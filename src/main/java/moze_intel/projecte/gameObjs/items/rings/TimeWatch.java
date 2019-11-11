@@ -14,6 +14,7 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -94,7 +95,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				}
 			}
 		}
-		if (world.isRemote || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (world.isRemote || !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) entity;
@@ -183,11 +184,11 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private byte getTimeBoost(ItemStack stack) {
-		return stack.getOrCreateTag().getByte("TimeMode");
+		return stack.getOrCreateTag().getByte(Constants.NBT_KEY_TIME_MODE);
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time) {
-		stack.getOrCreateTag().putByte("TimeMode", (byte) MathHelper.clamp(time, 0, 2));
+		stack.getOrCreateTag().putByte(Constants.NBT_KEY_TIME_MODE, (byte) MathHelper.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge) {

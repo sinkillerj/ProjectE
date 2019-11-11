@@ -3,10 +3,11 @@ package moze_intel.projecte.gameObjs.container.inventory;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -75,13 +76,13 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 	}
 
 	public void readFromNBT(CompoundNBT nbt) {
-		isInWhitelist = nbt.getBoolean("Whitelist");
-		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, nbt.getList("Items", Constants.NBT.TAG_COMPOUND));
+		isInWhitelist = nbt.getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
+		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, nbt.getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND));
 	}
 
 	public void writeToNBT(CompoundNBT nbt) {
-		nbt.putBoolean("Whitelist", isInWhitelist);
-		nbt.put("Items", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null));
+		nbt.putBoolean(Constants.NBT_KEY_GEM_WHITELIST, isInWhitelist);
+		nbt.put(Constants.NBT_KEY_GEM_ITEMS, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null));
 	}
 
 	public void changeMode() {

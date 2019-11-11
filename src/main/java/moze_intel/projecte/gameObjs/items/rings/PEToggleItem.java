@@ -5,6 +5,7 @@ import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -25,17 +26,17 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 
 	@Override
 	public byte getMode(@Nonnull ItemStack stack) {
-		return stack.getOrCreateTag().getBoolean(TAG_ACTIVE) ? (byte) 1 : 0;
+		return stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override
 	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		if (!stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (!stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			stack.getTag().putBoolean(TAG_ACTIVE, true);
+			stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, true);
 		} else {
 			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			stack.getTag().putBoolean(TAG_ACTIVE, false);
+			stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
 		}
 		return true;
 	}

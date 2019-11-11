@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -41,7 +42,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getXP(player) > 0) {
 				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 				addStoredXP(stack, toAdd);
@@ -54,7 +55,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !stack.getOrCreateTag().getBoolean(TAG_ACTIVE) && getStoredXP(stack) != 0) {
+		if (!world.isRemote && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			if (toAdd > 0) {
 				addXP(player, toAdd);
@@ -125,11 +126,11 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private int getStoredXP(ItemStack stack) {
-		return stack.getOrCreateTag().getInt("StoredXP");
+		return stack.getOrCreateTag().getInt(Constants.NBT_KEY_STORED_XP);
 	}
 
 	private void setStoredXP(ItemStack stack, int XP) {
-		stack.getOrCreateTag().putInt("StoredXP", XP);
+		stack.getOrCreateTag().putInt(Constants.NBT_KEY_STORED_XP, XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) {

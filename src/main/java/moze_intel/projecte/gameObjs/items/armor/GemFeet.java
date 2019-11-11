@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,7 +28,6 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister {
 
-	private static final String STEP_ASSIST = "StepAssist";
 	private static final UUID MODIFIER = UUID.randomUUID();
 
 	public GemFeet(Properties props) {
@@ -35,16 +35,16 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	public static boolean isStepAssistEnabled(ItemStack boots) {
-		return !boots.hasTag() || !boots.getTag().contains(STEP_ASSIST) || boots.getTag().getBoolean(STEP_ASSIST);
+		return !boots.hasTag() || !boots.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) || boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 	}
 
 	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
 		boolean value;
-		if (boots.getOrCreateTag().contains(STEP_ASSIST)) {
-			boots.getTag().putBoolean(STEP_ASSIST, !boots.getTag().getBoolean(STEP_ASSIST));
-			value = boots.getTag().getBoolean(STEP_ASSIST);
+		if (boots.getOrCreateTag().contains(Constants.NBT_KEY_STEP_ASSIST)) {
+			boots.getTag().putBoolean(Constants.NBT_KEY_STEP_ASSIST, !boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST));
+			value = boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 		} else {
-			boots.getTag().putBoolean(STEP_ASSIST, false);
+			boots.getTag().putBoolean(Constants.NBT_KEY_STEP_ASSIST, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
@@ -91,7 +91,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	private boolean canStep(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains(STEP_ASSIST) && stack.getTag().getBoolean(STEP_ASSIST);
+		return stack.getTag() != null && stack.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) && stack.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 	}
 
 	@Nonnull

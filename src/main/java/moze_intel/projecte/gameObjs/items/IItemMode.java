@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -26,13 +27,9 @@ public interface IItemMode extends IModeChanger {
 		return translationKeys[mode];
 	}
 
-	default String getModeTag() {
-		return ItemPE.TAG_MODE;
-	}
-
 	@Override
 	default byte getMode(@Nonnull ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getByte(getModeTag()) : 0;
+		return stack.hasTag() ? stack.getTag().getByte(Constants.NBT_KEY_MODE) : 0;
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public interface IItemMode extends IModeChanger {
 			return false;
 		}
 		//Update the mode
-		stack.getOrCreateTag().putByte(getModeTag(), (byte) ((getMode(stack) + 1) % numModes));
+		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
 		TranslationTextComponent modeName = new TranslationTextComponent(getModeTranslationKey(stack));
 		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName));
 		return true;

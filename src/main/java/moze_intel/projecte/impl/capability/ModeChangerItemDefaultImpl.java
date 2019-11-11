@@ -3,7 +3,7 @@ package moze_intel.projecte.impl.capability;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
-import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -12,7 +12,7 @@ public final class ModeChangerItemDefaultImpl implements IModeChanger {
 
 	@Override
 	public byte getMode(@Nonnull ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getByte(ItemPE.TAG_MODE) : 0;
+		return stack.hasTag() ? stack.getTag().getByte(Constants.NBT_KEY_MODE) : 0;
 	}
 
 	@Override

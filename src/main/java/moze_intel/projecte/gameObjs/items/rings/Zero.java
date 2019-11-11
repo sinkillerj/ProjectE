@@ -11,6 +11,7 @@ import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
@@ -50,7 +51,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
-		if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8 || !stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8 || !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);

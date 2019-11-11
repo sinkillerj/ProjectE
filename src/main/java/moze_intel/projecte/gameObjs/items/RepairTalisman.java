@@ -16,6 +16,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -115,9 +116,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-		byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
+		byte coolDown = stack.getOrCreateTag().getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
-			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
+			stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
 			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
@@ -134,7 +135,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				}
 			}
 			if (hasAction) {
-				stack.getTag().putByte("Cooldown", (byte) 19);
+				stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 				tile.markDirty();
 			}
 		}
@@ -145,9 +146,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (player.getEntityWorld().isRemote) {
 			return false;
 		}
-		byte coolDown = stack.getOrCreateTag().getByte("Cooldown");
+		byte coolDown = stack.getOrCreateTag().getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
-			stack.getTag().putByte("Cooldown", (byte) (coolDown - 1));
+			stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
 			for (int i = 0; i < inv.getSlots(); i++) {
@@ -163,7 +164,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				}
 			}
 			if (hasAction) {
-				stack.getTag().putByte("Cooldown", (byte) 19);
+				stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 				return true;
 			}
 		}

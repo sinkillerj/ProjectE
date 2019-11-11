@@ -16,8 +16,9 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
@@ -51,7 +52,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	private void tick(ItemStack stack, PlayerEntity player) {
-		if (stack.getOrCreateTag().getInt(TAG_MODE) > 1) {
+		if (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
 		}
@@ -63,7 +64,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
 
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-			if (stack.getTag().getInt(TAG_MODE) > 0) {
+			if (stack.getTag().getInt(Constants.NBT_KEY_MODE) > 0) {
 				changeMode(player, stack, 0);
 			}
 
@@ -80,11 +81,11 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		if (playerMP.abilities.isFlying) {
 			if (!isFlyingEnabled(stack)) {
-				changeMode(player, stack, stack.getTag().getInt(TAG_MODE) == 0 ? 1 : 3);
+				changeMode(player, stack, stack.getTag().getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
 		} else {
 			if (isFlyingEnabled(stack)) {
-				changeMode(player, stack, stack.getTag().getInt(TAG_MODE) == 1 ? 0 : 2);
+				changeMode(player, stack, stack.getTag().getInt(Constants.NBT_KEY_MODE) == 1 ? 0 : 2);
 			}
 		}
 
@@ -94,9 +95,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			toRemove = 0.32F;
 		}
 
-		if (stack.getTag().getInt(TAG_MODE) == 2) {
+		if (stack.getTag().getInt(Constants.NBT_KEY_MODE) == 2) {
 			toRemove = 0.32F;
-		} else if (stack.getTag().getInt(TAG_MODE) == 3) {
+		} else if (stack.getTag().getInt(Constants.NBT_KEY_MODE) == 3) {
 			toRemove = 0.64F;
 		}
 
@@ -106,7 +107,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	private boolean isFlyingEnabled(ItemStack stack) {
-		return stack.getTag().getInt(TAG_MODE) == 1 || stack.getTag().getInt(TAG_MODE) == 3;
+		return stack.getTag().getInt(Constants.NBT_KEY_MODE) == 1 || stack.getTag().getInt(Constants.NBT_KEY_MODE) == 3;
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			int newMode = 0;
-			switch (stack.getOrCreateTag().getInt(TAG_MODE)) {
+			switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
 				case 0:
 					newMode = 2;
 					break;
@@ -146,11 +147,11 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	 * Change the mode of SWRG. Modes:<p> 0 = Ring Off<p> 1 = Flight<p> 2 = Shield<p> 3 = Flight + Shield<p>
 	 */
 	public void changeMode(PlayerEntity player, ItemStack stack, int mode) {
-		int oldMode = stack.getOrCreateTag().getInt(TAG_MODE);
+		int oldMode = stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE);
 		if (mode == oldMode) {
 			return;
 		}
-		stack.getTag().putInt(TAG_MODE, mode);
+		stack.getTag().putInt(Constants.NBT_KEY_MODE, mode);
 		if (player == null) {
 			//Don't do sounds if the player is null
 			return;

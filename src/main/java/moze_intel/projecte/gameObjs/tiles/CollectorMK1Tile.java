@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
@@ -278,7 +279,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
-		unprocessedEMC = nbt.getDouble("UnprocessedEMC");
+		unprocessedEMC = nbt.getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
 	}
 
 	@Nonnull
@@ -288,7 +289,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		nbt.putLong("FuelEMC", storedFuelEmc);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("AuxSlots", auxSlots.serializeNBT());
-		nbt.putDouble("UnprocessedEMC", unprocessedEMC);
+		nbt.putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);
 		return nbt;
 	}
 

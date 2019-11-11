@@ -12,8 +12,9 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -52,9 +53,9 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		}
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
 		ServerPlayerEntity player = (ServerPlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-				stack.getTag().putBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
 				WorldHelper.igniteNearby(world, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));

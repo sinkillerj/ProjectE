@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
@@ -18,11 +19,9 @@ import net.minecraftforge.fml.ModList;
 
 public class ItemPE extends Item {
 
-	public static final String TAG_ACTIVE = "Active";
-	public static final String TAG_MODE = "Mode";
 	protected static final ResourceLocation ACTIVE_NAME = new ResourceLocation(PECore.MODID, "active");
-	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(TAG_ACTIVE) ? 1F : 0F;
-	protected static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(TAG_MODE) : 0F;
+	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F;
+	protected static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F;
 
 	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();
 
@@ -45,16 +44,16 @@ public class ItemPE extends Item {
 		if (oldStack.getItem() != newStack.getItem()) {
 			return true;
 		}
-
-		boolean diffActive = oldStack.hasTag() && newStack.hasTag()
-							 && oldStack.getTag().contains(TAG_ACTIVE) && newStack.getTag().contains(TAG_ACTIVE)
-							 && !oldStack.getTag().get(TAG_ACTIVE).equals(newStack.getTag().get(TAG_ACTIVE));
-
-		boolean diffMode = oldStack.hasTag() && newStack.hasTag()
-						   && oldStack.getTag().contains(TAG_MODE) && newStack.getTag().contains(TAG_MODE)
-						   && !oldStack.getTag().get(TAG_MODE).equals(newStack.getTag().get(TAG_MODE));
-
-		return diffActive || diffMode;
+		if (oldStack.hasTag() && newStack.hasTag()) {
+			CompoundNBT newTag = newStack.getTag();
+			CompoundNBT oldTag = oldStack.getTag();
+			boolean diffActive = oldTag.contains(Constants.NBT_KEY_ACTIVE) && newTag.contains(Constants.NBT_KEY_ACTIVE)
+								 && !oldTag.get(Constants.NBT_KEY_ACTIVE).equals(newTag.get(Constants.NBT_KEY_ACTIVE));
+			boolean diffMode = oldTag.contains(Constants.NBT_KEY_MODE) && newTag.contains(Constants.NBT_KEY_MODE)
+							   && !oldTag.get(Constants.NBT_KEY_MODE).equals(newTag.get(Constants.NBT_KEY_MODE));
+			return diffActive || diffMode;
+		}
+		return false;
 	}
 
 	@Override
@@ -66,11 +65,11 @@ public class ItemPE extends Item {
 	}
 
 	public static long getEmc(ItemStack stack) {
-		return stack.getOrCreateTag().getLong("StoredEMC");
+		return stack.getOrCreateTag().getLong(Constants.NBT_KEY_STORED_EMC);
 	}
 
 	public static void setEmc(ItemStack stack, long amount) {
-		stack.getOrCreateTag().putLong("StoredEMC", amount);
+		stack.getOrCreateTag().putLong(Constants.NBT_KEY_STORED_EMC, amount);
 	}
 
 	public static void addEmcToStack(ItemStack stack, long amount) {

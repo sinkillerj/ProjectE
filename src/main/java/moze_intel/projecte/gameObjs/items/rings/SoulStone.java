@@ -10,6 +10,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,9 +39,9 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false)) {
-				stack.getTag().putBoolean(TAG_ACTIVE, false);
+				stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateHeal();

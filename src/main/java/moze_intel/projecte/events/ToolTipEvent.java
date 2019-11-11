@@ -68,8 +68,8 @@ public class ToolTipEvent {
 
 		if (current.hasTag()) {
 			long value;
-			if (current.getTag().contains("StoredEMC")) {
-				value = current.getTag().getLong("StoredEMC");
+			if (current.getTag().contains(Constants.NBT_KEY_STORED_EMC)) {
+				value = current.getTag().getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
 				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 				if (holderCapability.isPresent()) {

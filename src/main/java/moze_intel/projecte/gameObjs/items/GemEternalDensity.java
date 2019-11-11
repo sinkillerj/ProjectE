@@ -52,7 +52,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
-	private static final String CONSUMED_KEY = "Consumed";
 	private final String[] modes;
 
 	public GemEternalDensity(Properties props) {
@@ -82,7 +81,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	 * @return Whether the inventory was changed
 	 */
 	private static boolean condense(ItemStack gem, IItemHandler inv) {
-		if (!gem.getOrCreateTag().getBoolean(TAG_ACTIVE) || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC) {
+		if (!gem.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || ItemPE.getEmc(gem) >= Constants.TILE_MAX_EMC) {
 			return false;
 		}
 
@@ -133,16 +132,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (player.isSneaking()) {
-				if (stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+				if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
 						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
-					stack.getTag().putBoolean(TAG_ACTIVE, false);
+					stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
 				} else {
-					stack.getTag().putBoolean(TAG_ACTIVE, true);
+					stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
 				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
@@ -182,12 +181,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			s.write(nbt);
 			tList.add(nbt);
 		}
-		stack.getOrCreateTag().put(CONSUMED_KEY, tList);
+		stack.getOrCreateTag().put(Constants.NBT_KEY_GEM_CONSUMED, tList);
 	}
 
 	private static List<ItemStack> getItems(ItemStack stack) {
 		List<ItemStack> list = new ArrayList<>();
-		ListNBT tList = stack.getOrCreateTag().getList(CONSUMED_KEY, NBT.TAG_COMPOUND);
+		ListNBT tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_COMPOUND);
 		for (int i = 0; i < tList.size(); i++) {
 			list.add(ItemStack.read(tList.getCompound(i)));
 		}
@@ -226,23 +225,23 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (stack.getItem() instanceof GemEternalDensity) {
 			//Double check it is actually a stack of the correct type
 			CompoundNBT nbt = stack.getTag();
-			if (nbt == null || !nbt.contains(CONSUMED_KEY, NBT.TAG_LIST)) {
+			if (nbt == null || !nbt.contains(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_LIST)) {
 				//If we don't have any NBT or already don't have the key just return the NBT as is
 				return nbt;
 			}
 			//Don't sync the list of consumed stacks to the client to make sure it doesn't overflow the packet
-			return ItemHelper.copyNBTSkipKey(nbt, CONSUMED_KEY);
+			return ItemHelper.copyNBTSkipKey(nbt, Constants.NBT_KEY_GEM_CONSUMED);
 		}
 		return super.getShareTag(stack);
 	}
 
 	private static boolean isWhitelistMode(ItemStack stack) {
-		return stack.getOrCreateTag().getBoolean("Whitelist");
+		return stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
 	}
 
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
 		List<ItemStack> result = new ArrayList<>();
-		ListNBT list = stack.getOrCreateTag().getList("Items", NBT.TAG_COMPOUND);
+		ListNBT list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			result.add(ItemStack.read(list.getCompound(i)));
 		}
@@ -272,7 +271,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		if (!world.isRemote && stack.getOrCreateTag().getBoolean(TAG_ACTIVE)) {
+		if (!world.isRemote && stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
 				AlchChestTile tile = (AlchChestTile) te;
