@@ -48,7 +48,6 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 		blit(guiLeft + 126 + getBonusXShift(), guiTop + 49 - progress, 177 + getTextureBonusXShift(), 13 - progress, 12, progress);
 
 		//EMC storage. Max is 48
-		//TODO: Does this even calculate it as we want it to given it isn't a double?
 		blit(guiLeft + 64 + getBonusXShift(), guiTop + 18, 0, 166, (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * 48), 10);
 
 		//Klein Star Charge Progress. Max is 48
