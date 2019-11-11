@@ -17,7 +17,7 @@ import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.IntegrationHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;

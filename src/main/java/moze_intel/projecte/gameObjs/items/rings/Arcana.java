@@ -15,7 +15,7 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.utils.IntegrationHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Blocks;

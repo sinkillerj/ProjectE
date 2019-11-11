@@ -53,7 +53,6 @@ import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.impl.capability.ModeChangerItemDefaultImpl;
 import moze_intel.projecte.impl.capability.PedestalItemDefaultImpl;
 import moze_intel.projecte.impl.capability.ProjectileShooterItemDefaultImpl;
-import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -78,7 +77,7 @@ import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
-import moze_intel.projecte.utils.IntegrationHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -95,7 +94,6 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -203,11 +201,6 @@ public class PECore {
 		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IEmcStorage.class, new DummyIStorage<>(), EmcStorageDefaultImpl::new);
 
-		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
-			FMLJavaModLoadingContext.get().getModEventBus().register(CuriosIntegration.class);
-			MinecraftForge.EVENT_BUS.register(CuriosIntegration.class);
-		}
-
 		new ThreadCheckUpdate().start();
 
 		DeferredWorkQueue.runLater(() -> {
@@ -227,6 +220,7 @@ public class PECore {
 		WorldTransmutations.init();
 		NSSSerializer.init();
 		CraftingMapper.init();
+		IntegrationHelper.sendIMCMessages(event);
 	}
 
 	private void imcHandle(InterModProcessEvent event) {

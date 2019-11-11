@@ -14,7 +14,7 @@ import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.IntegrationHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;

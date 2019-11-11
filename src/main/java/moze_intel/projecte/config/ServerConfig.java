@@ -120,12 +120,16 @@ public final class ServerConfig {
 	public static class Misc {
 
 		public final BooleanValue unsafeKeyBinds;
+		public final BooleanValue hwylaTOPDisplay;
 
 		private Misc(ForgeConfigSpec.Builder builder) {
 			builder.push("misc");
 			unsafeKeyBinds = builder
 					.comment("False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered")
 					.define("unsafeKeyBinds", false);
+			hwylaTOPDisplay = builder
+					.comment("Shows the EMC value of blocks when looking at them in Hwyla or TOP")
+					.define("hwylaTOPDisplay", true);
 			builder.pop();
 		}
 	}

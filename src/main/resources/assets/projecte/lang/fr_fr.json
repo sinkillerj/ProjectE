@@ -114,7 +114,7 @@
     "block.projecte.alchemical_coal_block": "Bloc de charbon alchimique",
     "block.projecte.mobius_fuel_block": "Bloc de combustible Mobius",
     "block.projecte.aeternalis_fuel_block": "Bloc de combustible Aeternalis",
-    "block.projecte.dmPedestal": "Piédestal en matière noire",
+    "block.projecte.dm_pedestal": "Piédestal en matière noire",
 
     "itemGroup.projecte": "ProjectE",
     "projecte.desc": "Commerce Correspondant?",
@@ -406,7 +406,7 @@
 
     "pe.manual.pe_interdiction_torch": "La Torche d'Interdiction est plus que juste une alternative élégante à la torche, toute les mobs qui l'approche seront repoussées, comme un homme sage a dit... PERSONNE NE PASSERA!",
 
-    "pe.manual.pe_alchemical_coal_block": "Comme les autres combustilbles solides le combustible Mobius peut être compréssé en bloc. Utilisez-le comme un combustible efficace, ou comme décoration.",
+    "pe.manual.pe_mobius_fuel_block": "Comme les autres combustilbles solides le combustible Mobius peut être compréssé en bloc. Utilisez-le comme un combustible efficace, ou comme décoration.",
 
     "pe.manual.pe_nova_cataclysm": "Tout le fun d'une Nova Catalyseuse, mais avec des explosions deux fois plus puissantes!",
 

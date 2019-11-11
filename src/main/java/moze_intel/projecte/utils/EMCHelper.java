@@ -16,6 +16,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -130,8 +134,11 @@ public final class EMCHelper {
 	}
 
 	public static long getEmcSellValue(ItemInfo info) {
-		long originalValue = getEmcValue(info);
-		if (originalValue == 0) {
+		return getEmcSellValue(getEmcValue(info));
+	}
+
+	public static long getEmcSellValue(long originalValue) {
+		if (originalValue <= 0) {
 			return 0;
 		}
 		long emc = (long) Math.floor(originalValue * ProjectEConfig.server.difficulty.covalenceLoss.get());
@@ -145,14 +152,21 @@ public final class EMCHelper {
 		return emc;
 	}
 
-	public static String getEmcSellString(ItemStack stack, int stackSize) {
+	public static ITextComponent getEmcTextComponent(long emc, int stackSize) {
+		ITextComponent prefix = new TranslationTextComponent(stackSize > 1 ? "pe.emc.stackemc_tooltip_prefix" : "pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
+		ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(stackSize == 1 ? emc : BigInteger.valueOf(emc).multiply(BigInteger.valueOf(stackSize)))).applyTextStyle(TextFormatting.WHITE);
+		ITextComponent sell = new StringTextComponent(getEmcSellString(getEmcSellValue(emc), stackSize)).applyTextStyle(TextFormatting.BLUE);
+		return prefix.appendSibling(valueText).appendSibling(sell);
+	}
+
+	public static String getEmcSellString(long emcSellValue, int stackSize) {
 		if (ProjectEConfig.server.difficulty.covalenceLoss.get() == 1.0) {
 			return " ";
 		}
-
-		BigInteger emc = BigInteger.valueOf(getEmcSellValue(stack));
-
-		return " (" + Constants.EMC_FORMATTER.format(emc.multiply(BigInteger.valueOf(stackSize))) + ")";
+		if (stackSize == 1) {
+			return " (" + Constants.EMC_FORMATTER.format(emcSellValue) + ")";
+		}
+		return " (" + Constants.EMC_FORMATTER.format(BigInteger.valueOf(emcSellValue).multiply(BigInteger.valueOf(stackSize))) + ")";
 	}
 
 	public static long getKleinStarMaxEmc(ItemStack stack) {
@@ -160,13 +174,6 @@ public final class EMCHelper {
 			return Constants.MAX_KLEIN_EMC[((KleinStar) stack.getItem()).tier.ordinal()];
 		}
 		return 0;
-	}
-
-	private static long getStoredEMCBonus(ItemStack stack) {
-		if (stack.getOrCreateTag().contains("StoredEMC")) {
-			return stack.getTag().getLong("StoredEMC");
-		}
-		return LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY)).map(emcHolder -> emcHolder.getStoredEmc(stack)).orElse(0L);
 	}
 
 	public static long getEMCPerDurability(ItemStack stack) {

@@ -92,8 +92,6 @@
     "item.projecte.transmutation_tablet": "轉換平板",
     "item.projecte.manual": "煉金術之書[WIP]",
 
-    "_comment": "",
-
     "block.projecte.alchemical_chest": "煉金箱子",
     "block.projecte.interdiction_torch": "禁止火把",
     "block.projecte.transmutation_table": "轉換桌",
@@ -114,7 +112,7 @@
     "block.projecte.alchemical_coal_block": "煉金煤炭磚",
     "block.projecte.mobius_fuel_block": "莫比烏斯燃料磚",
     "block.projecte.aeternalis_fuel_block": "永恆燃料磚",
-    "block.projecte.dmPedestal": "暗物質臺座",
+    "block.projecte.dm_pedestal": "暗物質臺座",
 
     "itemGroup.projecte": "計畫 -等價交換２-",
     "projecte.desc": "對應物交易？",
@@ -124,7 +122,7 @@
     "advancements.pe_alch_chest": "儲存升級！",
     "advancements.pe_alch_chest.desc": "一個「小的」儲物箱升級。",
     "advancements.pe_alch_bag": "口袋儲存！",
-    "_comment": "",
+
     "advancements.pe_transmutation": "把這個轉換成那個！",
     "advancements.pe_transmutation.desc": "萬物的開始與結束。",
     "advancements.pe_condenser": "壓縮世界！",
@@ -133,22 +131,13 @@
     "advancements.pe_collector.desc": "現在開始有趣了。",
     "advancements.pe_relay": "能量花！",
     "advancements.pe_relay.desc": "把收集器連在一起來獲得更多能量。",
-    "_comment": "",
-    "_comment": "",
-    "_comment": "",
+
     "advancements.pe_dark_matter.desc": "它看起來…很詭異…。",
-    "_comment": "",
-    "_comment": "",
-    "_comment": "",
-    "_comment": "",
+
     "advancements.pe_rm_block": "又紅又亮！",
-    "_comment": "",
-    "_comment": "",
-    "_comment": "",
-    "_comment": "",
+
     "advancements.pe_rm_furnace.desc": "WOW，那東西可真快。",
-    "_comment": "",
-    "_comment": "",
+
     "advancements.pe_rm_pick": "這東西安全嗎？",
     "advancements.pe_rm_pick.desc": "大概不會。",
     "advancements.pe_klein": "ＥＭＣ電池",
@@ -278,7 +267,6 @@
     "pe.misc.every_tick": "每tick",
     "pe.misc.seconds": "秒",
     "pe.misc.storedxp_tooltip": "已儲存經驗值：",
-    "_comment": "",
 
     "pe.morningstar.mode1": "標準",
     "pe.morningstar.mode2": "３倍高射程",
@@ -375,49 +363,12 @@
     "pe.jei.philo": "賢者之石熔煉",
 
     "pe.manual.index": "索引",
-    "_comment": "",
 
     "_comment": "ItemPages bodies",
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
-    "_comment": "",
-
     "_comment": "TextPages headers and bodies",
-    "_comment": "",
     "pe.manual.introduction.header": "介紹",
 
     "_comment": "ImagePage headers",
-    "_comment": "",
 
     "pe.subtitle.pecharge": "蓄力",
     "pe.subtitle.peuncharge": "消力"

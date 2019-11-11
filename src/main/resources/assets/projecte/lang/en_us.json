@@ -114,7 +114,7 @@
     "block.projecte.alchemical_coal_block": "Alchemical Coal Block",
     "block.projecte.mobius_fuel_block": "Mobius Fuel Block",
     "block.projecte.aeternalis_fuel_block": "Aeternalis Fuel Block",
-    "block.projecte.dmPedestal": "Dark Matter Pedestal",
+    "block.projecte.dm_pedestal": "Dark Matter Pedestal",
 
     "itemGroup.projecte": "ProjectE",
     "projecte.desc": "Correspondent Commerce?",
@@ -430,7 +430,7 @@
 
     "pe.manual.pe_interdiction_torch": "The Interdiction Torch is more than just a stylish alternative to coal and twigs, any mob that approaches it will be pushed away, as a wise man once said... NONE SHALL PASS!",
 
-    "pe.manual.pe_alchemical_coal_block": "Like other solid fuels Mobius Fuel can be compressed into block form. Use it as a efficient fuel, or a poor mans Red Matter for decor.",
+    "pe.manual.pe_mobius_fuel_block": "Like other solid fuels Mobius Fuel can be compressed into block form. Use it as a efficient fuel, or a poor mans Red Matter for decor.",
 
     "pe.manual.pe_nova_cataclysm": "All the fun of the Nova Catalyst, but with double the boom!",
 

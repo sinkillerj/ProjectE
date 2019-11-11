@@ -108,24 +108,29 @@ minecraft {
 }
 
 repositories {
-	maven { //MinecraftForge
-		name "MinecraftForge Maven"
+	maven {
+		name "MinecraftForge"
 		url "http://files.minecraftforge.net/maven/"
 	}
-
     maven {
         name 'JEI'
         url "http://dvs1.progwml6.com/files/maven"
     }
-
     maven {
         name 'CraftTweaker'
         url "http://maven.blamejared.com"
     }
-
     maven {
         name 'curios'
         url "https://maven.theillusivec4.top/"
+    }
+    maven {
+        name 'TOP'
+        url "https://maven.tterrag.com/"
+    }
+    maven {
+        name 'HWYLA'
+        url "http://tehnut.info/maven"
     }
 }
 
@@ -146,6 +151,14 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
+
+    //TODO: Fix this once https://github.com/McJtyMods/TheOneProbe/issues/344 gets resolved
+    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api")
+    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}")
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
+
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 

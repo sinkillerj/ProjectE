@@ -1,6 +1,5 @@
 package moze_intel.projecte.events;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import moze_intel.projecte.PECore;
@@ -57,19 +56,10 @@ public class ToolTipEvent {
 		if (ProjectEConfig.client.emcToolTips.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
 			long value = EMCHelper.getEmcValue(current);
 			if (value > 0) {
-				ITextComponent prefix = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
-				ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(value)).applyTextStyle(TextFormatting.WHITE);
-				ITextComponent sell = new StringTextComponent(EMCHelper.getEmcSellString(current, 1)).applyTextStyle(TextFormatting.BLUE);
-
-				event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
-
+				event.getToolTip().add(EMCHelper.getEmcTextComponent(value, 1));
 				if (current.getCount() > 1) {
-					prefix = new TranslationTextComponent("pe.emc.stackemc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
-					valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(BigInteger.valueOf(value).multiply(BigInteger.valueOf(current.getCount())))).applyTextStyle(TextFormatting.WHITE);
-					sell = new StringTextComponent(EMCHelper.getEmcSellString(current, current.getCount())).applyTextStyle(TextFormatting.BLUE);
-					event.getToolTip().add(prefix.appendSibling(valueText).appendSibling(sell));
+					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
-
 				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
 					event.getToolTip().add(new TranslationTextComponent("pe.emc.has_knowledge").applyTextStyle(TextFormatting.YELLOW));
 				}

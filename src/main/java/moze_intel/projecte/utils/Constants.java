@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import java.math.BigInteger;
 import java.text.NumberFormat;
 
+//TODO: Add constants for the different constant NBT strings to this file.
 public final class Constants {
 
 	public static final NumberFormat EMC_FORMATTER = getFormatter();

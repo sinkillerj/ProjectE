@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;

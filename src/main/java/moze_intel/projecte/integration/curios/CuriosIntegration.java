@@ -1,10 +1,9 @@
 package moze_intel.projecte.integration.curios;
 
 import javax.annotation.Nullable;
-import moze_intel.projecte.utils.IntegrationHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.entity.LivingEntity;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
@@ -21,8 +20,7 @@ public class CuriosIntegration {
 				new CombinedInvWrapper(curiosHandler.getCurioMap().values().toArray(new IItemHandlerModifiable[0]))).orElse(null);
 	}
 
-	@SubscribeEvent
-	public static void enqueueImc(InterModEnqueueEvent evt) {
+	public static void sendIMC(InterModEnqueueEvent event) {
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("necklace"));
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("belt"));
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("ring"));
