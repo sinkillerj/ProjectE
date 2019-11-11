@@ -15,10 +15,12 @@ import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -38,12 +40,12 @@ public class GemHelmet extends GemArmorBase {
 
 	public static void toggleNightVision(ItemStack helm, PlayerEntity player) {
 		boolean value;
-
-		if (helm.getOrCreateTag().contains(Constants.NBT_KEY_NIGHT_VISION)) {
-			helm.getTag().putBoolean(Constants.NBT_KEY_NIGHT_VISION, !helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION));
-			value = helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION);
+		CompoundNBT helmetTag = helm.getOrCreateTag();
+		if (helmetTag.contains(Constants.NBT_KEY_NIGHT_VISION)) {
+			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, !helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION));
+			value = helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION);
 		} else {
-			helm.getTag().putBoolean(Constants.NBT_KEY_NIGHT_VISION, false);
+			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
@@ -55,8 +57,8 @@ public class GemHelmet extends GemArmorBase {
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
 		tooltips.add(new TranslationTextComponent("pe.gem.helm.lorename"));
 
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt", Minecraft.getInstance().gameSettings.keyBindSneak.getTranslationKey(),
-				ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt",
+				new StringTextComponent(Minecraft.getInstance().gameSettings.keyBindSneak.getLocalizedName()), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
 		boolean enabled = isNightVisionEnabled(stack);
 		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")

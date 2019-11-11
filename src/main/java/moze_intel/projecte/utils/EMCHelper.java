@@ -14,6 +14,7 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.text.ITextComponent;
@@ -199,11 +200,12 @@ public final class EMCHelper {
 	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
 	 */
 	public static long removeFractionalEMC(ItemStack stack, double amount) {
-		double unprocessedEMC = stack.getOrCreateTag().getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
+		CompoundNBT nbt = stack.getOrCreateTag();
+		double unprocessedEMC = nbt.getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
 		unprocessedEMC += amount;
 		long toRemove = (long) unprocessedEMC;
 		unprocessedEMC -= toRemove;
-		stack.getTag().putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);
+		nbt.putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);
 		return toRemove;
 	}
 }

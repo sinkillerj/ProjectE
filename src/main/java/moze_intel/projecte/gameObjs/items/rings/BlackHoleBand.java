@@ -84,15 +84,14 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void inventoryTick(ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (!stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || !(entity instanceof PlayerEntity)) {
-			return;
-		}
-		PlayerEntity player = (PlayerEntity) entity;
-		AxisAlignedBB bBox = player.getBoundingBox().grow(7);
-		List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
-		for (ItemEntity item : itemList) {
-			if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem())) {
-				WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
+		if (entity instanceof PlayerEntity && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+			PlayerEntity player = (PlayerEntity) entity;
+			AxisAlignedBB bBox = player.getBoundingBox().grow(7);
+			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
+			for (ItemEntity item : itemList) {
+				if (ItemHelper.hasSpace(player.inventory.mainInventory, item.getItem())) {
+					WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
+				}
 			}
 		}
 	}
@@ -141,7 +140,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			BlockPos tilePos = tile.getPos();
 			int tileX = tilePos.getX();
 			int tileY = tilePos.getY();
@@ -168,7 +167,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
 				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
 			}

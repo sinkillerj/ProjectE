@@ -25,6 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -116,9 +117,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			return;
 		}
 		AlchChestTile tile = (AlchChestTile) te;
-		byte coolDown = stack.getOrCreateTag().getByte(Constants.NBT_KEY_COOLDOWN);
+		CompoundNBT nbt = stack.getOrCreateTag();
+		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
-			stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
 			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
@@ -135,7 +137,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				}
 			}
 			if (hasAction) {
-				stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 				tile.markDirty();
 			}
 		}
@@ -146,9 +148,10 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (player.getEntityWorld().isRemote) {
 			return false;
 		}
-		byte coolDown = stack.getOrCreateTag().getByte(Constants.NBT_KEY_COOLDOWN);
+		CompoundNBT nbt = stack.getOrCreateTag();
+		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
-			stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
 			for (int i = 0; i < inv.getSlots(); i++) {
@@ -164,7 +167,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				}
 			}
 			if (hasAction) {
-				stack.getTag().putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 				return true;
 			}
 		}

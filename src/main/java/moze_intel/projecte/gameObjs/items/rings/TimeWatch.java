@@ -95,7 +95,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				}
 			}
 		}
-		if (world.isRemote || !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (world.isRemote || !stack.hasTag() || !stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) entity;
@@ -184,7 +184,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private byte getTimeBoost(ItemStack stack) {
-		return stack.getOrCreateTag().getByte(Constants.NBT_KEY_TIME_MODE);
+		return stack.hasTag() ? stack.getTag().getByte(Constants.NBT_KEY_TIME_MODE) : 0;
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time) {

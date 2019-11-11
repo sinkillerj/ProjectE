@@ -20,7 +20,9 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 
 	public EternalDensityInventory(ItemStack stack, PlayerEntity player) {
 		this.invItem = stack;
-		readFromNBT(stack.getOrCreateTag());
+		if (stack.hasTag()) {
+			readFromNBT(stack.getTag());
+		}
 	}
 
 	@Override

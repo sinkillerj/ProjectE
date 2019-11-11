@@ -90,7 +90,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	private void tick(ItemStack stack, World world, ServerPlayerEntity player) {
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			switch (getMode(stack)) {
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().grow(5), player, true);

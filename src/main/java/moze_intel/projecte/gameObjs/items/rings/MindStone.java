@@ -42,12 +42,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-			if (getXP(player) > 0) {
-				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
-				addStoredXP(stack, toAdd);
-				removeXP(player, TRANSFER_RATE);
-			}
+		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
+			int toAdd = Math.min(getXP(player), TRANSFER_RATE);
+			addStoredXP(stack, toAdd);
+			removeXP(player, TRANSFER_RATE);
 		}
 	}
 
@@ -126,7 +124,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private int getStoredXP(ItemStack stack) {
-		return stack.getOrCreateTag().getInt(Constants.NBT_KEY_STORED_XP);
+		return stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_STORED_XP) : 0;
 	}
 
 	private void setStoredXP(ItemStack stack, int XP) {

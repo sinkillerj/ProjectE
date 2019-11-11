@@ -14,10 +14,10 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;
@@ -132,16 +132,17 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (player.isSneaking()) {
-				if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+				CompoundNBT nbt = stack.getOrCreateTag();
+				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
 						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
-					stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
+					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 				} else {
-					stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, true);
+					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
 				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
@@ -186,9 +187,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	private static List<ItemStack> getItems(ItemStack stack) {
 		List<ItemStack> list = new ArrayList<>();
-		ListNBT tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_COMPOUND);
-		for (int i = 0; i < tList.size(); i++) {
-			list.add(ItemStack.read(tList.getCompound(i)));
+		if (stack.hasTag()) {
+			ListNBT tList = stack.getTag().getList(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_COMPOUND);
+			for (int i = 0; i < tList.size(); i++) {
+				list.add(ItemStack.read(tList.getCompound(i)));
+			}
 		}
 		return list;
 	}
@@ -236,14 +239,16 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	private static boolean isWhitelistMode(ItemStack stack) {
-		return stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
+		return stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
 	}
 
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
 		List<ItemStack> result = new ArrayList<>();
-		ListNBT list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND);
-		for (int i = 0; i < list.size(); i++) {
-			result.add(ItemStack.read(list.getCompound(i)));
+		if (stack.hasTag()) {
+			ListNBT list = stack.getTag().getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND);
+			for (int i = 0; i < list.size(); i++) {
+				result.add(ItemStack.read(list.getCompound(i)));
+			}
 		}
 		return result;
 	}
@@ -271,7 +276,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		if (!world.isRemote && stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (!world.isRemote && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
 				AlchChestTile tile = (AlchChestTile) te;

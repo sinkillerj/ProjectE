@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -40,11 +41,12 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
 	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
 		boolean value;
-		if (boots.getOrCreateTag().contains(Constants.NBT_KEY_STEP_ASSIST)) {
-			boots.getTag().putBoolean(Constants.NBT_KEY_STEP_ASSIST, !boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST));
-			value = boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
+		CompoundNBT bootsTag = boots.getOrCreateTag();
+		if (bootsTag.contains(Constants.NBT_KEY_STEP_ASSIST)) {
+			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, !bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST));
+			value = bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 		} else {
-			boots.getTag().putBoolean(Constants.NBT_KEY_STEP_ASSIST, false);
+			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, false);
 			value = false;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")

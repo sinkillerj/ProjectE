@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -39,9 +40,10 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		CompoundNBT nbt = stack.getOrCreateTag();
+		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false)) {
-				stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateHeal();

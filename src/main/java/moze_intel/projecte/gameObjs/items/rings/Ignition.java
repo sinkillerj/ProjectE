@@ -26,6 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -53,9 +54,10 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		}
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
 		ServerPlayerEntity player = (ServerPlayerEntity) entity;
-		if (stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		CompoundNBT nbt = stack.getOrCreateTag();
+		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-				stack.getTag().putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
 				WorldHelper.igniteNearby(world, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));

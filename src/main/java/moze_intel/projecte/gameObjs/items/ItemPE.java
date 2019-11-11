@@ -65,7 +65,7 @@ public class ItemPE extends Item {
 	}
 
 	public static long getEmc(ItemStack stack) {
-		return stack.getOrCreateTag().getLong(Constants.NBT_KEY_STORED_EMC);
+		return stack.hasTag() ? stack.getTag().getLong(Constants.NBT_KEY_STORED_EMC) : 0;
 	}
 
 	public static void setEmc(ItemStack stack, long amount) {

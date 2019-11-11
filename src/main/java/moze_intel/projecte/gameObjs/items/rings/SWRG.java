@@ -28,6 +28,7 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -52,26 +53,22 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	private void tick(ItemStack stack, PlayerEntity player) {
-		if (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE) > 1) {
+		CompoundNBT nbt = stack.getOrCreateTag();
+		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
 		}
-
 		if (player.getEntityWorld().isRemote) {
 			return;
 		}
-
 		ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
-
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-			if (stack.getTag().getInt(Constants.NBT_KEY_MODE) > 0) {
+			if (nbt.getInt(Constants.NBT_KEY_MODE) > 0) {
 				changeMode(player, stack, 0);
 			}
-
 			if (playerMP.abilities.allowFlying) {
 				playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::disableSwrgFlightOverride);
 			}
-
 			return;
 		}
 
@@ -81,12 +78,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		if (playerMP.abilities.isFlying) {
 			if (!isFlyingEnabled(stack)) {
-				changeMode(player, stack, stack.getTag().getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
+				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
-		} else {
-			if (isFlyingEnabled(stack)) {
-				changeMode(player, stack, stack.getTag().getInt(Constants.NBT_KEY_MODE) == 1 ? 0 : 2);
-			}
+		} else if (isFlyingEnabled(stack)) {
+			changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 1 ? 0 : 2);
 		}
 
 		float toRemove = 0;
@@ -95,9 +90,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			toRemove = 0.32F;
 		}
 
-		if (stack.getTag().getInt(Constants.NBT_KEY_MODE) == 2) {
+		if (nbt.getInt(Constants.NBT_KEY_MODE) == 2) {
 			toRemove = 0.32F;
-		} else if (stack.getTag().getInt(Constants.NBT_KEY_MODE) == 3) {
+		} else if (nbt.getInt(Constants.NBT_KEY_MODE) == 3) {
 			toRemove = 0.64F;
 		}
 
@@ -147,11 +142,12 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	 * Change the mode of SWRG. Modes:<p> 0 = Ring Off<p> 1 = Flight<p> 2 = Shield<p> 3 = Flight + Shield<p>
 	 */
 	public void changeMode(PlayerEntity player, ItemStack stack, int mode) {
-		int oldMode = stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE);
+		CompoundNBT nbt = stack.getOrCreateTag();
+		int oldMode = nbt.getInt(Constants.NBT_KEY_MODE);
 		if (mode == oldMode) {
 			return;
 		}
-		stack.getTag().putInt(Constants.NBT_KEY_MODE, mode);
+		nbt.putInt(Constants.NBT_KEY_MODE, mode);
 		if (player == null) {
 			//Don't do sounds if the player is null
 			return;
