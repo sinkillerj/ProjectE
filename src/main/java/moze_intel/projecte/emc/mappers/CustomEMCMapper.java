@@ -29,9 +29,4 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> 
 	public String getDescription() {
 		return "Uses the `custom_emc.json` File to add EMC values.";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
 }

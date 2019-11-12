@@ -49,11 +49,6 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
-	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> files = load(resourceManager);
 		for (CustomConversionFile file : files.values()) {

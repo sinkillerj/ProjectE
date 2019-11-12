@@ -43,9 +43,4 @@ public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	public String getDescription() {
 		return "Allows setting EMC values through CraftTweaker. This behaves similarly to if someone used the custom emc file instead.";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
 }

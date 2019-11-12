@@ -1,21 +1,23 @@
 package moze_intel.projecte.emc.nbt.processor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 
 @NBTProcessor(priority = Integer.MAX_VALUE)
 public class DamageProcessor implements INBTProcessor {
 
-	@Nullable
 	@Override
-	public CompoundNBT getPersistentNBT(@Nonnull ItemInfo info) {
-		return null;
+	public String getName() {
+		return "DamageProcessor";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Reduces the EMC value the more damaged an item is.";
 	}
 
 	@Override
@@ -34,10 +36,5 @@ public class DamageProcessor implements INBTProcessor {
 			currentEMC = Math.multiplyExact(currentEMC, Math.addExact(maxDamage - damage, 1)) / maxDamage;
 		}
 		return currentEMC;
-	}
-
-	@Override
-	public String getName() {
-		return "DamageProcessor";
 	}
 }

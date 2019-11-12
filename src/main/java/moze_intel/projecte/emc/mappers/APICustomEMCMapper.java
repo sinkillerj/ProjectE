@@ -54,11 +54,6 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	}
 
 	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
-	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
 		Map<String, Integer> priorityMap = new HashMap<>();
 

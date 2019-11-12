@@ -27,9 +27,4 @@ public class TagMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public String getDescription() {
 		return "Adds back and forth conversions of objects and their Tag variant. (EMC values assigned to tags will not behave properly if this mapper is disabled)";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
 }

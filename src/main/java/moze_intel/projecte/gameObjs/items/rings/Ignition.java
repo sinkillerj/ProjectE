@@ -73,10 +73,11 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
 		BlockState state = world.getBlockState(pos);
+		//TODO: Fix this once https://github.com/MinecraftForge/MinecraftForge/pull/6290 is merged
+		// Make the if statement check isExplosive, and the explode call use createExplosion
 		if (state.getBlock() instanceof TNTBlock) {
 			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) ctx.getPlayer(), pos)) {
-				// Ignite TNT or derivatives
-				//TODO: Fix this once https://github.com/MinecraftForge/MinecraftForge/pull/6290 is merged, make it use createExplosion
+				// Ignite the block
 				((TNTBlock) state.getBlock()).explode(world, pos);
 				world.removeBlock(pos, false);
 				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);

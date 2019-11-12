@@ -129,9 +129,4 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public String getDescription() {
 		return "Adds Conversions for fluid container items and fluids.";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
 }

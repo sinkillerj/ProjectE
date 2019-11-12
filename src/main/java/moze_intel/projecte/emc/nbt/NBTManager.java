@@ -2,11 +2,10 @@ package moze_intel.projecte.emc.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
+import moze_intel.projecte.config.NBTProcessorConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -24,6 +23,8 @@ public class NBTManager {
 	public static void loadProcessors() {
 		if (processors.isEmpty()) {
 			processors.addAll(AnnotationHelper.getNBTProcessors());
+			//Setup the config for the NBT Processors
+			NBTProcessorConfig.setup(processors);
 		}
 	}
 
@@ -33,7 +34,15 @@ public class NBTManager {
 			return info;
 		}
 		//Cleans up the tag in info to reduce it as much as possible
-		List<CompoundNBT> persistentNBT = processors.stream().map(processor -> processor.getPersistentNBT(info)).filter(Objects::nonNull).collect(Collectors.toList());
+		List<CompoundNBT> persistentNBT = new ArrayList<>();
+		for (INBTProcessor processor : processors) {
+			if (NBTProcessorConfig.isEnabled(processor) && processor.hasPersistentNBT() && NBTProcessorConfig.hasPersistent(processor)) {
+				CompoundNBT nbt = processor.getPersistentNBT(info);
+				if (nbt != null) {
+					persistentNBT.add(nbt);
+				}
+			}
+		}
 		return ItemInfo.fromItem(info.getItem(), ItemHelper.recombineNBT(persistentNBT));
 	}
 
@@ -55,15 +64,17 @@ public class NBTManager {
 
 		//Note: We continue to use our initial ItemInfo so that we are calculating based on the NBT
 		for (INBTProcessor processor : processors) {
-			try {
-				emcValue = processor.recalculateEMC(info, emcValue);
-			} catch (ArithmeticException e) {
-				//Return the last successfully calculated EMC value
-				return emcValue;
-			}
-			if (emcValue <= 0) {
-				//Exit if it gets to zero (also safety check for less than zero in case a mod didn't bother sanctifying their data)
-				return 0;
+			if (NBTProcessorConfig.isEnabled(processor)) {
+				try {
+					emcValue = processor.recalculateEMC(info, emcValue);
+				} catch (ArithmeticException e) {
+					//Return the last successfully calculated EMC value
+					return emcValue;
+				}
+				if (emcValue <= 0) {
+					//Exit if it gets to zero (also safety check for less than zero in case a mod didn't bother sanctifying their data)
+					return 0;
+				}
 			}
 		}
 		return emcValue;

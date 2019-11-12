@@ -131,11 +131,6 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		return "Add Conversions for Crafting Recipes gathered from net.minecraft.item.crafting.RecipeManager";
 	}
 
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
 	private Iterable<CraftingIngredients> getIngredientsFor(IRecipe recipe) {
 		List<Iterable<ItemStack>> variableInputs = new ArrayList<>();
 		List<ItemStack> fixedInputs = new ArrayList<>();

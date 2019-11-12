@@ -205,10 +205,4 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public String getDescription() {
 		return "Add Conversions for Brewing Recipes";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
 }

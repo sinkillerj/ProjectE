@@ -36,17 +36,17 @@ import org.apache.commons.math3.fraction.BigFraction;
 
 public final class EMCMappingHandler {
 
-	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> EMC_MAPPERS = new ArrayList<>();
+	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> mappers = new ArrayList<>();
 	private static final Map<ItemInfo, Long> emc = new HashMap<>();
 
-	private static void loadMappers() {
+	public static void loadMappers() {
 		//If we don't have any mappers loaded try to load them
-		if (EMC_MAPPERS.isEmpty()) {
+		if (mappers.isEmpty()) {
 			//Add all the EMC mappers we have encountered
-			EMC_MAPPERS.addAll(AnnotationHelper.getEMCMappers());
+			mappers.addAll(AnnotationHelper.getEMCMappers());
 			//Manually register the Tag Mapper to ensure that it is registered last so that it can "fix" all the tags used in any of the other mappers
 			// This also has the side effect to make sure that we can use EMC_MAPPERS.isEmpty to check if we have attempted to initialize our cache yet
-			EMC_MAPPERS.add(new TagMapper());
+			mappers.add(new TagMapper());
 		}
 	}
 
@@ -61,8 +61,6 @@ public final class EMCMappingHandler {
 	}
 
 	public static void map(IResourceManager resourceManager) {
-		//Ensure we load the EMC mappers
-		loadMappers();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
@@ -96,7 +94,7 @@ public final class EMCMappingHandler {
 			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
 			PECore.debugLog("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : EMC_MAPPERS) {
+			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : mappers) {
 				try {
 					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable())) {
 						DumpToFileCollector.currentGroupName = emcMapper.getName();

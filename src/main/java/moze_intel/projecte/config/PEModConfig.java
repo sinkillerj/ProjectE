@@ -3,6 +3,7 @@ package moze_intel.projecte.config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.nio.file.Path;
 import java.util.function.Function;
+import moze_intel.projecte.PECore;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
@@ -19,7 +20,7 @@ public class PEModConfig extends ModConfig {
 	private static final PEConfigFileTypeHandler PE_TOML = new PEConfigFileTypeHandler();
 
 	public PEModConfig(Type type, ForgeConfigSpec spec, ModContainer container, String fileName) {
-		super(type, spec, container, fileName);
+		super(type, spec, container, PECore.MODNAME + "/" + fileName + ".toml");
 	}
 
 	@Override

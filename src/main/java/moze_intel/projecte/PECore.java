@@ -53,6 +53,7 @@ import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.impl.capability.ModeChangerItemDefaultImpl;
 import moze_intel.projecte.impl.capability.PedestalItemDefaultImpl;
 import moze_intel.projecte.impl.capability.ProjectileShooterItemDefaultImpl;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
@@ -77,7 +78,6 @@ import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -94,6 +94,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -123,6 +124,8 @@ public class PECore {
 
 	public static final List<String> uuids = new ArrayList<>();
 
+	public static ModContainer MOD_CONTAINER;
+
 	public static void debugLog(String msg, Object... args) {
 		if (DEV_ENVIRONMENT || ProjectEConfig.common.debugLogging.get()) {
 			LOGGER.info(msg, args);
@@ -132,6 +135,8 @@ public class PECore {
 	}
 
 	public PECore() {
+		MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
+
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
@@ -146,7 +151,7 @@ public class PECore {
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 
 		//Register our config files
-		ProjectEConfig.register(ModLoadingContext.get());
+		ProjectEConfig.register();
 	}
 
 	static class ClientHandler {
@@ -203,9 +208,11 @@ public class PECore {
 
 		new ThreadCheckUpdate().start();
 
+		EMCMappingHandler.loadMappers();
+		NBTManager.loadProcessors();
+
 		DeferredWorkQueue.runLater(() -> {
 			PacketHandler.register();
-			NBTManager.loadProcessors();
 
 			// internals unsafe
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);

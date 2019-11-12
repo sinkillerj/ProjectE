@@ -42,10 +42,4 @@ public class ShulkerBoxColoringMapper implements IEMCMapper<NormalizedSimpleStac
 	public String getDescription() {
 		return "Add Conversions for the recipes that recolor shulker boxes.";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
 }

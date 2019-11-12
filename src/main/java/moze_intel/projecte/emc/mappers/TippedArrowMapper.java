@@ -43,10 +43,4 @@ public class TippedArrowMapper implements IEMCMapper<NormalizedSimpleStack, Long
 	public String getDescription() {
 		return "Add Conversions for all lingering potions to arrow recipes";
 	}
-
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
 }

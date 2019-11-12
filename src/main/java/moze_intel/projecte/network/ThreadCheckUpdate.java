@@ -9,7 +9,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -28,7 +27,7 @@ public class ThreadCheckUpdate extends Thread {
 
 	@Override
 	public void run() {
-		IModInfo info = ModList.get().getModContainerById(PECore.MODID).get().getModInfo();
+		IModInfo info = PECore.MOD_CONTAINER.getModInfo();
 		VersionChecker.CheckResult result = null;
 
 		int tries = 0;

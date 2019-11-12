@@ -43,11 +43,6 @@ public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack,
 		return "Allows adding custom conversions through CraftTweaker. This behaves similarly to if someone used a custom conversion file instead.";
 	}
 
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
-
 	public static class CrTConversion {
 
 		public final int amount;

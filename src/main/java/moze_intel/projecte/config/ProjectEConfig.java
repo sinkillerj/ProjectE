@@ -3,8 +3,6 @@ package moze_intel.projecte.config;
 import java.nio.file.Path;
 import moze_intel.projecte.PECore;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -34,13 +32,13 @@ public class ProjectEConfig {
 		clientSpec = clientConfiguration.getRight();
 	}
 
-	public static void register(ModLoadingContext modLoadingContext) {
-		registerConfig(modLoadingContext.getActiveContainer(), Type.SERVER, serverSpec, "server");
-		registerConfig(modLoadingContext.getActiveContainer(), Type.COMMON, commonSpec, "common");
-		registerConfig(modLoadingContext.getActiveContainer(), Type.CLIENT, clientSpec, "client");
+	public static void register() {
+		registerConfig(Type.SERVER, serverSpec, "server");
+		registerConfig(Type.COMMON, commonSpec, "common");
+		registerConfig(Type.CLIENT, clientSpec, "client");
 	}
 
-	private static void registerConfig(ModContainer activeContainer, ModConfig.Type type, ForgeConfigSpec spec, String fileName) {
-		activeContainer.addConfig(new PEModConfig(type, spec, activeContainer, PECore.MODNAME + "/" + fileName + ".toml"));
+	private static void registerConfig(ModConfig.Type type, ForgeConfigSpec spec, String fileName) {
+		PECore.MOD_CONTAINER.addConfig(new PEModConfig(type, spec, PECore.MOD_CONTAINER, fileName));
 	}
 }

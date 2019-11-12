@@ -32,7 +32,9 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 *
 	 * @return {@code true} if you want {@link #addMappings} to be called, {@code false} otherwise.
 	 */
-	boolean isAvailable();
+	default boolean isAvailable() {
+		return true;
+	}
 
 	/**
 	 * The method that allows the IEMCMapper to contribute to the EMC Mapping. Use the methods provided by the {@link IMappingCollector}. <br/> Use the config object to
