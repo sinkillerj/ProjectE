@@ -16,7 +16,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class ClearKnowledgeCMD {
 
-	//TODO: Add the ability to reset a player's EMC value to zero
 	public static ArgumentBuilder<CommandSource, ?> register() {
 		return Commands.literal("clearknowledge")
 				.requires(cs -> cs.hasPermissionLevel(4))

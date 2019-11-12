@@ -15,8 +15,6 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name("mods.projecte.NSSResolver")
 public class CrTNSSResolver {
 
-	//TODO: Create helper wrappers for fluid once CraftTweaker supports fluid again
-
 	@ZenCodeType.Method
 	public static NSSCrT deserialize(String representation) {
 		if (checkNonNull(representation)) {
