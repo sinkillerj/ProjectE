@@ -21,7 +21,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -120,7 +119,7 @@ public class TransmutationContainer extends Container {
 					}
 					//Set the stack size to what we found the max value is we have room for (capped at the stack's own max size)
 					newStack.setCount(stackSize);
-					IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
+					IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 					transmutationInventory.removeEmc(totalEmc);
 					ItemHandlerHelper.insertItemStacked(inv, newStack, false);
 					transmutationInventory.updateClientTargets();

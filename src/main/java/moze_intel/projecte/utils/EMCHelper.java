@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -15,7 +16,6 @@ import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -31,47 +31,47 @@ public final class EMCHelper {
 
 	/**
 	 * Consumes EMC from fuel items or Klein Stars Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
+	 *
+	 * @implNote Order it tries to extract from is, Curios, Offhand, main inventory
 	 */
 	public static long consumePlayerFuel(PlayerEntity player, long minFuel) {
 		if (player.abilities.isCreativeMode) {
 			return minFuel;
 		}
-
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new);
-		Map<Integer, Integer> map = new LinkedHashMap<>();
-		boolean metRequirement = false;
-		long emcConsumed = 0;
-
-		ItemStack offhand = player.getHeldItemOffhand();
-
-		if (!offhand.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(offhand.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
-				long simulatedExtraction = emcHolder.extractEmc(offhand, minFuel, EmcAction.SIMULATE);
-				if (simulatedExtraction == minFuel) {
-					long actualExtracted = emcHolder.extractEmc(offhand, simulatedExtraction, EmcAction.EXECUTE);
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null) {
+			for (int i = 0; i < curios.getSlots(); i++) {
+				long actualExtracted = tryExtract(curios.getStackInSlot(i), minFuel);
+				if (actualExtracted > 0) {
 					player.openContainer.detectAndSendChanges();
 					return actualExtracted;
 				}
 			}
 		}
 
+		ItemStack offhand = player.getHeldItemOffhand();
+
+		if (!offhand.isEmpty()) {
+			long actualExtracted = tryExtract(offhand, minFuel);
+			if (actualExtracted > 0) {
+				player.openContainer.detectAndSendChanges();
+				return actualExtracted;
+			}
+		}
+
+		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+		Map<Integer, Integer> map = new LinkedHashMap<>();
+		boolean metRequirement = false;
+		long emcConsumed = 0;
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
-
 			if (stack.isEmpty()) {
 				continue;
 			}
-			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
-				long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);
-				if (simulatedExtraction == minFuel) {
-					long actualExtracted = emcHolder.extractEmc(stack, simulatedExtraction, EmcAction.EXECUTE);
-					player.openContainer.detectAndSendChanges();
-					return actualExtracted;
-				}
+			long actualExtracted = tryExtract(stack, minFuel);
+			if (actualExtracted > 0) {
+				player.openContainer.detectAndSendChanges();
+				return actualExtracted;
 			} else if (!metRequirement) {
 				if (FuelMapper.isStackFuel(stack)) {
 					long emc = getEmcValue(stack);
@@ -88,11 +88,9 @@ public final class EMCHelper {
 							metRequirement = true;
 						}
 					}
-
 				}
 			}
 		}
-
 		if (metRequirement) {
 			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 				inv.extractItem(entry.getKey(), entry.getValue(), false);
@@ -101,6 +99,21 @@ public final class EMCHelper {
 			return emcConsumed;
 		}
 		return -1;
+	}
+
+	private static long tryExtract(@Nonnull ItemStack stack, long minFuel) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+		if (holderCapability.isPresent()) {
+			IItemEmcHolder emcHolder = holderCapability.get();
+			long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);
+			if (simulatedExtraction == minFuel) {
+				return emcHolder.extractEmc(stack, simulatedExtraction, EmcAction.EXECUTE);
+			}
+		}
+		return 0;
 	}
 
 	public static boolean doesItemHaveEmc(ItemInfo info) {
