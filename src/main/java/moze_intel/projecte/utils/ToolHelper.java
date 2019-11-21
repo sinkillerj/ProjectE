@@ -61,9 +61,12 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.Event.Result;
 
 public class ToolHelper {
 
@@ -176,9 +179,12 @@ public class ToolHelper {
 	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType tillShovelAOE(ItemUseContext context, long emcCost) {
-		//TODO: ForgeEventFactory::onShovelUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
-		// For now it just pretends it is always valid
-		return tillAOE(context, emcCost, ShovelItem.SHOVEL_LOOKUP, /*ForgeEventFactory::onShovelUse*/ctx -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
+		//Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
+		// This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
+		// If something like: https://github.com/MinecraftForge/MinecraftForge/pull/6294 ever gets merged then this can use that
+		// or when the hoe event goes away we can switch it to a boolean from an int
+		// Note: The same goes for the stripLogsAOE that if that gets merged we need to add back support for the third state
+		return tillAOE(context, emcCost, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1, SoundEvents.ITEM_SHOVEL_FLATTEN);
 	}
 
 	/**
@@ -297,28 +303,24 @@ public class ToolHelper {
 			//Skip stripping the blocks if the one we clicked cannot be stipped
 			return ActionResultType.PASS;
 		}
-		//TODO: ForgeEventFactory::onAxeUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
-		// For now it just pretends it is always valid
-		ToIntFunction<ItemUseContext> onItemUse = ctx -> 0;//ForgeEventFactory::onAxeUse;
-		int useResult = onItemUse.applyAsInt(context);
-		if (useResult < 0) {
-			return ActionResultType.PASS;
-		} else if (world.isRemote) {
+		//Note: We don't need to fire a check for the tool being used here as we never would have had our current method get called
+		// if a generic interact was not allowed
+		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
 		Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
 		BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
-		if (useResult == 0) {
-			//Processing did not happen in the hook so we need to process it
-			//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-			world.setBlockState(pos, strippedState, 11);
-			world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-		}
+		//Process the block we interacted with initially and play the sound
+		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
+		world.setBlockState(pos, strippedState, 11);
+		world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
 		Hand hand = context.getHand();
 		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		if (charge > 0) {
-			for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, context.getFace(), charge))) {
+			Direction side = context.getFace();
+			for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, side, charge))) {
 				if (pos.equals(newPos)) {
 					//Skip the source position as it is free and we manually handled it before the loop
 					continue;
@@ -330,16 +332,8 @@ public class ToolHelper {
 					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 					// matter we make sure to get an immutable instance of newPos
 					newPos = newPos.toImmutable();
-					useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false)));
-					if (useResult < 0) {
+					if (!onToolUse(player, hand, newPos, side)) {
 						//We were denied from using the item so continue to the next block
-						continue;
-					} else if (useResult > 0) {
-						//Processing happened in the hook so we use our desired fuel amount
-						if (!ItemPE.consumeFuel(player, stack, emcCost, true)) {
-							//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
-							break;
-						}
 						continue;
 					} //else we are allowed to use the item
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
@@ -357,6 +351,17 @@ public class ToolHelper {
 		}
 		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
+	}
+
+	/**
+	 * Tries to use a tool as a player
+	 *
+	 * @return True if the player is allowed to use the tool, false otherwise
+	 */
+	private static boolean onToolUse(PlayerEntity player, Hand hand, BlockPos pos, Direction face) {
+		RightClickBlock event = ForgeHooks.onRightClickBlock(player, hand, pos, face);
+		//Nothing happens if it is cancelled or we are not allowed to use the item so return false
+		return !event.isCanceled() && event.getUseItem() != Result.DENY;
 	}
 
 	/**
