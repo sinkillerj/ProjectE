@@ -14,7 +14,6 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.DyeColor;
 import net.minecraft.resources.IResourceManager;
 
-//TODO: Note: This does not work currently due to https://github.com/MinecraftForge/MinecraftForge/issues/6301
 @EMCMapper
 public class ShulkerBoxColoringMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 

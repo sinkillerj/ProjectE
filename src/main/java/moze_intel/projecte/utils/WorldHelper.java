@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,6 +19,7 @@ import net.minecraft.block.IGrowable;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.SnowBlock;
+import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -33,9 +35,11 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -458,5 +462,25 @@ public final class WorldHelper {
 				}
 			}
 		}
+	}
+
+	@Nonnull
+	public static ActionResultType igniteTNT(ItemUseContext ctx) {
+		World world = ctx.getWorld();
+		BlockPos pos = ctx.getPos();
+		Direction side = ctx.getFace();
+		BlockState state = world.getBlockState(pos);
+		if (state.isFlammable(world, pos, side)) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) ctx.getPlayer(), pos)) {
+				// Ignite the block
+				state.catchFire(world, pos, side, ctx.getPlayer());
+				if (state.getBlock() instanceof TNTBlock) {
+					world.removeBlock(pos, false);
+				}
+				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			}
+			return ActionResultType.SUCCESS;
+		}
+		return ActionResultType.PASS;
 	}
 }

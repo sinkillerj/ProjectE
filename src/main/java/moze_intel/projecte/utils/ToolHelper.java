@@ -178,7 +178,7 @@ public class ToolHelper {
 	public static ActionResultType tillShovelAOE(ItemUseContext context, long emcCost) {
 		//TODO: ForgeEventFactory::onShovelUse https://github.com/MinecraftForge/MinecraftForge/pull/6294
 		// For now it just pretends it is always valid
-		return tillAOE(context, emcCost, ShovelItem.field_195955_e, /*ForgeEventFactory::onShovelUse*/ctx -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
+		return tillAOE(context, emcCost, ShovelItem.SHOVEL_LOOKUP, /*ForgeEventFactory::onShovelUse*/ctx -> 0, SoundEvents.ITEM_SHOVEL_FLATTEN);
 	}
 
 	/**

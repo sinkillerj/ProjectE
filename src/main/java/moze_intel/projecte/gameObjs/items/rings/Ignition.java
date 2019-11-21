@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
@@ -16,10 +15,7 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.TNTBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -70,21 +65,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
-		World world = ctx.getWorld();
-		BlockPos pos = ctx.getPos();
-		BlockState state = world.getBlockState(pos);
-		//TODO: Fix this once https://github.com/MinecraftForge/MinecraftForge/pull/6290 is merged
-		// Make the if statement check isExplosive, and the explode call use createExplosion
-		if (state.getBlock() instanceof TNTBlock) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) ctx.getPlayer(), pos)) {
-				// Ignite the block
-				((TNTBlock) state.getBlock()).explode(world, pos);
-				world.removeBlock(pos, false);
-				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
+		return WorldHelper.igniteTNT(ctx);
 	}
 
 	@Override

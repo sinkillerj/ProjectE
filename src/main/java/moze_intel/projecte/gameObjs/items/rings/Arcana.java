@@ -27,6 +27,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -136,6 +137,18 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
 		}
 		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
+	}
+
+	@Nonnull
+	@Override
+	public ActionResultType onItemUse(ItemUseContext ctx) {
+		if (getMode(ctx.getItem()) == 1) {
+			ActionResultType result = WorldHelper.igniteTNT(ctx);
+			if (result != ActionResultType.PASS) {
+				return result;
+			}
+		}
+		return super.onItemUse(ctx);
 	}
 
 	@Override

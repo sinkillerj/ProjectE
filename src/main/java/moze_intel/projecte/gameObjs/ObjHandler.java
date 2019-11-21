@@ -219,7 +219,7 @@ public class ObjHandler {
 	public static final Item rmAxe = new PEAxe(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_axe");
 	public static final Item rmShovel = new PEShovel(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shovel");
 	public static final Item rmSword = new RedMatterSword(ibNoStack()).setRegistryName(PECore.MODID, "rm_sword");
-	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 2, ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
+	public static final Item rmHoe = new PEHoe(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_hoe");
 	public static final Item rmShears = new PEShears(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_shears");
 	public static final Item rmHammer = new PEHammer(EnumMatterType.RED_MATTER, 3, ibNoStack()).setRegistryName(PECore.MODID, "rm_hammer");
 	public static final Item rmKatar = new PEKatar(EnumMatterType.RED_MATTER, 4, ibNoStack()).setRegistryName(PECore.MODID, "rm_katar");
