@@ -1,19 +1,25 @@
-modLoader="javafml" #mandatory
+modLoader="javafml"
 loaderVersion="[28,)"
-issueTrackerURL="https://github.com/sinkillerj/ProjectE/issues" #optional
-displayURL="https://github.com/sinkillerj/ProjectE" #optional
-# A file name (in the root of the mod JAR) containing a logo for display
-logoFile="logo.png" #optional
-# A text field displayed in the mod UI
-# credits="Thanks for this example mod goes to Java" #optional
-# A text field displayed in the mod UI
-authors="x3n0ph0b3, MidnightLightning, Magic Banana, MaPePeR, williewillus, Lilylicious" #optional
+issueTrackerURL="https://github.com/sinkillerj/ProjectE/issues"
 
 [[mods]]
-modId="projecte"
-version="2.0.0"
-displayName="ProjectE"
-updateJSONURL="https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.14.x/update.json"
-description='''
-A complete rewrite of EE2 for modern Minecraft versions.
-'''
+  modId="projecte"
+  version="${version}"
+  displayName="ProjectE"
+  updateJSONURL="https://raw.githubusercontent.com/sinkillerj/ProjectE/mc1.14.x/update.json"
+  displayURL="https://github.com/sinkillerj/ProjectE"
+  logoFile="logo.png"
+  authors="SinKillerJ, MaPePeR, williewillus, Lilylicious, pupnewfster"
+  credits="EE2 creator - x3n0ph0b3, EE2 GUI Textures - MidnightLightning, Former Texture Artist - Magic Banana"
+  description='''A complete rewrite of EE2 for modern Minecraft versions.'''
+
+[[dependencies.projecte]]
+  modId="minecraft"
+  mandatory=true
+  versionRange="[${mc_version}]"
+  side="BOTH"
+[[dependencies.projecte]]
+  modId="forge"
+  mandatory=true
+  versionRange="[${forge_version},)"
+  side="BOTH"

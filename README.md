@@ -14,7 +14,7 @@ Bugs can be reported at: https://github.com/sinkillerj/ProjectE/issues
 Please try the latest release build before reporting, be sure to also include any logs or steps to reproduce you may have, as well as your Forge version, and whether or not you are using a third party loader such as Cauldron. When submitting logs please use a service such as Pastebin, do not paste the log directly into the issue.
 
 # Downloads
-http://minecraft.curseforge.com/mc-mods/projecte/files
+https://www.curseforge.com/minecraft/mc-mods/projecte/files
 
 # Support Development
 ![](/patreon.png?raw=true)
