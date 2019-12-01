@@ -1,5 +1,30 @@
 {
   "variants": {
-    "": { "model": "projecte:block/transmutation_table" }
+    "facing=up": {
+      "model": "projecte:block/transmutation_table"
+    },
+    "facing=down": {
+      "model": "projecte:block/transmutation_table",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "projecte:block/transmutation_table",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "projecte:block/transmutation_table",
+      "x": -90
+    },
+    "facing=east": {
+      "model": "projecte:block/transmutation_table",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west": {
+      "model": "projecte:block/transmutation_table",
+      "x": -90,
+      "y": 90
+    }
   }
 }

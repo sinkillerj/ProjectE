@@ -34,7 +34,7 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
 	public AlchemicalChest(Properties props) {
 		super(props);
-		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH).with(BlockStateProperties.WATERLOGGED, false));
+		this.setDefaultState(getStateContainer().getBaseState().with(FACING, Direction.NORTH).with(BlockStateProperties.WATERLOGGED, false));
 	}
 
 	@Override
