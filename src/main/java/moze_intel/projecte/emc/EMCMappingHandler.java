@@ -61,6 +61,8 @@ public final class EMCMappingHandler {
 	}
 
 	public static void map(IResourceManager resourceManager) {
+		//Start by clearing the cached map so if values are removed say by setting EMC to zero then we respect the change
+		clearEmcMap();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
