@@ -16,7 +16,7 @@
       "item": "projecte:dark_matter"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     }
   }
 }

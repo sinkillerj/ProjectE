@@ -19,7 +19,7 @@
       "tag": "forge:gems/diamond"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     }
   }
 }

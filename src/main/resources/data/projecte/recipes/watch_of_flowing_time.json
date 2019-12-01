@@ -19,7 +19,7 @@
       "item": "minecraft:glowstone"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     }
   }
 }

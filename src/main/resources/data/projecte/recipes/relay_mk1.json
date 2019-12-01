@@ -13,7 +13,7 @@
       "item": "minecraft:glass"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     },
     "D": {
       "tag": "forge:storage_blocks/diamond"

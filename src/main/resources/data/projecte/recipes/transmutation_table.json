@@ -13,7 +13,7 @@
       "tag": "forge:stone"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     },
     "P": {
       "item": "projecte:philosophers_stone"

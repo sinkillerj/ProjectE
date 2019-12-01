@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "projecte:rm_leggings"
+    "item": "projecte:rm_helmet"
   },
   "pattern": [
     "MMM",
@@ -9,7 +9,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "D": {
-      "item": "projecte:dm_leggings"
+      "item": "projecte:dm_helmet"
     },
     "M": {
       "item": "projecte:red_matter"
