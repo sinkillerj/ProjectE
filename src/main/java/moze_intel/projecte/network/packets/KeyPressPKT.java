@@ -45,7 +45,11 @@ public class KeyPressPKT {
 		public static void handle(final KeyPressPKT message, Supplier<NetworkEvent.Context> ctx) {
 			ctx.get().enqueueWork(() -> {
 				ServerPlayerEntity player = ctx.get().getSender();
-				InternalAbilities internalAbilities = player.getCapability(InternalAbilities.CAPABILITY).orElseThrow(NullPointerException::new);
+				Optional<InternalAbilities> cap = LazyOptionalHelper.toOptional(player.getCapability(InternalAbilities.CAPABILITY));
+				if (!cap.isPresent()) {
+					return;
+				}
+				InternalAbilities internalAbilities = cap.get();
 				if (message.key == PEKeybind.ARMOR_TOGGLE) {
 					if (player.isSneaking()) {
 						ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);

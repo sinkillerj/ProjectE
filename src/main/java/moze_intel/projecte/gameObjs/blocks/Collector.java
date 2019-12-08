@@ -26,6 +26,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class Collector extends BlockDirection {
 
@@ -93,7 +94,12 @@ public class Collector extends BlockDirection {
 	@Deprecated
 	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
 		CollectorMK1Tile tile = (CollectorMK1Tile) world.getTileEntity(pos);
-		ItemStack charging = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).orElseThrow(NullPointerException::new).getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
+		Optional<IItemHandler> cap = LazyOptionalHelper.toOptional(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP));
+		if (!cap.isPresent()) {
+			//If something went wrong fallback to default implementation
+			return super.getComparatorInputOverride(state, world, pos);
+		}
+		ItemStack charging = cap.get().getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
 			Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
 			if (holderCapability.isPresent()) {

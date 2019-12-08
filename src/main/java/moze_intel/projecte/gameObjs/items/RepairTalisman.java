@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -18,6 +19,7 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
@@ -123,22 +125,25 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
-			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
-			for (int i = 0; i < inv.getSlots(); i++) {
-				ItemStack invStack = inv.getStackInSlot(i);
-				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
-					continue;
-				}
-				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
-					invStack.setDamage(invStack.getDamage() - 1);
-					if (!hasAction) {
-						hasAction = true;
+			Optional<IItemHandler> cap = LazyOptionalHelper.toOptional(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+			if (cap.isPresent()) {
+				IItemHandler inv = cap.get();
+				for (int i = 0; i < inv.getSlots(); i++) {
+					ItemStack invStack = inv.getStackInSlot(i);
+					if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
+						continue;
+					}
+					if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
+						invStack.setDamage(invStack.getDamage() - 1);
+						if (!hasAction) {
+							hasAction = true;
+						}
 					}
 				}
-			}
-			if (hasAction) {
-				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-				tile.markDirty();
+				if (hasAction) {
+					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+					tile.markDirty();
+				}
 			}
 		}
 	}

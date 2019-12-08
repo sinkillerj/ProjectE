@@ -35,9 +35,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 			PlayerEntity player = findOnlinePlayer(playerUUID);
 			if (player != null) {
 				return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
-			} else {
-				return TransmutationOffline.forPlayer(playerUUID);
 			}
+			return TransmutationOffline.forPlayer(playerUUID);
 		}
 	}
 

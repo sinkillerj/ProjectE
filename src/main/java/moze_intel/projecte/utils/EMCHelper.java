@@ -59,44 +59,48 @@ public final class EMCHelper {
 			}
 		}
 
-		IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
-		Map<Integer, Integer> map = new LinkedHashMap<>();
-		boolean metRequirement = false;
-		long emcConsumed = 0;
-		for (int i = 0; i < inv.getSlots(); i++) {
-			ItemStack stack = inv.getStackInSlot(i);
-			if (stack.isEmpty()) {
-				continue;
-			}
-			long actualExtracted = tryExtract(stack, minFuel);
-			if (actualExtracted > 0) {
-				player.openContainer.detectAndSendChanges();
-				return actualExtracted;
-			} else if (!metRequirement) {
-				if (FuelMapper.isStackFuel(stack)) {
-					long emc = getEmcValue(stack);
-					int toRemove = (int) Math.ceil((double) (minFuel - emcConsumed) / emc);
+		Optional<IItemHandler> itemHandlerCap = LazyOptionalHelper.toOptional(player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+		if (itemHandlerCap.isPresent()) {
+			//Ensure that we have an item handler capability, because if for example the player is dead we will not
+			IItemHandler inv = itemHandlerCap.get();
+			Map<Integer, Integer> map = new LinkedHashMap<>();
+			boolean metRequirement = false;
+			long emcConsumed = 0;
+			for (int i = 0; i < inv.getSlots(); i++) {
+				ItemStack stack = inv.getStackInSlot(i);
+				if (stack.isEmpty()) {
+					continue;
+				}
+				long actualExtracted = tryExtract(stack, minFuel);
+				if (actualExtracted > 0) {
+					player.openContainer.detectAndSendChanges();
+					return actualExtracted;
+				} else if (!metRequirement) {
+					if (FuelMapper.isStackFuel(stack)) {
+						long emc = getEmcValue(stack);
+						int toRemove = (int) Math.ceil((double) (minFuel - emcConsumed) / emc);
 
-					if (stack.getCount() >= toRemove) {
-						map.put(i, toRemove);
-						emcConsumed += emc * toRemove;
-						metRequirement = true;
-					} else {
-						map.put(i, stack.getCount());
-						emcConsumed += emc * stack.getCount();
-						if (emcConsumed >= minFuel) {
+						if (stack.getCount() >= toRemove) {
+							map.put(i, toRemove);
+							emcConsumed += emc * toRemove;
 							metRequirement = true;
+						} else {
+							map.put(i, stack.getCount());
+							emcConsumed += emc * stack.getCount();
+							if (emcConsumed >= minFuel) {
+								metRequirement = true;
+							}
 						}
 					}
 				}
 			}
-		}
-		if (metRequirement) {
-			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-				inv.extractItem(entry.getKey(), entry.getValue(), false);
+			if (metRequirement) {
+				for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+					inv.extractItem(entry.getKey(), entry.getValue(), false);
+				}
+				player.openContainer.detectAndSendChanges();
+				return emcConsumed;
 			}
-			player.openContainer.detectAndSendChanges();
-			return emcConsumed;
 		}
 		return -1;
 	}

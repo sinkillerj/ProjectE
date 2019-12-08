@@ -1,7 +1,9 @@
 package moze_intel.projecte.events;
 
+import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -10,6 +12,7 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -125,17 +128,18 @@ public class PlayerEvents {
 	public static void pickupItem(EntityItemPickupEvent event) {
 		PlayerEntity player = event.getPlayer();
 		World world = player.getEntityWorld();
-
 		if (world.isRemote) {
 			return;
 		}
-
 		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
-
 		if (bag.isEmpty()) {
 			return;
 		}
-		IItemHandler handler = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(((AlchemicalBag) bag.getItem()).color);
+		Optional<IAlchBagProvider> cap = LazyOptionalHelper.toOptional(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY));
+		if (!cap.isPresent()) {
+			return;
+		}
+		IItemHandler handler = cap.get().getBag(((AlchemicalBag) bag.getItem()).color);
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 		if (remainder.isEmpty()) {
 			event.getItem().remove();

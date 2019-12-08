@@ -1,11 +1,14 @@
 package moze_intel.projecte.gameObjs.items;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -46,9 +49,17 @@ public class AlchemicalBag extends ItemPE {
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(PlayerEntity player, NonNullList<ItemStack> inventory) {
+		Optional<IAlchBagProvider> cap = Optional.empty();
 		for (ItemStack stack : inventory) {
 			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag) {
-				IItemHandler inv = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).orElseThrow(NullPointerException::new).getBag(((AlchemicalBag) stack.getItem()).color);
+				if (!cap.isPresent()) {
+					cap = LazyOptionalHelper.toOptional(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY));
+					if (!cap.isPresent()) {
+						//If the player really doesn't have the capability and it isn't just not not loaded yet, exit
+						break;
+					}
+				}
+				IItemHandler inv = cap.get().getBag(((AlchemicalBag) stack.getItem()).color);
 				for (int i = 0; i < inv.getSlots(); i++) {
 					ItemStack ring = inv.getStackInSlot(i);
 					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {
