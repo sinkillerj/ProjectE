@@ -47,6 +47,7 @@ public class ShowBagCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("showbag")
+				.requires(cs -> cs.hasPermissionLevel(4))
 				.then(Commands.argument("color", new ColorArgument())
 						.then(Commands.argument("target", EntityArgument.player())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))))
