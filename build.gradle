@@ -170,6 +170,7 @@ jar {
 }
 
 processResources {
+    outputs.upToDateWhen { false }
     filesMatching('META-INF/mods.toml') {
         //Replace some keys from the mods.toml with values from the gradle.properties file
         expand "version": projecte_version, "mc_version": minecraft_version, "forge_version": min_forge_version
