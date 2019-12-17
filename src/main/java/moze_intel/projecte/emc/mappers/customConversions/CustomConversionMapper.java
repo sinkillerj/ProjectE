@@ -102,17 +102,19 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueBefore.entrySet()) {
 			NormalizedSimpleStack something = entry.getKey();
 			mapper.setValueBefore(something, entry.getValue());
-			if (something instanceof NSSTag) {
+			//TODO: If something breaks from this, uncomment it and add it to other locations that have setValueBefore
+			/*if (something instanceof NSSTag) {
 				((NSSTag) something).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.getValue()));
-			}
+			}*/
 		}
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueAfter.entrySet()) {
 			NormalizedSimpleStack something = entry.getKey();
 			mapper.setValueAfter(something, entry.getValue());
-			if (something instanceof NSSTag) {
+			//TODO: If something breaks from this, uncomment it and add it to other locations that have setValueAfter
+			/*if (something instanceof NSSTag) {
 				((NSSTag) something).forEachElement(normalizedSimpleStack -> mapper.setValueAfter(normalizedSimpleStack, entry.getValue()));
-			}
+			}*/
 		}
 
 		for (CustomConversion conversion : file.values.conversion) {

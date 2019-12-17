@@ -13,7 +13,9 @@ public class TagMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
 		AbstractNSSTag.getAllCreatedTags().forEach(stack -> stack.forEachElement(normalizedSimpleStack -> {
+			//Tag -> element
 			mapper.addConversion(1, stack, Collections.singletonList(normalizedSimpleStack));
+			//Element -> tag
 			mapper.addConversion(1, normalizedSimpleStack, Collections.singletonList(stack));
 		}));
 	}

@@ -13,6 +13,13 @@ import java.lang.annotation.Target;
 public @interface EMCMapper {
 
 	/**
+	 * Gets the priority of this {@link EMCMapper}. This is used when loading the list of emc mappers. The higher this number is the earlier it gets ran.
+	 *
+	 * @return Sort priority of this {@link EMCMapper}
+	 */
+	int priority() default 0;
+
+	/**
 	 * Array of modids that are required for this {@link EMCMapper} to be loaded, empty String or array for no dependencies.
 	 *
 	 * @return array of modids.

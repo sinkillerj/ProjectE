@@ -54,6 +54,7 @@ public class AnnotationHelper {
 	public static List<IEMCMapper<NormalizedSimpleStack, Long>> getEMCMappers() {
 		ModList modList = ModList.get();
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = new ArrayList<>();
+		Map<IEMCMapper<NormalizedSimpleStack, Long>, Integer> priorities = new HashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
@@ -61,8 +62,11 @@ public class AnnotationHelper {
 					IEMCMapper mapper = getEMCMapper(data.getMemberName());
 					if (mapper != null) {
 						try {
-							emcMappers.add((IEMCMapper<NormalizedSimpleStack, Long>) mapper);
-							PECore.LOGGER.info("Found and loaded EMC mapper: {}", mapper.getName());
+							IEMCMapper<NormalizedSimpleStack, Long> emcMapper = (IEMCMapper<NormalizedSimpleStack, Long>) mapper;
+							int priority = getPriority(data);
+							emcMappers.add(emcMapper);
+							priorities.put(emcMapper, priority);
+							PECore.LOGGER.info("Found and loaded EMC mapper: {}, with priority {}", mapper.getName(), priority);
 						} catch (ClassCastException e) {
 							PECore.LOGGER.error("{}: Is not a mapper for {}, to {}", mapper.getClass(), NormalizedSimpleStack.class, Long.class, e);
 						}
@@ -70,6 +74,7 @@ public class AnnotationHelper {
 				}
 			}
 		}
+		emcMappers.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
 		return emcMappers;
 	}
 

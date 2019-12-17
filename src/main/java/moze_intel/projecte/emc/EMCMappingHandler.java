@@ -42,6 +42,7 @@ public final class EMCMappingHandler {
 	public static void loadMappers() {
 		//If we don't have any mappers loaded try to load them
 		if (mappers.isEmpty()) {
+			//TODO: Make some of the mappers use the priority annotation as needed
 			//Add all the EMC mappers we have encountered
 			mappers.addAll(AnnotationHelper.getEMCMappers());
 			//Manually register the Tag Mapper to ensure that it is registered last so that it can "fix" all the tags used in any of the other mappers

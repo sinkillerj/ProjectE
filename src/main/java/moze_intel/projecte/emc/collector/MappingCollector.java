@@ -80,7 +80,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 			return;
 		}
 		if (fixValueBeforeInherit.containsKey(something)) {
-			PECore.debugLog("Overwriting fixValueBeforeInherit for {}:{} to {}", something, fixValueBeforeInherit.get(something), value);
+			PECore.debugLog("Overwriting fixValueBeforeInherit for {} from: {} to {}", something, fixValueBeforeInherit.get(something), value);
 		}
 		fixValueBeforeInherit.put(something, value);
 		fixValueAfterInherit.remove(something);
@@ -92,7 +92,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 			return;
 		}
 		if (fixValueAfterInherit.containsKey(something)) {
-			PECore.debugLog("Overwriting fixValueAfterInherit for {}:{} to {}", something, fixValueAfterInherit.get(something), value);
+			PECore.debugLog("Overwriting fixValueAfterInherit for {} from: {} to {}", something, fixValueAfterInherit.get(something), value);
 		}
 		fixValueAfterInherit.put(something, value);
 	}
