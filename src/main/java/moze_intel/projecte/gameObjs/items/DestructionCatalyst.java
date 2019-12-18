@@ -66,7 +66,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, ctx.getPos());
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 		return ActionResultType.SUCCESS;
 	}

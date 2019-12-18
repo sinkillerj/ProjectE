@@ -65,7 +65,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public RayTraceResult getHitBlock(PlayerEntity player) {
-		return rayTrace(player.getEntityWorld(), player, player.isSneaking() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		return rayTrace(player.getEntityWorld(), player, player.func_225608_bj_() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 	}
 
 	@Nonnull
@@ -88,7 +88,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			sideHit = ((BlockRayTraceResult) rtr).getFace();
 		}
 
-		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
+		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.func_225608_bj_());
 
 		if (result != null) {
 			int mode = this.getMode(stack);
@@ -101,7 +101,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				}
 			}
 
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		}
 
 		return ActionResultType.SUCCESS;
@@ -110,7 +110,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(ent);

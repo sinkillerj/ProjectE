@@ -161,7 +161,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
+			WorldHelper.createLootDrop(drops, world, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}
@@ -282,7 +282,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -349,7 +349,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -475,7 +475,7 @@ public class ToolHelper {
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
 			PlayerHelper.swingItem(player, hand);
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -520,7 +520,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			PlayerHelper.swingItem(player, hand);
 		}
 	}
@@ -586,7 +586,7 @@ public class ToolHelper {
 			if (!world.isRemote && Math.random() < 0.01) {
 				Entity e = ent.getType().create(world);
 				if (e != null) {
-					e.setPosition(ent.posX, ent.posY, ent.posZ);
+					e.setPosition(ent.func_226277_ct_(), ent.func_226278_cu_(), ent.func_226281_cx_());
 					if (e instanceof MobEntity) {
 						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(entityPosition), SpawnReason.EVENT, null, null);
 					}
@@ -601,7 +601,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
+			WorldHelper.createLootDrop(drops, world, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}
@@ -639,7 +639,7 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -672,7 +672,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.posX, player.posY, player.posZ);
+			WorldHelper.createLootDrop(drops, world, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}

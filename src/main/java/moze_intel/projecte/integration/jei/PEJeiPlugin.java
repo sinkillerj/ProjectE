@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.jei;
+/*package moze_intel.projecte.integration.jei;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,4 +66,4 @@ public class PEJeiPlugin implements IModPlugin {
 		}
 		registry.addRecipes(fuelRecipes, CollectorRecipeCategory.UID);
 	}
-}
+}*/

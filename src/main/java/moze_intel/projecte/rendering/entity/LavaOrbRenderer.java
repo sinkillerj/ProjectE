@@ -12,8 +12,9 @@ public class LavaOrbRenderer extends EntitySpriteRenderer<EntityLavaProjectile> 
 		super(manager);
 	}
 
+	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull EntityLavaProjectile entity) {
+	public ResourceLocation getEntityTexture(@Nonnull EntityLavaProjectile entity) {
 		return new ResourceLocation(PECore.MODID, "textures/entity/lava_orb.png");
 	}
 }

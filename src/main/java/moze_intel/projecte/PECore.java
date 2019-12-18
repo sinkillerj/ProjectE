@@ -25,15 +25,6 @@ import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
-import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCatalystPrimed;
-import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
-import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -86,6 +77,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -152,6 +144,10 @@ public class PECore {
 
 		//Register our config files
 		ProjectEConfig.register();
+
+		//TODO: 1.15 things to double check:
+		// is func_225608_bj_ the proper replacement for isSneaking
+		// Replace some usages of RenderSystem with direct matrix manipulation
 	}
 
 	static class ClientHandler {
@@ -160,21 +156,21 @@ public class PECore {
 			DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
 
 			//Tile Entity
-			ClientRegistry.bindTileEntitySpecialRenderer(AlchChestTile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == ObjHandler.alchChest));
-			ClientRegistry.bindTileEntitySpecialRenderer(CondenserTile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == ObjHandler.condenser));
-			ClientRegistry.bindTileEntitySpecialRenderer(CondenserMK2Tile.class, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == ObjHandler.condenserMk2));
-			ClientRegistry.bindTileEntitySpecialRenderer(DMPedestalTile.class, new PedestalRenderer());
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<AlchChestTile>) ObjHandler.ALCH_CHEST_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == ObjHandler.alchChest));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserTile>) ObjHandler.CONDENSER_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == ObjHandler.condenser));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserMK2Tile>) ObjHandler.CONDENSER_MK2_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == ObjHandler.condenserMk2));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<DMPedestalTile>) ObjHandler.DM_PEDESTAL_TILE, new PedestalRenderer());
 
 			//Entities
-			RenderingRegistry.registerEntityRenderingHandler(EntityWaterProjectile.class, WaterOrbRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityLavaProjectile.class, LavaOrbRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityMobRandomizer.class, RandomizerRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityLensProjectile.class, ExplosiveLensRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityFireProjectile.class, FireballRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntitySWRGProjectile.class, LightningRenderer::new);
-			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCatalystPrimed.class, manager -> new NovaRenderer<>(manager, ObjHandler.novaCatalyst::getDefaultState));
-			RenderingRegistry.registerEntityRenderingHandler(EntityNovaCataclysmPrimed.class, manager -> new NovaRenderer<>(manager, ObjHandler.novaCataclysm::getDefaultState));
-			RenderingRegistry.registerEntityRenderingHandler(EntityHomingArrow.class, TippedArrowRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.WATER_PROJECTILE, WaterOrbRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.LAVA_PROJECTILE, LavaOrbRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.MOB_RANDOMIZER, RandomizerRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.LENS_PROJECTILE, ExplosiveLensRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.FIRE_PROJECTILE, FireballRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.SWRG_PROJECTILE, LightningRenderer::new);
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.NOVA_CATALYST_PRIMED, manager -> new NovaRenderer<>(manager, ObjHandler.novaCatalyst::getDefaultState));
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.NOVA_CATACLYSM_PRIMED, manager -> new NovaRenderer<>(manager, ObjHandler.novaCataclysm::getDefaultState));
+			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.HOMING_ARROW, TippedArrowRenderer::new);
 		}
 
 		static void loadComplete(FMLLoadCompleteEvent evt) {

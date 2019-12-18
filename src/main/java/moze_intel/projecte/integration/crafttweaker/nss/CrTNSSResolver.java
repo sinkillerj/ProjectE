@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker.nss;
+/*package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
@@ -53,4 +53,4 @@ public class CrTNSSResolver {
 		}
 		return true;
 	}
-}
+}*/

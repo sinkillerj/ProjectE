@@ -11,6 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -21,6 +23,23 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
 public final class ItemHelper {
+
+	/**
+	 * Gets an ActionResult based on a type
+	 */
+	public static ActionResult<ItemStack> actionResultFromType(ActionResultType type, ItemStack stack) {
+		switch (type) {
+			case SUCCESS:
+				return ActionResult.func_226248_a_(stack);
+			case CONSUME:
+				return ActionResult.func_226249_b_(stack);
+			case FAIL:
+				return ActionResult.func_226251_d_(stack);
+			case PASS:
+			default:
+				return ActionResult.func_226250_c_(stack);
+		}
+	}
 
 	/**
 	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.

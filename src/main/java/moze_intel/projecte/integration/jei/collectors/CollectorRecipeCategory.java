@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.jei.collectors;
+/*package moze_intel.projecte.integration.jei.collectors;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -98,4 +98,4 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		fontRenderer.drawString(emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(55, 18);
 	}
-}
+}*/

@@ -30,6 +30,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 
 public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
@@ -68,7 +69,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem())) {
 			return ActionResultType.FAIL;
 		}
-		if (player.isSneaking()) {
+		if (player.func_225608_bj_()) {
 			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.BONE_MEAL, 4);
 			if (obj == null) {
 				return ActionResultType.FAIL;
@@ -86,16 +87,18 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	private boolean useBoneMeal(World world, BlockPos pos) {
 		boolean result = false;
-		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15))) {
-			BlockState state = world.getBlockState(currentPos);
-			Block crop = state.getBlock();
-			if (crop instanceof IGrowable) {
-				IGrowable growable = (IGrowable) crop;
-				if (growable.canUseBonemeal(world, world.rand, currentPos, state)) {
-					if (!result) {
-						result = true;
+		if (world instanceof ServerWorld) {
+			for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15))) {
+				BlockState state = world.getBlockState(currentPos);
+				Block crop = state.getBlock();
+				if (crop instanceof IGrowable) {
+					IGrowable growable = (IGrowable) crop;
+					if (growable.canUseBonemeal(world, world.rand, currentPos, state)) {
+						if (!result) {
+							result = true;
+						}
+						growable.func_225535_a_((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
 					}
-					growable.grow(world, world.rand, currentPos.toImmutable(), state);
 				}
 			}
 		}

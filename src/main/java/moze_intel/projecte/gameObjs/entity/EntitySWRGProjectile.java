@@ -49,7 +49,7 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		// Undo the 0.99 (0.8 in water) drag applied in superclass
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 		this.setMotion(this.getMotion().scale(inverse));
-		if (!world.isRemote && isAlive() && posY > world.getHeight() && world.isRaining()) {
+		if (!world.isRemote && isAlive() && func_226278_cu_() > world.getHeight() && world.isRaining()) {
 			world.getWorldInfo().setThundering(true);
 			remove();
 		}

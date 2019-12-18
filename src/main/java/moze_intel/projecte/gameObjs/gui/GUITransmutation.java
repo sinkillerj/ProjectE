@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Locale;
@@ -56,7 +56,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color4f(1F, 1F, 1F, 1F);
+		RenderSystem.color4f(1F, 1F, 1F, 1F);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		this.textBoxFilter.render(mouseX, mouseY, partialTicks);

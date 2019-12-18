@@ -167,7 +167,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    /*compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
@@ -181,7 +181,7 @@ dependencies {
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")*/
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
@@ -195,7 +195,7 @@ processResources {
     outputs.upToDateWhen { false }
     filesMatching('META-INF/mods.toml') {
         //Replace some keys from the mods.toml with values from the gradle.properties file
-        expand "version": projecte_version, "mc_version": minecraft_version, "forge_version": min_forge_version
+        expand "version": projecte_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version
     }
 }
 

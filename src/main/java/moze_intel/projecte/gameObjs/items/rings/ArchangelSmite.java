@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -82,14 +81,14 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		if (!world.isRemote) {
 			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.func_226248_a_(player.getHeldItem(hand));
 	}
 
 	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
-			world.playSound(null, shooter.posX, shooter.posY, shooter.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+			world.playSound(null, shooter.func_226277_ct_(), shooter.func_226278_cu_(), shooter.func_226281_cx_(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 			world.addEntity(arrow);
 		}
 	}
@@ -106,9 +105,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
 					for (int i = 0; i < 3; i++) {
 						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
-						arrow.posX = tile.centeredX;
-						arrow.posY = tile.centeredY + 2;
-						arrow.posZ = tile.centeredZ;
+						arrow.func_226288_n_(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
 						arrow.setMotion(0, 1, 0);
 						arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 						world.addEntity(arrow);

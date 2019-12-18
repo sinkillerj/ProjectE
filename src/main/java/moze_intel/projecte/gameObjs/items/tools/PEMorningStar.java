@@ -130,9 +130,9 @@ public class PEMorningStar extends PETool implements IItemMode {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
-			return ActionResult.newResult(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
+			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.newResult(ActionResultType.PASS, stack);
+		return ActionResult.func_226250_c_(stack);
 	}
 
 	@Override

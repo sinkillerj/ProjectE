@@ -5,12 +5,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -22,7 +20,8 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 		super(props);
 		this.tier = tier;
 		addItemCapability(new EmcHolderItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -45,9 +44,9 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
-			return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+			return ActionResult.func_226248_a_(stack);
 		}
-		return ActionResult.newResult(ActionResultType.PASS, stack);
+		return ActionResult.func_226250_c_(stack);
 	}
 
 	public enum EnumKleinTier {

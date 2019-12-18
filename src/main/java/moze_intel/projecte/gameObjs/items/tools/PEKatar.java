@@ -10,6 +10,7 @@ import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.Block;
@@ -149,7 +150,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		//Shear entities
-		return ActionResult.newResult(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
+		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
 	}
 
 	@Override

@@ -318,9 +318,9 @@ public final class WorldHelper {
 	 * Gravitates an entity, vanilla xp orb style, towards a position Code adapted from EntityXPOrb and OpenBlocks Vacuum Hopper, mostly the former
 	 */
 	public static void gravitateEntityTowards(Entity ent, double x, double y, double z) {
-		double dX = x - ent.posX;
-		double dY = y - ent.posY;
-		double dZ = z - ent.posZ;
+		double dX = x - ent.func_226277_ct_();
+		double dY = y - ent.func_226278_cu_();
+		double dZ = z - ent.func_226281_cx_();
 		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
 
 		double vel = 1.0 - dist / 15.0;
@@ -331,6 +331,9 @@ public final class WorldHelper {
 	}
 
 	public static void growNearbyRandomly(boolean harvest, World world, BlockPos pos, PlayerEntity player) {
+		if (!(world instanceof ServerWorld)) {
+			return;
+		}
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
 			currentPos = currentPos.toImmutable();
@@ -354,7 +357,7 @@ public final class WorldHelper {
 					}
 				} else if (world.rand.nextInt(chance) == 0) {
 					if (ProjectEConfig.server.items.harvBandGrass.get() || !crop.getTranslationKey().toLowerCase(Locale.ROOT).contains("grass")) {
-						growable.grow(world, world.rand, currentPos, state);
+						growable.func_225535_a_((ServerWorld) world, world.rand, currentPos, state);
 					}
 				}
 			}
@@ -363,7 +366,7 @@ public final class WorldHelper {
 			else if (crop instanceof IPlantable) {
 				if (world.rand.nextInt(chance / 4) == 0) {
 					for (int i = 0; i < (harvest ? 8 : 4); i++) {
-						state.randomTick(world, currentPos, world.rand);
+						state.func_227034_b_((ServerWorld) world, currentPos, world.rand);
 					}
 				}
 
@@ -454,7 +457,7 @@ public final class WorldHelper {
 							continue;
 						}
 						Vec3d p = new Vec3d(x, y, z);
-						Vec3d t = new Vec3d(ent.posX, ent.posY, ent.posZ);
+						Vec3d t = new Vec3d(ent.func_226277_ct_(), ent.func_226278_cu_(), ent.func_226281_cx_());
 						double distance = p.distanceTo(t) + 0.1D;
 						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
 						ent.setMotion(ent.getMotion().add(r.scale(1 / 1.5D * 1 / distance)));
@@ -477,7 +480,7 @@ public final class WorldHelper {
 				if (state.getBlock() instanceof TNTBlock) {
 					world.removeBlock(pos, false);
 				}
-				world.playSound(null, ctx.getPlayer().posX, ctx.getPlayer().posY, ctx.getPlayer().posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, ctx.getPlayer().func_226277_ct_(), ctx.getPlayer().func_226278_cu_(), ctx.getPlayer().func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 			return ActionResultType.SUCCESS;
 		}

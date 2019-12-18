@@ -14,7 +14,6 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -35,7 +34,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -67,7 +65,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new ModeChangerItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -131,12 +130,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
-			if (player.isSneaking()) {
+			if (player.func_225608_bj_()) {
 				CompoundNBT nbt = stack.getOrCreateTag();
 				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
-						WorldHelper.createLootDrop(items, world, player.posX, player.posY, player.posZ);
+						WorldHelper.createLootDrop(items, world, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
@@ -148,7 +147,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
 			}
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.func_226248_a_(stack);
 	}
 
 	private static ItemStack getTarget(ItemStack stack) {

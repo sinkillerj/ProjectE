@@ -11,7 +11,6 @@ import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
@@ -31,7 +30,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		if (!world.isRemote) {
 			shootProjectile(player, stack, hand);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.func_226248_a_(stack);
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;
 		}
-		world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), world);
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(ent);

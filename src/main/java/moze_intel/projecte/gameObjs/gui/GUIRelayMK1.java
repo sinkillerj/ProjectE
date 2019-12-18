@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.utils.Constants;
@@ -28,7 +28,7 @@ public class GUIRelayMK1 extends PEContainerScreen<RelayMK1Container> {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);

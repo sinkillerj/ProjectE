@@ -46,7 +46,7 @@ public class EntityLensProjectile extends ThrowableEntity {
 		}
 		if (this.isInWater()) {
 			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, posX, posY, posZ, 2, 0, 0, 0, 0);
+			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, func_226277_ct_(), func_226278_cu_(), func_226281_cx_(), 2, 0, 0, 0, 0);
 			this.remove();
 		}
 	}
@@ -54,7 +54,7 @@ public class EntityLensProjectile extends ThrowableEntity {
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
 		if (!this.getEntityWorld().isRemote) {
-			WorldHelper.createNovaExplosion(world, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+			WorldHelper.createNovaExplosion(world, getThrower(), func_226277_ct_(), func_226278_cu_(), func_226281_cx_(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 			remove();
 		}
 	}

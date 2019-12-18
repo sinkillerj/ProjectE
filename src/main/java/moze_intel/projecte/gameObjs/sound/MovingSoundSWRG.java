@@ -25,9 +25,9 @@ public class MovingSoundSWRG extends TickableSound {
 		if (!this.swrgProjectile.isAlive()) {
 			this.donePlaying = true;
 		} else {
-			this.x = (float) this.swrgProjectile.posX;
-			this.y = (float) this.swrgProjectile.posY;
-			this.z = (float) this.swrgProjectile.posZ;
+			this.x = (float) this.swrgProjectile.func_226277_ct_();
+			this.y = (float) this.swrgProjectile.func_226278_cu_();
+			this.z = (float) this.swrgProjectile.func_226281_cx_();
 			float f = MathHelper.sqrt(Entity.horizontalMag(this.swrgProjectile.getMotion()));
 
 			if ((double) f >= 0.01D) {

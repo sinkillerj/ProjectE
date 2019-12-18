@@ -15,7 +15,6 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -60,7 +59,8 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 		addItemCapability(new ModeChangerItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 					break;
 				case 3:
-					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
+					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getBoundingBox().grow(5), player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
 					break;
 			}
 		}
@@ -136,7 +136,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.func_226248_a_(player.getHeldItem(hand));
 	}
 
 	@Nonnull
@@ -178,7 +178,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 						}
 						break;
 				}
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
 		return true;

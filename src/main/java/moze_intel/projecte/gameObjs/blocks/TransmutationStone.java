@@ -18,6 +18,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
@@ -74,13 +75,14 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 		}
 	}
 
+	@Nonnull
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public ActionResultType func_225533_a_(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Nullable

@@ -49,13 +49,14 @@ public class GemLegs extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			if (player.isSneaking() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
+			if (player.func_225608_bj_() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
 				player.setMotion(player.getMotion().add(0, -0.32F, 0));
 			}
 		}
-		if (player.isSneaking()) {
-			AxisAlignedBB box = new AxisAlignedBB(player.posX - 3.5, player.posY - 3.5, player.posZ - 3.5, player.posX + 3.5, player.posY + 3.5, player.posZ + 3.5);
-			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
+		if (player.func_225608_bj_()) {
+			AxisAlignedBB box = new AxisAlignedBB(player.func_226277_ct_() - 3.5, player.func_226278_cu_() - 3.5, player.func_226281_cx_() - 3.5,
+					player.func_226277_ct_() + 3.5, player.func_226278_cu_() + 3.5, player.func_226281_cx_() + 3.5);
+			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
 			if (!world.isRemote && player.getMotion().getY() < -0.08) {
 				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player, player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
 						entity -> entity instanceof LivingEntity);

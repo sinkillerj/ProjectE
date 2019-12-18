@@ -4,8 +4,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
@@ -29,7 +27,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -77,9 +74,10 @@ public final class PlayerHelper {
 
 	@Nullable
 	public static IItemHandler getCurios(PlayerEntity player) {
-		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
+		//TODO: Curios
+		/*if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 			return CuriosIntegration.getAll(player);
-		}
+		}*/
 		return null;
 	}
 
@@ -95,7 +93,7 @@ public final class PlayerHelper {
 	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance) {
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
-		Vec3d playerPos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+		Vec3d playerPos = new Vec3d(player.func_226277_ct_(), player.func_226278_cu_() + player.getEyeHeight(), player.func_226281_cx_());
 		Vec3d src = playerPos.add(0, player.getEyeHeight(), 0);
 		Vec3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);

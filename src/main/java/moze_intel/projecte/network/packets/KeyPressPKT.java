@@ -51,7 +51,7 @@ public class KeyPressPKT {
 				}
 				InternalAbilities internalAbilities = cap.get();
 				if (message.key == PEKeybind.ARMOR_TOGGLE) {
-					if (player.isSneaking()) {
+					if (player.func_225608_bj_()) {
 						ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 						if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
 							GemHelmet.toggleNightVision(helm, player);

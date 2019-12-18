@@ -1,6 +1,6 @@
 package moze_intel.projecte.events;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.PECore;
@@ -16,8 +16,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -49,17 +47,18 @@ public class TransmutationRenderingEvent {
 			if (transmutationResult != null) {
 				if (transmutationResult.getBlock() instanceof FlowingFluidBlock) {
 					ResourceLocation spriteName = ((FlowingFluidBlock) transmutationResult.getBlock()).getFluid().getAttributes().getFlowingTexture();
-					TextureAtlasSprite sprite = mc.getTextureMap().getSprite(spriteName);
-					mc.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+					//TODO: 1.15 FIXME
+					/*TextureAtlasSprite sprite = mc.getTextureMap().getSprite(spriteName);
+					mc.textureManager.bindTexture(PlayerContainer.field_226615_c_);
 					BufferBuilder wr = Tessellator.getInstance().getBuffer();
 					wr.begin(7, DefaultVertexFormats.POSITION_TEX);
-					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
-					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
-					wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
-					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
-					Tessellator.getInstance().draw();
+					wr.func_225582_a_(0, 0, 0).func_225583_a_(sprite.getMinU(), sprite.getMinV()).endVertex();
+					wr.func_225582_a_(0, 16, 0).func_225583_a_(sprite.getMinU(), sprite.getMaxV()).endVertex();
+					wr.func_225582_a_(16, 16, 0).func_225583_a_(sprite.getMaxU(), sprite.getMaxV()).endVertex();
+					wr.func_225582_a_(16, 0, 0).func_225583_a_(sprite.getMaxU(), sprite.getMinV()).endVertex();
+					Tessellator.getInstance().draw();*/
 				} else {
-					RenderHelper.enableStandardItemLighting();
+					RenderHelper.func_227780_a_();
 					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
 					mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock(), 1), 0, 0, model);
 					RenderHelper.disableStandardItemLighting();
@@ -90,7 +89,7 @@ public class TransmutationRenderingEvent {
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState current = world.getBlockState(rtr.getPos());
-			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.func_225608_bj_());
 
 			if (transmutationResult != null) {
 				List<AxisAlignedBB> renderList = new ArrayList<>(1);
@@ -109,14 +108,14 @@ public class TransmutationRenderingEvent {
 	}
 
 	private static void drawAll(List<AxisAlignedBB> renderList) {
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GlStateManager.disableTexture();
-		GlStateManager.disableCull();
-		GlStateManager.disableLighting();
-		GlStateManager.depthMask(false);
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		RenderSystem.disableTexture();
+		RenderSystem.disableCull();
+		RenderSystem.disableLighting();
+		RenderSystem.depthMask(false);
 
-		GlStateManager.color4f(1.0f, 1.0f, 1.0f, ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60f : 0.35f);
+		RenderSystem.color4f(1.0f, 1.0f, 1.0f, ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60f : 0.35f);
 
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder wr = tess.getBuffer();
@@ -125,49 +124,49 @@ public class TransmutationRenderingEvent {
 
 		for (AxisAlignedBB b : renderList) {
 			//Top
-			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
-			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).endVertex();
 
 			//Bottom
-			wr.pos(b.minX, b.minY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
-			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.maxZ).endVertex();
 
 			//Front
-			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
-			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
-			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
-			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).endVertex();
 
 			//Back
-			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
-			wr.pos(b.minX, b.minY, b.minZ).endVertex();
-			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).endVertex();
 
 			//Left
-			wr.pos(b.minX, b.maxY, b.maxZ).endVertex();
-			wr.pos(b.minX, b.maxY, b.minZ).endVertex();
-			wr.pos(b.minX, b.minY, b.minZ).endVertex();
-			wr.pos(b.minX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.minX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.minX, b.minY, b.maxZ).endVertex();
 
 			//Right
-			wr.pos(b.maxX, b.maxY, b.maxZ).endVertex();
-			wr.pos(b.maxX, b.maxY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.minY, b.minZ).endVertex();
-			wr.pos(b.maxX, b.minY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.minZ).endVertex();
+			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).endVertex();
 		}
 
 		tess.draw();
 
-		GlStateManager.depthMask(true);
-		GlStateManager.enableCull();
-		GlStateManager.enableLighting();
-		GlStateManager.enableTexture();
-		GlStateManager.disableBlend();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableCull();
+		RenderSystem.enableLighting();
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 	private static float getPulseProportion() {

@@ -554,7 +554,8 @@ public class ObjHandler {
 
 	@SubscribeEvent
 	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt) {
-		evt.getRegistry().register(WATER_PROJECTILE.setRegistryName(PECore.MODID, "water_projectile"));
+		//TODO: 1.15 FIXME
+		/*evt.getRegistry().register(WATER_PROJECTILE.setRegistryName(PECore.MODID, "water_projectile"));
 		evt.getRegistry().register(LAVA_PROJECTILE.setRegistryName(PECore.MODID, "lava_projectile"));
 		evt.getRegistry().register(MOB_RANDOMIZER.setRegistryName(PECore.MODID, "mob_randomizer"));
 		evt.getRegistry().register(LENS_PROJECTILE.setRegistryName(PECore.MODID, "lens_projectile"));
@@ -562,7 +563,7 @@ public class ObjHandler {
 		evt.getRegistry().register(NOVA_CATACLYSM_PRIMED.setRegistryName(PECore.MODID, "nova_cataclysm_primed"));
 		evt.getRegistry().register(HOMING_ARROW.setRegistryName(PECore.MODID, "homing_arrow"));
 		evt.getRegistry().register(FIRE_PROJECTILE.setRegistryName(PECore.MODID, "fire_projectile"));
-		evt.getRegistry().register(SWRG_PROJECTILE.setRegistryName(PECore.MODID, "swrg_projectile"));
+		evt.getRegistry().register(SWRG_PROJECTILE.setRegistryName(PECore.MODID, "swrg_projectile"));*/
 	}
 
 	@SubscribeEvent

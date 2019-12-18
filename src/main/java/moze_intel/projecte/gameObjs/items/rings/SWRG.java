@@ -16,7 +16,6 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
@@ -31,7 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -49,14 +47,15 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private void tick(ItemStack stack, PlayerEntity player) {
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.posX, player.posY, player.posZ, true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
 		}
 		if (player.getEntityWorld().isRemote) {
 			return;
@@ -135,7 +134,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			}
 			changeMode(player, stack, newMode);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.func_226248_a_(stack);
 	}
 
 	/**
@@ -154,10 +153,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 		if (mode == 0 || oldMode == 3) {
 			//At least one mode deactivated
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 0.8F, 1.0F);
 		} else if (oldMode == 0 || mode == 3) {
 			//At least one mode activated
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
@@ -187,7 +186,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
 						continue;
 					}
-					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.posX, living.posY, living.posZ, false));
+					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.func_226277_ct_(), living.func_226278_cu_(), living.func_226281_cx_(), false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
 			} else {

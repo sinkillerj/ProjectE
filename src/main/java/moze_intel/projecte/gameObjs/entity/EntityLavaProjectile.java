@@ -61,7 +61,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 					}
 				});
 			}
-			if (this.posY > 128) {
+			if (func_226278_cu_() > 128) {
 				WorldInfo worldInfo = world.getWorldInfo();
 				worldInfo.setRaining(false);
 				this.remove();

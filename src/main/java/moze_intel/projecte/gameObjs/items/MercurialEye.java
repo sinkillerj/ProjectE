@@ -90,15 +90,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		ItemStack stack = player.getHeldItem(hand);
 		if (getMode(stack) == CREATION_MODE) {
 			if (world.isRemote) {
-				return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+				return ActionResult.func_226248_a_(stack);
 			}
-			Vec3d eyeVec = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+			Vec3d eyeVec = new Vec3d(player.func_226277_ct_(), player.func_226278_cu_() + player.getEyeHeight(), player.func_226281_cx_());
 			Vec3d lookVec = player.getLookVec();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
 			Vec3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
-			return ActionResult.newResult(formBlocks(stack, player, new BlockPos(targVec), null), stack);
+			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
 		}
-		return ActionResult.newResult(ActionResultType.PASS, stack);
+		return ActionResult.func_226250_c_(stack);
 	}
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {
@@ -139,7 +139,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
 			Block block = startingState.getBlock();
-			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isSneaking() && !block.isAir(startingState, world, startingPos))) {
+			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.func_225608_bj_() && !block.isAir(startingState, world, startingPos))) {
 				BlockPos offsetPos = startingPos.offset(facing);
 				BlockState offsetState = world.getBlockState(offsetPos);
 				if (!offsetState.getMaterial().isReplaceable()) {
@@ -227,7 +227,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 		if (hitTargets > 0) {
 			if (PESounds.POWER != null) {
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
+				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			}
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together

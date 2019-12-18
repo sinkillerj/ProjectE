@@ -10,7 +10,6 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -19,7 +18,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,7 +33,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ChargeItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -55,7 +54,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 			return;
 		}
 		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-			AxisAlignedBB box = new AxisAlignedBB(entity.posX - 3, entity.posY - 3, entity.posZ - 3, entity.posX + 3, entity.posY + 3, entity.posZ + 3);
+			AxisAlignedBB box = new AxisAlignedBB(entity.func_226277_ct_() - 3, entity.func_226278_cu_() - 3, entity.func_226281_cx_() - 3,
+					entity.func_226277_ct_() + 3, entity.func_226278_cu_() + 3, entity.func_226281_cx_() + 3);
 			WorldHelper.freezeInBoundingBox(world, box, (PlayerEntity) entity, true);
 		}
 	}
@@ -68,10 +68,10 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		if (!world.isRemote) {
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getBoundingBox().grow(offset);
-			world.playSound(null, player.posX, player.posY, player.posZ, PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.func_226248_a_(stack);
 	}
 
 	@Override

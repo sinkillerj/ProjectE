@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -107,13 +108,14 @@ public class Pedestal extends Block implements IWaterLoggable {
 		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
 	}
 
+	@Nonnull
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public ActionResultType func_225533_a_(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof DMPedestalTile)) {
-				return true;
+				return ActionResultType.FAIL;
 			}
 			DMPedestalTile tile = (DMPedestalTile) te;
 			ItemStack item = tile.getInventory().getStackInSlot(0);
@@ -131,7 +133,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 				world.notifyBlockUpdate(pos, state, state, 8);
 			}
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	// [VanillaCopy] Adapted from BlockNote

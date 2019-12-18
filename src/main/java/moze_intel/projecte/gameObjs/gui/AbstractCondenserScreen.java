@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
@@ -28,7 +28,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);

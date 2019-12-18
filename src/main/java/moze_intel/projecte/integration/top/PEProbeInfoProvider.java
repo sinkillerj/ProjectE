@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.top;
+/*package moze_intel.projecte.integration.top;
 
 import java.util.function.Function;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -38,4 +38,4 @@ public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOne
 		iTheOneProbe.registerProvider(this);
 		return null;
 	}
-}
+}*/

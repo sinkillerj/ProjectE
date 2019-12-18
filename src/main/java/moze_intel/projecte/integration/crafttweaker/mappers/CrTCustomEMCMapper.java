@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker.mappers;
+/*package moze_intel.projecte.integration.crafttweaker.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.HashMap;
@@ -43,4 +43,4 @@ public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	public String getDescription() {
 		return "Allows setting EMC values through CraftTweaker. This behaves similarly to if someone used the custom emc file instead.";
 	}
-}
+}*/

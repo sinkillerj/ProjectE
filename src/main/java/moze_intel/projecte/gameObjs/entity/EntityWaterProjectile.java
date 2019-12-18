@@ -48,8 +48,8 @@ public class EntityWaterProjectile extends ThrowableEntity {
 			}
 			if (getThrower() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
-				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
-					IFluidState state = this.getEntityWorld().getFluidState(pos);
+				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
+					IFluidState state = getEntityWorld().getFluidState(pos);
 					if (state.isTagged(FluidTags.LAVA)) {
 						pos = pos.toImmutable();
 						if (state.isSource()) {
@@ -57,17 +57,17 @@ public class EntityWaterProjectile extends ThrowableEntity {
 						} else {
 							PlayerHelper.checkedReplaceBlock(player, pos, Blocks.COBBLESTONE.getDefaultState());
 						}
-						playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (this.getEntityWorld().rand.nextFloat() - this.getEntityWorld().rand.nextFloat()) * 0.8F);
+						playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (getEntityWorld().rand.nextFloat() - getEntityWorld().rand.nextFloat()) * 0.8F);
 					}
 				});
 			}
-			if (this.isInWater()) {
-				this.remove();
+			if (isInWater()) {
+				remove();
 			}
-			if (this.posY > 128) {
+			if (func_226278_cu_() > 128) {
 				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
-				this.remove();
+				remove();
 			}
 		}
 	}

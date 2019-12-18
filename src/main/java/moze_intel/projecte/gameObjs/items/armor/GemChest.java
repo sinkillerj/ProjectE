@@ -35,15 +35,15 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	@Override
 	public void onArmorTick(ItemStack chest, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			int x = (int) Math.floor(player.posX);
-			int y = (int) (player.posY - player.getYOffset());
-			int z = (int) Math.floor(player.posZ);
+			int x = (int) Math.floor(player.func_226277_ct_());
+			int y = (int) (player.func_226278_cu_() - player.getYOffset());
+			int z = (int) Math.floor(player.func_226281_cx_());
 			BlockPos pos = new BlockPos(x, y, z);
 
 			Block b = world.getBlockState(pos.down()).getBlock();
 
 			if (b == Blocks.LAVA && world.isAirBlock(pos)) {
-				if (!player.isSneaking()) {
+				if (!player.func_225608_bj_()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;
 					player.onGround = true;
@@ -61,7 +61,7 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public void doExplode(PlayerEntity player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
-			WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.posX, player.posY, player.posZ, 9.0F);
+			WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), 9.0F);
 		}
 	}
 

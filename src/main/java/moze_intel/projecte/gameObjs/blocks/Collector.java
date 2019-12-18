@@ -18,6 +18,7 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -41,16 +42,17 @@ public class Collector extends BlockDirection {
 		return tier;
 	}
 
+	@Nonnull
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
+	public ActionResultType func_225533_a_(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
 		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof CollectorMK1Tile) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (CollectorMK1Tile) te, pos);
 			}
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Nullable

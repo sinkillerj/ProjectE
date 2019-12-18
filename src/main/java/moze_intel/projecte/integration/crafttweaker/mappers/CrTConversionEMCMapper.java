@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker.mappers;
+/*package moze_intel.projecte.integration.crafttweaker.mappers;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.ArrayList;
@@ -55,4 +55,4 @@ public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack,
 			this.ingredients = ingredients;
 		}
 	}
-}
+}*/

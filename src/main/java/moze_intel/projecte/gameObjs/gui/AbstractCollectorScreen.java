@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
@@ -38,7 +38,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);

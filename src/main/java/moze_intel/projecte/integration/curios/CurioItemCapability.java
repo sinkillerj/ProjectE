@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.curios;
+/*package moze_intel.projecte.integration.curios;
 
 import moze_intel.projecte.capability.BasicItemCapability;
 import net.minecraft.entity.LivingEntity;
@@ -17,4 +17,4 @@ public class CurioItemCapability extends BasicItemCapability<ICurio> implements 
 	public void onCurioTick(String identifier, int index, LivingEntity living) {
 		getStack().inventoryTick(living.getEntityWorld(), living, index, false);
 	}
-}
+}*/

@@ -14,7 +14,6 @@ import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -54,7 +53,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
 			} else {
 				WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA, false);
-				world.playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 
@@ -102,12 +102,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			return;
 		}
 		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.posX);
-		int y = (int) (living.posY - living.getYOffset());
-		int z = (int) Math.floor(living.posZ);
+		int x = (int) Math.floor(living.func_226277_ct_());
+		int y = (int) (living.func_226278_cu_() - living.getYOffset());
+		int z = (int) Math.floor(living.func_226281_cx_());
 		BlockPos pos = new BlockPos(x, y, z);
 		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
-			if (!living.isSneaking()) {
+			if (!living.func_225608_bj_()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;
@@ -124,7 +124,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().addEntity(ent);

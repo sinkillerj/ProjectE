@@ -32,7 +32,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -43,6 +42,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
@@ -65,13 +65,13 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (!world.isRemote) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
-				return ActionResult.newResult(ActionResultType.FAIL, stack);
+				return ActionResult.func_226251_d_(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()));
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, stack);
+		return ActionResult.func_226248_a_(stack);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
-		if (bBox == null || bonusTicks == 0) {
+		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerWorld)) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
@@ -163,7 +163,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.randomTick(world, pos.toImmutable(), random);
+					state.func_227034_b_((ServerWorld) world, pos.toImmutable(), random);
 				}
 			}
 		}

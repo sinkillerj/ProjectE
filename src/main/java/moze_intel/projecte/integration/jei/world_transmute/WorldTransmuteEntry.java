@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.jei.world_transmute;
+/*package moze_intel.projecte.integration.jei.world_transmute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,4 +109,4 @@ public class WorldTransmuteEntry {
 	public FluidStack getInputFluid() {
 		return inputFluid;
 	}
-}
+}*/

@@ -11,7 +11,6 @@ import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -51,7 +50,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
@@ -65,7 +65,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
 			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
 			if (fluid != Fluids.EMPTY) {
-				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ,
+				player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(),
 						fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				return ActionResultType.SUCCESS;
 			}
@@ -79,7 +79,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.func_226248_a_(player.getHeldItem(hand));
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
 			for (ItemEntity item : itemList) {
 				if (ItemHelper.simulateFit(player.inventory.mainInventory, item.getItem()) < item.getItem().getCount()) {
-					WorldHelper.gravitateEntityTowards(item, player.posX, player.posY, player.posZ);
+					WorldHelper.gravitateEntityTowards(item, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 				}
 			}
 		}
@@ -169,7 +169,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
 		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
-				WorldHelper.gravitateEntityTowards(e, player.posX, player.posY, player.posZ);
+				WorldHelper.gravitateEntityTowards(e, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 			}
 		}
 		return false;

@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,7 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}

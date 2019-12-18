@@ -3,10 +3,8 @@ package moze_intel.projecte.gameObjs.entity;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Vector3d;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -76,15 +74,16 @@ public class EntityHomingArrow extends ArrowEntity {
 			double mX = getMotion().getX();
 			double mY = getMotion().getY();
 			double mZ = getMotion().getZ();
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, this.posX + mX / 4.0D, this.posY + mY / 4.0D, this.posZ + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, this.posX + mX / 4.0D, this.posY + mY / 4.0D, this.posZ + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, func_226277_ct_() + mX / 4.0D, func_226278_cu_() + mY / 4.0D, func_226281_cx_() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, func_226277_ct_() + mX / 4.0D, func_226278_cu_() + mY / 4.0D, func_226281_cx_() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vector3d arrowLoc = new Vector3d(posX, posY, posZ);
-			Vector3d targetLoc = new Vector3d(target.posX, target.posY + target.getHeight() / 2, target.posZ);
+			Vector3d arrowLoc = new Vector3d(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
+			Vector3d targetLoc = new Vector3d(target.func_226277_ct_(), target.func_226278_cu_() + target.getHeight() / 2, target.func_226281_cx_());
 
 			// Get the vector that points straight from the arrow to the target
-			Vector3d lookVec = new Vector3d(targetLoc);
+			//TODO: 1.15 FIXME
+			/*Vector3d lookVec = new Vector3d(targetLoc);
 			lookVec.sub(arrowLoc);
 
 			Vector3d arrowMotion = new Vector3d(mX, mY, mZ);
@@ -107,7 +106,7 @@ public class EntityHomingArrow extends ArrowEntity {
 			transform.transform(arrowMotion, adjustedLookVec);
 
 			// Tell mc to adjust our rotation accordingly
-			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
+			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);*/
 		}
 
 		super.tick();

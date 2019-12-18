@@ -62,15 +62,15 @@ public interface IItemCharge {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 
-		if (player.isSneaking()) {
+		if (player.func_225608_bj_()) {
 			if (currentCharge > 0) {
-				player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F,
+				player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F,
 						0.5F + ((0.5F / (float) numCharges) * currentCharge));
 				stack.getTag().putInt(KEY, currentCharge - 1);
 				return true;
 			}
 		} else if (currentCharge < numCharges) {
-			player.getEntityWorld().playSound(null, player.posX, player.posY, player.posZ, PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F,
+			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F,
 					0.5F + ((0.5F / (float) numCharges) * currentCharge));
 			stack.getTag().putInt(KEY, currentCharge + 1);
 			return true;

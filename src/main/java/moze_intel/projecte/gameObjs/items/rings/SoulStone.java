@@ -9,7 +9,6 @@ import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
@@ -30,7 +29,8 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 	public SoulStone(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		//TODO: Curios
+		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
 					}
@@ -69,7 +69,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 				for (ServerPlayerEntity player : players) {
 					if (player.getHealth() < player.getMaxHealth()) {
-						world.playSound(null, player.posX, player.posY, player.posZ, PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart
 					}
 				}

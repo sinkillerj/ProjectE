@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -80,7 +81,7 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		return ActionResult.newResult(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
+		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
 	}
 
 	@Override

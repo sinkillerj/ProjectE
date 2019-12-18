@@ -50,7 +50,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 	protected void onImpact(@Nonnull RayTraceResult mop) {
 		if (this.getEntityWorld().isRemote) {
 			for (int i = 0; i < 4; ++i) {
-				this.getEntityWorld().addParticle(ParticleTypes.PORTAL, this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+				this.getEntityWorld().addParticle(ParticleTypes.PORTAL, func_226277_ct_(), func_226278_cu_() + rand.nextDouble() * 2.0D, func_226281_cx_(), this.rand.nextGaussian(), 0.0D, rand.nextGaussian());
 			}
 			return;
 		}
@@ -63,7 +63,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 		MobEntity randomized = EntityRandomizerHelper.getRandomEntity(this.getEntityWorld(), ent);
 		if (randomized != null && EMCHelper.consumePlayerFuel((PlayerEntity) getThrower(), 384) != -1) {
 			ent.remove();
-			randomized.setLocationAndAngles(ent.posX, ent.posY, ent.posZ, ent.rotationYaw, ent.rotationPitch);
+			randomized.setLocationAndAngles(ent.func_226277_ct_(), ent.func_226278_cu_(), ent.func_226281_cx_(), ent.rotationYaw, ent.rotationPitch);
 			randomized.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(randomized)), SpawnReason.CONVERSION, null, null);
 			this.getEntityWorld().addEntity(randomized);
 			randomized.spawnExplosionParticle();

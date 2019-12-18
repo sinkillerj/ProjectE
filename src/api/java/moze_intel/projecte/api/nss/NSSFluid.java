@@ -102,7 +102,7 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	@Nonnull
 	@Override
 	protected TagCollection<Fluid> getTagCollection() {
-		return FluidTags.getCollection();
+		return FluidTags.func_226157_a_();
 	}
 
 	@Override

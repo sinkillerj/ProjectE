@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker;
+/*package moze_intel.projecte.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
@@ -53,4 +53,4 @@ public class EntityRandomizer {
 	public static void clearHostileMobs() {
 		CraftTweakerAPI.apply(new EntityRandomizerAction.Clear(false));
 	}
-}
+}*/

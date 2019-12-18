@@ -15,6 +15,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -57,16 +58,17 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
+	@Nonnull
 	@Override
 	@Deprecated
-	public boolean onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public ActionResultType func_225533_a_(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof AlchChestTile) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (AlchChestTile) te, pos);
 			}
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

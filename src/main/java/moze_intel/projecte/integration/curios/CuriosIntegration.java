@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.curios;
+/*package moze_intel.projecte.integration.curios;
 
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
@@ -31,4 +31,4 @@ public class CuriosIntegration {
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, CuriosAPI.IMC.REGISTER_TYPE, () -> new CurioIMCMessage("klein_star"));
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, IMC.REGISTER_ICON, () -> new Tuple<>("klein_star", new ResourceLocation(PECore.MODID, "textures/curios/empty_klein_star.png")));
 	}
-}
+}*/

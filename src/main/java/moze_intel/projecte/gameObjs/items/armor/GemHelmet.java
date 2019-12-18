@@ -58,7 +58,7 @@ public class GemHelmet extends GemArmorBase {
 		tooltips.add(new TranslationTextComponent("pe.gem.helm.lorename"));
 
 		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt",
-				new StringTextComponent(Minecraft.getInstance().gameSettings.keyBindSneak.getLocalizedName()), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+				new StringTextComponent(Minecraft.getInstance().gameSettings.field_228046_af_.getLocalizedName()), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
 		boolean enabled = isNightVisionEnabled(stack);
 		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
@@ -68,14 +68,14 @@ public class GemHelmet extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			int x = (int) Math.floor(player.posX);
-			int y = (int) (player.posY - player.getYOffset());
-			int z = (int) Math.floor(player.posZ);
+			int x = (int) Math.floor(player.func_226277_ct_());
+			int y = (int) (player.func_226278_cu_() - player.getYOffset());
+			int z = (int) Math.floor(player.func_226281_cx_());
 			BlockPos pos = new BlockPos(x, y, z);
 			Block b = world.getBlockState(pos.down()).getBlock();
 
 			if (b == Blocks.WATER && world.isAirBlock(pos)) {
-				if (!player.isSneaking()) {
+				if (!player.func_225608_bj_()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;
 					player.onGround = true;
