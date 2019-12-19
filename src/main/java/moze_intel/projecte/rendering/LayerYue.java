@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
@@ -61,7 +62,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 
 			Tessellator tess = Tessellator.getInstance();
 			BufferBuilder r = tess.getBuffer();
-			r.begin(7, DefaultVertexFormats.POSITION_TEX);
+			r.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 			r.func_225582_a_(0, 0, 0).func_225583_a_(0, 0).endVertex();
 			r.func_225582_a_(0, 0, 1).func_225583_a_(0, 1).endVertex();
 			r.func_225582_a_(1, 0, 1).func_225583_a_(1, 1).endVertex();

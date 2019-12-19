@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRenderer<T> {
@@ -37,7 +38,7 @@ public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRende
 
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder r = tess.getBuffer();
-		r.begin(7, DefaultVertexFormats.POSITION_TEX);
+		r.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		r.func_225582_a_(-1, -1, 0).func_225583_a_(1, 1).endVertex();
 		r.func_225582_a_(-1, 1, 0).func_225583_a_(1, 0).endVertex();
 		r.func_225582_a_(1, 1, 0).func_225583_a_(0, 0).endVertex();

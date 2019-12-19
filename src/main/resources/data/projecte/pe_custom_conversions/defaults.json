@@ -70,6 +70,13 @@
           }
         },
         {
+          "output": "minecraft:honeycomb",
+          "count": 3,
+          "ingredients": [
+            "minecraft:honey_bottle"
+          ]
+        },
+        {
           "output": "minecraft:suspicious_stew",
           "ingredients": [
             "minecraft:bowl",
@@ -269,6 +276,7 @@
       "#forge:crops/nether_wart": 24,
       "minecraft:apple": 128,
       "minecraft:pumpkin": 144,
+      "minecraft:honey_bottle": 48,
       "minecraft:porkchop": 64,
       "minecraft:beef": 64,
       "minecraft:chicken": 64,
