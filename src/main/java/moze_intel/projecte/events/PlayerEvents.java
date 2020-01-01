@@ -51,17 +51,6 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void cloneEvent(PlayerEvent.Clone evt) {
 		PlayerEntity original = evt.getOriginal();
-		//Only bother reviving the entity when it is from the end and if the entity is not currently valid.
-		// Given if the entity is currently valid then we don't need to revive it, and then remove it when it shouldn't be
-		// removed by us afterwards (such as after the fix gets merged into forge)
-		// This is a patch for https://github.com/sinkillerj/ProjectE/issues/1943, that can be removed when
-		// https://github.com/MinecraftForge/MinecraftForge/pull/6359 gets merged
-		//TODO: Remove the patch when the fix gets merged into forge
-		boolean fromEnd = !evt.isWasDeath() && !original.isAlive();
-		if (fromEnd) {
-			//If we returned from the end, our original entity will not be valid so the capabilities will not be found
-			original.revive();
-		}
 		original.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
 			CompoundNBT bags = old.serializeNBT();
 			evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
@@ -70,10 +59,6 @@ public class PlayerEvents {
 			CompoundNBT knowledge = old.serializeNBT();
 			evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
-		if (fromEnd) {
-			//Re-remove the original entity that we "revived" for purposes of grabbing its capabilities
-			original.remove();
-		}
 	}
 
 	// On death or return from end, sync to the client
