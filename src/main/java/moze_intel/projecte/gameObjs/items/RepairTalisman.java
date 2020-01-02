@@ -16,6 +16,7 @@ import moze_intel.projecte.gameObjs.items.rings.PEToggleItem;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
@@ -43,8 +44,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new PedestalItemCapabilityWrapper());
-		//TODO: Curios
-		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

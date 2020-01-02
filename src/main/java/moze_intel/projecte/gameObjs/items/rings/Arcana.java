@@ -15,6 +15,7 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -59,8 +60,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
 		addItemCapability(new ModeChangerItemCapabilityWrapper());
-		//TODO: Curios
-		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

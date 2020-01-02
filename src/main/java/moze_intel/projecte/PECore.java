@@ -77,9 +77,11 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -87,6 +89,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -132,6 +135,7 @@ public class PECore {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::clientSetup);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::loadComplete);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::onStitch);
 		});
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
@@ -156,10 +160,10 @@ public class PECore {
 			DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
 
 			//Tile Entity
-			ClientRegistry.bindTileEntityRenderer((TileEntityType<AlchChestTile>) ObjHandler.ALCH_CHEST_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == ObjHandler.alchChest));
-			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserTile>) ObjHandler.CONDENSER_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == ObjHandler.condenser));
-			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserMK2Tile>) ObjHandler.CONDENSER_MK2_TILE, new ChestRenderer(new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == ObjHandler.condenserMk2));
-			ClientRegistry.bindTileEntityRenderer((TileEntityType<DMPedestalTile>) ObjHandler.DM_PEDESTAL_TILE, new PedestalRenderer());
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<AlchChestTile>) ObjHandler.ALCH_CHEST_TILE, dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == ObjHandler.alchChest));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserTile>) ObjHandler.CONDENSER_TILE, dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == ObjHandler.condenser));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<CondenserMK2Tile>) ObjHandler.CONDENSER_MK2_TILE, dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == ObjHandler.condenserMk2));
+			ClientRegistry.bindTileEntityRenderer((TileEntityType<DMPedestalTile>) ObjHandler.DM_PEDESTAL_TILE, PedestalRenderer::new);
 
 			//Entities
 			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.WATER_PROJECTILE, WaterOrbRenderer::new);
@@ -182,6 +186,15 @@ public class PECore {
 				render = skinMap.get("slim");
 				render.addLayer(new LayerYue(render));
 			});
+		}
+
+		static void onStitch(TextureStitchEvent.Pre evt) {
+			if (evt.getMap().func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
+				//If curios is loaded add the klein star slot icon the the block map as curios no longer does it automatically
+				if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
+					evt.addSprite(IntegrationHelper.CURIOS_KLEIN_STAR);
+				}
+			}
 		}
 	}
 

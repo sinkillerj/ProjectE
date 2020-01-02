@@ -28,8 +28,8 @@ public class ChestRenderer extends ChestTileEntityRenderer<ChestTileEmc> {
 	private final Predicate<Block> blockChecker;
 	private final ResourceLocation texture;
 
-	public ChestRenderer(ResourceLocation texture, Predicate<Block> blockChecker) {
-		super(TileEntityRendererDispatcher.instance);
+	public ChestRenderer(TileEntityRendererDispatcher dispatcher, ResourceLocation texture, Predicate<Block> blockChecker) {
+		super(dispatcher);
 		this.texture = texture;
 		this.blockChecker = blockChecker;
 

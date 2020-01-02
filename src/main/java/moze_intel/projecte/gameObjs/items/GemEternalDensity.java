@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -65,8 +66,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		addItemCapability(new AlchBagItemCapabilityWrapper());
 		addItemCapability(new AlchChestItemCapabilityWrapper());
 		addItemCapability(new ModeChangerItemCapabilityWrapper());
-		//TODO: Curios
-		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

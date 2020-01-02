@@ -18,8 +18,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 
-	public PedestalRenderer() {
-		super(TileEntityRendererDispatcher.instance);
+	public PedestalRenderer(TileEntityRendererDispatcher dispatcher) {
+		super(dispatcher);
 	}
 
 	@Override

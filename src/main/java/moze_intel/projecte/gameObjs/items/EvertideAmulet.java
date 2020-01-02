@@ -12,6 +12,7 @@ import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
@@ -60,8 +61,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		addItemCapability(new PedestalItemCapabilityWrapper());
 		addItemCapability(new InfiniteFluidHandler());
 		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
-		//TODO: Curios
-		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override

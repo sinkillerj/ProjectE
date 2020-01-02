@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.CooldownResetPKT;
 import moze_intel.projecte.network.packets.SetFlyPKT;
@@ -27,6 +29,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -74,10 +77,9 @@ public final class PlayerHelper {
 
 	@Nullable
 	public static IItemHandler getCurios(PlayerEntity player) {
-		//TODO: Curios
-		/*if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
+		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 			return CuriosIntegration.getAll(player);
-		}*/
+		}
 		return null;
 	}
 

@@ -9,6 +9,7 @@ import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.entity.Entity;
@@ -29,8 +30,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	public BodyStone(Properties props) {
 		super(props);
 		addItemCapability(new PedestalItemCapabilityWrapper());
-		//TODO: Curios
-		//addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
+		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
