@@ -1,22 +1,18 @@
 package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
 
@@ -33,51 +29,31 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 		this.render = renderer;
 	}
 
-	//TODO: 1.15, I am not sure the angle params are right
 	@Override
 	public void func_225628_a_(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, @Nonnull AbstractClientPlayerEntity player,
 			float angle1, float angle2, float partialTick, float angle3, float angle4, float angle5) {
 		if (player.isInvisible()) {
 			return;
 		}
-
-		if (SIN_UUID.equals(player.getUniqueID()) || CLAR_UUID.equals(player.getUniqueID()) || PECore.DEV_ENVIRONMENT) {
-			RenderSystem.pushMatrix();
-			//TODO: 1.15 FIXME
-			//render.getEntityModel().bipedBodyWear.postRender(0.0625F);
-			if (player.func_225608_bj_()) {
-				RenderSystem.rotatef(-28.64789F, 1.0F, 0.0F, 0.0F);
+		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUniqueID()) || CLAR_UUID.equals(player.getUniqueID())) {
+			matrix.func_227860_a_();
+			render.getEntityModel().bipedBodyWear.func_228307_a_(matrix);
+			double yShift = -0.498;
+			if (player.isCrouching()) {
+				//Only modify where it renders if the player's pose is crouching
+				matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-28.64789F));
+				yShift = -0.44;
 			}
-			RenderSystem.rotatef(180, 0, 0, 1);
-			RenderSystem.scalef(3.0f, 3.0f, 3.0f);
-			RenderSystem.translatef(-0.5f, -0.498f, -0.5f);
-			RenderSystem.color4f(0.0F, 1.0F, 0.0F, 1.0F);
-			RenderSystem.disableLighting();
-			RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240f, 240f);
-			if (CLAR_UUID.equals(player.getUniqueID())) {
-				Minecraft.getInstance().textureManager.bindTexture(HEART_LOC);
-			} else {
-				Minecraft.getInstance().textureManager.bindTexture(YUE_LOC);
-			}
-
-			Tessellator tess = Tessellator.getInstance();
-			BufferBuilder r = tess.getBuffer();
-			r.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-			r.func_225582_a_(0, 0, 0).func_225583_a_(0, 0).endVertex();
-			r.func_225582_a_(0, 0, 1).func_225583_a_(0, 1).endVertex();
-			r.func_225582_a_(1, 0, 1).func_225583_a_(1, 1).endVertex();
-			r.func_225582_a_(1, 0, 0).func_225583_a_(1, 0).endVertex();
-			tess.draw();
-
-			RenderSystem.enableLighting();
-			RenderSystem.color3f(1F, 1F, 1F);
-			RenderSystem.popMatrix();
+			matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+			matrix.func_227862_a_(3, 3, 3);
+			matrix.func_227861_a_(-0.5, yShift, -0.5);
+			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));
+			Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
+			builder.func_227888_a_(matrix4f, 0, 0, 0).func_225583_a_(0, 0).func_227885_a_(0, 1, 0, 1).endVertex();
+			builder.func_227888_a_(matrix4f, 0, 0, 1).func_225583_a_(0, 1).func_227885_a_(0, 1, 0, 1).endVertex();
+			builder.func_227888_a_(matrix4f, 1, 0, 1).func_225583_a_(1, 1).func_227885_a_(0, 1, 0, 1).endVertex();
+			builder.func_227888_a_(matrix4f, 1, 0, 0).func_225583_a_(1, 0).func_227885_a_(0, 1, 0, 1).endVertex();
+			matrix.func_227865_b_();
 		}
 	}
-
-	//TODO: 1.15??
-	/*@Override
-	public boolean shouldCombineTextures() {
-		return false;
-	}*/
 }
