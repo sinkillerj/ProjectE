@@ -30,4 +30,15 @@ public class PERenderType extends RenderType {
 				.func_228728_a_(true);
 		return func_228633_a_("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, 7, 256, true, false, state);
 	}
+
+	public static RenderType transmutationOverlay() {
+		RenderType.State state = RenderType.State.func_228694_a_()
+				.func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+				.func_228724_a_(field_228523_o_)//disableTexture
+				.func_228714_a_(field_228491_A_)//disableCull
+				.func_228719_a_(field_228529_u_)//disableLighting
+				.func_228727_a_(field_228496_F_)//depthMask(false)
+				.func_228728_a_(true);
+		return func_228633_a_("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, 7, 256, true, false, state);
+	}
 }

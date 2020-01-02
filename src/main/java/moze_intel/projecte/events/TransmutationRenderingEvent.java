@@ -1,20 +1,24 @@
 package moze_intel.projecte.events;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.ArrayList;
-import java.util.List;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
+import moze_intel.projecte.rendering.PERenderType;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -22,7 +26,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -75,7 +78,7 @@ public class TransmutationRenderingEvent {
 	}
 
 	@SubscribeEvent
-	public static void onOverlay(DrawHighlightEvent event) {
+	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
 		PlayerEntity player = mc.player;
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
@@ -86,95 +89,81 @@ public class TransmutationRenderingEvent {
 			transmutationResult = null;
 			return;
 		}
-		//TODO: Decide if this should this be event.getTarget()
 		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState current = world.getBlockState(rtr.getPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.func_225608_bj_());
-
 			if (transmutationResult != null) {
-				Vec3d viewPosition = event.getInfo().getProjectedView();
-				List<AxisAlignedBB> renderList = new ArrayList<>(1);
+				ActiveRenderInfo activeRenderInfo = event.getInfo();
+				Vec3d viewPosition = activeRenderInfo.getProjectedView();
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
+				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
+				IRenderTypeBuffer.Impl impl = Minecraft.getInstance().func_228019_au_().func_228487_b_();
+				IVertexBuilder builder = impl.getBuffer(PERenderType.transmutationOverlay());
+				MatrixStack matrix = new MatrixStack();
+				//Note: Doesn't support roll
+				//matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(cameraSetup.getRoll()));
+				matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(activeRenderInfo.getPitch()));
+				matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(activeRenderInfo.getYaw() + 180.0F));
+				matrix.func_227861_a_(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
-					double shiftX = pos.getX() - viewPosition.x;
-					double shiftY = pos.getY() - viewPosition.y;
-					double shiftZ = pos.getZ() - viewPosition.z;
-					//TODO: Should this be getRenderShape
+					matrix.func_227860_a_();
+					matrix.func_227861_a_(pos.getX(), pos.getY(), pos.getZ());
+					matrix.func_227862_a_(1.02F, 1.02F, 1.02F);
+					matrix.func_227861_a_(-0.01, -0.01, -0.01);
+					Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
 					world.getBlockState(pos).getShape(world, pos).forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
-						renderList.add(new AxisAlignedBB(minX + shiftX, minY + shiftY, minZ + shiftZ, maxX + shiftX, maxY + shiftY, maxZ + shiftZ).grow(0.01));
+						float bMinX = (float) minX;
+						float bMinY = (float) minY;
+						float bMinZ = (float) minZ;
+						float bMaxX = (float) maxX;
+						float bMaxY = (float) maxY;
+						float bMaxZ = (float) maxZ;
+
+						//Top
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+
+						//Bottom
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+
+						//Front
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+
+						//Back
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+
+						//Left
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+
+						//Right
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
 					});
+					matrix.func_227865_b_();
 				}
-				drawAll(renderList);
 			}
 		} else {
 			transmutationResult = null;
 		}
-	}
-
-	private static void drawAll(List<AxisAlignedBB> renderList) {
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		RenderSystem.disableTexture();
-		RenderSystem.disableCull();
-		RenderSystem.disableLighting();
-		RenderSystem.depthMask(false);
-
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder wr = tess.getBuffer();
-
-		//TODO: Hovering seems to make things like water lose their color, probably from the GL stuff (or maybe due to a lack of resetting the color?)
-		// Note: only seems to happen when the border is showing
-		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
-		float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
-		for (AxisAlignedBB b : renderList) {
-			//Top
-			wr.func_225582_a_(b.minX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-
-			//Bottom
-			wr.func_225582_a_(b.minX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-
-			//Front
-			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-
-			//Back
-			wr.func_225582_a_(b.maxX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-
-			//Left
-			wr.func_225582_a_(b.minX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.minX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-
-			//Right
-			wr.func_225582_a_(b.maxX, b.maxY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.maxY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.minY, b.minZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-			wr.func_225582_a_(b.maxX, b.minY, b.maxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-		}
-
-		tess.draw();
-
-		RenderSystem.depthMask(true);
-		RenderSystem.enableCull();
-		RenderSystem.enableLighting();
-		RenderSystem.enableTexture();
-		RenderSystem.disableBlend();
 	}
 
 	private static float getPulseProportion() {
