@@ -21,7 +21,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class BlockDirection extends Block {
 
-	protected static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
 	public BlockDirection(Properties props) {
 		super(props);

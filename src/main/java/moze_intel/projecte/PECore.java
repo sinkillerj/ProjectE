@@ -148,10 +148,6 @@ public class PECore {
 
 		//Register our config files
 		ProjectEConfig.register();
-
-		//TODO: 1.15 things to double check:
-		// is func_225608_bj_ the proper replacement for isSneaking
-		// Replace some usages of RenderSystem with direct matrix manipulation
 	}
 
 	static class ClientHandler {

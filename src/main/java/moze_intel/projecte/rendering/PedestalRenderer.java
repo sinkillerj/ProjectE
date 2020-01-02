@@ -23,7 +23,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 	}
 
 	@Override
-	public void func_225616_a_(@Nonnull DMPedestalTile te, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+	public void func_225616_a_(@Nonnull DMPedestalTile te, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
 		if (!te.isRemoved()) {
 			if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox()) {
 				matrix.func_227860_a_();
@@ -41,7 +41,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 				matrix.func_227862_a_(0.75F, 0.75F, 0.75F);
 				float angle = (te.getWorld().getGameTime() + partialTick) / 20.0F * (180F / (float) Math.PI);
 				matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(angle));
-				Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, TransformType.GROUND, light, otherLight, matrix, renderer);
+				Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, TransformType.GROUND, light, overlayLight, matrix, renderer);
 				matrix.func_227865_b_();
 			}
 		}
