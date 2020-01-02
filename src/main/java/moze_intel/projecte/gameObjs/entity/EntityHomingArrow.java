@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +16,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -78,38 +78,74 @@ public class EntityHomingArrow extends ArrowEntity {
 			this.getEntityWorld().addParticle(ParticleTypes.FLAME, func_226277_ct_() + mX / 4.0D, func_226278_cu_() + mY / 4.0D, func_226281_cx_() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vector3d arrowLoc = new Vector3d(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
-			Vector3d targetLoc = new Vector3d(target.func_226277_ct_(), target.func_226278_cu_() + target.getHeight() / 2, target.func_226281_cx_());
+			Vec3d arrowLoc = new Vec3d(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
+			Vec3d targetLoc = new Vec3d(target.func_226277_ct_(), target.func_226278_cu_() + target.getHeight() / 2, target.func_226281_cx_());
 
 			// Get the vector that points straight from the arrow to the target
-			//TODO: 1.15 FIXME
-			/*Vector3d lookVec = new Vector3d(targetLoc);
-			lookVec.sub(arrowLoc);
+			Vec3d lookVec = targetLoc.subtract(arrowLoc);
 
-			Vector3d arrowMotion = new Vector3d(mX, mY, mZ);
+			Vec3d arrowMotion = new Vec3d(mX, mY, mZ);
 
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
-			double theta = wrap180Radian(arrowMotion.angle(lookVec));
+			double theta = wrap180Radian(angleBetween(arrowMotion, lookVec));
 			theta = clampAbs(theta, Math.PI / 2); // Dividing by higher numbers kills accuracy
 
 			// Find the cross product to determine the axis of rotation
-			Vector3d crossProduct = new Vector3d();
-			crossProduct.cross(arrowMotion, lookVec);
-			crossProduct.normalize();
+			Vec3d crossProduct = arrowMotion.crossProduct(lookVec).normalize();
 
-			// Create the rotation using the axis and our angle
-			Matrix4d transform = new Matrix4d();
-			transform.set(new AxisAngle4d(crossProduct, theta));
-
-			// Adjust the vector
-			Vector3d adjustedLookVec = new Vector3d(arrowMotion);
-			transform.transform(arrowMotion, adjustedLookVec);
+			// Create the rotation using the axis and our angle and adjust the vector to it
+			Vec3d adjustedLookVec = transform(crossProduct, theta, arrowMotion);
 
 			// Tell mc to adjust our rotation accordingly
-			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);*/
+			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
 		}
 
 		super.tick();
+	}
+
+	private Vec3d transform(Vec3d axis, double angle, Vec3d normal) {
+		//Trimmed down math of javax vecmath calculations, potentially should be rewritten at some point
+		double m00 = 1;
+		double m01 = 0;
+		double m02 = 0;
+
+		double m10 = 0;
+		double m11 = 1;
+		double m12 = 0;
+
+		double m20 = 0;
+		double m21 = 0;
+		double m22 = 1;
+		double mag = Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+		if (mag >= 1.0E-10) {
+			mag = 1.0 / mag;
+			double ax = axis.x * mag;
+			double ay = axis.y * mag;
+			double az = axis.z * mag;
+
+			double sinTheta = Math.sin(angle);
+			double cosTheta = Math.cos(angle);
+			double t = 1.0 - cosTheta;
+
+			double xz = ax * az;
+			double xy = ax * ay;
+			double yz = ay * az;
+
+			m00 = t * ax * ax + cosTheta;
+			m01 = t * xy - sinTheta * az;
+			m02 = t * xz + sinTheta * ay;
+
+			m10 = t * xy + sinTheta * az;
+			m11 = t * ay * ay + cosTheta;
+			m12 = t * yz - sinTheta * ax;
+
+			m20 = t * xz - sinTheta * ay;
+			m21 = t * yz + sinTheta * ax;
+			m22 = t * az * az + cosTheta;
+		}
+		return new Vec3d(m00 * normal.x + m01 * normal.y + m02 * normal.z,
+				m10 * normal.x + m11 * normal.y + m12 * normal.z,
+				m20 * normal.x + m21 * normal.y + m22 * normal.z);
 	}
 
 	@Nonnull
@@ -135,6 +171,17 @@ public class EntityHomingArrow extends ArrowEntity {
 
 	private boolean hasTarget() {
 		return getTarget() != null;
+	}
+
+	private double angleBetween(Vec3d v1, Vec3d v2) {
+		double vDot = v1.dotProduct(v2) / (v1.length() * v2.length());
+		if (vDot < -1.0) {
+			vDot = -1.0;
+		}
+		if (vDot > 1.0) {
+			vDot = 1.0;
+		}
+		return Math.acos(vDot);
 	}
 
 	private double wrap180Radian(double radian) {
