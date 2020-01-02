@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,6 +42,18 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 			} else if (te != null && te.getType() == ObjHandler.RM_FURNACE_TILE) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (RMFurnaceTile) te, pos);
 			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile != null) {
+				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
+			}
+			super.onReplaced(state, world, pos, newState, isMoving);
 		}
 	}
 

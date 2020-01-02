@@ -116,16 +116,18 @@ public class Collector extends BlockDirection {
 	@Override
 	@Deprecated
 	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-		TileEntity ent = world.getTileEntity(pos);
-		if (ent != null) {
-			ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
-				for (int i = 0; i < handler.getSlots(); i++) {
-					if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty()) {
-						InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+		if (state.getBlock() != newState.getBlock()) {
+			TileEntity ent = world.getTileEntity(pos);
+			if (ent != null) {
+				ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
+					for (int i = 0; i < handler.getSlots(); i++) {
+						if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty()) {
+							InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+						}
 					}
-				}
-			});
+				});
+			}
+			super.onReplaced(state, world, pos, newState, isMoving);
 		}
-		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 }

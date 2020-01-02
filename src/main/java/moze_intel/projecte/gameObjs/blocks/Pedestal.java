@@ -83,8 +83,10 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Override
 	@Deprecated
 	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-		dropItem(world, pos);
-		super.onReplaced(state, world, pos, newState, isMoving);
+		if (state.getBlock() != newState.getBlock()) {
+			dropItem(world, pos);
+			super.onReplaced(state, world, pos, newState, isMoving);
+		}
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -175,7 +176,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		@Nonnull
 		@Override
 		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-			return new PhilosStoneContainer(windowId, playerInventory);
+			return new PhilosStoneContainer(windowId, playerInventory, IWorldPosCallable.of(playerIn.getEntityWorld(), playerIn.getPosition()));
 		}
 
 		@Nonnull

@@ -44,11 +44,13 @@ public abstract class BlockDirection extends Block {
 	@Override
 	@Deprecated
 	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile != null) {
-			tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
+		if (state.getBlock() != newState.getBlock()) {
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile != null) {
+				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
+			}
+			super.onReplaced(state, world, pos, newState, isMoving);
 		}
-		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
 	@Override
