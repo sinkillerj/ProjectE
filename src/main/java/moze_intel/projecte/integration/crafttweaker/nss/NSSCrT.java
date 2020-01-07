@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker.nss;
+package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import javax.annotation.Nonnull;
@@ -26,4 +26,4 @@ public class NSSCrT {
 	public String toString() {
 		return internal.toString();
 	}
-}*/
+}

@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker;
+package moze_intel.projecte.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
@@ -32,4 +32,4 @@ public class WorldTransmutation {
 	private static boolean validate(MCBlockState input, MCBlockState output) {
 		return CraftTweakerHelper.checkNonNull(input, "Input cannot be null") & CraftTweakerHelper.checkNonNull(output, "Output cannot be null");
 	}
-}*/
+}

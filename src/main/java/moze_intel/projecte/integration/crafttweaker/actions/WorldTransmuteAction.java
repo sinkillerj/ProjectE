@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import com.blamejared.crafttweaker.impl.blocks.MCBlockState;
@@ -118,4 +118,4 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 			return "Restored world transmutation recipes to default";
 		}
 	}
-}*/
+}

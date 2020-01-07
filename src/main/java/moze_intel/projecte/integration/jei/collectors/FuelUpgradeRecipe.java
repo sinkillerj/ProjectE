@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.jei.collectors;
+package moze_intel.projecte.integration.jei.collectors;
 
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
@@ -26,4 +26,4 @@ public class FuelUpgradeRecipe {
 	public long getUpgradeEMC() {
 		return upgradeEMC;
 	}
-}*/
+}

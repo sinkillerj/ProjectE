@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import javax.annotation.Nonnull;
@@ -36,4 +36,4 @@ public class CustomEMCAction implements IUndoableAction {
 	public String describeUndo() {
 		return "Undoing emc registration for: " + stack;
 	}
-}*/
+}

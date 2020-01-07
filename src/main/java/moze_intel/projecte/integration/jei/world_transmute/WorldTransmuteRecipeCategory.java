@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.jei.world_transmute;
+package moze_intel.projecte.integration.jei.world_transmute;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -149,4 +149,4 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		});
 		return visible;
 	}
-}*/
+}

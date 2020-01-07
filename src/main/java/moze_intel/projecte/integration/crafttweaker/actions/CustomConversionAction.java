@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import java.util.Map;
@@ -46,4 +46,4 @@ public class CustomConversionAction implements IUndoableAction {
 	public String describeUndo() {
 		return "Undoing adding of custom conversion creating '" + conversion.amount + "' of " + conversion.output;
 	}
-}*/
+}

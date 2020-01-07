@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
@@ -123,4 +123,4 @@ public abstract class EntityRandomizerAction implements IUndoableAction {
 			return "Restored the " + (this.peaceful ? "peaceful" : "hostile") + " Philosopher Stone Entity Randomizer to default.";
 		}
 	}
-}*/
+}
