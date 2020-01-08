@@ -73,11 +73,11 @@ import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -185,7 +185,7 @@ public class PECore {
 		}
 
 		static void onStitch(TextureStitchEvent.Pre evt) {
-			if (evt.getMap().func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
+			if (evt.getMap().func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
 				//If curios is loaded add the klein star slot icon the the block map as curios no longer does it automatically
 				if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 					evt.addSprite(IntegrationHelper.CURIOS_KLEIN_STAR);
