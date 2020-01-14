@@ -179,8 +179,8 @@ dependencies {
     //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}")
     //compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
 
-    //compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    //runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 

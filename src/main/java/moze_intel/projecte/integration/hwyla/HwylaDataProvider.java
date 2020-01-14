@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.hwyla;
+package moze_intel.projecte.integration.hwyla;
 
 import java.util.List;
 import mcp.mobius.waila.api.IComponentProvider;
@@ -21,4 +21,4 @@ public class HwylaDataProvider implements IComponentProvider {
 			}
 		}
 	}
-}*/
+}
