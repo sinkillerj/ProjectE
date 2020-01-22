@@ -88,7 +88,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
-			world.playSound(null, shooter.func_226277_ct_(), shooter.func_226278_cu_(), shooter.func_226281_cx_(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+			world.playSound(null, shooter.getPosX(), shooter.getPosY(), shooter.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 			world.addEntity(arrow);
 		}
 	}
@@ -105,7 +105,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
 					for (int i = 0; i < 3; i++) {
 						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
-						arrow.func_226288_n_(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
+						arrow.setRawPosition(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
 						arrow.setMotion(0, 1, 0);
 						arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 						world.addEntity(arrow);

@@ -94,7 +94,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 					}
 				} else {
 					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-					world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+					world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				}
 			}
 		}
@@ -115,9 +115,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			return;
 		}
 		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.func_226277_ct_());
-		int y = (int) (living.func_226278_cu_() - living.getYOffset());
-		int z = (int) Math.floor(living.func_226281_cx_());
+		int x = (int) Math.floor(living.getPosX());
+		int y = (int) (living.getPosY() - living.getYOffset());
+		int z = (int) Math.floor(living.getPosZ());
 		BlockPos pos = new BlockPos(x, y, z);
 		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos)) {
 			if (!living.func_225608_bj_()) {
@@ -142,7 +142,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
 		if (ProjectEConfig.server.items.opEvertide.get() || !world.dimension.doesWaterVaporize()) {
-			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
 			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 			world.addEntity(ent);

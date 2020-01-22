@@ -54,8 +54,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 			return;
 		}
 		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-			AxisAlignedBB box = new AxisAlignedBB(entity.func_226277_ct_() - 3, entity.func_226278_cu_() - 3, entity.func_226281_cx_() - 3,
-					entity.func_226277_ct_() + 3, entity.func_226278_cu_() + 3, entity.func_226281_cx_() + 3);
+			AxisAlignedBB box = new AxisAlignedBB(entity.getPosX() - 3, entity.getPosY() - 3, entity.getPosZ() - 3,
+					entity.getPosX() + 3, entity.getPosY() + 3, entity.getPosZ() + 3);
 			WorldHelper.freezeInBoundingBox(world, box, (PlayerEntity) entity, true);
 		}
 	}
@@ -68,7 +68,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		if (!world.isRemote) {
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getBoundingBox().grow(offset);
-			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
 		return ActionResult.func_226248_a_(stack);

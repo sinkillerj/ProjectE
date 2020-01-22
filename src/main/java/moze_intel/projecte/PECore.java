@@ -185,7 +185,7 @@ public class PECore {
 		}
 
 		static void onStitch(TextureStitchEvent.Pre evt) {
-			if (evt.getMap().func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+			if (evt.getMap().getBasePath().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
 				//If curios is loaded add the klein star slot icon the the block map as curios no longer does it automatically
 				if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 					evt.addSprite(IntegrationHelper.CURIOS_KLEIN_STAR);

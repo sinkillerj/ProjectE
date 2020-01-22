@@ -35,9 +35,9 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	@Override
 	public void onArmorTick(ItemStack chest, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			int x = (int) Math.floor(player.func_226277_ct_());
-			int y = (int) (player.func_226278_cu_() - player.getYOffset());
-			int z = (int) Math.floor(player.func_226281_cx_());
+			int x = (int) Math.floor(player.getPosX());
+			int y = (int) (player.getPosY() - player.getYOffset());
+			int z = (int) Math.floor(player.getPosZ());
 			BlockPos pos = new BlockPos(x, y, z);
 
 			Block b = world.getBlockState(pos.down()).getBlock();
@@ -61,7 +61,7 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public void doExplode(PlayerEntity player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
-			WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), 9.0F);
+			WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.getPosX(), player.getPosY(), player.getPosZ(), 9.0F);
 		}
 	}
 

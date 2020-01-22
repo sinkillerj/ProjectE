@@ -95,7 +95,7 @@ public final class PlayerHelper {
 	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance) {
 		// Thank you ForgeEssentials
 		Vec3d look = player.getLook(1.0F);
-		Vec3d playerPos = new Vec3d(player.func_226277_ct_(), player.func_226278_cu_() + player.getEyeHeight(), player.func_226281_cx_());
+		Vec3d playerPos = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
 		Vec3d src = playerPos.add(0, player.getEyeHeight(), 0);
 		Vec3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);

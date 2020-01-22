@@ -57,14 +57,14 @@ public class TransmutationRenderingEvent {
 					float green = (color >> 8 & 0xFF) / 255.0F;
 					float blue = (color & 0xFF) / 255.0F;
 					float alpha = (color >> 24 & 0xFF) / 255.0F;
-					TextureAtlasSprite sprite = mc.func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
+					TextureAtlasSprite sprite = mc.getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder wr = tessellator.getBuffer();
 					wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-					wr.func_225582_a_(0, 0, 0).func_225583_a_(sprite.getMinU(), sprite.getMinV()).func_227885_a_(red, green, blue, alpha).endVertex();
-					wr.func_225582_a_(0, 16, 0).func_225583_a_(sprite.getMinU(), sprite.getMaxV()).func_227885_a_(red, green, blue, alpha).endVertex();
-					wr.func_225582_a_(16, 16, 0).func_225583_a_(sprite.getMaxU(), sprite.getMaxV()).func_227885_a_(red, green, blue, alpha).endVertex();
-					wr.func_225582_a_(16, 0, 0).func_225583_a_(sprite.getMaxU(), sprite.getMinV()).func_227885_a_(red, green, blue, alpha).endVertex();
+					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
+					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
+					wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
+					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
 					tessellator.draw();
 				} else {
 					RenderHelper.func_227780_a_();
@@ -103,16 +103,16 @@ public class TransmutationRenderingEvent {
 				IVertexBuilder builder = impl.getBuffer(PERenderType.transmutationOverlay());
 				MatrixStack matrix = new MatrixStack();
 				//Note: Doesn't support roll
-				//matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(cameraSetup.getRoll()));
-				matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(activeRenderInfo.getPitch()));
-				matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(activeRenderInfo.getYaw() + 180.0F));
-				matrix.func_227861_a_(-viewPosition.x, -viewPosition.y, -viewPosition.z);
+				//matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(cameraSetup.getRoll()));
+				matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(activeRenderInfo.getPitch()));
+				matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(activeRenderInfo.getYaw() + 180.0F));
+				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
-					matrix.func_227860_a_();
-					matrix.func_227861_a_(pos.getX(), pos.getY(), pos.getZ());
-					matrix.func_227862_a_(1.02F, 1.02F, 1.02F);
-					matrix.func_227861_a_(-0.01, -0.01, -0.01);
-					Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
+					matrix.push();
+					matrix.translate(pos.getX(), pos.getY(), pos.getZ());
+					matrix.scale(1.02F, 1.02F, 1.02F);
+					matrix.translate(-0.01, -0.01, -0.01);
+					Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
 					world.getBlockState(pos).getShape(world, pos).forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
 						float bMinX = (float) minX;
 						float bMinY = (float) minY;
@@ -122,42 +122,42 @@ public class TransmutationRenderingEvent {
 						float bMaxZ = (float) maxZ;
 
 						//Top
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
 
 						//Bottom
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
 
 						//Front
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
 
 						//Back
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
 
 						//Left
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMinX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
 
 						//Right
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMaxY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMinZ).func_227885_a_(1, 1, 1, alpha).endVertex();
-						builder.func_227888_a_(matrix4f, bMaxX, bMinY, bMaxZ).func_227885_a_(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(1, 1, 1, alpha).endVertex();
+						builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(1, 1, 1, alpha).endVertex();
 					});
-					matrix.func_227865_b_();
+					matrix.pop();
 				}
 			}
 		} else {

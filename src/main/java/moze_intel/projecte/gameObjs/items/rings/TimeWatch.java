@@ -163,7 +163,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.func_227034_b_((ServerWorld) world, pos.toImmutable(), random);
+					state.randomTick((ServerWorld) world, pos.toImmutable(), random);
 				}
 			}
 		}

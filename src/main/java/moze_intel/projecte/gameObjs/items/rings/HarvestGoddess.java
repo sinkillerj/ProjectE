@@ -97,7 +97,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 						if (!result) {
 							result = true;
 						}
-						growable.func_225535_a_((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
+						growable.grow((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
 					}
 				}
 			}

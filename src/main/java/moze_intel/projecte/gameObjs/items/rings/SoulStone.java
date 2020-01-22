@@ -48,7 +48,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
 					}
@@ -69,7 +69,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 				for (ServerPlayerEntity player : players) {
 					if (player.getHealth() < player.getMaxHealth()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 						player.heal(1.0F); // 1/2 heart
 					}
 				}

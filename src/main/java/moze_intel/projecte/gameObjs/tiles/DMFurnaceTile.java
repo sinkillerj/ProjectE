@@ -135,9 +135,9 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	}
 
 	@Override
-	public void func_226984_a_(@Nonnull World world, @Nonnull BlockPos pos) {
-		super.func_226984_a_(world, pos);
-		dummyFurnace.func_226984_a_(world, pos);
+	public void setWorldAndPos(@Nonnull World world, @Nonnull BlockPos pos) {
+		super.setWorldAndPos(world, pos);
+		dummyFurnace.setWorldAndPos(world, pos);
 	}
 
 	public IItemHandler getFuel() {

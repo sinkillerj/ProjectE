@@ -36,24 +36,24 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 			return;
 		}
 		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUniqueID()) || CLAR_UUID.equals(player.getUniqueID())) {
-			matrix.func_227860_a_();
-			render.getEntityModel().bipedBodyWear.func_228307_a_(matrix);
+			matrix.push();
+			render.getEntityModel().bipedBodyWear.setAnglesAndRotation(matrix);
 			double yShift = -0.498;
 			if (player.isCrouching()) {
 				//Only modify where it renders if the player's pose is crouching
-				matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-28.64789F));
+				matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(-28.64789F));
 				yShift = -0.44;
 			}
-			matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-			matrix.func_227862_a_(3, 3, 3);
-			matrix.func_227861_a_(-0.5, yShift, -0.5);
+			matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+			matrix.scale(3, 3, 3);
+			matrix.translate(-0.5, yShift, -0.5);
 			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));
-			Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
-			builder.func_227888_a_(matrix4f, 0, 0, 0).func_225583_a_(0, 0).func_227885_a_(0, 1, 0, 1).endVertex();
-			builder.func_227888_a_(matrix4f, 0, 0, 1).func_225583_a_(0, 1).func_227885_a_(0, 1, 0, 1).endVertex();
-			builder.func_227888_a_(matrix4f, 1, 0, 1).func_225583_a_(1, 1).func_227885_a_(0, 1, 0, 1).endVertex();
-			builder.func_227888_a_(matrix4f, 1, 0, 0).func_225583_a_(1, 0).func_227885_a_(0, 1, 0, 1).endVertex();
-			matrix.func_227865_b_();
+			Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+			builder.pos(matrix4f, 0, 0, 0).tex(0, 0).color(0, 1, 0, 1).endVertex();
+			builder.pos(matrix4f, 0, 0, 1).tex(0, 1).color(0, 1, 0, 1).endVertex();
+			builder.pos(matrix4f, 1, 0, 1).tex(1, 1).color(0, 1, 0, 1).endVertex();
+			builder.pos(matrix4f, 1, 0, 0).tex(1, 0).color(0, 1, 0, 1).endVertex();
+			matrix.pop();
 		}
 	}
 }

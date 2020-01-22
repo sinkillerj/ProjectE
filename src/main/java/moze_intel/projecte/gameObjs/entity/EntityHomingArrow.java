@@ -74,12 +74,12 @@ public class EntityHomingArrow extends ArrowEntity {
 			double mX = getMotion().getX();
 			double mY = getMotion().getY();
 			double mZ = getMotion().getZ();
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, func_226277_ct_() + mX / 4.0D, func_226278_cu_() + mY / 4.0D, func_226281_cx_() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, func_226277_ct_() + mX / 4.0D, func_226278_cu_() + mY / 4.0D, func_226281_cx_() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, getPosX() + mX / 4.0D, getPosY() + mY / 4.0D, getPosZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getEntityWorld().addParticle(ParticleTypes.FLAME, getPosX() + mX / 4.0D, getPosY() + mY / 4.0D, getPosZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vec3d arrowLoc = new Vec3d(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
-			Vec3d targetLoc = new Vec3d(target.func_226277_ct_(), target.func_226278_cu_() + target.getHeight() / 2, target.func_226281_cx_());
+			Vec3d arrowLoc = new Vec3d(getPosX(), getPosY(), getPosZ());
+			Vec3d targetLoc = new Vec3d(target.getPosX(), target.getPosY() + target.getHeight() / 2, target.getPosZ());
 
 			// Get the vector that points straight from the arrow to the target
 			Vec3d lookVec = targetLoc.subtract(arrowLoc);

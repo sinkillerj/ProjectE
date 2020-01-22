@@ -48,13 +48,13 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
 					if (player.getFoodStats().needFood() && timers.canFeed()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 						player.getFoodStats().addStats(2, 10);
 						removeEmc(stack, 64);
 					}
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.PLAYERS, 1, 1);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
 					}
@@ -75,11 +75,11 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
 				for (ServerPlayerEntity player : players) {
 					if (player.getHealth() < player.getMaxHealth()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.heal(1.0F); // 1/2 heart
 					}
 					if (player.getFoodStats().needFood()) {
-						world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
+						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.BLOCKS, 1, 1);
 						player.getFoodStats().addStats(1, 1); // 1/2 shank
 					}
 				}

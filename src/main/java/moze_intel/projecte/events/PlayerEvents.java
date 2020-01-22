@@ -142,7 +142,7 @@ public class PlayerEvents {
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 		if (remainder.isEmpty()) {
 			event.getItem().remove();
-			world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			((ServerPlayerEntity) player).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), player.getEntityId(), 1));
 		} else {
 			event.getItem().setItem(remainder);

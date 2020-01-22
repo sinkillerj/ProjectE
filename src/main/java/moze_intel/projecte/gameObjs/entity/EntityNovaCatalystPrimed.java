@@ -30,7 +30,7 @@ public class EntityNovaCatalystPrimed extends TNTEntity {
 
 	@Override
 	protected void explode() {
-		WorldHelper.createNovaExplosion(world, this, func_226277_ct_(), func_226278_cu_(), func_226281_cx_(), 16.0F);
+		WorldHelper.createNovaExplosion(world, this, getPosX(), getPosY(), getPosZ(), 16.0F);
 	}
 
 	@Nonnull

@@ -81,7 +81,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
 			} else {
 				WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA, false);
-				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 
@@ -102,9 +102,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			return;
 		}
 		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.func_226277_ct_());
-		int y = (int) (living.func_226278_cu_() - living.getYOffset());
-		int z = (int) Math.floor(living.func_226281_cx_());
+		int x = (int) Math.floor(living.getPosX());
+		int y = (int) (living.getPosY() - living.getYOffset());
+		int z = (int) Math.floor(living.getPosZ());
 		BlockPos pos = new BlockPos(x, y, z);
 		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
 			if (!living.func_225608_bj_()) {
@@ -124,7 +124,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
 		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().addEntity(ent);

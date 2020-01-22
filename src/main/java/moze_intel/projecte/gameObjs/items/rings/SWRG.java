@@ -55,7 +55,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
+			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.getPosX(), player.getPosY(), player.getPosZ(), true);
 		}
 		if (player.getEntityWorld().isRemote) {
 			return;
@@ -153,10 +153,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 		if (mode == 0 || oldMode == 3) {
 			//At least one mode deactivated
-			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.HEAL, SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.HEAL, SoundCategory.PLAYERS, 0.8F, 1.0F);
 		} else if (oldMode == 0 || mode == 3) {
 			//At least one mode activated
-			player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
@@ -186,7 +186,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
 						continue;
 					}
-					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.func_226277_ct_(), living.func_226278_cu_(), living.func_226281_cx_(), false));
+					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.getPosX(), living.getPosY(), living.getPosZ(), false));
 				}
 				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
 			} else {

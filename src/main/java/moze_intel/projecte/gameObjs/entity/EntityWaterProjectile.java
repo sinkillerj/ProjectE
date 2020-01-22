@@ -64,7 +64,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 			if (isInWater()) {
 				remove();
 			}
-			if (func_226278_cu_() > 128) {
+			if (getPosY() > 128) {
 				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
 				remove();

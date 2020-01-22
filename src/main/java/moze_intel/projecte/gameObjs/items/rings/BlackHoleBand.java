@@ -65,7 +65,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
 			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
 			if (fluid != Fluids.EMPTY) {
-				player.getEntityWorld().playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(),
+				player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
 						fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				return ActionResultType.SUCCESS;
 			}
@@ -90,7 +90,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
 			for (ItemEntity item : itemList) {
 				if (ItemHelper.simulateFit(player.inventory.mainInventory, item.getItem()) < item.getItem().getCount()) {
-					WorldHelper.gravitateEntityTowards(item, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
+					WorldHelper.gravitateEntityTowards(item, player.getPosX(), player.getPosY(), player.getPosZ());
 				}
 			}
 		}
@@ -169,7 +169,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
 		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
-				WorldHelper.gravitateEntityTowards(e, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
+				WorldHelper.gravitateEntityTowards(e, player.getPosX(), player.getPosY(), player.getPosZ());
 			}
 		}
 		return false;

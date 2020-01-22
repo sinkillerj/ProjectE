@@ -103,7 +103,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
 					break;
 				case 3:
-					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getBoundingBox().grow(5), player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
+					WorldHelper.repelEntitiesInAABBFromPoint(world, player.getBoundingBox().grow(5), player.getPosX(), player.getPosY(), player.getPosZ(), true);
 					break;
 			}
 		}
@@ -178,7 +178,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 						}
 						break;
 				}
-				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
 		return true;

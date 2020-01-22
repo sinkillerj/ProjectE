@@ -54,9 +54,9 @@ public class GemLegs extends GemArmorBase {
 			}
 		}
 		if (player.func_225608_bj_()) {
-			AxisAlignedBB box = new AxisAlignedBB(player.func_226277_ct_() - 3.5, player.func_226278_cu_() - 3.5, player.func_226281_cx_() - 3.5,
-					player.func_226277_ct_() + 3.5, player.func_226278_cu_() + 3.5, player.func_226281_cx_() + 3.5);
-			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), true);
+			AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 3.5, player.getPosY() - 3.5, player.getPosZ() - 3.5,
+					player.getPosX() + 3.5, player.getPosY() + 3.5, player.getPosZ() + 3.5);
+			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.getPosX(), player.getPosY(), player.getPosZ(), true);
 			if (!world.isRemote && player.getMotion().getY() < -0.08) {
 				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player, player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
 						entity -> entity instanceof LivingEntity);

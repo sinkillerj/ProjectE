@@ -92,7 +92,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			if (world.isRemote) {
 				return ActionResult.func_226248_a_(stack);
 			}
-			Vec3d eyeVec = new Vec3d(player.func_226277_ct_(), player.func_226278_cu_() + player.getEyeHeight(), player.func_226281_cx_());
+			Vec3d eyeVec = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
 			Vec3d lookVec = player.getLookVec();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
 			Vec3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
@@ -227,7 +227,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 		if (hitTargets > 0) {
 			if (PESounds.POWER != null) {
-				world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			}
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together

@@ -14,31 +14,31 @@ public class PERenderType extends RenderType {
 	}
 
 	public static RenderType spriteRenderer(ResourceLocation resourceLocation) {
-		RenderType.State state = RenderType.State.func_228694_a_()
-				.func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-				.func_228719_a_(field_228529_u_)//disableLighting
-				.func_228713_a_(field_228518_j_)//alpha
-				.func_228728_a_(true);
-		return func_228633_a_("sprite_renderer", DefaultVertexFormats.POSITION_TEX, 7, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+				.lightmap(LIGHTMAP_DISABLED)//disableLighting
+				.alpha(HALF_ALPHA)//alpha
+				.build(true);
+		return get("sprite_renderer", DefaultVertexFormats.POSITION_TEX, 7, 256, true, false, state);
 	}
 
 	public static RenderType yeuRenderer(ResourceLocation resourceLocation) {
-		RenderType.State state = RenderType.State.func_228694_a_()
-				.func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-				.func_228719_a_(field_228529_u_)//disableLighting
-				.func_228713_a_(field_228518_j_)//alpha
-				.func_228728_a_(true);
-		return func_228633_a_("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, 7, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+				.lightmap(LIGHTMAP_DISABLED)//disableLighting
+				.alpha(HALF_ALPHA)//alpha
+				.build(true);
+		return get("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, 7, 256, true, false, state);
 	}
 
 	public static RenderType transmutationOverlay() {
-		RenderType.State state = RenderType.State.func_228694_a_()
-				.func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
-				.func_228724_a_(field_228523_o_)//disableTexture
-				.func_228714_a_(field_228491_A_)//disableCull
-				.func_228719_a_(field_228529_u_)//disableLighting
-				.func_228727_a_(field_228496_F_)//depthMask(false)
-				.func_228728_a_(true);
-		return func_228633_a_("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, 7, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.transparency(TRANSLUCENT_TRANSPARENCY)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+				.texture(NO_TEXTURE)//disableTexture
+				.cull(CULL_DISABLED)//disableCull
+				.lightmap(LIGHTMAP_DISABLED)//disableLighting
+				.writeMask(COLOR_WRITE)//depthMask(false)
+				.build(true);
+		return get("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, 7, 256, true, false, state);
 	}
 }
