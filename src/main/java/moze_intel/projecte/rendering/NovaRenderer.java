@@ -38,10 +38,10 @@ public class NovaRenderer<T extends TNTEntity> extends EntityRenderer<T> {
 			matrix.scale(f1, f1, f1);
 		}
 
-		matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90.0F));
+		matrix.rotate(Vector3f.YP.rotationDegrees(-90.0F));
 		matrix.translate(-0.5D, -0.5D, 0.5D);
-		matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90.0F));
-		TNTMinecartRenderer.func_229127_a_(stateSupplier.get(), matrix, renderer, light, entity.getFuse() / 5 % 2 == 0);
+		matrix.rotate(Vector3f.YP.rotationDegrees(90.0F));
+		TNTMinecartRenderer.renderTntFlash(stateSupplier.get(), matrix, renderer, light, entity.getFuse() / 5 % 2 == 0);
 		matrix.pop();
 		super.render(entity, entityYaw, partialTick, matrix, renderer, light);
 	}

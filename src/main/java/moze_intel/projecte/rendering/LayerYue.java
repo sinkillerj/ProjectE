@@ -30,8 +30,8 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 	}
 
 	@Override
-	public void func_225628_a_(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, @Nonnull AbstractClientPlayerEntity player,
-			float angle1, float angle2, float partialTick, float angle3, float angle4, float angle5) {
+	public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, @Nonnull AbstractClientPlayerEntity player,
+			float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (player.isInvisible()) {
 			return;
 		}
@@ -41,10 +41,10 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 			double yShift = -0.498;
 			if (player.isCrouching()) {
 				//Only modify where it renders if the player's pose is crouching
-				matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(-28.64789F));
+				matrix.rotate(Vector3f.XP.rotationDegrees(-28.64789F));
 				yShift = -0.44;
 			}
-			matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+			matrix.rotate(Vector3f.ZP.rotationDegrees(180));
 			matrix.scale(3, 3, 3);
 			matrix.translate(-0.5, yShift, -0.5);
 			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));

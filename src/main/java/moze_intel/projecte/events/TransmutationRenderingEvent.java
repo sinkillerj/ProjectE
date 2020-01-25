@@ -67,7 +67,7 @@ public class TransmutationRenderingEvent {
 					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
 					tessellator.draw();
 				} else {
-					RenderHelper.func_227780_a_();
+					RenderHelper.enableStandardItemLighting();
 					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
 					mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0, model);
 					RenderHelper.disableStandardItemLighting();
@@ -92,20 +92,20 @@ public class TransmutationRenderingEvent {
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState current = world.getBlockState(rtr.getPos());
-			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.func_225608_bj_());
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
 			if (transmutationResult != null) {
 				ActiveRenderInfo activeRenderInfo = event.getInfo();
 				Vec3d viewPosition = activeRenderInfo.getProjectedView();
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
-				IRenderTypeBuffer.Impl impl = Minecraft.getInstance().func_228019_au_().func_228487_b_();
+				IRenderTypeBuffer.Impl impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 				IVertexBuilder builder = impl.getBuffer(PERenderType.transmutationOverlay());
 				MatrixStack matrix = new MatrixStack();
 				//Note: Doesn't support roll
-				//matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(cameraSetup.getRoll()));
-				matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(activeRenderInfo.getPitch()));
-				matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(activeRenderInfo.getYaw() + 180.0F));
+				//matrix.rotate(Vector3f.ZP.rotationDegrees(cameraSetup.getRoll()));
+				matrix.rotate(Vector3f.XP.rotationDegrees(activeRenderInfo.getPitch()));
+				matrix.rotate(Vector3f.YP.rotationDegrees(activeRenderInfo.getYaw() + 180.0F));
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
 					matrix.push();

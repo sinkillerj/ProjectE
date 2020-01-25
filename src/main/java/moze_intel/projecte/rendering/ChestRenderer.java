@@ -48,7 +48,7 @@ public class ChestRenderer extends ChestTileEntityRenderer<ChestTileEmc> {
 			BlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
 			if (blockChecker.test(state.getBlock())) {
 				matrix.translate(0.5D, 0.5D, 0.5D);
-				matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-state.get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle()));
+				matrix.rotate(Vector3f.YP.rotationDegrees(-state.get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle()));
 				matrix.translate(-0.5D, -0.5D, -0.5D);
 			}
 		}

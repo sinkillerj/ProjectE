@@ -69,7 +69,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem())) {
 			return ActionResultType.FAIL;
 		}
-		if (player.func_225608_bj_()) {
+		if (player.isShiftKeyDown()) {
 			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.BONE_MEAL, 4);
 			if (obj == null) {
 				return ActionResultType.FAIL;

@@ -40,7 +40,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 				matrix.translate(0, MathHelper.sin((te.getWorld().getGameTime() + partialTick) / 10.0F) * 0.1 + 0.1, 0);
 				matrix.scale(0.75F, 0.75F, 0.75F);
 				float angle = (te.getWorld().getGameTime() + partialTick) / 20.0F * (180F / (float) Math.PI);
-				matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(angle));
+				matrix.rotate(Vector3f.YP.rotationDegrees(angle));
 				Minecraft.getInstance().getItemRenderer().renderItem(stack, TransformType.GROUND, light, overlayLight, matrix, renderer);
 				matrix.pop();
 			}

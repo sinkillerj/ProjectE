@@ -120,7 +120,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		int z = (int) Math.floor(living.getPosZ());
 		BlockPos pos = new BlockPos(x, y, z);
 		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos)) {
-			if (!living.func_225608_bj_()) {
+			if (!living.isShiftKeyDown()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.onGround = true;

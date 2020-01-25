@@ -66,7 +66,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public RayTraceResult getHitBlock(PlayerEntity player) {
-		return rayTrace(player.getEntityWorld(), player, player.func_225608_bj_() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		return rayTrace(player.getEntityWorld(), player, player.isShiftKeyDown() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 	}
 
 	@Nonnull
@@ -89,7 +89,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			sideHit = ((BlockRayTraceResult) rtr).getFace();
 		}
 
-		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.func_225608_bj_());
+		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isShiftKeyDown());
 
 		if (result != null) {
 			int mode = this.getMode(stack);

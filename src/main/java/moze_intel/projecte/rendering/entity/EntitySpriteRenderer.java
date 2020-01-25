@@ -19,7 +19,7 @@ public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRende
 	@Override
 	public void render(@Nonnull T entity, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
 		matrix.push();
-		matrix.rotate(renderManager.func_229098_b_());
+		matrix.rotate(renderManager.getCameraOrientation());
 		matrix.scale(0.5F, 0.5F, 0.5F);
 		IVertexBuilder builder = renderer.getBuffer(PERenderType.spriteRenderer(getEntityTexture(entity)));
 		Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
