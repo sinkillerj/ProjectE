@@ -37,7 +37,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	public HarvestGoddess(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
 	@Override

@@ -23,19 +23,19 @@ public class ItemPE extends Item {
 	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F;
 	protected static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F;
 
-	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();
+	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 
 	public ItemPE(Properties props) {
 		super(props);
 	}
 
-	protected <TYPE> void addItemCapability(ItemCapability<TYPE> capability) {
-		supportedCapabilities.add(capability);
+	protected void addItemCapability(Supplier<ItemCapability<?>> capabilitySupplier) {
+		supportedCapabilities.add(capabilitySupplier);
 	}
 
-	protected <TYPE> void addItemCapability(String modid, Supplier<Supplier<ItemCapability<TYPE>>> capabilitySupplier) {
+	protected void addItemCapability(String modid, Supplier<Supplier<ItemCapability<?>>> capabilitySupplier) {
 		if (ModList.get().isLoaded(modid)) {
-			supportedCapabilities.add(capabilitySupplier.get().get());
+			supportedCapabilities.add(capabilitySupplier.get());
 		}
 	}
 

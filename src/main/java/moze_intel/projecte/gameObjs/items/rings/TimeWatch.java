@@ -54,8 +54,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	public TimeWatch(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
 	@Nonnull

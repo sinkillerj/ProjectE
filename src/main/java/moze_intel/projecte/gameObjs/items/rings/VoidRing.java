@@ -28,8 +28,8 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 	public VoidRing(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
 	@Override

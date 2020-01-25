@@ -29,7 +29,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 
 	public BodyStone(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

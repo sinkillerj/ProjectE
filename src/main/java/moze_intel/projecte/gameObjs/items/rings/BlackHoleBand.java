@@ -48,9 +48,9 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	public BlackHoleBand(Properties props) {
 		super(props);
-		addItemCapability(new AlchBagItemCapabilityWrapper());
-		addItemCapability(new AlchChestItemCapabilityWrapper());
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(AlchBagItemCapabilityWrapper::new);
+		addItemCapability(AlchChestItemCapabilityWrapper::new);
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

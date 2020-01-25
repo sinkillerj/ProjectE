@@ -20,7 +20,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 	public KleinStar(Properties props, EnumKleinTier tier) {
 		super(props);
 		this.tier = tier;
-		addItemCapability(new EmcHolderItemCapabilityWrapper());
+		addItemCapability(EmcHolderItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

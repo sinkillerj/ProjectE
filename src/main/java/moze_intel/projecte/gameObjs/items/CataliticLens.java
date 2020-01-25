@@ -12,7 +12,7 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 
 	public CataliticLens(Properties props) {
 		super(props);
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
 	@Override

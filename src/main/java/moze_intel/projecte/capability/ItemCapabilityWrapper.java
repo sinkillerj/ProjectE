@@ -1,7 +1,7 @@
 package moze_intel.projecte.capability;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
@@ -13,19 +13,25 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundNBT> {
 
-	private final List<ItemCapability<?>> capabilities;
+	private final ItemCapability<?>[] capabilities;
 	private final ItemStack itemStack;
 
-	public ItemCapabilityWrapper(ItemStack stack, List<ItemCapability<?>> capabilities) {
+	public ItemCapabilityWrapper(ItemStack stack, List<Supplier<ItemCapability<?>>> capabilities) {
 		itemStack = stack;
-		this.capabilities = capabilities;
-		this.capabilities.forEach(cap -> cap.setWrapper(this));
+		this.capabilities = new ItemCapability<?>[capabilities.size()];
+		for (int i = 0; i < capabilities.size(); i++) {
+			ItemCapability<?> cap = capabilities.get(i).get();
+			this.capabilities[i] = cap;
+			cap.setWrapper(this);
+		}
 	}
 
 	public ItemCapabilityWrapper(ItemStack stack, ItemCapability<?>... capabilities) {
 		itemStack = stack;
-		this.capabilities = Arrays.asList(capabilities);
-		this.capabilities.forEach(cap -> cap.setWrapper(this));
+		this.capabilities = capabilities;
+		for (ItemCapability<?> cap : this.capabilities) {
+			cap.setWrapper(this);
+		}
 	}
 
 	protected ItemStack getItemStack() {

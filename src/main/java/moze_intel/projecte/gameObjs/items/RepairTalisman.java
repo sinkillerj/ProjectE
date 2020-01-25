@@ -41,9 +41,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	public RepairTalisman(Properties props) {
 		super(props);
-		addItemCapability(new AlchBagItemCapabilityWrapper());
-		addItemCapability(new AlchChestItemCapabilityWrapper());
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(AlchBagItemCapabilityWrapper::new);
+		addItemCapability(AlchChestItemCapabilityWrapper::new);
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

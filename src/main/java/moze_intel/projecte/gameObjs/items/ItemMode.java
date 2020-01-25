@@ -22,8 +22,8 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 		super(props);
 		this.numCharge = numCharge;
 		this.modes = modeDescrp;
-		addItemCapability(new ChargeItemCapabilityWrapper());
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
+		addItemCapability(ChargeItemCapabilityWrapper::new);
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override

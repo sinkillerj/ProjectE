@@ -58,9 +58,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	public EvertideAmulet(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new InfiniteFluidHandler());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(InfiniteFluidHandler::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

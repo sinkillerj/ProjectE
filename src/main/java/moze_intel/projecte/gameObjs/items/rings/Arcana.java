@@ -57,9 +57,9 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		super(props);
 		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

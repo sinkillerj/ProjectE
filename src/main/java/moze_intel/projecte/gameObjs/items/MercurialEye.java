@@ -66,8 +66,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				"pe.pe_mercurial_eye.mode4",
 				"pe.pe_mercurial_eye.mode5",
 				"pe.pe_mercurial_eye.mode6"});
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
-		addItemCapability(new EyeInventoryHandler());
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
+		addItemCapability(EyeInventoryHandler::new);
 	}
 
 	@Override

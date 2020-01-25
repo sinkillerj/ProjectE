@@ -41,7 +41,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		super(props);
 		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
 		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
 	public void fireVolley(ItemStack stack, PlayerEntity player) {

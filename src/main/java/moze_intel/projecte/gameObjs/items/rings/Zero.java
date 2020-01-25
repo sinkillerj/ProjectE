@@ -32,8 +32,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 
 	public Zero(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(ChargeItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

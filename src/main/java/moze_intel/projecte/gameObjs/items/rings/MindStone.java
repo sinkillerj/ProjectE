@@ -31,7 +31,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	public MindStone(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
 	@Override

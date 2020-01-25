@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
@@ -27,7 +28,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 
-	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();
+	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 	private final EnumMatterType matterType;
 	private final int numCharges;
 
@@ -35,12 +36,12 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 		super(matterType, damage, -2.4F, props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
-		addItemCapability(new ChargeItemCapabilityWrapper());
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		addItemCapability(ChargeItemCapabilityWrapper::new);
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
-	protected <TYPE> void addItemCapability(ItemCapability<TYPE> capability) {
-		supportedCapabilities.add(capability);
+	protected void addItemCapability(Supplier<ItemCapability<?>> capabilitySupplier) {
+		supportedCapabilities.add(capabilitySupplier);
 	}
 
 	@Override

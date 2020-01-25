@@ -53,8 +53,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 				.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_KATAR, matterType.getHarvestLevel()));
 		modeDesc = new String[]{"pe.katar.mode1", "pe.katar.mode2"};
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
@@ -21,7 +22,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public abstract class PETool extends ToolItem implements IItemCharge {
 
-	private final List<ItemCapability<?>> supportedCapabilities = new ArrayList<>();
+	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 	protected final EnumMatterType matterType;
 	private final int numCharges;
 
@@ -29,11 +30,11 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 		super(damage, attackSpeed, matterType, new HashSet<>(), props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
-		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
-	protected <TYPE> void addItemCapability(ItemCapability<TYPE> capability) {
-		supportedCapabilities.add(capability);
+	protected void addItemCapability(Supplier<ItemCapability<?>> capabilitySupplier) {
+		supportedCapabilities.add(capabilitySupplier);
 	}
 
 	@Override

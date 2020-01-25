@@ -36,7 +36,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	public DiviningRod(Properties props, String[] modeDesc) {
 		super(props);
 		modes = modeDesc;
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Nonnull

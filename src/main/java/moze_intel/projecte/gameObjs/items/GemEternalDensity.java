@@ -63,9 +63,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				"item.projecte.dark_matter",
 				"item.projecte.red_matter"
 		};
-		addItemCapability(new AlchBagItemCapabilityWrapper());
-		addItemCapability(new AlchChestItemCapabilityWrapper());
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
+		addItemCapability(AlchBagItemCapabilityWrapper::new);
+		addItemCapability(AlchChestItemCapabilityWrapper::new);
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

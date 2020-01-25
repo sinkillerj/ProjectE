@@ -51,8 +51,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				"pe.philstone.mode1",
 				"pe.philstone.mode2",
 				"pe.philstone.mode3"});
-		addItemCapability(new ExtraFunctionItemCapabilityWrapper());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
 	@Override

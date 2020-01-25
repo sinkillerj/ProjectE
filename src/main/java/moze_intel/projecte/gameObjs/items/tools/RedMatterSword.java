@@ -19,7 +19,7 @@ public class RedMatterSword extends PESword implements IItemMode {
 	public RedMatterSword(Properties props) {
 		super(EnumMatterType.RED_MATTER, 3, 12, props);
 		modeDesc = new String[]{"pe.redsword.mode1", "pe.redsword.mode2"};
-		addItemCapability(new ModeChangerItemCapabilityWrapper());
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override

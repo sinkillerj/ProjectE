@@ -25,7 +25,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 
 	public DestructionCatalyst(Properties props) {
 		super(props);
-		addItemCapability(new ChargeItemCapabilityWrapper());
+		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
 	@Nonnull

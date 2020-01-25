@@ -19,8 +19,8 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	public HyperkineticLens(Properties props) {
 		super(props);
-		addItemCapability(new ChargeItemCapabilityWrapper());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(ChargeItemCapabilityWrapper::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
 	@Nonnull

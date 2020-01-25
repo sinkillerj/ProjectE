@@ -46,8 +46,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public SWRG(Properties props) {
 		super(props);
 		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 

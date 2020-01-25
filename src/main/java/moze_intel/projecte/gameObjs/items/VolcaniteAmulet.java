@@ -52,8 +52,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	public VolcaniteAmulet(Properties props) {
 		super(props);
-		addItemCapability(new PedestalItemCapabilityWrapper());
-		addItemCapability(new ProjectileShooterItemCapabilityWrapper());
+		addItemCapability(PedestalItemCapabilityWrapper::new);
+		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
