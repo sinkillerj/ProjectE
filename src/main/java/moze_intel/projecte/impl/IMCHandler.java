@@ -9,13 +9,11 @@ import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.imc.IMCMethods;
-import moze_intel.projecte.api.imc.IRecipeMapper;
 import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.emc.mappers.CraftingMapper;
 import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -96,16 +94,6 @@ public class IMCHandler {
 					}
 				});
 		NSSSerializer.INSTANCE.setCreators(creators);
-
-		List<IRecipeMapper> irecipeMappers = new ArrayList<>();
-		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_MAPPABLE_IRECIPE::equals)
-				.filter(msg -> msg.getMessageSupplier().get() instanceof IRecipeMapper)
-				.forEach(msg -> {
-					IRecipeMapper iRecipeMapper = (IRecipeMapper) msg.getMessageSupplier().get();
-					irecipeMappers.add(iRecipeMapper);
-					PECore.debugLog("Mod: '{}' registered an IRecipeMapper with the name: '{}'", msg.getSenderModId(), iRecipeMapper.getName());
-				});
-		CraftingMapper.setRecipeMappers(irecipeMappers);
 	}
 
 	private static List<EntityType<? extends MobEntity>> getRandomizerEntities(boolean peaceful) {

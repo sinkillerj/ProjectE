@@ -13,7 +13,7 @@ import net.minecraft.resources.IResourceManager;
 public interface IEMCMapper<T, V extends Comparable<V>> {
 
 	/**
-	 * A unique Name for the IEMCMapper. This is used to identify the IEMCMapper in the Configuration.
+	 * A unique Name for the {@link IEMCMapper}. This is used to identify the {@link IEMCMapper} in the Configuration.
 	 *
 	 * @return A unique Name
 	 */
@@ -27,8 +27,8 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	String getDescription();
 
 	/**
-	 * This method is used to determine if this EMCMapper can work in the current environment. If this returns {@code false} {@link #addMappings} will not be called.<br/>
-	 * This method will also be used to determine the default for enabling/disabling this IEMCMapper
+	 * This method is used to determine the default for enabling/disabling this {@link IEMCMapper}. If this returns {@code false} {@link #addMappings} will not be
+	 * called.
 	 *
 	 * @return {@code true} if you want {@link #addMappings} to be called, {@code false} otherwise.
 	 */
@@ -37,9 +37,10 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	}
 
 	/**
-	 * The method that allows the IEMCMapper to contribute to the EMC Mapping. Use the methods provided by the {@link IMappingCollector}. <br/> Use the config object to
-	 * generate a useful Configuration for your IEMCMapper. <br/> The Configuration Object will be a {@link com.electronwill.nightconfig.core.file.CommentedFileConfig}
-	 * representing the top-level mapping.cfg file. Please use properly prefixed config keys and do not clobber those not belonging to your mapper
+	 * The method that allows the {@link IEMCMapper} to contribute to the EMC Mapping. Use the methods provided by the {@link IMappingCollector}. <br/> Use the config
+	 * object to generate a useful Configuration for your {@link IEMCMapper}. <br/> The Configuration Object will be a {@link
+	 * com.electronwill.nightconfig.core.file.CommentedFileConfig} representing the top-level mapping.cfg file. Please use properly prefixed config keys and do not
+	 * clobber those not belonging to your mapper
 	 */
 	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config, IResourceManager resourceManager);
 }

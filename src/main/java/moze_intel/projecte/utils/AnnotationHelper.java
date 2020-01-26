@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
+import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -26,6 +28,7 @@ import org.objectweb.asm.Type;
 public class AnnotationHelper {
 
 	private static final Type MAPPER_TYPE = Type.getType(EMCMapper.class);
+	private static final Type RECIPE_TYPE_MAPPER_TYPE = Type.getType(RecipeTypeMapper.class);
 	private static final Type NBT_PROCESSOR_TYPE = Type.getType(NBTProcessor.class);
 
 	public static List<INBTProcessor> getNBTProcessors() {
@@ -48,6 +51,28 @@ public class AnnotationHelper {
 		}
 		nbtProcessors.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
 		return nbtProcessors;
+	}
+
+	public static List<IRecipeTypeMapper> getRecipeTypeMappers() {
+		ModList modList = ModList.get();
+		List<IRecipeTypeMapper> recipeTypeMappers = new ArrayList<>();
+		Map<IRecipeTypeMapper, Integer> priorities = new HashMap<>();
+		for (ModFileScanData scanData : modList.getAllScanData()) {
+			for (AnnotationData data : scanData.getAnnotations()) {
+				if (RECIPE_TYPE_MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
+					//If all the mods were loaded then attempt to get the processor
+					IRecipeTypeMapper mapper = getRecipeTypeMapper(data.getMemberName());
+					if (mapper != null) {
+						int priority = getPriority(data);
+						recipeTypeMappers.add(mapper);
+						priorities.put(mapper, priority);
+						PECore.LOGGER.info("Found and loaded RecipeType Mapper: {}, with priority {}", mapper.getName(), priority);
+					}
+				}
+			}
+		}
+		recipeTypeMappers.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
+		return recipeTypeMappers;
 	}
 
 	//Note: We don't bother caching this value because EMCMappingHandler#loadMappers caches our processed result
@@ -81,6 +106,11 @@ public class AnnotationHelper {
 	@Nullable
 	private static IEMCMapper getEMCMapper(String className) {
 		return createOrGetInstance(className, IEMCMapper.class, EMCMapper.Instance.class, IEMCMapper::getName);
+	}
+
+	@Nullable
+	private static IRecipeTypeMapper getRecipeTypeMapper(String className) {
+		return createOrGetInstance(className, IRecipeTypeMapper.class, RecipeTypeMapper.Instance.class, IRecipeTypeMapper::getName);
 	}
 
 	@Nullable
