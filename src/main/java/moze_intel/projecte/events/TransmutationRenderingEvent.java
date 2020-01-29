@@ -32,7 +32,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -101,11 +103,16 @@ public class TransmutationRenderingEvent {
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
 				IRenderTypeBuffer.Impl impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 				IVertexBuilder builder = impl.getBuffer(PERenderType.transmutationOverlay());
+				//TODO: Replace this and getting the IRenderTypeBuffer with getting it from the event when
+				// https://github.com/MinecraftForge/MinecraftForge/pull/6444 gets merged
 				MatrixStack matrix = new MatrixStack();
-				//Note: Doesn't support roll
-				//matrix.rotate(Vector3f.ZP.rotationDegrees(cameraSetup.getRoll()));
-				matrix.rotate(Vector3f.XP.rotationDegrees(activeRenderInfo.getPitch()));
-				matrix.rotate(Vector3f.YP.rotationDegrees(activeRenderInfo.getYaw() + 180.0F));
+				{
+					EntityViewRenderEvent.CameraSetup cameraSetup = ForgeHooksClient.onCameraSetup(Minecraft.getInstance().gameRenderer, event.getInfo(), event.getPartialTicks());
+					event.getInfo().setAnglesInternal(cameraSetup.getYaw(), cameraSetup.getPitch());
+					matrix.rotate(Vector3f.ZP.rotationDegrees(cameraSetup.getRoll()));
+					matrix.rotate(Vector3f.XP.rotationDegrees(activeRenderInfo.getPitch()));
+					matrix.rotate(Vector3f.YP.rotationDegrees(activeRenderInfo.getYaw() + 180.0F));
+				}
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
 					matrix.push();
