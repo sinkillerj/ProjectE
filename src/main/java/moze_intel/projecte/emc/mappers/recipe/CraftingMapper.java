@@ -1,7 +1,6 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,8 +40,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
-		//TODO: Improve the debug logging for recipeCount, to include class types of failed recipes that fall in a specific class type
-		Map<ResourceLocation, Pair<Integer, Integer>> recipeCount = new HashMap<>();
+		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
 		RecipeManager recipeManager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
 		//TODO: If there ever ends up being a forge registry for recipe types, use that instead
@@ -50,6 +48,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);
 			boolean wasHandled = false;
 			Collection<IRecipe<?>> recipes = null;
+			List<IRecipe<?>> unhandled = new ArrayList<>();
 			for (IRecipeTypeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
 				if (EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), recipeMapper.isAvailable())) {
@@ -59,31 +58,56 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							//If we haven't already retrieved the recipes, do so
 							recipes = recipeManager.recipes.getOrDefault(recipeType, Collections.emptyMap()).values();
 						}
-						int numHandled = (int) recipes.stream().filter(recipe -> recipeMapper.handleRecipe(mapper, recipe)).count();
+						int numHandled = 0;
+						for (IRecipe<?> recipe : recipes) {
+							if (recipeMapper.handleRecipe(mapper, recipe)) {
+								numHandled++;
+							} else {
+								unhandled.add(recipe);
+							}
+						}
 						if (numHandled > 0 || recipes.isEmpty()) {
-							recipeCount.put(typeRegistryName, Pair.of(numHandled, recipes.size()));
+							if (recipeCount.containsKey(typeRegistryName)) {
+								recipeCount.get(typeRegistryName).setUnhandled(unhandled);
+							} else {
+								recipeCount.put(typeRegistryName, new RecipeCountInfo(recipes.size(), unhandled));
+							}
 							wasHandled = true;
-							//On the first recipe mapper we run into that supports this recipe type, use it and move on to the next recipe type
-							// or if there are not actually any recipes we mark it as handled
-							//TODO: Eventually we may want to make it so that instead of just breaking we can attempt to handle
-							// any missed recipes using an alternate mapper.
-							break;
+							if (unhandled.isEmpty()) {
+								//If we have no more recipes that were unhandled break out of mapping this recipe type
+								break;
+							} else {
+								//Otherwise we replace our collection of known recipes with the unhandled ones and reset the list of unhandled recipes
+								recipes = unhandled;
+								unhandled = new ArrayList<>();
+							}
 						}
 						//If we didn't actually handle/map any recipes, continue looking
 					}
 				}
 			}
 			if (!wasHandled) {
+				//Note: We cannot just look at not unhandled is empty as then if none of the mappers even support the type
+				// it will not be true. We also don't have any issues due to how we modify the unhandled
 				canNotMap.add(typeRegistryName);
 			}
 		}
 		PECore.debugLog("CraftingMapper Statistics:");
-		for (Map.Entry<ResourceLocation, Pair<Integer, Integer>> entry : recipeCount.entrySet()) {
-			Pair<Integer, Integer> count = entry.getValue();
-			PECore.debugLog("Found and handled {} of {} Recipes of Type {}", count.getFirst(), count.getSecond(), entry.getKey());
+		for (Map.Entry<ResourceLocation, RecipeCountInfo> entry : recipeCount.entrySet()) {
+			ResourceLocation typeRegistryName = entry.getKey();
+			RecipeCountInfo countInfo = entry.getValue();
+			int total = countInfo.getTotalRecipes();
+			List<IRecipe<?>> unhandled = countInfo.getUnhandled();
+			PECore.debugLog("Found and handled {} of {} Recipes of Type {}", total - unhandled.size(), total, typeRegistryName);
+			if (!unhandled.isEmpty()) {
+				PECore.debugLog("Unhandled Recipes of Type {}:", typeRegistryName);
+				for (IRecipe<?> recipe : unhandled) {
+					PECore.debugLog("Name: {}, Recipe class: {}", recipe.getId(), recipe.getClass().getName());
+				}
+			}
 		}
 		for (ResourceLocation typeRegistryName : canNotMap) {
-			PECore.debugLog("Could not map Recipes with Type: {}", typeRegistryName);
+			PECore.debugLog("Could not map any Recipes of Type: {}", typeRegistryName);
 		}
 	}
 
@@ -95,5 +119,28 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public String getDescription() {
 		return "Add Conversions for Crafting Recipes gathered from net.minecraft.item.crafting.RecipeManager";
+	}
+
+	private static class RecipeCountInfo {
+
+		private final int totalRecipes;
+		private List<IRecipe<?>> unhandled;
+
+		private RecipeCountInfo(int totalRecipes, List<IRecipe<?>> unhandled) {
+			this.totalRecipes = totalRecipes;
+			this.unhandled = unhandled;
+		}
+
+		public int getTotalRecipes() {
+			return totalRecipes;
+		}
+
+		public void setUnhandled(List<IRecipe<?>> unhandled) {
+			this.unhandled = unhandled;
+		}
+
+		public List<IRecipe<?>> getUnhandled() {
+			return unhandled;
+		}
 	}
 }
