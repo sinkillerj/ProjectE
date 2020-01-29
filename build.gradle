@@ -171,15 +171,11 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    //compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.15.1-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-1.15.1-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
 
-    //TODO: Fix this once https://github.com/McJtyMods/TheOneProbe/issues/344 gets resolved
-    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api")
-    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}")
-    //compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
 
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")

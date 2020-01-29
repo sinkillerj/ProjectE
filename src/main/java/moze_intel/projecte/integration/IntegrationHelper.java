@@ -5,6 +5,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.integration.curios.CurioItemCapability;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
+import moze_intel.projecte.integration.top.TOPIntegration;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -24,9 +25,8 @@ public class IntegrationHelper {
 		if (modList.isLoaded(CURIO_MODID)) {
 			CuriosIntegration.sendIMC(event);
 		}
-		//TODO: TOP
-		/*if (modList.isLoaded(TOP_MODID)) {
+		if (modList.isLoaded(TOP_MODID)) {
 			TOPIntegration.sendIMC(event);
-		}*/
+		}
 	}
 }
