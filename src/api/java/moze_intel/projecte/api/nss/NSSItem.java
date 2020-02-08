@@ -27,7 +27,18 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	 */
 	@Nonnull
 	public static NSSItem createItem(@Nonnull ItemStack stack) {
-		//Don't bother checking if it is empty as getItem returns AIR which will then fail anyways for being empty
+		if (stack.isEmpty()) {
+			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
+		}
+		if (stack.isDamageable() && stack.hasTag()) {
+			//If the stack is damageable check if the NBT is identical to what it would be without the damage attached
+			// as creating a new ItemStack auto sets the NBT for the damage value, which we ideally do not want as it may
+			// throw off various calculations
+			if (stack.getTag().equals(new ItemStack(stack.getItem()).getTag())) {
+				//Skip including the NBT for the item as it auto gets added on stack creation anyways
+				return createItem(stack.getItem(), null);
+			}
+		}
 		return createItem(stack.getItem(), stack.getTag());
 	}
 

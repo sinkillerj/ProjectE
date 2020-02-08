@@ -10,7 +10,6 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -58,20 +57,8 @@ public class NBTManager {
 			//Try getting a base emc value from the NBT less variant if we don't have one matching our NBT
 			emcValue = EMCMappingHandler.getStoredEmcValue(ItemInfo.fromItem(info.getItem()));
 			if (emcValue == 0) {
-				ItemStack testStack = info.createStack();
-				if (testStack.isDamageable()) {
-					//If the item is damageable attempt to grab the EMC value of it at no damage,
-					// as the stack gets initialized with NBT stating it has no damage taken
-					//TODO: Maybe improving this logic somehow will allow implementing the edge case about random NBT
-					testStack.setDamage(0);
-					emcValue = EMCMappingHandler.getStoredEmcValue(ItemInfo.fromStack(testStack));
-					if (emcValue == 0) {
-						//If the item with full durability doesn't have an EMC value either, just exit
-					}
-				} else {
-					//The base item doesn't have an EMC value either so just exit
-					return 0;
-				}
+				//The base item doesn't have an EMC value either so just exit
+				return 0;
 			}
 		}
 
