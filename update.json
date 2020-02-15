@@ -23,9 +23,9 @@
         "1.12-recommended": "1.12-PE1.3.2h",
         "1.12.2-latest": "1.12.2-PE1.4.1",
         "1.12.2-recommended": "1.12.2-PE1.4.1",
-        "1.14.4-latest": "1.14.4-PE1.0.0B",
-        "1.14.4-recommended": "1.14.4-PE1.0.0B",
-        "1.15.2-latest": "1.15.2-PE1.0.1B",
-        "1.15.2-recommended": "1.15.2-PE1.0.1B"
+        "1.14.4-latest": "1.14.4-PE1.0.1B",
+        "1.14.4-recommended": "1.14.4-PE1.0.1B",
+        "1.15.2-latest": "1.15.2-PE1.0.2B",
+        "1.15.2-recommended": "1.15.2-PE1.0.2B"
     }
 }
