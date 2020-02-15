@@ -12,6 +12,7 @@ import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
+import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.resources.IResourceManager;
@@ -71,11 +72,16 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 			if (customEMCforMod.containsKey(modId)) {
 				for (Map.Entry<NormalizedSimpleStack, Long> entry : customEMCforMod.get(modId).entrySet()) {
 					NormalizedSimpleStack normStack = entry.getKey();
-					if (isAllowedToSet(modId, normStack, entry.getValue(), config)) {
-						mapper.setValueBefore(normStack, entry.getValue());
-						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+					long emc = entry.getValue();
+					if (isAllowedToSet(modId, normStack, emc, config)) {
+						mapper.setValueBefore(normStack, emc);
+						if (normStack instanceof NSSTag) {
+							//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
+							((NSSTag) normStack).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, emc));
+						}
+						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, emc);
 					} else {
-						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, entry.getValue());
+						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, emc);
 					}
 				}
 			}
