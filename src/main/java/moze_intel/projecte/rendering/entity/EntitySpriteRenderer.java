@@ -22,7 +22,7 @@ public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRende
 		matrix.rotate(renderManager.getCameraOrientation());
 		matrix.scale(0.5F, 0.5F, 0.5F);
 		IVertexBuilder builder = renderer.getBuffer(PERenderType.spriteRenderer(getEntityTexture(entity)));
-		Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+		Matrix4f matrix4f = matrix.getLast().getMatrix();
 		builder.pos(matrix4f, -1, -1, 0).tex(1, 1).endVertex();
 		builder.pos(matrix4f, -1, 1, 0).tex(1, 0).endVertex();
 		builder.pos(matrix4f, 1, 1, 0).tex(0, 0).endVertex();

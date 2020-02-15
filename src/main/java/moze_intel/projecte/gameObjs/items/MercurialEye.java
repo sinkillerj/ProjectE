@@ -90,7 +90,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		ItemStack stack = player.getHeldItem(hand);
 		if (getMode(stack) == CREATION_MODE) {
 			if (world.isRemote) {
-				return ActionResult.func_226248_a_(stack);
+				return ActionResult.resultSuccess(stack);
 			}
 			Vec3d eyeVec = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
 			Vec3d lookVec = player.getLookVec();
@@ -98,7 +98,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			Vec3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
 			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
 		}
-		return ActionResult.func_226250_c_(stack);
+		return ActionResult.resultPass(stack);
 	}
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {

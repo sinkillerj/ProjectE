@@ -134,7 +134,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			}
 			changeMode(player, stack, newMode);
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	/**

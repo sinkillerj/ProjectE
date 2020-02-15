@@ -37,7 +37,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 		}
 		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUniqueID()) || CLAR_UUID.equals(player.getUniqueID())) {
 			matrix.push();
-			render.getEntityModel().bipedBodyWear.setAnglesAndRotation(matrix);
+			render.getEntityModel().bipedBodyWear.translateRotate(matrix);
 			double yShift = -0.498;
 			if (player.isCrouching()) {
 				//Only modify where it renders if the player's pose is crouching
@@ -48,7 +48,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 			matrix.scale(3, 3, 3);
 			matrix.translate(-0.5, yShift, -0.5);
 			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));
-			Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+			Matrix4f matrix4f = matrix.getLast().getMatrix();
 			builder.pos(matrix4f, 0, 0, 0).tex(0, 0).color(0, 1, 0, 1).endVertex();
 			builder.pos(matrix4f, 0, 0, 1).tex(0, 1).color(0, 1, 0, 1).endVertex();
 			builder.pos(matrix4f, 1, 0, 1).tex(1, 1).color(0, 1, 0, 1).endVertex();

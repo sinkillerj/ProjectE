@@ -30,14 +30,14 @@ public final class ItemHelper {
 	public static ActionResult<ItemStack> actionResultFromType(ActionResultType type, ItemStack stack) {
 		switch (type) {
 			case SUCCESS:
-				return ActionResult.func_226248_a_(stack);
+				return ActionResult.resultSuccess(stack);
 			case CONSUME:
-				return ActionResult.func_226249_b_(stack);
+				return ActionResult.resultConsume(stack);
 			case FAIL:
-				return ActionResult.func_226251_d_(stack);
+				return ActionResult.resultFail(stack);
 			case PASS:
 			default:
-				return ActionResult.func_226250_c_(stack);
+				return ActionResult.resultPass(stack);
 		}
 	}
 

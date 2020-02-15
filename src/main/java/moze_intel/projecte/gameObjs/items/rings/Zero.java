@@ -71,7 +71,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	@Override

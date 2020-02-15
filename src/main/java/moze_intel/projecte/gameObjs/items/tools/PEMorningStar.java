@@ -132,7 +132,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.func_226250_c_(stack);
+		return ActionResult.resultPass(stack);
 	}
 
 	@Override

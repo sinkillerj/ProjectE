@@ -81,7 +81,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		if (!world.isRemote) {
 			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}
-		return ActionResult.func_226248_a_(player.getHeldItem(hand));
+		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}
 
 	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {

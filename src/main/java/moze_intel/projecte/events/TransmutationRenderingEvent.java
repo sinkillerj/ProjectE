@@ -55,7 +55,7 @@ public class TransmutationRenderingEvent {
 					float green = (color >> 8 & 0xFF) / 255.0F;
 					float blue = (color & 0xFF) / 255.0F;
 					float alpha = (color >> 24 & 0xFF) / 255.0F;
-					TextureAtlasSprite sprite = mc.getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
+					TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder wr = tessellator.getBuffer();
 					wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -106,7 +106,7 @@ public class TransmutationRenderingEvent {
 					matrix.translate(pos.getX(), pos.getY(), pos.getZ());
 					matrix.scale(1.02F, 1.02F, 1.02F);
 					matrix.translate(-0.01, -0.01, -0.01);
-					Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+					Matrix4f matrix4f = matrix.getLast().getMatrix();
 					world.getBlockState(pos).getShape(world, pos).forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
 						float bMinX = (float) minX;
 						float bMinY = (float) minY;

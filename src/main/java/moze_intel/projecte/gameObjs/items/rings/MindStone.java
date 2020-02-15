@@ -58,7 +58,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 				addXP(player, toAdd);
 			}
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	@OnlyIn(Dist.CLIENT)

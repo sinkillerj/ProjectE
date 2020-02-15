@@ -30,7 +30,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		if (!world.isRemote) {
 			shootProjectile(player, stack, hand);
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	@Override

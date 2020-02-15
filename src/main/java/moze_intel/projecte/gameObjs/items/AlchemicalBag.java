@@ -44,7 +44,7 @@ public class AlchemicalBag extends ItemPE {
 			});
 		}
 
-		return ActionResult.func_226248_a_(player.getHeldItem(hand));
+		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(PlayerEntity player, NonNullList<ItemStack> inventory) {

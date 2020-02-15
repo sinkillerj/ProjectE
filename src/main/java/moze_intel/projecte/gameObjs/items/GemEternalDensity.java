@@ -147,7 +147,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
 			}
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	private static ItemStack getTarget(ItemStack stack) {

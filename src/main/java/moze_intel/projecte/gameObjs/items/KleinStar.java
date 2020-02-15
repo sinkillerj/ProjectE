@@ -44,9 +44,9 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && PECore.DEV_ENVIRONMENT) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
-			return ActionResult.func_226248_a_(stack);
+			return ActionResult.resultSuccess(stack);
 		}
-		return ActionResult.func_226250_c_(stack);
+		return ActionResult.resultPass(stack);
 	}
 
 	public enum EnumKleinTier {

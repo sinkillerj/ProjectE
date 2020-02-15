@@ -79,7 +79,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
-		return ActionResult.func_226248_a_(player.getHeldItem(hand));
+		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}
 
 	@Override

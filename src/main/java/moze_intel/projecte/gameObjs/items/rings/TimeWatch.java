@@ -65,13 +65,13 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (!world.isRemote) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
-				return ActionResult.func_226251_d_(stack);
+				return ActionResult.resultFail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()));
 		}
-		return ActionResult.func_226248_a_(stack);
+		return ActionResult.resultSuccess(stack);
 	}
 
 	@Override

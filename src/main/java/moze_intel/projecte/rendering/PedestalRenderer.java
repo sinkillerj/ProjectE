@@ -28,7 +28,7 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 			if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox()) {
 				matrix.push();
 				AxisAlignedBB aabb = te.getEffectBounds().offset(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
-				IVertexBuilder vertexBuilder = renderer.getBuffer(RenderType.lines());
+				IVertexBuilder vertexBuilder = renderer.getBuffer(RenderType.getLines());
 				WorldRenderer.drawBoundingBox(matrix, vertexBuilder, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX + 1, aabb.maxY + 1, aabb.maxZ + 1,
 						1, 0, 1, 1, 1, 0, 1);
 				matrix.pop();

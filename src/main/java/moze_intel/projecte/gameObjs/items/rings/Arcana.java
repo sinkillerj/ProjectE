@@ -136,7 +136,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
 		}
-		return ActionResult.func_226248_a_(player.getHeldItem(hand));
+		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}
 
 	@Nonnull

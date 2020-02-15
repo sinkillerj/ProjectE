@@ -54,7 +54,7 @@ public class ChestRenderer extends ChestTileEntityRenderer<ChestTileEmc> {
 		}
 		float lidAngle = 1.0F - chestTile.getLidAngle(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
-		IVertexBuilder builder = renderer.getBuffer(RenderType.entityCutout(texture));
+		IVertexBuilder builder = renderer.getBuffer(RenderType.getEntityCutout(texture));
 		lid.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
 		latch.rotateAngleX = lid.rotateAngleX;
 		lid.render(matrix, builder, light, overlayLight);
