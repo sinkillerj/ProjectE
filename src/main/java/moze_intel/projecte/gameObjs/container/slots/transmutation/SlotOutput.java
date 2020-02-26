@@ -17,6 +17,11 @@ public class SlotOutput extends SlotItemHandler {
 		this.inv = inv;
 	}
 
+	@Override
+	protected void onSwapCraft(int amount) {
+		decrStackSize(amount);
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int amount) {
