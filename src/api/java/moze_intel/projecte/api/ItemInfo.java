@@ -133,7 +133,11 @@ public final class ItemInfo {
 	 */
 	public ItemStack createStack() {
 		ItemStack stack = new ItemStack(item);
-		stack.setTag(getNBT());
+		CompoundNBT nbt = getNBT();
+		if (nbt != null) {
+			//Only set the NBT if we have some, other then allow the item to use its default NBT
+			stack.setTag(nbt);
+		}
 		return stack;
 	}
 
