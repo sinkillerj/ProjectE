@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:charcoal",
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}
