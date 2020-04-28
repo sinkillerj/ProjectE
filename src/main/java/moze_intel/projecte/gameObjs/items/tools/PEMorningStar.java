@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
@@ -45,6 +46,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, matterType.getHarvestLevel()));
 		modeDesc = new String[]{"pe.morningstar.mode1", "pe.morningstar.mode2", "pe.morningstar.mode3", "pe.morningstar.mode4"};
+		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override
