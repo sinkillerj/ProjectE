@@ -90,7 +90,7 @@ public class TransmutationRenderingEvent {
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState current = world.getBlockState(rtr.getPos());
-			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 			if (transmutationResult != null) {
 				ActiveRenderInfo activeRenderInfo = event.getInfo();
 				Vec3d viewPosition = activeRenderInfo.getProjectedView();

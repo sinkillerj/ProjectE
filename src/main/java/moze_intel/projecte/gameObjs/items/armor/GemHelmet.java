@@ -75,7 +75,7 @@ public class GemHelmet extends GemArmorBase {
 			Block b = world.getBlockState(pos.down()).getBlock();
 
 			if (b == Blocks.WATER && world.isAirBlock(pos)) {
-				if (!player.isShiftKeyDown()) {
+				if (!player.isSneaking()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;
 					player.onGround = true;

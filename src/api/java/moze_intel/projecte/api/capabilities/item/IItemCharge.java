@@ -62,7 +62,7 @@ public interface IItemCharge {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			if (currentCharge > 0) {
 				player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F,
 						0.5F + ((0.5F / (float) numCharges) * currentCharge));

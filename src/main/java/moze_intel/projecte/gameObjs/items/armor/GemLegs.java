@@ -49,11 +49,11 @@ public class GemLegs extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			if (player.isShiftKeyDown() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
+			if (player.isSneaking() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
 				player.setMotion(player.getMotion().add(0, -0.32F, 0));
 			}
 		}
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 3.5, player.getPosY() - 3.5, player.getPosZ() - 3.5,
 					player.getPosX() + 3.5, player.getPosY() + 3.5, player.getPosZ() + 3.5);
 			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.getPosX(), player.getPosY(), player.getPosZ(), true);
