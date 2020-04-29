@@ -55,7 +55,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesInAABBFromPoint(player.getEntityWorld(), player.getBoundingBox().grow(5), player.getPosX(), player.getPosY(), player.getPosZ(), true);
+			WorldHelper.repelEntitiesSWRG(player.getEntityWorld(), player.getBoundingBox().grow(5), player);
 		}
 		if (player.getEntityWorld().isRemote) {
 			return;

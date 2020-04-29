@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.PESounds;
@@ -24,12 +25,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
@@ -65,8 +68,9 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 public final class WorldHelper {
 
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
-
 	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
+	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !swrgBlacklist.contains(entity.getType());
+	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> !entity.isSpectator() && !interdictionBlacklist.contains(entity.getType());
 
 	public static void setInterdictionBlacklist(Set<EntityType<?>> types) {
 		interdictionBlacklist = ImmutableSet.copyOf(types);
@@ -447,24 +451,51 @@ public final class WorldHelper {
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
-	public static void repelEntitiesInAABBFromPoint(World world, AxisAlignedBB effectBounds, double x, double y, double z, boolean isSWRG) {
-		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, effectBounds);
-		for (Entity ent : list) {
-			if ((isSWRG && !swrgBlacklist.contains(ent.getType())) || (!isSWRG && !interdictionBlacklist.contains(ent.getType()))) {
-				if (ent instanceof MobEntity || ent instanceof IProjectile) {
-					if (isSWRG || !ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
-						if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround) {
-							continue;
-						}
-						Vec3d p = new Vec3d(x, y, z);
-						Vec3d t = new Vec3d(ent.getPosX(), ent.getPosY(), ent.getPosZ());
-						double distance = p.distanceTo(t) + 0.1D;
-						Vec3d r = new Vec3d(t.x - p.x, t.y - p.y, t.z - p.z);
-						ent.setMotion(ent.getMotion().add(r.scale(1 / 1.5D * 1 / distance)));
+	public static void repelEntitiesInterdiction(World world, AxisAlignedBB effectBounds, double x, double y, double z) {
+		Vec3d vec = new Vec3d(x, y, z);
+		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, INTERDICTION_REPEL_PREDICATE)) {
+			if (ent instanceof MobEntity || ent instanceof IProjectile) {
+				if (!ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
+					if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround) {
+						continue;
 					}
+					repelEntity(vec, ent);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Repels projectiles and mobs in the given AABB away from a given player, if the player is not the thrower of the projectile
+	 */
+	public static void repelEntitiesSWRG(World world, AxisAlignedBB effectBounds, PlayerEntity player) {
+		Vec3d playerVec = player.getPositionVec();
+		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
+			if (ent instanceof MobEntity || ent instanceof IProjectile) {
+				if (ent instanceof AbstractArrowEntity) {
+					AbstractArrowEntity arrow = (AbstractArrowEntity) ent;
+					if (arrow.onGround || player.getUniqueID().equals(arrow.shootingEntity)) {
+						continue;
+					}
+				} else if (ent instanceof ThrowableEntity) {
+					LivingEntity thrower = ((ThrowableEntity) ent).getThrower();
+					//Note: Eventually we wouldn't have the check for if the world is remote and the thrower is null
+					// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
+					// but makes it so the client can't quite properly render it if we properly deflect another player's throwable
+					if (world.isRemote() && thrower == null || thrower != null && player.getUniqueID().equals(thrower.getUniqueID())) {
+						continue;
+					}
+				}
+				repelEntity(playerVec, ent);
+			}
+		}
+	}
+
+	private static void repelEntity(Vec3d vec, Entity entity) {
+		Vec3d t = new Vec3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+		Vec3d r = new Vec3d(t.x - vec.x, t.y - vec.y, t.z - vec.z);
+		double distance = vec.distanceTo(t) + 0.1;
+		entity.setMotion(entity.getMotion().add(r.scale(1 / 1.5 * 1 / distance)));
 	}
 
 	@Nonnull

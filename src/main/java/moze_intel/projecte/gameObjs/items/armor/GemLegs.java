@@ -56,7 +56,7 @@ public class GemLegs extends GemArmorBase {
 		if (player.isSneaking()) {
 			AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 3.5, player.getPosY() - 3.5, player.getPosZ() - 3.5,
 					player.getPosX() + 3.5, player.getPosY() + 3.5, player.getPosZ() + 3.5);
-			WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.getPosX(), player.getPosY(), player.getPosZ(), true);
+			WorldHelper.repelEntitiesSWRG(world, box, player);
 			if (!world.isRemote && player.getMotion().getY() < -0.08) {
 				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player, player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
 						entity -> entity instanceof LivingEntity);
