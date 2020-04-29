@@ -60,10 +60,15 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						}
 						int numHandled = 0;
 						for (IRecipe<?> recipe : recipes) {
-							if (recipeMapper.handleRecipe(mapper, recipe)) {
-								numHandled++;
-							} else {
-								unhandled.add(recipe);
+							try {
+								if (recipeMapper.handleRecipe(mapper, recipe)) {
+									numHandled++;
+								} else {
+									unhandled.add(recipe);
+								}
+							} catch (Exception e) {
+								PECore.LOGGER.fatal("A fatal error occurred while trying to map the recipe: {}", recipe.getId());
+								throw e;
 							}
 						}
 						if (numHandled > 0 || recipes.isEmpty()) {
