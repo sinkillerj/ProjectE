@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PrimitiveIterator;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
@@ -14,12 +14,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.NonNullLazy;
 
 public class DiviningRod extends ItemPE implements IItemMode {
 
@@ -47,13 +48,13 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			return ActionResultType.SUCCESS;
 		}
 		PlayerEntity player = ctx.getPlayer();
-		List<Long> emcValues = new ArrayList<>();
+		LongList emcValues = new LongArrayList();
 		long totalEmc = 0;
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItem());
-		AxisAlignedBB box = WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth);
-		Collection<IRecipe<?>> recipes = world.getRecipeManager().getRecipes();
-		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
+		//Lazily retrieve the values for the furnace recipes
+		NonNullLazy<Collection<IRecipe<IInventory>>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getRecipes(IRecipeType.SMELTING).values());
+		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth))) {
 			if (world.isAirBlock(digPos)) {
 				continue;
 			}
@@ -64,20 +65,17 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			}
 			ItemStack blockStack = drops.get(0);
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
-
 			if (blockEmc == 0) {
-				PrimitiveIterator.OfLong iter = recipes.stream()
-						.filter(r -> r instanceof FurnaceRecipe && r.getIngredients().get(0).test(blockStack))
-						.mapToLong(r -> EMCHelper.getEmcValue(r.getRecipeOutput()))
-						.iterator();
-
-				while (iter.hasNext()) {
-					long currentValue = iter.nextLong();
-					if (currentValue != 0) {
-						if (!emcValues.contains(currentValue)) {
-							emcValues.add(currentValue);
+				for (IRecipe<IInventory> furnaceRecipe : furnaceRecipes.get()) {
+					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
+						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getRecipeOutput());
+						if (currentValue != 0) {
+							if (!emcValues.contains(currentValue)) {
+								emcValues.add(currentValue);
+							}
+							totalEmc += currentValue;
+							break;
 						}
-						totalEmc += currentValue;
 					}
 				}
 			} else {
@@ -92,28 +90,22 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		if (numBlocks == 0) {
 			return ActionResultType.FAIL;
 		}
-
-		long[] maxValues = new long[3];
-
-		for (int i = 0; i < 3; i++) {
-			maxValues[i] = 1;
-		}
-
-		emcValues.sort(Comparator.reverseOrder());
-
-		int num = Math.min(emcValues.size(), 3);
-
-		for (int i = 0; i < num; i++) {
-			maxValues[i] = emcValues.get(i);
-		}
-
 		player.sendMessage(new TranslationTextComponent("pe.divining.avgemc", numBlocks, totalEmc / numBlocks));
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3) {
+			long[] maxValues = new long[3];
+			for (int i = 0; i < 3; i++) {
+				maxValues[i] = 1;
+			}
+			emcValues.sort(Comparator.reverseOrder());
+			int num = Math.min(emcValues.size(), 3);
+			for (int i = 0; i < num; i++) {
+				maxValues[i] = emcValues.getLong(i);
+			}
 			player.sendMessage(new TranslationTextComponent("pe.divining.maxemc", maxValues[0]));
-		}
-		if (this == ObjHandler.dRod3) {
-			player.sendMessage(new TranslationTextComponent("pe.divining.secondmax", maxValues[1]));
-			player.sendMessage(new TranslationTextComponent("pe.divining.thirdmax", maxValues[2]));
+			if (this == ObjHandler.dRod3) {
+				player.sendMessage(new TranslationTextComponent("pe.divining.secondmax", maxValues[1]));
+				player.sendMessage(new TranslationTextComponent("pe.divining.thirdmax", maxValues[2]));
+			}
 		}
 		return ActionResultType.SUCCESS;
 	}
