@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -37,17 +36,17 @@ public class EntityLensProjectile extends ThrowableEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.getEntityWorld().isRemote) {
+		if (getEntityWorld().isRemote) {
 			return;
 		}
-		if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
-			this.remove();
+		if (ticksExisted > 400 || !getEntityWorld().isBlockPresent(getPosition())) {
+			remove();
 			return;
 		}
-		if (this.isInWater()) {
-			this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+		if (isInWater()) {
+			playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (rand.nextFloat() - rand.nextFloat()) * 0.4F);
 			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, getPosX(), getPosY(), getPosZ(), 2, 0, 0, 0, 0);
-			this.remove();
+			remove();
 		}
 	}
 

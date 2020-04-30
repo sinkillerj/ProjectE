@@ -53,11 +53,11 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
+				WorldHelper.growNearbyRandomly(true, world, player.getPosition(), player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		} else {
-			WorldHelper.growNearbyRandomly(false, world, new BlockPos(player), player);
+			WorldHelper.growNearbyRandomly(false, world, player.getPosition(), player);
 		}
 	}
 
@@ -66,23 +66,26 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
-		if (world.isRemote || !player.canPlayerEdit(ctx.getPos(), ctx.getFace(), ctx.getItem())) {
+		BlockPos pos = ctx.getPos();
+		if (world.isRemote || !player.canPlayerEdit(pos, ctx.getFace(), ctx.getItem())) {
 			return ActionResultType.FAIL;
 		}
 		if (player.isSneaking()) {
-			Object[] obj = getStackFromInventory(player.inventory.mainInventory, Items.BONE_MEAL, 4);
-			if (obj == null) {
-				return ActionResultType.FAIL;
+			for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
+				ItemStack stack = player.inventory.mainInventory.get(i);
+				if (!stack.isEmpty() && stack.getCount() >= 4 && stack.getItem() == Items.BONE_MEAL) {
+					if (useBoneMeal(world, pos)) {
+						player.inventory.decrStackSize(i, 4);
+						player.container.detectAndSendChanges();
+						return ActionResultType.SUCCESS;
+					}
+					break;
+				}
 			}
-			ItemStack boneMeal = (ItemStack) obj[1];
-			if (!boneMeal.isEmpty() && useBoneMeal(world, ctx.getPos())) {
-				player.inventory.decrStackSize((Integer) obj[0], 4);
-				player.container.detectAndSendChanges();
-				return ActionResultType.SUCCESS;
-			}
-			return ActionResultType.FAIL;
+		} else if (plantSeeds(world, player, pos)) {
+			return ActionResultType.SUCCESS;
 		}
-		return plantSeeds(world, player, ctx.getPos()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+		return ActionResultType.FAIL;
 	}
 
 	private boolean useBoneMeal(World world, BlockPos pos) {
@@ -93,11 +96,11 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 				Block crop = state.getBlock();
 				if (crop instanceof IGrowable) {
 					IGrowable growable = (IGrowable) crop;
-					if (growable.canUseBonemeal(world, world.rand, currentPos, state)) {
+					if (growable.canGrow(world, currentPos, state, false) && growable.canUseBonemeal(world, world.rand, currentPos, state)) {
+						growable.grow((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
 						if (!result) {
 							result = true;
 						}
-						growable.grow((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
 					}
 				}
 			}
@@ -116,27 +119,27 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 				continue;
 			}
 			BlockState state = world.getBlockState(currentPos);
+			//Ensure we are immutable so that changing blocks doesn't act weird
+			currentPos = currentPos.toImmutable();
 			for (int i = 0; i < seeds.size(); i++) {
 				StackWithSlot s = seeds.get(i);
-				IPlantable plant;
-				if (s.stack.getItem() instanceof IPlantable) {
-					plant = (IPlantable) s.stack.getItem();
-				} else {
-					plant = (IPlantable) Block.getBlockFromItem(s.stack.getItem());
-				}
-				//Ensure we are immutable so that changing blocks doesn't act weird
-				currentPos = currentPos.toImmutable();
-				if (state.getBlock().canSustainPlant(state, world, currentPos, Direction.UP, plant) && world.isAirBlock(currentPos.up())) {
-					world.setBlockState(currentPos.up(), plant.getPlant(world, currentPos.up()));
+				if (state.canSustainPlant(world, currentPos, Direction.UP, s.plantable) && world.isAirBlock(currentPos.up())) {
+					world.setBlockState(currentPos.up(), s.plantable.getPlant(world, currentPos.up()));
 					player.inventory.decrStackSize(s.slot, 1);
 					player.container.detectAndSendChanges();
-					s.stack.shrink(1);
-					if (s.stack.isEmpty()) {
+					s.count--;
+					if (s.count == 0) {
 						seeds.remove(i);
+						if (seeds.isEmpty()) {
+							//If we are out of seeds, hard exit the method
+							return true;
+						}
 					}
 					if (!result) {
 						result = true;
 					}
+					//Once we set a seed in that position, break out of trying to place other seeds in that position
+					break;
 				}
 			}
 		}
@@ -148,30 +151,18 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.get(i);
 			if (!stack.isEmpty()) {
-				if (stack.getItem() instanceof IPlantable) {
-					result.add(new StackWithSlot(stack, i));
-					continue;
-				}
-				Block block = Block.getBlockFromItem(stack.getItem());
-				if (block instanceof IPlantable) {
-					result.add(new StackWithSlot(stack, i));
+				Item item = stack.getItem();
+				if (item instanceof IPlantable) {
+					result.add(new StackWithSlot(stack, i, (IPlantable) item));
+				} else {
+					Block block = Block.getBlockFromItem(item);
+					if (block instanceof IPlantable) {
+						result.add(new StackWithSlot(stack, i, (IPlantable) block));
+					}
 				}
 			}
 		}
 		return result;
-	}
-
-	private Object[] getStackFromInventory(NonNullList<ItemStack> inv, Item item, int minAmount) {
-		Object[] obj = new Object[2];
-		for (int i = 0; i < inv.size(); i++) {
-			ItemStack stack = inv.get(i);
-			if (!stack.isEmpty() && stack.getCount() >= minAmount && stack.getItem() == item) {
-				obj[0] = i;
-				obj[1] = stack;
-				return obj;
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -205,12 +196,14 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	private static class StackWithSlot {
 
+		public final IPlantable plantable;
 		public final int slot;
-		public final ItemStack stack;
+		public int count;
 
-		public StackWithSlot(ItemStack stack, int slot) {
-			this.stack = stack.copy();
+		public StackWithSlot(ItemStack stack, int slot, IPlantable plantable) {
 			this.slot = slot;
+			this.count = stack.getCount();
+			this.plantable = plantable;
 		}
 	}
 }

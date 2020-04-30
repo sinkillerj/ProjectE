@@ -1,0 +1,9 @@
+{
+  "__comment": "Blocks added here (that are IGrowable) will not be broken by the harvest goddess band when unable to continue growing.",
+  "replace": false,
+  "values": [
+    "minecraft:grass_block",
+    "minecraft:melon_stem",
+    "minecraft:pumpkin_stem"
+  ]
+}

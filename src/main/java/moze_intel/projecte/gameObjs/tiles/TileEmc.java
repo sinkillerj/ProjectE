@@ -50,7 +50,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 		for (Direction dir : Direction.values()) {
 			BlockPos neighboringPos = getPos().offset(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
-			if (world.isBlockLoaded(neighboringPos)) {
+			if (world.isBlockPresent(neighboringPos)) {
 				TileEntity neighboringTile = world.getTileEntity(neighboringPos);
 				if (neighboringTile != null) {
 					neighboringTile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {

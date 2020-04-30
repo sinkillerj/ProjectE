@@ -100,7 +100,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 					WorldHelper.igniteNearby(world, player);
 					break;
 				case 2:
-					WorldHelper.growNearbyRandomly(true, world, new BlockPos(player), player);
+					WorldHelper.growNearbyRandomly(true, world, player.getPosition(), player);
 					break;
 				case 3:
 					WorldHelper.repelEntitiesSWRG(world, player.getBoundingBox().grow(5), player);

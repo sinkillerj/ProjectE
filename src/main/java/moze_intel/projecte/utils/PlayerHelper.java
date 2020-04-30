@@ -21,6 +21,7 @@ import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -83,10 +84,10 @@ public final class PlayerHelper {
 		return null;
 	}
 
-	public static BlockPos getBlockLookingAt(PlayerEntity player, double maxDistance) {
+	public static BlockRayTraceResult getBlockLookingAt(PlayerEntity player, double maxDistance) {
 		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
 		RayTraceContext ctx = new RayTraceContext(vecs.getLeft(), vecs.getRight(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
-		return player.getEntityWorld().rayTraceBlocks(ctx).getPos();
+		return player.getEntityWorld().rayTraceBlocks(ctx);
 	}
 
 	/**

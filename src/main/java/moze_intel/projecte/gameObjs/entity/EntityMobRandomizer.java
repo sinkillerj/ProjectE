@@ -35,7 +35,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 	public void tick() {
 		super.tick();
 		if (!this.getEntityWorld().isRemote) {
-			if (ticksExisted > 400 || this.isInWater() || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
+			if (ticksExisted > 400 || isInWater() || !getEntityWorld().isBlockPresent(getPosition())) {
 				this.remove();
 			}
 		}
@@ -48,13 +48,13 @@ public class EntityMobRandomizer extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (this.getEntityWorld().isRemote) {
+		if (getEntityWorld().isRemote) {
 			for (int i = 0; i < 4; ++i) {
-				this.getEntityWorld().addParticle(ParticleTypes.PORTAL, getPosX(), getPosY() + rand.nextDouble() * 2.0D, getPosZ(), this.rand.nextGaussian(), 0.0D, rand.nextGaussian());
+				getEntityWorld().addParticle(ParticleTypes.PORTAL, getPosX(), getPosY() + rand.nextDouble() * 2.0D, getPosZ(), rand.nextGaussian(), 0.0D, rand.nextGaussian());
 			}
 			return;
 		}
-		if (this.isInWater() || !(mop instanceof EntityRayTraceResult) || !(((EntityRayTraceResult) mop).getEntity() instanceof MobEntity) || !(getThrower() instanceof PlayerEntity)) {
+		if (isInWater() || !(mop instanceof EntityRayTraceResult) || !(((EntityRayTraceResult) mop).getEntity() instanceof MobEntity) || !(getThrower() instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
@@ -65,7 +65,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 			ent.remove();
 			randomized.setLocationAndAngles(ent.getPosX(), ent.getPosY(), ent.getPosZ(), ent.rotationYaw, ent.rotationPitch);
 			randomized.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(randomized)), SpawnReason.CONVERSION, null, null);
-			this.getEntityWorld().addEntity(randomized);
+			getEntityWorld().addEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}
 		remove();

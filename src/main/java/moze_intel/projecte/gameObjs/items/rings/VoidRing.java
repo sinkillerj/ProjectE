@@ -18,6 +18,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,9 +56,12 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		if (player.getCooldownTracker().hasCooldown(this)) {
 			return false;
 		}
-		BlockPos c = PlayerHelper.getBlockLookingAt(player, 64);
-		if (c == null) {
+		BlockRayTraceResult lookingAt = PlayerHelper.getBlockLookingAt(player, 64);
+		BlockPos c;
+		if (lookingAt.getType() == Type.MISS) {
 			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
+		} else {
+			c = lookingAt.getPos();
 		}
 		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
 		if (!MinecraftForge.EVENT_BUS.post(event)) {

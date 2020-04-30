@@ -42,13 +42,13 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	public void tick() {
 		super.tick();
 		if (!this.getEntityWorld().isRemote) {
-			if (ticksExisted > 400 || !this.getEntityWorld().isBlockLoaded(new BlockPos(this))) {
-				this.remove();
+			if (ticksExisted > 400 || !getEntityWorld().isBlockPresent(getPosition())) {
+				remove();
 				return;
 			}
 			if (getThrower() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
-				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
+				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
 					IFluidState state = getEntityWorld().getFluidState(pos);
 					if (state.isTagged(FluidTags.LAVA)) {
 						pos = pos.toImmutable();

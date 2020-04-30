@@ -4,17 +4,18 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.ILiquidContainer;
@@ -40,10 +41,13 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -67,6 +71,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
  */
 public final class WorldHelper {
 
+	private static final Tag<Block> HARVEST_BLACKLIST = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "harvest_blacklist"));
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
 	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !swrgBlacklist.contains(entity.getType());
@@ -347,7 +352,7 @@ public final class WorldHelper {
 			// Vines, leaves, tallgrass, deadbush, doubleplants
 			if (crop instanceof IShearable) {
 				if (harvest) {
-					world.destroyBlock(currentPos, true);
+					harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 				}
 			}
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
@@ -355,12 +360,11 @@ public final class WorldHelper {
 			else if (crop instanceof IGrowable) {
 				IGrowable growable = (IGrowable) crop;
 				if (!growable.canGrow(world, currentPos, state, false)) {
-					if (harvest && crop != Blocks.MELON_STEM && crop != Blocks.PUMPKIN_STEM
-						&& (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos))) {
-						world.destroyBlock(currentPos, true);
+					if (harvest && !crop.isIn(HARVEST_BLACKLIST)) {
+						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 					}
-				} else if (world.rand.nextInt(chance) == 0) {
-					if (ProjectEConfig.server.items.harvBandGrass.get() || !crop.getTranslationKey().toLowerCase(Locale.ROOT).contains("grass")) {
+				} else if (crop != Blocks.GRASS_BLOCK || ProjectEConfig.server.items.harvBandGrass.get()) {
+					if (world.rand.nextInt(chance) == 0) {
 						growable.grow((ServerWorld) world, world.rand, currentPos, state);
 					}
 				}
@@ -373,43 +377,32 @@ public final class WorldHelper {
 						state.randomTick((ServerWorld) world, currentPos, world.rand);
 					}
 				}
-
 				if (harvest) {
-					if (crop instanceof FlowerBlock) {
-						if (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos)) {
-							world.destroyBlock(currentPos, true);
-						}
-					}
-					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
-						boolean shouldHarvest = true;
-
-						for (int i = 1; i < 3; i++) {
-							if (world.getBlockState(currentPos.up(i)).getBlock() != crop) {
-								shouldHarvest = false;
-								break;
-							}
-						}
-
-						if (shouldHarvest) {
+					if (crop instanceof FlowerBlock || crop instanceof DoublePlantBlock) {
+						//Handle double plant blocks that were not already handled due to being shearable
+						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
+					} else if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
+						if (world.getBlockState(currentPos.up()).getBlock() == crop && world.getBlockState(currentPos.up(2)).getBlock() == crop) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								if (player != null && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos.up(i))) {
-									world.destroyBlock(currentPos.up(i), true);
-								} else if (player == null) {
-									world.destroyBlock(currentPos.up(i), true);
-								}
+								harvestBlock(world, currentPos.up(i), (ServerPlayerEntity) player);
 							}
 						}
-					}
-					if (crop == Blocks.NETHER_WART) {
-						int age = state.get(NetherWartBlock.AGE);
-						if (age == 3) {
-							if (player == null || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos)) {
-								world.destroyBlock(currentPos, true);
-							}
+					} else if (crop == Blocks.NETHER_WART) {
+						if (state.get(NetherWartBlock.AGE) == 3) {
+							harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 						}
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Breaks and "harvests" a block if the player has permission to break it or there is no player
+	 */
+	private static void harvestBlock(World world, BlockPos pos, @Nullable ServerPlayerEntity player) {
+		if (player == null || PlayerHelper.hasBreakPermission(player, pos)) {
+			world.destroyBlock(pos, true, player);
 		}
 	}
 

@@ -95,10 +95,10 @@ public class NovaExplosion extends Explosion {
 		}
 
 		// PE: Drop all together
-		if (getExplosivePlacedBy() != null) {
-			WorldHelper.createLootDrop(allDrops, world, new BlockPos(getExplosivePlacedBy()));
-		} else {
+		if (getExplosivePlacedBy() == null) {
 			WorldHelper.createLootDrop(allDrops, world, x, y, z);
+		} else {
+			WorldHelper.createLootDrop(allDrops, world, getExplosivePlacedBy().getPosition());
 		}
 	}
 }

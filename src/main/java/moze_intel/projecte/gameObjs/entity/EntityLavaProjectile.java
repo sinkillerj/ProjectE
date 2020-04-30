@@ -44,13 +44,13 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	public void tick() {
 		super.tick();
 		if (!world.isRemote) {
-			if (ticksExisted > 400 || !world.isBlockLoaded(new BlockPos(this))) {
-				this.remove();
+			if (ticksExisted > 400 || !world.isBlockPresent(getPosition())) {
+				remove();
 				return;
 			}
 			if (getThrower() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
-				BlockPos.getAllInBox(this.getPosition().add(-3, -3, -3), this.getPosition().add(3, 3, 3)).forEach(pos -> {
+				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
 					Block block = world.getBlockState(pos).getBlock();
 					if (block == Blocks.WATER) {
 						pos = pos.toImmutable();
@@ -64,7 +64,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 			if (getPosY() > 128) {
 				WorldInfo worldInfo = world.getWorldInfo();
 				worldInfo.setRaining(false);
-				this.remove();
+				remove();
 			}
 		}
 	}

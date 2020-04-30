@@ -19,6 +19,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -103,8 +105,9 @@ public class GemHelmet extends GemArmorBase {
 
 	public void doZap(PlayerEntity player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
-			BlockPos strikePos = PlayerHelper.getBlockLookingAt(player, 120.0F);
-			if (strikePos != null) {
+			BlockRayTraceResult strikeResult = PlayerHelper.getBlockLookingAt(player, 120.0F);
+			if (strikeResult.getType() != Type.MISS) {
+				BlockPos strikePos = strikeResult.getPos();
 				((ServerWorld) player.getEntityWorld()).addLightningBolt(new LightningBoltEntity(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
 			}
 		}
