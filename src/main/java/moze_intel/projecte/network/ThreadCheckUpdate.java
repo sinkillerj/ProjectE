@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.forgespi.language.IModInfo;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
@@ -27,6 +28,10 @@ public class ThreadCheckUpdate extends Thread {
 
 	@Override
 	public void run() {
+		if (!FMLConfig.runVersionCheck()) {
+			//Forge update checker disabled, just exit
+			return;
+		}
 		IModInfo info = PECore.MOD_CONTAINER.getModInfo();
 		VersionChecker.CheckResult result = null;
 
