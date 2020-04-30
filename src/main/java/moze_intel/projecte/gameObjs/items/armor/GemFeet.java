@@ -35,8 +35,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		super(EquipmentSlotType.FEET, props);
 	}
 
-	public static boolean isStepAssistEnabled(ItemStack boots) {
-		return !boots.hasTag() || !boots.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) || boots.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
+	public static boolean isStepAssistEnabled(ItemStack stack) {
+		return stack.getTag() != null && stack.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) && stack.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 	}
 
 	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
@@ -46,8 +46,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, !bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST));
 			value = bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 		} else {
-			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, false);
-			value = false;
+			//If we don't have the tag count that as it already being "false"
+			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, true);
+			value = true;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
 				.appendSibling(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(value ? TextFormatting.GREEN : TextFormatting.RED)));
@@ -87,13 +88,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		tooltips.add(new TranslationTextComponent("pe.gem.feet.lorename"));
 		tooltips.add(new TranslationTextComponent("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
-		boolean enabled = canStep(stack);
+		boolean enabled = isStepAssistEnabled(stack);
 		tooltips.add(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendText(" ")
 				.appendSibling(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
-	}
-
-	private boolean canStep(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) && stack.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 	}
 
 	@Nonnull
@@ -114,6 +111,6 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
 	@Override
 	public boolean canAssistStep(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack && canStep(stack);
+		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack && isStepAssistEnabled(stack);
 	}
 }

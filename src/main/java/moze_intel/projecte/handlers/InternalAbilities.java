@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
@@ -8,6 +9,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -27,6 +29,7 @@ public final class InternalAbilities {
 	private final ServerPlayerEntity player;
 	private boolean swrgOverride = false;
 	private boolean gemArmorReady = false;
+	private boolean stepAssisted = false;
 	private boolean hadFlightItem = false;
 	private boolean wasFlyingGamemode = false;
 	private boolean isFlyingGamemode = false;
@@ -97,10 +100,14 @@ public final class InternalAbilities {
 			wasFlying = player.abilities.isFlying;
 		}
 		if (!shouldPlayerStep()) {
-			if (player.stepHeight > 0.6F) {
+			if (stepAssisted) {
+				//If we don't have step assist but we previously did, then lower the step height
+				stepAssisted = false;
 				PlayerHelper.updateClientServerStepHeight(player, 0.6F);
 			}
-		} else if (player.stepHeight < 1.0F) {
+		} else if (!stepAssisted) {
+			//If we should be able to have auto step, but we don't have it set yet, enable it
+			stepAssisted = true;
 			PlayerHelper.updateClientServerStepHeight(player, 1.0F);
 		}
 	}
@@ -108,7 +115,7 @@ public final class InternalAbilities {
 	public void onDimensionChange() {
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(player, player.abilities.allowFlying);
-		PlayerHelper.updateClientServerStepHeight(player, shouldPlayerStep() ? 1.0F : 0.6F);
+		PlayerHelper.updateClientServerStepHeight(player, stepAssisted ? 1.0F : 0.6F);
 	}
 
 	private boolean shouldPlayerFly() {
@@ -119,63 +126,36 @@ public final class InternalAbilities {
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}
-		for (ItemStack stack : player.inventory.armorInventory) {
-			if (!stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
-				return true;
-			}
-		}
-		for (int i = 0; i <= 8; i++) {
-			ItemStack stack = player.inventory.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
-				return true;
-			}
-		}
-		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null) {
-			for (int i = 0; i < curios.getSlots(); i++) {
-				ItemStack stack = curios.getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return checkArmorHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player));
 	}
 
 	private boolean shouldPlayerStep() {
-		for (ItemStack stack : player.inventory.armorInventory) {
-			if (!stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
-				return true;
-			}
-		}
-		for (int i = 0; i <= 8; i++) {
-			ItemStack stack = player.inventory.getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
-				return true;
-			}
-		}
-		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null) {
-			for (int i = 0; i < curios.getSlots(); i++) {
-				ItemStack stack = curios.getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return checkArmorHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player));
 	}
 
 	private boolean hasSwrg() {
-		for (int i = 0; i <= 8; i++) {
-			if (!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == ObjHandler.swrg) {
+		return checkHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() == ObjHandler.swrg);
+	}
+
+	private boolean checkArmorHotbarCurios(Predicate<ItemStack> checker) {
+		for (ItemStack stack : player.inventory.armorInventory) {
+			if (checker.test(stack)) {
+				return true;
+			}
+		}
+		return checkHotbarCurios(checker);
+	}
+
+	private boolean checkHotbarCurios(Predicate<ItemStack> checker) {
+		for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
+			if (checker.test(player.inventory.getStackInSlot(i))) {
 				return true;
 			}
 		}
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {
-				if (!curios.getStackInSlot(i).isEmpty() && curios.getStackInSlot(i).getItem() == ObjHandler.swrg) {
+				if (checker.test(curios.getStackInSlot(i))) {
 					return true;
 				}
 			}

@@ -47,8 +47,9 @@ public class GemHelmet extends GemArmorBase {
 			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, !helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION));
 			value = helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION);
 		} else {
-			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, false);
-			value = false;
+			//If we don't have the tag count that as it already being "false"
+			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, true);
+			value = true;
 		}
 		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
 				.appendSibling(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(value ? TextFormatting.GREEN : TextFormatting.RED)));
