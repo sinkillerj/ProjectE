@@ -71,6 +71,8 @@ import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -171,6 +173,10 @@ public class PECore {
 			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.NOVA_CATALYST_PRIMED, manager -> new NovaRenderer<>(manager, ObjHandler.novaCatalyst::getDefaultState));
 			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.NOVA_CATACLYSM_PRIMED, manager -> new NovaRenderer<>(manager, ObjHandler.novaCataclysm::getDefaultState));
 			RenderingRegistry.registerEntityRenderingHandler(ObjHandler.HOMING_ARROW, TippedArrowRenderer::new);
+
+			//Render layers
+			RenderTypeLookup.setRenderLayer(ObjHandler.interdictionTorch, RenderType.getCutout());
+			RenderTypeLookup.setRenderLayer(ObjHandler.interdictionTorchWall, RenderType.getCutout());
 		}
 
 		static void loadComplete(FMLLoadCompleteEvent evt) {
