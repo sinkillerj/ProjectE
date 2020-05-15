@@ -30,13 +30,22 @@ public class PEModConfig extends ModConfig {
 
 	private static class PEConfigFileTypeHandler extends ConfigFileTypeHandler {
 
-		@Override
-		public Function<ModConfig, CommentedFileConfig> reader(Path configBasePath) {
+		private static Path getPath(Path configBasePath) {
 			//Intercept server config path reading for ProjectE configs and reroute it to the normal config directory
 			if (configBasePath.endsWith("serverconfig")) {
-				return super.reader(FMLPaths.CONFIGDIR.get());
+				return FMLPaths.CONFIGDIR.get();
 			}
-			return super.reader(configBasePath);
+			return configBasePath;
+		}
+
+		@Override
+		public Function<ModConfig, CommentedFileConfig> reader(Path configBasePath) {
+			return super.reader(getPath(configBasePath));
+		}
+
+		@Override
+		public void unload(Path configBasePath, ModConfig config) {
+			super.unload(getPath(configBasePath), config);
 		}
 	}
 }
