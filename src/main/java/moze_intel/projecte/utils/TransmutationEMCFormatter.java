@@ -10,10 +10,10 @@ public class TransmutationEMCFormatter {
 		String emcAsString = emc.toString();
 		int length = emcAsString.length();
 		int splits = (length - 1) / 3;
-		if (splits < 3) {
+		if (splits < 4) {
 			return Constants.EMC_FORMATTER.format(emc);
 		}
-		int postfixIndex = splits - 3;
+		int postfixIndex = splits - 4;
 		if (postfixIndex > MAX_POSTFIX_INDEX) {
 			//If we have have a number larger than the highest postfix we have a translation key for
 			// then display the too much translation key instead. If someone somehow gets to this
