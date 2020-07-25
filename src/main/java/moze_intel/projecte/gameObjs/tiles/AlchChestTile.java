@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -44,8 +45,8 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt) {
-		super.read(nbt);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.read(state, nbt);
 		inventory.deserializeNBT(nbt);
 	}
 

@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +27,11 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,7 +45,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -58,11 +61,11 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -78,16 +81,20 @@ public class ToolHelper {
 
 	private static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
 	//Note: These all also do the check that super did before of making sure the entity is not spectating
-	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
+	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IForgeShearable;
 	private static final Predicate<Entity> SLAY_MOB = entity -> !entity.isSpectator() && entity instanceof IMob;
 	private static final Predicate<Entity> SLAY_ALL = entity -> !entity.isSpectator() && (entity instanceof IMob || entity instanceof LivingEntity);
 
-	public static Multimap<String, AttributeModifier> addChargeAttributeModifier(Multimap<String, AttributeModifier> currentModifiers, @Nonnull EquipmentSlotType slot, ItemStack stack) {
+	public static Multimap<Attribute, AttributeModifier> addChargeAttributeModifier(Multimap<Attribute, AttributeModifier> currentModifiers, @Nonnull EquipmentSlotType slot, ItemStack stack) {
 		if (slot == EquipmentSlotType.MAINHAND) {
 			int charge = getCharge(stack);
 			if (charge > 0) {
+				//TODO - 1.16: Do this in a better way that allows for some caching?
+				Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
+				attributesBuilder.putAll(currentModifiers);
 				//If we have any charge take it into account for calculating the damage
-				currentModifiers.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(CHARGE_MODIFIER, "Charge modifier", charge, Operation.ADDITION));
+				attributesBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHARGE_MODIFIER, "Charge modifier", charge, Operation.ADDITION));
+				return attributesBuilder.build();
 			}
 		}
 		return currentModifiers;
@@ -122,7 +129,7 @@ public class ToolHelper {
 	/**
 	 * Clears the given tag in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static ActionResultType clearTagAOE(World world, PlayerEntity player, Hand hand, long emcCost, Tag<Block> tag) {
+	public static ActionResultType clearTagAOE(World world, PlayerEntity player, Hand hand, long emcCost, ITag<Block> tag) {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
@@ -248,7 +255,7 @@ public class ToolHelper {
 					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 					// matter we make sure to get an immutable instance of newPos
 					newPos = newPos.toImmutable();
-					useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false)));
+					useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, newPos, false)));
 					if (useResult < 0) {
 						//We were denied from using the item so continue to the next block
 						continue;
@@ -531,10 +538,10 @@ public class ToolHelper {
 	public static ActionResultType shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		World world = player.getEntityWorld();
 		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof IShearable) {
-			IShearable target = (IShearable) block;
+		if (block instanceof IForgeShearable) {
+			IForgeShearable target = (IForgeShearable) block;
 			if (target.isShearable(stack, world, pos) && (world.isRemote || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos))) {
-				List<ItemStack> drops = target.onSheared(stack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+				List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
 				if (!drops.isEmpty()) {
 					if (!world.isRemote) {
 						WorldHelper.createLootDrop(drops, world, pos);
@@ -562,13 +569,13 @@ public class ToolHelper {
 		List<ItemStack> drops = new ArrayList<>();
 		for (Entity ent : list) {
 			BlockPos entityPosition = ent.getPosition();
-			IShearable target = (IShearable) ent;
+			IForgeShearable target = (IForgeShearable) ent;
 			if (target.isShearable(stack, world, entityPosition)) {
 				if (world.isRemote) {
 					return ActionResultType.SUCCESS;
 				}
 				if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-					List<ItemStack> entDrops = target.onSheared(stack, world, entityPosition, fortune);
+					List<ItemStack> entDrops = target.onSheared(player, stack, world, entityPosition, fortune);
 					if (!entDrops.isEmpty()) {
 						//Double all drops (just add them all twice because we compact the list later anyways)
 						//Note: The reason we don't grow the stacks like we used to is to ensure if a modded mob drops

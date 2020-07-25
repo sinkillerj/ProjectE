@@ -87,6 +87,7 @@ public class DMArmor extends PEArmor {
 		@Nonnull
 		@Override
 		public String getName() {
+			//TODO - 1.16: Make this and other armors prefix this with projecte and remove override needed for armor texture location
 			//Only used on the client
 			return "dark_matter";
 		}
@@ -94,6 +95,12 @@ public class DMArmor extends PEArmor {
 		@Override
 		public float getToughness() {
 			return 2;
+		}
+
+		@Override
+		public float getKnockbackResistance() {
+			//TODO - 1.16: Knockback resistance?
+			return 0;
 		}
 	}
 }

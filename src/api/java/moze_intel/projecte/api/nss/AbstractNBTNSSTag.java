@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
  *
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.
  *
  * @implNote This does not handle NBT on Tags.
  */

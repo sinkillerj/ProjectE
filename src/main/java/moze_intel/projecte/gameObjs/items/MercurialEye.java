@@ -37,8 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -92,10 +92,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			if (world.isRemote) {
 				return ActionResult.resultSuccess(stack);
 			}
-			Vec3d eyeVec = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
-			Vec3d lookVec = player.getLookVec();
+			Vector3d eyeVec = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+			Vector3d lookVec = player.getLookVec();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
-			Vec3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
+			Vector3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
 			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
 		}
 		return ActionResult.resultPass(stack);

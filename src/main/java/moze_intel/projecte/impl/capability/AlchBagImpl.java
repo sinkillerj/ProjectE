@@ -67,7 +67,7 @@ public final class AlchBagImpl {
 				if (inventories.containsKey(c)) {
 					INBT inv = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
 							.writeNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inventories.get(c), null);
-					ret.put(c.getName(), inv);
+					ret.put(c.getString(), inv);
 				}
 			}
 			return ret;
@@ -81,10 +81,10 @@ public final class AlchBagImpl {
 		@Override
 		public void deserializeNBT(CompoundNBT nbt) {
 			for (DyeColor e : DyeColor.values()) {
-				if (nbt.contains(e.getName())) {
+				if (nbt.contains(e.getString())) {
 					IItemHandler inv = new ItemStackHandler(104);
 					CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
-							.readNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv, null, nbt.get(e.getName()));
+							.readNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv, null, nbt.get(e.getString()));
 					inventories.put(e, inv);
 				}
 			}

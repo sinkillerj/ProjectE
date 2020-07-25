@@ -1,5 +1,6 @@
 package moze_intel.projecte.integration.jei.collectors;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
@@ -91,11 +92,12 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public void draw(FuelUpgradeRecipe recipe, double mouseX, double mouseY) {
+	public void draw(FuelUpgradeRecipe recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
+		//TODO - 1.16: Cleanup how we do translations and make sure everything is properly translateable
 		String emc = recipe.getUpgradeEMC() + " EMC";
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.getStringWidth(emc);
-		fontRenderer.drawString(emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
-		arrow.draw(55, 18);
+		fontRenderer.drawString(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
+		arrow.draw(matrix, 55, 18);
 	}
 }

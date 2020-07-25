@@ -95,5 +95,11 @@ public class RMArmor extends PEArmor {
 		public float getToughness() {
 			return 2;
 		}
+
+		@Override
+		public float getKnockbackResistance() {
+			//TODO - 1.16: Knockback resistance?
+			return 0;
+		}
 	}
 }

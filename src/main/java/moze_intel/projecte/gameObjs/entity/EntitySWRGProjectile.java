@@ -4,10 +4,12 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,8 +19,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntitySWRGProjectile extends ThrowableEntity {
@@ -50,7 +53,9 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 		this.setMotion(this.getMotion().scale(inverse));
 		if (!world.isRemote && isAlive() && getPosY() > world.getHeight() && world.isRaining()) {
-			world.getWorldInfo().setThundering(true);
+			if (world.getWorldInfo() instanceof IServerWorldInfo) {
+				((IServerWorldInfo) world.getWorldInfo()).setThundering(true);
+			}
 			remove();
 		}
 	}
@@ -65,23 +70,32 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		if (world.isRemote) {
 			return;
 		}
-		if (!(getThrower() instanceof PlayerEntity)) {
+		Entity thrower = func_234616_v_();
+		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) getThrower();
+		PlayerEntity player = (PlayerEntity) thrower;
 		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
 		if (mop instanceof BlockRayTraceResult) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
 				BlockPos pos = ((BlockRayTraceResult) mop).getPos();
 
-				LightningBoltEntity lightning = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), false);
-				((ServerWorld) world).addLightningBolt(lightning);
+				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+				if (lightning != null) {
+					lightning.moveForced(Vector3d.copyCentered(pos));
+					lightning.setCaster((ServerPlayerEntity) player);
+					world.addEntity(lightning);
+				}
 
 				if (world.isThundering()) {
 					for (int i = 0; i < 3; i++) {
-						LightningBoltEntity bonus = new LightningBoltEntity(world, pos.getX() + world.rand.nextGaussian(), pos.getY() + world.rand.nextGaussian(), pos.getZ() + world.rand.nextGaussian(), false);
-						((ServerWorld) world).addLightningBolt(bonus);
+						LightningBoltEntity bonus = EntityType.LIGHTNING_BOLT.create(world);
+						if (bonus != null) {
+							bonus.moveForced(pos.getX() + 0.5 + world.rand.nextGaussian(), pos.getY() + 0.5 + world.rand.nextGaussian(), pos.getZ() + 0.5 + world.rand.nextGaussian());
+							bonus.setCaster((ServerPlayerEntity) player);
+							world.addEntity(bonus);
+						}
 					}
 				}
 			}
@@ -92,10 +106,11 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 				e.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
 
 				// Fake onGround before knockBack so you can re-launch mobs that have already been launched
-				boolean oldOnGround = e.onGround;
-				e.onGround = true;
-				e.knockBack(player, 5F, -getMotion().getX() * 0.25, -getMotion().getZ() * 0.25);
-				e.onGround = oldOnGround;
+				boolean oldOnGround = e.isOnGround();
+				e.setOnGround(true);
+				//TODO - 1.16: This used to have a player param in it
+				e.applyKnockback(5F, -getMotion().getX() * 0.25, -getMotion().getZ() * 0.25);
+				e.setOnGround(oldOnGround);
 				e.setMotion(e.getMotion().mul(1, 3, 1));
 			}
 		}

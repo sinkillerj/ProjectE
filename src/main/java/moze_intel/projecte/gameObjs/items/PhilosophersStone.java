@@ -113,7 +113,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		World world = player.getEntityWorld();
 		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
-		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(ent);
 		return true;
 	}

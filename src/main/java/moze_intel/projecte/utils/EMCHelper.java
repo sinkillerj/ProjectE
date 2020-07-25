@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -171,10 +172,10 @@ public final class EMCHelper {
 	}
 
 	public static ITextComponent getEmcTextComponent(long emc, int stackSize) {
-		ITextComponent prefix = new TranslationTextComponent(stackSize > 1 ? "pe.emc.stackemc_tooltip_prefix" : "pe.emc.emc_tooltip_prefix").applyTextStyle(TextFormatting.YELLOW).appendText(" ");
-		ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(stackSize == 1 ? emc : BigInteger.valueOf(emc).multiply(BigInteger.valueOf(stackSize)))).applyTextStyle(TextFormatting.WHITE);
-		ITextComponent sell = new StringTextComponent(getEmcSellString(getEmcSellValue(emc), stackSize)).applyTextStyle(TextFormatting.BLUE);
-		return prefix.appendSibling(valueText).appendSibling(sell);
+		IFormattableTextComponent prefix = new TranslationTextComponent(stackSize > 1 ? "pe.emc.stackemc_tooltip_prefix" : "pe.emc.emc_tooltip_prefix").mergeStyle(TextFormatting.YELLOW).appendString(" ");
+		ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(stackSize == 1 ? emc : BigInteger.valueOf(emc).multiply(BigInteger.valueOf(stackSize)))).mergeStyle(TextFormatting.WHITE);
+		ITextComponent sell = new StringTextComponent(getEmcSellString(getEmcSellValue(emc), stackSize)).mergeStyle(TextFormatting.BLUE);
+		return prefix.append(valueText).append(sell);
 	}
 
 	public static String getEmcSellString(long emcSellValue, int stackSize) {

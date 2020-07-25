@@ -94,8 +94,8 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
-			list.add(new TranslationTextComponent("pe.ignition.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.ignition.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
@@ -107,7 +107,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 			return false;
 		}
 		EntityFireProjectile fire = new EntityFireProjectile(player, world);
-		fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		fire.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(fire);
 		return true;
 	}

@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
@@ -33,7 +32,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -55,8 +53,6 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 
 	public Arcana(Properties props) {
 		super(props);
-		addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
-		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
@@ -122,7 +118,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
 		if (stack.hasTag()) {
 			if (!stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-				list.add(new TranslationTextComponent("pe.arcana.inactive").applyTextStyle(TextFormatting.RED));
+				list.add(new TranslationTextComponent("pe.arcana.inactive").mergeStyle(TextFormatting.RED));
 			} else {
 				list.add(getToolTip(stack));
 			}
@@ -193,19 +189,19 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		switch (getMode(stack)) {
 			case 0: // zero
 				SnowballEntity snowball = new SnowballEntity(world, player);
-				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+				snowball.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.addEntity(snowball);
 				snowball.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(player, world);
-				fire.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+				fire.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.addEntity(fire);
 				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);
-				lightning.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+				lightning.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.addEntity(lightning);
 				break;
 		}

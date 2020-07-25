@@ -104,9 +104,9 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		//Only used on the client
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
-			list.add(new TranslationTextComponent("pe.zero.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.zero.pedestal2").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.zero.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.zero.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.zero.pedestal2").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.zero.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.zero.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

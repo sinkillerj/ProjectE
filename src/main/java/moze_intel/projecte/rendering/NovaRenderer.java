@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 //Only used on the client
 public class NovaRenderer<T extends TNTEntity> extends EntityRenderer<T> {

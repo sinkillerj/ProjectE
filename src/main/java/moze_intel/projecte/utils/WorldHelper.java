@@ -25,15 +25,13 @@ import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
@@ -43,7 +41,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -52,13 +50,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -71,7 +69,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
  */
 public final class WorldHelper {
 
-	private static final Tag<Block> HARVEST_BLACKLIST = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "harvest_blacklist"));
+	private static final ITag<Block> HARVEST_BLACKLIST = BlockTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "harvest_blacklist").toString());
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
 	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !swrgBlacklist.contains(entity.getType());
@@ -126,7 +124,7 @@ public final class WorldHelper {
 	}
 
 	public static void extinguishNearby(World world, PlayerEntity player) {
-		BlockPos.getAllInBox(new BlockPos(player).add(-1, -1, -1), new BlockPos(player).add(1, 1, 1)).forEach(pos -> {
+		BlockPos.getAllInBox(player.getPosition().add(-1, -1, -1), player.getPosition().add(1, 1, 1)).forEach(pos -> {
 			pos = pos.toImmutable();
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				world.removeBlock(pos, false);
@@ -195,7 +193,7 @@ public final class WorldHelper {
 	 */
 	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = world.getBlockState(pos);
-		if (checkWaterVaporize && world.dimension.doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
+		if (checkWaterVaporize && world.func_230315_m_().func_236040_e_() && fluid.isIn(FluidTags.WATER)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 			for (int l = 0; l < 8; ++l) {
 				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
@@ -343,6 +341,7 @@ public final class WorldHelper {
 		if (!(world instanceof ServerWorld)) {
 			return;
 		}
+		//TODO - 1.16: Evaluate new crops
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
 			currentPos = currentPos.toImmutable();
@@ -350,7 +349,7 @@ public final class WorldHelper {
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
-			if (crop instanceof IShearable) {
+			if (crop instanceof IForgeShearable) {
 				if (harvest) {
 					harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 				}
@@ -434,7 +433,7 @@ public final class WorldHelper {
 	}
 
 	public static void igniteNearby(World world, PlayerEntity player) {
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(player).add(-8, -5, -8), new BlockPos(player).add(8, 5, 8))) {
+		for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-8, -5, -8), player.getPosition().add(8, 5, 8))) {
 			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos)) {
 				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.toImmutable(), Blocks.FIRE.getDefaultState());
 			}
@@ -445,11 +444,13 @@ public final class WorldHelper {
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
 	public static void repelEntitiesInterdiction(World world, AxisAlignedBB effectBounds, double x, double y, double z) {
-		Vec3d vec = new Vec3d(x, y, z);
+		Vector3d vec = new Vector3d(x, y, z);
 		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, INTERDICTION_REPEL_PREDICATE)) {
-			if (ent instanceof MobEntity || ent instanceof IProjectile) {
-				if (!ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof IProjectile) {
-					if (ent instanceof AbstractArrowEntity && ((AbstractArrowEntity) ent).onGround) {
+			if (ent instanceof MobEntity || ent instanceof ProjectileEntity) {
+				if (!ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof ProjectileEntity) {
+					//TODO - 1.16: Evaluate this and other use cases of ProjectileEntity and maybe expand on ground checks to them?
+					// (For example tridents that are on the ground)
+					if (ent instanceof AbstractArrowEntity && ent.isOnGround()) {
 						continue;
 					}
 					repelEntity(vec, ent);
@@ -462,20 +463,20 @@ public final class WorldHelper {
 	 * Repels projectiles and mobs in the given AABB away from a given player, if the player is not the thrower of the projectile
 	 */
 	public static void repelEntitiesSWRG(World world, AxisAlignedBB effectBounds, PlayerEntity player) {
-		Vec3d playerVec = player.getPositionVec();
+		Vector3d playerVec = player.getPositionVec();
 		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
-			if (ent instanceof MobEntity || ent instanceof IProjectile) {
-				if (ent instanceof AbstractArrowEntity) {
-					AbstractArrowEntity arrow = (AbstractArrowEntity) ent;
-					if (arrow.onGround || player.getUniqueID().equals(arrow.shootingEntity)) {
+			if (ent instanceof MobEntity || ent instanceof ProjectileEntity) {
+				//TODO - 1.16: Evaluate if this is messed up and should not be checking all projectiles in this manner (Was IProjectile on a smaller subset before)
+				if (ent instanceof ProjectileEntity) {
+					if (ent instanceof AbstractArrowEntity && ent.isOnGround()) {
+						//TODO - 1.16: Should this be any on ground for example tridents?
 						continue;
 					}
-				} else if (ent instanceof ThrowableEntity) {
-					LivingEntity thrower = ((ThrowableEntity) ent).getThrower();
+					Entity owner = ((ProjectileEntity) ent).func_234616_v_();
 					//Note: Eventually we wouldn't have the check for if the world is remote and the thrower is null
 					// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
 					// but makes it so the client can't quite properly render it if we properly deflect another player's throwable
-					if (world.isRemote() && thrower == null || thrower != null && player.getUniqueID().equals(thrower.getUniqueID())) {
+					if (world.isRemote() && owner == null || owner != null && player.getUniqueID().equals(owner.getUniqueID())) {
 						continue;
 					}
 				}
@@ -484,9 +485,9 @@ public final class WorldHelper {
 		}
 	}
 
-	private static void repelEntity(Vec3d vec, Entity entity) {
-		Vec3d t = new Vec3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-		Vec3d r = new Vec3d(t.x - vec.x, t.y - vec.y, t.z - vec.z);
+	private static void repelEntity(Vector3d vec, Entity entity) {
+		Vector3d t = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+		Vector3d r = new Vector3d(t.x - vec.x, t.y - vec.y, t.z - vec.z);
 		double distance = vec.distanceTo(t) + 0.1;
 		entity.setMotion(entity.getMotion().add(r.scale(1 / 1.5 * 1 / distance)));
 	}

@@ -53,7 +53,7 @@ public class EntityLensProjectile extends ThrowableEntity {
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
 		if (!this.getEntityWorld().isRemote) {
-			WorldHelper.createNovaExplosion(world, getThrower(), getPosX(), getPosY(), getPosZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+			WorldHelper.createNovaExplosion(world, func_234616_v_(), getPosX(), getPosY(), getPosZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 			remove();
 		}
 	}
@@ -64,13 +64,13 @@ public class EntityLensProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT nbt) {
+	public void writeAdditional(@Nonnull CompoundNBT nbt) {
 		super.writeAdditional(nbt);
 		nbt.putInt("Charge", charge);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT nbt) {
+	public void readAdditional(@Nonnull CompoundNBT nbt) {
 		super.readAdditional(nbt);
 		charge = nbt.getInt("Charge");
 	}

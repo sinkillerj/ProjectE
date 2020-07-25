@@ -32,11 +32,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -73,7 +75,7 @@ public class ShowBagCMD {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static ITextComponent getBagName(DyeColor color) {
+	private static IFormattableTextComponent getBagName(DyeColor color) {
 		return new TranslationTextComponent(ObjHandler.getBag(color).getTranslationKey());
 	}
 
@@ -81,7 +83,7 @@ public class ShowBagCMD {
 		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
-		ITextComponent name = getBagName(color).appendText(" (").appendSibling(target.getDisplayName()).appendText(")");
+		ITextComponent name = getBagName(color).appendString(" (").append(target.getDisplayName()).appendString(")");
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
 
@@ -93,7 +95,7 @@ public class ShowBagCMD {
 		ITextComponent name = getBagName(color);
 		if (profileByUUID != null) {
 			//If we have a cache of the player, include their last known name in the name of the bag
-			name = getBagName(color).appendText(" (").appendSibling(new StringTextComponent(profileByUUID.getName())).appendText(")");
+			name = getBagName(color).appendString(" (").append(new StringTextComponent(profileByUUID.getName())).appendString(")");
 		}
 		return getContainer(sender, name, inv, true, () -> true);
 	}
@@ -120,8 +122,9 @@ public class ShowBagCMD {
 	}
 
 	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
-		ServerWorld overWorld = server.getWorld(DimensionType.OVERWORLD);
-		File playerData = new File(overWorld.getSaveHandler().getWorldDirectory(), "playerdata");
+		ServerWorld overWorld = server.getWorld(World.field_234918_g_);
+		//TODO - 1.16: Test me
+		File playerData = server.func_240776_a_(FolderName.field_237247_c_).toFile();
 		if (playerData.exists()) {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {

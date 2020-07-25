@@ -12,7 +12,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
@@ -99,7 +99,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid) {
+	public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
 		if (player.isCreative() && dropItem(world, pos)) {
 			//If the player is creative, try to drop the item, and if we succeeded return false to cancel removing the pedestal
 			// Note: we notify the block of an update to make sure that it re-appears visually on the client instead of having there
@@ -189,7 +189,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public IFluidState getFluidState(BlockState state) {
+	public FluidState getFluidState(BlockState state) {
 		return state.get(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
 	}
 

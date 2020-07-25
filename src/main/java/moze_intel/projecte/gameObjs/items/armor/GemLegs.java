@@ -49,7 +49,7 @@ public class GemLegs extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (world.isRemote) {
-			if (player.isSneaking() && !player.onGround && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
+			if (player.isSneaking() && !player.isOnGround() && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
 				player.setMotion(player.getMotion().add(0, -0.32F, 0));
 			}
 		}

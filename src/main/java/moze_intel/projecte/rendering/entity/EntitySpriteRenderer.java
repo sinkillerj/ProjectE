@@ -5,10 +5,10 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.rendering.PERenderType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.vector.Matrix4f;
 
 public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRenderer<T> {
 

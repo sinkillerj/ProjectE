@@ -363,8 +363,8 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt) {
-		super.read(nbt);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.read(state, nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));

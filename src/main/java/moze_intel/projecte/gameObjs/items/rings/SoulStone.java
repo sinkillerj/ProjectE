@@ -85,8 +85,8 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
-			list.add(new TranslationTextComponent("pe.soul.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.soul.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.soul.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

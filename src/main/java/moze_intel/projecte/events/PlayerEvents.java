@@ -25,6 +25,9 @@ import net.minecraft.network.play.server.SCollectItemPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -116,10 +119,18 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
 		if (PECore.uuids.contains(evt.getPlayer().getUniqueID().toString())) {
-			ITextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").applyTextStyle(TextFormatting.BLUE);
-			ITextComponent playername = evt.getPlayer().getDisplayName().applyTextStyle(TextFormatting.GOLD);
-			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").applyTextStyle(TextFormatting.BLUE);
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().sendMessage(prior.appendText(" ").appendSibling(playername).appendText(" ").appendSibling(latter));
+			IFormattableTextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").mergeStyle(TextFormatting.BLUE);
+			//TODO - 1.16: Util method
+			IFormattableTextComponent name;
+			if (evt.getPlayer().getDisplayName() instanceof IFormattableTextComponent) {
+				name = (IFormattableTextComponent) evt.getPlayer().getDisplayName();
+			} else {
+				name = evt.getPlayer().getDisplayName().deepCopy();
+			}
+			ITextComponent playername = name.mergeStyle(TextFormatting.GOLD);
+			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").mergeStyle(TextFormatting.BLUE);
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().func_232641_a_(prior.appendString(" ").append(playername).appendString(" ").append(latter),
+					ChatType.SYSTEM, Util.DUMMY_UUID);
 		}
 	}
 

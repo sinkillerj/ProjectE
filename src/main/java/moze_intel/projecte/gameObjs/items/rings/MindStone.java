@@ -65,8 +65,8 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flags) {
 		if (stack.getTag() != null) {
-			tooltip.add(new TranslationTextComponent("pe.misc.storedxp_tooltip").applyTextStyle(TextFormatting.DARK_GREEN).appendText(" ")
-					.appendSibling(new StringTextComponent(String.format("%,d", getStoredXP(stack))).applyTextStyle(TextFormatting.GREEN)));
+			tooltip.add(new TranslationTextComponent("pe.misc.storedxp_tooltip").mergeStyle(TextFormatting.DARK_GREEN).appendString(" ")
+					.append(new StringTextComponent(String.format("%,d", getStoredXP(stack))).mergeStyle(TextFormatting.GREEN)));
 		}
 	}
 

@@ -11,6 +11,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -31,7 +32,7 @@ public class ClearKnowledgeCMD {
 			source.sendFeedback(new TranslationTextComponent("pe.command.clearknowledge.success", player.getDisplayName()), true);
 
 			if (player != source.getEntity()) {
-				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", source.getDisplayName()).applyTextStyle(TextFormatting.RED));
+				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", source.getDisplayName()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
 			}
 		}
 		return targets.size();

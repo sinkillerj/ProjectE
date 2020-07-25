@@ -18,7 +18,7 @@ public enum EnumFuelType implements IStringSerializable {
 
 	@Nonnull
 	@Override
-	public String getName() {
+	public String getString() {
 		return name;
 	}
 
@@ -28,6 +28,6 @@ public enum EnumFuelType implements IStringSerializable {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getString();
 	}
 }

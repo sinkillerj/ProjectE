@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -152,8 +153,8 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT tag) {
-		super.read(tag);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
+		super.read(state, tag);
 		long set = tag.getLong("EMC");
 		if (set > getMaximumEmc()) {
 			set = getMaximumEmc();

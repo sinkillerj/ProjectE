@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,14 +17,14 @@ import net.minecraft.util.ResourceLocation;
  *
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.
  */
 public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	private static final Set<NSSTag> createdTags = new HashSet<>();
 
 	/**
-	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link Tag}
+	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link ITag}
 	 *
 	 * @apiNote This method is meant for internal use of adding Tag -> Type and Type -> Tag conversions
 	 */
@@ -33,7 +33,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link Tag}s
+	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link ITag}s
 	 *
 	 * @apiNote This method is meant for internal use when the EMC mapper is reloading.
 	 */
@@ -54,7 +54,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link Tag}, or the {@link ResourceLocation} of the
+	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link ITag}, or the {@link ResourceLocation} of the
 	 */
 	@Nonnull
 	public ResourceLocation getResourceLocation() {
@@ -66,7 +66,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	 *
 	 * @return True if the given {@link AbstractNSSTag} is of the same type as this {@link AbstractNSSTag}.
 	 */
-	protected abstract boolean isInstance(AbstractNSSTag o);
+	protected abstract boolean isInstance(AbstractNSSTag<?> o);
 
 	/**
 	 * @return A string representing a type description of this {@link NormalizedSimpleStack}
@@ -95,7 +95,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
 		if (representsTag()) {
-			Tag<TYPE> tag = getTagCollection().get(getResourceLocation());
+			ITag<TYPE> tag = getTagCollection().get(getResourceLocation());
 			if (tag != null) {
 				tag.getAllElements().stream().map(createNew()).forEach(consumer);
 			}
@@ -123,8 +123,8 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 		if (o == this) {
 			return true;
 		}
-		if (o instanceof AbstractNSSTag && isInstance((AbstractNSSTag) o)) {
-			AbstractNSSTag other = (AbstractNSSTag) o;
+		if (o instanceof AbstractNSSTag && isInstance((AbstractNSSTag<?>) o)) {
+			AbstractNSSTag<?> other = (AbstractNSSTag<?>) o;
 			return representsTag() == other.representsTag() && getResourceLocation().equals(other.getResourceLocation());
 		}
 		return false;

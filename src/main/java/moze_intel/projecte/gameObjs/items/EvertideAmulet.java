@@ -25,9 +25,9 @@ import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -44,6 +44,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -54,7 +55,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem {
 
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION);
 
 	public EvertideAmulet(Properties props) {
 		super(props);
@@ -103,8 +104,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Override
 	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-			player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		if (player.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+			player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 		}
 		return true;
 	}
@@ -123,17 +124,17 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
-				living.onGround = true;
+				living.setOnGround(true);
 			}
-			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
+			if (!world.isRemote && !living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+				living.getAttribute(Attributes.MOVEMENT_SPEED).applyNonPersistentModifier(SPEED_BOOST);
 			}
 		} else if (!world.isRemote) {
 			if (living.isInWater()) {
 				living.setAir(300);
 			}
-			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+			if (living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+				living.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -141,10 +142,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		if (ProjectEConfig.server.items.opEvertide.get() || !world.dimension.doesWaterVaporize()) {
+		if (ProjectEConfig.server.items.opEvertide.get() || !world.func_230315_m_().func_236040_e_()) {
 			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.WATER, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
-			ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+			ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 			world.addEntity(ent);
 			return true;
 		}
@@ -167,10 +168,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			if (te instanceof DMPedestalTile) {
 				DMPedestalTile tile = (DMPedestalTile) te;
 				if (tile.getActivityCooldown() == 0) {
-					int i = (300 + world.rand.nextInt(600)) * 20;
-					world.getWorldInfo().setRainTime(i);
-					world.getWorldInfo().setThunderTime(i);
-					world.getWorldInfo().setRaining(true);
+					if (world.getWorldInfo() instanceof IServerWorldInfo) {
+						int i = (300 + world.rand.nextInt(600)) * 20;
+						IServerWorldInfo worldInfo = (IServerWorldInfo) world.getWorldInfo();
+						worldInfo.setRainTime(i);
+						worldInfo.setThunderTime(i);
+						worldInfo.setRaining(true);
+					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.evertide.get());
 				} else {
 					tile.decrementActivityCooldown();
@@ -184,8 +188,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
-			list.add(new TranslationTextComponent("pe.evertide.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.evertide.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

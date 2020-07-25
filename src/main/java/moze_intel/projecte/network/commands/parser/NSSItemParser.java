@@ -15,8 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -49,7 +49,7 @@ public class NSSItemParser {
 			return new NSSItemResult(this);
 		}
 		//Else it is a tag
-		Tag<Item> tag = ItemTags.getCollection().get(tagId);
+		ITag<Item> tag = ItemTags.getCollection().get(tagId);
 		if (tag == null) {
 			throw UNKNOWN_TAG.create(tagId.toString());
 		}

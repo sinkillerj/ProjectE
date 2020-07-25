@@ -21,8 +21,9 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	private final EnumMatterType matterType;
 	private final int numCharges;
 
+	//TODO - 1.16: Figure out damage
 	public PEHoe(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, matterType.getMatterTier(), props.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel()));
+		super(matterType, 0, matterType.getMatterTier(), props.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel()));
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}

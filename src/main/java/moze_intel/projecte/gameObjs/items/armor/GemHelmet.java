@@ -11,22 +11,24 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -51,8 +53,8 @@ public class GemHelmet extends GemArmorBase {
 			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, true);
 			value = true;
 		}
-		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
-				.appendSibling(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(value ? TextFormatting.GREEN : TextFormatting.RED)));
+		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendString(" ")
+				.append(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(value ? TextFormatting.GREEN : TextFormatting.RED)), Util.DUMMY_UUID);
 	}
 
 	@Override
@@ -60,12 +62,12 @@ public class GemHelmet extends GemArmorBase {
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
 		tooltips.add(new TranslationTextComponent("pe.gem.helm.lorename"));
 
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt",
-				new StringTextComponent(Minecraft.getInstance().gameSettings.keyBindSneak.getLocalizedName()), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt", Minecraft.getInstance().gameSettings.keyBindSneak.func_238171_j_(),
+				ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
 
 		boolean enabled = isNightVisionEnabled(stack);
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendText(" ")
-				.appendSibling(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").applyTextStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
+		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendString(" ")
+				.append(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class GemHelmet extends GemArmorBase {
 				if (!player.isSneaking()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;
-					player.onGround = true;
+					player.setOnGround(true);
 				}
 			}
 		} else {
@@ -109,7 +111,13 @@ public class GemHelmet extends GemArmorBase {
 			BlockRayTraceResult strikeResult = PlayerHelper.getBlockLookingAt(player, 120.0F);
 			if (strikeResult.getType() != Type.MISS) {
 				BlockPos strikePos = strikeResult.getPos();
-				((ServerWorld) player.getEntityWorld()).addLightningBolt(new LightningBoltEntity(player.getEntityWorld(), strikePos.getX(), strikePos.getY(), strikePos.getZ(), false));
+				World world = player.getEntityWorld();
+				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+				if (lightning != null) {
+					lightning.moveForced(Vector3d.copyCentered(strikePos));
+					lightning.setCaster((ServerPlayerEntity) player);
+					world.addEntity(lightning);
+				}
 			}
 		}
 	}

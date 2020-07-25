@@ -7,8 +7,9 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -75,15 +76,20 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link Tag<Fluid>}
+	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link ITag<Fluid>}
 	 */
 	@Nonnull
-	public static NSSFluid createTag(@Nonnull Tag<Fluid> tag) {
-		return createTag(tag.getId());
+	public static NSSFluid createTag(@Nonnull ITag<Fluid> tag) {
+		//TODO - 1.16: Evaluate if this should use FluidTags#getCollection. I believe the below is correct as this happens in a reload listener so before FluidTags is updated
+		ResourceLocation tagLocation = TagCollectionManager.func_232928_e_().func_232926_c_().func_232973_a_(tag);
+		if (tagLocation == null) {
+			throw new IllegalArgumentException("Can't make NSSFluid with a tag that does not exist");
+		}
+		return createTag(tagLocation);
 	}
 
 	@Override
-	protected boolean isInstance(AbstractNSSTag o) {
+	protected boolean isInstance(AbstractNSSTag<?> o) {
 		return o instanceof NSSFluid;
 	}
 

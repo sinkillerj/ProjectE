@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,7 +34,8 @@ public class EntityFireProjectile extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (!world.isRemote && getThrower() instanceof PlayerEntity && mop instanceof BlockRayTraceResult) {
+		Entity thrower = func_234616_v_();
+		if (!world.isRemote && thrower instanceof PlayerEntity && mop instanceof BlockRayTraceResult) {
 			BlockPos pos = ((BlockRayTraceResult) mop).getPos();
 			Block block = world.getBlockState(pos).getBlock();
 			if (block == Blocks.OBSIDIAN) {
@@ -41,13 +43,13 @@ public class EntityFireProjectile extends ThrowableEntity {
 			} else if (block == Blocks.SAND) {
 				BlockPos.getAllInBox(pos.add(-2, -2, -2), pos.add(2, 2, 2)).forEach(currentPos -> {
 					if (world.getBlockState(currentPos).getBlock() == Blocks.SAND) {
-						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), pos.toImmutable(), Blocks.GLASS.getDefaultState());
+						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, pos.toImmutable(), Blocks.GLASS.getDefaultState());
 					}
 				});
 			} else {
 				BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1)).forEach(currentPos -> {
 					if (world.isAirBlock(currentPos)) {
-						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) getThrower(), currentPos.toImmutable(), Blocks.FIRE.getDefaultState());
+						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, currentPos.toImmutable(), Blocks.FIRE.getDefaultState());
 					}
 				});
 			}
