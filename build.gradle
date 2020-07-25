@@ -38,18 +38,42 @@ sourceSets {
         }
     }
     main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
+        resources {
+            //Add the generated main module resources
+            srcDirs += 'src/datagen/generated/projecte'
+            //But exclude the cache of the generated data from what gets built
+            exclude '.cache'
+        }
+        compileClasspath += project.sourceSets.api.output
+        runtimeClasspath += project.sourceSets.api.output
+    }
+    datagen {
+        java.srcDirs = ['src/datagen/java']
+        resources.srcDirs = ['src/datagen/resources']
+        compileClasspath += project.sourceSets.api.output
+        compileClasspath += project.sourceSets.main.output
     }
     test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
+        compileClasspath += project.sourceSets.api.output
+        runtimeClasspath += project.sourceSets.api.output
     }
 }
 
 configurations {
-    //Let the api source set know about forge
-    apiCompile.extendsFrom(compile)
+    //Make sure all our sub source set stuff extends the proper base methods so that
+    // they can see all the dependencies we have in dependencies including forge
+    def compileExtenders = [apiCompile, testCompile, datagenCompile]
+    def compileOnlyExtenders = [apiCompileOnly, testCompileOnly, datagenCompileOnly]
+    def runtimeOnlyExtenders = [apiRuntimeOnly, datagenRuntimeOnly]
+    for (def compileExtender : compileExtenders) {
+        compileExtender.extendsFrom(compile)
+    }
+    for (def compileOnlyExtender : compileOnlyExtenders) {
+        compileOnlyExtender.extendsFrom(compileOnly)
+    }
+    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
+        runtimeOnlyExtender.extendsFrom(runtimeOnly)
+    }
 }
 
 version = "${projecte_version}"
@@ -114,9 +138,12 @@ minecraft {
             workingDirectory project.file('run')
             environment 'target', 'fmluserdevdata'
 
+            args '--all', '--output', file('src/datagen/generated/'), '--mod', 'projecte',
+                    '--existing', sourceSets.main.resources.srcDirs[0]
+
             mods {
                 projecte {
-                    sources(sourceSets.main, sourceSets.api)
+                    sources(sourceSets.main, sourceSets.api, sourceSets.datagen)
                 }
             }
         }
@@ -182,6 +209,16 @@ dependencies {
 jar {
     from sourceSets.main.output
     from sourceSets.api.output
+    //TODO - 1.16: Evaluate what we want to set these values to
+    manifest.attributes([
+            "Specification-Title"     : "ProjectE",
+            "Specification-Vendor"    : "ProjectE",
+            "Specification-Version"   : "${project.projecte_version}",
+            "Implementation-Title"    : "ProjectE",
+            "Implementation-Version"  : "${project.projecte_version}",
+            "Implementation-Vendor"   : "ProjectE",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+    ])
 }
 
 processResources {
