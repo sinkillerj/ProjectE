@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
@@ -13,15 +12,13 @@ import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.ModList;
 
 public class ItemPE extends Item {
 
-	protected static final ResourceLocation ACTIVE_NAME = new ResourceLocation(PECore.MODID, "active");
-	protected static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F;
-	protected static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F;
+	public static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F;
+	public static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F;
 
 	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 

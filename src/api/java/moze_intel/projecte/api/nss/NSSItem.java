@@ -7,9 +7,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
@@ -88,15 +89,20 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing a tag from a {@link Tag<Item>}
+	 * Helper method to create an {@link NSSItem} representing a tag from a {@link ITag<Item>}
 	 */
 	@Nonnull
-	public static NSSItem createTag(@Nonnull Tag<Item> tag) {
-		return createTag(tag.getId());
+	public static NSSItem createTag(@Nonnull ITag<Item> tag) {
+		//TODO - 1.16: Evaluate if this should use ItemTags#getCollection. I believe the below is correct as this happens in a reload listener so before ItemTags is updated
+		ResourceLocation tagLocation = TagCollectionManager.func_232928_e_().func_232925_b_().func_232973_a_(tag);
+		if (tagLocation == null) {
+			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
+		}
+		return createTag(tagLocation);
 	}
 
 	@Override
-	protected boolean isInstance(AbstractNSSTag o) {
+	protected boolean isInstance(AbstractNSSTag<?> o) {
 		return o instanceof NSSItem;
 	}
 

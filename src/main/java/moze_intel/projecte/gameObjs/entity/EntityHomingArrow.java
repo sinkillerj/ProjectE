@@ -16,7 +16,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -78,23 +78,23 @@ public class EntityHomingArrow extends ArrowEntity {
 			this.getEntityWorld().addParticle(ParticleTypes.FLAME, getPosX() + mX / 4.0D, getPosY() + mY / 4.0D, getPosZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vec3d arrowLoc = new Vec3d(getPosX(), getPosY(), getPosZ());
-			Vec3d targetLoc = new Vec3d(target.getPosX(), target.getPosY() + target.getHeight() / 2, target.getPosZ());
+			Vector3d arrowLoc = new Vector3d(getPosX(), getPosY(), getPosZ());
+			Vector3d targetLoc = new Vector3d(target.getPosX(), target.getPosY() + target.getHeight() / 2, target.getPosZ());
 
 			// Get the vector that points straight from the arrow to the target
-			Vec3d lookVec = targetLoc.subtract(arrowLoc);
+			Vector3d lookVec = targetLoc.subtract(arrowLoc);
 
-			Vec3d arrowMotion = new Vec3d(mX, mY, mZ);
+			Vector3d arrowMotion = new Vector3d(mX, mY, mZ);
 
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
 			double theta = wrap180Radian(angleBetween(arrowMotion, lookVec));
 			theta = clampAbs(theta, Math.PI / 2); // Dividing by higher numbers kills accuracy
 
 			// Find the cross product to determine the axis of rotation
-			Vec3d crossProduct = arrowMotion.crossProduct(lookVec).normalize();
+			Vector3d crossProduct = arrowMotion.crossProduct(lookVec).normalize();
 
 			// Create the rotation using the axis and our angle and adjust the vector to it
-			Vec3d adjustedLookVec = transform(crossProduct, theta, arrowMotion);
+			Vector3d adjustedLookVec = transform(crossProduct, theta, arrowMotion);
 
 			// Tell mc to adjust our rotation accordingly
 			shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, 1.0F, 0);
@@ -103,7 +103,7 @@ public class EntityHomingArrow extends ArrowEntity {
 		super.tick();
 	}
 
-	private Vec3d transform(Vec3d axis, double angle, Vec3d normal) {
+	private Vector3d transform(Vector3d axis, double angle, Vector3d normal) {
 		//Trimmed down math of javax vecmath calculations, potentially should be rewritten at some point
 		double m00 = 1;
 		double m01 = 0;
@@ -143,7 +143,7 @@ public class EntityHomingArrow extends ArrowEntity {
 			m21 = t * yz + sinTheta * ax;
 			m22 = t * az * az + cosTheta;
 		}
-		return new Vec3d(m00 * normal.x + m01 * normal.y + m02 * normal.z,
+		return new Vector3d(m00 * normal.x + m01 * normal.y + m02 * normal.z,
 				m10 * normal.x + m11 * normal.y + m12 * normal.z,
 				m20 * normal.x + m21 * normal.y + m22 * normal.z);
 	}
@@ -173,7 +173,7 @@ public class EntityHomingArrow extends ArrowEntity {
 		return getTarget() != null;
 	}
 
-	private double angleBetween(Vec3d v1, Vec3d v2) {
+	private double angleBetween(Vector3d v1, Vector3d v2) {
 		double vDot = v1.dotProduct(v2) / (v1.length() * v2.length());
 		if (vDot < -1.0) {
 			vDot = -1.0;

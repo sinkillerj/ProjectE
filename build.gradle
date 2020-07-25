@@ -73,9 +73,6 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            properties 'forge.logging.markers': 'REGISTRIES,REGISTRYDUMP'
-            properties 'forge.logging.console.level': 'debug'
-            properties 'fml.earlyprogresswindow': 'false'
 
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
@@ -106,8 +103,7 @@ minecraft {
         }
         server {
             workingDirectory project.file('run')
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            properties 'forge.logging.console.level': 'debug'
+
             mods {
                 projecte {
                     sources(sourceSets.main, sourceSets.api)
@@ -117,9 +113,7 @@ minecraft {
         data {
             workingDirectory project.file('run')
             environment 'target', 'fmluserdevdata'
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            properties 'forge.logging.console.level': 'debug'
-            properties 'fml.earlyprogresswindow': 'false'
+
             mods {
                 projecte {
                     sources(sourceSets.main, sourceSets.api)
@@ -150,10 +144,10 @@ repositories {
         name 'TOP'
         url "https://maven.tterrag.com/"
     }
-    maven {
+    /*maven {
         name 'HWYLA'
-        url "https://tehnut.info/maven"
-    }
+        url "https://maven.tehnut.info"
+    }*/
 }
 
 test {
@@ -174,11 +168,11 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
 
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
-    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    //compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    //runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 

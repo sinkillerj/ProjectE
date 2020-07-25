@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 public interface IPedestalItem {
 
-	ITextComponent TOOLTIP_DISABLED = new TranslationTextComponent("pe.pedestal.item_disabled").applyTextStyle(TextFormatting.RED);
+	ITextComponent TOOLTIP_DISABLED = new TranslationTextComponent("pe.pedestal.item_disabled").mergeStyle(TextFormatting.RED);
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside

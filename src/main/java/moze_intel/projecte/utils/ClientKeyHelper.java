@@ -7,7 +7,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KeyPressPKT;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -51,7 +50,7 @@ public class ClientKeyHelper {
 
 	public static ITextComponent getKeyName(PEKeybind k) {
 		if (peToMc.containsKey(k)) {
-			return new StringTextComponent(peToMc.get(k).getLocalizedName());
+			return peToMc.get(k).func_238171_j_();
 		}
 		//Fallback to the translation key of the key's function
 		return new TranslationTextComponent(getKeyTranslationKey(k));

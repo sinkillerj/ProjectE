@@ -25,13 +25,13 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 
 	@Nonnull
 	@Override
-	public String getName() {
+	public String getString() {
 		return name;
 	}
 
 	@Override
 	public String toString() {
-		return getName();
+		return getString();
 	}
 
 	@Override

@@ -1,9 +1,10 @@
 package moze_intel.projecte.gameObjs.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
@@ -16,6 +17,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
@@ -35,17 +38,17 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	public void init() {
 		super.init();
 
-		this.textBoxFilter = new TextFieldWidget(this.font, guiLeft + 88, guiTop + 8, 45, 10, "");
+		this.textBoxFilter = new TextFieldWidget(this.font, guiLeft + 88, guiTop + 8, 45, 10, StringTextComponent.EMPTY);
 		this.textBoxFilter.setText(inv.filter);
 
-		addButton(new Button(guiLeft + 125, guiTop + 100, 14, 14, "<", b -> {
+		addButton(new Button(guiLeft + 125, guiTop + 100, 14, 14, new StringTextComponent("<"), b -> {
 			if (inv.searchpage != 0) {
 				inv.searchpage--;
 			}
 			inv.filter = textBoxFilter.getText().toLowerCase(Locale.ROOT);
 			inv.updateClientTargets();
 		}));
-		addButton(new Button(guiLeft + 193, guiTop + 100, 14, 14, ">", b -> {
+		addButton(new Button(guiLeft + 193, guiTop + 100, 14, 14, new StringTextComponent(">"), b -> {
 			if (inv.getKnowledgeSize() > 12) {
 				inv.searchpage++;
 			}
@@ -55,45 +58,45 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1F, 1F, 1F, 1F);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
-		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
-		this.textBoxFilter.render(mouseX, mouseY, partialTicks);
+		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.textBoxFilter.render(matrix, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
-		this.font.drawString(I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+		this.font.drawString(matrix, I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
 		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
-		this.font.drawString(emcLabel, 6, this.ySize - 104, 0x404040);
+		this.font.drawString(matrix, emcLabel, 6, this.ySize - 104, 0x404040);
 		String emc = TransmutationEMCFormatter.formatEMC(emcAmount);
-		this.font.drawString(emc, 6, this.ySize - 94, 0x404040);
+		this.font.drawString(matrix, emc, 6, this.ySize - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
-			this.font.drawString(I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned1"), 99, 38, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned2"), 100, 46, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned3"), 101, 54, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned4"), 102, 62, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned5"), 103, 70, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned6"), 104, 78, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.learned7"), 107, 86, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned1"), 99, 38, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned2"), 100, 46, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned3"), 101, 54, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned4"), 102, 62, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned5"), 103, 70, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned6"), 104, 78, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.learned7"), 107, 86, 0x404040);
 
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0) {
-			this.font.drawString(I18n.format("pe.transmutation.unlearned0"), 97, 22, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned1"), 98, 30, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned2"), 99, 38, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned3"), 100, 46, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned4"), 101, 54, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned5"), 102, 62, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned6"), 103, 70, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned7"), 104, 78, 0x404040);
-			this.font.drawString(I18n.format("pe.transmutation.unlearned8"), 107, 86, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned0"), 97, 22, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned1"), 98, 30, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned2"), 99, 38, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned3"), 100, 46, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned4"), 101, 54, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned5"), 102, 62, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned6"), 103, 70, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned7"), 104, 78, 0x404040);
+			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned8"), 107, 86, 0x404040);
 
 			inv.unlearnFlag--;
 		}
@@ -176,11 +179,11 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderHoveredToolTip(int mouseX, int mouseY) {
+	protected void func_230459_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEMC();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {
-			super.renderHoveredToolTip(mouseX, mouseY);
+			super.func_230459_a_(matrix, mouseX, mouseY);
 			return;
 		}
 
@@ -190,10 +193,10 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
-			String emcAsString = I18n.format("pe.emc.emc_tooltip_prefix") + " " + Constants.EMC_FORMATTER.format(emcAmount);
-			renderTooltip(Collections.singletonList(emcAsString), mouseX, mouseY);
+			ITextComponent emcAsString = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").appendString(" " + Constants.EMC_FORMATTER.format(emcAmount));
+			renderTooltip(matrix, emcAsString, mouseX, mouseY);
 		} else {
-			super.renderHoveredToolTip(mouseX, mouseY);
+			super.func_230459_a_(matrix, mouseX, mouseY);
 		}
 	}
 }

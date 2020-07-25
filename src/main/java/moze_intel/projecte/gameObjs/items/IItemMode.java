@@ -6,6 +6,7 @@ import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -42,12 +43,12 @@ public interface IItemMode extends IModeChanger {
 		//Update the mode
 		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
 		TranslationTextComponent modeName = new TranslationTextComponent(getModeTranslationKey(stack));
-		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName));
+		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName), Util.DUMMY_UUID);
 		return true;
 	}
 
 	default ITextComponent getToolTip(ItemStack stack) {
-		return new TranslationTextComponent("pe.item.mode").appendText(": ")
-				.appendSibling(new TranslationTextComponent(getModeTranslationKey(stack)).applyTextStyle(TextFormatting.AQUA));
+		return new TranslationTextComponent("pe.item.mode").appendString(": ")
+				.append(new TranslationTextComponent(getModeTranslationKey(stack)).mergeStyle(TextFormatting.AQUA));
 	}
 }

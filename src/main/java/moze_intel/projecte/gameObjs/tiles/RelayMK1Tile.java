@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -186,8 +187,8 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt) {
-		super.read(nbt);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.read(state, nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		output.deserializeNBT(nbt.getCompound("Output"));
 		bonusEMC = nbt.getDouble("BonusEMC");

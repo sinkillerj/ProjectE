@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -207,8 +208,8 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt) {
-		super.read(nbt);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.read(state, nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lockInfo = ItemInfo.read(nbt.getCompound("LockInfo"));
 	}

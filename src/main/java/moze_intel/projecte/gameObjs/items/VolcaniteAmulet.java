@@ -22,9 +22,9 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -41,6 +41,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -48,7 +49,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
 
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION).setSaved(false);
+	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION);
 
 	public VolcaniteAmulet(Properties props) {
 		super(props);
@@ -90,8 +91,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		if (player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-			player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		if (player.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+			player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 		}
 		return true;
 	}
@@ -110,14 +111,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			if (!living.isSneaking()) {
 				living.setMotion(living.getMotion().mul(1, 0, 1));
 				living.fallDistance = 0.0F;
-				living.onGround = true;
+				living.setOnGround(true);
 			}
-			if (!world.isRemote && !living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPEED_BOOST);
+			if (!world.isRemote && !living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+				living.getAttribute(Attributes.MOVEMENT_SPEED).applyNonPersistentModifier(SPEED_BOOST);
 			}
 		} else if (!world.isRemote) {
-			if (living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+			if (living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
+				living.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
 			}
 		}
 	}
@@ -126,7 +127,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
-		ent.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.getEntityWorld().addEntity(ent);
 		return true;
 	}
@@ -149,10 +150,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			}
 			DMPedestalTile tile = (DMPedestalTile) te;
 			if (tile.getActivityCooldown() == 0) {
-				world.getWorldInfo().setRainTime(0);
-				world.getWorldInfo().setThunderTime(0);
-				world.getWorldInfo().setRaining(false);
-				world.getWorldInfo().setThundering(false);
+				if (world.getWorldInfo() instanceof IServerWorldInfo) {
+					IServerWorldInfo worldInfo = (IServerWorldInfo) world.getWorldInfo();
+					worldInfo.setRainTime(0);
+					worldInfo.setThunderTime(0);
+					worldInfo.setRaining(false);
+					worldInfo.setThundering(false);
+				}
 				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
 			} else {
 				tile.decrementActivityCooldown();
@@ -165,8 +169,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
-			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.volcanite.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.volcanite.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

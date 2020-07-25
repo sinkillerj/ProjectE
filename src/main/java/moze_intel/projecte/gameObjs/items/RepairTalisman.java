@@ -103,8 +103,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
-			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.repair.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.repairtalisman.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.repair.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

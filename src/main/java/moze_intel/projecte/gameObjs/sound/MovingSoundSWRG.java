@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 
 // [VanillaCopy] MovingSoundMinecart
 //Only used on the client
-public class MovingSoundSWRG extends TickableSound {
+public class MovingSoundSWRG extends TickableSound {//TODO - 1.16: Double check this copy of vanilla and also check other vanilla copies we have
 
 	private final EntitySWRGProjectile swrgProjectile;
 	private float distance = 0.0F;
@@ -23,7 +23,7 @@ public class MovingSoundSWRG extends TickableSound {
 	@Override
 	public void tick() {
 		if (!this.swrgProjectile.isAlive()) {
-			this.donePlaying = true;
+			this.func_239509_o_();
 		} else {
 			this.x = (float) this.swrgProjectile.getPosX();
 			this.y = (float) this.swrgProjectile.getPosY();

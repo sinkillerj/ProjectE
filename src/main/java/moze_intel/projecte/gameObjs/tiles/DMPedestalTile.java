@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -108,8 +109,8 @@ public class DMPedestalTile extends TileEmc {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT tag) {
-		super.read(tag);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
+		super.read(state, tag);
 		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
@@ -135,7 +136,7 @@ public class DMPedestalTile extends TileEmc {
 
 	@Override
 	public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
-		read(packet.getNbtCompound());
+		read(getBlockState(), packet.getNbtCompound());
 	}
 
 	public boolean getActive() {

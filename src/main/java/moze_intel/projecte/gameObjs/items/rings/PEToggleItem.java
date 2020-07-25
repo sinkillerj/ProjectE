@@ -16,7 +16,6 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 
 	public PEToggleItem(Properties props) {
 		super(props);
-		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 

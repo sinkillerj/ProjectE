@@ -11,8 +11,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.network.IPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.SoundEvents;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityWaterProjectile extends ThrowableEntity {
@@ -46,10 +46,11 @@ public class EntityWaterProjectile extends ThrowableEntity {
 				remove();
 				return;
 			}
-			if (getThrower() instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
+			Entity thrower = func_234616_v_();
+			if (thrower instanceof ServerPlayerEntity) {
+				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
 				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
-					IFluidState state = getEntityWorld().getFluidState(pos);
+					FluidState state = getEntityWorld().getFluidState(pos);
 					if (state.isTagged(FluidTags.LAVA)) {
 						pos = pos.toImmutable();
 						if (state.isSource()) {
@@ -65,7 +66,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 				remove();
 			}
 			if (getPosY() > 128) {
-				WorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
+				IWorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
 				worldInfo.setRaining(true);
 				remove();
 			}
@@ -82,13 +83,14 @@ public class EntityWaterProjectile extends ThrowableEntity {
 		if (world.isRemote) {
 			return;
 		}
-		if (!(getThrower() instanceof PlayerEntity)) {
+		Entity thrower = func_234616_v_();
+		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult result = (BlockRayTraceResult) mop;
-			WorldHelper.placeFluid((ServerPlayerEntity) getThrower(), world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+			WorldHelper.placeFluid((ServerPlayerEntity) thrower, world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
 			if (ent.isBurning()) {

@@ -187,9 +187,9 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

@@ -27,13 +27,14 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -50,7 +51,7 @@ import net.minecraftforge.common.IPlantable;
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge {
 
 	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
-	private static final Tag<Block> BLOCK_BLACKLIST_TAG = new BlockTags.Wrapper(new ResourceLocation(PECore.MODID, "time_watch_blacklist"));
+	private static final ITag<Block> BLOCK_BLACKLIST_TAG = BlockTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "time_watch_blacklist").toString());
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -64,12 +65,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
-				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"));
+				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"), Util.DUMMY_UUID);
 				return ActionResult.resultFail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
-			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()));
+			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()), Util.DUMMY_UUID);
 		}
 		return ActionResult.resultSuccess(stack);
 	}
@@ -84,14 +85,15 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
-		if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
+		if (!world.isRemote && world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
+			ServerWorld serverWorld = (ServerWorld) world;
 			if (timeControl == 1) {
-				world.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4, Long.MAX_VALUE));
+				serverWorld.func_241114_a_(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4, Long.MAX_VALUE));
 			} else if (timeControl == 2) {
 				if (world.getDayTime() - (getCharge(stack) + 1) * 4 < 0) {
-					world.setDayTime(0);
+					serverWorld.func_241114_a_(0);
 				} else {
-					world.setDayTime(world.getDayTime() - (getCharge(stack) + 1) * 4);
+					serverWorld.func_241114_a_(world.getDayTime() - (getCharge(stack) + 1) * 4);
 				}
 			}
 		}
@@ -201,7 +203,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		list.add(new TranslationTextComponent("pe.timewatch.tooltip1"));
 		list.add(new TranslationTextComponent("pe.timewatch.tooltip2"));
 		if (stack.hasTag()) {
-			list.add(new TranslationTextComponent("pe.timewatch.mode").appendSibling(new TranslationTextComponent(getTimeName(stack))));
+			list.add(new TranslationTextComponent("pe.timewatch.mode").append(new TranslationTextComponent(getTimeName(stack))));
 		}
 	}
 
@@ -228,10 +230,10 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.server.effects.timePedBonus.get()).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.server.effects.timePedBonus.get()).mergeStyle(TextFormatting.BLUE));
 		}
 		if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.server.effects.timePedMobSlowness.get()).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.server.effects.timePedMobSlowness.get()).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

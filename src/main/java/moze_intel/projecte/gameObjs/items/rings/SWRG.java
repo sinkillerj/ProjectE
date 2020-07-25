@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
@@ -22,6 +21,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -32,20 +32,17 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter {
 
 	public SWRG(Properties props) {
 		super(props);
-		addPropertyOverride(new ResourceLocation(PECore.MODID, "mode"), MODE_GETTER);
 		addItemCapability(PedestalItemCapabilityWrapper::new);
 		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
@@ -186,7 +183,11 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 					if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
 						continue;
 					}
-					((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, living.getPosX(), living.getPosY(), living.getPosZ(), false));
+					LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+					if (lightning != null) {
+						lightning.moveForced(living.getPositionVec());
+						world.addEntity(lightning);
+					}
 				}
 				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
 			} else {
@@ -200,8 +201,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
-			list.add(new TranslationTextComponent("pe.swrg.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.swrg.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
@@ -209,7 +210,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
-		projectile.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
+		projectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		player.world.addEntity(projectile);
 		return true;
 	}

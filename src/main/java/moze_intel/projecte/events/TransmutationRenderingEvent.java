@@ -14,7 +14,6 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -27,7 +26,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -93,7 +93,7 @@ public class TransmutationRenderingEvent {
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 			if (transmutationResult != null) {
 				ActiveRenderInfo activeRenderInfo = event.getInfo();
-				Vec3d viewPosition = activeRenderInfo.getProjectedView();
+				Vector3d viewPosition = activeRenderInfo.getProjectedView();
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;

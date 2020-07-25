@@ -25,6 +25,7 @@ import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
@@ -80,6 +81,9 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -87,6 +91,8 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
@@ -101,7 +107,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -143,8 +148,9 @@ public class PECore {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcQueue);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcHandle);
-		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
+		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 
@@ -177,6 +183,18 @@ public class PECore {
 			//Render layers
 			RenderTypeLookup.setRenderLayer(ObjHandler.interdictionTorch, RenderType.getCutout());
 			RenderTypeLookup.setRenderLayer(ObjHandler.interdictionTorchWall, RenderType.getCutout());
+
+			//Property Overrides
+			addPropertyOverrides(new ResourceLocation(PECore.MODID, "active"), ItemPE.ACTIVE_GETTER, ObjHandler.eternalDensity, ObjHandler.voidRing,
+					ObjHandler.arcana, ObjHandler.angelSmite, ObjHandler.blackHole, ObjHandler.bodyStone, ObjHandler.harvestGod, ObjHandler.ignition,
+					ObjHandler.lifeStone, ObjHandler.mindStone, ObjHandler.soulStone, ObjHandler.timeWatch, ObjHandler.zero);
+			addPropertyOverrides(new ResourceLocation(PECore.MODID, "mode"), ItemPE.MODE_GETTER, ObjHandler.arcana, ObjHandler.swrg);
+		}
+
+		private static void addPropertyOverrides(ResourceLocation override, IItemPropertyGetter propertyGetter, Item... items) {
+			for (Item item : items) {
+				ItemModelsProperties.func_239418_a_(item, override, propertyGetter);
+			}
 		}
 
 		static void loadComplete(FMLLoadCompleteEvent evt) {
@@ -245,27 +263,28 @@ public class PECore {
 		IMCHandler.handleMessages();
 	}
 
-	private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+	private void addReloadListeners(AddReloadListenerEvent event) {
 		//Register the philo stone smelting helper at the regular event timing
-		event.getServer().getResourceManager().addReloadListener(new PhilStoneSmeltingHelper());
+		event.addListener(new PhilStoneSmeltingHelper());
 	}
 
-	private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {
+	private void addReloadListenersLowest(AddReloadListenerEvent event) {
 		//Note: We register our listener for this event on lowest priority so that if other mods register custom NSSTags
 		// or other things that need to be sync'd/reloaded they have a chance to go before we do
-		event.getServer().getResourceManager().addReloadListener(new EMCReloadListener());
+		event.addListener(new EMCReloadListener());
 	}
 
-	private void serverStarting(FMLServerStartingEvent event) {
+	private void registerCommands(RegisterCommandsEvent event) {
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
 				.then(RemoveEmcCMD.register())
 				.then(ResetEmcCMD.register())
 				.then(SetEmcCMD.register())
 				.then(ShowBagCMD.register());
+		event.getDispatcher().register(root);
+	}
 
-		event.getCommandDispatcher().register(root);
-
+	private void serverStarting(FMLServerStartingEvent event) {
 		if (!ThreadCheckUUID.hasRunServer()) {
 			new ThreadCheckUUID(true).start();
 		}

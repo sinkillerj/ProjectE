@@ -23,7 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
@@ -53,7 +53,7 @@ public final class PlayerHelper {
 			return false;
 		}
 		World world = player.getEntityWorld();
-		BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, pos);
+		BlockSnapshot before = BlockSnapshot.create(world, pos);
 		world.setBlockState(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
@@ -85,7 +85,7 @@ public final class PlayerHelper {
 	}
 
 	public static BlockRayTraceResult getBlockLookingAt(PlayerEntity player, double maxDistance) {
-		Pair<Vec3d, Vec3d> vecs = getLookVec(player, maxDistance);
+		Pair<Vector3d, Vector3d> vecs = getLookVec(player, maxDistance);
 		RayTraceContext ctx = new RayTraceContext(vecs.getLeft(), vecs.getRight(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
 		return player.getEntityWorld().rayTraceBlocks(ctx);
 	}
@@ -93,12 +93,12 @@ public final class PlayerHelper {
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Pair<Vec3d, Vec3d> getLookVec(PlayerEntity player, double maxDistance) {
+	public static Pair<Vector3d, Vector3d> getLookVec(PlayerEntity player, double maxDistance) {
 		// Thank you ForgeEssentials
-		Vec3d look = player.getLook(1.0F);
-		Vec3d playerPos = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
-		Vec3d src = playerPos.add(0, player.getEyeHeight(), 0);
-		Vec3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
+		Vector3d look = player.getLook(1.0F);
+		Vector3d playerPos = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+		Vector3d src = playerPos.add(0, player.getEyeHeight(), 0);
+		Vector3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 
@@ -107,7 +107,7 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasEditPermission(ServerPlayerEntity player, BlockPos pos) {
-		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected(player.getEntityWorld(), pos, player)) {
+		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected((ServerWorld) player.getEntityWorld(), pos, player)) {
 			return false;
 		}
 		return Arrays.stream(Direction.values()).allMatch(e -> player.canPlayerEdit(pos, e, ItemStack.EMPTY));

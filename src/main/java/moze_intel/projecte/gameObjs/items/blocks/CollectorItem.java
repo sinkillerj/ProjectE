@@ -31,12 +31,12 @@ public class CollectorItem extends BlockItem {
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
 		if (ProjectEConfig.client.statToolTips.get()) {
-			tooltip.add(new TranslationTextComponent("pe.emc.maxgenrate_tooltip").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" ")
-					.appendSibling(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getGenRate())).applyTextStyle(TextFormatting.BLUE)).appendText(" ")
-					.appendSibling(new TranslationTextComponent("pe.emc.rate")));
-			tooltip.add(new TranslationTextComponent("pe.emc.maxstorage_tooltip").applyTextStyle(TextFormatting.DARK_PURPLE).appendText(" ")
-					.appendSibling(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getStorage())).applyTextStyle(TextFormatting.BLUE)).appendText(" ")
-					.appendSibling(new TranslationTextComponent("pe.emc.name")));
+			tooltip.add(new TranslationTextComponent("pe.emc.maxgenrate_tooltip").mergeStyle(TextFormatting.DARK_PURPLE).appendString(" ")
+					.append(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getGenRate())).mergeStyle(TextFormatting.BLUE)).appendString(" ")
+					.append(new TranslationTextComponent("pe.emc.rate")));
+			tooltip.add(new TranslationTextComponent("pe.emc.maxstorage_tooltip").mergeStyle(TextFormatting.DARK_PURPLE).appendString(" ")
+					.append(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getStorage())).mergeStyle(TextFormatting.BLUE)).appendString(" ")
+					.append(new TranslationTextComponent("pe.emc.name")));
 		}
 	}
 }

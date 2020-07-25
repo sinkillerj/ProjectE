@@ -1,5 +1,6 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -68,8 +71,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	}
 
 	@Override
-	public void draw(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
-		arrow.draw(55, 18);
+	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
+		arrow.draw(matrix, 55, 18);
 	}
 
 	@Override
@@ -117,9 +120,9 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
 	@Nonnull
 	@Override
-	public List<String> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+	public List<ITextComponent> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
-			return Collections.singletonList(I18n.format("pe.jei.worldtransmute.description"));
+			return Collections.singletonList(new TranslationTextComponent("pe.jei.worldtransmute.description"));
 		}
 		return Collections.emptyList();
 	}

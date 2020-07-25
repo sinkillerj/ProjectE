@@ -2,6 +2,7 @@ package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -62,12 +63,12 @@ public class ThreadCheckUpdate extends Thread {
 	public static void worldLoad(EntityJoinWorldEvent evt) {
 		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage) {
 			hasSentMessage = true;
-			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.available", target));
-			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.getit"));
+			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.available", target), Util.DUMMY_UUID);
+			evt.getEntity().sendMessage(new TranslationTextComponent("pe.update.getit"), Util.DUMMY_UUID);
 
 			ITextComponent link = new StringTextComponent(curseURL);
 			link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-			evt.getEntity().sendMessage(link);
+			evt.getEntity().sendMessage(link, Util.DUMMY_UUID);
 		}
 	}
 }

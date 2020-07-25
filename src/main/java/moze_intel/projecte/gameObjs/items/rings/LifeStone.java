@@ -95,8 +95,8 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
-			list.add(new TranslationTextComponent("pe.life.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.life.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.life.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.life.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.life.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

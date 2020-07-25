@@ -21,6 +21,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +40,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolType;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
@@ -176,32 +177,32 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
 		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 
 	/**
 	 * Copy of {@link net.minecraft.item.ShearsItem#itemInteractionForEntity(ItemStack, PlayerEntity, LivingEntity, Hand)}
 	 */
+	@Nonnull
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
-		if (entity.world.isRemote) {
-			return false;
-		}
-		if (entity instanceof IShearable) {
-			IShearable target = (IShearable) entity;
+	public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, LivingEntity entity, @Nonnull Hand hand) {
+		if (entity instanceof IForgeShearable) {
+			IForgeShearable target = (IForgeShearable) entity;
 			BlockPos pos = entity.getPosition();
 			if (target.isShearable(stack, entity.world, pos)) {
-				List<ItemStack> drops = target.onSheared(stack, entity.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-				Random rand = new Random();
-				drops.forEach(d -> {
-					ItemEntity ent = entity.entityDropItem(d, 1.0F);
-					ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
-							(rand.nextFloat() - rand.nextFloat()) * 0.1F));
-				});
-				return true;
+				if (!entity.world.isRemote) {
+					List<ItemStack> drops = target.onSheared(player, stack, entity.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+					Random rand = new Random();
+					drops.forEach(d -> {
+						ItemEntity ent = entity.entityDropItem(d, 1.0F);
+						ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
+								(rand.nextFloat() - rand.nextFloat()) * 0.1F));
+					});
+				}
+				return ActionResultType.SUCCESS;
 			}
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 }

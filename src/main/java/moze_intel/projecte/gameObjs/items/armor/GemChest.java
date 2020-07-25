@@ -46,7 +46,7 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 				if (!player.isSneaking()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;
-					player.onGround = true;
+					player.setOnGround(true);
 				}
 			}
 		} else {

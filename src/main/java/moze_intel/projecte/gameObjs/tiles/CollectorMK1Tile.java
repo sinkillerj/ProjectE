@@ -13,6 +13,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -244,7 +245,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	}
 
 	public int getSunLevel() {
-		if (world.dimension.doesWaterVaporize()) {
+		if (world.func_230315_m_().func_236040_e_()) {
 			return 16;
 		}
 		return world.getLight(getPos().up()) + 1;
@@ -274,8 +275,8 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	}
 
 	@Override
-	public void read(@Nonnull CompoundNBT nbt) {
-		super.read(nbt);
+	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.read(state, nbt);
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));

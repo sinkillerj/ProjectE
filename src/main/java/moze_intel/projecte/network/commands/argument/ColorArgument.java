@@ -21,7 +21,7 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 	public DyeColor parse(StringReader reader) throws CommandSyntaxException {
 		String s = reader.readUnquotedString();
 		for (DyeColor c : DyeColor.values()) {
-			if (c.getName().equals(s)) {
+			if (c.getString().equals(s)) {
 				return c;
 			}
 		}
@@ -34,7 +34,7 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return ISuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getName), builder);
+		return ISuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getString), builder);
 	}
 
 	@Override

@@ -11,13 +11,13 @@ import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 public class NBTManager {
 
-	private static final Tag<Item> NBT_WHITELIST_TAG = new ItemTags.Wrapper(new ResourceLocation(PECore.MODID, "nbt_whitelist"));
+	private static final ITag<Item> NBT_WHITELIST_TAG = ItemTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "nbt_whitelist").toString());
 	private static final List<INBTProcessor> processors = new ArrayList<>();
 
 	public static void loadProcessors() {

@@ -86,8 +86,8 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
-			list.add(new TranslationTextComponent("pe.body.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.body.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}

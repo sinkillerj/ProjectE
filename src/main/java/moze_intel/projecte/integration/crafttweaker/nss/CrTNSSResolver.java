@@ -8,7 +8,7 @@ import com.google.gson.JsonParseException;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -38,7 +38,7 @@ public class CrTNSSResolver {
 	@ZenCodeType.Method
 	public static NSSCrT fromItemTag(MCTag tag) {
 		if (checkNonNull(tag)) {
-			Tag<Item> itemTag = tag.getItemTag();
+			ITag<Item> itemTag = tag.getItemTag();
 			if (checkNonNull(itemTag)) {
 				return new NSSCrT(NSSItem.createTag(itemTag));
 			}

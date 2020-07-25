@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityLavaProjectile extends ThrowableEntity {
@@ -48,8 +48,9 @@ public class EntityLavaProjectile extends ThrowableEntity {
 				remove();
 				return;
 			}
-			if (getThrower() instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = (ServerPlayerEntity) getThrower();
+			Entity thrower = func_234616_v_();
+			if (thrower instanceof ServerPlayerEntity) {
+				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
 				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
 					Block block = world.getBlockState(pos).getBlock();
 					if (block == Blocks.WATER) {
@@ -62,7 +63,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 				});
 			}
 			if (getPosY() > 128) {
-				WorldInfo worldInfo = world.getWorldInfo();
+				IWorldInfo worldInfo = world.getWorldInfo();
 				worldInfo.setRaining(false);
 				remove();
 			}
@@ -79,11 +80,12 @@ public class EntityLavaProjectile extends ThrowableEntity {
 		if (world.isRemote) {
 			return;
 		}
-		if (!(getThrower() instanceof PlayerEntity)) {
+		Entity thrower = func_234616_v_();
+		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) getThrower();
+		PlayerEntity player = (PlayerEntity) thrower;
 		ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
 		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 			if (mop instanceof BlockRayTraceResult) {

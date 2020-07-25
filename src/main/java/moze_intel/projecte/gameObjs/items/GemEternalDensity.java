@@ -55,7 +55,6 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	public GemEternalDensity(Properties props) {
 		super(props);
-		this.addPropertyOverride(ACTIVE_NAME, ACTIVE_GETTER);
 		modes = new String[]{
 				"item.minecraft.iron_ingot",
 				"item.minecraft.gold_ingot",
@@ -266,7 +265,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
 		list.add(new TranslationTextComponent("pe.gemdensity.tooltip1"));
 		if (stack.hasTag()) {
-			list.add(new TranslationTextComponent("pe.gemdensity.tooltip2").appendSibling(new TranslationTextComponent(getModeTranslationKey(stack))));
+			list.add(new TranslationTextComponent("pe.gemdensity.tooltip2").append(new TranslationTextComponent(getModeTranslationKey(stack))));
 		}
 		list.add(new TranslationTextComponent("pe.gemdensity.tooltip3", ClientKeyHelper.getKeyName(PEKeybind.MODE)));
 		list.add(new TranslationTextComponent("pe.gemdensity.tooltip4"));

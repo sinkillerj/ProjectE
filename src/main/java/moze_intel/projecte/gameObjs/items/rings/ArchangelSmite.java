@@ -87,7 +87,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
-			arrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
+			arrow.func_234612_a_(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.getPosX(), shooter.getPosY(), shooter.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 			world.addEntity(arrow);
 		}
@@ -123,8 +123,8 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
-			list.add(new TranslationTextComponent("pe.archangel.pedestal1").applyTextStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())).applyTextStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.archangel.pedestal1").mergeStyle(TextFormatting.BLUE));
+			list.add(new TranslationTextComponent("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())).mergeStyle(TextFormatting.BLUE));
 		}
 		return list;
 	}
