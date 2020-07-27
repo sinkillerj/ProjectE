@@ -23,7 +23,7 @@ We accept donations via Patreon, visit the team members section to learn more.
 
 # Join the Conversation
 
-Discord: https://discordapp.com/invite/uTbDkT4
+Discord: https://discord.gg/fkpxV5Z
 
 # Current Team Members
 Members actively working on ProjectE.
