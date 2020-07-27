@@ -1,4 +1,4 @@
-/*package moze_intel.projecte.integration.hwyla;
+package moze_intel.projecte.integration.hwyla;
 
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
@@ -13,4 +13,4 @@ public class PEHwylaPlugin implements IWailaPlugin {
 	public void register(IRegistrar registrar) {
 		registrar.registerComponentProvider(HwylaDataProvider.INSTANCE, TooltipPosition.BODY, Block.class);
 	}
-}*/
+}
