@@ -81,12 +81,12 @@
     "item.projecte.rm_leggings": "红物质护腿",
     "item.projecte.rm_chestplate": "红物质胸甲",
     "item.projecte.rm_helmet": "红物质头盔",
-    "item.projecte.gem_boots": "飓风长靴",
-    "item.projecte.gem_leggings": "重力护腿",
-    "item.projecte.gem_chestplate": "炼狱胸甲",
-    "item.projecte.gem_helmet": "深渊头盔",
+
+
+
+
     "item.projecte.arcana_ring": "奥法指环",
-    "item.projecte.void_ring": "虚空指环",
+
     "item.projecte.zero_ring": "零度指环",
     "item.projecte.tome": "炼金术秘卷",
     "item.projecte.transmutation_tablet": "便携式转化桌",
@@ -155,11 +155,8 @@
     "advancements.pe_klein_big": "大容量的EMC能量电池",
     "advancements.pe_klein_big.desc": "它能容得下整个宇宙!",
 
-    "pe.arcana.mode.0": "零度",
-    "pe.arcana.mode.1": "烈焰",
-    "pe.arcana.mode.2": "丰收",
-    "pe.arcana.mode.3": "疾风",
-    "pe.arcana.inactive": "关闭!",
+
+
 
     "pe.archangel.pedestal1": "射击附近的怪物",
     "pe.archangel.pedestal2": "每%s射击一次",
@@ -228,13 +225,12 @@
     "pe.gem.disabled": "关闭",
     "pe.gem.enabled": "启用",
 
-    "pe.gem.activate": "启用炼狱套装被动技能",
-    "pe.gem.deactivate": "禁用炼狱套装被动技能",
 
-    "pe.gem.helm.lorename": "深渊头盔",
-    "pe.gem.chest.lorename": "炼狱胸甲",
-    "pe.gem.legs.lorename": "重力护腿",
-    "pe.gem.feet.lorename": "飓风长靴",
+
+
+
+
+
 
     "pe.gem.nightvision_tooltip": "夜视模式:",
     "pe.gem.nightvision.prompt": "按 [%s + %s] 键切换夜视模式",
@@ -257,17 +253,17 @@
     "pe.ignition.pedestal1": "燃烧附近的怪物",
     "pe.ignition.pedestal2": "每%s激活一次",
 
-    "pe.item.mode": "模式",
+
     "pe.item.mode_switch": "切换为 %s 模式",
 
     "pe.katar.mode1": "虐杀敌对生物",
     "pe.katar.mode2": "虐杀一切生物",
 
-    "key.projecte.armor_toggle": "护甲效果",
-    "key.projecte.charge": "充能",
-    "key.projecte.extra_function": "其他功能",
-    "key.projecte.fire_projectile": "发射宝珠",
-    "key.projecte.mode": "转换模式",
+
+
+
+
+
 
     "pe.life.pedestal1": "恢复生命与饥饿度",
     "pe.life.pedestal2": "每%s恢复半格生命值及饥饿值",
@@ -276,7 +272,7 @@
 
     "pe.misc.every_tick": "/tick",
     "pe.misc.seconds": "秒",
-    "pe.misc.storedxp_tooltip": "存储经验:",
+
     "pe.misc.wrenched_block": "扳动方块!",
 
     "pe.morningstar.mode1": "普通模式",
@@ -368,7 +364,7 @@
     "pe.zero.pedestal2": "并冻结周围的一切",
     "pe.zero.pedestal3": "每%s激活一次",
 
-    "pe.debug.metainvalid": "metadata参数设置无效",
+
 
     "pe.jei.worldtransmute": "世界转化",
     "pe.jei.philo": "贤者之石的转化",
