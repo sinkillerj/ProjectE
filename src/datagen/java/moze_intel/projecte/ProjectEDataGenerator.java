@@ -1,5 +1,6 @@
 package moze_intel.projecte;
 
+import moze_intel.projecte.client.lang.PELangProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +17,7 @@ public class ProjectEDataGenerator {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 		if (event.includeClient()) {
 			//Client side data generators
-
+			gen.addProvider(new PELangProvider(gen));
 		}
 		if (event.includeServer()) {
 			//Server side data generators

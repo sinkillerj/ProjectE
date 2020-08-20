@@ -8,6 +8,7 @@ import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -18,9 +19,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,8 +64,8 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flags) {
 		if (stack.getTag() != null) {
-			tooltip.add(new TranslationTextComponent("pe.misc.storedxp_tooltip").mergeStyle(TextFormatting.DARK_GREEN).appendString(" ")
-					.append(new StringTextComponent(String.format("%,d", getStoredXP(stack))).mergeStyle(TextFormatting.GREEN)));
+			//TODO - 1.16: Number format
+			tooltip.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
 	}
 
@@ -186,6 +185,6 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Nonnull
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(new TranslationTextComponent("pe.mind.pedestal1"));
+		return Lists.newArrayList(PELang.PEDESTAL_MIND_STONE.translateColored(TextFormatting.BLUE));
 	}
 }

@@ -19,6 +19,7 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
@@ -42,7 +43,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -155,10 +155,10 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(new TranslationTextComponent("pe.evertide.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(new TranslationTextComponent("pe.evertide.tooltip2"));
-		list.add(new TranslationTextComponent("pe.evertide.tooltip3"));
-		list.add(new TranslationTextComponent("pe.evertide.tooltip4"));
+		list.add(PELang.TOOLTIP_EVERTIDE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(PELang.TOOLTIP_EVERTIDE_2.translate());
+		list.add(PELang.TOOLTIP_EVERTIDE_3.translate());
+		list.add(PELang.TOOLTIP_EVERTIDE_4.translate());
 	}
 
 	@Override
@@ -188,8 +188,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
-			list.add(new TranslationTextComponent("pe.evertide.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.evertide.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_EVERTIDE_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_EVERTIDE_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())));
 		}
 		return list;
 	}

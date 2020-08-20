@@ -18,6 +18,8 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -37,18 +39,17 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
 
-	private final static String[] modes = new String[]{
-			"pe.arcana.mode.0",
-			"pe.arcana.mode.1",
-			"pe.arcana.mode.2",
-			"pe.arcana.mode.3"
+	private final static ILangEntry[] modes = new ILangEntry[]{
+			PELang.MODE_ARCANA_1,
+			PELang.MODE_ARCANA_2,
+			PELang.MODE_ARCANA_3,
+			PELang.MODE_ARCANA_4
 	};
 
 	public Arcana(Properties props) {
@@ -82,7 +83,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modes;
 	}
 
@@ -117,10 +118,10 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
 		if (stack.hasTag()) {
-			if (!stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-				list.add(new TranslationTextComponent("pe.arcana.inactive").mergeStyle(TextFormatting.RED));
-			} else {
+			if (stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 				list.add(getToolTip(stack));
+			} else {
+				list.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
 			}
 		}
 	}

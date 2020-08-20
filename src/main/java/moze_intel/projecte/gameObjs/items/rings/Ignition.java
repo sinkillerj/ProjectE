@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +31,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter {
@@ -94,8 +94,8 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
-			list.add(new TranslationTextComponent("pe.ignition.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.ignition.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_IGNITION_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_IGNITION_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())));
 		}
 		return list;
 	}

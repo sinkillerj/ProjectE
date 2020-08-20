@@ -19,6 +19,7 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -39,7 +40,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -135,10 +135,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
-		list.add(new TranslationTextComponent("pe.volcanite.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(new TranslationTextComponent("pe.volcanite.tooltip2"));
-		list.add(new TranslationTextComponent("pe.volcanite.tooltip3"));
-		list.add(new TranslationTextComponent("pe.volcanite.tooltip4"));
+		list.add(PELang.TOOLTIP_VOLCANITE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		list.add(PELang.TOOLTIP_VOLCANITE_2.translate());
+		list.add(PELang.TOOLTIP_VOLCANITE_3.translate());
+		list.add(PELang.TOOLTIP_VOLCANITE_4.translate());
 	}
 
 	@Override
@@ -169,8 +169,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
-			list.add(new TranslationTextComponent("pe.volcanite.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.volcanite.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.volcanite.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_VOLCANITE_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_VOLCANITE_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.volcanite.get())));
 		}
 		return list;
 	}

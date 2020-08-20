@@ -19,6 +19,8 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
+import moze_intel.projecte.utils.text.PELang;
+import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -32,10 +34,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.FolderName;
@@ -45,7 +44,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class ShowBagCMD {
 
-	private static final SimpleCommandExceptionType NOT_FOUND = new SimpleCommandExceptionType(new TranslationTextComponent("pe.command.showbag.offline.notfound"));
+	private static final SimpleCommandExceptionType NOT_FOUND = new SimpleCommandExceptionType(PELang.SHOWBAG_NOT_FOUND.translate());
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("showbag")
@@ -75,15 +74,11 @@ public class ShowBagCMD {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static IFormattableTextComponent getBagName(DyeColor color) {
-		return new TranslationTextComponent(ObjHandler.getBag(color).getTranslationKey());
-	}
-
 	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) {
 		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
-		ITextComponent name = getBagName(color).appendString(" (").append(target.getDisplayName()).appendString(")");
+		ITextComponent name = PELang.SHOWBAG_NAMED.translate(ObjHandler.getBag(color), target.getDisplayName());
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
 
@@ -92,10 +87,12 @@ public class ShowBagCMD {
 		//Try to get the bag
 		IItemHandlerModifiable inv = loadOfflineBag(server, target, color);
 		GameProfile profileByUUID = server.getPlayerProfileCache().getProfileByUUID(target);
-		ITextComponent name = getBagName(color);
-		if (profileByUUID != null) {
+		ITextComponent name;
+		if (profileByUUID == null) {
+			name = TextComponentUtil.build(ObjHandler.getBag(color));
+		} else {
 			//If we have a cache of the player, include their last known name in the name of the bag
-			name = getBagName(color).appendString(" (").append(new StringTextComponent(profileByUUID.getName())).appendString(")");
+			name = PELang.SHOWBAG_NAMED.translate(ObjHandler.getBag(color), profileByUUID.getName());
 		}
 		return getContainer(sender, name, inv, true, () -> true);
 	}

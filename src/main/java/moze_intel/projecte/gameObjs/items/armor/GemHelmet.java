@@ -7,6 +7,7 @@ import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,21 +53,24 @@ public class GemHelmet extends GemArmorBase {
 			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, true);
 			value = true;
 		}
-		player.sendMessage(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendString(" ")
-				.append(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(value ? TextFormatting.GREEN : TextFormatting.RED)), Util.DUMMY_UUID);
+		if (value) {
+			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.DUMMY_UUID);
+		} else {
+			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.DUMMY_UUID);
+		}
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
-		tooltips.add(new TranslationTextComponent("pe.gem.helm.lorename"));
-
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision.prompt", Minecraft.getInstance().gameSettings.keyBindSneak.func_238171_j_(),
-				ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
-
-		boolean enabled = isNightVisionEnabled(stack);
-		tooltips.add(new TranslationTextComponent("pe.gem.nightvision_tooltip").appendString(" ")
-				.append(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
+		tooltips.add(PELang.GEM_LORE_HELM.translate());
+		//TODO - 1.16: Change this to using the keybind modifier system forge adds so that we can allow them to change it separately?
+		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(Minecraft.getInstance().gameSettings.keyBindSneak.func_238171_j_(), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		if (isNightVisionEnabled(stack)) {
+			tooltips.add(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
+		} else {
+			tooltips.add(PELang.NIGHT_VISION.translate(TextFormatting.RED, PELang.GEM_DISABLED));
+		}
 	}
 
 	@Override

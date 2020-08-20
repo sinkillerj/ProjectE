@@ -10,6 +10,7 @@ import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -18,7 +19,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
@@ -69,10 +69,9 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
 		this.font.drawString(matrix, I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
-		String emcLabel = I18n.format("pe.emc.emc_tooltip_prefix");
-		this.font.drawString(matrix, emcLabel, 6, this.ySize - 104, 0x404040);
-		String emc = TransmutationEMCFormatter.formatEMC(emcAmount);
-		this.font.drawString(matrix, emc, 6, this.ySize - 94, 0x404040);
+		this.font.func_238422_b_(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
+		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);
+		this.font.func_238422_b_(matrix, emc, 6, this.ySize - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
 			this.font.drawString(matrix, I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);
@@ -193,8 +192,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
-			ITextComponent emcAsString = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").appendString(" " + Constants.EMC_FORMATTER.format(emcAmount));
-			renderTooltip(matrix, emcAsString, mouseX, mouseY);
+			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(emcAmount)), mouseX, mouseY);
 		} else {
 			super.func_230459_a_(matrix, mouseX, mouseY);
 		}

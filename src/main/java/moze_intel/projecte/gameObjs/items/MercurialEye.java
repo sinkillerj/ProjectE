@@ -20,6 +20,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,13 +60,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	private static final int PILLAR_MODE = 5;
 
 	public MercurialEye(Properties props) {
-		super(props, (byte) 4, new String[]{
-				"pe.pe_mercurial_eye.mode1",
-				"pe.pe_mercurial_eye.mode2",
-				"pe.pe_mercurial_eye.mode3",
-				"pe.pe_mercurial_eye.mode4",
-				"pe.pe_mercurial_eye.mode5",
-				"pe.pe_mercurial_eye.mode6"});
+		super(props, (byte) 4, PELang.MODE_MERCURIAL_EYE_1, PELang.MODE_MERCURIAL_EYE_2, PELang.MODE_MERCURIAL_EYE_3, PELang.MODE_MERCURIAL_EYE_4,
+				PELang.MODE_MERCURIAL_EYE_5, PELang.MODE_MERCURIAL_EYE_6);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 		addItemCapability(EyeInventoryHandler::new);
 	}

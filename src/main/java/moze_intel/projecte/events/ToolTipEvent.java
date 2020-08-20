@@ -5,11 +5,11 @@ import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,10 +36,10 @@ public class ToolTipEvent {
 		PlayerEntity clientPlayer = Minecraft.getInstance().player;
 		if (ProjectEConfig.client.pedestalToolTips.get()) {
 			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-				event.getToolTip().add(new TranslationTextComponent("pe.pedestal.on_pedestal").mergeStyle(TextFormatting.DARK_PURPLE).appendString(" "));
+				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(TextFormatting.DARK_PURPLE));
 				List<ITextComponent> description = pedestalItem.getPedestalDescription();
 				if (description.isEmpty()) {
-					event.getToolTip().add(IPedestalItem.TOOLTIP_DISABLED);
+					event.getToolTip().add(PELang.PEDESTAL_DISABLED.translateColored(TextFormatting.RED));
 				} else {
 					event.getToolTip().addAll(description);
 				}
@@ -49,7 +48,7 @@ public class ToolTipEvent {
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
 			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem())) {
-				event.getToolTip().add(new StringTextComponent("#" + tag.toString()));
+				event.getToolTip().add(new StringTextComponent("#" + tag));
 			}
 		}
 
@@ -61,7 +60,7 @@ public class ToolTipEvent {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
 				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
-					event.getToolTip().add(new TranslationTextComponent("pe.emc.has_knowledge").mergeStyle(TextFormatting.YELLOW));
+					event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(TextFormatting.YELLOW));
 				}
 			}
 		}
@@ -78,8 +77,8 @@ public class ToolTipEvent {
 					return;
 				}
 			}
-			event.getToolTip().add(new TranslationTextComponent("pe.emc.storedemc_tooltip").mergeStyle(TextFormatting.YELLOW).appendString(" ")
-					.append(new StringTextComponent(Constants.EMC_FORMATTER.format(value)).mergeStyle(TextFormatting.RESET)));
+			//TODO - 1.16: Validate that the emc number has the format reset
+			event.getToolTip().add(PELang.EMC_STORED.translateColored(TextFormatting.YELLOW, Constants.EMC_FORMATTER.format(value)));
 		}
 	}
 }

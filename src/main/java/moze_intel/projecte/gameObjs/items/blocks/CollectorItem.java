@@ -7,13 +7,12 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,12 +30,8 @@ public class CollectorItem extends BlockItem {
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
 		if (ProjectEConfig.client.statToolTips.get()) {
-			tooltip.add(new TranslationTextComponent("pe.emc.maxgenrate_tooltip").mergeStyle(TextFormatting.DARK_PURPLE).appendString(" ")
-					.append(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getGenRate())).mergeStyle(TextFormatting.BLUE)).appendString(" ")
-					.append(new TranslationTextComponent("pe.emc.rate")));
-			tooltip.add(new TranslationTextComponent("pe.emc.maxstorage_tooltip").mergeStyle(TextFormatting.DARK_PURPLE).appendString(" ")
-					.append(new StringTextComponent(Constants.EMC_FORMATTER.format(tier.getStorage())).mergeStyle(TextFormatting.BLUE)).appendString(" ")
-					.append(new TranslationTextComponent("pe.emc.name")));
+			tooltip.add(PELang.EMC_MAX_GEN_RATE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getGenRate())));
+			tooltip.add(PELang.EMC_MAX_STORAGE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getStorage())));
 		}
 	}
 }

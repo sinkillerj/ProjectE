@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PEHoe extends HoeItem implements IItemCharge {
@@ -23,7 +24,7 @@ public class PEHoe extends HoeItem implements IItemCharge {
 
 	//TODO - 1.16: Figure out damage
 	public PEHoe(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, 0, matterType.getMatterTier(), props.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel()));
+		super(matterType, 0, matterType.getMatterTier(), props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -65,7 +66,7 @@ public class PEHoe extends HoeItem implements IItemCharge {
 
 	@Override
 	public boolean canHarvestBlock(BlockState state) {
-		if (state.getHarvestTool() == ToolHelper.TOOL_TYPE_HOE) {
+		if (state.getHarvestTool() == ToolType.HOE) {
 			//Patch HoeItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of a hoe
 			return getTier().getHarvestLevel() >= state.getHarvestLevel();
 		}

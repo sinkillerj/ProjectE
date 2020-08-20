@@ -17,6 +17,8 @@ import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
@@ -40,7 +42,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -65,12 +66,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
-				player.sendMessage(new TranslationTextComponent("pe.timewatch.disabled"), Util.DUMMY_UUID);
+				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.DUMMY_UUID);
 				return ActionResult.resultFail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
-			player.sendMessage(new TranslationTextComponent("pe.timewatch.mode_switch", new TranslationTextComponent(getTimeName(stack)).getUnformattedComponentText()), Util.DUMMY_UUID);
+			player.sendMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)), Util.DUMMY_UUID);
 		}
 		return ActionResult.resultSuccess(stack);
 	}
@@ -171,17 +172,17 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		}
 	}
 
-	private String getTimeName(ItemStack stack) {
+	private ILangEntry getTimeName(ItemStack stack) {
 		byte mode = getTimeBoost(stack);
 		switch (mode) {
 			case 0:
-				return "pe.timewatch.off";
+				return PELang.TIME_WATCH_OFF;
 			case 1:
-				return "pe.timewatch.ff";
+				return PELang.TIME_WATCH_FAST_FORWARD;
 			case 2:
-				return "pe.timewatch.rw";
+				return PELang.TIME_WATCH_REWIND;
 			default:
-				return "ERROR_INVALID_MODE";
+				return PELang.INVALID_MODE;
 		}
 	}
 
@@ -200,10 +201,10 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(new TranslationTextComponent("pe.timewatch.tooltip1"));
-		list.add(new TranslationTextComponent("pe.timewatch.tooltip2"));
+		list.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
+		list.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
 		if (stack.hasTag()) {
-			list.add(new TranslationTextComponent("pe.timewatch.mode").append(new TranslationTextComponent(getTimeName(stack))));
+			list.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
 		}
 	}
 
@@ -230,10 +231,10 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal1", ProjectEConfig.server.effects.timePedBonus.get()).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_TIME_WATCH_1.translateColored(TextFormatting.BLUE, ProjectEConfig.server.effects.timePedBonus.get()));
 		}
 		if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-			list.add(new TranslationTextComponent("pe.timewatch.pedestal2", ProjectEConfig.server.effects.timePedMobSlowness.get()).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(TextFormatting.BLUE, ProjectEConfig.server.effects.timePedMobSlowness.get()));
 		}
 		return list;
 	}

@@ -42,6 +42,7 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+		//TODO: Move to just adjusting title positions
 		this.font.drawString(matrix, I18n.format("pe.dmfurnace.shortname"), 57, 5, 0x404040);
 		this.font.drawString(matrix, I18n.format("container.inventory"), 57, ySize - 96 + 2, 0x404040);
 	}

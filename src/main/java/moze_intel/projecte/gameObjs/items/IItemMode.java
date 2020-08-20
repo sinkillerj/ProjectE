@@ -3,29 +3,30 @@ package moze_intel.projecte.gameObjs.items;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public interface IItemMode extends IModeChanger {
 
-	String[] getModeTranslationKeys();
+	ILangEntry[] getModeLangEntries();
 
 	default byte getModeCount() {
-		return (byte) getModeTranslationKeys().length;
+		return (byte) getModeLangEntries().length;
 	}
 
-	default String getModeTranslationKey(ItemStack stack) {
-		String[] translationKeys = getModeTranslationKeys();
+	default ILangEntry getModeLangEntry(ItemStack stack) {
+		ILangEntry[] langEntries = getModeLangEntries();
 		byte mode = getMode(stack);
-		if (mode < 0 || mode >= translationKeys.length) {
-			return "pe.item.mode.invalid";
+		if (mode < 0 || mode >= langEntries.length) {
+			return PELang.INVALID_MODE;
 		}
-		return translationKeys[mode];
+		return langEntries[mode];
 	}
 
 	@Override
@@ -42,13 +43,11 @@ public interface IItemMode extends IModeChanger {
 		}
 		//Update the mode
 		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
-		TranslationTextComponent modeName = new TranslationTextComponent(getModeTranslationKey(stack));
-		player.sendMessage(new TranslationTextComponent("pe.item.mode_switch", modeName), Util.DUMMY_UUID);
+		player.sendMessage(PELang.MODE_SWITCH.translate(getModeLangEntry(stack)), Util.DUMMY_UUID);
 		return true;
 	}
 
 	default ITextComponent getToolTip(ItemStack stack) {
-		return new TranslationTextComponent("pe.item.mode").appendString(": ")
-				.append(new TranslationTextComponent(getModeTranslationKey(stack)).mergeStyle(TextFormatting.AQUA));
+		return PELang.CURRENT_MODE.translate(TextFormatting.AQUA, getModeLangEntry(stack));
 	}
 }

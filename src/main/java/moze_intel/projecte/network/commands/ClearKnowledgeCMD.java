@@ -7,13 +7,13 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeClearPKT;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class ClearKnowledgeCMD {
 
@@ -29,10 +29,10 @@ public class ClearKnowledgeCMD {
 		for (ServerPlayerEntity player : targets) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-			source.sendFeedback(new TranslationTextComponent("pe.command.clearknowledge.success", player.getDisplayName()), true);
+			source.sendFeedback(PELang.CLEAR_KNOWLEDGE_SUCCESS.translate(player.getDisplayName()), true);
 
 			if (player != source.getEntity()) {
-				player.sendMessage(new TranslationTextComponent("pe.command.clearknowledge.notify", source.getDisplayName()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+				player.sendMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(TextFormatting.RED, source.getDisplayName()), Util.DUMMY_UUID);
 			}
 		}
 		return targets.size();

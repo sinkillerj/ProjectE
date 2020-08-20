@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
@@ -28,7 +29,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
@@ -187,9 +187,9 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal2").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.harvestgod.pedestal3", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_2.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_3.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())));
 		}
 		return list;
 	}

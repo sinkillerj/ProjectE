@@ -8,16 +8,16 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class RemoveEmcCMD {
 
-	private static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(new TranslationTextComponent("pe.command.remove.noitem"));
+	private static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(PELang.COMMAND_REMOVE_NO_ITEM.translate());
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("removeemc")
@@ -30,8 +30,8 @@ public class RemoveEmcCMD {
 	private static int removeEmc(CommandContext<CommandSource> ctx, NSSItemResult stack) {
 		String toRemove = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toRemove, 0);
-		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.remove.success", toRemove), true);
-		ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
+		ctx.getSource().sendFeedback(PELang.COMMAND_REMOVE_SUCCESS.translate(toRemove), true);
+		ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
 		return Command.SINGLE_SUCCESS;
 	}
 

@@ -11,11 +11,12 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe> {
 
@@ -30,7 +31,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
 				.setTextureSize(32, 32).build();
 		icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.collectorMK1));
-		localizedName = I18n.format("pe.jei.collector");
+		localizedName = PELang.JEI_COLLECTOR.translate().getString();
 	}
 
 	@Nonnull
@@ -93,11 +94,11 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 
 	@Override
 	public void draw(FuelUpgradeRecipe recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
-		//TODO - 1.16: Cleanup how we do translations and make sure everything is properly translateable
-		String emc = recipe.getUpgradeEMC() + " EMC";
+		ITextComponent emc = PELang.EMC.translate(recipe.getUpgradeEMC());
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		int stringWidth = fontRenderer.getStringWidth(emc);
-		fontRenderer.drawString(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
+		int stringWidth = fontRenderer.func_238414_a_(emc);
+		//TODO - 1.16: Test this renders correctly
+		fontRenderer.func_238422_b_(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(matrix, 55, 18);
 	}
 }

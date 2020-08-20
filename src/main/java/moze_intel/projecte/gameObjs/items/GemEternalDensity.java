@@ -21,6 +21,8 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,17 +53,17 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
-	private final String[] modes;
+	//TODO - 1.16: Lang
+	private static final ILangEntry[] modes = new ILangEntry[]{
+			"item.minecraft.iron_ingot",
+			"item.minecraft.gold_ingot",
+			"item.minecraft.diamond",
+			"item.projecte.dark_matter",
+			"item.projecte.red_matter"
+	};
 
 	public GemEternalDensity(Properties props) {
 		super(props);
-		modes = new String[]{
-				"item.minecraft.iron_ingot",
-				"item.minecraft.gold_ingot",
-				"item.minecraft.diamond",
-				"item.projecte.dark_matter",
-				"item.projecte.red_matter"
-		};
 		addItemCapability(AlchBagItemCapabilityWrapper::new);
 		addItemCapability(AlchChestItemCapabilityWrapper::new);
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
@@ -256,20 +258,20 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modes;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(new TranslationTextComponent("pe.gemdensity.tooltip1"));
+		list.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
-			list.add(new TranslationTextComponent("pe.gemdensity.tooltip2").append(new TranslationTextComponent(getModeTranslationKey(stack))));
+			list.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getModeLangEntry(stack)));
 		}
-		list.add(new TranslationTextComponent("pe.gemdensity.tooltip3", ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		list.add(new TranslationTextComponent("pe.gemdensity.tooltip4"));
-		list.add(new TranslationTextComponent("pe.gemdensity.tooltip5"));
+		list.add(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		list.add(PELang.TOOLTIP_GEM_DENSITY_4.translate());
+		list.add(PELang.TOOLTIP_GEM_DENSITY_5.translate());
 	}
 
 	@Override

@@ -9,6 +9,8 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,7 +40,7 @@ import net.minecraftforge.common.ToolType;
 
 public class PEMorningStar extends PETool implements IItemMode {
 
-	private final String[] modeDesc;
+	private final ILangEntry[] modeDesc;
 
 	public PEMorningStar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 16, -3, numCharges, props
@@ -46,12 +48,12 @@ public class PEMorningStar extends PETool implements IItemMode {
 				.addToolType(ToolType.SHOVEL, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, matterType.getHarvestLevel()));
-		modeDesc = new String[]{"pe.morningstar.mode1", "pe.morningstar.mode2", "pe.morningstar.mode3", "pe.morningstar.mode4"};
+		modeDesc = new ILangEntry[]{PELang.MODE_MORNING_STAR_1, PELang.MODE_MORNING_STAR_2, PELang.MODE_MORNING_STAR_3, PELang.MODE_MORNING_STAR_4};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modeDesc;
 	}
 

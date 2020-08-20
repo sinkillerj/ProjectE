@@ -6,12 +6,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import java.util.UUID;
-import net.minecraft.util.text.TranslationTextComponent;
+import moze_intel.projecte.utils.text.PELang;
 
 public class UUIDArgument implements ArgumentType<UUID> {
 
-	private static final DynamicCommandExceptionType MALFORMED_UUID = new DynamicCommandExceptionType(uuid ->
-			new TranslationTextComponent("pe.command.showbag.offline.uuid", uuid));
+	private static final DynamicCommandExceptionType MALFORMED_UUID = new DynamicCommandExceptionType(PELang.SHOWBAG_UUID::translate);
 
 	@Override
 	public UUID parse(StringReader reader) throws CommandSyntaxException {
