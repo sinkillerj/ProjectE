@@ -20,6 +20,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -36,7 +37,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter {
@@ -201,8 +201,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
-			list.add(new TranslationTextComponent("pe.swrg.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.swrg.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_SWRG_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_SWRG_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())));
 		}
 		return list;
 	}

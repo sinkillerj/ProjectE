@@ -8,11 +8,11 @@ import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends PEContainerScreen<T> {
 
@@ -41,8 +41,8 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
-		String emc = TransmutationEMCFormatter.formatEMC(toDisplay);
-		this.font.drawString(matrix, emc, 140, 10, 0x404040);
+		ITextComponent emc = TransmutationEMCFormatter.formatEMC(toDisplay);
+		this.font.func_238422_b_(matrix, emc, 140, 10, 0x404040);
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
-			ITextComponent emcAsString = new TranslationTextComponent("pe.emc.emc_tooltip_prefix").appendString(" " + Constants.EMC_FORMATTER.format(toDisplay));
-			renderTooltip(matrix, emcAsString, mouseX, mouseY);
+			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(toDisplay)), mouseX, mouseY);
 		} else {
 			super.func_230459_a_(matrix, mouseX, mouseY);
 		}

@@ -6,8 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -21,8 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
  * @author williewillus
  */
 public interface IPedestalItem {
-
-	ITextComponent TOOLTIP_DISABLED = new TranslationTextComponent("pe.pedestal.item_disabled").mergeStyle(TextFormatting.RED);
 
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside

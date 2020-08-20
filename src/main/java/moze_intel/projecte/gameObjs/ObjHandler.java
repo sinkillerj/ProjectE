@@ -112,6 +112,7 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
@@ -251,11 +252,9 @@ public class ObjHandler {
 	public static final Item everTide = new EvertideAmulet(ibNoStack()).setRegistryName(PECore.MODID, "evertide_amulet");
 	public static final Item volcanite = new VolcaniteAmulet(ibNoStack()).setRegistryName(PECore.MODID, "volcanite_amulet");
 	public static final Item eternalDensity = new GemEternalDensity(ibNoStack()).setRegistryName(PECore.MODID, "gem_of_eternal_density");
-	public static final Item dRod1 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3"}).setRegistryName(PECore.MODID, "divining_rod_1");
-	public static final Item dRod2 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3",
-																			   "pe.diving_rod.mode.range.16"}).setRegistryName(PECore.MODID, "divining_rod_2");
-	public static final Item dRod3 = new DiviningRod(ibNoStack(), new String[]{"pe.diving_rod.mode.range.3", "pe.diving_rod.mode.range.16",
-																			   "pe.diving_rod.mode.range.64"}).setRegistryName(PECore.MODID, "divining_rod_3");
+	public static final Item dRod1 = new DiviningRod(ibNoStack(), PELang.DIVINING_RANGE_3).setRegistryName(PECore.MODID, "divining_rod_1");
+	public static final Item dRod2 = new DiviningRod(ibNoStack(), PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16).setRegistryName(PECore.MODID, "divining_rod_2");
+	public static final Item dRod3 = new DiviningRod(ibNoStack(), PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16, PELang.DIVINING_RANGE_64).setRegistryName(PECore.MODID, "divining_rod_3");
 	public static final Item mercEye = new MercurialEye(ibNoStack()).setRegistryName(PECore.MODID, "mercurial_eye");
 	public static final Item voidRing = new VoidRing(ibNoStack()).setRegistryName(PECore.MODID, "void_ring");
 	public static final Item arcana = new Arcana(ibNoStack().rarity(Rarity.RARE)).setRegistryName(PECore.MODID, "arcana_ring");

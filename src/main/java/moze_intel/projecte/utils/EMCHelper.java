@@ -13,15 +13,14 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -172,20 +171,34 @@ public final class EMCHelper {
 	}
 
 	public static ITextComponent getEmcTextComponent(long emc, int stackSize) {
-		IFormattableTextComponent prefix = new TranslationTextComponent(stackSize > 1 ? "pe.emc.stackemc_tooltip_prefix" : "pe.emc.emc_tooltip_prefix").mergeStyle(TextFormatting.YELLOW).appendString(" ");
-		ITextComponent valueText = new StringTextComponent(Constants.EMC_FORMATTER.format(stackSize == 1 ? emc : BigInteger.valueOf(emc).multiply(BigInteger.valueOf(stackSize)))).mergeStyle(TextFormatting.WHITE);
-		ITextComponent sell = new StringTextComponent(getEmcSellString(getEmcSellValue(emc), stackSize)).mergeStyle(TextFormatting.BLUE);
-		return prefix.append(valueText).append(sell);
-	}
-
-	public static String getEmcSellString(long emcSellValue, int stackSize) {
 		if (ProjectEConfig.server.difficulty.covalenceLoss.get() == 1.0) {
-			return " ";
+			ILangEntry prefix;
+			String value;
+			if (stackSize > 1) {
+				prefix = PELang.EMC_STACK_TOOLTIP;
+				value = Constants.EMC_FORMATTER.format(BigInteger.valueOf(emc).multiply(BigInteger.valueOf(stackSize)));
+			} else {
+				prefix = PELang.EMC_TOOLTIP;
+				value = Constants.EMC_FORMATTER.format(emc);
+			}
+			return prefix.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, value);
 		}
-		if (stackSize == 1) {
-			return " (" + Constants.EMC_FORMATTER.format(emcSellValue) + ")";
+		//Sell enabled
+		long emcSellValue = getEmcSellValue(emc);
+		ILangEntry prefix;
+		String value;
+		String sell;
+		if (stackSize > 1) {
+			prefix = PELang.EMC_STACK_TOOLTIP_WITH_SELL;
+			BigInteger bigIntStack = BigInteger.valueOf(stackSize);
+			value = Constants.EMC_FORMATTER.format(BigInteger.valueOf(emc).multiply(bigIntStack));
+			sell = Constants.EMC_FORMATTER.format(BigInteger.valueOf(emcSellValue).multiply(bigIntStack));
+		} else {
+			prefix = PELang.EMC_TOOLTIP_WITH_SELL;
+			value = Constants.EMC_FORMATTER.format(emc);
+			sell = Constants.EMC_FORMATTER.format(emcSellValue);
 		}
-		return " (" + Constants.EMC_FORMATTER.format(BigInteger.valueOf(emcSellValue).multiply(BigInteger.valueOf(stackSize))) + ")";
+		return prefix.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, value, TextFormatting.BLUE, sell);
 	}
 
 	public static long getKleinStarMaxEmc(ItemStack stack) {

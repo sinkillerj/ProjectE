@@ -12,6 +12,7 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -22,7 +23,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class BodyStone extends PEToggleItem implements IPedestalItem {
@@ -86,8 +86,8 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
-			list.add(new TranslationTextComponent("pe.body.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.body.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_BODY_STONE_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_BODY_STONE_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())));
 		}
 		return list;
 	}

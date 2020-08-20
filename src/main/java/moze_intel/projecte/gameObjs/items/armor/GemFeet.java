@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -25,7 +26,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -60,8 +60,11 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, true);
 			value = true;
 		}
-		player.sendMessage(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendString(" ")
-				.append(new TranslationTextComponent(value ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(value ? TextFormatting.GREEN : TextFormatting.RED)), Util.DUMMY_UUID);
+		if (value) {
+			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.DUMMY_UUID);
+		} else {
+			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.DUMMY_UUID);
+		}
 	}
 
 	private static boolean isJumpPressed() {
@@ -95,12 +98,13 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
-		tooltips.add(new TranslationTextComponent("pe.gem.feet.lorename"));
-		tooltips.add(new TranslationTextComponent("pe.gem.stepassist.prompt", ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
-
-		boolean enabled = isStepAssistEnabled(stack);
-		tooltips.add(new TranslationTextComponent("pe.gem.stepassist_tooltip").appendString(" ")
-				.append(new TranslationTextComponent(enabled ? "pe.gem.enabled" : "pe.gem.disabled").mergeStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED)));
+		tooltips.add(PELang.GEM_LORE_FEET.translate());
+		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		if (isStepAssistEnabled(stack)) {
+			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
+		} else {
+			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED));
+		}
 	}
 
 	@Nonnull

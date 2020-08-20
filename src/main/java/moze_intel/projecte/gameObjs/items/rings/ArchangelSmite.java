@@ -13,6 +13,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -27,7 +28,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -123,8 +123,8 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	public List<ITextComponent> getPedestalDescription() {
 		List<ITextComponent> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
-			list.add(new TranslationTextComponent("pe.archangel.pedestal1").mergeStyle(TextFormatting.BLUE));
-			list.add(new TranslationTextComponent("pe.archangel.pedestal2", MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())).mergeStyle(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_ARCHANGEL_1.translateColored(TextFormatting.BLUE));
+			list.add(PELang.PEDESTAL_ARCHANGEL_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())));
 		}
 		return list;
 	}

@@ -15,6 +15,7 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.entity.Entity;
@@ -38,7 +39,6 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -129,8 +129,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Nonnull
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(new TranslationTextComponent("pe.bhb.pedestal1").mergeStyle(TextFormatting.BLUE),
-				new TranslationTextComponent("pe.bhb.pedestal2").mergeStyle(TextFormatting.BLUE));
+		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BLAND_1.translateColored(TextFormatting.BLUE),
+				PELang.PEDESTAL_BLACK_HOLE_BLAND_2.translateColored(TextFormatting.BLUE));
 	}
 
 	@Override

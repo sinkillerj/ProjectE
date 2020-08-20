@@ -73,7 +73,6 @@ import net.minecraftforge.eventbus.api.Event.Result;
 
 public class ToolHelper {
 
-	public static final ToolType TOOL_TYPE_HOE = ToolType.get("hoe");
 	public static final ToolType TOOL_TYPE_SHEARS = ToolType.get("shears");
 	public static final ToolType TOOL_TYPE_HAMMER = ToolType.get("hammer");
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");

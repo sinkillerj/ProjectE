@@ -17,6 +17,7 @@ import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +38,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,10 +47,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
 
 	public PhilosophersStone(Properties props) {
-		super(props, (byte) 4, new String[]{
-				"pe.philstone.mode1",
-				"pe.philstone.mode2",
-				"pe.philstone.mode3"});
+		super(props, (byte) 4, PELang.MODE_PHILOSOPHER_1, PELang.MODE_PHILOSOPHER_2, PELang.MODE_PHILOSOPHER_3);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
@@ -130,7 +127,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
 		super.addInformation(stack, world, list, flags);
-		list.add(new TranslationTextComponent("pe.philstone.tooltip1", ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+		list.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
 	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {

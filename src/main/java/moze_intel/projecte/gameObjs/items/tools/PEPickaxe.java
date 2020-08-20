@@ -12,6 +12,8 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -34,12 +36,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	private final EnumMatterType matterType;
-	private final String[] modeDesc;
+	private final ILangEntry[] modeDesc;
 	private final int numCharges;
 
 	public PEPickaxe(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 4, -2.8F, props);
-		this.modeDesc = new String[]{"pe.pick.mode1", "pe.pick.mode2", "pe.pick.mode3", "pe.pick.mode4"};
+		this.modeDesc = new ILangEntry[]{PELang.MODE_PICK_STAR_1, PELang.MODE_PICK_STAR_2, PELang.MODE_PICK_STAR_3, PELang.MODE_PICK_STAR_4};
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -78,7 +80,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modeDesc;
 	}
 

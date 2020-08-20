@@ -10,6 +10,8 @@ import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,7 +25,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,10 +33,9 @@ import net.minecraftforge.common.util.NonNullLazy;
 
 public class DiviningRod extends ItemPE implements IItemMode {
 
-	// Modes should be in the format pe.diving_rod.mode.range.depth
-	private final String[] modes;
+	private final ILangEntry[] modes;
 
-	public DiviningRod(Properties props, String[] modeDesc) {
+	public DiviningRod(Properties props, ILangEntry... modeDesc) {
 		super(props);
 		modes = modeDesc;
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
@@ -91,7 +91,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		if (numBlocks == 0) {
 			return ActionResultType.FAIL;
 		}
-		player.sendMessage(new TranslationTextComponent("pe.divining.avgemc", numBlocks, totalEmc / numBlocks), Util.DUMMY_UUID);
+		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.DUMMY_UUID);
 		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3) {
 			long[] maxValues = new long[3];
 			for (int i = 0; i < 3; i++) {
@@ -102,26 +102,31 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			for (int i = 0; i < num; i++) {
 				maxValues[i] = emcValues.getLong(i);
 			}
-			player.sendMessage(new TranslationTextComponent("pe.divining.maxemc", maxValues[0]), Util.DUMMY_UUID);
+			player.sendMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]), Util.DUMMY_UUID);
 			if (this == ObjHandler.dRod3) {
-				player.sendMessage(new TranslationTextComponent("pe.divining.secondmax", maxValues[1]), Util.DUMMY_UUID);
-				player.sendMessage(new TranslationTextComponent("pe.divining.thirdmax", maxValues[2]), Util.DUMMY_UUID);
+				player.sendMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]), Util.DUMMY_UUID);
+				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.DUMMY_UUID);
 			}
 		}
 		return ActionResultType.SUCCESS;
 	}
 
-	/**
-	 * Gets the range from the translation keys string
-	 *
-	 * Format is "pe.diving_rod.mode.range.RANGE"
-	 */
 	private int getDepthFromMode(ItemStack stack) {
-		return Integer.parseInt(getModeTranslationKey(stack).substring(25));
+		byte mode = getMode(stack);
+		//TODO - 1.16: Re-evaluate how this is being done
+		if (mode < 0 || mode >= getModeLangEntries().length) {
+			//No range something went wrong
+			return 0;
+		} else if (mode == 0) {
+			return 3;
+		} else if (mode == 1) {
+			return 16;
+		}//mode == 2
+		return 64;
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modes;
 	}
 

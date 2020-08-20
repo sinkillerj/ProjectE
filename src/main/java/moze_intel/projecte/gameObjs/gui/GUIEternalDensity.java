@@ -5,13 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer> {
 
@@ -26,10 +25,11 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 	@Override
 	public void init() {
 		super.init();
-		addButton(new Button(guiLeft + 62, guiTop + 4, 52, 20, new StringTextComponent(container.inventory.isWhitelistMode() ? "Whitelist" : "Blacklist"), b -> {
-			container.inventory.changeMode();
-			b.setMessage(new TranslationTextComponent(container.inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist"));
-		}));
+		addButton(new Button(guiLeft + 62, guiTop + 4, 52, 20, container.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate(),
+				b -> {
+					container.inventory.changeMode();
+					b.setMessage(container.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());
+				}));
 	}
 
 	@Override

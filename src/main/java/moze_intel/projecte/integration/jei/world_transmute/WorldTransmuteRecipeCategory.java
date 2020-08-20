@@ -15,12 +15,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.client.resources.I18n;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -37,7 +36,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
 				.setTextureSize(32, 32).build();
 		icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
-		localizedName = I18n.format("pe.jei.worldtransmute");
+		localizedName = PELang.WORLD_TRANSMUTE.translate().getString();
 	}
 
 	@Nonnull
@@ -122,7 +121,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	@Override
 	public List<ITextComponent> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
-			return Collections.singletonList(new TranslationTextComponent("pe.jei.worldtransmute.description"));
+			return Collections.singletonList(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate());
 		}
 		return Collections.emptyList();
 	}

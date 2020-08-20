@@ -16,13 +16,14 @@ import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class KeyPressPKT {
@@ -78,7 +79,8 @@ public class KeyPressPKT {
 							}
 							if (hand == Hand.MAIN_HAND && (ProjectEConfig.server.misc.unsafeKeyBinds.get() || stack.isEmpty()) && GemArmorBase.hasAnyPiece(player)) {
 								internalAbilities.setGemState(!internalAbilities.getGemState());
-								player.sendMessage(new TranslationTextComponent(internalAbilities.getGemState() ? "pe.gem.activate" : "pe.gem.deactivate"), Util.DUMMY_UUID);
+								ILangEntry langEntry = internalAbilities.getGemState() ? PELang.GEM_ACTIVATE : PELang.GEM_DEACTIVATE;
+								player.sendMessage(langEntry.translate(), Util.DUMMY_UUID);
 								return;
 							}
 							break;

@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
+import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -16,9 +17,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge {
 
 	private final int numCharge;
-	private final String[] modes;
+	private final ILangEntry[] modes;
 
-	public ItemMode(Properties props, int numCharge, String[] modeDescrp) {
+	public ItemMode(Properties props, int numCharge, ILangEntry... modeDescrp) {
 		super(props);
 		this.numCharge = numCharge;
 		this.modes = modeDescrp;
@@ -27,7 +28,7 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modes;
 	}
 

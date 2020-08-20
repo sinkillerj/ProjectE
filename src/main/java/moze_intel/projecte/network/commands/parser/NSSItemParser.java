@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ItemParser;
 import net.minecraft.item.Item;
@@ -18,7 +19,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -27,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class NSSItemParser {
 
 	//This error message is a copy of ItemPredicateArgument.UNKNOWN_TAG
-	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType(tagId -> new TranslationTextComponent("arguments.item.tag.unknown", tagId));
+	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType(PELang.UNKNOWN_TAG::translate);
 	private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = SuggestionsBuilder::buildFuture;
 
 	private final StringReader reader;

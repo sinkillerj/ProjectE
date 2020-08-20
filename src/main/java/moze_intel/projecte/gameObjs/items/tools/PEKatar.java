@@ -13,6 +13,8 @@ import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -45,21 +47,21 @@ import net.minecraftforge.common.ToolType;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
-	private final String[] modeDesc;
+	private final ILangEntry[] modeDesc;
 
 	public PEKatar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 19, -2.4F, numCharges, props
 				.addToolType(ToolType.AXE, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_SHEARS, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_HOE, matterType.getHarvestLevel())
+				.addToolType(ToolType.HOE, matterType.getHarvestLevel())
 				.addToolType(ToolHelper.TOOL_TYPE_KATAR, matterType.getHarvestLevel()));
-		modeDesc = new String[]{"pe.katar.mode1", "pe.katar.mode2"};
+		modeDesc = new ILangEntry[]{PELang.MODE_KATAR_1, PELang.MODE_KATAR_2};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
 	@Override
-	public String[] getModeTranslationKeys() {
+	public ILangEntry[] getModeLangEntries() {
 		return modeDesc;
 	}
 

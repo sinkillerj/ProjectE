@@ -6,10 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class ResetEmcCMD {
 
@@ -24,10 +24,10 @@ public class ResetEmcCMD {
 	private static int resetEmc(CommandContext<CommandSource> ctx, NSSItemResult stack) {
 		String toReset = stack.getStringRepresentation();
 		if (CustomEMCParser.removeFromFile(toReset)) {
-			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reset.success", toReset), true);
-			ctx.getSource().sendFeedback(new TranslationTextComponent("pe.command.reload.notice"), true);
+			ctx.getSource().sendFeedback(PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
+			ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
 			return Command.SINGLE_SUCCESS;
 		}
-		throw new CommandException(new TranslationTextComponent("pe.command.remove.invaliditem", toReset));
+		throw new CommandException(PELang.COMMAND_REMOVE_INVALID_ITEM.translate(toReset));
 	}
 }

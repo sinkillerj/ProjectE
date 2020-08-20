@@ -14,6 +14,7 @@ import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,10 +28,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -119,18 +118,8 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
 		if (PECore.uuids.contains(evt.getPlayer().getUniqueID().toString())) {
-			IFormattableTextComponent prior = new TranslationTextComponent("pe.server.high_alchemist").mergeStyle(TextFormatting.BLUE);
-			//TODO - 1.16: Util method
-			IFormattableTextComponent name;
-			if (evt.getPlayer().getDisplayName() instanceof IFormattableTextComponent) {
-				name = (IFormattableTextComponent) evt.getPlayer().getDisplayName();
-			} else {
-				name = evt.getPlayer().getDisplayName().deepCopy();
-			}
-			ITextComponent playername = name.mergeStyle(TextFormatting.GOLD);
-			ITextComponent latter = new TranslationTextComponent("pe.server.has_joined").mergeStyle(TextFormatting.BLUE);
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().func_232641_a_(prior.appendString(" ").append(playername).appendString(" ").append(latter),
-					ChatType.SYSTEM, Util.DUMMY_UUID);
+			ITextComponent joinMessage = PELang.HIGH_ALCHEMIST.translateColored(TextFormatting.BLUE, TextFormatting.GOLD, evt.getPlayer().getDisplayName());
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().func_232641_a_(joinMessage, ChatType.SYSTEM, Util.DUMMY_UUID);
 		}
 	}
 
