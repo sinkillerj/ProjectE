@@ -594,7 +594,7 @@ public class ToolHelper {
 				if (e != null) {
 					e.setPosition(ent.getPosX(), ent.getPosY(), ent.getPosZ());
 					if (e instanceof MobEntity) {
-						((MobEntity) e).onInitialSpawn(world, world.getDifficultyForLocation(entityPosition), SpawnReason.EVENT, null, null);
+						((MobEntity) e).onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(entityPosition), SpawnReason.EVENT, null, null);
 					}
 					if (e instanceof SheepEntity) {
 						((SheepEntity) e).setFleeceColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));

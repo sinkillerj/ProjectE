@@ -187,7 +187,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				}
 				BlockPos offsetPos = pos.offset(facing);
 				BlockState offsetState = world.getBlockState(offsetPos);
-				if (!Block.hasSolidSide(offsetState, world, offsetPos, facing)) {
+				if (!offsetState.isSolidSide(world, offsetPos, facing)) {
 					boolean hit = false;
 					if (mode == EXTENSION_MODE) {
 						VoxelShape cbBox = startingState.getCollisionShape(world, offsetPos);

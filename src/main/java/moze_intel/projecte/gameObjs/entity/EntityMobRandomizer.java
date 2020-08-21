@@ -15,6 +15,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityMobRandomizer extends ThrowableEntity {
@@ -69,7 +70,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 		if (randomized != null && EMCHelper.consumePlayerFuel((PlayerEntity) thrower, 384) != -1) {
 			ent.remove();
 			randomized.setLocationAndAngles(ent.getPosX(), ent.getPosY(), ent.getPosZ(), ent.rotationYaw, ent.rotationPitch);
-			randomized.onInitialSpawn(world, world.getDifficultyForLocation(randomized.getPosition()), SpawnReason.CONVERSION, null, null);
+			randomized.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(randomized.getPosition()), SpawnReason.CONVERSION, null, null);
 			getEntityWorld().addEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}

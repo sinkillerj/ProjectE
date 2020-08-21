@@ -21,7 +21,7 @@ public final class FuelMapper {
 	public static void loadMap() {
 		FUEL_MAP.clear();
 		//TODO - 1.16: Try to move this back to being cached?
-		ITag<Item> collectorFuelTag = ItemTags.getCollection().getOrCreate(new ResourceLocation(PECore.MODID, "collector_fuel"));
+		ITag<Item> collectorFuelTag = ItemTags.getCollection().func_241834_b(new ResourceLocation(PECore.MODID, "collector_fuel"));
 		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}

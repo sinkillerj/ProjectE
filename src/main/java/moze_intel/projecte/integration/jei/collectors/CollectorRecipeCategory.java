@@ -98,7 +98,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.func_238414_a_(emc);
 		//TODO - 1.16: Test this renders correctly
-		fontRenderer.func_238422_b_(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
+		fontRenderer.func_243248_b(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(matrix, 55, 18);
 	}
 }
