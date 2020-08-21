@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -83,7 +83,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	protected abstract String getJsonPrefix();
 
 	@Nonnull
-	protected abstract TagCollection<TYPE> getTagCollection();
+	protected abstract ITagCollection<TYPE> getTagCollection();
 
 	protected abstract Function<TYPE, NormalizedSimpleStack> createNew();
 

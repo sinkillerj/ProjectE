@@ -69,9 +69,9 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
 		this.font.drawString(matrix, I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
-		this.font.func_238422_b_(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
+		this.font.func_243248_b(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);
-		this.font.func_238422_b_(matrix, emc, 6, this.ySize - 94, 0x404040);
+		this.font.func_243248_b(matrix, emc, 6, this.ySize - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
 			this.font.drawString(matrix, I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);

@@ -15,6 +15,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -78,15 +79,18 @@ public class NovaExplosion extends Explosion {
 					pos = pos.toImmutable();
 					if (world instanceof ServerWorld && state.canDropFromExplosion(world, pos, this)) {
 						TileEntity tileentity = state.hasTileEntity() ? world.getTileEntity(pos) : null;
-						LootContext.Builder builder = new LootContext.Builder((ServerWorld) world).withRandom(world.rand).withParameter(LootParameters.POSITION, pos)
-								.withParameter(LootParameters.TOOL, ItemStack.EMPTY).withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity);
+						LootContext.Builder builder = new LootContext.Builder((ServerWorld) world)
+								.withRandom(world.rand)
+								.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+								.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+								.withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity);
 						if (mode == Explosion.Mode.DESTROY) {
 							builder.withParameter(LootParameters.EXPLOSION_RADIUS, size);
 						}
 
 						// PE: Collect the drops we can, spawn the stuff we can't
 						allDrops.addAll(state.getDrops(builder));
-						state.spawnAdditionalDrops(world, pos, ItemStack.EMPTY);
+						state.spawnAdditionalDrops((ServerWorld) world, pos, ItemStack.EMPTY);
 					}
 					world.setBlockState(pos, Blocks.AIR.getDefaultState());
 					block.onExplosionDestroy(world, pos, this);

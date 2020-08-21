@@ -42,7 +42,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(toDisplay);
-		this.font.func_238422_b_(matrix, emc, 140, 10, 0x404040);
+		this.font.func_243248_b(matrix, emc, 140, 10, 0x404040);
 	}
 
 	@Override

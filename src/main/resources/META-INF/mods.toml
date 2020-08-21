@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[${loader_version},)"
 issueTrackerURL="https://github.com/sinkillerj/ProjectE/issues"
+license="MIT"
 
 [[mods]]
   modId="projecte"

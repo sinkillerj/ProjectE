@@ -22,6 +22,7 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.LangEntryWrapper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -55,11 +56,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	//TODO - 1.16: Lang
 	private static final ILangEntry[] modes = new ILangEntry[]{
-			"item.minecraft.iron_ingot",
-			"item.minecraft.gold_ingot",
-			"item.minecraft.diamond",
-			"item.projecte.dark_matter",
-			"item.projecte.red_matter"
+			new LangEntryWrapper("item.minecraft.iron_ingot"),
+			new LangEntryWrapper("item.minecraft.gold_ingot"),
+			new LangEntryWrapper("item.minecraft.diamond"),
+			new LangEntryWrapper("item.projecte.dark_matter"),
+			new LangEntryWrapper("item.projecte.red_matter")
 	};
 
 	public GemEternalDensity(Properties props) {
