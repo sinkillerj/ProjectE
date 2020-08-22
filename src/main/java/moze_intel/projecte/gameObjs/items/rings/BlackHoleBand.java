@@ -129,8 +129,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Nonnull
 	@Override
 	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BLAND_1.translateColored(TextFormatting.BLUE),
-				PELang.PEDESTAL_BLACK_HOLE_BLAND_2.translateColored(TextFormatting.BLUE));
+		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BAND_1.translateColored(TextFormatting.BLUE),
+				PELang.PEDESTAL_BLACK_HOLE_BAND_2.translateColored(TextFormatting.BLUE));
 	}
 
 	@Override

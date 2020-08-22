@@ -92,7 +92,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			return ActionResultType.FAIL;
 		}
 		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.DUMMY_UUID);
-		if (this == PEItems.DIVINING_ROD2.get() || this == PEItems.DIVINING_ROD3.get()) {
+		if (this == PEItems.MEDIUM_DIVINING_ROD.get() || this == PEItems.HIGH_DIVINING_ROD.get()) {
 			long[] maxValues = new long[3];
 			for (int i = 0; i < 3; i++) {
 				maxValues[i] = 1;
@@ -103,7 +103,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				maxValues[i] = emcValues.getLong(i);
 			}
 			player.sendMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]), Util.DUMMY_UUID);
-			if (this == PEItems.DIVINING_ROD3.get()) {
+			if (this == PEItems.HIGH_DIVINING_ROD.get()) {
 				player.sendMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]), Util.DUMMY_UUID);
 				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.DUMMY_UUID);
 			}

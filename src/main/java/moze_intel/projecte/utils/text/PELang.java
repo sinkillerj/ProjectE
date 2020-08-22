@@ -1,12 +1,22 @@
 package moze_intel.projecte.utils.text;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 
 public enum PELang implements ILangEntry {
 	//Vanilla
+	INVENTORY("container.inventory"),
 	UNKNOWN_TAG("arguments.item.tag.unknown"),
+	//Misc
+	PROJECTE("misc", "mod_name"),
+	SECONDS("misc", "seconds"),
+	EVERY_TICK("misc", "seconds.every_tick"),
+	HIGH_ALCHEMIST("misc", "high_alchemist_joined"),
+	UPDATE_AVAILABLE("misc", "update.available"),
+	UPDATE_GET_IT("misc", "update.get_it"),
+	BLACKLIST("misc", "blacklist"),
+	WHITELIST("misc", "whitelist"),
+	DENSITY_MODE_TARGET("misc", "mode_switch"),
 	//Command
 	CLEAR_KNOWLEDGE_NOTIFY("command", "clear_knowledge.notify"),
 	CLEAR_KNOWLEDGE_SUCCESS("command", "clear_knowledge.success"),
@@ -43,6 +53,8 @@ public enum PELang implements ILangEntry {
 	JEI_COLLECTOR("jei", "collector"),
 	WORLD_TRANSMUTE("jei", "world_transmute"),
 	WORLD_TRANSMUTE_DESCRIPTION("jei", "world_transmute.description"),
+	//Curios
+	CURIOS_KLEIN_STAR("curios.identifier.klein_star"),
 	//Gem armor
 	GEM_ENABLED("gem", "enabled"),
 	GEM_DISABLED("gem", "disabled"),
@@ -56,6 +68,13 @@ public enum PELang implements ILangEntry {
 	GEM_LORE_LEGS("gem", "lore.legs"),
 	GEM_LORE_CHEST("gem", "lore.chest"),
 	GEM_LORE_HELM("gem", "lore.helm"),
+	//GUI
+	//TODO - 1.16: Re-evaluate how these constants are used and maybe get rid of them
+	GUI_DARK_MATTER_FURNACE("gui", "dark_matter_furnace.shortname"),
+	GUI_RED_MATTER_FURNACE("gui", "red_matter_furnace.shortname"),
+	GUI_RELAY_MK1("gui", "relay.mk1"),
+	GUI_RELAY_MK2("gui", "relay.mk2"),
+	GUI_RELAY_MK3("gui", "relay.mk3"),
 	//Mode
 	CURRENT_MODE("mode", "current"),
 	INVALID_MODE("mode", "invalid"),
@@ -79,28 +98,28 @@ public enum PELang implements ILangEntry {
 	MODE_PHILOSOPHER_1("mode", "philosopher.1"),
 	MODE_PHILOSOPHER_2("mode", "philosopher.2"),
 	MODE_PHILOSOPHER_3("mode", "philosopher.3"),
-	MODE_PICK_STAR_1("mode", "pick.1"),
-	MODE_PICK_STAR_2("mode", "pick.2"),
-	MODE_PICK_STAR_3("mode", "pick.3"),
-	MODE_PICK_STAR_4("mode", "pick.4"),
+	MODE_PICK_1("mode", "pick.1"),
+	MODE_PICK_2("mode", "pick.2"),
+	MODE_PICK_3("mode", "pick.3"),
+	MODE_PICK_4("mode", "pick.4"),
 	MODE_RED_SWORD_1("mode", "red_sword.1"),
 	MODE_RED_SWORD_2("mode", "red_sword.2"),
 	//Pedestal
 	PEDESTAL_DISABLED("pedestal", "item_disabled"),
 	PEDESTAL_ON("pedestal", "on_pedestal"),
 	PEDESTAL_TOOLTIP1("pedestal", "tooltip.1"),
-	PEDESTAL_TOOLTIP2("pedestal", "tooltip.1"),
+	PEDESTAL_TOOLTIP2("pedestal", "tooltip.2"),
 	PEDESTAL_ARCHANGEL_1("pedestal", "archangel.1"),
 	PEDESTAL_ARCHANGEL_2("pedestal", "archangel.2"),
-	PEDESTAL_BLACK_HOLE_BLAND_1("pedestal", "black_hole_band.1"),
-	PEDESTAL_BLACK_HOLE_BLAND_2("pedestal", "black_hole_band.2"),
+	PEDESTAL_BLACK_HOLE_BAND_1("pedestal", "black_hole_band.1"),
+	PEDESTAL_BLACK_HOLE_BAND_2("pedestal", "black_hole_band.2"),
 	PEDESTAL_BODY_STONE_1("pedestal", "body_stone.1"),
 	PEDESTAL_BODY_STONE_2("pedestal", "body_stone.2"),
 	PEDESTAL_EVERTIDE_1("pedestal", "evertide.1"),
 	PEDESTAL_EVERTIDE_2("pedestal", "evertide.2"),
 	PEDESTAL_HARVEST_GODDESS_1("pedestal", "harvest_goddess.1"),
 	PEDESTAL_HARVEST_GODDESS_2("pedestal", "harvest_goddess.2"),
-	PEDESTAL_HARVEST_GODDESS_3("pedestal", "harvest_goddess.2"),
+	PEDESTAL_HARVEST_GODDESS_3("pedestal", "harvest_goddess.3"),
 	PEDESTAL_IGNITION_1("pedestal", "ignition.1"),
 	PEDESTAL_IGNITION_2("pedestal", "ignition.2"),
 	PEDESTAL_LIFE_STONE_1("pedestal", "life_stone.1"),
@@ -146,21 +165,31 @@ public enum PELang implements ILangEntry {
 	TOOLTIP_VOLCANITE_2("tooltip", "volcanite.2"),
 	TOOLTIP_VOLCANITE_3("tooltip", "volcanite.3"),
 	TOOLTIP_VOLCANITE_4("tooltip", "volcanite.4"),
-	//Misc
-	PROJECTE("misc", "mod_name"),
-	SECONDS("misc", "seconds"),
-	EVERY_TICK("misc", "seconds.every_tick"),
-	HIGH_ALCHEMIST("misc", "high_alchemist_joined"),
-	UPDATE_AVAILABLE("misc", "update.available"),
-	UPDATE_GET_IT("misc", "update.get_it"),
-	BLACKLIST("misc", "blacklist"),
-	WHITELIST("misc", "whitelist"),
+	//Transmutation GUI
+	TRANSMUTATION_TRANSMUTE("transmutation", "transmute"),
+	TRANSMUTATION_LEARNED_1("transmutation", "learned.1"),
+	TRANSMUTATION_LEARNED_2("transmutation", "learned.2"),
+	TRANSMUTATION_LEARNED_3("transmutation", "learned.3"),
+	TRANSMUTATION_LEARNED_4("transmutation", "learned.4"),
+	TRANSMUTATION_LEARNED_5("transmutation", "learned.5"),
+	TRANSMUTATION_LEARNED_6("transmutation", "learned.6"),
+	TRANSMUTATION_LEARNED_7("transmutation", "learned.7"),
+	TRANSMUTATION_LEARNED_8("transmutation", "learned.8"),
+	TRANSMUTATION_UNLEARNED_1("transmutation", "unlearned.1"),
+	TRANSMUTATION_UNLEARNED_2("transmutation", "unlearned.2"),
+	TRANSMUTATION_UNLEARNED_3("transmutation", "unlearned.3"),
+	TRANSMUTATION_UNLEARNED_4("transmutation", "unlearned.4"),
+	TRANSMUTATION_UNLEARNED_5("transmutation", "unlearned.5"),
+	TRANSMUTATION_UNLEARNED_6("transmutation", "unlearned.6"),
+	TRANSMUTATION_UNLEARNED_7("transmutation", "unlearned.7"),
+	TRANSMUTATION_UNLEARNED_8("transmutation", "unlearned.8"),
+	TRANSMUTATION_UNLEARNED_9("transmutation", "unlearned.9"),
 	;
 
 	private final String key;
 
 	PELang(String type, String path) {
-		this(Util.makeTranslationKey(type, new ResourceLocation(PECore.MODID, path)));
+		this(Util.makeTranslationKey(type, PECore.rl(path)));
 	}
 
 	PELang(String key) {

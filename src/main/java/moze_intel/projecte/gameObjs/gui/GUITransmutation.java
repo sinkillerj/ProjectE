@@ -14,7 +14,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -67,35 +66,35 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
-		this.font.drawString(matrix, I18n.format("pe.transmutation.transmute"), 6, 8, 0x404040);
+		this.font.func_243248_b(matrix, PELang.TRANSMUTATION_TRANSMUTE.translate(), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
 		this.font.func_243248_b(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);
 		this.font.func_243248_b(matrix, emc, 6, this.ySize - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned0"), 98, 30, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned1"), 99, 38, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned2"), 100, 46, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned3"), 101, 54, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned4"), 102, 62, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned5"), 103, 70, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned6"), 104, 78, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.learned7"), 107, 86, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_1.translate(), 98, 30, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_2.translate(), 99, 38, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_3.translate(), 100, 46, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_4.translate(), 101, 54, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_5.translate(), 102, 62, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_6.translate(), 103, 70, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_7.translate(), 104, 78, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_LEARNED_8.translate(), 107, 86, 0x404040);
 
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0) {
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned0"), 97, 22, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned1"), 98, 30, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned2"), 99, 38, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned3"), 100, 46, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned4"), 101, 54, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned5"), 102, 62, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned6"), 103, 70, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned7"), 104, 78, 0x404040);
-			this.font.drawString(matrix, I18n.format("pe.transmutation.unlearned8"), 107, 86, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_1.translate(), 97, 22, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_2.translate(), 98, 30, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_3.translate(), 99, 38, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_4.translate(), 100, 46, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_5.translate(), 101, 54, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_6.translate(), 102, 62, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_7.translate(), 103, 70, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_8.translate(), 104, 78, 0x404040);
+			this.font.func_243248_b(matrix, PELang.TRANSMUTATION_UNLEARNED_9.translate(), 107, 86, 0x404040);
 
 			inv.unlearnFlag--;
 		}

@@ -96,11 +96,9 @@ public final class PacketHandler {
 	}
 
 	public static void sendFragmentedEmcPacketToAll() {
-		if (ServerLifecycleHooks.getCurrentServer() != null) {
-			SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
-			for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-				sendNonLocal(pkt, player);
-			}
+		SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
+		for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+			sendNonLocal(pkt, player);
 		}
 	}
 

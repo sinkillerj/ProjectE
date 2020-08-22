@@ -41,7 +41,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	public PEPickaxe(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 4, -2.8F, props);
-		this.modeDesc = new ILangEntry[]{PELang.MODE_PICK_STAR_1, PELang.MODE_PICK_STAR_2, PELang.MODE_PICK_STAR_3, PELang.MODE_PICK_STAR_4};
+		this.modeDesc = new ILangEntry[]{PELang.MODE_PICK_1, PELang.MODE_PICK_2, PELang.MODE_PICK_3, PELang.MODE_PICK_4};
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}

@@ -1,16 +1,17 @@
 package moze_intel.projecte.utils.text;
 
+import net.minecraft.util.IItemProvider;
+
 public class LangEntryWrapper implements ILangEntry {
 
-	private final String translationKey;
+	private final IItemProvider itemProvider;
 
-	//TODO: Replace this with something that can go based on the items directly
-	public LangEntryWrapper(String translationKey) {
-		this.translationKey = translationKey;
+	public LangEntryWrapper(IItemProvider itemProvider) {
+		this.itemProvider = itemProvider;
 	}
 
 	@Override
 	public String getTranslationKey() {
-		return translationKey;
+		return itemProvider.asItem().getTranslationKey();
 	}
 }

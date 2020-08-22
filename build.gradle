@@ -40,7 +40,7 @@ sourceSets {
     main {
         resources {
             //Add the generated main module resources
-            srcDirs += 'src/datagen/generated/projecte'
+            srcDirs += 'src/datagen/generated'
             //But exclude the cache of the generated data from what gets built
             exclude '.cache'
         }

@@ -4,7 +4,7 @@
       "item": "projecte:philosophers_stone"
     },
     "title": {
-      "translate": "itemGroup.projecte"
+      "translate": "misc.projecte.mod_name"
     },
     "description": {
       "translate": "projecte.desc"
