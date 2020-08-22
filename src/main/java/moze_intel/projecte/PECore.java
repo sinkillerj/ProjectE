@@ -183,13 +183,13 @@ public class PECore {
 
 	private void addReloadListeners(AddReloadListenerEvent event) {
 		//Register the philo stone smelting helper at the regular event timing
-		event.addListener(new PhilStoneSmeltingHelper());
+		event.addListener(new PhilStoneSmeltingHelper(event.getDataPackRegistries()));
 	}
 
 	private void addReloadListenersLowest(AddReloadListenerEvent event) {
 		//Note: We register our listener for this event on lowest priority so that if other mods register custom NSSTags
 		// or other things that need to be sync'd/reloaded they have a chance to go before we do
-		event.addListener(new EMCReloadListener());
+		event.addListener(new EMCReloadListener(event.getDataPackRegistries()));
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {

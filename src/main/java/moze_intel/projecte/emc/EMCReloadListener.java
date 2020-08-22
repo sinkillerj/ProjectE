@@ -5,30 +5,33 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.PacketHandler;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 //Note: Has to be IResourceManagerReloadListener, so that it works properly on servers
 public class EMCReloadListener implements IResourceManagerReloadListener {
 
+	private final DataPackRegistries dataPackRegistries;
+
+	public EMCReloadListener(DataPackRegistries dataPackRegistries) {
+		this.dataPackRegistries = dataPackRegistries;
+	}
+
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
-		//First run of the reload listener is before there is a server
-		if (ServerLifecycleHooks.getCurrentServer() != null) {
-			long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 
-			//Clear the cached created tags
-			AbstractNSSTag.clearCreatedTags();
-			CustomEMCParser.init();
+		//Clear the cached created tags
+		AbstractNSSTag.clearCreatedTags();
+		CustomEMCParser.init();
 
-			try {
-				EMCMappingHandler.map(resourceManager);
-				PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-				PacketHandler.sendFragmentedEmcPacketToAll();
-			} catch (Throwable t) {
-				PECore.LOGGER.error("Error calculating EMC values", t);
-			}
+		try {
+			EMCMappingHandler.map(dataPackRegistries, resourceManager);
+			PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+			PacketHandler.sendFragmentedEmcPacketToAll();
+		} catch (Throwable t) {
+			PECore.LOGGER.error("Error calculating EMC values", t);
 		}
 	}
 }

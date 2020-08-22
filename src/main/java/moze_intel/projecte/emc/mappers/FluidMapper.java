@@ -20,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
@@ -90,7 +91,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		NSSFluid fluidTag = NSSFluid.createTag(FluidTags.WATER);
 		mapper.setValueBefore(fluidTag, Constants.FREE_ARITHMETIC_VALUE);
 		//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
