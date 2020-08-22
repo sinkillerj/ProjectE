@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -84,7 +84,7 @@ public class RecipeShapelessHidden implements ICraftingRecipe {
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ObjHandler.SHAPELESS_HIDDEN_SERIALIZER;
+		return PERecipeSerializers.SHAPELESS_HIDDEN.get();
 	}
 
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeShapelessHidden> {

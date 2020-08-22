@@ -2,16 +2,17 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -26,14 +27,14 @@ public class DMFurnaceContainer extends Container {
 	private int lastBurnTime;
 	private int lastItemBurnTime;
 
-	public DMFurnaceContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, DMFurnaceTile tile) {
-		super(type, windowId);
+	public DMFurnaceContainer(ContainerTypeRegistryObject<?> type, int windowId, PlayerInventory invPlayer, DMFurnaceTile tile) {
+		super(type.get(), windowId);
 		this.tile = tile;
 		initSlots(invPlayer);
 	}
 
 	public DMFurnaceContainer(int windowId, PlayerInventory invPlayer, DMFurnaceTile tile) {
-		this(ObjHandler.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
+		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
 	public static DMFurnaceContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buffer) {
@@ -113,7 +114,7 @@ public class DMFurnaceContainer extends Container {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.dmFurnace
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.DARK_MATTER_FURNACE.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 

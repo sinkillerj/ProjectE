@@ -2,17 +2,18 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -33,11 +34,11 @@ public class CollectorMK1Container extends PEContainer {
 	}
 
 	public CollectorMK1Container(int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector) {
-		this(ObjHandler.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
+		this(PEContainerTypes.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
 	}
 
-	protected CollectorMK1Container(ContainerType<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector) {
-		super(type, windowId);
+	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector) {
+		super(type.get(), windowId);
 		this.longFields.add(emc);
 		this.intFields.add(sunLevel);
 		this.intFields.add(kleinChargeProgress);
@@ -128,7 +129,7 @@ public class CollectorMK1Container extends PEContainer {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK1
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.COLLECTOR.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 

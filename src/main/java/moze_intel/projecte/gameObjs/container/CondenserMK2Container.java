@@ -1,10 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
@@ -19,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 public class CondenserMK2Container extends CondenserContainer {
 
 	public CondenserMK2Container(int windowId, PlayerInventory invPlayer, CondenserMK2Tile condenser) {
-		super(ObjHandler.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
+		super(PEContainerTypes.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
 	}
 
 	public static CondenserMK2Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
@@ -85,7 +86,7 @@ public class CondenserMK2Container extends CondenserContainer {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.condenserMk2
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.CONDENSER_MK2.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

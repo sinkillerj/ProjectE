@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.entity;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class EntityHomingArrow extends ArrowEntity {
 	@Nonnull
 	@Override
 	public EntityType<?> getType() {
-		return ObjHandler.HOMING_ARROW;
+		return PEEntityTypes.HOMING_ARROW.get();
 	}
 
 	@Override

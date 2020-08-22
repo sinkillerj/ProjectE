@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -134,7 +134,7 @@ public final class InternalAbilities {
 	}
 
 	private boolean hasSwrg() {
-		return checkHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() == ObjHandler.swrg);
+		return checkHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() == PEItems.SWIFTWOLF_RENDING_GALE.get());
 	}
 
 	private boolean checkArmorHotbarCurios(Predicate<ItemStack> checker) {

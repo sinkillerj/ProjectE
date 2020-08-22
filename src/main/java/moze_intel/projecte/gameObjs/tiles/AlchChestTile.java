@@ -2,8 +2,9 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,7 +27,7 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
 	public AlchChestTile() {
-		super(ObjHandler.ALCH_CHEST_TILE);
+		super(PETileEntityTypes.ALCHEMICAL_CHEST.get());
 	}
 
 	@Override
@@ -78,6 +79,6 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ObjHandler.alchChest.getTranslationKey());
+		return new TranslationTextComponent(PEBlocks.ALCHEMICAL_CHEST.getBlock().getTranslationKey());
 	}
 }

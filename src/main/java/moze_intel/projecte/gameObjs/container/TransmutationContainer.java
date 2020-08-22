@@ -2,13 +2,14 @@ package moze_intel.projecte.gameObjs.container;
 
 import java.math.BigInteger;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotInput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotLock;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotOutput;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotUnlearn;
+import moze_intel.projecte.gameObjs.items.Tome;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.ContainerHelper;
@@ -37,7 +38,7 @@ public class TransmutationContainer extends Container {
 	}
 
 	public TransmutationContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
-		super(ObjHandler.TRANSMUTATION_CONTAINER, windowId);
+		super(PEContainerTypes.TRANSMUTATION_CONTAINER.get(), windowId);
 		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
 
 		// Transmutation Inventory
@@ -127,7 +128,7 @@ public class TransmutationContainer extends Container {
 			}
 		} else if (slotIndex > 26) {
 			long emc = EMCHelper.getEmcSellValue(stack);
-			if (emc == 0 && stack.getItem() != ObjHandler.tome) {
+			if (emc == 0 && !(stack.getItem() instanceof Tome)) {
 				return ItemStack.EMPTY;
 			}
 			BigInteger emcBigInt = BigInteger.valueOf(emc);

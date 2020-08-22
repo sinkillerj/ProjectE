@@ -10,7 +10,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -30,7 +30,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
 				.setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.collectorMK1));
+		icon = guiHelper.createDrawableIngredient(new ItemStack(PEBlocks.COLLECTOR));
 		localizedName = PELang.JEI_COLLECTOR.translate().getString();
 	}
 

@@ -3,10 +3,11 @@ package moze_intel.projecte.gameObjs.tiles;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
@@ -85,7 +86,7 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	private boolean isCompacting;
 
 	public DMFurnaceTile() {
-		this(ObjHandler.DM_FURNACE_TILE, 10, 3);
+		this(PETileEntityTypes.DARK_MATTER_FURNACE.get(), 10, 3);
 	}
 
 	protected DMFurnaceTile(TileEntityType<?> type, int ticksBeforeSmelt, int efficiencyBonus) {
@@ -125,7 +126,7 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ObjHandler.dmFurnace.getTranslationKey());
+		return new TranslationTextComponent(PEBlocks.DARK_MATTER_FURNACE.getBlock().getTranslationKey());
 	}
 
 	@Override

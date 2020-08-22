@@ -1,8 +1,9 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
@@ -33,7 +34,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	}
 
 	public EntityLavaProjectile(PlayerEntity entity, World world) {
-		super(ObjHandler.LAVA_PROJECTILE, entity, world);
+		super(PEEntityTypes.LAVA_PROJECTILE.get(), entity, world);
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) thrower;
-		ItemStack found = PlayerHelper.findFirstItem(player, ObjHandler.volcanite);
+		ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
 		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 			if (mop instanceof BlockRayTraceResult) {
 				BlockRayTraceResult result = (BlockRayTraceResult) mop;

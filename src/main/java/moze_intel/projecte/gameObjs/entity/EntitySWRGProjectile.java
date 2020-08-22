@@ -1,8 +1,9 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -33,7 +34,7 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	}
 
 	public EntitySWRGProjectile(PlayerEntity player, boolean fromArcana, World world) {
-		super(ObjHandler.SWRG_PROJECTILE, player, world);
+		super(PEEntityTypes.SWRG_PROJECTILE.get(), player, world);
 		this.fromArcana = fromArcana;
 	}
 
@@ -76,7 +77,7 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) thrower;
-		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? ObjHandler.arcana : ObjHandler.swrg);
+		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
 		if (mop instanceof BlockRayTraceResult) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
 				BlockPos pos = ((BlockRayTraceResult) mop).getPos();

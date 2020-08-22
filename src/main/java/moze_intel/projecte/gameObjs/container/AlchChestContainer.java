@@ -1,7 +1,8 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
@@ -20,7 +21,7 @@ public class AlchChestContainer extends Container {
 	private final AlchChestTile tile;
 
 	public AlchChestContainer(int windowId, PlayerInventory invPlayer, AlchChestTile tile) {
-		super(ObjHandler.ALCH_CHEST_CONTAINER, windowId);
+		super(PEContainerTypes.ALCH_CHEST_CONTAINER.get(), windowId);
 		this.tile = tile;
 		tile.numPlayersUsing++;
 
@@ -42,7 +43,7 @@ public class AlchChestContainer extends Container {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.alchChest
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.ALCHEMICAL_CHEST.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 

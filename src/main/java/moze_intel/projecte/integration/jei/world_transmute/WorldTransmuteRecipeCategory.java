@@ -13,7 +13,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.fluid.Fluid;
@@ -35,7 +35,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
 				.setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ObjHandler.philosStone));
+		icon = guiHelper.createDrawableIngredient(new ItemStack(PEItems.PHILOSOPHERS_STONE));
 		localizedName = PELang.WORLD_TRANSMUTE.translate().getString();
 	}
 

@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
@@ -11,8 +11,8 @@ import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
@@ -134,7 +134,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return new TranslationTextComponent(ObjHandler.transmuteStone.getTranslationKey());
+			return new TranslationTextComponent(PEBlocks.TRANSMUTATION_TABLE.getBlock().getTranslationKey());
 		}
 	}
 }

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.WorldHelper;
@@ -37,9 +37,9 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 	protected void interactWith(World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
 		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te != null && te.getType() == ObjHandler.DM_FURNACE_TILE) {
+			if (te != null && te.getType() == PETileEntityTypes.DARK_MATTER_FURNACE.get()) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (DMFurnaceTile) te, pos);
-			} else if (te != null && te.getType() == ObjHandler.RM_FURNACE_TILE) {
+			} else if (te != null && te.getType() == PETileEntityTypes.RED_MATTER_FURNACE.get()) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (RMFurnaceTile) te, pos);
 			}
 		}

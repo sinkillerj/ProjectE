@@ -1,9 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
@@ -21,7 +22,7 @@ public class RelayMK3Container extends RelayMK1Container {
 	}
 
 	public RelayMK3Container(int windowId, PlayerInventory invPlayer, RelayMK3Tile relay) {
-		super(ObjHandler.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
+		super(PEContainerTypes.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class RelayMK3Container extends RelayMK1Container {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relayMK3
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RELAY_MK3.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

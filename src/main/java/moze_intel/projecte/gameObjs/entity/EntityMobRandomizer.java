@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.Entity;
@@ -25,7 +25,7 @@ public class EntityMobRandomizer extends ThrowableEntity {
 	}
 
 	public EntityMobRandomizer(PlayerEntity entity, World world) {
-		super(ObjHandler.MOB_RANDOMIZER, entity, world);
+		super(PEEntityTypes.MOB_RANDOMIZER.get(), entity, world);
 	}
 
 	@Override

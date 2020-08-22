@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -58,7 +58,7 @@ public abstract class BlockDirection extends Block {
 	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
 		if (!world.isRemote) {
 			ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-			if (!stack.isEmpty() && stack.getItem() == ObjHandler.philosStone) {
+			if (!stack.isEmpty() && stack.getItem() instanceof PhilosophersStone) {
 				world.setBlockState(pos, world.getBlockState(pos).with(FACING, player.getHorizontalFacing().getOpposite()));
 			}
 		}

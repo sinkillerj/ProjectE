@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets;
 
 import java.util.function.Supplier;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -32,7 +32,8 @@ public class UpdateGemModePKT {
 				if (stack.isEmpty()) {
 					stack = ctx.get().getSender().getHeldItem(Hand.OFF_HAND);
 				}
-				if (!stack.isEmpty() && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing)) {
+				if (!stack.isEmpty() && stack.getItem() instanceof GemEternalDensity) {
+					//Note: Void Ring extends gem of eternal density so we only need to check if it is an instance of the base class
 					stack.getTag().putBoolean(Constants.NBT_KEY_GEM_WHITELIST, pkt.mode);
 				}
 			});

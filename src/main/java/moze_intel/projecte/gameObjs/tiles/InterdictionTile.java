@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -9,7 +9,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class InterdictionTile extends TileEntity implements ITickableTileEntity {
 
 	public InterdictionTile() {
-		super(ObjHandler.INTERDICTION_TORCH_TILE);
+		super(PETileEntityTypes.INTERDICTION_TORCH.get());
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener {
 				ResourceLocation recipeName = new ResourceLocation(PECore.MODID, "philstone_smelt_" + inputName);
 
 				NonNullList<Ingredient> ingrs = NonNullList.from(Ingredient.EMPTY,
-						Ingredient.fromItems(ObjHandler.philosStone),
+						Ingredient.fromItems(PEItems.PHILOSOPHERS_STONE),
 						input, input, input, input, input, input, input,
 						Ingredient.fromTag(ItemTags.COALS));
 				craftingRecipes.put(recipeName, new RecipeShapelessHidden(recipeName, "projecte:philstone_smelt", output, ingrs));

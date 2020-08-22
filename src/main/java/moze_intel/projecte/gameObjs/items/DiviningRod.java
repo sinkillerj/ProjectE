@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -92,7 +92,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			return ActionResultType.FAIL;
 		}
 		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.DUMMY_UUID);
-		if (this == ObjHandler.dRod2 || this == ObjHandler.dRod3) {
+		if (this == PEItems.DIVINING_ROD2.get() || this == PEItems.DIVINING_ROD3.get()) {
 			long[] maxValues = new long[3];
 			for (int i = 0; i < 3; i++) {
 				maxValues[i] = 1;
@@ -103,7 +103,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				maxValues[i] = emcValues.getLong(i);
 			}
 			player.sendMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]), Util.DUMMY_UUID);
-			if (this == ObjHandler.dRod3) {
+			if (this == PEItems.DIVINING_ROD3.get()) {
 				player.sendMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]), Util.DUMMY_UUID);
 				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.DUMMY_UUID);
 			}

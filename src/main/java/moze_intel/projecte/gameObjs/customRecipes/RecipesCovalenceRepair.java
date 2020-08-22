@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -41,7 +42,7 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 					// Duplicate item
 					return new Tuple<>(ItemStack.EMPTY, Collections.emptyList());
 				}
-			} else if (input.getItem() == ObjHandler.covalenceDustLow || input.getItem() == ObjHandler.covalenceDustMedium || input.getItem() == ObjHandler.covalenceDustHigh) {
+			} else if (input.getItem() == PEItems.LOW_COVALENCE_DUST.get() || input.getItem() == PEItems.MEDIUM_COVALENCE_DUST.get() || input.getItem() == PEItems.HIGH_COVALENCE_DUST.get()) {
 				dust.add(input);
 			} else {
 				// Non-dust non-tool
@@ -104,6 +105,6 @@ public class RecipesCovalenceRepair implements ICraftingRecipe {
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ObjHandler.COVALENCE_REPAIR_RECIPE_SERIALIZER;
+		return PERecipeSerializers.COVALENCE_REPAIR.get();
 	}
 }

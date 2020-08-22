@@ -147,6 +147,7 @@ public enum PELang implements ILangEntry {
 	TOOLTIP_VOLCANITE_3("tooltip", "volcanite.3"),
 	TOOLTIP_VOLCANITE_4("tooltip", "volcanite.4"),
 	//Misc
+	PROJECTE("misc", "mod_name"),
 	SECONDS("misc", "seconds"),
 	EVERY_TICK("misc", "seconds.every_tick"),
 	HIGH_ALCHEMIST("misc", "high_alchemist_joined"),
