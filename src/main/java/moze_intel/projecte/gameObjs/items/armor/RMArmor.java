@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.PECore;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,11 +13,6 @@ public class RMArmor extends PEArmor {
 
 	public RMArmor(EquipmentSlotType armorType, Properties props) {
 		super(RMArmorMaterial.INSTANCE, armorType, props);
-	}
-
-	@Override
-	protected String getNameForLocation() {
-		return "redmatter";
 	}
 
 	@Override
@@ -88,7 +84,7 @@ public class RMArmor extends PEArmor {
 		@Override
 		public String getName() {
 			//Only used on the client
-			return "red_matter";
+			return PECore.rl("red_matter").toString();
 		}
 
 		@Override

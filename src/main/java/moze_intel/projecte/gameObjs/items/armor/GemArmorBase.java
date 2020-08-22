@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.PECore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
@@ -13,11 +14,6 @@ public abstract class GemArmorBase extends PEArmor {
 
 	public GemArmorBase(EquipmentSlotType armorType, Properties props) {
 		super(GemArmorMaterial.INSTANCE, armorType, props);
-	}
-
-	@Override
-	protected String getNameForLocation() {
-		return "gem";
 	}
 
 	@Override
@@ -97,7 +93,7 @@ public abstract class GemArmorBase extends PEArmor {
 		@Override
 		public String getName() {
 			//Only used on the client
-			return "gem_armor";
+			return PECore.rl("gem_armor").toString();
 		}
 
 		@Override

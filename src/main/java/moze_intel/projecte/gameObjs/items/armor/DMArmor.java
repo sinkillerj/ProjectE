@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.PECore;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,11 +13,6 @@ public class DMArmor extends PEArmor {
 
 	public DMArmor(EquipmentSlotType armorPiece, Properties props) {
 		super(DMArmorMaterial.INSTANCE, armorPiece, props);
-	}
-
-	@Override
-	protected String getNameForLocation() {
-		return "darkmatter";
 	}
 
 	@Override
@@ -87,9 +83,8 @@ public class DMArmor extends PEArmor {
 		@Nonnull
 		@Override
 		public String getName() {
-			//TODO - 1.16: Make this and other armors prefix this with projecte and remove override needed for armor texture location
 			//Only used on the client
-			return "dark_matter";
+			return PECore.rl("dark_matter").toString();
 		}
 
 		@Override

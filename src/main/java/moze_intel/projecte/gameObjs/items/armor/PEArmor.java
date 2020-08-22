@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -27,15 +25,6 @@ public abstract class PEArmor extends ArmorItem {
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
 		return 0;
 	}
-
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-		//Only used on the client
-		char index = this.getEquipmentSlot() == EquipmentSlotType.LEGS ? '2' : '1';
-		return PECore.MODID + ":textures/armor/" + getNameForLocation() + "_" + index + ".png";
-	}
-
-	protected abstract String getNameForLocation();
 
 	/**
 	 * Minimum percent damage will be reduced to if the full set is worn
