@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -14,6 +13,7 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -175,7 +175,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 						}
 						break;
 				}
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
 		return true;
@@ -198,7 +198,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 				EntityFireProjectile fire = new EntityFireProjectile(player, world);
 				fire.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 				world.addEntity(fire);
-				fire.playSound(PESounds.POWER, 1.0F, 1.0F);
+				fire.playSound(PESoundEvents.POWER.get(), 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);

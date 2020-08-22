@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -146,7 +146,7 @@ public class DMPedestalTile extends TileEmc {
 	public void setActive(boolean newState) {
 		if (newState != this.getActive() && world != null) {
 			if (newState) {
-				world.playSound(null, pos, PESounds.CHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				world.playSound(null, pos, PESoundEvents.CHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					this.getWorld().addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
@@ -154,7 +154,7 @@ public class DMPedestalTile extends TileEmc {
 							0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				world.playSound(null, pos, PESounds.UNCHARGE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				world.playSound(null, pos, PESoundEvents.UNCHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					this.getWorld().addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,

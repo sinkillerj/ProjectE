@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -15,6 +14,7 @@ import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.IItemCapabilitySerializable;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
@@ -222,9 +222,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 
 		if (hitTargets > 0) {
-			if (PESounds.POWER != null) {
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
-			}
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together
 				WorldHelper.createLootDrop(drops, player.getEntityWorld(), startingPos);

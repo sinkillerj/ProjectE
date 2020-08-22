@@ -10,8 +10,8 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -504,7 +504,7 @@ public final class WorldHelper {
 				if (state.getBlock() instanceof TNTBlock) {
 					world.removeBlock(pos, false);
 				}
-				world.playSound(null, ctx.getPlayer().getPosX(), ctx.getPlayer().getPosY(), ctx.getPlayer().getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, ctx.getPlayer().getPosX(), ctx.getPlayer().getPosY(), ctx.getPlayer().getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 			return ActionResultType.SUCCESS;
 		}
