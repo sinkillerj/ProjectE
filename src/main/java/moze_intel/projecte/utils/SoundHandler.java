@@ -24,7 +24,7 @@ public final class SoundHandler {
 	}
 
 	private static void registerSound(IForgeRegistry<SoundEvent> registry, String soundName) {
-		ResourceLocation name = new ResourceLocation(PECore.MODID, soundName);
+		ResourceLocation name = PECore.rl(soundName);
 		registry.register(new SoundEvent(name).setRegistryName(name));
 	}
 

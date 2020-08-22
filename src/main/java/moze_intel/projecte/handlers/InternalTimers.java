@@ -15,7 +15,7 @@ public class InternalTimers {
 
 	@CapabilityInject(InternalTimers.class)
 	public static Capability<InternalTimers> CAPABILITY = null;
-	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_timers");
+	public static final ResourceLocation NAME = PECore.rl("internal_timers");
 
 	private final Timer repair = new Timer();
 	private final Timer heal = new Timer();

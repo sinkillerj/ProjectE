@@ -247,7 +247,7 @@ public final class KnowledgeImpl {
 
 	public static class Provider implements ICapabilitySerializable<CompoundNBT> {
 
-		public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "knowledge");
+		public static final ResourceLocation NAME = PECore.rl("knowledge");
 
 		private final DefaultImpl impl;
 		private final LazyOptional<IKnowledgeProvider> cap;

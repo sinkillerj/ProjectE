@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/rmfurnace.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/rmfurnace.png");
 	private final RMFurnaceTile tile;
 
 	public GUIRMFurnace(RMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title) {

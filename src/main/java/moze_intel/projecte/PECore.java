@@ -109,7 +109,6 @@ public class PECore {
 	}
 
 	public static ResourceLocation rl(String path) {
-		//TODO - 1.16: Switch more things over to using this
 		return new ResourceLocation(MODID, path);
 	}
 

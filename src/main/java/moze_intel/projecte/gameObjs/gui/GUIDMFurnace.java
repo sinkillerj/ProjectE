@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/dmfurnace.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/dmfurnace.png");
 	private final DMFurnaceTile tile;
 
 	public GUIDMFurnace(DMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title) {

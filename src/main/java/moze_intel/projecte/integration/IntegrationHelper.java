@@ -18,7 +18,7 @@ public class IntegrationHelper {
 	//Double supplier to make sure it does not resolve early
 	public static final Supplier<Supplier<ItemCapability<?>>> CURIO_CAP_SUPPLIER = () -> CurioItemCapability::new;
 
-	public static final ResourceLocation CURIOS_KLEIN_STAR = new ResourceLocation(PECore.MODID, "curios/empty_klein_star");
+	public static final ResourceLocation CURIOS_KLEIN_STAR = PECore.rl("curios/empty_klein_star");
 
 	public static void sendIMCMessages(InterModEnqueueEvent event) {
 		ModList modList = ModList.get();

@@ -52,7 +52,7 @@ import net.minecraftforge.common.IPlantable;
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge {
 
 	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
-	private static final ITag<Block> BLOCK_BLACKLIST_TAG = BlockTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "time_watch_blacklist").toString());
+	private static final ITag<Block> BLOCK_BLACKLIST_TAG = BlockTags.makeWrapperTag(PECore.rl("time_watch_blacklist").toString());
 
 	public TimeWatch(Properties props) {
 		super(props);

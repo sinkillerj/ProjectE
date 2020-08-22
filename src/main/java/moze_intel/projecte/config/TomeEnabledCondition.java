@@ -8,7 +8,7 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 public class TomeEnabledCondition implements ICondition {
 
-	private static final ResourceLocation ID = new ResourceLocation(PECore.MODID, "tome_enabled");
+	private static final ResourceLocation ID = PECore.rl("tome_enabled");
 
 	@Override
 	public ResourceLocation getID() {

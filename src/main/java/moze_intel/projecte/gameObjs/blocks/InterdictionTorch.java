@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockReader;
 public class InterdictionTorch extends TorchBlock {
 
 	public InterdictionTorch(Properties props) {
-		super(props, ParticleTypes.SOUL_FIRE_FLAME);//TODO - 1.16: Is this good or should we make our own particle
+		super(props, ParticleTypes.SOUL_FIRE_FLAME);
 	}
 
 	@Override

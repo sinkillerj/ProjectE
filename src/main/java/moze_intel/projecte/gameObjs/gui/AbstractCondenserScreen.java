@@ -74,7 +74,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 
 		@Override
 		protected ResourceLocation getTexture() {
-			return new ResourceLocation(PECore.MODID, "textures/gui/condenser.png");
+			return PECore.rl("textures/gui/condenser.png");
 		}
 	}
 
@@ -86,7 +86,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 
 		@Override
 		protected ResourceLocation getTexture() {
-			return new ResourceLocation(PECore.MODID, "textures/gui/condenser_mk2.png");
+			return PECore.rl("textures/gui/condenser_mk2.png");
 		}
 	}
 }

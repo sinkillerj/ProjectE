@@ -24,7 +24,7 @@ public final class InternalAbilities {
 
 	@CapabilityInject(InternalAbilities.class)
 	public static Capability<InternalAbilities> CAPABILITY = null;
-	public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "internal_abilities");
+	public static final ResourceLocation NAME = PECore.rl("internal_abilities");
 
 	private final ServerPlayerEntity player;
 	private boolean swrgOverride = false;

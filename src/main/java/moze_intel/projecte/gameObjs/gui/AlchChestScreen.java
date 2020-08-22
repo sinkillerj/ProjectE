@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class AlchChestScreen extends PEContainerScreen<AlchChestContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/alchchest.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/alchchest.png");
 
 	public AlchChestScreen(AlchChestContainer container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);

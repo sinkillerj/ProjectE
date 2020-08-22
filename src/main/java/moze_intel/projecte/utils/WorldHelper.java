@@ -45,7 +45,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,7 +68,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
  */
 public final class WorldHelper {
 
-	private static final ITag<Block> HARVEST_BLACKLIST = BlockTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "harvest_blacklist").toString());
+	private static final ITag<Block> HARVEST_BLACKLIST = BlockTags.makeWrapperTag(PECore.rl("harvest_blacklist").toString());
 	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
 	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
 	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !swrgBlacklist.contains(entity.getType());

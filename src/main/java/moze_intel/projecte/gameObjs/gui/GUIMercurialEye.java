@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIMercurialEye extends PEContainerScreen<MercurialEyeContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/mercurial_eye.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/mercurial_eye.png");
 
 	public GUIMercurialEye(MercurialEyeContainer container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);

@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/eternal_density.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/eternal_density.png");
 
 	public GUIEternalDensity(EternalDensityContainer container, PlayerInventory inv, ITextComponent title) {
 		super(container, inv, title);

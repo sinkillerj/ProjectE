@@ -54,7 +54,7 @@ public class PhilStoneSmeltingHelper implements IResourceManagerReloadListener {
 				output.setCount(output.getCount() * 7);
 
 				String inputName = r.getId().toString().replace(':', '_');
-				ResourceLocation recipeName = new ResourceLocation(PECore.MODID, "philstone_smelt_" + inputName);
+				ResourceLocation recipeName = PECore.rl("philstone_smelt_" + inputName);
 
 				NonNullList<Ingredient> ingrs = NonNullList.from(Ingredient.EMPTY,
 						Ingredient.fromItems(PEItems.PHILOSOPHERS_STONE),
