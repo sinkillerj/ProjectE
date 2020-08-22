@@ -6,13 +6,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -99,7 +99,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				}
 			}
 
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
 		}
 
 		return ActionResultType.SUCCESS;
@@ -108,7 +108,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
 		World world = player.getEntityWorld();
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.TRANSMUTE, SoundCategory.PLAYERS, 1, 1);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
 		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(ent);

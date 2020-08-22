@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
 import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.util.SoundEvent;
@@ -14,11 +13,6 @@ public class SoundEventRegistryObject<SOUND extends SoundEvent> extends WrappedR
     public SoundEventRegistryObject(RegistryObject<SOUND> registryObject) {
         super(registryObject);
         translationKey = Util.makeTranslationKey("sound_event", this.registryObject.getId());
-    }
-
-    @Nonnull
-    public SOUND getSoundEvent() {
-        return get();
     }
 
     @Override

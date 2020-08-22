@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.sound;
 
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
@@ -15,7 +15,7 @@ public class MovingSoundSWRG extends TickableSound {//TODO - 1.16: Double check 
 	private float distance = 0.0F;
 
 	public MovingSoundSWRG(EntitySWRGProjectile swrgProjectile) {
-		super(PESounds.WIND, SoundCategory.WEATHER);
+		super(PESoundEvents.WIND_MAGIC.get(), SoundCategory.WEATHER);
 		this.swrgProjectile = swrgProjectile;
 		this.volume = 0.6F;
 	}

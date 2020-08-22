@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), world);
 		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
 		world.addEntity(ent);

@@ -3,12 +3,12 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -68,7 +68,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 		if (!world.isRemote) {
 			int offset = 3 + this.getCharge(stack);
 			AxisAlignedBB box = player.getBoundingBox().grow(offset);
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.POWER, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
 		return ActionResult.resultSuccess(stack);

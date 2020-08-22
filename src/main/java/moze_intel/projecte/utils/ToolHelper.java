@@ -9,12 +9,12 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
@@ -258,7 +258,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -315,7 +315,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -430,7 +430,7 @@ public class ToolHelper {
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
 			PlayerHelper.swingItem(player, hand);
-			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -475,7 +475,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			PlayerHelper.swingItem(player, hand);
 		}
 	}
@@ -594,7 +594,7 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.DESTRUCT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
