@@ -28,8 +28,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
@@ -116,11 +114,12 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		}
 		Hand hand = context.getHand();
 		World world = context.getWorld();
-		BlockState state = world.getBlockState(context.getPos());
+		BlockPos pos = context.getPos();
+		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Strip logs, hoe ground, AOE remove logs, AOE remove leaves
-		return ToolHelper.performActions(AxeItem.BLOCK_STRIPPING_MAP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
-				() -> HoeItem.HOE_LOOKUP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
+		return ToolHelper.performActions(state.getToolModifiedState(world, pos, player, player.getHeldItem(hand), ToolType.AXE) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
+				() -> state.getToolModifiedState(world, pos, player, player.getHeldItem(hand), ToolType.HOE) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
 				() -> {
 					if (state.isIn(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
