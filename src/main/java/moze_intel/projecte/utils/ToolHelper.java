@@ -5,11 +5,9 @@ import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -37,12 +35,9 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ShovelItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.ITag;
@@ -61,15 +56,11 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 
 public class ToolHelper {
 
@@ -104,13 +95,14 @@ public class ToolHelper {
 	 *
 	 * @implNote Only returns that we failed if all the tested actions failed.
 	 */
-	public static ActionResultType performActions(ActionResultType firstAction, ActionSupplier... secondaryActions) {
+	@SafeVarargs
+	public static ActionResultType performActions(ActionResultType firstAction, Supplier<ActionResultType>... secondaryActions) {
 		if (firstAction == ActionResultType.SUCCESS) {
 			return ActionResultType.SUCCESS;
 		}
 		ActionResultType result = firstAction;
 		boolean hasFailed = result == ActionResultType.FAIL;
-		for (ActionSupplier secondaryAction : secondaryActions) {
+		for (Supplier<ActionResultType> secondaryAction : secondaryActions) {
 			result = secondaryAction.get();
 			if (result == ActionResultType.SUCCESS) {
 				//If we were successful
@@ -178,25 +170,20 @@ public class ToolHelper {
 	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType tillHoeAOE(ItemUseContext context, long emcCost) {
-		return tillAOE(context, emcCost, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL);
+		return tillAOE(context, emcCost, ToolType.HOE, SoundEvents.ITEM_HOE_TILL);
 	}
 
 	/**
 	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType tillShovelAOE(ItemUseContext context, long emcCost) {
-		//Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
-		// This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
-		// If something like: https://github.com/MinecraftForge/MinecraftForge/pull/6294 ever gets merged then this can use that
-		// or when the hoe event goes away we can switch it to a boolean from an int
-		// Note: The same goes for the stripLogsAOE that if that gets merged we need to add back support for the third state
-		return tillAOE(context, emcCost, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1, SoundEvents.ITEM_SHOVEL_FLATTEN);
+		return tillAOE(context, emcCost, ToolType.SHOVEL, SoundEvents.ITEM_SHOVEL_FLATTEN);
 	}
 
 	/**
 	 * Tills in an AOE using the specified lookup map and tester. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	private static ActionResultType tillAOE(ItemUseContext context, long emcCost, Map<Block, BlockState> lookup, ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound) {
+	private static ActionResultType tillAOE(ItemUseContext context, long emcCost, ToolType toolType, SoundEvent sound) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
@@ -206,9 +193,11 @@ public class ToolHelper {
 			//Don't allow tilling a block from underneath
 			return ActionResultType.PASS;
 		}
+		Hand hand = context.getHand();
+		ItemStack stack = player.getHeldItem(hand);
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
-		BlockState tilledState = lookup.get(world.getBlockState(pos).getBlock());
+		BlockState tilledState = world.getBlockState(pos).getToolModifiedState(world, pos, player, stack, toolType);
 		if (tilledState == null) {
 			//Skip tilling the blocks if the one we clicked cannot be tilled
 			return ActionResultType.PASS;
@@ -220,26 +209,19 @@ public class ToolHelper {
 			//If the block above our source is opaque, just skip tiling in general
 			return ActionResultType.PASS;
 		}
-		int useResult = onItemUse.applyAsInt(context);
-		if (useResult < 0) {
-			return ActionResultType.PASS;
-		} else if (world.isRemote) {
+		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
-		if (useResult == 0) {
-			//Processing did not happen in the hook so we need to process it
-			//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-			world.setBlockState(pos, tilledState, 11);
-			Material aboveMaterial = aboveState.getMaterial();
-			if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !aboveState.getBlock().hasTileEntity(aboveState)) {
-				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, abovePos)) {
-					world.destroyBlock(abovePos, true);
-				}
+		//Processing did not happen, so we need to process it
+		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
+		world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
+		Material aboveMaterial = aboveState.getMaterial();
+		if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !aboveState.getBlock().hasTileEntity(aboveState)) {
+			if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, abovePos)) {
+				world.destroyBlock(abovePos, true);
 			}
-			world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		}
-		Hand hand = context.getHand();
-		ItemStack stack = player.getHeldItem(hand);
+		world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		int charge = getCharge(stack);
 		if (charge > 0) {
 			for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge))) {
@@ -250,29 +232,17 @@ public class ToolHelper {
 				BlockState stateAbove = world.getBlockState(newPos.up());
 				//Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
 				// the same as the one we got on the initial block we interacted with
-				if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == lookup.get(world.getBlockState(newPos).getBlock())) {
-					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
-					// matter we make sure to get an immutable instance of newPos
-					newPos = newPos.toImmutable();
-					useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, newPos, false)));
-					if (useResult < 0) {
-						//We were denied from using the item so continue to the next block
-						continue;
-					} else if (useResult > 0) {
-						//Processing happened in the hook so we use our desired fuel amount
-						if (!ItemPE.consumeFuel(player, stack, emcCost, true)) {
-							//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
-							break;
-						}
-						continue;
-					} //else we are allowed to use the item
+				if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == world.getBlockState(newPos).getToolModifiedState(world, newPos, player, stack, toolType)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
+						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
+						// matter we make sure to get an immutable instance of newPos
+						newPos = newPos.toImmutable();
 						//Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do), rather than using our
 						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
-						world.setBlockState(newPos, tilledState, 11);
-						Material aboveMaterial = stateAbove.getMaterial();
+						world.setBlockState(newPos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
+						aboveMaterial = stateAbove.getMaterial();
 						if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !stateAbove.getBlock().hasTileEntity(stateAbove)) {
 							//If the block above the one we tilled is a plant (and not a tile entity because you never know), then we try to remove it
 							//Note: We do check for breaking the block above that we attempt to break it though, as we
@@ -288,7 +258,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -300,29 +270,23 @@ public class ToolHelper {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
+		Hand hand = context.getHand();
+		ItemStack stack = player.getHeldItem(hand);
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
-		Map<Block, Block> lookup = AxeItem.BLOCK_STRIPPING_MAP;
 		BlockState clickedState = world.getBlockState(pos);
-		Block strippedBlock = lookup.get(clickedState.getBlock());
-		if (strippedBlock == null) {
-			//Skip stripping the blocks if the one we clicked cannot be stipped
+		BlockState strippedState = clickedState.getToolModifiedState(world, pos, player, stack, ToolType.AXE);
+		if (strippedState == null) {
+			//Skip stripping the blocks if the one we clicked cannot be stripped
 			return ActionResultType.PASS;
-		}
-		//Note: We don't need to fire a check for the tool being used here as we never would have had our current method get called
-		// if a generic interact was not allowed
-		if (world.isRemote) {
+		} else if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
 		Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
-		BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
 		//Process the block we interacted with initially and play the sound
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-		world.setBlockState(pos, strippedState, 11);
+		world.setBlockState(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
 		world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-
-		Hand hand = context.getHand();
-		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		if (charge > 0) {
 			Direction side = context.getFace();
@@ -334,20 +298,16 @@ public class ToolHelper {
 				//Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
 				// Also make sure that it is on the same axis as the block we initially clicked
 				BlockState state = world.getBlockState(newPos);
-				if (strippedBlock == lookup.get(state.getBlock()) && axis == state.get(RotatedPillarBlock.AXIS)) {
-					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
-					// matter we make sure to get an immutable instance of newPos
-					newPos = newPos.toImmutable();
-					if (!onToolUse(player, hand, newPos, side)) {
-						//We were denied from using the item so continue to the next block
-						continue;
-					} //else we are allowed to use the item
+				if (strippedState == state.getToolModifiedState(world, newPos, player, stack, ToolType.AXE) && axis == state.get(RotatedPillarBlock.AXIS)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
+						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
+						// matter we make sure to get an immutable instance of newPos
+						newPos = newPos.toImmutable();
 						//Replace the block. Note it just directly sets it (in the same way that AxeItem does), rather than using our
 						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
-						world.setBlockState(newPos, strippedState, 11);
+						world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
 						break;
@@ -355,19 +315,8 @@ public class ToolHelper {
 				}
 			}
 		}
-		player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
-	}
-
-	/**
-	 * Tries to use a tool as a player
-	 *
-	 * @return True if the player is allowed to use the tool, false otherwise
-	 */
-	private static boolean onToolUse(PlayerEntity player, Hand hand, BlockPos pos, Direction face) {
-		RightClickBlock event = ForgeHooks.onRightClickBlock(player, hand, pos, face);
-		//Nothing happens if it is cancelled or we are not allowed to use the item so return false
-		return !event.isCanceled() && event.getUseItem() != Result.DENY;
 	}
 
 	/**
@@ -709,9 +658,5 @@ public class ToolHelper {
 	public interface RayTracePointer {
 
 		RayTraceResult rayTrace(World world, PlayerEntity player, FluidMode fluidMode);
-	}
-
-	//Helper interface to remove warnings of varargs of generics
-	public interface ActionSupplier extends Supplier<ActionResultType> {
 	}
 }
