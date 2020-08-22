@@ -35,8 +35,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -119,7 +117,6 @@ public class ShowBagCMD {
 	}
 
 	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
-		ServerWorld overWorld = server.getWorld(World.field_234918_g_);
 		//TODO - 1.16: Test me
 		File playerData = server.func_240776_a_(FolderName.field_237247_c_).toFile();
 		if (playerData.exists()) {

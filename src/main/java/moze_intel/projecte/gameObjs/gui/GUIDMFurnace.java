@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -42,8 +42,8 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
-		//TODO: Move to just adjusting title positions
-		this.font.drawString(matrix, I18n.format("pe.dmfurnace.shortname"), 57, 5, 0x404040);
-		this.font.drawString(matrix, I18n.format("container.inventory"), 57, ySize - 96 + 2, 0x404040);
+		//TODO: - 1.16 Move to just adjusting title positions
+		this.font.func_243248_b(matrix, PELang.GUI_DARK_MATTER_FURNACE.translate(), 57, 5, 0x404040);
+		this.font.func_243248_b(matrix, PELang.INVENTORY.translate(), 57, ySize - 96 + 2, 0x404040);
 	}
 }

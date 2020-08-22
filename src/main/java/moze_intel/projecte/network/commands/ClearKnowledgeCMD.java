@@ -30,7 +30,6 @@ public class ClearKnowledgeCMD {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
 			source.sendFeedback(PELang.CLEAR_KNOWLEDGE_SUCCESS.translate(player.getDisplayName()), true);
-
 			if (player != source.getEntity()) {
 				player.sendMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(TextFormatting.RED, source.getDisplayName()), Util.DUMMY_UUID);
 			}

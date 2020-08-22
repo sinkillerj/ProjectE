@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -24,7 +24,7 @@ public class GUIRelayMK1 extends PEContainerScreen<RelayMK1Container> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
-		this.font.drawString(matrix, I18n.format("pe.relay.mk1"), 10, 6, 0x404040);
+		this.font.func_243248_b(matrix, PELang.GUI_RELAY_MK1.translate(), 10, 6, 0x404040);
 		this.font.drawString(matrix, Constants.EMC_FORMATTER.format(container.emc.get()), 88, 24, 0x404040);
 	}
 

@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -42,7 +42,7 @@ public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
-		this.font.drawString(matrix, I18n.format("pe.rmfurnace.shortname"), 76, 5, 0x404040);
-		this.font.drawString(matrix, I18n.format("container.inventory"), 76, ySize - 96 + 2, 0x404040);
+		this.font.func_243248_b(matrix, PELang.GUI_RED_MATTER_FURNACE.translate(), 76, 5, 0x404040);
+		this.font.func_243248_b(matrix, PELang.INVENTORY.translate(), 76, ySize - 96 + 2, 0x404040);
 	}
 }

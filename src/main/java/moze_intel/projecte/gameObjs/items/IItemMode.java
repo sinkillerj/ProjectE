@@ -43,8 +43,12 @@ public interface IItemMode extends IModeChanger {
 		}
 		//Update the mode
 		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
-		player.sendMessage(PELang.MODE_SWITCH.translate(getModeLangEntry(stack)), Util.DUMMY_UUID);
+		player.sendMessage(getModeSwitchEntry().translate(getModeLangEntry(stack)), Util.DUMMY_UUID);
 		return true;
+	}
+
+	default ILangEntry getModeSwitchEntry() {
+		return PELang.MODE_SWITCH;
 	}
 
 	default ITextComponent getToolTip(ItemStack stack) {

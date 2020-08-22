@@ -148,9 +148,9 @@ public class PEItems {
 	public static final ItemRegistryObject<MindStone> MIND_STONE = ITEMS.registerNoStack("mind_stone", MindStone::new);
 	public static final ItemRegistryObject<LifeStone> LIFE_STONE = ITEMS.registerNoStack("life_stone", LifeStone::new);
 
-	public static final ItemRegistryObject<DiviningRod> DIVINING_ROD1 = ITEMS.registerNoStack("divining_rod_1", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3));
-	public static final ItemRegistryObject<DiviningRod> DIVINING_ROD2 = ITEMS.registerNoStack("divining_rod_2", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16));
-	public static final ItemRegistryObject<DiviningRod> DIVINING_ROD3 = ITEMS.registerNoStack("divining_rod_3", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16, PELang.DIVINING_RANGE_64));
+	public static final ItemRegistryObject<DiviningRod> LOW_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_1", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3));
+	public static final ItemRegistryObject<DiviningRod> MEDIUM_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_2", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16));
+	public static final ItemRegistryObject<DiviningRod> HIGH_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_3", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16, PELang.DIVINING_RANGE_64));
 
 	public static final ItemRegistryObject<DestructionCatalyst> DESTRUCTION_CATALYST = ITEMS.registerNoStack("destruction_catalyst", DestructionCatalyst::new);
 	public static final ItemRegistryObject<HyperkineticLens> HYPERKINETIC_LENS = ITEMS.registerNoStack("hyperkinetic_lens", HyperkineticLens::new);

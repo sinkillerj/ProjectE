@@ -1,8 +1,9 @@
 package moze_intel.projecte.utils;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 
 public class TransmutationEMCFormatter {
@@ -34,7 +35,6 @@ public class TransmutationEMCFormatter {
 		} else {//if (extraDigits == 2)
 			value = Double.parseDouble(emcAsString.substring(0, 2) + "." + emcAsString.substring(2, 4));
 		}
-		//TODO - 1.16: FIXME
-		return TextComponentUtil.getString(Constants.EMC_FORMATTER.format(value) + " " + I18n.format("pe.emc.postfix." + postfixIndex));
+		return TextComponentUtil.smartTranslate(Util.makeTranslationKey("emc", PECore.rl("postfix." + postfixIndex)), Constants.EMC_FORMATTER.format(value));
 	}
 }
