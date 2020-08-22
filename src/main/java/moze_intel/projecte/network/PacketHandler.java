@@ -26,7 +26,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -38,7 +37,7 @@ public final class PacketHandler {
 
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation(PECore.MODID, "main_channel"))
+			.named(PECore.rl("main_channel"))
 			.clientAcceptedVersions(PROTOCOL_VERSION::equals)
 			.serverAcceptedVersions(PROTOCOL_VERSION::equals)
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)

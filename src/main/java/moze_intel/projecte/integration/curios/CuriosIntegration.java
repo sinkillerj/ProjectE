@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
@@ -24,7 +23,6 @@ public class CuriosIntegration {
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("necklace").build());
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("belt").build());
 		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("ring").build());
-		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("klein_star")
-				.icon(new ResourceLocation(PECore.MODID, "klein_star")).build());
+		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("klein_star").icon(PECore.rl("klein_star")).build());
 	}
 }

@@ -15,6 +15,6 @@ public class FireballRenderer extends EntitySpriteRenderer<EntityFireProjectile>
 	@Nonnull
 	@Override
 	public ResourceLocation getEntityTexture(@Nonnull EntityFireProjectile entity) {
-		return new ResourceLocation(PECore.MODID, "textures/entity/fireball.png");
+		return PECore.rl("textures/entity/fireball.png");
 	}
 }

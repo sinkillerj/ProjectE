@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/transmute.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/transmute.png");
 	private final TransmutationInventory inv;
 	private TextFieldWidget textBoxFilter;
 

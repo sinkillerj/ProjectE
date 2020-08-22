@@ -93,7 +93,7 @@ public final class AlchBagImpl {
 
 	public static class Provider implements ICapabilitySerializable<CompoundNBT> {
 
-		public static final ResourceLocation NAME = new ResourceLocation(PECore.MODID, "alch_bags");
+		public static final ResourceLocation NAME = PECore.rl("alch_bags");
 		private final IAlchBagProvider impl = new DefaultImpl();
 		private final LazyOptional<IAlchBagProvider> cap = LazyOptional.of(() -> impl);
 

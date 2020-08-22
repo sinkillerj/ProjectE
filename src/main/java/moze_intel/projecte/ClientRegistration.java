@@ -87,9 +87,9 @@ public class ClientRegistration {
 		DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
 
 		//Tile Entity
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/alchemy_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER.get(), dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/condenser.png"), block -> block == PEBlocks.CONDENSER.getBlock()));
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER_MK2.get(), dispatcher -> new ChestRenderer(dispatcher, new ResourceLocation(PECore.MODID, "textures/blocks/condenser_mk2.png"), block -> block == PEBlocks.CONDENSER_MK2.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/alchemy_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/condenser.png"), block -> block == PEBlocks.CONDENSER.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER_MK2.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/condenser_mk2.png"), block -> block == PEBlocks.CONDENSER_MK2.getBlock()));
 		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.DARK_MATTER_PEDESTAL.get(), PedestalRenderer::new);
 
 		//Entities
@@ -108,10 +108,10 @@ public class ClientRegistration {
 		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.getCutout());
 
 		//Property Overrides
-		addPropertyOverrides(new ResourceLocation(PECore.MODID, "active"), ItemPE.ACTIVE_GETTER, PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING,
-				PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE, PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING,
-				PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME, PEItems.ZERO_RING);
-		addPropertyOverrides(new ResourceLocation(PECore.MODID, "mode"), ItemPE.MODE_GETTER, PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
+		addPropertyOverrides(PECore.rl("active"), ItemPE.ACTIVE_GETTER, PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING,
+				PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE, PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE,
+				PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME, PEItems.ZERO_RING);
+		addPropertyOverrides(PECore.rl("mode"), ItemPE.MODE_GETTER, PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
 	}
 
 	@SubscribeEvent

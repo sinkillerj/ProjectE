@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GUIRelayMK3 extends PEContainerScreen<RelayMK3Container> {
 
-	private static final ResourceLocation texture = new ResourceLocation(PECore.MODID, "textures/gui/relay3.png");
+	private static final ResourceLocation texture = PECore.rl("textures/gui/relay3.png");
 
 	public GUIRelayMK3(RelayMK3Container container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);

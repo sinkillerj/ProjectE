@@ -10,18 +10,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
 
 public final class FuelMapper {
 
-	private static final ITag<Item> collectorFuelTag = ItemTags.makeWrapperTag(new ResourceLocation(PECore.MODID, "collector_fuel").toString());
+	private static final ITag<Item> collectorFuelTag = ItemTags.makeWrapperTag(PECore.rl("collector_fuel").toString());
 
 	private static final List<Item> FUEL_MAP = new ArrayList<>();
 
 	public static void loadMap() {
 		FUEL_MAP.clear();
 		//TODO - 1.16: Try to move this back to being cached?
-		ITag<Item> collectorFuelTag = ItemTags.getCollection().func_241834_b(new ResourceLocation(PECore.MODID, "collector_fuel"));
+		ITag<Item> collectorFuelTag = ItemTags.getCollection().func_241834_b(PECore.rl("collector_fuel"));
 		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}

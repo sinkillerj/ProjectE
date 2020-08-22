@@ -26,7 +26,7 @@ import net.minecraft.util.ResourceLocation;
 @JeiPlugin
 public class PEJeiPlugin implements IModPlugin {
 
-	private static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "main");
+	private static final ResourceLocation UID = PECore.rl("main");
 
 	@Nonnull
 	@Override

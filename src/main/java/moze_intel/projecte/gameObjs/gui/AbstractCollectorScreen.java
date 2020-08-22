@@ -69,7 +69,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 		@Override
 		protected ResourceLocation getTexture() {
-			return new ResourceLocation(PECore.MODID, "textures/gui/collector1.png");
+			return PECore.rl("textures/gui/collector1.png");
 		}
 	}
 
@@ -83,7 +83,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 		@Override
 		protected ResourceLocation getTexture() {
-			return new ResourceLocation(PECore.MODID, "textures/gui/collector2.png");
+			return PECore.rl("textures/gui/collector2.png");
 		}
 
 		@Override
@@ -107,7 +107,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 		@Override
 		protected ResourceLocation getTexture() {
-			return new ResourceLocation(PECore.MODID, "textures/gui/collector3.png");
+			return PECore.rl("textures/gui/collector3.png");
 		}
 
 		@Override

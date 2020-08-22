@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
 
-	public static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "world_transmutation");
+	public static final ResourceLocation UID = PECore.rl("world_transmutation");
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
@@ -33,8 +33,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
 	public WorldTransmuteRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
-		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
-				.setTextureSize(32, 32).build();
+		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
 		icon = guiHelper.createDrawableIngredient(new ItemStack(PEItems.PHILOSOPHERS_STONE));
 		localizedName = PELang.WORLD_TRANSMUTE.translate().getString();
 	}

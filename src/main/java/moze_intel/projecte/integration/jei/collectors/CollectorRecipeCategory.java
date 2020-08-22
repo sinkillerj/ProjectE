@@ -20,7 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe> {
 
-	public static final ResourceLocation UID = new ResourceLocation(PECore.MODID, "collector");
+	public static final ResourceLocation UID = PECore.rl("collector");
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
@@ -28,8 +28,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 
 	public CollectorRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
-		arrow = guiHelper.drawableBuilder(new ResourceLocation(PECore.MODID, "textures/gui/arrow.png"), 0, 0, 22, 15)
-				.setTextureSize(32, 32).build();
+		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
 		icon = guiHelper.createDrawableIngredient(new ItemStack(PEBlocks.COLLECTOR));
 		localizedName = PELang.JEI_COLLECTOR.translate().getString();
 	}
