@@ -20,10 +20,10 @@ import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -39,10 +39,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
-		RecipeManager recipeManager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
+		RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
 		//TODO: If there ever ends up being a forge registry for recipe types, use that instead
 		for (IRecipeType<?> recipeType : Registry.RECIPE_TYPE) {
 			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);

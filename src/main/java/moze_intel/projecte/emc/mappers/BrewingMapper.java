@@ -22,6 +22,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -122,7 +123,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		boolean vanillaRetrieved = mapAllReagents();
 		if (vanillaRetrieved) {
 			mapAllInputs();

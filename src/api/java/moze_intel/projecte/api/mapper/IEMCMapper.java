@@ -2,6 +2,7 @@ package moze_intel.projecte.api.mapper;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 
 /**
@@ -42,5 +43,5 @@ public interface IEMCMapper<T, V extends Comparable<V>> {
 	 * com.electronwill.nightconfig.core.file.CommentedFileConfig} representing the top-level mapping.cfg file. Please use properly prefixed config keys and do not
 	 * clobber those not belonging to your mapper
 	 */
-	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config, IResourceManager resourceManager);
+	void addMappings(IMappingCollector<T, V> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager);
 }

@@ -77,8 +77,7 @@ public class ToolTipEvent {
 					return;
 				}
 			}
-			//TODO - 1.16: Validate that the emc number has the format reset
-			event.getToolTip().add(PELang.EMC_STORED.translateColored(TextFormatting.YELLOW, Constants.EMC_FORMATTER.format(value)));
+			event.getToolTip().add(PELang.EMC_STORED.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, Constants.EMC_FORMATTER.format(value)));
 		}
 	}
 }

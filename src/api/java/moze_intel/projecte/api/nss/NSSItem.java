@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.IItemProvider;
@@ -93,7 +92,6 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	 */
 	@Nonnull
 	public static NSSItem createTag(@Nonnull ITag<Item> tag) {
-		//TODO - 1.16: Evaluate if this should use ItemTags#getCollection. I believe the below is correct as this happens in a reload listener so before ItemTags is updated
 		ResourceLocation tagLocation = TagCollectionManager.func_242178_a().func_241836_b().func_232973_a_(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
@@ -122,7 +120,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	@Nonnull
 	@Override
 	protected ITagCollection<Item> getTagCollection() {
-		return ItemTags.getCollection();
+		return TagCollectionManager.func_242178_a().func_241836_b();
 	}
 
 	@Override

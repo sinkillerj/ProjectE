@@ -23,6 +23,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDe
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +50,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> files = load(resourceManager);
 		for (CustomConversionFile file : files.values()) {
 			addMappingsFromFile(file, mapper);

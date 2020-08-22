@@ -10,6 +10,7 @@ import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 
 @EMCMapper(requiredMods = "crafttweaker")
@@ -26,7 +27,7 @@ public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		for (CrTConversion apiConversion : storedConversions) {
 			mapper.addConversion(apiConversion.amount, apiConversion.output, apiConversion.ingredients);
 			PECore.debugLog("CraftTweaker setting value for {}", apiConversion.output);

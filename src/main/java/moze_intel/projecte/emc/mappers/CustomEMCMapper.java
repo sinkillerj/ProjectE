@@ -8,13 +8,14 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.config.CustomEMCParser;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 
 @EMCMapper
 public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
 			PECore.debugLog("Adding custom EMC value for {}: {}", entry.item, entry.emc);
 			mapper.setValueBefore(entry.item, entry.emc);

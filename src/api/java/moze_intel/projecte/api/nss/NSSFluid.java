@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.TagCollectionManager;
@@ -80,7 +79,6 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	 */
 	@Nonnull
 	public static NSSFluid createTag(@Nonnull ITag<Fluid> tag) {
-		//TODO - 1.16: Evaluate if this should use FluidTags#getCollection. I believe the below is correct as this happens in a reload listener so before FluidTags is updated
 		ResourceLocation tagLocation = TagCollectionManager.func_242178_a().func_241837_c().func_232973_a_(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSFluid with a tag that does not exist");
@@ -108,7 +106,7 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	@Nonnull
 	@Override
 	protected ITagCollection<Fluid> getTagCollection() {
-		return FluidTags.getCollection();
+		return TagCollectionManager.func_242178_a().func_241837_c();
 	}
 
 	@Override
