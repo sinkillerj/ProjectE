@@ -4,11 +4,12 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
@@ -18,7 +19,6 @@ import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -32,8 +32,8 @@ public class CondenserContainer extends PEContainer {
 	public final BoxedLong requiredEmc = new BoxedLong();
 	protected final BoxedItemInfo boxedLockInfo = new BoxedItemInfo();
 
-	public CondenserContainer(ContainerType<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
-		super(type, windowId);
+	public CondenserContainer(ContainerTypeRegistryObject<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
+		super(type.get(), windowId);
 		this.longFields.add(displayEmc);
 		this.longFields.add(requiredEmc);
 		tile = condenser;
@@ -42,7 +42,7 @@ public class CondenserContainer extends PEContainer {
 	}
 
 	public static CondenserContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, invPlayer, (CondenserTile) GuiHandler.getTeFromBuf(buf));
+		return new CondenserContainer(PEContainerTypes.CONDENSER_CONTAINER, windowId, invPlayer, (CondenserTile) GuiHandler.getTeFromBuf(buf));
 	}
 
 	protected void initSlots(PlayerInventory invPlayer) {

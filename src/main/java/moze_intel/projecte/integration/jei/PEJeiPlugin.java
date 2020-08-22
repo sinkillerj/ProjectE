@@ -12,8 +12,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
@@ -46,10 +47,10 @@ public class PEJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addRecipeCatalyst(new ItemStack(ObjHandler.philosStone), VanillaRecipeCategoryUid.CRAFTING, WorldTransmuteRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK1), CollectorRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK2), CollectorRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(ObjHandler.collectorMK3), CollectorRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(PEItems.PHILOSOPHERS_STONE), VanillaRecipeCategoryUid.CRAFTING, WorldTransmuteRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.UID);
 	}
 
 	@Override

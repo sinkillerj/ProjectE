@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -11,7 +11,7 @@ import net.minecraft.inventory.container.Container;
 public class CollectorMK3Tile extends CollectorMK1Tile {
 
 	public CollectorMK3Tile() {
-		super(ObjHandler.COLLECTOR_MK3_TILE, EnumCollectorTier.MK3);
+		super(PETileEntityTypes.COLLECTOR_MK3.get(), EnumCollectorTier.MK3);
 	}
 
 	@Override

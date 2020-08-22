@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -25,7 +25,7 @@ public class EntityNovaCatalystPrimed extends TNTEntity {
 	@Nonnull
 	@Override
 	public EntityType<?> getType() {
-		return ObjHandler.NOVA_CATALYST_PRIMED;
+		return PEEntityTypes.NOVA_CATALYST_PRIMED.get();
 	}
 
 	@Override

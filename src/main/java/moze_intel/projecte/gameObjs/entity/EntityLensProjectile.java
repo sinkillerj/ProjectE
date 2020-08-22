@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.entity.EntityType;
@@ -25,7 +25,7 @@ public class EntityLensProjectile extends ThrowableEntity {
 	}
 
 	public EntityLensProjectile(PlayerEntity entity, int charge, World world) {
-		super(ObjHandler.LENS_PROJECTILE, entity, world);
+		super(PEEntityTypes.LENS_PROJECTILE.get(), entity, world);
 		this.charge = charge;
 	}
 

@@ -2,10 +2,11 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
@@ -23,7 +24,7 @@ public class CollectorMK3Container extends CollectorMK1Container {
 	}
 
 	public CollectorMK3Container(int windowId, PlayerInventory invPlayer, CollectorMK3Tile collector) {
-		super(ObjHandler.COLLECTOR_MK3_CONTAINER, windowId, invPlayer, collector);
+		super(PEContainerTypes.COLLECTOR_MK3_CONTAINER, windowId, invPlayer, collector);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class CollectorMK3Container extends CollectorMK1Container {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.collectorMK3
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.COLLECTOR_MK3.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 }

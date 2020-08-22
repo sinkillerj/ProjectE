@@ -5,9 +5,11 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +42,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	public long requiredEmc;
 
 	public CondenserTile() {
-		this(ObjHandler.CONDENSER_TILE);
+		this(PETileEntityTypes.CONDENSER.get());
 	}
 
 	protected CondenserTile(TileEntityType<?> type) {
@@ -227,12 +229,12 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 
 	@Override
 	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-		return new CondenserContainer(ObjHandler.CONDENSER_CONTAINER, windowId, playerInventory, this);
+		return new CondenserContainer(PEContainerTypes.CONDENSER_CONTAINER, windowId, playerInventory, this);
 	}
 
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ObjHandler.condenser.getTranslationKey());
+		return new TranslationTextComponent(PEBlocks.CONDENSER.getBlock().getTranslationKey());
 	}
 }

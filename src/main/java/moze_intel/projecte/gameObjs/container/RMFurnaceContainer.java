@@ -2,9 +2,10 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
@@ -19,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 public class RMFurnaceContainer extends DMFurnaceContainer {
 
 	public RMFurnaceContainer(int windowId, PlayerInventory invPlayer, RMFurnaceTile tile) {
-		super(ObjHandler.RM_FURNACE_CONTAINER, windowId, invPlayer, tile);
+		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
 	public static RMFurnaceContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buffer) {
@@ -64,7 +65,7 @@ public class RMFurnaceContainer extends DMFurnaceContainer {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.rmFurnace
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RED_MATTER_FURNACE.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 

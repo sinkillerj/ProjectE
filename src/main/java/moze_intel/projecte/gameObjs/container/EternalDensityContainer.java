@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +26,7 @@ public class EternalDensityContainer extends Container {
 	}
 
 	public EternalDensityContainer(int windowId, PlayerInventory invPlayer, EternalDensityInventory gemInv) {
-		super(ObjHandler.ETERNAL_DENSITY_CONTAINER, windowId);
+		super(PEContainerTypes.ETERNAL_DENSITY_CONTAINER.get(), windowId);
 		inventory = gemInv;
 
 		for (int i = 0; i < 3; ++i) {

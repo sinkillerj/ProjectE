@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.utils.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,7 +26,7 @@ public class MercurialEyeContainer extends Container {
 	}
 
 	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
-		super(ObjHandler.MERCURIAL_EYE_CONTAINER, windowId);
+		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER.get(), windowId);
 		inventory = new MercurialEyeInventory(invPlayer.player.getHeldItem(hand));
 
 		//Klein Star

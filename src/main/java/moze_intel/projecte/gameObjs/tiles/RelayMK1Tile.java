@@ -5,9 +5,10 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.LazyOptionalHelper;
@@ -61,7 +62,7 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 	private double bonusEMC;
 
 	public RelayMK1Tile() {
-		this(ObjHandler.RELAY_MK1_TILE, 7, EnumRelayTier.MK1);
+		this(PETileEntityTypes.RELAY.get(), 7, EnumRelayTier.MK1);
 	}
 
 	RelayMK1Tile(TileEntityType<?> type, int sizeInv, EnumRelayTier tier) {
@@ -228,6 +229,6 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ObjHandler.relay.getTranslationKey());
+		return new TranslationTextComponent(PEBlocks.RELAY.getBlock().getTranslationKey());
 	}
 }

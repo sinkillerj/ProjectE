@@ -13,6 +13,7 @@ public class PELangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        add(PELang.PROJECTE, "ProjectE");
         add(PELang.HIGH_ALCHEMIST, "High alchemist %s has joined the server");
         add(PELang.SECONDS, "%s seconds");
         add(PELang.EVERY_TICK, "%s seconds (every tick)");

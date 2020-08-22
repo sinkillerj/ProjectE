@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -33,7 +33,7 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ObjHandler.KLEIN_RECIPE_SERIALIZER;
+		return PERecipeSerializers.KLEIN.get();
 	}
 
 	@Override

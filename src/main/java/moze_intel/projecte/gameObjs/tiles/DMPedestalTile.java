@@ -4,7 +4,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.PESounds;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,7 +33,7 @@ public class DMPedestalTile extends TileEmc {
 	public double centeredX, centeredY, centeredZ;
 
 	public DMPedestalTile() {
-		super(ObjHandler.DM_PEDESTAL_TILE);
+		super(PETileEntityTypes.DARK_MATTER_PEDESTAL.get());
 	}
 
 	@Override

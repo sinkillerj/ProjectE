@@ -1,15 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -28,11 +29,11 @@ public class RelayMK1Container extends PEContainer {
 	}
 
 	public RelayMK1Container(int windowId, PlayerInventory invPlayer, RelayMK1Tile relay) {
-		this(ObjHandler.RELAY_MK1_CONTAINER, windowId, invPlayer, relay);
+		this(PEContainerTypes.RELAY_MK1_CONTAINER, windowId, invPlayer, relay);
 	}
 
-	protected RelayMK1Container(ContainerType<?> type, int windowId, PlayerInventory invPlayer, RelayMK1Tile relay) {
-		super(type, windowId);
+	protected RelayMK1Container(ContainerTypeRegistryObject<?> type, int windowId, PlayerInventory invPlayer, RelayMK1Tile relay) {
+		super(type.get(), windowId);
 		this.longFields.add(emc);
 		this.intFields.add(kleinChargeProgress);
 		this.intFields.add(inputBurnProgress);
@@ -99,7 +100,7 @@ public class RelayMK1Container extends PEContainer {
 
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == ObjHandler.relay
+		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RELAY.getBlock()
 			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
 	}
 

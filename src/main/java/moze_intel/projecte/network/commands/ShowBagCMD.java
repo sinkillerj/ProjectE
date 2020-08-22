@@ -14,8 +14,8 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
@@ -78,7 +78,7 @@ public class ShowBagCMD {
 		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
-		ITextComponent name = PELang.SHOWBAG_NAMED.translate(ObjHandler.getBag(color), target.getDisplayName());
+		ITextComponent name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
 
@@ -89,10 +89,10 @@ public class ShowBagCMD {
 		GameProfile profileByUUID = server.getPlayerProfileCache().getProfileByUUID(target);
 		ITextComponent name;
 		if (profileByUUID == null) {
-			name = TextComponentUtil.build(ObjHandler.getBag(color));
+			name = TextComponentUtil.build(PEItems.getBag(color));
 		} else {
 			//If we have a cache of the player, include their last known name in the name of the bag
-			name = PELang.SHOWBAG_NAMED.translate(ObjHandler.getBag(color), profileByUUID.getName());
+			name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), profileByUUID.getName());
 		}
 		return getContainer(sender, name, inv, true, () -> true);
 	}

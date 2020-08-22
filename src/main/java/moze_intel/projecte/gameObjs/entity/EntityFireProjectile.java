@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -24,7 +24,7 @@ public class EntityFireProjectile extends ThrowableEntity {
 	}
 
 	public EntityFireProjectile(PlayerEntity entity, World world) {
-		super(ObjHandler.FIRE_PROJECTILE, entity, world);
+		super(PEEntityTypes.FIRE_PROJECTILE.get(), entity, world);
 	}
 
 	@Override

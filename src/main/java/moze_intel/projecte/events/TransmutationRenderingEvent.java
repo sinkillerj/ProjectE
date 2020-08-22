@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.rendering.PERenderType;
@@ -82,11 +81,11 @@ public class TransmutationRenderingEvent {
 		if (stack.isEmpty()) {
 			stack = player.getHeldItem(Hand.OFF_HAND);
 		}
-		if (stack.isEmpty() || stack.getItem() != ObjHandler.philosStone) {
+		if (stack.isEmpty() || !(stack.getItem() instanceof PhilosophersStone)) {
 			transmutationResult = null;
 			return;
 		}
-		RayTraceResult mop = ((PhilosophersStone) ObjHandler.philosStone).getHitBlock(player);
+		RayTraceResult mop = ((PhilosophersStone) stack.getItem()).getHitBlock(player);
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult rtr = (BlockRayTraceResult) mop;
 			BlockState current = world.getBlockState(rtr.getPos());

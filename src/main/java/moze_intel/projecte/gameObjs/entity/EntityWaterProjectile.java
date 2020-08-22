@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.entity;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Blocks;
@@ -31,7 +31,7 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	}
 
 	public EntityWaterProjectile(PlayerEntity entity, World world) {
-		super(ObjHandler.WATER_PROJECTILE, entity, world);
+		super(PEEntityTypes.WATER_PROJECTILE.get(), entity, world);
 	}
 
 	@Override

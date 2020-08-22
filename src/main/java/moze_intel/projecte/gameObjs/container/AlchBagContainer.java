@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.utils.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,7 +28,7 @@ public class AlchBagContainer extends Container {
 	}
 
 	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable) {
-		super(ObjHandler.ALCH_BAG_CONTAINER, windowId);
+		super(PEContainerTypes.ALCH_BAG_CONTAINER.get(), windowId);
 		this.hand = hand;
 		this.immutable = immutable;
 

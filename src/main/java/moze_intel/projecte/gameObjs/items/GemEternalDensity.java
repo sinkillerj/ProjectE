@@ -10,9 +10,9 @@ import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -167,9 +167,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			case 2:
 				return new ItemStack(Items.DIAMOND);
 			case 3:
-				return new ItemStack(ObjHandler.darkMatter);
+				return new ItemStack(PEItems.DARK_MATTER);
 			case 4:
-				return new ItemStack(ObjHandler.redMatter);
+				return new ItemStack(PEItems.RED_MATTER);
 			default:
 				PECore.LOGGER.fatal("Invalid target for gem of eternal density: {}", target);
 				return ItemStack.EMPTY;
@@ -309,7 +309,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return new TranslationTextComponent(ObjHandler.eternalDensity.getTranslationKey());
+			return new TranslationTextComponent(PEItems.GEM_OF_ETERNAL_DENSITY.get().getTranslationKey());
 		}
 	}
 }

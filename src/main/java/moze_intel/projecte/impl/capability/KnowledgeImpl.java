@@ -15,7 +15,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
@@ -108,7 +108,7 @@ public final class KnowledgeImpl {
 			if (fullKnowledge) {
 				return false;
 			}
-			if (info.getItem() == ObjHandler.tome) {
+			if (info.getItem() instanceof Tome) {
 				if (info.hasNBT()) {
 					//Make sure we don't have any NBT as it doesn't have any effect for the tome
 					info = ItemInfo.fromItem(info.getItem());
@@ -133,7 +133,7 @@ public final class KnowledgeImpl {
 
 		@Override
 		public boolean removeKnowledge(@Nonnull ItemInfo info) {
-			if (info.getItem() == ObjHandler.tome) {
+			if (info.getItem() instanceof Tome) {
 				setFullKnowledge(false);
 				return true;
 			}

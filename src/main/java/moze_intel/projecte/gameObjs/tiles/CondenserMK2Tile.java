@@ -1,9 +1,10 @@
 package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +22,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 public class CondenserMK2Tile extends CondenserTile {
 
 	public CondenserMK2Tile() {
-		super(ObjHandler.CONDENSER_MK2_TILE);
+		super(PETileEntityTypes.CONDENSER_MK2.get());
 	}
 
 	@Nonnull
@@ -88,6 +89,6 @@ public class CondenserMK2Tile extends CondenserTile {
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ObjHandler.condenserMk2.getTranslationKey());
+		return new TranslationTextComponent(PEBlocks.CONDENSER_MK2.getBlock().getTranslationKey());
 	}
 }
