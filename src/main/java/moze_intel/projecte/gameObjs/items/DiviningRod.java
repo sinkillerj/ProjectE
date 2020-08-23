@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -16,10 +15,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Util;
@@ -54,7 +52,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItem());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<Collection<IRecipe<IInventory>>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getRecipes(IRecipeType.SMELTING).values());
+		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().func_241447_a_(IRecipeType.SMELTING));
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth))) {
 			if (world.isAirBlock(digPos)) {
 				continue;
@@ -67,7 +65,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			ItemStack blockStack = drops.get(0);
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
 			if (blockEmc == 0) {
-				for (IRecipe<IInventory> furnaceRecipe : furnaceRecipes.get()) {
+				for (FurnaceRecipe furnaceRecipe : furnaceRecipes.get()) {
 					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
 						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getRecipeOutput());
 						if (currentValue != 0) {

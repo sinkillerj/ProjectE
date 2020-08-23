@@ -2,8 +2,6 @@ package moze_intel.projecte.emc.mappers.recipe;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,15 +37,16 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
 		RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
-		//TODO: If there ever ends up being a forge registry for recipe types, use that instead
 		for (IRecipeType<?> recipeType : Registry.RECIPE_TYPE) {
 			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);
 			boolean wasHandled = false;
-			Collection<IRecipe<?>> recipes = null;
+			List<? extends IRecipe<?>> recipes = null;
 			List<IRecipe<?>> unhandled = new ArrayList<>();
 			for (IRecipeTypeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
@@ -56,7 +55,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 					if (recipeMapper.canHandle(recipeType)) {
 						if (recipes == null) {
 							//If we haven't already retrieved the recipes, do so
-							recipes = recipeManager.recipes.getOrDefault(recipeType, Collections.emptyMap()).values();
+							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it
+							// it will not actually compile due to IRecipeType's generic only having to be of IRecipe<?>
+							// so no information is stored about the type of inventory for the recipe
+							recipes = recipeManager.func_241447_a_((IRecipeType) recipeType);
 						}
 						int numHandled = 0;
 						for (IRecipe<?> recipe : recipes) {

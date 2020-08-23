@@ -22,7 +22,6 @@ import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.customRecipes.PhilStoneSmeltingHelper;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
@@ -126,7 +125,6 @@ public class PECore {
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
 		PETileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
@@ -179,11 +177,6 @@ public class PECore {
 
 	private void imcHandle(InterModProcessEvent event) {
 		IMCHandler.handleMessages();
-	}
-
-	private void addReloadListeners(AddReloadListenerEvent event) {
-		//Register the philo stone smelting helper at the regular event timing
-		event.addListener(new PhilStoneSmeltingHelper(event.getDataPackRegistries()));
 	}
 
 	private void addReloadListenersLowest(AddReloadListenerEvent event) {
