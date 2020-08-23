@@ -5,7 +5,7 @@ import java.util.Map;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 
-public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> implements IExtendedMappingCollector<T, V, A> {
+public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic<?>> implements IExtendedMappingCollector<T, V, A> {
 
 	private final A defaultArithmetic;
 
