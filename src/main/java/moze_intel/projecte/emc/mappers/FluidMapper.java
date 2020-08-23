@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
+import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFake;
@@ -26,6 +27,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.fraction.BigFraction;
 
 @EMCMapper
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -111,7 +113,8 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		if (!(mapper instanceof IExtendedMappingCollector)) {
 			throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
 		}
-		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
+		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> emapper =
+				(IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>>) mapper;
 		FullBigFractionArithmetic fluidArithmetic = new FullBigFractionArithmetic();
 
 		for (Pair<NormalizedSimpleStack, Pair<NormalizedSimpleStack, Integer>> pair : meltingAlt) {

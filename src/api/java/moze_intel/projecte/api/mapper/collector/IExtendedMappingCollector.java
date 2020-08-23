@@ -10,7 +10,7 @@ import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
  * @param <V> The type for the EMC Value
  * @param <A> The type for the arithmetic used in calculating the values.
  */
-public interface IExtendedMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic> extends IMappingCollector<T, V> {
+public interface IExtendedMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic<?>> extends IMappingCollector<T, V> {
 
 	/**
 	 * Add a Conversion that produced {@code outnumber} items of {@code output} by consuming the ingredients, that are specified in the {@code ingredientsWithAmount} Map,

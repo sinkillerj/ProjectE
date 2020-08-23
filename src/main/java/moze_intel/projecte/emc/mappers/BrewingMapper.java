@@ -46,7 +46,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	private static List<Object> itemConversions;
 	private static List<Object> typeConversions;
-	private static Class mixPredicateClass;
+	private static Class<?> mixPredicateClass;
 
 	private static boolean mapAllReagents() {
 		if (itemConversions == null || typeConversions == null) {
@@ -87,7 +87,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static boolean addReagents(List<Object> conversions) {
 		for (Object conversion : conversions) {
 			try {
-				Ingredient reagent = (Ingredient) ObfuscationReflectionHelper.getPrivateValue(mixPredicateClass, conversion, "field_185199_b");
+				Ingredient reagent = ObfuscationReflectionHelper.getPrivateValue((Class<Object>) mixPredicateClass, conversion, "field_185199_b");
 				for (ItemStack r : reagent.getMatchingStacks()) {
 					allReagents.add(ItemInfo.fromStack(r));
 				}
@@ -135,7 +135,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		waterIngredients.put(NSSFluid.createTag(FluidTags.WATER), FluidAttributes.BUCKET_VOLUME / 3);
 		mapper.addConversion(1, NSSItem.createItem(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.WATER)), waterIngredients);
 
-		Set<Class> canNotMap = new HashSet<>();
+		Set<Class<?>> canNotMap = new HashSet<>();
 		int recipeCount = 0;
 		List<IBrewingRecipe> recipes = BrewingRecipeRegistry.getRecipes();
 		for (IBrewingRecipe recipe : recipes) {

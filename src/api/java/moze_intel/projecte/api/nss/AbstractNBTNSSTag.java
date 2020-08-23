@@ -57,14 +57,14 @@ public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> imple
 		if (o == this) {
 			return true;
 		}
-		return super.equals(o) && Objects.equals(nbt, ((AbstractNBTNSSTag) o).nbt);
+		return super.equals(o) && Objects.equals(nbt, ((AbstractNBTNSSTag<?>) o).nbt);
 	}
 
 	@Override
 	public int hashCode() {
 		int code = super.hashCode();
 		if (hasNBT()) {
-			code = 31 * code + nbt.hashCode();
+			code = 31 * code + getNBT().hashCode();
 		}
 		return code;
 	}

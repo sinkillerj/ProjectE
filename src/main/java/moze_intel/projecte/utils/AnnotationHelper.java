@@ -84,7 +84,7 @@ public class AnnotationHelper {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
 					//If all the mods were loaded then attempt to get the mapper
-					IEMCMapper mapper = getEMCMapper(data.getMemberName());
+					IEMCMapper<?, ?> mapper = getEMCMapper(data.getMemberName());
 					if (mapper != null) {
 						try {
 							IEMCMapper<NormalizedSimpleStack, Long> emcMapper = (IEMCMapper<NormalizedSimpleStack, Long>) mapper;
@@ -104,7 +104,7 @@ public class AnnotationHelper {
 	}
 
 	@Nullable
-	private static IEMCMapper getEMCMapper(String className) {
+	private static IEMCMapper<?, ?> getEMCMapper(String className) {
 		return createOrGetInstance(className, IEMCMapper.class, EMCMapper.Instance.class, IEMCMapper::getName);
 	}
 
