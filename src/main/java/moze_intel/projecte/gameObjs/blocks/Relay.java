@@ -86,7 +86,7 @@ public class Relay extends BlockDirection {
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null) {

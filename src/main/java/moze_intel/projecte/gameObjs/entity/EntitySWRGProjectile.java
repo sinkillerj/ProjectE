@@ -119,13 +119,13 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
+	public void readAdditional(@Nonnull CompoundNBT compound) {
 		super.readAdditional(compound);
 		fromArcana = compound.getBoolean("fromArcana");
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
+	public void writeAdditional(@Nonnull CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("fromArcana", fromArcana);
 	}

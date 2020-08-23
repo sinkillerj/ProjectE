@@ -152,7 +152,7 @@ public class TransmutationContainer extends Container {
 	}
 
 	@Override
-	public boolean canDragIntoSlot(Slot slot) {
+	public boolean canDragIntoSlot(@Nonnull Slot slot) {
 		return !(slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock || slot instanceof SlotOutput);
 	}
 }

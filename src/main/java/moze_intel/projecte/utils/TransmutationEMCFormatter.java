@@ -31,7 +31,7 @@ public class TransmutationEMCFormatter {
 		if (extraDigits == 0) {
 			value = Double.parseDouble(emcAsString.substring(0, 3) + "." + emcAsString.substring(3, 5));
 		} else if (extraDigits == 1) {
-			value = Double.parseDouble(emcAsString.substring(0, 1) + "." + emcAsString.substring(1, 3));
+			value = Double.parseDouble(emcAsString.charAt(0) + "." + emcAsString.substring(1, 3));
 		} else {//if (extraDigits == 2)
 			value = Double.parseDouble(emcAsString.substring(0, 2) + "." + emcAsString.substring(2, 4));
 		}

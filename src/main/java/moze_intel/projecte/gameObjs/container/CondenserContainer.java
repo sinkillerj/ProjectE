@@ -109,14 +109,14 @@ public class CondenserContainer extends PEContainer {
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity player) {
+	public void onContainerClosed(@Nonnull PlayerEntity player) {
 		super.onContainerClosed(player);
 		tile.numPlayersUsing--;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
+	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slot == 0) {
 			if (tile.attemptCondenserSet(player)) {
 				this.detectAndSendChanges();

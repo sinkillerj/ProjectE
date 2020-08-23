@@ -34,8 +34,9 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced) {
-		list.add(getToolTip(stack));
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(getToolTip(stack));
 	}
 
 	@Override

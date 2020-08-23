@@ -134,11 +134,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
-		list.add(PELang.TOOLTIP_VOLCANITE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(PELang.TOOLTIP_VOLCANITE_2.translate());
-		list.add(PELang.TOOLTIP_VOLCANITE_3.translate());
-		list.add(PELang.TOOLTIP_VOLCANITE_4.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.TOOLTIP_VOLCANITE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		tooltips.add(PELang.TOOLTIP_VOLCANITE_2.translate());
+		tooltips.add(PELang.TOOLTIP_VOLCANITE_3.translate());
+		tooltips.add(PELang.TOOLTIP_VOLCANITE_4.translate());
 	}
 
 	@Override

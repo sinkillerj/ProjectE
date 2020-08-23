@@ -268,14 +268,15 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
-			list.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getModeLangEntry(stack)));
+			tooltips.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getModeLangEntry(stack)));
 		}
-		list.add(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		list.add(PELang.TOOLTIP_GEM_DENSITY_4.translate());
-		list.add(PELang.TOOLTIP_GEM_DENSITY_5.translate());
+		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_4.translate());
+		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_5.translate());
 	}
 
 	@Override

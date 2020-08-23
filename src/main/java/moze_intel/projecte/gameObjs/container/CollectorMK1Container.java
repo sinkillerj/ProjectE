@@ -74,7 +74,7 @@ public class CollectorMK1Container extends PEContainer {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slotID, int button, @Nonnull ClickType flag, PlayerEntity player) {
+	public ItemStack slotClick(int slotID, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slotID >= 0) {
 			Slot slot = getSlot(slotID);
 			if (slot instanceof SlotGhost && !slot.getStack().isEmpty()) {

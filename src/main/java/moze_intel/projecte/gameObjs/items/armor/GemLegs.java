@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -30,8 +31,9 @@ public class GemLegs extends GemArmorBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag advanced) {
-		list.add(PELang.GEM_LORE_LEGS.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.GEM_LORE_LEGS.translate());
 	}
 
 	private final Map<Integer, Long> lastJumpTracker = new HashMap<>();

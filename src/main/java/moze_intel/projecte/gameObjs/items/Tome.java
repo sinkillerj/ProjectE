@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,7 +19,8 @@ public class Tome extends ItemPE {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(PELang.TOOLTIP_TOME.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.TOOLTIP_TOME.translate());
 	}
 }

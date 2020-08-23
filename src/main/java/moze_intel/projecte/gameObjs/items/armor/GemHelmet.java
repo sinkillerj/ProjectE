@@ -1,6 +1,8 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
@@ -62,7 +64,8 @@ public class GemHelmet extends GemArmorBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_HELM.translate());
 		//TODO - 1.16: Change this to using the keybind modifier system forge adds so that we can allow them to change it separately?
 		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(Minecraft.getInstance().gameSettings.keyBindSneak.func_238171_j_(), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));

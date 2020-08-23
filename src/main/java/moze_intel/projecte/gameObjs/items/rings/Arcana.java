@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -116,19 +117,20 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flags) {
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
 		if (stack.hasTag()) {
 			if (stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-				list.add(getToolTip(stack));
+				tooltips.add(getToolTip(stack));
 			} else {
-				list.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
+				tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
 			}
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
 			CompoundNBT compound = player.getHeldItem(hand).getOrCreateTag();
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));

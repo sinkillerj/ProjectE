@@ -36,7 +36,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -55,14 +55,13 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
-		RayTraceResult rtr = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-		if (!(rtr instanceof BlockRayTraceResult)) {
+		BlockRayTraceResult result = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+		if (result.getType() != Type.BLOCK) {
 			return ActionResultType.PASS;
 		}
-		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
-		BlockPos fluidPos = brtr.getPos();
+		BlockPos fluidPos = result.getPos();
 		BlockState state = world.getBlockState(fluidPos);
-		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, brtr.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
+		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, result.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
 			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
 			if (fluid != Fluids.EMPTY) {
 				player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
@@ -75,7 +74,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
 			changeMode(player, player.getHeldItem(hand), hand);
 		}
@@ -83,7 +82,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		if (entity instanceof PlayerEntity && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			PlayerEntity player = (PlayerEntity) entity;
 			AxisAlignedBB bBox = player.getBoundingBox().grow(7);
