@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.EMCHelper;
@@ -130,7 +131,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(getToolTip(stack));
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(getToolTip(stack));
 	}
 }

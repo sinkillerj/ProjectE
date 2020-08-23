@@ -76,7 +76,7 @@ public class AlchChestContainer extends Container {
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity player) {
+	public void onContainerClosed(@Nonnull PlayerEntity player) {
 		super.onContainerClosed(player);
 		tile.numPlayersUsing--;
 	}

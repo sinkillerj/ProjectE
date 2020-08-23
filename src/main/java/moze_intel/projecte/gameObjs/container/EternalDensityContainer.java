@@ -57,7 +57,7 @@ public class EternalDensityContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
+	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem) {
 			return ItemStack.EMPTY;
 		}
@@ -68,7 +68,7 @@ public class EternalDensityContainer extends Container {
 	}
 
 	@Override
-	public boolean canDragIntoSlot(Slot slot) {
+	public boolean canDragIntoSlot(@Nonnull Slot slot) {
 		return false;
 	}
 }

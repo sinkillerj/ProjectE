@@ -71,7 +71,7 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInventory inv) {
 		return compose.getRemainingItems(inv);
 	}
 

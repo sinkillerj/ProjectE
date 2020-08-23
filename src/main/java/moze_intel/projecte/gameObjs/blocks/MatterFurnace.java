@@ -58,7 +58,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, @Nonnull BlockPos pos) {
+	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);

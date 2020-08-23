@@ -43,7 +43,7 @@ public abstract class BlockDirection extends Block {
 
 	@Override
 	@Deprecated
-	public void onReplaced(BlockState state, World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile != null) {

@@ -78,7 +78,8 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+			@Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
@@ -87,7 +88,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
 		BlockState state = super.getStateForPlacement(context);
 		return state == null ? null : state.with(FACING, context.getFace()).with(BlockStateProperties.WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
 	}
@@ -102,8 +103,8 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
-			@Nonnull BlockPos facingPos) {
+	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.get(BlockStateProperties.WATERLOGGED)) {
 			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}

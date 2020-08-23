@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
@@ -62,10 +63,11 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flags) {
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
 		if (stack.getTag() != null) {
 			//TODO - 1.16: Number format
-			tooltip.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
+			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
 	}
 

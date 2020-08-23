@@ -29,7 +29,7 @@ public class ProjectETNT extends TNTBlock {
 	}
 
 	@Override
-	public void catchFire(BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
+	public void catchFire(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
 		if (!world.isRemote) {
 			TNTEntity tnt = tntEntityCreator.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
 			world.addEntity(tnt);

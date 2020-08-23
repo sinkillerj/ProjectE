@@ -77,7 +77,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
 			fireArrow(player.getHeldItem(hand), world, player, 1F);
 		}

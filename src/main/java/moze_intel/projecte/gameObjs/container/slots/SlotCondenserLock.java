@@ -31,7 +31,7 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public boolean canTakeStack(PlayerEntity player) {
+	public boolean canTakeStack(@Nonnull PlayerEntity player) {
 		return false;
 	}
 

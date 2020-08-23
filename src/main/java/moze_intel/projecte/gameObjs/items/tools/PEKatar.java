@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
@@ -65,8 +66,9 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(getToolTip(stack));
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(getToolTip(stack));
 	}
 
 	/**
@@ -150,7 +152,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		//Shear entities
 		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
 	}
@@ -167,12 +169,12 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Nonnull
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
+	public UseAction getUseAction(@Nonnull ItemStack stack) {
 		return UseAction.BLOCK;
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack) {
+	public int getUseDuration(@Nonnull ItemStack stack) {
 		return 72_000;
 	}
 
@@ -187,7 +189,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	 */
 	@Nonnull
 	@Override
-	public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, LivingEntity entity, @Nonnull Hand hand) {
+	public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
 		if (entity instanceof IForgeShearable) {
 			IForgeShearable target = (IForgeShearable) entity;
 			BlockPos pos = entity.getPosition();

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -28,7 +29,8 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_CHEST.translate());
 	}
 

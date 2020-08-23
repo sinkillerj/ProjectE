@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -200,11 +201,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
-		list.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
+		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
 		if (stack.hasTag()) {
-			list.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
+			tooltips.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
 		}
 	}
 

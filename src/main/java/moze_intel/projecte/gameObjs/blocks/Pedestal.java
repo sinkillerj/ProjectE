@@ -181,7 +181,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
 		BlockState state = super.getStateForPlacement(context);
 		return state == null ? null : state.with(BlockStateProperties.WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
 	}
@@ -196,8 +196,8 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
-			@Nonnull BlockPos facingPos) {
+	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.get(BlockStateProperties.WATERLOGGED)) {
 			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}

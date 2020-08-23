@@ -114,8 +114,8 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
-			@Nonnull BlockPos facingPos) {
+	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.get(BlockStateProperties.WATERLOGGED)) {
 			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}

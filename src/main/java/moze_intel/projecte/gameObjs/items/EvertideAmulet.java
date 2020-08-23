@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.BasicItemCapability;
@@ -154,11 +155,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flags) {
-		list.add(PELang.TOOLTIP_EVERTIDE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
-		list.add(PELang.TOOLTIP_EVERTIDE_2.translate());
-		list.add(PELang.TOOLTIP_EVERTIDE_3.translate());
-		list.add(PELang.TOOLTIP_EVERTIDE_4.translate());
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.addInformation(stack, world, tooltips, flags);
+		tooltips.add(PELang.TOOLTIP_EVERTIDE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+		tooltips.add(PELang.TOOLTIP_EVERTIDE_2.translate());
+		tooltips.add(PELang.TOOLTIP_EVERTIDE_3.translate());
+		tooltips.add(PELang.TOOLTIP_EVERTIDE_4.translate());
 	}
 
 	@Override
