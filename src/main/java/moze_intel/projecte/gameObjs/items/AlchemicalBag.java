@@ -8,7 +8,6 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -52,7 +51,7 @@ public class AlchemicalBag extends ItemPE {
 		for (ItemStack stack : inventory) {
 			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag) {
 				if (!cap.isPresent()) {
-					cap = LazyOptionalHelper.toOptional(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY));
+					cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
 					if (!cap.isPresent()) {
 						//If the player really doesn't have the capability and it isn't just not not loaded yet, exit
 						break;

@@ -5,7 +5,6 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.item.ItemStack;
 
 @NBTProcessor
@@ -24,7 +23,6 @@ public class StoredEMCProcessor implements INBTProcessor {
 	@Override
 	public long recalculateEMC(@Nonnull ItemInfo info, long currentEMC) throws ArithmeticException {
 		ItemStack stack = info.createStack();
-		return LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY))
-				.map(emcHolder -> Math.addExact(currentEMC, emcHolder.getStoredEmc(stack))).orElse(currentEMC);
+		return stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).map(emcHolder -> Math.addExact(currentEMC, emcHolder.getStoredEmc(stack))).orElse(currentEMC);
 	}
 }

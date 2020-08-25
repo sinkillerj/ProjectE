@@ -12,7 +12,6 @@ import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -146,7 +145,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	private void checkFuelOrKlein() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+			Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 			if (emcHolder.isPresent()) {
 				if (emcHolder.get().getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
@@ -221,8 +220,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	public long getItemCharge() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			return LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY)).map(emcHolder ->
-					emcHolder.getStoredEmc(upgrading)).orElse(-1L);
+			return upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).map(emcHolder -> emcHolder.getStoredEmc(upgrading)).orElse(-1L);
 		}
 		return -1;
 	}
@@ -233,7 +231,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 		if (upgrading.isEmpty() || charge <= 0) {
 			return -1;
 		}
-		Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+		Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (emcHolder.isPresent()) {
 			long max = emcHolder.get().getMaximumEmc(upgrading);
 			if (charge >= max) {

@@ -59,7 +59,7 @@ public final class EMCHelper {
 			}
 		}
 
-		Optional<IItemHandler> itemHandlerCap = LazyOptionalHelper.toOptional(player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+		Optional<IItemHandler> itemHandlerCap = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (itemHandlerCap.isPresent()) {
 			//Ensure that we have an item handler capability, because if for example the player is dead we will not
 			IItemHandler inv = itemHandlerCap.get();
@@ -109,7 +109,7 @@ public final class EMCHelper {
 		if (stack.isEmpty()) {
 			return 0;
 		}
-		Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+		Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);

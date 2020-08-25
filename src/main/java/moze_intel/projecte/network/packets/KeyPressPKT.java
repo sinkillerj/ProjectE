@@ -13,7 +13,6 @@ import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -47,7 +46,10 @@ public class KeyPressPKT {
 		public static void handle(final KeyPressPKT message, Supplier<NetworkEvent.Context> ctx) {
 			ctx.get().enqueueWork(() -> {
 				ServerPlayerEntity player = ctx.get().getSender();
-				Optional<InternalAbilities> cap = LazyOptionalHelper.toOptional(player.getCapability(InternalAbilities.CAPABILITY));
+				if (player == null) {
+					return;
+				}
+				Optional<InternalAbilities> cap = player.getCapability(InternalAbilities.CAPABILITY).resolve();
 				if (!cap.isPresent()) {
 					return;
 				}
@@ -72,7 +74,7 @@ public class KeyPressPKT {
 					switch (message.key) {
 						case CHARGE:
 							if (!stack.isEmpty()) {
-								Optional<IItemCharge> chargeCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.CHARGE_ITEM_CAPABILITY));
+								Optional<IItemCharge> chargeCapability = stack.getCapability(ProjectEAPI.CHARGE_ITEM_CAPABILITY).resolve();
 								if (chargeCapability.isPresent() && chargeCapability.get().changeCharge(player, stack, hand)) {
 									return;
 								}
@@ -86,7 +88,7 @@ public class KeyPressPKT {
 							break;
 						case EXTRA_FUNCTION:
 							if (!stack.isEmpty()) {
-								Optional<IExtraFunction> extraFunctionCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY));
+								Optional<IExtraFunction> extraFunctionCapability = stack.getCapability(ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY).resolve();
 								if (extraFunctionCapability.isPresent() && extraFunctionCapability.get().doExtraFunction(stack, player, hand)) {
 									return;
 								}
@@ -102,7 +104,7 @@ public class KeyPressPKT {
 							break;
 						case FIRE_PROJECTILE:
 							if (!stack.isEmpty() && internalAbilities.getProjectileCooldown() == 0) {
-								Optional<IProjectileShooter> projectileShooterCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.PROJECTILE_SHOOTER_ITEM_CAPABILITY));
+								Optional<IProjectileShooter> projectileShooterCapability = stack.getCapability(ProjectEAPI.PROJECTILE_SHOOTER_ITEM_CAPABILITY).resolve();
 								if (projectileShooterCapability.isPresent() && projectileShooterCapability.get().shootProjectile(player, stack, hand)) {
 									PlayerHelper.swingItem(player, hand);
 									internalAbilities.resetProjectileCooldown();
@@ -119,7 +121,7 @@ public class KeyPressPKT {
 							break;
 						case MODE:
 							if (!stack.isEmpty()) {
-								Optional<IModeChanger> modeChangerCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY));
+								Optional<IModeChanger> modeChangerCapability = stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).resolve();
 								if (modeChangerCapability.isPresent() && modeChangerCapability.get().changeMode(player, stack, hand)) {
 									return;
 								}

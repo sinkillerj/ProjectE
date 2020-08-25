@@ -17,7 +17,6 @@ import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -227,7 +226,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.get();
 					long shrunkenValue = MathUtils.clampToLong(value);
@@ -278,7 +277,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				}
 				ItemStack stack = inputLocks.getStackInSlot(i);
 				if (!stack.isEmpty()) {
-					Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+					Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 					if (holderCapability.isPresent()) {
 						IItemEmcHolder emcHolder = holderCapability.get();
 						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
@@ -330,7 +329,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> emcHolder = LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+				Optional<IItemEmcHolder> emcHolder = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (emcHolder.isPresent()) {
 					emc = emc.add(BigInteger.valueOf(emcHolder.get().getStoredEmc(stack)));
 				}

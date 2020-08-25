@@ -17,7 +17,6 @@ import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -98,7 +97,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {
-		Optional<IItemHandler> inventoryCapability = LazyOptionalHelper.toOptional(eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (!inventoryCapability.isPresent()) {
 			return ActionResultType.FAIL;
 		}
@@ -232,7 +231,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private boolean doBlockPlace(PlayerEntity player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
-		Optional<IItemHandler> inventoryCapability = LazyOptionalHelper.toOptional(eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (!inventoryCapability.isPresent()) {
 			return false;
 		}
@@ -241,7 +240,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		if (klein.isEmpty()) {
 			return false;
 		}
-		Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+		Optional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null) {
 			return false;
 		}

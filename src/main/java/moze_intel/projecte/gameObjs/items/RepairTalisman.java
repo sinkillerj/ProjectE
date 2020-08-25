@@ -19,7 +19,6 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -125,7 +124,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 		} else {
 			boolean hasAction = false;
-			Optional<IItemHandler> cap = LazyOptionalHelper.toOptional(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+			Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 			if (cap.isPresent()) {
 				IItemHandler inv = cap.get();
 				for (int i = 0; i < inv.getSlots(); i++) {

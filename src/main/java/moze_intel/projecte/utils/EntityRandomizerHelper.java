@@ -21,7 +21,7 @@ public class EntityRandomizerHelper {
 	private static List<EntityType<? extends MobEntity>> peacefulMobs = Collections.emptyList();
 	private static List<EntityType<? extends MobEntity>> hostileMobs = Collections.emptyList();
 
-	public static void init() {//TODO - 1.16: Add new mobs
+	public static void init() {
 		//Peaceful Mobs
 		registerDefault(true, EntityType.SHEEP);
 		registerDefault(true, EntityType.PIG);
@@ -51,6 +51,7 @@ public class EntityRandomizerHelper {
 		registerDefault(true, EntityType.PANDA);
 		registerDefault(true, EntityType.TRADER_LLAMA);
 		registerDefault(true, EntityType.WANDERING_TRADER);
+		registerDefault(true, EntityType.STRIDER);
 
 		//Hostile Mobs
 		registerDefault(false, EntityType.ZOMBIE);
@@ -60,6 +61,10 @@ public class EntityRandomizerHelper {
 		registerDefault(false, EntityType.ENDERMAN);
 		registerDefault(false, EntityType.SILVERFISH);
 		registerDefault(false, EntityType.ZOMBIFIED_PIGLIN);
+		registerDefault(false, EntityType.PIGLIN);
+		registerDefault(false, EntityType.field_242287_aj);
+		registerDefault(false, EntityType.HOGLIN);
+		registerDefault(false, EntityType.ZOGLIN);
 		registerDefault(false, EntityType.GHAST);
 		registerDefault(false, EntityType.BLAZE);
 		registerDefault(false, EntityType.SLIME);

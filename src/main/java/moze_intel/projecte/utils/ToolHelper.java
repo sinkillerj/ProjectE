@@ -647,11 +647,11 @@ public class ToolHelper {
 	}
 
 	private static int getCharge(ItemStack stack) {
-		return LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.CHARGE_ITEM_CAPABILITY)).map(itemCharge -> itemCharge.getCharge(stack)).orElse(0);
+		return stack.getCapability(ProjectEAPI.CHARGE_ITEM_CAPABILITY).map(itemCharge -> itemCharge.getCharge(stack)).orElse(0);
 	}
 
 	private static byte getMode(ItemStack stack) {
-		return LazyOptionalHelper.toOptional(stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY)).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
+		return stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
 	}
 
 	@FunctionalInterface

@@ -93,7 +93,7 @@ public final class EMCMappingHandler {
 		File pregeneratedEmcFile = Paths.get("config", PECore.MODNAME, "pregenerated_emc.json").toFile();
 		Map<NormalizedSimpleStack, Long> graphMapperValues;
 		if (shouldUsePregenerated && pregeneratedEmcFile.canRead() && PregeneratedEMC.tryRead(pregeneratedEmcFile, graphMapperValues = new HashMap<>())) {
-			PECore.LOGGER.info(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
+			PECore.LOGGER.info("Loaded {} values from pregenerated EMC File", graphMapperValues.size());
 		} else {
 			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
