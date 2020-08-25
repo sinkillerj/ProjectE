@@ -236,7 +236,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			list.add(PELang.PEDESTAL_TIME_WATCH_1.translateColored(TextFormatting.BLUE, ProjectEConfig.server.effects.timePedBonus.get()));
 		}
 		if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(TextFormatting.BLUE, ProjectEConfig.server.effects.timePedMobSlowness.get()));
+			//TODO - 1.16: Number format
+			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(TextFormatting.BLUE, String.format("%.3f", ProjectEConfig.server.effects.timePedMobSlowness.get())));
 		}
 		return list;
 	}

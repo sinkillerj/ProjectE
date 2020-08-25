@@ -72,16 +72,13 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	@Override
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull FuelUpgradeRecipe o, @Nonnull IIngredients ingredients) {
 		int itemSlots = 0;
-
 		int xPos = 16;
-
 		for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM)) {
 			recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
 			recipeLayout.getItemStacks().set(itemSlots, s);
 			itemSlots++;
 			xPos += 16;
 		}
-
 		xPos = 104;
 		for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM)) {
 			recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
@@ -96,7 +93,6 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		ITextComponent emc = PELang.EMC.translate(recipe.getUpgradeEMC());
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.func_238414_a_(emc);
-		//TODO - 1.16: Test this renders correctly
 		fontRenderer.func_243248_b(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(matrix, 55, 18);
 	}

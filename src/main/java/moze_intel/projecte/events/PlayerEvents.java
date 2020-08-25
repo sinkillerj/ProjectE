@@ -12,7 +12,6 @@ import moze_intel.projecte.impl.TransmutationOffline;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
@@ -134,7 +133,7 @@ public class PlayerEvents {
 		if (bag.isEmpty()) {
 			return;
 		}
-		Optional<IAlchBagProvider> cap = LazyOptionalHelper.toOptional(player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY));
+		Optional<IAlchBagProvider> cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
 		if (!cap.isPresent()) {
 			return;
 		}

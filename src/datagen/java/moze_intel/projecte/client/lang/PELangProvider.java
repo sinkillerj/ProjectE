@@ -361,9 +361,8 @@ public class PELangProvider extends BaseLanguageProvider {
         add(PELang.PEDESTAL_SOUL_STONE_2, "Half a heart every %s");
         add(PELang.PEDESTAL_SWRG_1, "Shoots lightning at nearby mobs");
         add(PELang.PEDESTAL_SWRG_2, "Activates every %s");
-        //TODO - 1.16: FIXME, cases like this don't work properly as %d and %.3f aren't replaced properly with text components, check other strings also for similar things
-        add(PELang.PEDESTAL_TIME_WATCH_1, "Gives %d bonus ticks to nearby blocks every tick");
-        add(PELang.PEDESTAL_TIME_WATCH_2, "Each tick, nearby mobs move %.3f times the speed");
+        add(PELang.PEDESTAL_TIME_WATCH_1, "Gives %s bonus ticks to nearby blocks every tick");
+        add(PELang.PEDESTAL_TIME_WATCH_2, "Each tick, nearby mobs move %s times the speed");
         add(PELang.PEDESTAL_VOLCANITE_1, "Prevents rain/snow storms");
         add(PELang.PEDESTAL_VOLCANITE_2, "Attempts to stop weather every %s");
         add(PELang.PEDESTAL_ZERO_1, "Extinguishes entities");

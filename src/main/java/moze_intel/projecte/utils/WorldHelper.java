@@ -213,7 +213,7 @@ public final class WorldHelper {
 	 */
 	@Nullable
 	public static IItemHandler getItemHandler(@Nonnull TileEntity tile, @Nullable Direction direction) {
-		Optional<IItemHandler> capability = LazyOptionalHelper.toOptional(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction));
+		Optional<IItemHandler> capability = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
 		if (capability.isPresent()) {
 			return capability.get();
 		} else if (tile instanceof ISidedInventory) {

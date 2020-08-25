@@ -8,7 +8,6 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.LazyOptionalHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -70,7 +69,7 @@ public class ToolTipEvent {
 			if (current.getTag().contains(Constants.NBT_KEY_STORED_EMC)) {
 				value = current.getTag().getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
-				Optional<IItemEmcHolder> holderCapability = LazyOptionalHelper.toOptional(current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY));
+				Optional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {
 					value = holderCapability.get().getStoredEmc(current);
 				} else {
