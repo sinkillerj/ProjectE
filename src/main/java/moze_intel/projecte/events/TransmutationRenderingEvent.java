@@ -103,6 +103,8 @@ public class TransmutationRenderingEvent {
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
 					matrix.push();
 					matrix.translate(pos.getX(), pos.getY(), pos.getZ());
+					//TODO - 1.16: FIX this, some overlays for things like lower half slabs or corner stairs
+					// have parts that don't render quite right for the overlay
 					matrix.scale(1.02F, 1.02F, 1.02F);
 					matrix.translate(-0.01, -0.01, -0.01);
 					Matrix4f matrix4f = matrix.getLast().getMatrix();

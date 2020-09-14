@@ -19,7 +19,8 @@ import net.minecraft.resources.IResourceManager;
 public class ShulkerBoxColoringMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		int recipeCount = 0;
 		NSSItem nssBox = NSSItem.createItem(Blocks.SHULKER_BOX);
 		for (DyeColor color : DyeColor.values()) {

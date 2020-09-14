@@ -147,7 +147,7 @@ public final class EMCMappingHandler {
 		}
 
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
-		FuelMapper.loadMap();
+		FuelMapper.loadMap(dataPackRegistries.func_244358_d());
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {

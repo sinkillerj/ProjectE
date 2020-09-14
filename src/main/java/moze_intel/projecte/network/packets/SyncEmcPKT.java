@@ -7,6 +7,7 @@ import moze_intel.projecte.emc.FuelMapper;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class SyncEmcPKT {
@@ -41,7 +42,8 @@ public class SyncEmcPKT {
 			ctx.get().enqueueWork(() -> {
 				PECore.LOGGER.info("Receiving EMC data from server.");
 				EMCMappingHandler.fromPacket(pkt.data);
-				FuelMapper.loadMap();
+				//TODO - 1.16: Figure out if this is correct or if it should somehow reference ItemTags instead
+				FuelMapper.loadMap(TagCollectionManager.func_242178_a());
 			});
 			ctx.get().setPacketHandled(true);
 		}

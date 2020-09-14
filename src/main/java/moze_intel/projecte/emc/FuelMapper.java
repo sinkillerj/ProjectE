@@ -9,8 +9,8 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollectionSupplier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagCollectionManager;
 
 public final class FuelMapper {
 
@@ -18,10 +18,10 @@ public final class FuelMapper {
 
 	private static final List<Item> FUEL_MAP = new ArrayList<>();
 
-	public static void loadMap() {
+	public static void loadMap(ITagCollectionSupplier tagCollectionSupplier) {
 		FUEL_MAP.clear();
 		//TODO - 1.16: Try to move this back to being cached?
-		ITag<Item> collectorFuelTag = TagCollectionManager.func_242178_a().func_241836_b().func_241834_b(PECore.rl("collector_fuel"));
+		ITag<Item> collectorFuelTag = tagCollectionSupplier.func_241836_b().func_241834_b(PECore.rl("collector_fuel"));
 		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}
@@ -36,14 +36,11 @@ public final class FuelMapper {
 
 	public static ItemStack getFuelUpgrade(ItemStack stack) {
 		int index = FUEL_MAP.indexOf(stack.getItem());
-
 		if (index == -1) {
 			PECore.LOGGER.warn("Tried to upgrade invalid fuel: {}", stack);
 			return ItemStack.EMPTY;
 		}
-
 		int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
-
 		return new ItemStack(FUEL_MAP.get(nextIndex));
 	}
 

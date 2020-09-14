@@ -21,7 +21,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class TippedArrowMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		int recipeCount = 0;
 		NSSItem nssArrow = NSSItem.createItem(Items.ARROW);
 		for (Potion potionType : ForgeRegistries.POTION_TYPES.getValues()) {

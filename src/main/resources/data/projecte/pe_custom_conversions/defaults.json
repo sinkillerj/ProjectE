@@ -23,6 +23,18 @@
           }
         },
         {
+          "output": "minecraft:crimson_nylium",
+          "ingredients": {
+            "minecraft:netherrack": 2
+          }
+        },
+        {
+          "output": "minecraft:warped_nylium",
+          "ingredients": {
+            "minecraft:netherrack": 2
+          }
+        },
+        {
           "output": "minecraft:grass_path",
           "ingredients": [ "minecraft:grass" ]
         },
@@ -119,6 +131,14 @@
             "minecraft:glass_bottle",
             "FAKE|single_emc"
           ]
+        },
+        {
+          "output": "minecraft:soul_soil",
+          "ingredients": [ "minecraft:soul_sand" ]
+        },
+        {
+          "output": "minecraft:warped_wart_block",
+          "ingredients": [ "minecraft:nether_wart_block" ]
         }
       ]
     },
@@ -202,6 +222,8 @@
       "minecraft:andesite": 16,
       "minecraft:end_stone": 1,
       "minecraft:netherrack": 1,
+      "minecraft:basalt": 4,
+      "minecraft:blackstone": 4,
       "minecraft:dirt": 1,
       "minecraft:sand": 1,
       "minecraft:red_sand": 1,
@@ -224,6 +246,7 @@
       "minecraft:bamboo": 32,
       "minecraft:soul_sand": 49,
       "minecraft:obsidian": 64,
+      "minecraft:crying_obsidian": 768,
       "minecraft:sponge": 128,
       "minecraft:grass": 1,
       "minecraft:seagrass": 1,
@@ -234,6 +257,13 @@
       "minecraft:large_fern": 1,
       "minecraft:packed_ice": 4,
       "minecraft:magma_block": 128,
+      "minecraft:nether_sprouts": 1,
+      "minecraft:crimson_roots": 1,
+      "minecraft:warped_roots": 1,
+      "minecraft:weeping_vines": 8,
+      "minecraft:twisting_vines": 8,
+      "minecraft:crimson_fungus": 32,
+      "minecraft:warped_fungus": 32,
 
       "minecraft:tube_coral_block": 64,
       "minecraft:brain_coral_block": 64,
@@ -342,6 +372,7 @@
 
       "#minecraft:wool": 48,
 
+      "minecraft:netherite_scrap": 12288,
       "#forge:gems/diamond": 8192,
       "#forge:dusts/redstone": 64,
       "#forge:dusts/glowstone": 384

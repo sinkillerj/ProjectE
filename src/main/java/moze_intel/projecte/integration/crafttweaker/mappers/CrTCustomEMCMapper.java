@@ -27,7 +27,8 @@ public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : customEmcValues.entrySet()) {
 			NormalizedSimpleStack normStack = entry.getKey();
 			long value = entry.getValue();
