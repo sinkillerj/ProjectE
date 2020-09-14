@@ -15,7 +15,8 @@ import net.minecraftforge.common.Tags;
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		for (Item ore : Tags.Items.ORES.getAllElements()) {
 			NSSItem nssOre = NSSItem.createItem(ore);
 			mapper.setValueBefore(nssOre, 0L);

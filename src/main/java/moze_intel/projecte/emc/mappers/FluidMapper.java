@@ -93,7 +93,8 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries, IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries,
+			IResourceManager resourceManager) {
 		NSSFluid fluidTag = NSSFluid.createTag(FluidTags.WATER);
 		mapper.setValueBefore(fluidTag, Constants.FREE_ARITHMETIC_VALUE);
 		//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values

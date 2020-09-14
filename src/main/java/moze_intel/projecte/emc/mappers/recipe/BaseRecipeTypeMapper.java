@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			return false;
 		}
 		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
-		for (Ingredient recipeItem : recipe.getIngredients()) {
+		for (Ingredient recipeItem : getIngredients(recipe)) {
 			ItemStack[] matches = recipeItem.getMatchingStacks();
 			if (matches.length == 1) {
 				//Handle this ingredient as a direct representation of the stack it represents
@@ -54,5 +55,10 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 		}
 		mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap.getMap());
 		return true;
+	}
+
+	//Allow overwriting the ingredients list because Smithing recipes don't override it themselves
+	protected Collection<Ingredient> getIngredients(IRecipe<?> recipe) {
+		return recipe.getIngredients();
 	}
 }
