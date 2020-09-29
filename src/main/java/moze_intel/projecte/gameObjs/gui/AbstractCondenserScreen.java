@@ -46,11 +46,11 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	}
 
 	@Override
-	protected void func_230459_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+	protected void renderHoveredTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 
 		if (toDisplay < 1e12) {
-			super.func_230459_a_(matrix, mouseX, mouseY);
+			super.renderHoveredTooltip(matrix, mouseX, mouseY);
 			return;
 		}
 
@@ -62,7 +62,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(toDisplay)), mouseX, mouseY);
 		} else {
-			super.func_230459_a_(matrix, mouseX, mouseY);
+			super.renderHoveredTooltip(matrix, mouseX, mouseY);
 		}
 	}
 

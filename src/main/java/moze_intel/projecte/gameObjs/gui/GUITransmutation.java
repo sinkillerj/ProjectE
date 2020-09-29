@@ -12,6 +12,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.AbstractCommandBlockScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -155,7 +156,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		int minX = textBoxFilter.x;
 		int minY = textBoxFilter.y;
 		int maxX = minX + textBoxFilter.getWidth();
-		int maxY = minY + textBoxFilter.getWidth_CLASH();//TODO - Better mappings: This is really getHeight
+		int maxY = minY + textBoxFilter.getHeightRealms();//TODO - Better mappings: This is really getHeight
 
 		if (x >= minX && x <= maxX && y <= maxY) {
 			if (mouseButton == 1) {
@@ -177,11 +178,11 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void func_230459_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+	protected void renderHoveredTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEMC();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {
-			super.func_230459_a_(matrix, mouseX, mouseY);
+			super.renderHoveredTooltip(matrix, mouseX, mouseY);
 			return;
 		}
 
@@ -193,7 +194,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(emcAmount)), mouseX, mouseY);
 		} else {
-			super.func_230459_a_(matrix, mouseX, mouseY);
+			super.renderHoveredTooltip(matrix, mouseX, mouseY);
 		}
 	}
 }

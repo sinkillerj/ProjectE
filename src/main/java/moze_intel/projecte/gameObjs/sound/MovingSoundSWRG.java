@@ -23,7 +23,7 @@ public class MovingSoundSWRG extends TickableSound {//TODO - 1.16: Double check 
 	@Override
 	public void tick() {
 		if (!this.swrgProjectile.isAlive()) {
-			this.func_239509_o_();
+			this.finishPlaying();
 		} else {
 			this.x = (float) this.swrgProjectile.getPosX();
 			this.y = (float) this.swrgProjectile.getPosY();

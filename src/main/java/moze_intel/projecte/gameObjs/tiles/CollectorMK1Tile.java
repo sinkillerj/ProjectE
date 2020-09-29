@@ -243,7 +243,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	}
 
 	public int getSunLevel() {
-		if (world.func_230315_m_().func_236040_e_()) {
+		if (world.getDimensionType().isUltrawarm()) {
 			return 16;
 		}
 		return world.getLight(getPos().up()) + 1;

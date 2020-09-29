@@ -53,7 +53,7 @@ public final class PlayerHelper {
 			return false;
 		}
 		World world = player.getEntityWorld();
-		BlockSnapshot before = BlockSnapshot.create(world.func_234923_W_(), world, pos);
+		BlockSnapshot before = BlockSnapshot.create(world.getDimensionKey(), world, pos);
 		world.setBlockState(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);

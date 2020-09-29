@@ -58,7 +58,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it
 							// it will not actually compile due to IRecipeType's generic only having to be of IRecipe<?>
 							// so no information is stored about the type of inventory for the recipe
-							recipes = recipeManager.func_241447_a_((IRecipeType) recipeType);
+							recipes = recipeManager.getRecipesForType((IRecipeType) recipeType);
 						}
 						int numHandled = 0;
 						for (IRecipe<?> recipe : recipes) {

@@ -23,7 +23,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
         @Nonnull
         @Override
-        public ITextComponent func_242392_c() {
+        public ITextComponent getGroupName() {
             //Overwrite the lang key to match the one representing ProjectE
             return PELang.PROJECTE.translate();
         }
