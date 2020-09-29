@@ -192,7 +192,7 @@ public final class WorldHelper {
 	 */
 	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = world.getBlockState(pos);
-		if (checkWaterVaporize && world.func_230315_m_().func_236040_e_() && fluid.isIn(FluidTags.WATER)) {
+		if (checkWaterVaporize && world.getDimensionType().isUltrawarm() && fluid.isIn(FluidTags.WATER)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 			for (int l = 0; l < 8; ++l) {
 				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);

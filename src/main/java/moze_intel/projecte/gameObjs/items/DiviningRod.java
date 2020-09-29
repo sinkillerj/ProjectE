@@ -53,7 +53,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItem());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().func_241447_a_(IRecipeType.SMELTING));
+		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getRecipesForType(IRecipeType.SMELTING));
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth))) {
 			if (world.isAirBlock(digPos)) {
 				continue;
