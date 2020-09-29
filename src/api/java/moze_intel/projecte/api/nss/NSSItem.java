@@ -92,7 +92,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	 */
 	@Nonnull
 	public static NSSItem createTag(@Nonnull ITag<Item> tag) {
-		ResourceLocation tagLocation = TagCollectionManager.func_242178_a().func_241836_b().func_232973_a_(tag);
+		ResourceLocation tagLocation = TagCollectionManager.getManager().getItemTags().getDirectIdFromTag(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
 		}
@@ -120,7 +120,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	@Nonnull
 	@Override
 	protected ITagCollection<Item> getTagCollection() {
-		return TagCollectionManager.func_242178_a().func_241836_b();
+		return TagCollectionManager.getManager().getItemTags();
 	}
 
 	@Override

@@ -138,7 +138,7 @@ public class ClientRegistration {
 
 	private static void addPropertyOverrides(ResourceLocation override, IItemPropertyGetter propertyGetter, IItemProvider... itemProviders) {
 		for (IItemProvider itemProvider : itemProviders) {
-			ItemModelsProperties.func_239418_a_(itemProvider.asItem(), override, propertyGetter);
+			ItemModelsProperties.registerProperty(itemProvider.asItem(), override, propertyGetter);
 		}
 	}
 

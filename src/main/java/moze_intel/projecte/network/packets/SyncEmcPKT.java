@@ -43,7 +43,7 @@ public class SyncEmcPKT {
 				PECore.LOGGER.info("Receiving EMC data from server.");
 				EMCMappingHandler.fromPacket(pkt.data);
 				//TODO - 1.16: Figure out if this is correct or if it should somehow reference ItemTags instead
-				FuelMapper.loadMap(TagCollectionManager.func_242178_a());
+				FuelMapper.loadMap(TagCollectionManager.getManager());
 			});
 			ctx.get().setPacketHandled(true);
 		}

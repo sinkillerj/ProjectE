@@ -79,7 +79,7 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	 */
 	@Nonnull
 	public static NSSFluid createTag(@Nonnull ITag<Fluid> tag) {
-		ResourceLocation tagLocation = TagCollectionManager.func_242178_a().func_241837_c().func_232973_a_(tag);
+		ResourceLocation tagLocation = TagCollectionManager.getManager().getFluidTags().getDirectIdFromTag(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSFluid with a tag that does not exist");
 		}
@@ -106,7 +106,7 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	@Nonnull
 	@Override
 	protected ITagCollection<Fluid> getTagCollection() {
-		return TagCollectionManager.func_242178_a().func_241837_c();
+		return TagCollectionManager.getManager().getFluidTags();
 	}
 
 	@Override
