@@ -21,7 +21,7 @@ public class AlchChestScreen extends PEContainerScreen<AlchChestContainer> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);

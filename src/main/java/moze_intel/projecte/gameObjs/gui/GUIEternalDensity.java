@@ -33,7 +33,7 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float p_146976_1_, int p_146976_2_, int p_146976_3_) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);

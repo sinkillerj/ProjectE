@@ -65,7 +65,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		this.font.func_243248_b(matrix, PELang.TRANSMUTATION_TRANSMUTE.translate(), 6, 8, 0x404040);
 		BigInteger emcAmount = inv.getAvailableEMC();
 		this.font.func_243248_b(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);

@@ -14,7 +14,7 @@ public abstract class PEContainerScreen<T extends Container> extends ContainerSc
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		//TODO - 1.16: Adjust all our GUIs to have room for the title and inventory text to show
 	}
 
