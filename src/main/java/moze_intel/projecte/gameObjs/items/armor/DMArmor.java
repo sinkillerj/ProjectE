@@ -94,8 +94,7 @@ public class DMArmor extends PEArmor {
 
 		@Override
 		public float getKnockbackResistance() {
-			//TODO - 1.16: Knockback resistance?
-			return 0;
+			return 0.1F;
 		}
 	}
 }
