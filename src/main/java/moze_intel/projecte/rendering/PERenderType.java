@@ -9,8 +9,8 @@ import net.minecraft.util.ResourceLocation;
 public class PERenderType extends RenderType {
 
 	//Ignored
-	public PERenderType(String name, VertexFormat format, int p_i225992_3_, int p_i225992_4_, boolean p_i225992_5_, boolean p_i225992_6_, Runnable runnablePre, Runnable runnablePost) {
-		super(name, format, p_i225992_3_, p_i225992_4_, p_i225992_5_, p_i225992_6_, runnablePre, runnablePost);
+	private PERenderType(String name, VertexFormat format, int drawMode, int bufferSize, boolean useDelegate, boolean needsSorting, Runnable setupTask, Runnable clearTask) {
+		super(name, format, drawMode, bufferSize, useDelegate, needsSorting, setupTask, clearTask);
 	}
 
 	public static RenderType spriteRenderer(ResourceLocation resourceLocation) {

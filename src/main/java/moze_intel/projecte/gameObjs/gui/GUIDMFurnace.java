@@ -25,7 +25,7 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 
@@ -41,7 +41,7 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		//TODO: - 1.16 Move to just adjusting title positions
 		this.font.func_243248_b(matrix, PELang.GUI_DARK_MATTER_FURNACE.translate(), 57, 5, 0x404040);
 		this.font.func_243248_b(matrix, PELang.INVENTORY.translate(), 57, ySize - 96 + 2, 0x404040);

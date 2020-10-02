@@ -23,13 +23,13 @@ public class GUIRelayMK2 extends PEContainerScreen<RelayMK2Container> {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		this.font.func_243248_b(matrix, PELang.GUI_RELAY_MK2.translate(), 28, 6, 0x404040);
 		this.font.drawString(matrix, Constants.EMC_FORMATTER.format(container.emc.get()), 107, 25, 0x404040);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 

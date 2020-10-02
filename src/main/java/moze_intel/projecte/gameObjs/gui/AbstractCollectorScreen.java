@@ -30,7 +30,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int var1, int var2) {
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		this.font.drawString(matrix, Long.toString(container.emc.get()), 60 + getBonusXShift(), 32, 0x404040);
 		long kleinCharge = container.kleinEmc.get();
 		if (kleinCharge > 0) {
@@ -39,7 +39,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
 		Minecraft.getInstance().textureManager.bindTexture(getTexture());
 

@@ -39,7 +39,7 @@ public class MercurialEyeContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity var1) {
+	public boolean canInteractWith(@Nonnull PlayerEntity player) {
 		return true;
 	}
 
