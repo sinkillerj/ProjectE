@@ -103,8 +103,7 @@ public abstract class GemArmorBase extends PEArmor {
 
 		@Override
 		public float getKnockbackResistance() {
-			//TODO - 1.16: Knockback resistance?
-			return 0;
+			return 0.25F;
 		}
 	}
 }

@@ -155,7 +155,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		int minX = textBoxFilter.x;
 		int minY = textBoxFilter.y;
 		int maxX = minX + textBoxFilter.getWidth();
-		int maxY = minY + textBoxFilter.getHeightRealms();//TODO - Better mappings: This is really getHeight
+		int maxY = minY + textBoxFilter.getHeightRealms();
 
 		if (x >= minX && x <= maxX && y <= maxY) {
 			if (mouseButton == 1) {
