@@ -9,7 +9,8 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.item.Item;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.common.Tags;
+import net.minecraft.tags.ITag;
+import net.minecraft.util.ResourceLocation;
 
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -17,10 +18,13 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
 			IResourceManager resourceManager) {
-		for (Item ore : Tags.Items.ORES.getAllElements()) {
-			NSSItem nssOre = NSSItem.createItem(ore);
-			mapper.setValueBefore(nssOre, 0L);
-			mapper.setValueAfter(nssOre, 0L);
+		ITag<Item> ores = dataPackRegistries.func_244358_d().getItemTags().get(new ResourceLocation("forge", "ores"));
+		if (ores != null) {
+			for (Item ore : ores.getAllElements()) {
+				NSSItem nssOre = NSSItem.createItem(ore);
+				mapper.setValueBefore(nssOre, 0L);
+				mapper.setValueAfter(nssOre, 0L);
+			}
 		}
 	}
 
