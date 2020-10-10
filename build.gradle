@@ -63,10 +63,14 @@ configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
     def compileExtenders = [apiCompile, testCompile, datagenCompile]
+    def implementationExtenders = [apiImplementation, testImplementation, datagenImplementation]
     def compileOnlyExtenders = [apiCompileOnly, testCompileOnly, datagenCompileOnly]
     def runtimeOnlyExtenders = [apiRuntimeOnly, datagenRuntimeOnly]
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
+    }
+    for (def implementationExtender : implementationExtenders) {
+        implementationExtender.extendsFrom(implementation)
     }
     for (def compileOnlyExtender : compileOnlyExtenders) {
         compileOnlyExtender.extendsFrom(compileOnly)
@@ -221,12 +225,19 @@ jar {
     ])
 }
 
-processResources {
+task replaceResources(type: Copy) {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') {
-        //Replace some keys from the mods.toml with values from the gradle.properties file
+    from(sourceSets.main.resources) {
+        include "META-INF/mods.toml"
         expand "version": projecte_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version
     }
+    into "$buildDir/resources/main/"
+}
+
+processResources {
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy replaceResources
 }
 
 task apiJar(type: Jar) {
