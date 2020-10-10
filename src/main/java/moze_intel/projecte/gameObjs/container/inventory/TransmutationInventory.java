@@ -22,6 +22,8 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -192,7 +194,14 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			return true;
 		}
 		try {
-			return info.createStack().getDisplayName().getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(filter);
+			//TODO - 1.16: Rewrite this so that it does the actual searching on the client side (assuming the client actually
+			// knows all the items it has learned) and then have the client send the ItemInfo it wants to remove and validate it
+			// on the server as this old way of doing it is really starting to show its age and not really work even partially
+			ITextComponent displayName = info.createStack().getDisplayName();
+			if (displayName instanceof TranslationTextComponent) {
+				return ((TranslationTextComponent) displayName).getKey().toLowerCase(Locale.ROOT).contains(filter);
+			}
+			return displayName.getUnformattedComponentText().toLowerCase(Locale.ROOT).contains(filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//From old code... Not sure if intended to not remove items that crash on getDisplayName

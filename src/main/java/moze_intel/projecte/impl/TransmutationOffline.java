@@ -54,7 +54,6 @@ public class TransmutationOffline {
 	private static boolean cacheOfflineData(UUID playerUUID) {
 		Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		//TODO - 1.16: Test this
 		File playerData = server.func_240776_a_(FolderName.PLAYERDATA).toFile();
 		if (playerData.exists()) {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
