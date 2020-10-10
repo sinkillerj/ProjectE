@@ -51,9 +51,9 @@ public class SyncEmcPKT {
 
 	public static class EmcPKTInfo {
 
-		private Item item;
-		private long emc;
-		private CompoundNBT nbt;
+		private final Item item;
+		private final long emc;
+		private final CompoundNBT nbt;
 
 		public EmcPKTInfo(Item item, CompoundNBT nbt, long emc) {
 			this.item = item;
