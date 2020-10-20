@@ -243,7 +243,7 @@ public class PELangProvider extends BaseLanguageProvider {
         add(PEItems.MOBIUS_FUEL, "Mobius Fuel");
         add(PEItems.AETERNALIS_FUEL, "Aeternalis Fuel");
         add(PEItems.LOW_COVALENCE_DUST, "Low Covalence Dust");
-        add(PEItems.MEDIUM_COVALENCE_DUST, "Medium Covalence Dus");
+        add(PEItems.MEDIUM_COVALENCE_DUST, "Medium Covalence Dust");
         add(PEItems.HIGH_COVALENCE_DUST, "High Covalence Dust");
         add(PEItems.DARK_MATTER, "Dark Matter");
         add(PEItems.RED_MATTER, "Red Matter");

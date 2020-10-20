@@ -13,7 +13,6 @@ import moze_intel.projecte.gameObjs.gui.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelayMK3;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -32,6 +31,7 @@ import moze_intel.projecte.rendering.entity.LightningRenderer;
 import moze_intel.projecte.rendering.entity.RandomizerRenderer;
 import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -52,7 +52,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -84,7 +83,7 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent evt) {
-		DeferredWorkQueue.runLater(ClientKeyHelper::registerKeyBindings);
+		evt.enqueueWork(ClientKeyHelper::registerKeyBindings);
 
 		//Tile Entity
 		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/alchemy_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
@@ -108,16 +107,18 @@ public class ClientRegistration {
 		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.getCutout());
 
 		//Property Overrides
-		addPropertyOverrides(PECore.rl("active"), ItemPE.ACTIVE_GETTER, PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING,
-				PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE, PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE,
-				PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME, PEItems.ZERO_RING);
-		addPropertyOverrides(PECore.rl("mode"), ItemPE.MODE_GETTER, PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
+		addPropertyOverrides(PECore.rl("active"), (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
+				PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
+				PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
+				PEItems.ZERO_RING);
+		addPropertyOverrides(PECore.rl("mode"), (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F,
+				PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
 	}
 
 	@SubscribeEvent
 	public static void loadComplete(FMLLoadCompleteEvent evt) {
 		// ClientSetup is too early to do this
-		DeferredWorkQueue.runLater(() -> {
+		evt.enqueueWork(() -> {
 			Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 			PlayerRenderer render = skinMap.get("default");
 			render.addLayer(new LayerYue(render));

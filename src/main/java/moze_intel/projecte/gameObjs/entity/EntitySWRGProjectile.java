@@ -109,7 +109,6 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 				// Fake onGround before knockBack so you can re-launch mobs that have already been launched
 				boolean oldOnGround = e.isOnGround();
 				e.setOnGround(true);
-				//TODO - 1.16: This used to have a player param in it
 				e.applyKnockback(5F, -getMotion().getX() * 0.25, -getMotion().getZ() * 0.25);
 				e.setOnGround(oldOnGround);
 				e.setMotion(e.getMotion().mul(1, 3, 1));
