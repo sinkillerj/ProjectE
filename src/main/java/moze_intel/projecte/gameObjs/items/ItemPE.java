@@ -8,7 +8,6 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,9 +15,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.ModList;
 
 public class ItemPE extends Item {
-
-	public static final IItemPropertyGetter ACTIVE_GETTER = (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F;
-	public static final IItemPropertyGetter MODE_GETTER = (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F;
 
 	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 

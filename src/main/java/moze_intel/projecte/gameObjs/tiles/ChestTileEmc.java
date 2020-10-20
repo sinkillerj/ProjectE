@@ -1,12 +1,11 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class ChestTileEmc extends TileEmc implements IChestLid {
+public abstract class ChestTileEmc extends TileEmc {
 
 	private int ticksSinceSync;
 	private float lidAngle;
@@ -55,7 +54,6 @@ public abstract class ChestTileEmc extends TileEmc implements IChestLid {
 		return super.receiveClientEvent(number, arg);
 	}
 
-	@Override
 	public float getLidAngle(float partialTicks) {
 		//Only used on the client
 		return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
