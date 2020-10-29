@@ -2,11 +2,14 @@ package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.google.gson.JsonParseException;
+import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.emc.json.NSSSerializer;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
@@ -41,6 +44,25 @@ public class CrTNSSResolver {
 			ITag<Item> itemTag = tag.getItemTag();
 			if (checkNonNull(itemTag)) {
 				return new NSSCrT(NSSItem.createTag(itemTag));
+			}
+		}
+		return null;
+	}
+
+	@ZenCodeType.Method
+	public static NSSCrT fromFluid(IFluidStack stack) {
+		if (checkNonNull(stack)) {
+			return new NSSCrT(NSSFluid.createFluid(stack.getInternal()));
+		}
+		return null;
+	}
+
+	@ZenCodeType.Method
+	public static NSSCrT fromFluidTag(MCTag tag) {
+		if (checkNonNull(tag)) {
+			ITag<Fluid> fluidTag = tag.getFluidTag();
+			if (checkNonNull(fluidTag)) {
+				return new NSSCrT(NSSFluid.createTag(fluidTag));
 			}
 		}
 		return null;
