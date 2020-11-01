@@ -19,6 +19,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.ExplosionContext;
 
 public class NovaExplosion extends Explosion {
 
@@ -29,7 +31,7 @@ public class NovaExplosion extends Explosion {
 	private final float size;
 
 	public NovaExplosion(World world, @Nullable Entity entity, double x, double y, double z, float radius, boolean causesFire, Explosion.Mode mode) {
-		super(world, entity, x, y, z, radius, causesFire, mode);
+		super(world, entity, (DamageSource) null, (ExplosionContext) null, x, y, z, radius, causesFire, mode);
 		this.world = world;
 		this.mode = mode;
 		this.size = radius;
