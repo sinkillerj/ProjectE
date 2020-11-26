@@ -7,8 +7,11 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PEShearsUtil;
 import moze_intel.projecte.utils.ToolHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,6 +19,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -94,6 +98,7 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
+		PEShearsUtil.onUseItem(context);
 		if (player != null) {
 			World world = context.getWorld();
 			if (world.getBlockState(context.getPos()).isIn(BlockTags.LEAVES)) {
@@ -102,5 +107,27 @@ public class PEShears extends ShearsItem implements IItemCharge {
 			}
 		}
 		return ActionResultType.PASS;
+	}
+	@Override
+	public boolean onBlockDestroyed(ItemStack stackIn, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+
+		Block block = state.getBlock();
+		if (isPresentOnTag(BlockTags.LEAVES, state) || block == Blocks.GRASS || block == Blocks.TALL_GRASS
+				|| block == Blocks.FERN || block == Blocks.DEAD_BUSH || block == Blocks.VINE
+				|| block == Blocks.ROSE_BUSH || block == Blocks.POPPY || block == Blocks.BLUE_ORCHID
+				|| block == Blocks.SEAGRASS || block == Blocks.DANDELION || block == Blocks.NETHER_SPROUTS) {
+			Block.spawnAsEntity(worldIn, pos, new ItemStack(state.getBlock().asItem()));
+		}
+
+		return super.onBlockDestroyed(stackIn, worldIn, state, pos, entityLiving);
+	}
+
+	public boolean isPresentOnTag(ITag.INamedTag<Block> tag, BlockState state) {
+		for (Block block : tag.getAllElements()) {
+			if (state.isIn(block)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
