@@ -5,9 +5,6 @@ Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for m
 Discover powerful alchemical tools, items, and devices. Break down unwanted items into EMC (Energy-Matter Covalence) and use that EMC to create new items.
 
 
-# Can I include it in a modpack?
-This mod may be redistributed as part of a modpack, both public and private modpacks are allowed. You may not mirror the mod by itself or create a "mod installer", legal action will be taken against sites found violating this. It is requested that you credit the mod on any lists as ProjectE, there is no space in the name.
-
 # I found a bug
 Bugs can be reported at: https://github.com/sinkillerj/ProjectE/issues
 
