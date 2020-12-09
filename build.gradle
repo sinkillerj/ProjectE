@@ -14,6 +14,7 @@ buildscript {
 
 plugins {
     id "com.github.johnrengelman.shadow" version "1.2.4"
+    id "com.wynprice.cursemaven" version "2.1.5"
     id 'java'
     id 'eclipse'
     id 'idea'
@@ -150,10 +151,6 @@ repositories {
         name 'TOP'
         url "https://maven.tterrag.com/"
     }
-    maven {
-        name 'HWYLA'
-        url "https://tehnut.info/maven"
-    }
 }
 
 test {
@@ -177,10 +174,10 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
 
-    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    compileOnly fg.deobf("curse.maven:Hwyla:${hwyla_curse_id_api}")
+    runtimeOnly fg.deobf("curse.maven:Hwyla:${hwyla_curse_id}")
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    compile fg.deobf("curse.maven:CraftTweaker-${minecraft_version}:${crafttweaker_curse_id}")
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
