@@ -29,7 +29,7 @@ public class NovaExplosion extends Explosion {
 	private final float size;
 
 	public NovaExplosion(World world, @Nullable Entity entity, double x, double y, double z, float radius, boolean causesFire, Explosion.Mode mode) {
-		super(world, entity, x, y, z, radius, causesFire, mode);
+		super(world, entity, null, null, x, y, z, radius, causesFire, mode);
 		this.world = world;
 		this.mode = mode;
 		this.size = radius;
