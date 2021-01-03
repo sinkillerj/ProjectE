@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-    id "com.github.johnrengelman.shadow" version "1.2.4"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id 'java'
     id 'eclipse'
     id 'idea'
@@ -84,7 +84,7 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "projecte"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8 // Need this here so eclipse task generates correctly.
 
 minecraft {
     // the mappings can be changed at any time, and must be in the following format.
@@ -100,8 +100,9 @@ minecraft {
     // these can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            workingDirectory project.file('run')
-
+            workingDirectory file('run')
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
             // Setting the below properties allows use of your normal Minecraft account in the
@@ -122,32 +123,51 @@ minecraft {
                 //Your access token, you can find it in your '.minecraft/launcher_profiles.json' file
                 args '--accessToken', project.getProperty('mc_accessToken')
             }
+            if (project.hasProperty('forge_force_ansi')) {
+                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+                // or eclipse's plugin that adds support for ansi escape in console
+                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
+            }
 
             mods {
                 projecte {
-                    sources(sourceSets.main, sourceSets.api)
+                    sources((SourceSet[]) [sourceSets.main, sourceSets.api])
                 }
             }
         }
         server {
-            workingDirectory project.file('run')
+            workingDirectory file('run')
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
+            if (project.hasProperty('forge_force_ansi')) {
+                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+                // or eclipse's plugin that adds support for ansi escape in console
+                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
+            }
 
             mods {
                 projecte {
-                    sources(sourceSets.main, sourceSets.api)
+                    sources((SourceSet[]) [sourceSets.main, sourceSets.api])
                 }
             }
         }
         data {
-            workingDirectory project.file('run')
+            workingDirectory file('run')
             environment 'target', 'fmluserdevdata'
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
+            if (project.hasProperty('forge_force_ansi')) {
+                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+                // or eclipse's plugin that adds support for ansi escape in console
+                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
+            }
 
             args '--all', '--output', file('src/datagen/generated/'), '--mod', 'projecte',
-                    '--existing', sourceSets.main.resources.srcDirs[0]
+                    '--existing', file('src/main/resources/')
 
             mods {
                 projecte {
-                    sources(sourceSets.main, sourceSets.api, sourceSets.datagen)
+                    sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagen])
                 }
             }
         }
@@ -158,26 +178,51 @@ repositories {
 	maven {
 		name "MinecraftForge"
 		url "https://files.minecraftforge.net/maven/"
+        content {
+            includeGroupByRegex 'net\\.minecraftforge.*'
+            includeGroup 'de.oceanlabs.mcp'
+            includeGroup 'cpw.mods'
+        }
 	}
     maven {
         name 'JEI'
         url "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup 'mezz.jei'
+        }
     }
     maven {
         name 'CraftTweaker'
         url "https://maven.blamejared.com"
+        content {
+            includeGroup 'com.blamejared.crafttweaker'
+        }
     }
     maven {
         name 'curios'
         url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
     }
     maven {
         name 'TOP'
         url "https://maven.tterrag.com/"
+        content {
+            includeGroupByRegex 'com\\.enderio.*'
+            includeGroupByRegex 'com\\.enderzoo.*'
+            includeGroupByRegex 'com\\.tterrag.*'
+            includeGroupByRegex 'tterrag.*'
+            includeGroup 'mcjty.theoneprobe'
+            includeGroup 'team.chisel.ctm'
+        }
     }
     maven {
         name 'HWYLA'
         url "https://maven.tehnut.info"
+        content {
+            includeGroup 'mcp.mobius.waila'
+        }
     }
 }
 
@@ -229,7 +274,8 @@ task replaceResources(type: Copy) {
     outputs.upToDateWhen { false }
     from(sourceSets.main.resources) {
         include "META-INF/mods.toml"
-        expand "version": projecte_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version
+        expand "version": projecte_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
+                "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range
     }
     into "$buildDir/resources/main/"
 }
@@ -242,7 +288,7 @@ processResources {
 
 task apiJar(type: Jar) {
     from sourceSets.api.output
-    classifier = "api"
+    archiveClassifier.set('api')
 }
 
 shadowJar {
@@ -278,7 +324,7 @@ shadowJar {
     // Relocate apache commons-math3 to prevent conflicts with other mods that include it
     relocate 'org.apache.commons.math3', 'moze_intel.projecte.shaded.org.apache.commons.math3'
 
-    classifier = 'universal' // Replace the default JAR
+    archiveClassifier.set('universal') // Replace the default JAR
 }
 
 reobf {

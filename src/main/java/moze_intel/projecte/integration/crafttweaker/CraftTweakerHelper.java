@@ -6,6 +6,7 @@ import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 
+//TODO - 1.16: Finish updating our CrT integration to the newer style of how CrT does things. And clean things up due to there not being any nulls
 public class CraftTweakerHelper {
 
 	public static boolean checkNonNull(Object value, String message) {

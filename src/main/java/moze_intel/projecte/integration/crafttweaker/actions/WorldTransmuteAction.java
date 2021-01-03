@@ -1,7 +1,7 @@
 package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
-import com.blamejared.crafttweaker.impl.blocks.MCBlockState;
+import com.blamejared.crafttweaker.impl_native.blocks.ExpandBlockState;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 
@@ -10,10 +10,6 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 	protected final BlockState input;
 	protected final BlockState output;
 	protected final BlockState sneakOutput;
-
-	private WorldTransmuteAction(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
-		this(input.getInternal(), output.getInternal(), sneakOutput.getInternal());
-	}
 
 	private WorldTransmuteAction(BlockState input, BlockState output, BlockState sneakOutput) {
 		this.input = input;
@@ -32,7 +28,7 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 
 	public static class Add extends WorldTransmuteAction {
 
-		public Add(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+		public Add(BlockState input, BlockState output, BlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 
@@ -44,9 +40,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		@Override
 		public String describe() {
 			if (sneakOutput == null) {
-				return "Adding world transmutation recipe for: " + input + " with output: " + output;
+				return "Adding world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+					   ExpandBlockState.getCommandString(output);
 			}
-			return "Adding world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+			return "Adding world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
 
 		@Override
@@ -57,15 +55,17 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		@Override
 		public String describeUndo() {
 			if (sneakOutput == null) {
-				return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output;
+				return "Undoing addition of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+					   ExpandBlockState.getCommandString(output);
 			}
-			return "Undoing addition of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+			return "Undoing addition of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
 	}
 
 	public static class Remove extends WorldTransmuteAction {
 
-		public Remove(MCBlockState input, MCBlockState output, MCBlockState sneakOutput) {
+		public Remove(BlockState input, BlockState output, BlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 
@@ -77,9 +77,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		@Override
 		public String describe() {
 			if (sneakOutput == null) {
-				return "Removing world transmutation recipe for: " + input + " with output: " + output;
+				return "Removing world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+					   ExpandBlockState.getCommandString(output);
 			}
-			return "Removing world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+			return "Removing world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
 
 		@Override
@@ -90,9 +92,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		@Override
 		public String describeUndo() {
 			if (sneakOutput == null) {
-				return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output;
+				return "Undoing removal of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+					   ExpandBlockState.getCommandString(output);
 			}
-			return "Undoing removal of world transmutation recipe for: " + input + " with output: " + output + " and secondary output: " + sneakOutput;
+			return "Undoing removal of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
+				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
 	}
 
