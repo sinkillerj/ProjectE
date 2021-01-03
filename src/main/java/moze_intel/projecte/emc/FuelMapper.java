@@ -10,16 +10,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollectionSupplier;
+import net.minecraft.util.ResourceLocation;
 
 public final class FuelMapper {
 
 	private static final List<Item> FUEL_MAP = new ArrayList<>();
+	private static final ResourceLocation FUEL_TAG = PECore.rl("collector_fuel");
 
 	public static void loadMap(ITagCollectionSupplier tagCollectionSupplier) {
 		FUEL_MAP.clear();
-		//Note: We need to get the tag from the tag collection supplier as the named tag variants may not have been
-		// populated yet
-		ITag<Item> collectorFuelTag = tagCollectionSupplier.getItemTags().getTagByID(PECore.rl("collector_fuel"));
+		//Note: We need to get the tag by resource location, as named tags are not populated yet here
+		ITag<Item> collectorFuelTag = tagCollectionSupplier.getItemTags().getTagByID(FUEL_TAG);
 		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}

@@ -1,16 +1,13 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,7 +21,6 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
@@ -39,9 +35,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -68,19 +62,8 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
  */
 public final class WorldHelper {
 
-	private static final ITag<Block> HARVEST_BLACKLIST = BlockTags.makeWrapperTag(PECore.rl("harvest_blacklist").toString());
-	private static Set<EntityType<?>> interdictionBlacklist = Collections.emptySet();
-	private static Set<EntityType<?>> swrgBlacklist = Collections.emptySet();
-	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !swrgBlacklist.contains(entity.getType());
-	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> !entity.isSpectator() && !interdictionBlacklist.contains(entity.getType());
-
-	public static void setInterdictionBlacklist(Set<EntityType<?>> types) {
-		interdictionBlacklist = ImmutableSet.copyOf(types);
-	}
-
-	public static void setSwrgBlacklist(Set<EntityType<?>> types) {
-		swrgBlacklist = ImmutableSet.copyOf(types);
-	}
+	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !entity.getType().isContained(PETags.Entities.BLACKLIST_SWRG);
+	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> !entity.isSpectator() && !entity.getType().isContained(PETags.Entities.BLACKLIST_INTERDICTION);
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos) {
 		createLootDrop(drops, world, pos.getX(), pos.getY(), pos.getZ());
@@ -358,7 +341,7 @@ public final class WorldHelper {
 			else if (crop instanceof IGrowable) {
 				IGrowable growable = (IGrowable) crop;
 				if (!growable.canGrow(world, currentPos, state, false)) {
-					if (harvest && !crop.isIn(HARVEST_BLACKLIST)) {
+					if (harvest && !crop.isIn(PETags.Blocks.BLACKLIST_HARVEST)) {
 						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 					}
 				} else if (crop != Blocks.GRASS_BLOCK || ProjectEConfig.server.items.harvBandGrass.get()) {

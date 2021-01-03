@@ -80,5 +80,7 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.PHANTOM,
 				EntityType.PILLAGER
 		);
+		getOrCreateBuilder(PETags.Entities.BLACKLIST_SWRG);
+		getOrCreateBuilder(PETags.Entities.BLACKLIST_INTERDICTION);
 	}
 }

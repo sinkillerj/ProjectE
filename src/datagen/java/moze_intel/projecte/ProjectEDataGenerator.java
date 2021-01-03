@@ -1,7 +1,10 @@
 package moze_intel.projecte;
 
 import moze_intel.projecte.client.lang.PELangProvider;
+import moze_intel.projecte.common.tag.PEBlockTagsProvider;
 import moze_intel.projecte.common.tag.PEEntityTypeTagsProvider;
+import moze_intel.projecte.common.tag.PEItemTagsProvider;
+import moze_intel.projecte.common.tag.PETileEntityTypeTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +25,11 @@ public class ProjectEDataGenerator {
 		}
 		if (event.includeServer()) {
 			//Server side data generators
+			PEBlockTagsProvider blockTagsProvider = new PEBlockTagsProvider(gen, existingFileHelper);
+			gen.addProvider(blockTagsProvider);
+			gen.addProvider(new PEItemTagsProvider(gen, blockTagsProvider, existingFileHelper));
 			gen.addProvider(new PEEntityTypeTagsProvider(gen, existingFileHelper));
+			gen.addProvider(new PETileEntityTypeTagsProvider(gen, existingFileHelper));
 		}
 	}
 }

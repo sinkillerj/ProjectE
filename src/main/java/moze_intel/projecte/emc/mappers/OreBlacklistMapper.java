@@ -15,10 +15,13 @@ import net.minecraft.util.ResourceLocation;
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
+	private static final ResourceLocation ORES = new ResourceLocation("forge", "ores");
+
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
 			IResourceManager resourceManager) {
-		ITag<Item> ores = dataPackRegistries.func_244358_d().getItemTags().get(new ResourceLocation("forge", "ores"));
+		//Note: We need to get the tag by resource location, as named tags are not populated yet here
+		ITag<Item> ores = dataPackRegistries.func_244358_d().getItemTags().get(ORES);
 		if (ores != null) {
 			for (Item ore : ores.getAllElements()) {
 				NSSItem nssOre = NSSItem.createItem(ore);

@@ -75,7 +75,11 @@ public class TransmutationRenderingEvent {
 
 	@SubscribeEvent
 	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
-		PlayerEntity player = mc.player;
+		ActiveRenderInfo activeRenderInfo = event.getInfo();
+		if (!(activeRenderInfo.getRenderViewEntity() instanceof PlayerEntity)) {
+			return;
+		}
+		PlayerEntity player = (PlayerEntity) activeRenderInfo.getRenderViewEntity();
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
 		if (stack.isEmpty()) {
@@ -91,7 +95,6 @@ public class TransmutationRenderingEvent {
 			BlockState current = world.getBlockState(rtr.getPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 			if (transmutationResult != null) {
-				ActiveRenderInfo activeRenderInfo = event.getInfo();
 				Vector3d viewPosition = activeRenderInfo.getProjectedView();
 				int charge = ((ItemMode) stack.getItem()).getCharge(stack);
 				byte mode = ((ItemMode) stack.getItem()).getMode(stack);

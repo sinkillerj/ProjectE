@@ -2,21 +2,17 @@ package moze_intel.projecte.emc.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.config.NBTProcessorConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 
 public class NBTManager {
 
-	private static final ITag<Item> NBT_WHITELIST_TAG = ItemTags.makeWrapperTag(PECore.rl("nbt_whitelist").toString());
 	private static final List<INBTProcessor> processors = new ArrayList<>();
 
 	public static void loadProcessors() {
@@ -28,7 +24,7 @@ public class NBTManager {
 	}
 
 	public static ItemInfo getPersistentInfo(ItemInfo info) {
-		if (!info.hasNBT() || info.getItem().isIn(NBT_WHITELIST_TAG) || EMCMappingHandler.hasEmcValue(info)) {
+		if (!info.hasNBT() || info.getItem().isIn(PETags.Items.NBT_WHITELIST) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}

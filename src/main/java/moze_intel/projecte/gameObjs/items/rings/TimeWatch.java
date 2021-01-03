@@ -1,19 +1,15 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -29,14 +25,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -51,9 +43,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge {
-
-	private static Set<TileEntityType<?>> internalBlacklist = Collections.emptySet();
-	private static final ITag<Block> BLOCK_BLACKLIST_TAG = BlockTags.makeWrapperTag(PECore.rl("time_watch_blacklist").toString());
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -142,12 +131,10 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 
-		Set<ResourceLocation> blacklist = ProjectEConfig.server.effects.timeWatchTEBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toSet());
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 		for (int i = 0; i < bonusTicks; i++) {
 			for (TileEntity tile : list) {
-				if (!tile.isRemoved() && tile instanceof ITickableTileEntity && !internalBlacklist.contains(tile.getType())
-					&& !blacklist.contains(tile.getType().getRegistryName())) {
+				if (!tile.isRemoved() && tile instanceof ITickableTileEntity && !tile.getType().isIn(PETags.TileEntities.BLACKLIST_TIME_WATCH)) {
 					((ITickableTileEntity) tile).tick();
 				}
 			}
@@ -163,7 +150,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			for (int i = 0; i < bonusTicks; i++) {
 				BlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.ticksRandomly() && !BLOCK_BLACKLIST_TAG.contains(block)
+				if (state.ticksRandomly() && !block.isIn(PETags.Blocks.BLACKLIST_TIME_WATCH)
 					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
@@ -240,10 +227,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(TextFormatting.BLUE, String.format("%.3f", ProjectEConfig.server.effects.timePedMobSlowness.get())));
 		}
 		return list;
-	}
-
-	public static void setInternalBlacklist(Set<TileEntityType<?>> types) {
-		internalBlacklist = ImmutableSet.copyOf(types);
 	}
 
 	@Override

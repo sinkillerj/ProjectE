@@ -1,11 +1,7 @@
 package moze_intel.projecte.config;
 
-import java.util.Collections;
-import java.util.List;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
@@ -95,7 +91,6 @@ public final class ServerConfig {
 
 		public final IntValue timePedBonus;
 		public final DoubleValue timePedMobSlowness;
-		public final ConfigValue<List<? extends String>> timeWatchTEBlacklist;
 		public final BooleanValue interdictionMode;
 
 		private Effects(ForgeConfigSpec.Builder builder) {
@@ -106,10 +101,6 @@ public final class ServerConfig {
 			timePedMobSlowness = builder
 					.comment("Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.")
 					.defineInRange("timePedMobSlowness", 0.10, 0, 1);
-			timeWatchTEBlacklist = builder
-					.comment("Tile entity ID's that the Watch of Flowing Time should not give extra ticks to.")
-					.defineList("timeWatchTEBlacklist", Collections.singletonList("projecte:dm_pedestal"),
-							element -> element instanceof String && ResourceLocation.tryCreate((String) element) != null);
 			interdictionMode = builder
 					.comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
 					.define("interdictionMode", true);
