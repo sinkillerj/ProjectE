@@ -2,6 +2,7 @@ package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.actions.IUndoableAction;
 import com.blamejared.crafttweaker.impl_native.blocks.ExpandBlockState;
+import javax.annotation.Nullable;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.block.BlockState;
 
@@ -9,9 +10,10 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 
 	protected final BlockState input;
 	protected final BlockState output;
+	@Nullable
 	protected final BlockState sneakOutput;
 
-	private WorldTransmuteAction(BlockState input, BlockState output, BlockState sneakOutput) {
+	private WorldTransmuteAction(BlockState input, BlockState output, @Nullable BlockState sneakOutput) {
 		this.input = input;
 		this.output = output;
 		this.sneakOutput = sneakOutput;
@@ -28,7 +30,7 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 
 	public static class Add extends WorldTransmuteAction {
 
-		public Add(BlockState input, BlockState output, BlockState sneakOutput) {
+		public Add(BlockState input, BlockState output, @Nullable BlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 
@@ -65,7 +67,7 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 
 	public static class Remove extends WorldTransmuteAction {
 
-		public Remove(BlockState input, BlockState output, BlockState sneakOutput) {
+		public Remove(BlockState input, BlockState output, @Nullable BlockState sneakOutput) {
 			super(input, output, sneakOutput);
 		}
 

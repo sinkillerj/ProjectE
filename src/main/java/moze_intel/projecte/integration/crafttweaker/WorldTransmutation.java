@@ -12,24 +12,16 @@ public class WorldTransmutation {
 
 	@ZenCodeType.Method
 	public static void add(BlockState input, BlockState output, @ZenCodeType.Optional BlockState sneakOutput) {
-		if (validate(input, output)) {
-			CraftTweakerAPI.apply(new WorldTransmuteAction.Add(input, output, sneakOutput));
-		}
+		CraftTweakerAPI.apply(new WorldTransmuteAction.Add(input, output, sneakOutput));
 	}
 
 	@ZenCodeType.Method
 	public static void remove(BlockState input, BlockState output, @ZenCodeType.Optional BlockState sneakOutput) {
-		if (validate(input, output)) {
-			CraftTweakerAPI.apply(new WorldTransmuteAction.Remove(input, output, sneakOutput));
-		}
+		CraftTweakerAPI.apply(new WorldTransmuteAction.Remove(input, output, sneakOutput));
 	}
 
 	@ZenCodeType.Method
 	public static void removeAll() {
 		CraftTweakerAPI.apply(new WorldTransmuteAction.RemoveAll());
-	}
-
-	private static boolean validate(BlockState input, BlockState output) {
-		return CraftTweakerHelper.checkNonNull(input, "Input cannot be null") & CraftTweakerHelper.checkNonNull(output, "Output cannot be null");
 	}
 }

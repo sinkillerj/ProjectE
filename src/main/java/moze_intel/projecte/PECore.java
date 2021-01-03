@@ -57,7 +57,6 @@ import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.DummyIStorage;
-import moze_intel.projecte.utils.EntityRandomizerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -168,7 +167,6 @@ public class PECore {
 	}
 
 	private void imcQueue(InterModEnqueueEvent event) {
-		EntityRandomizerHelper.init();
 		WorldTransmutations.init();
 		NSSSerializer.init();
 		IntegrationHelper.sendIMCMessages(event);

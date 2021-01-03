@@ -1,6 +1,7 @@
 package moze_intel.projecte;
 
 import moze_intel.projecte.client.lang.PELangProvider;
+import moze_intel.projecte.common.tag.PEEntityTypeTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,7 +22,7 @@ public class ProjectEDataGenerator {
 		}
 		if (event.includeServer()) {
 			//Server side data generators
-
+			gen.addProvider(new PEEntityTypeTagsProvider(gen, existingFileHelper));
 		}
 	}
 }

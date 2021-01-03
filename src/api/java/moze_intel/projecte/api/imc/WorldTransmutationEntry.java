@@ -7,6 +7,7 @@ public class WorldTransmutationEntry {
 
 	private final BlockState origin;
 	private final BlockState result;
+	@Nullable
 	private final BlockState altResult;
 
 	/**
@@ -28,6 +29,7 @@ public class WorldTransmutationEntry {
 		return result;
 	}
 
+	@Nullable
 	public BlockState getAltResult() {
 		return altResult;
 	}

@@ -10,37 +10,21 @@ public class IMCMethods {
 	 *
 	 * The Object sent must be an instance of {@link net.minecraft.entity.EntityType}, or else the message is ignored.
 	 */
-	public static final String BLACKLIST_SWRG = "blacklist_swrg";
+	public static final String BLACKLIST_SWRG = "blacklist_swrg";//TODO - 1.16: Move to tags
 
 	/**
 	 * This method blacklists an Entity Type from the Interdiction Torch's repel effect.
 	 *
 	 * The Object sent must be an instance of {@link net.minecraft.entity.EntityType}, or else the message is ignored.
 	 */
-	public static final String BLACKLIST_INTERDICTION = "blacklist_interdiction";
+	public static final String BLACKLIST_INTERDICTION = "blacklist_interdiction";//TODO - 1.16: Move to tags
 
 	/**
 	 * This method blacklists a Tile Entity Type from the Watch of Flowing Time's acceleration.
 	 *
 	 * The Object sent must be an instance of {@link net.minecraft.tileentity.TileEntityType}, or else the message is ignored.
 	 */
-	public static final String BLACKLIST_TIMEWATCH = "blacklist_timewatch";
-
-	/**
-	 * This method adds an Entity Type to the default list of philosopher stone's (peaceful) entity randomizer
-	 *
-	 * The Object sent must be an instance of {@link net.minecraft.entity.EntityType}, and the entity must extend {@link net.minecraft.entity.MobEntity}, or else the
-	 * message is ignored.
-	 */
-	public static final String ENTITY_RANDOMIZATION_PEACEFUL = "entity_randomization_peaceful";
-
-	/**
-	 * This method adds an Entity Type to the default list of philosopher stone's (hostile) entity randomizer
-	 *
-	 * The Object sent must be an instance of {@link net.minecraft.entity.EntityType}, and the entity must extend {@link net.minecraft.entity.MobEntity}, or else the
-	 * message is ignored.
-	 */
-	public static final String ENTITY_RANDOMIZATION_HOSTILE = "entity_randomization_hostile";
+	public static final String BLACKLIST_TIMEWATCH = "blacklist_timewatch";//TODO - 1.16: Move to tags
 
 	/**
 	 * This method registers a World Transmutation with the Philosopher's Stone.
