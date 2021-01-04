@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:alchemical_chest",
+  "display": {
+    "icon": {
+      "item": "projecte:condenser_mk1"
+    },
+    "title": {
+      "translate": "advancements.projecte.condenser"
+    },
+    "description": {
+      "translate": "advancements.projecte.condenser.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "condenser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:condenser_mk1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "condenser"
+    ]
+  ]
+}

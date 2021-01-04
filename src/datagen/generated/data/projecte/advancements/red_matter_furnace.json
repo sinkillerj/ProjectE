@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:red_matter_block",
+  "display": {
+    "icon": {
+      "item": "projecte:rm_furnace"
+    },
+    "title": {
+      "translate": "advancements.projecte.red_matter_furnace"
+    },
+    "description": {
+      "translate": "advancements.projecte.red_matter_furnace.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "rm_furnace": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:rm_furnace"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "rm_furnace"
+    ]
+  ]
+}

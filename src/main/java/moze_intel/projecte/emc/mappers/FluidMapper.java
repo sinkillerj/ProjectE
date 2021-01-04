@@ -95,10 +95,10 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries,
 			IResourceManager resourceManager) {
-		NSSFluid fluidTag = NSSFluid.createTag(FluidTags.WATER);
-		mapper.setValueBefore(fluidTag, Constants.FREE_ARITHMETIC_VALUE);
+		NSSFluid waterTag = NSSFluid.createTag(FluidTags.WATER);
+		mapper.setValueBefore(waterTag, Constants.FREE_ARITHMETIC_VALUE);
 		//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-		fluidTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, Constants.FREE_ARITHMETIC_VALUE));
+		waterTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, Constants.FREE_ARITHMETIC_VALUE));
 		//1 Bucket of Lava = 1 Block of Obsidian
 		mapper.addConversion(FluidAttributes.BUCKET_VOLUME, NSSFluid.createTag(FluidTags.LAVA), Collections.singletonList(NSSItem.createItem(Blocks.OBSIDIAN)));
 
@@ -123,7 +123,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		}
 
 		// TODO figure out a way to get all containers again since FluidContainerRegistry disappeared after fluid caps
-		mapper.addConversion(1, NSSItem.createItem(Items.WATER_BUCKET), ImmutableMap.of(bucketNSS, 1, fluidTag, FluidAttributes.BUCKET_VOLUME));
+		mapper.addConversion(1, NSSItem.createItem(Items.WATER_BUCKET), ImmutableMap.of(bucketNSS, 1, waterTag, FluidAttributes.BUCKET_VOLUME));
 		mapper.addConversion(1, NSSItem.createItem(Items.LAVA_BUCKET), ImmutableMap.of(bucketNSS, 1, NSSFluid.createTag(FluidTags.LAVA), FluidAttributes.BUCKET_VOLUME));
 		mapper.addConversion(1, NSSItem.createItem(Items.MILK_BUCKET), ImmutableMap.of(bucketNSS, 1, milkNSS, FluidAttributes.BUCKET_VOLUME));
 	}

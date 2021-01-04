@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class PERenderType extends RenderType {
 
@@ -19,7 +20,7 @@ public class PERenderType extends RenderType {
 				.lightmap(LIGHTMAP_DISABLED)//disableLighting
 				.alpha(HALF_ALPHA)//alpha
 				.build(true);
-		return makeType("sprite_renderer", DefaultVertexFormats.POSITION_TEX, 7, 256, true, false, state);
+		return makeType("sprite_renderer", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, true, false, state);
 	}
 
 	public static RenderType yeuRenderer(ResourceLocation resourceLocation) {
@@ -28,7 +29,7 @@ public class PERenderType extends RenderType {
 				.lightmap(LIGHTMAP_DISABLED)//disableLighting
 				.alpha(HALF_ALPHA)//alpha
 				.build(true);
-		return makeType("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, 7, 256, true, false, state);
+		return makeType("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
 	}
 
 	public static RenderType transmutationOverlay() {
@@ -39,6 +40,6 @@ public class PERenderType extends RenderType {
 				.lightmap(LIGHTMAP_DISABLED)//disableLighting
 				.writeMask(COLOR_WRITE)//depthMask(false)
 				.build(true);
-		return makeType("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, 7, 256, true, false, state);
+		return makeType("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, true, false, state);
 	}
 }

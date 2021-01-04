@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:dark_matter",
+  "display": {
+    "icon": {
+      "item": "projecte:red_matter"
+    },
+    "title": {
+      "translate": "advancements.projecte.red_matter"
+    },
+    "description": {
+      "translate": "advancements.projecte.red_matter.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "rm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:red_matter"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "rm"
+    ]
+  ]
+}

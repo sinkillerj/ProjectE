@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:condenser",
+  "display": {
+    "icon": {
+      "item": "projecte:collector_mk1"
+    },
+    "title": {
+      "translate": "advancements.projecte.collector"
+    },
+    "description": {
+      "translate": "advancements.projecte.collector.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "collector": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:condenser_mk1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "collector"
+    ]
+  ]
+}

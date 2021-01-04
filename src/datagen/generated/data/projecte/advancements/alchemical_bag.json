@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:alchemical_chest",
+  "display": {
+    "icon": {
+      "item": "projecte:white_alchemical_bag"
+    },
+    "title": {
+      "translate": "advancements.projecte.alch_bag"
+    },
+    "description": {
+      "translate": "advancements.projecte.alch_bag.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "bag": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "projecte:alchemical_bags"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "bag"
+    ]
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:root",
+  "display": {
+    "icon": {
+      "item": "projecte:philosophers_stone"
+    },
+    "title": {
+      "translate": "advancements.projecte.philo_stone"
+    },
+    "description": {
+      "translate": "advancements.projecte.philo_stone.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "philosophers_stone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:philosophers_stone"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "philosophers_stone"
+    ]
+  ]
+}

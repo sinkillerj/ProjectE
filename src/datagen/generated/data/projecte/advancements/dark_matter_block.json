@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:dark_matter",
+  "display": {
+    "icon": {
+      "item": "projecte:dark_matter_block"
+    },
+    "title": {
+      "translate": "advancements.projecte.dark_matter_block"
+    },
+    "description": {
+      "translate": "advancements.projecte.dark_matter_block.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dm_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:dark_matter_block"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dm_block"
+    ]
+  ]
+}

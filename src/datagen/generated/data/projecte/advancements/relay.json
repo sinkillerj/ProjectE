@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:collector",
+  "display": {
+    "icon": {
+      "item": "projecte:relay_mk1"
+    },
+    "title": {
+      "translate": "advancements.projecte.relay"
+    },
+    "description": {
+      "translate": "advancements.projecte.relay.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "relay": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:relay_mk1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "relay"
+    ]
+  ]
+}

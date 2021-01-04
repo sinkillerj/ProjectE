@@ -1,0 +1,35 @@
+{
+  "parent": "projecte:klein_star_ein",
+  "display": {
+    "icon": {
+      "item": "projecte:klein_star_omega"
+    },
+    "title": {
+      "translate": "advancements.projecte.klein_star_big"
+    },
+    "description": {
+      "translate": "advancements.projecte.klein_star_big.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "klein_star": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:klein_star_omega"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "klein_star"
+    ]
+  ]
+}

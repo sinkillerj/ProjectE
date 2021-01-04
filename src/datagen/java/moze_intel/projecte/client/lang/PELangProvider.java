@@ -87,44 +87,43 @@ public class PELangProvider extends BaseLanguageProvider {
     }
     
     private void addAdvancements() {
-        //TODO - 1.16: Re-evaluate how we handle the keys and the like once we look into making advancements be made via data generators?
-        add("projecte.desc", "Correspondent Commerce?");
-        add("advancements.pe_phil_stone", "An alchemist's best friend!");
-        add("advancements.pe_phil_stone.desc", "Let's get things started! Craft a philosopher's stone");
-        add("advancements.pe_alch_chest", "Storage Upgrade!");
-        add("advancements.pe_alch_chest.desc", "A \"little\" chest upgrade.");
-        add("advancements.pe_alch_bag", "Pocket storage!");
-        add("advancements.pe_alch_bag.desc", "All the wonders of an alchemical chest, in your pocket.");
-        add("advancements.pe_transmutation", "Transmute this into that!");
-        add("advancements.pe_transmutation.desc", "The beginning (and end) of everything.");
-        add("advancements.pe_condenser", "Condense the world!");
-        add("advancements.pe_condenser.desc", "MORE DIAMONDS!");
-        add("advancements.pe_collector", "The power of the sun!");
-        add("advancements.pe_collector.desc", "Now the fun begins.");
-        add("advancements.pe_relay", "Power flowers!");
-        add("advancements.pe_relay.desc", "Linking collectors together for even more power.");
-        add("advancements.pe_portable_transmutation", "Transmutation on the go!");
-        add("advancements.pe_portable_transmutation.desc", "And then you thought things couldn't get better.");
-        add("advancements.pe_dark_matter", "All that Matters.");
-        add("advancements.pe_dark_matter.desc", "It looks... weird....");
-        add("advancements.pe_red_matter", "Even better Matter!");
-        add("advancements.pe_red_matter.desc", "The space time continuum may be broken.");
-        add("advancements.pe_dm_block", "A block that Matters!");
-        add("advancements.pe_dm_block.desc", "Stuffing matter together. Because that's a good idea.");
-        add("advancements.pe_rm_block", "Red and shiny!");
-        add("advancements.pe_rm_block.desc", "Now you're getting somewhere!");
-        add("advancements.pe_dm_furnace", "Hot matter!");
-        add("advancements.pe_dm_furnace.desc", "A furnace is even better when made from dark matter.");
-        add("advancements.pe_rm_furnace", "Even hotter matter!");
-        add("advancements.pe_rm_furnace.desc", "Wow, that thing is fast.");
-        add("advancements.pe_dm_pick", "Using Matter on Matter");
-        add("advancements.pe_dm_pick.desc", "Because why not?");
-        add("advancements.pe_rm_pick", "Is this thing safe?");
-        add("advancements.pe_rm_pick.desc", "Probably not.");
-        add("advancements.pe_klein", "EMC Batteries");
-        add("advancements.pe_klein.desc", "Storing EMC for a rainy day.");
-        add("advancements.pe_klein_big", "BIG EMC Batteries");
-        add("advancements.pe_klein_big.desc", "Holding the universe in your pocket.");
+        add(PELang.ADVANCEMENTS_PROJECTE_DESCRIPTION, "Correspondent Commerce?");
+        add(PELang.ADVANCEMENTS_PHILO_STONE, "An alchemist's best friend!");
+        add(PELang.ADVANCEMENTS_PHILO_STONE_DESCRIPTION, "Let's get things started! Craft a philosopher's stone");
+        add(PELang.ADVANCEMENTS_ALCH_CHEST, "Storage Upgrade!");
+        add(PELang.ADVANCEMENTS_ALCH_CHEST_DESCRIPTION, "A \"little\" chest upgrade.");
+        add(PELang.ADVANCEMENTS_ALCH_BAG, "Pocket storage!");
+        add(PELang.ADVANCEMENTS_ALCH_BAG_DESCRIPTION, "All the wonders of an alchemical chest, in your pocket.");
+        add(PELang.ADVANCEMENTS_TRANSMUTATION_TABLE, "Transmute this into that!");
+        add(PELang.ADVANCEMENTS_TRANSMUTATION_TABLE_DESCRIPTION, "The beginning (and end) of everything.");
+        add(PELang.ADVANCEMENTS_CONDENSER, "Condense the world!");
+        add(PELang.ADVANCEMENTS_CONDENSER_DESCRIPTION, "MORE DIAMONDS!");
+        add(PELang.ADVANCEMENTS_COLLECTOR, "The power of the sun!");
+        add(PELang.ADVANCEMENTS_COLLECTOR_DESCRIPTION, "Now the fun begins.");
+        add(PELang.ADVANCEMENTS_RELAY, "Power flowers!");
+        add(PELang.ADVANCEMENTS_RELAY_DESCRIPTION, "Linking collectors together for even more power.");
+        add(PELang.ADVANCEMENTS_TRANSMUTATION_TABLET, "Transmutation on the go!");
+        add(PELang.ADVANCEMENTS_TRANSMUTATION_TABLET_DESCRIPTION, "And then you thought things couldn't get better.");
+        add(PELang.ADVANCEMENTS_DARK_MATTER, "All that Matters.");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_DESCRIPTION, "It looks... weird....");
+        add(PELang.ADVANCEMENTS_RED_MATTER, "Even better Matter!");
+        add(PELang.ADVANCEMENTS_RED_MATTER_DESCRIPTION, "The space time continuum may be broken.");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_BLOCK, "A block that Matters!");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_BLOCK_DESCRIPTION, "Stuffing matter together. Because that's a good idea.");
+        add(PELang.ADVANCEMENTS_RED_MATTER_BLOCK, "Red and shiny!");
+        add(PELang.ADVANCEMENTS_RED_MATTER_BLOCK_DESCRIPTION, "Now you're getting somewhere!");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_FURNACE, "Hot matter!");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_FURNACE_DESCRIPTION, "A furnace is even better when made from dark matter.");
+        add(PELang.ADVANCEMENTS_RED_MATTER_FURNACE, "Even hotter matter!");
+        add(PELang.ADVANCEMENTS_RED_MATTER_FURNACE_DESCRIPTION, "Wow, that thing is fast.");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_PICKAXE, "Using Matter on Matter");
+        add(PELang.ADVANCEMENTS_DARK_MATTER_PICKAXE_DESCRIPTION, "Because why not?");
+        add(PELang.ADVANCEMENTS_RED_MATTER_PICKAXE, "Is this thing safe?");
+        add(PELang.ADVANCEMENTS_RED_MATTER_PICKAXE_DESCRIPTION, "Probably not.");
+        add(PELang.ADVANCEMENTS_KLEIN_STAR, "EMC Batteries");
+        add(PELang.ADVANCEMENTS_KLEIN_STAR_DESCRIPTION, "Storing EMC for a rainy day.");
+        add(PELang.ADVANCEMENTS_KLEIN_STAR_BIG, "BIG EMC Batteries");
+        add(PELang.ADVANCEMENTS_KLEIN_STAR_BIG_DESCRIPTION, "Holding the universe in your pocket.");
     }
 
     private void addBlocks() {
@@ -135,8 +134,8 @@ public class PELangProvider extends BaseLanguageProvider {
         add(PEBlocks.CONDENSER_MK2, "Energy Condenser MK2");
         add(PEBlocks.DARK_MATTER_FURNACE, "Dark Matter Furnace");
         add(PEBlocks.RED_MATTER_FURNACE, "Red Matter Furnace");
-        add(PEBlocks.DARK_MATTER_BLOCK, "Dark Matter Block");
-        add(PEBlocks.RED_MATTER_BLOCK, "Red Matter Block");
+        add(PEBlocks.DARK_MATTER, "Dark Matter Block");
+        add(PEBlocks.RED_MATTER, "Red Matter Block");
         add(PEBlocks.COLLECTOR, "Energy Collector MK1");
         add(PEBlocks.COLLECTOR_MK2, "Energy Collector MK2");
         add(PEBlocks.COLLECTOR_MK3, "Energy Collector MK3");

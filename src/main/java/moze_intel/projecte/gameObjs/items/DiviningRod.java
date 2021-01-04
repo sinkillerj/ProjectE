@@ -33,10 +33,12 @@ import net.minecraftforge.common.util.NonNullLazy;
 public class DiviningRod extends ItemPE implements IItemMode {
 
 	private final ILangEntry[] modes;
+	private final int maxModes;
 
 	public DiviningRod(Properties props, ILangEntry... modeDesc) {
 		super(props);
 		modes = modeDesc;
+		maxModes = modes.length;
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
@@ -112,8 +114,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 
 	private int getDepthFromMode(ItemStack stack) {
 		byte mode = getMode(stack);
-		//TODO - 1.16: Re-evaluate how this is being done
-		if (mode < 0 || mode >= getModeLangEntries().length) {
+		if (mode < 0 || mode >= maxModes) {
 			//No range something went wrong
 			return 0;
 		} else if (mode == 0) {
