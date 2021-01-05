@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/dark_matter_block_deconstruct"
+    ]
+  },
+  "criteria": {
+    "has_dark_matter_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:dark_matter_block"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:conversions/dark_matter_block_deconstruct"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_dark_matter_block",
+      "has_the_recipe"
+    ]
+  ]
+}

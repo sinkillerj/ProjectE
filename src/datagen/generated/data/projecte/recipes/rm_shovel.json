@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R",
+    "S",
+    "M"
+  ],
+  "key": {
+    "R": {
+      "item": "projecte:red_matter"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    },
+    "S": {
+      "item": "projecte:dm_shovel"
+    }
+  },
+  "result": {
+    "item": "projecte:rm_shovel"
+  }
+}

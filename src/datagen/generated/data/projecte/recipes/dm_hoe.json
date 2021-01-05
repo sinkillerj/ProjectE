@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MM",
+    " D",
+    " D"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    }
+  },
+  "result": {
+    "item": "projecte:dm_hoe"
+  }
+}

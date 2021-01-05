@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:gem_chestplate"
+    ]
+  },
+  "criteria": {
+    "has_chestplate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:rm_chestplate"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:gem_chestplate"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chestplate",
+      "has_the_recipe"
+    ]
+  ]
+}

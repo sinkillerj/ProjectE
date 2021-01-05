@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FFF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "projecte:aeternalis_fuel"
+    }
+  },
+  "result": {
+    "item": "projecte:aeternalis_fuel_block"
+  }
+}

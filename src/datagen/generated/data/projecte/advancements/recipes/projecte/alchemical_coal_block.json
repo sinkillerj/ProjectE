@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:alchemical_coal_block"
+    ]
+  },
+  "criteria": {
+    "has_alchemical_coal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:alchemical_coal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:alchemical_coal_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alchemical_coal",
+      "has_the_recipe"
+    ]
+  ]
+}

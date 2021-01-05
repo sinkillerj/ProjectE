@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/redstone_to_lava"
+    ]
+  },
+  "criteria": {
+    "has_volcanite_amulet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:volcanite_amulet"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:conversions/redstone_to_lava"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_volcanite_amulet",
+      "has_the_recipe"
+    ]
+  ]
+}

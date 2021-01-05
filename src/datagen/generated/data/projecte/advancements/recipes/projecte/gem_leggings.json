@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:gem_leggings"
+    ]
+  },
+  "criteria": {
+    "has_leggings": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:rm_leggings"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:gem_leggings"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_leggings",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R",
+    "S "
+  ],
+  "key": {
+    "R": {
+      "item": "projecte:red_matter"
+    },
+    "S": {
+      "item": "projecte:dm_shears"
+    }
+  },
+  "result": {
+    "item": "projecte:rm_shears"
+  }
+}

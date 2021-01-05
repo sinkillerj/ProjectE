@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:pink_alchemical_bag"
+    ]
+  },
+  "criteria": {
+    "has_alchemical_chest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:alchemical_chest"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:pink_alchemical_bag"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alchemical_chest",
+      "has_the_recipe"
+    ]
+  ]
+}

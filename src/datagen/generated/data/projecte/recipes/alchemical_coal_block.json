@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FFF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "projecte:alchemical_coal"
+    }
+  },
+  "result": {
+    "item": "projecte:alchemical_coal_block"
+  }
+}

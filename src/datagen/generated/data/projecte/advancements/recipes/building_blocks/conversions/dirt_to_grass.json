@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/dirt_to_grass"
+    ]
+  },
+  "criteria": {
+    "has_arcana_ring": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:arcana_ring"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:conversions/dirt_to_grass"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_arcana_ring",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "projecte:red_matter_block"
+    }
+  ],
+  "result": {
+    "item": "projecte:red_matter",
+    "count": 4
+  }
+}

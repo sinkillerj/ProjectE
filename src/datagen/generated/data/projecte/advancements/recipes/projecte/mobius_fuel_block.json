@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:mobius_fuel_block"
+    ]
+  },
+  "criteria": {
+    "has_mobius_fuel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:mobius_fuel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:mobius_fuel_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_mobius_fuel",
+      "has_the_recipe"
+    ]
+  ]
+}

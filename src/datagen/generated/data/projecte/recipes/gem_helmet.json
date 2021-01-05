@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "projecte:rm_helmet"
+    },
+    {
+      "item": "projecte:klein_star_omega"
+    },
+    {
+      "item": "projecte:evertide_amulet"
+    },
+    {
+      "item": "projecte:soul_stone"
+    }
+  ],
+  "result": {
+    "item": "projecte:gem_helmet"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/mobius_fuel_to_alchemical_coal"
+    ]
+  },
+  "criteria": {
+    "has_mobius_fuel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:philosophers_stone"
+          },
+          {
+            "item": "projecte:mobius_fuel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:conversions/mobius_fuel_to_alchemical_coal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_mobius_fuel",
+      "has_the_recipe"
+    ]
+  ]
+}
