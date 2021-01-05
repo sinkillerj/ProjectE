@@ -1,6 +1,7 @@
 package moze_intel.projecte;
 
 import moze_intel.projecte.client.lang.PELangProvider;
+import moze_intel.projecte.client.sound.PESoundProvider;
 import moze_intel.projecte.common.PEAdvancementsProvider;
 import moze_intel.projecte.common.loot.PELootProvider;
 import moze_intel.projecte.common.recipe.PERecipeProvider;
@@ -25,6 +26,7 @@ public class ProjectEDataGenerator {
 		if (event.includeClient()) {
 			//Client side data generators
 			gen.addProvider(new PELangProvider(gen));
+			gen.addProvider(new PESoundProvider(gen, existingFileHelper));
 		}
 		if (event.includeServer()) {
 			//Server side data generators

@@ -29,6 +29,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
+//TODO - 1.16: Make it so that we can have another recipe condition that toggles if the klein stars need to be filled for recipes or not
 public class PERecipeProvider extends RecipeProvider {
 
 	public PERecipeProvider(DataGenerator generator) {

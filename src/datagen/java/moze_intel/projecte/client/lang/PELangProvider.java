@@ -4,6 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.data.DataGenerator;
@@ -25,6 +26,7 @@ public class PELangProvider extends BaseLanguageProvider {
 		addItems();
 		addModes();
 		addPedestalTooltips();
+		addSubtitles();
 		addTooltips();
 		addTransmutation();
 		//Misc stuff
@@ -367,6 +369,18 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.PEDESTAL_ZERO_1, "Extinguishes entities");
 		add(PELang.PEDESTAL_ZERO_2, "Freezes surroundings");
 		add(PELang.PEDESTAL_ZERO_3, "Activates every %s");
+	}
+
+	private void addSubtitles() {
+		//TODO - 1.16: Re-evaluate all of these, they were sort of just done as placeholders as there previously were none fully set
+		add(PESoundEvents.WIND_MAGIC, "Wind");
+		add(PESoundEvents.WATER_MAGIC, "Water");
+		add(PESoundEvents.POWER, "Power");
+		add(PESoundEvents.HEAL, "Heal");
+		add(PESoundEvents.DESTRUCT, "Destruct");
+		add(PESoundEvents.CHARGE, "Charged");
+		add(PESoundEvents.UNCHARGE, "Uncharged");
+		add(PESoundEvents.TRANSMUTE, "Transmute");
 	}
 
 	private void addTooltips() {
