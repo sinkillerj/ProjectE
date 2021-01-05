@@ -12,7 +12,8 @@ public class IRecipeSerializerDeferredRegister extends WrappedDeferredRegister<I
 		super(ForgeRegistries.RECIPE_SERIALIZERS);
 	}
 
-	public <RECIPE extends IRecipe<?>> IRecipeSerializerRegistryObject<RECIPE> register(String name, Supplier<IRecipeSerializer<RECIPE>> sup) {
+	public <RECIPE extends IRecipe<?>, SERIALIZER extends IRecipeSerializer<RECIPE>> IRecipeSerializerRegistryObject<RECIPE, SERIALIZER> register(String name,
+			Supplier<SERIALIZER> sup) {
 		return register(name, sup, IRecipeSerializerRegistryObject::new);
 	}
 }

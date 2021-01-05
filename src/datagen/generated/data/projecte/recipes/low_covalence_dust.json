@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:charcoal"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    },
+    {
+      "tag": "forge:cobblestone"
+    }
+  ],
+  "result": {
+    "item": "projecte:low_covalence_dust",
+    "count": 40
+  }
+}

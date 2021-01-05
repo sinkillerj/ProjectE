@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:divining_rod_3"
+    ]
+  },
+  "criteria": {
+    "has_previous": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:divining_rod_2"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:divining_rod_3"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_previous",
+      "has_the_recipe"
+    ]
+  ]
+}

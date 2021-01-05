@@ -16,10 +16,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 
+//TODO - 1.16: Validate this, it seems that we didn't have it as a recipe in 1.14/15, we now do again, but we need to review it works properly
 public class RecipesCovalenceRepair implements ICraftingRecipe {
 
 	private final ResourceLocation id;
-	private ItemStack output = ItemStack.EMPTY;
 
 	public RecipesCovalenceRepair(ResourceLocation id) {
 		this.id = id;

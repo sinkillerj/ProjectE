@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ZIH",
+    "SMM",
+    "MMM"
+  ],
+  "key": {
+    "S": {
+      "item": "projecte:swiftwolf_rending_gale"
+    },
+    "H": {
+      "item": "projecte:harvest_goddess_band"
+    },
+    "I": {
+      "item": "projecte:ignition_ring"
+    },
+    "Z": {
+      "item": "projecte:zero_ring"
+    },
+    "M": {
+      "item": "projecte:red_matter"
+    }
+  },
+  "result": {
+    "item": "projecte:arcana_ring"
+  }
+}

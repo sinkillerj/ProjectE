@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NMN",
+    "MFM",
+    "NMN"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "M": {
+      "item": "projecte:mobius_fuel"
+    },
+    "N": {
+      "item": "projecte:nova_catalyst"
+    }
+  },
+  "result": {
+    "item": "projecte:destruction_catalyst"
+  }
+}

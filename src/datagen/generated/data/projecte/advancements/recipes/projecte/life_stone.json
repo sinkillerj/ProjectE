@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:life_stone"
+    ]
+  },
+  "criteria": {
+    "has_body": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:body_stone"
+          }
+        ]
+      }
+    },
+    "has_soul": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:soul_stone"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:life_stone"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_body",
+      "has_soul",
+      "has_the_recipe"
+    ]
+  ]
+}

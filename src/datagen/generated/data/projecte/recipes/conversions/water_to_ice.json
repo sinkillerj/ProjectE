@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    [
+      {
+        "item": "projecte:arcana_ring"
+      },
+      {
+        "item": "projecte:zero_ring"
+      }
+    ],
+    [
+      {
+        "item": "minecraft:water_bucket"
+      },
+      {
+        "item": "projecte:evertide_amulet"
+      }
+    ]
+  ],
+  "result": {
+    "item": "minecraft:ice"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:harvest_goddess_band"
+    ]
+  },
+  "criteria": {
+    "has_matter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:dark_matter"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:harvest_goddess_band"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_matter",
+      "has_the_recipe"
+    ]
+  ]
+}

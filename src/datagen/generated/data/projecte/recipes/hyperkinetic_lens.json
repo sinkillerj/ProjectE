@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "MNM",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    },
+    "N": {
+      "item": "projecte:nova_catalyst"
+    }
+  },
+  "result": {
+    "item": "projecte:hyperkinetic_lens"
+  }
+}

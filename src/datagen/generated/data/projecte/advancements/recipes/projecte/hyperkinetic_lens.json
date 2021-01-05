@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:hyperkinetic_lens"
+    ]
+  },
+  "criteria": {
+    "has_catalyst": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:nova_catalyst"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:hyperkinetic_lens"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_catalyst",
+      "has_the_recipe"
+    ]
+  ]
+}

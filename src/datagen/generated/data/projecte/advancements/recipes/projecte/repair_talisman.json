@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:repair_talisman"
+    ]
+  },
+  "criteria": {
+    "has_covalence_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:low_covalence_dust"
+          },
+          {
+            "item": "projecte:medium_covalence_dust"
+          },
+          {
+            "item": "projecte:high_covalence_dust"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:repair_talisman"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_covalence_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

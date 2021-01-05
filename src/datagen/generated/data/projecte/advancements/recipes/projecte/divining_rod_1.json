@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:divining_rod_1"
+    ]
+  },
+  "criteria": {
+    "has_covalence_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:low_covalence_dust"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:divining_rod_1"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_covalence_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

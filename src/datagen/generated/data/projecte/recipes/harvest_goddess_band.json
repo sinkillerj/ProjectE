@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SFS",
+    "DID",
+    "SFS"
+  ],
+  "key": {
+    "S": {
+      "tag": "minecraft:saplings"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "F": {
+      "item": "minecraft:poppy"
+    },
+    "I": {
+      "item": "projecte:iron_band"
+    }
+  },
+  "result": {
+    "item": "projecte:harvest_goddess_band"
+  }
+}

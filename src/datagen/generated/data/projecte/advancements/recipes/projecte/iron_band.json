@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:iron_band"
+    ]
+  },
+  "criteria": {
+    "has_lava": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:lava_bucket"
+          }
+        ]
+      }
+    },
+    "has_amulet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:volcanite_amulet"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:iron_band"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_lava",
+      "has_amulet",
+      "has_the_recipe"
+    ]
+  ]
+}

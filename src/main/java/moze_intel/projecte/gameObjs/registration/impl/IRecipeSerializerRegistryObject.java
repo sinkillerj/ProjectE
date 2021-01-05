@@ -5,9 +5,9 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 
-public class IRecipeSerializerRegistryObject<RECIPE extends IRecipe<?>> extends WrappedRegistryObject<IRecipeSerializer<RECIPE>> {
+public class IRecipeSerializerRegistryObject<RECIPE extends IRecipe<?>, SERIALIZER extends IRecipeSerializer<RECIPE>> extends WrappedRegistryObject<SERIALIZER> {
 
-	public IRecipeSerializerRegistryObject(RegistryObject<IRecipeSerializer<RECIPE>> registryObject) {
+	public IRecipeSerializerRegistryObject(RegistryObject<SERIALIZER> registryObject) {
 		super(registryObject);
 	}
 }

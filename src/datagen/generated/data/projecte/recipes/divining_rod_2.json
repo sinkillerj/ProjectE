@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "DSD",
+    "DDD"
+  ],
+  "key": {
+    "S": {
+      "item": "projecte:divining_rod_1"
+    },
+    "D": {
+      "item": "projecte:medium_covalence_dust"
+    }
+  },
+  "result": {
+    "item": "projecte:divining_rod_2"
+  }
+}

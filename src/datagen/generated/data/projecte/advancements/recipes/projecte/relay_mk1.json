@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:relay_mk1"
+    ]
+  },
+  "criteria": {
+    "has_diamond": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:storage_blocks/diamond"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:relay_mk1"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_diamond",
+      "has_the_recipe"
+    ]
+  ]
+}

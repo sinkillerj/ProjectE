@@ -1,0 +1,76 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:arcana_ring"
+    ]
+  },
+  "criteria": {
+    "has_swrg": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:swiftwolf_rending_gale"
+          }
+        ]
+      }
+    },
+    "has_harvest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:harvest_goddess_band"
+          }
+        ]
+      }
+    },
+    "has_ignition": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:ignition_ring"
+          }
+        ]
+      }
+    },
+    "has_zero": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:zero_ring"
+          }
+        ]
+      }
+    },
+    "has_matter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:red_matter"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:arcana_ring"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_swrg",
+      "has_harvest",
+      "has_ignition",
+      "has_zero",
+      "has_matter",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DFD",
+    "FIF",
+    "DFD"
+  ],
+  "key": {
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "F": {
+      "tag": "forge:feathers"
+    },
+    "I": {
+      "item": "projecte:iron_band"
+    }
+  },
+  "result": {
+    "item": "projecte:swiftwolf_rending_gale"
+  }
+}

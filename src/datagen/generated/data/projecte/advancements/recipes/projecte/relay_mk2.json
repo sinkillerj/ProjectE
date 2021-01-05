@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:relay_mk2"
+    ]
+  },
+  "criteria": {
+    "has_previous": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:relay_mk1"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:relay_mk2"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_previous",
+      "has_the_recipe"
+    ]
+  ]
+}

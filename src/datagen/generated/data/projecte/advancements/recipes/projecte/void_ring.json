@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:void_ring"
+    ]
+  },
+  "criteria": {
+    "has_matter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:dark_matter"
+          }
+        ]
+      }
+    },
+    "has_band": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:black_hole_band"
+          }
+        ]
+      }
+    },
+    "has_gem": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:gem_of_eternal_density"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:void_ring"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_matter",
+      "has_band",
+      "has_gem",
+      "has_the_recipe"
+    ]
+  ]
+}

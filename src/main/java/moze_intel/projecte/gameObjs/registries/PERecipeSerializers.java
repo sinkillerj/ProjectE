@@ -11,7 +11,7 @@ public class PERecipeSerializers {
 
 	public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister();
 
-	public static final IRecipeSerializerRegistryObject<RecipesCovalenceRepair> COVALENCE_REPAIR = RECIPE_SERIALIZERS.register("covalence_repair", () -> new SpecialRecipeSerializer<>(RecipesCovalenceRepair::new));
-	public static final IRecipeSerializerRegistryObject<RecipeShapelessKleinStar> KLEIN = RECIPE_SERIALIZERS.register("crafting_shapeless_kleinstar", RecipeShapelessKleinStar.Serializer::new);
-	public static final IRecipeSerializerRegistryObject<PhiloStoneSmeltingRecipe> PHILO_STONE_SMELTING = RECIPE_SERIALIZERS.register("philo_stone_smelting", () -> new SpecialRecipeSerializer<>(PhiloStoneSmeltingRecipe::new));
+	public static final IRecipeSerializerRegistryObject<RecipesCovalenceRepair, SpecialRecipeSerializer<RecipesCovalenceRepair>> COVALENCE_REPAIR = RECIPE_SERIALIZERS.register("covalence_repair", () -> new SpecialRecipeSerializer<>(RecipesCovalenceRepair::new));
+	public static final IRecipeSerializerRegistryObject<RecipeShapelessKleinStar, RecipeShapelessKleinStar.Serializer> KLEIN = RECIPE_SERIALIZERS.register("crafting_shapeless_kleinstar", RecipeShapelessKleinStar.Serializer::new);
+	public static final IRecipeSerializerRegistryObject<PhiloStoneSmeltingRecipe, SpecialRecipeSerializer<PhiloStoneSmeltingRecipe>> PHILO_STONE_SMELTING = RECIPE_SERIALIZERS.register("philo_stone_smelting", () -> new SpecialRecipeSerializer<>(PhiloStoneSmeltingRecipe::new));
 }

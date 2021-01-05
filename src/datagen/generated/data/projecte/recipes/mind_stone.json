@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "RLR",
+    "BBB"
+  ],
+  "key": {
+    "R": {
+      "item": "projecte:red_matter"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "L": {
+      "tag": "forge:gems/lapis"
+    }
+  },
+  "result": {
+    "item": "projecte:mind_stone"
+  }
+}

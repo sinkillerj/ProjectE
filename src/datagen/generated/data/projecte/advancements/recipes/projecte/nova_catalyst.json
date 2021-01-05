@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:nova_catalyst"
+    ]
+  },
+  "criteria": {
+    "has_tnt": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:tnt"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:nova_catalyst"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_tnt",
+      "has_the_recipe"
+    ]
+  ]
+}

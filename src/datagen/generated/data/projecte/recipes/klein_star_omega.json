@@ -1,0 +1,20 @@
+{
+  "type": "projecte:crafting_shapeless_kleinstar",
+  "ingredients": [
+    {
+      "item": "projecte:klein_star_sphere"
+    },
+    {
+      "item": "projecte:klein_star_sphere"
+    },
+    {
+      "item": "projecte:klein_star_sphere"
+    },
+    {
+      "item": "projecte:klein_star_sphere"
+    }
+  ],
+  "result": {
+    "item": "projecte:klein_star_omega"
+  }
+}

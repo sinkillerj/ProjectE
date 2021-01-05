@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:interdiction_torch"
+    ]
+  },
+  "criteria": {
+    "has_philo_stone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:philosophers_stone"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:interdiction_torch"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_philo_stone",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:destruction_catalyst"
+    ]
+  },
+  "criteria": {
+    "has_catalyst": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:nova_catalyst"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:destruction_catalyst"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_catalyst",
+      "has_the_recipe"
+    ]
+  ]
+}

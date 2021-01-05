@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "OSO",
+    "SPS",
+    "OSO"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:stone"
+    },
+    "O": {
+      "tag": "forge:obsidian"
+    },
+    "P": {
+      "item": "projecte:philosophers_stone"
+    }
+  },
+  "result": {
+    "item": "projecte:transmutation_table"
+  }
+}

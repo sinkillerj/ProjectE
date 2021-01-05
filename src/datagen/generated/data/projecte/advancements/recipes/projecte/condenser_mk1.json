@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:condenser_mk1"
+    ]
+  },
+  "criteria": {
+    "has_alchemical_chest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:alchemical_chest"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:condenser_mk1"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alchemical_chest",
+      "has_the_recipe"
+    ]
+  ]
+}

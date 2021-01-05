@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "projecte:black_hole_band"
+    },
+    {
+      "item": "projecte:gem_of_eternal_density"
+    },
+    {
+      "item": "projecte:red_matter"
+    },
+    {
+      "item": "projecte:red_matter"
+    }
+  ],
+  "result": {
+    "item": "projecte:void_ring"
+  }
+}

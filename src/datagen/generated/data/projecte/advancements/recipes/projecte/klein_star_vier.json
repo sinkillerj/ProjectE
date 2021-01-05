@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "projecte:klein_star_vier"
+    ]
+  },
+  "criteria": {
+    "has_components": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "projecte:klein_star_drei"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "projecte:klein_star_vier"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_components",
+      "has_the_recipe"
+    ]
+  ]
+}

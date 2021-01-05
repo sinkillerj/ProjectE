@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "DDD",
+    "LLL"
+  ],
+  "key": {
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "result": {
+    "item": "projecte:volcanite_amulet"
+  }
+}

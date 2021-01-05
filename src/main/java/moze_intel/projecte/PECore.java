@@ -62,12 +62,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
@@ -116,6 +118,7 @@ public class PECore {
 		modEventBus.addListener(this::commonSetup);
 		modEventBus.addListener(this::imcQueue);
 		modEventBus.addListener(this::imcHandle);
+		modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
 		PEBlocks.BLOCKS.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
@@ -130,6 +133,11 @@ public class PECore {
 
 		//Register our config files
 		ProjectEConfig.register();
+	}
+
+	private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+		//Add our serializer
+		CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
@@ -159,7 +167,6 @@ public class PECore {
 			PacketHandler.register();
 
 			// internals unsafe
-			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new ArgumentSerializer<>(UUIDArgument::new));
 			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new ArgumentSerializer<>(ColorArgument::new));
 			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new ArgumentSerializer<>(NSSItemArgument::new));
