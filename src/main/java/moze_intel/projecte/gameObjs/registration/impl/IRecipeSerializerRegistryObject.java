@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class IRecipeSerializerRegistryObject<RECIPE extends IRecipe<?>> extends WrappedRegistryObject<IRecipeSerializer<RECIPE>> {
 
-    public IRecipeSerializerRegistryObject(RegistryObject<IRecipeSerializer<RECIPE>> registryObject) {
-        super(registryObject);
-    }
+	public IRecipeSerializerRegistryObject(RegistryObject<IRecipeSerializer<RECIPE>> registryObject) {
+		super(registryObject);
+	}
 }

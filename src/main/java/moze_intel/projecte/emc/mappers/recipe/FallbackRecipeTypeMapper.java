@@ -13,7 +13,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.item.crafting.SmithingRecipe;
 
-@RecipeTypeMapper(priority =  Integer.MIN_VALUE)
+@RecipeTypeMapper(priority = Integer.MIN_VALUE)
 public class FallbackRecipeTypeMapper extends BaseRecipeTypeMapper {
 
 	@Override

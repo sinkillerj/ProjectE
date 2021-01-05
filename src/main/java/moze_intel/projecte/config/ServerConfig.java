@@ -18,8 +18,8 @@ public final class ServerConfig {
 
 	ServerConfig(ForgeConfigSpec.Builder builder) {
 		builder.comment("All of the config options in this file are server side and will be synced from server to client. ProjectE uses one \"server\" config file for " +
-				"all worlds, for convenience in going from one world to another, but makes it be a \"server\" config file so that forge will automatically sync it when " +
-				"we connect to a multiplayer server.")
+						"all worlds, for convenience in going from one world to another, but makes it be a \"server\" config file so that forge will automatically sync it when " +
+						"we connect to a multiplayer server.")
 				.push("server");
 		difficulty = new Difficulty(builder);
 		items = new Items(builder);

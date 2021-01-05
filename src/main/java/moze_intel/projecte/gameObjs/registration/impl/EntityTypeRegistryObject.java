@@ -8,12 +8,12 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<ENTITY>> implements IHasTranslationKey {
 
-    public EntityTypeRegistryObject(RegistryObject<EntityType<ENTITY>> registryObject) {
-        super(registryObject);
-    }
+	public EntityTypeRegistryObject(RegistryObject<EntityType<ENTITY>> registryObject) {
+		super(registryObject);
+	}
 
-    @Override
-    public String getTranslationKey() {
-        return get().getTranslationKey();
-    }
+	@Override
+	public String getTranslationKey() {
+		return get().getTranslationKey();
+	}
 }

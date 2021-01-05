@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class ContainerTypeRegistryObject<CONTAINER extends Container> extends WrappedRegistryObject<ContainerType<CONTAINER>> {
 
-    public ContainerTypeRegistryObject(RegistryObject<ContainerType<CONTAINER>> registryObject) {
-        super(registryObject);
-    }
+	public ContainerTypeRegistryObject(RegistryObject<ContainerType<CONTAINER>> registryObject) {
+		super(registryObject);
+	}
 }

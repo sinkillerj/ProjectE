@@ -8,15 +8,15 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class SoundEventRegistryObject<SOUND extends SoundEvent> extends WrappedRegistryObject<SOUND> implements ILangEntry {
 
-    private final String translationKey;
+	private final String translationKey;
 
-    public SoundEventRegistryObject(RegistryObject<SOUND> registryObject) {
-        super(registryObject);
-        translationKey = Util.makeTranslationKey("sound_event", this.registryObject.getId());
-    }
+	public SoundEventRegistryObject(RegistryObject<SOUND> registryObject) {
+		super(registryObject);
+		translationKey = Util.makeTranslationKey("sound_event", this.registryObject.getId());
+	}
 
-    @Override
-    public String getTranslationKey() {
-        return translationKey;
-    }
+	@Override
+	public String getTranslationKey() {
+		return translationKey;
+	}
 }

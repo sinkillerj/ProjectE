@@ -7,11 +7,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {
 
-    public EntityTypeDeferredRegister() {
-        super(ForgeRegistries.ENTITIES);
-    }
+	public EntityTypeDeferredRegister() {
+		super(ForgeRegistries.ENTITIES);
+	}
 
-    public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder) {
-        return register(name, () -> builder.build(name), EntityTypeRegistryObject::new);
-    }
+	public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder) {
+		return register(name, () -> builder.build(name), EntityTypeRegistryObject::new);
+	}
 }

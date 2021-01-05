@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class TileEntityTypeRegistryObject<TILE extends TileEntity> extends WrappedRegistryObject<TileEntityType<TILE>> {
 
-    public TileEntityTypeRegistryObject(RegistryObject<TileEntityType<TILE>> registryObject) {
-        super(registryObject);
-    }
+	public TileEntityTypeRegistryObject(RegistryObject<TileEntityType<TILE>> registryObject) {
+		super(registryObject);
+	}
 }

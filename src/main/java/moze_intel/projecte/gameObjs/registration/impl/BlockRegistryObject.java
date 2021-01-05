@@ -13,40 +13,40 @@ import net.minecraftforge.fml.RegistryObject;
 @ParametersAreNonnullByDefault
 public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<BLOCK, ITEM> implements IItemProvider, IHasTranslationKey {
 
-    public BlockRegistryObject(RegistryObject<BLOCK> blockRegistryObject, RegistryObject<ITEM> itemRegistryObject) {
-        super(blockRegistryObject, itemRegistryObject);
-    }
+	public BlockRegistryObject(RegistryObject<BLOCK> blockRegistryObject, RegistryObject<ITEM> itemRegistryObject) {
+		super(blockRegistryObject, itemRegistryObject);
+	}
 
-    @Nonnull
-    public BLOCK getBlock() {
-        return getPrimary();
-    }
+	@Nonnull
+	public BLOCK getBlock() {
+		return getPrimary();
+	}
 
-    @Nonnull
-    @Override
-    public ITEM asItem() {
-        return getSecondary();
-    }
+	@Nonnull
+	@Override
+	public ITEM asItem() {
+		return getSecondary();
+	}
 
-    @Override
-    public String getTranslationKey() {
-        return getBlock().getTranslationKey();
-    }
+	@Override
+	public String getTranslationKey() {
+		return getBlock().getTranslationKey();
+	}
 
-    public static class WallOrFloorBlockRegistryObject<BLOCK extends Block, WALL_BLOCK extends Block, ITEM extends WallOrFloorItem> extends BlockRegistryObject<BLOCK, ITEM> {
+	public static class WallOrFloorBlockRegistryObject<BLOCK extends Block, WALL_BLOCK extends Block, ITEM extends WallOrFloorItem> extends BlockRegistryObject<BLOCK, ITEM> {
 
-        @Nonnull
-        private final RegistryObject<WALL_BLOCK> wallRO;
+		@Nonnull
+		private final RegistryObject<WALL_BLOCK> wallRO;
 
-        public WallOrFloorBlockRegistryObject(RegistryObject<BLOCK> blockRegistryObject, RegistryObject<WALL_BLOCK> wallBlockRegistryObject,
-                RegistryObject<ITEM> itemRegistryObject) {
-            super(blockRegistryObject, itemRegistryObject);
-            this.wallRO = wallBlockRegistryObject;
-        }
+		public WallOrFloorBlockRegistryObject(RegistryObject<BLOCK> blockRegistryObject, RegistryObject<WALL_BLOCK> wallBlockRegistryObject,
+				RegistryObject<ITEM> itemRegistryObject) {
+			super(blockRegistryObject, itemRegistryObject);
+			this.wallRO = wallBlockRegistryObject;
+		}
 
-        @Nonnull
-        public WALL_BLOCK getWallBlock() {
-            return wallRO.get();
-        }
-    }
+		@Nonnull
+		public WALL_BLOCK getWallBlock() {
+			return wallRO.get();
+		}
+	}
 }

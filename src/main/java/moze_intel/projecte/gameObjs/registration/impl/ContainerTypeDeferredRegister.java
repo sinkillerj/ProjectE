@@ -10,15 +10,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<ContainerType<?>> {
 
-    public ContainerTypeDeferredRegister() {
-        super(ForgeRegistries.CONTAINERS);
-    }
+	public ContainerTypeDeferredRegister() {
+		super(ForgeRegistries.CONTAINERS);
+	}
 
-    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
-        return register(nameProvider.getInternalRegistryName(), factory);
-    }
+	public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
+		return register(nameProvider.getInternalRegistryName(), factory);
+	}
 
-    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
-        return register(name, () -> IForgeContainerType.create(factory), ContainerTypeRegistryObject::new);
-    }
+	public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
+		return register(name, () -> IForgeContainerType.create(factory), ContainerTypeRegistryObject::new);
+	}
 }

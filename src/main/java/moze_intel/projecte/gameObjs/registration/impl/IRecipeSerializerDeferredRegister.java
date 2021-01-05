@@ -8,11 +8,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class IRecipeSerializerDeferredRegister extends WrappedDeferredRegister<IRecipeSerializer<?>> {
 
-    public IRecipeSerializerDeferredRegister() {
-        super(ForgeRegistries.RECIPE_SERIALIZERS);
-    }
+	public IRecipeSerializerDeferredRegister() {
+		super(ForgeRegistries.RECIPE_SERIALIZERS);
+	}
 
-    public <RECIPE extends IRecipe<?>> IRecipeSerializerRegistryObject<RECIPE> register(String name, Supplier<IRecipeSerializer<RECIPE>> sup) {
-        return register(name, sup, IRecipeSerializerRegistryObject::new);
-    }
+	public <RECIPE extends IRecipe<?>> IRecipeSerializerRegistryObject<RECIPE> register(String name, Supplier<IRecipeSerializer<RECIPE>> sup) {
+		return register(name, sup, IRecipeSerializerRegistryObject::new);
+	}
 }

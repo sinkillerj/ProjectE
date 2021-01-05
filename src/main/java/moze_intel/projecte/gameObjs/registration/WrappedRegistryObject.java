@@ -9,21 +9,21 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 @ParametersAreNonnullByDefault
 public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T>, INamedEntry {
 
-    @Nonnull
-    protected final RegistryObject<T> registryObject;
+	@Nonnull
+	protected final RegistryObject<T> registryObject;
 
-    protected WrappedRegistryObject(RegistryObject<T> registryObject) {
-        this.registryObject = registryObject;
-    }
+	protected WrappedRegistryObject(RegistryObject<T> registryObject) {
+		this.registryObject = registryObject;
+	}
 
-    @Nonnull
-    @Override
-    public T get() {
-        return registryObject.get();
-    }
+	@Nonnull
+	@Override
+	public T get() {
+		return registryObject.get();
+	}
 
-    @Override
-    public String getInternalRegistryName() {
-        return registryObject.getId().getPath();
-    }
+	@Override
+	public String getInternalRegistryName() {
+		return registryObject.getId().getPath();
+	}
 }

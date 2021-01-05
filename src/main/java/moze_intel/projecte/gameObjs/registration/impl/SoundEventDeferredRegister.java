@@ -7,11 +7,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class SoundEventDeferredRegister extends WrappedDeferredRegister<SoundEvent> {
 
-    public SoundEventDeferredRegister() {
-        super(ForgeRegistries.SOUND_EVENTS);
-    }
+	public SoundEventDeferredRegister() {
+		super(ForgeRegistries.SOUND_EVENTS);
+	}
 
-    public SoundEventRegistryObject<SoundEvent> register(String name) {
-        return register(name, () -> new SoundEvent(PECore.rl(name)), SoundEventRegistryObject::new);
-    }
+	public SoundEventRegistryObject<SoundEvent> register(String name) {
+		return register(name, () -> new SoundEvent(PECore.rl(name)), SoundEventRegistryObject::new);
+	}
 }
