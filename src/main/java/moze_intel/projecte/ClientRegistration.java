@@ -62,6 +62,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
+	public static final ResourceLocation ACTIVE_OVERRIDE = PECore.rl("active");
+	public static final ResourceLocation MODE_OVERRIDE = PECore.rl("mode");
+
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
 		registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
@@ -83,12 +86,10 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent evt) {
-		evt.enqueueWork(ClientKeyHelper::registerKeyBindings);
-
 		//Tile Entity
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/alchemy_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/condenser.png"), block -> block == PEBlocks.CONDENSER.getBlock()));
-		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER_MK2.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/blocks/condenser_mk2.png"), block -> block == PEBlocks.CONDENSER_MK2.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/block/alchemical_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/block/condenser_mk1.png"), block -> block == PEBlocks.CONDENSER.getBlock()));
+		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER_MK2.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/block/condenser_mk2.png"), block -> block == PEBlocks.CONDENSER_MK2.getBlock()));
 		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.DARK_MATTER_PEDESTAL.get(), PedestalRenderer::new);
 
 		//Entities
@@ -106,13 +107,16 @@ public class ClientRegistration {
 		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getBlock(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.getCutout());
 
-		//Property Overrides
-		addPropertyOverrides(PECore.rl("active"), (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
-				PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
-				PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
-				PEItems.ZERO_RING);
-		addPropertyOverrides(PECore.rl("mode"), (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F,
-				PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
+		evt.enqueueWork(() -> {
+			ClientKeyHelper.registerKeyBindings();
+			//Property Overrides
+			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
+					PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
+					PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
+					PEItems.ZERO_RING);
+			addPropertyOverrides(MODE_OVERRIDE, (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F,
+					PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
+		});
 	}
 
 	@SubscribeEvent

@@ -1,0 +1,6 @@
+{
+  "parent": "projecte:block/collector_mk1",
+  "textures": {
+    "top": "projecte:block/collectors/top_2"
+  }
+}

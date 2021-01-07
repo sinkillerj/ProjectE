@@ -1,0 +1,213 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "pedestal": "projecte:block/dark_matter_block",
+    "particle": "projecte:block/dark_matter_block"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        2,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            10.0
+          ]
+        },
+        "up": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            10.0
+          ]
+        },
+        "north": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "south": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "east": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        2,
+        6
+      ],
+      "to": [
+        10,
+        9,
+        10
+      ],
+      "faces": {
+        "down": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            4.0
+          ]
+        },
+        "up": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            4.0
+          ]
+        },
+        "north": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            7.0
+          ]
+        },
+        "south": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            7.0
+          ]
+        },
+        "west": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            7.0
+          ]
+        },
+        "east": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            7.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        9,
+        5
+      ],
+      "to": [
+        11,
+        10,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            6.0
+          ]
+        },
+        "up": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            6.0
+          ]
+        },
+        "north": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            1.0
+          ]
+        },
+        "south": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            1.0
+          ]
+        },
+        "east": {
+          "texture": "#pedestal",
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            1.0
+          ]
+        }
+      }
+    }
+  ]
+}

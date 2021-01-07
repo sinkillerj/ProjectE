@@ -1,6 +1,0 @@
-{
-  "parent": "block/block",
-  "textures": {
-    "particle": "projecte:blocks/alchemy_chest"
-  }
-}

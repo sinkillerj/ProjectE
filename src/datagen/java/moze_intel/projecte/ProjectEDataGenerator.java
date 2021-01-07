@@ -1,5 +1,7 @@
 package moze_intel.projecte;
 
+import moze_intel.projecte.client.PEBlockStateProvider;
+import moze_intel.projecte.client.PEItemModelProvider;
 import moze_intel.projecte.client.lang.PELangProvider;
 import moze_intel.projecte.client.sound.PESoundProvider;
 import moze_intel.projecte.common.PEAdvancementsProvider;
@@ -27,6 +29,8 @@ public class ProjectEDataGenerator {
 			//Client side data generators
 			gen.addProvider(new PELangProvider(gen));
 			gen.addProvider(new PESoundProvider(gen, existingFileHelper));
+			gen.addProvider(new PEBlockStateProvider(gen, existingFileHelper));
+			gen.addProvider(new PEItemModelProvider(gen, existingFileHelper));
 		}
 		if (event.includeServer()) {
 			//Server side data generators

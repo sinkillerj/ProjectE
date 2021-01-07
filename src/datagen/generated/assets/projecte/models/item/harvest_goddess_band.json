@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecte:item/rings/harvest_god_off"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "projecte:active": 1.0
+      },
+      "model": "projecte:item/harvest_goddess_band_on"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "projecte:block/mobius_fuel_block"
+    }
+  }
+}

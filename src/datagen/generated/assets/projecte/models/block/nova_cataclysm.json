@@ -1,0 +1,6 @@
+{
+  "parent": "projecte:block/nova_catalyst",
+  "textures": {
+    "side": "projecte:block/explosives/nova1_side"
+  }
+}
