@@ -21,7 +21,7 @@ public class RemoveEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("removeemc")
-				.requires(cs -> cs.hasPermissionLevel(4))
+				.requires(cs -> cs.hasPermissionLevel(2))
 				.then(Commands.argument("item", new NSSItemArgument())
 						.executes(ctx -> removeEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> removeEmc(ctx, getHeldStack(ctx)));

@@ -15,7 +15,7 @@ public class SetEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("setemc")
-				.requires(cs -> cs.hasPermissionLevel(4))
+				.requires(cs -> cs.hasPermissionLevel(2))
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
 						.then(Commands.argument("item", new NSSItemArgument())
 								.executes(ctx -> setEmc(ctx, NSSItemArgument.getNSS(ctx, "item"), LongArgumentType.getLong(ctx, "emc"))))

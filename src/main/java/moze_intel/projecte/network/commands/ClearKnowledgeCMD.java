@@ -19,7 +19,7 @@ public class ClearKnowledgeCMD {
 
 	public static ArgumentBuilder<CommandSource, ?> register() {
 		return Commands.literal("clearknowledge")
-				.requires(cs -> cs.hasPermissionLevel(4))
+				.requires(cs -> cs.hasPermissionLevel(2))
 				.then(Commands.argument("targets", EntityArgument.players())
 						.executes(cs -> execute(cs, EntityArgument.getPlayers(cs, "targets"))));
 	}
