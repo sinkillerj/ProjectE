@@ -23,8 +23,6 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Tags.Items.INGOTS_IRON, 256)
 				.conversion(Tags.Items.INGOTS_GOLD).ingredient(Tags.Items.INGOTS_IRON, 8).propagateTags().end();
 		NormalizedSimpleStack singleEMC = NSSFake.create("single_emc");
-		//TODO - 1.16: Evaluate moving some of the custom mappers for odd things to here instead of being dedicated mappers
-		// For example shulker box recoloring and damaged anvils
 		createConversionBuilder(PECore.rl("defaults"))
 				.comment("Default values for vanilla items")
 				.group("default")

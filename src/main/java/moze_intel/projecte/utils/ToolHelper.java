@@ -80,6 +80,7 @@ public class ToolHelper {
 			int charge = getCharge(stack);
 			if (charge > 0) {
 				//TODO - 1.16: Do this in a better way that allows for some caching?
+				// In theory we could lazy cache in the item each possible combination as there aren't that many
 				Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
 				attributesBuilder.putAll(currentModifiers);
 				//If we have any charge take it into account for calculating the damage

@@ -57,7 +57,6 @@ public class FormatSplitter {
 	 * @apiNote Can return two TextComponents neighboring each other it doesn't bother combining them
 	 */
 	private static List<Component> splitMessageFormatInternal(String text) {
-		//TODO: Eventually if needed make it combine the neighboring TextComponents
 		List<Component> components = new ArrayList<>();
 		StringBuilder formattingCode = new StringBuilder();
 		StringBuilder rawText = new StringBuilder();
