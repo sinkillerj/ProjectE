@@ -8,9 +8,10 @@ import javax.annotation.Nonnull;
  */
 public final class NSSFake implements NormalizedSimpleStack {
 
-	// We need this bit of global mutable state
-	// So we can distinguish fake NSS's originating from separate files, but have the same name
-	// For example, "FAKE|foo" from a.json and "FAKE|foo" from b.json should not have anything to do with each other,
+	/**
+	 * We need this bit of global mutable state, so that we can distinguish fake NSS's originating from separate files, but have the same name. For example, "FAKE|foo"
+	 * from a.json and "FAKE|foo" from b.json should not have anything to do with each other.
+	 */
 	private static String currentNamespace = "";
 
 	private final String namespace;
@@ -21,14 +22,26 @@ public final class NSSFake implements NormalizedSimpleStack {
 		this.description = description;
 	}
 
+	/**
+	 * Resets the current namespace that will be used for any newly created {@link NSSFake} objects.
+	 */
 	public static void resetNamespace() {
 		setCurrentNamespace("");
 	}
 
+	/**
+	 * Sets the current namespace that will be used for any newly created {@link NSSFake} objects.
+	 *
+	 * @param ns Namespace
+	 */
 	public static void setCurrentNamespace(@Nonnull String ns) {
+		//TODO - 1.16: Re-evaluate this doesn't seem to be used outside of tests and probably should be used.
 		currentNamespace = ns;
 	}
 
+	/**
+	 * Helper method to create an {@link NSSFake} representing an abstract object that does not actually exist from a description.
+	 */
 	@Nonnull
 	public static NormalizedSimpleStack create(String description) {
 		return new NSSFake(currentNamespace, description);

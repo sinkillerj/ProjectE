@@ -36,49 +36,57 @@
         },
         {
           "output": "minecraft:grass_path",
-          "ingredients": [ "minecraft:grass" ]
+          "ingredients": [
+            "minecraft:grass_block"
+          ]
         },
         {
           "output": "minecraft:iron_horse_armor",
           "ingredients": {
-            "minecraft:iron_ingot": 8
+            "#forge:ingots/iron": 8
           }
         },
         {
           "output": "minecraft:golden_horse_armor",
           "ingredients": {
-            "minecraft:gold_ingot": 8
+            "#forge:ingots/gold": 8
           }
         },
         {
           "output": "minecraft:diamond_horse_armor",
           "ingredients": {
-            "minecraft:diamond": 8
+            "#forge:gems/diamond": 8
           }
         },
         {
           "output": "minecraft:carved_pumpkin",
-          "ingredients": [ "minecraft:pumpkin" ]
+          "ingredients": [
+            "minecraft:pumpkin"
+          ]
         },
         {
           "output": "minecraft:enchanted_book",
-          "ingredients": [ "minecraft:book" ]
+          "ingredients": [
+            "minecraft:book"
+          ]
         },
         {
           "output": "minecraft:enchanted_golden_apple",
           "ingredients": {
             "minecraft:apple": 1,
-            "minecraft:gold_block": 8
+            "#forge:storage_blocks/gold": 8
           }
         },
         {
           "output": "minecraft:wet_sponge",
-          "ingredients": [ "minecraft:sponge" ]
+          "ingredients": [
+            "minecraft:sponge"
+          ]
         },
         {
           "output": "minecraft:bell",
           "ingredients": {
-            "minecraft:gold_ingot": 7
+            "#forge:ingots/gold": 7
           }
         },
         {
@@ -134,11 +142,15 @@
         },
         {
           "output": "minecraft:soul_soil",
-          "ingredients": [ "minecraft:soul_sand" ]
+          "ingredients": [
+            "minecraft:soul_sand"
+          ]
         },
         {
           "output": "minecraft:warped_wart_block",
-          "ingredients": [ "minecraft:nether_wart_block" ]
+          "ingredients": [
+            "minecraft:nether_wart_block"
+          ]
         }
       ]
     },
@@ -147,67 +159,99 @@
       "conversions": [
         {
           "output": "minecraft:white_concrete",
-          "ingredients": [ "minecraft:white_concrete_powder" ]
+          "ingredients": [
+            "minecraft:white_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:orange_concrete",
-          "ingredients": [ "minecraft:orange_concrete_powder" ]
+          "ingredients": [
+            "minecraft:orange_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:magenta_concrete",
-          "ingredients": [ "minecraft:magenta_concrete_powder" ]
+          "ingredients": [
+            "minecraft:magenta_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:light_blue_concrete",
-          "ingredients": [ "minecraft:light_blue_concrete_powder" ]
+          "ingredients": [
+            "minecraft:light_blue_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:yellow_concrete",
-          "ingredients": [ "minecraft:yellow_concrete_powder" ]
+          "ingredients": [
+            "minecraft:yellow_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:lime_concrete",
-          "ingredients": [ "minecraft:lime_concrete_powder" ]
+          "ingredients": [
+            "minecraft:lime_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:pink_concrete",
-          "ingredients": [ "minecraft:pink_concrete_powder" ]
+          "ingredients": [
+            "minecraft:pink_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:gray_concrete",
-          "ingredients": [ "minecraft:gray_concrete_powder" ]
+          "ingredients": [
+            "minecraft:gray_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:light_gray_concrete",
-          "ingredients": [ "minecraft:light_gray_concrete_powder" ]
+          "ingredients": [
+            "minecraft:light_gray_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:cyan_concrete",
-          "ingredients": [ "minecraft:cyan_concrete_powder" ]
+          "ingredients": [
+            "minecraft:cyan_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:purple_concrete",
-          "ingredients": [ "minecraft:purple_concrete_powder" ]
+          "ingredients": [
+            "minecraft:purple_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:blue_concrete",
-          "ingredients": [ "minecraft:blue_concrete_powder" ]
+          "ingredients": [
+            "minecraft:blue_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:brown_concrete",
-          "ingredients": [ "minecraft:brown_concrete_powder" ]
+          "ingredients": [
+            "minecraft:brown_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:green_concrete",
-          "ingredients": [ "minecraft:green_concrete_powder" ]
+          "ingredients": [
+            "minecraft:green_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:red_concrete",
-          "ingredients": [ "minecraft:red_concrete_powder" ]
+          "ingredients": [
+            "minecraft:red_concrete_powder"
+          ]
         },
         {
           "output": "minecraft:black_concrete",
-          "ingredients": [ "minecraft:black_concrete_powder" ]
+          "ingredients": [
+            "minecraft:black_concrete_powder"
+          ]
         }
       ]
     }
@@ -215,7 +259,6 @@
   "values": {
     "before": {
       "FAKE|single_emc": 1,
-
       "minecraft:cobblestone": 1,
       "minecraft:granite": 16,
       "minecraft:diorite": 16,
@@ -236,10 +279,7 @@
       "minecraft:cobweb": 12,
       "minecraft:lily_pad": 16,
       "#minecraft:small_flowers": 16,
-      "minecraft:sunflower": 32,
-      "minecraft:lilac": 32,
-      "minecraft:rose_bush": 32,
-      "minecraft:peony": 32,
+      "#minecraft:tall_flowers": 32,
       "minecraft:red_mushroom": 32,
       "minecraft:brown_mushroom": 32,
       "minecraft:sugar_cane": 32,
@@ -255,7 +295,6 @@
       "minecraft:tall_grass": 1,
       "minecraft:fern": 1,
       "minecraft:large_fern": 1,
-      "minecraft:packed_ice": 4,
       "minecraft:magma_block": 128,
       "minecraft:nether_sprouts": 1,
       "minecraft:crimson_roots": 1,
@@ -264,22 +303,16 @@
       "minecraft:twisting_vines": 8,
       "minecraft:crimson_fungus": 32,
       "minecraft:warped_fungus": 32,
-
       "minecraft:tube_coral_block": 64,
       "minecraft:brain_coral_block": 64,
       "minecraft:bubble_coral_block": 64,
       "minecraft:fire_coral_block": 64,
       "minecraft:horn_coral_block": 64,
-      "minecraft:dead_tube_coral_block": 1,
-      "minecraft:dead_brain_coral_block": 1,
-      "minecraft:dead_bubble_coral_block": 1,
-      "minecraft:dead_fire_coral_block": 1,
-      "minecraft:dead_horn_coral_block": 1,
-      "minecraft:tube_coral": 16,
-      "minecraft:brain_coral": 16,
-      "minecraft:bubble_coral": 16,
-      "minecraft:fire_coral": 16,
-      "minecraft:horn_coral": 16,
+      "minecraft:dead_tube_coral_block": 4,
+      "minecraft:dead_brain_coral_block": 4,
+      "minecraft:dead_bubble_coral_block": 4,
+      "minecraft:dead_fire_coral_block": 4,
+      "minecraft:dead_horn_coral_block": 4,
       "minecraft:tube_coral_fan": 16,
       "minecraft:brain_coral_fan": 16,
       "minecraft:bubble_coral_fan": 16,
@@ -290,14 +323,19 @@
       "minecraft:dead_bubble_coral_fan": 1,
       "minecraft:dead_fire_coral_fan": 1,
       "minecraft:dead_horn_coral_fan": 1,
+      "minecraft:tube_coral": 16,
+      "minecraft:brain_coral": 16,
+      "minecraft:bubble_coral": 16,
+      "minecraft:fire_coral": 16,
+      "minecraft:horn_coral": 16,
       "minecraft:dead_tube_coral": 1,
       "minecraft:dead_brain_coral": 1,
       "minecraft:dead_bubble_coral": 1,
       "minecraft:dead_fire_coral": 1,
       "minecraft:dead_horn_coral": 1,
-
       "minecraft:chorus_plant": 64,
       "minecraft:chorus_flower": 96,
+      "minecraft:chorus_fruit": 192,
       "#forge:seeds/wheat": 16,
       "#forge:seeds/beetroot": 16,
       "minecraft:melon_slice": 16,
@@ -320,8 +358,6 @@
       "#forge:crops/beetroot": 64,
       "#forge:crops/potato": 64,
       "minecraft:poisonous_potato": 64,
-      "minecraft:chorus_fruit": 192,
-
       "minecraft:string": 12,
       "minecraft:rotten_flesh": 32,
       "minecraft:slime_ball": 32,
@@ -344,34 +380,29 @@
       "minecraft:trident": 16398,
       "minecraft:heart_of_the_sea": 32768,
       "minecraft:dragon_egg": 262144,
-
       "minecraft:saddle": 192,
       "minecraft:name_tag": 192,
-      "#forge:music_discs": 2048,
-
+      "#minecraft:music_discs": 2048,
       "minecraft:flint": 4,
       "minecraft:coal": 128,
-      "minecraft:quartz": 256,
+      "#forge:gems/quartz": 256,
       "minecraft:prismarine_shard": 256,
       "minecraft:prismarine_crystals": 512,
       "minecraft:ink_sac": 16,
       "minecraft:cocoa_beans": 64,
       "minecraft:lapis_lazuli": 864,
-      "minecraft:emerald": 16384,
-      "minecraft:nether_star": 139264,
+      "#forge:gems/emerald": 16384,
+      "#forge:nether_stars": 139264,
       "minecraft:clay_ball": 16,
       "minecraft:bone": 144,
       "minecraft:snowball": 1,
       "minecraft:filled_map": 1472,
-
       "#minecraft:logs": 32,
       "#minecraft:planks": 8,
       "#minecraft:saplings": 32,
       "#forge:rods/wooden": 4,
       "#minecraft:leaves": 1,
-
       "#minecraft:wool": 48,
-
       "minecraft:netherite_scrap": 12288,
       "#forge:gems/diamond": 8192,
       "#forge:dusts/redstone": 64,

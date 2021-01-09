@@ -1,13 +1,17 @@
 {
   "comment": "Sets default conversions for various metals from other mods",
-  "groups": {},
   "values": {
     "before": {
       "#forge:ingots/iron": 256
     },
     "conversion": [
-      { "propagateTags": true, "output": "#forge:ingots/gold", "count": 1, "ingredients": { "#forge:ingots/iron": 8 } }
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/gold",
+        "ingredients": {
+          "#forge:ingots/iron": 8
+        }
+      }
     ]
   }
 }
-

@@ -53,6 +53,12 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 				throw new JsonParseException(String.format("Unknown Key: %s in Conversion with value %s", entry.getKey(), element));
 			}
 		}
+		if (!foundOutput) {
+			throw new JsonParseException("No output declared");
+		} else if (!foundIngredients) {
+			throw new JsonParseException("No ingredients declared");
+		}
+		//TODO - 1.16: Validate that the count is at least 1?
 		return out;
 	}
 }

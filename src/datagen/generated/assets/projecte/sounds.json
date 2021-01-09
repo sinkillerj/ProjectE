@@ -1,14 +1,32 @@
 {
-  "transmute": {
-    "subtitle": "sound_event.projecte.transmute",
+  "windmagic": {
+    "subtitle": "sound_event.projecte.windmagic",
     "sounds": [
-      "projecte:item/petransmute"
+      "projecte:item/pewindmagic"
     ]
   },
   "watermagic": {
     "subtitle": "sound_event.projecte.watermagic",
     "sounds": [
       "projecte:item/pewatermagic"
+    ]
+  },
+  "power": {
+    "subtitle": "sound_event.projecte.power",
+    "sounds": [
+      "projecte:item/pepower"
+    ]
+  },
+  "heal": {
+    "subtitle": "sound_event.projecte.heal",
+    "sounds": [
+      "projecte:item/peheal"
+    ]
+  },
+  "destruct": {
+    "subtitle": "sound_event.projecte.destruct",
+    "sounds": [
+      "projecte:item/pedestruct"
     ]
   },
   "charge": {
@@ -23,28 +41,10 @@
       "projecte:item/peuncharge"
     ]
   },
-  "destruct": {
-    "subtitle": "sound_event.projecte.destruct",
+  "transmute": {
+    "subtitle": "sound_event.projecte.transmute",
     "sounds": [
-      "projecte:item/pedestruct"
-    ]
-  },
-  "heal": {
-    "subtitle": "sound_event.projecte.heal",
-    "sounds": [
-      "projecte:item/peheal"
-    ]
-  },
-  "power": {
-    "subtitle": "sound_event.projecte.power",
-    "sounds": [
-      "projecte:item/pepower"
-    ]
-  },
-  "windmagic": {
-    "subtitle": "sound_event.projecte.windmagic",
-    "sounds": [
-      "projecte:item/pewindmagic"
+      "projecte:item/petransmute"
     ]
   }
 }
