@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
@@ -12,37 +13,17 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class AlchChestTile extends ChestTileEmc implements INamedContainerProvider {
 
 	private final ItemStackHandler inventory = new StackHandler(104);
-	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
 	public AlchChestTile() {
 		super(PETileEntityTypes.ALCHEMICAL_CHEST.get());
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		inventoryCap.invalidate();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return inventoryCap.cast();
-		}
-		return super.getCapability(cap, side);
+		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
 	@Override

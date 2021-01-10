@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.tiles;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import net.minecraft.block.BlockState;
@@ -11,22 +12,27 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class DMPedestalTile extends TileEmc {
+public class DMPedestalTile extends CapabilityTileEMC {
 
 	private static final int RANGE = 4;
 	private boolean isActive = false;
-	private ItemStackHandler inventory = new StackHandler(1);
-	private final LazyOptional<IItemHandler> automationInv = LazyOptional.of(() -> inventory);
+	private ItemStackHandler inventory = new StackHandler(1) {
+		@Override
+		public void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			if (world != null && !world.isRemote) {
+				//If an item got added via the item handler, then rerender the block
+				BlockState state = getBlockState();
+				world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
+			}
+		}
+	};
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
@@ -34,12 +40,7 @@ public class DMPedestalTile extends TileEmc {
 
 	public DMPedestalTile() {
 		super(PETileEntityTypes.DARK_MATTER_PEDESTAL.get());
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		automationInv.invalidate();
+		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
 	@Override
@@ -164,15 +165,6 @@ public class DMPedestalTile extends TileEmc {
 			}
 		}
 		this.isActive = newState;
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return automationInv.cast();
-		}
-		return super.getCapability(cap, side);
 	}
 
 	public IItemHandlerModifiable getInventory() {

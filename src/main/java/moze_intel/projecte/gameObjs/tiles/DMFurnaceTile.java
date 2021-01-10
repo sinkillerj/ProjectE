@@ -2,7 +2,11 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
+import moze_intel.projecte.capability.managing.ICapabilityResolver;
+import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -32,47 +36,19 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
+public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerProvider {
 
 	private static final long EMC_CONSUMPTION = 2;
 	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
-	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return !getSmeltingResult(stack).isEmpty() ? super.insertItem(slot, stack, simulate) : stack;
-		}
-	});
-	private final LazyOptional<IItemHandler> automationFuel = LazyOptional.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN) {
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
-		}
-	});
-	private final LazyOptional<IItemHandler> automationOutput = LazyOptional.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
-	private final LazyOptional<IItemHandler> automationSides = LazyOptional.of(() -> {
-		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
-		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
-		return new CombinedInvWrapper(fuel, out);
-	});
-	private final LazyOptional<IItemHandler> joined = LazyOptional.of(() -> {
-		IItemHandlerModifiable in = (IItemHandlerModifiable) automationInput.orElseThrow(NullPointerException::new);
-		IItemHandlerModifiable fuel = (IItemHandlerModifiable) automationFuel.orElseThrow(NullPointerException::new);
-		IItemHandlerModifiable out = (IItemHandlerModifiable) automationOutput.orElseThrow(NullPointerException::new);
-		return new CombinedInvWrapper(in, fuel, out);
-	});
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
 	private final FurnaceTileEntity dummyFurnace = new FurnaceTileEntity();
@@ -93,6 +69,7 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		super(type, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
+		itemHandlerResolver = new DMFurnaceItemHandlerProvider();
 	}
 
 	@Override
@@ -155,34 +132,6 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 
 	public IItemHandler getOutput() {
 		return outputInventory;
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		automationInput.invalidate();
-		automationOutput.invalidate();
-		automationFuel.invalidate();
-		automationSides.invalidate();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if (side == null) {
-				return joined.cast();
-			}
-			switch (side) {
-				case UP:
-					return automationInput.cast();
-				case DOWN:
-					return automationOutput.cast();
-				default:
-					return automationSides.cast();
-			}
-		}
-		return super.getCapability(cap, side);
 	}
 
 	@Override
@@ -384,5 +333,57 @@ public class DMFurnaceTile extends TileEmc implements INamedContainerProvider {
 		nbt.put("Output", outputInventory.serializeNBT());
 		nbt.put("Fuel", fuelInv.serializeNBT());
 		return nbt;
+	}
+
+	private class DMFurnaceItemHandlerProvider extends SidedItemHandlerResolver {
+
+		private final ICapabilityResolver<IItemHandler> joined;
+		private final ICapabilityResolver<IItemHandler> automationInput;
+		private final ICapabilityResolver<IItemHandler> automationOutput;
+		private final ICapabilityResolver<IItemHandler> automationSides;
+
+		protected DMFurnaceItemHandlerProvider() {
+			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+					return !getSmeltingResult(stack).isEmpty() ? super.insertItem(slot, stack, simulate) : stack;
+				}
+			});
+			NonNullLazy<IItemHandlerModifiable> automationFuel = NonNullLazy.of(() -> new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN) {
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+					return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+				}
+			});
+			NonNullLazy<IItemHandler> automationOutput = NonNullLazy.of(() -> new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT));
+			this.joined = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper((IItemHandlerModifiable) automationInput.get(),
+					automationFuel.get(), (IItemHandlerModifiable) automationOutput.get()));
+			this.automationInput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationInput);
+			this.automationOutput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationOutput);
+			this.automationSides = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper(automationFuel.get(),
+					(IItemHandlerModifiable) automationOutput.get()));
+		}
+
+		@Override
+		protected ICapabilityResolver<IItemHandler> getResolver(@Nullable Direction side) {
+			if (side == null) {
+				return joined;
+			} else if (side == Direction.UP) {
+				return automationInput;
+			} else if (side == Direction.DOWN) {
+				return automationOutput;
+			}
+			return automationSides;
+		}
+
+		@Override
+		public void invalidateAll() {
+			joined.invalidateAll();
+			automationInput.invalidateAll();
+			automationOutput.invalidateAll();
+			automationSides.invalidateAll();
+		}
 	}
 }

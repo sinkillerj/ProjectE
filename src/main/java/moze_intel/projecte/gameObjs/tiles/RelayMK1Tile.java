@@ -2,8 +2,12 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
+import moze_intel.projecte.capability.managing.ICapabilityResolver;
+import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -22,41 +26,16 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
+public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerProvider {
 
 	private final ItemStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
-	private final LazyOptional<IItemHandler> automationInput;
-	private final LazyOptional<IItemHandler> automationOutput = LazyOptional.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
-		}
-
-		@Nonnull
-		@Override
-		public ItemStack extractItem(int slot, int amount, boolean simulate) {
-			ItemStack stack = getStackInSlot(slot);
-			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.get();
-					if (emcHolder.getNeededEmc(stack) == 0) {
-						return super.extractItem(slot, amount, simulate);
-					}
-					return ItemStack.EMPTY;
-				}
-			}
-			return super.extractItem(slot, amount, simulate);
-		}
-	});
 	private final long chargeRate;
 	private double bonusEMC;
 
@@ -74,31 +53,12 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 				return SlotPredicates.RELAY_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
-		automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
+		itemHandlerResolver = new RelayItemHandlerProvider();
 	}
 
 	@Override
 	public boolean isRelay() {
 		return true;
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		automationInput.invalidate();
-		automationOutput.invalidate();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if (side == Direction.DOWN) {
-				return automationOutput.cast();
-			}
-			return automationInput.cast();
-		}
-		return super.getCapability(cap, side);
 	}
 
 	private ItemStack getCharging() {
@@ -229,5 +189,61 @@ public class RelayMK1Tile extends TileEmc implements INamedContainerProvider {
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(PEBlocks.RELAY.getBlock().getTranslationKey());
+	}
+
+	private class RelayItemHandlerProvider extends SidedItemHandlerResolver {
+
+		private final ICapabilityResolver<IItemHandler> automationOutput;
+		private final ICapabilityResolver<IItemHandler> automationInput;
+		private final ICapabilityResolver<IItemHandler> joined;
+
+		protected RelayItemHandlerProvider() {
+			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
+			NonNullLazy<IItemHandler> automationOutput = NonNullLazy.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+					return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+				}
+
+				@Nonnull
+				@Override
+				public ItemStack extractItem(int slot, int amount, boolean simulate) {
+					ItemStack stack = getStackInSlot(slot);
+					if (!stack.isEmpty()) {
+						Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+						if (holderCapability.isPresent()) {
+							IItemEmcHolder emcHolder = holderCapability.get();
+							if (emcHolder.getNeededEmc(stack) == 0) {
+								return super.extractItem(slot, amount, simulate);
+							}
+							return ItemStack.EMPTY;
+						}
+					}
+					return super.extractItem(slot, amount, simulate);
+				}
+			});
+			this.automationInput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationInput);
+			this.automationOutput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationOutput);
+			this.joined = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper((IItemHandlerModifiable) automationInput.get(),
+					(IItemHandlerModifiable) automationOutput.get()));
+		}
+
+		@Override
+		protected ICapabilityResolver<IItemHandler> getResolver(@Nullable Direction side) {
+			if (side == null) {
+				return joined;
+			} else if (side.getAxis().isVertical()) {
+				return automationOutput;
+			}
+			return automationInput;
+		}
+
+		@Override
+		public void invalidateAll() {
+			joined.invalidateAll();
+			automationInput.invalidateAll();
+			automationOutput.invalidateAll();
+		}
 	}
 }

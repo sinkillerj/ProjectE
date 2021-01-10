@@ -2,8 +2,12 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
+import moze_intel.projecte.capability.managing.ICapabilityResolver;
+import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -24,37 +28,19 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider {
+public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContainerProvider {
 
 	private final ItemStackHandler input = new StackHandler(getInvSize());
 	private final ItemStackHandler auxSlots = new StackHandler(3);
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
-	private final LazyOptional<IItemHandler> automationInput = LazyOptional.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
-		}
-	});
-	private final LazyOptional<IItemHandler> automationAuxSlots = LazyOptional.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
-		@Nonnull
-		@Override
-		public ItemStack extractItem(int slot, int count, boolean simulate) {
-			if (slot == UPGRADE_SLOT) {
-				return super.extractItem(slot, count, simulate);
-			}
-			return ItemStack.EMPTY;
-		}
-	});
 	public static final int UPGRADING_SLOT = 0;
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
@@ -72,6 +58,7 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	public CollectorMK1Tile(TileEntityType<?> type, EnumCollectorTier tier) {
 		super(type, tier.getStorage());
 		this.emcGen = tier.getGenRate();
+		itemHandlerResolver = new CollectorItemHandlerProvider();
 	}
 
 	@Override
@@ -86,25 +73,6 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 
 	public IItemHandler getAux() {
 		return auxSlots;
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		automationInput.invalidate();
-		automationAuxSlots.invalidate();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if (side != null && side.getAxis().isVertical()) {
-				return automationAuxSlots.cast();
-			}
-			return automationInput.cast();
-		}
-		return super.getCapability(cap, side);
 	}
 
 	protected int getInvSize() {
@@ -312,5 +280,53 @@ public class CollectorMK1Tile extends TileEmc implements INamedContainerProvider
 	@Override
 	public ITextComponent getDisplayName() {
 		return new StringTextComponent(getType().getRegistryName().toString());
+	}
+
+	private class CollectorItemHandlerProvider extends SidedItemHandlerResolver {
+
+		private final ICapabilityResolver<IItemHandler> automationAuxSlots;
+		private final ICapabilityResolver<IItemHandler> automationInput;
+		private final ICapabilityResolver<IItemHandler> joined;
+
+		protected CollectorItemHandlerProvider() {
+			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+					return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+				}
+			});
+			NonNullLazy<IItemHandler> automationAuxSlots = NonNullLazy.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+				@Nonnull
+				@Override
+				public ItemStack extractItem(int slot, int count, boolean simulate) {
+					if (slot == UPGRADE_SLOT) {
+						return super.extractItem(slot, count, simulate);
+					}
+					return ItemStack.EMPTY;
+				}
+			});
+			this.automationInput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationInput);
+			this.automationAuxSlots = BasicCapabilityResolver.getBasicItemHandlerResolver(automationAuxSlots);
+			this.joined = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper((IItemHandlerModifiable) automationInput.get(),
+					(IItemHandlerModifiable) automationAuxSlots.get()));
+		}
+
+		@Override
+		protected ICapabilityResolver<IItemHandler> getResolver(@Nullable Direction side) {
+			if (side == null) {
+				return joined;
+			} else if (side.getAxis().isVertical()) {
+				return automationAuxSlots;
+			}
+			return automationInput;
+		}
+
+		@Override
+		public void invalidateAll() {
+			joined.invalidateAll();
+			automationInput.invalidateAll();
+			automationAuxSlots.invalidateAll();
+		}
 	}
 }

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -19,13 +20,9 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -34,7 +31,6 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
-	private final LazyOptional<IItemHandler> automationInventory = LazyOptional.of(this::createAutomationInventory);
 	@Nullable
 	private ItemInfo lockInfo;
 	private boolean isAcceptingEmc;
@@ -47,6 +43,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 
 	protected CondenserTile(TileEntityType<?> type) {
 		super(type);
+		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(this::createAutomationInventory);
 	}
 
 	@Override
@@ -98,21 +95,6 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 				return ItemStack.EMPTY;
 			}
 		};
-	}
-
-	@Override
-	public void remove() {
-		super.remove();
-		automationInventory.invalidate();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return automationInventory.cast();
-		}
-		return super.getCapability(cap, side);
 	}
 
 	@Override

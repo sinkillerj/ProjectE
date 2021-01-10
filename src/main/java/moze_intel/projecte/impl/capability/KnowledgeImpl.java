@@ -13,6 +13,7 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
+import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.Tome;
@@ -30,9 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -245,35 +244,18 @@ public final class KnowledgeImpl {
 		}
 	}
 
-	public static class Provider implements ICapabilitySerializable<CompoundNBT> {
+	public static class Provider extends SerializableCapabilityResolver<IKnowledgeProvider> {
 
 		public static final ResourceLocation NAME = PECore.rl("knowledge");
 
-		private final DefaultImpl impl;
-		private final LazyOptional<IKnowledgeProvider> cap;
-
 		public Provider(PlayerEntity player) {
-			impl = new DefaultImpl(player);
-			cap = LazyOptional.of(() -> impl);
+			super(new DefaultImpl(player));
 		}
 
 		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-			if (capability == ProjectEAPI.KNOWLEDGE_CAPABILITY) {
-				return cap.cast();
-			}
-			return LazyOptional.empty();
-		}
-
-		@Override
-		public CompoundNBT serializeNBT() {
-			return impl.serializeNBT();
-		}
-
-		@Override
-		public void deserializeNBT(CompoundNBT nbt) {
-			impl.deserializeNBT(nbt);
+		public Capability<IKnowledgeProvider> getMatchingCapability() {
+			return ProjectEAPI.KNOWLEDGE_CAPABILITY;
 		}
 	}
 

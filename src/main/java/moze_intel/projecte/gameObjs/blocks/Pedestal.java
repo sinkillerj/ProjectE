@@ -33,6 +33,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 
 public class Pedestal extends Block implements IWaterLoggable {
 
@@ -94,7 +95,6 @@ public class Pedestal extends Block implements IWaterLoggable {
 	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
 		if (!world.isRemote) {
 			dropItem(world, pos);
-			world.notifyBlockUpdate(pos, state, state, 8);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 			//If the player is creative, try to drop the item, and if we succeeded return false to cancel removing the pedestal
 			// Note: we notify the block of an update to make sure that it re-appears visually on the client instead of having there
 			// be a desync
-			world.notifyBlockUpdate(pos, state, state, 8);
+			world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
 			return false;
 		}
 		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
@@ -125,14 +125,13 @@ public class Pedestal extends Block implements IWaterLoggable {
 			if (stack.isEmpty() && !item.isEmpty()) {
 				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 					tile.setActive(!tile.getActive());
-					world.notifyBlockUpdate(pos, state, state, 8);
+					world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
 				});
 			} else if (!stack.isEmpty() && item.isEmpty()) {
 				tile.getInventory().setStackInSlot(0, stack.split(1));
 				if (stack.getCount() <= 0) {
 					player.setHeldItem(hand, ItemStack.EMPTY);
 				}
-				world.notifyBlockUpdate(pos, state, state, 8);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -152,7 +151,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 					if (!stack.isEmpty()) {
 						stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 							ped.setActive(!ped.getActive());
-							world.notifyBlockUpdate(pos, state, state, 11);
+							world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT_AND_RERENDER);
 						});
 					}
 				}

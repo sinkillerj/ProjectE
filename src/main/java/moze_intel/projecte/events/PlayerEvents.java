@@ -4,6 +4,7 @@ import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
 import moze_intel.projecte.handlers.InternalAbilities;
@@ -23,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SCollectItemPacket;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
@@ -80,14 +82,19 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void attachCaps(AttachCapabilitiesEvent<Entity> evt) {
 		if (evt.getObject() instanceof PlayerEntity) {
-			evt.addCapability(AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
-			evt.addCapability(KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider((PlayerEntity) evt.getObject()));
-
-			if (evt.getObject() instanceof ServerPlayerEntity) {
-				evt.addCapability(InternalTimers.NAME, new InternalTimers.Provider());
-				evt.addCapability(InternalAbilities.NAME, new InternalAbilities.Provider((ServerPlayerEntity) evt.getObject()));
+			PlayerEntity player = (PlayerEntity) evt.getObject();
+			attachCapability(evt, AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
+			attachCapability(evt, KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider(player));
+			if (player instanceof ServerPlayerEntity) {
+				attachCapability(evt, InternalTimers.NAME, new InternalTimers.Provider());
+				attachCapability(evt, InternalAbilities.NAME, new InternalAbilities.Provider((ServerPlayerEntity) player));
 			}
 		}
+	}
+
+	private static void attachCapability(AttachCapabilitiesEvent<Entity> evt, ResourceLocation name, BasicCapabilityResolver<?> cap) {
+		evt.addCapability(name, cap);
+		evt.addListener(cap::invalidateAll);
 	}
 
 	@SubscribeEvent

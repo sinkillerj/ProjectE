@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.utils.Constants;
@@ -43,7 +44,7 @@ public class FixedValuesDeserializer implements JsonDeserializer<FixedValues> {
 				out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), primitive.getAsLong());
 				continue;
 			} else if (primitive.isString()) {
-				if (primitive.getAsString().toLowerCase().equals("free")) {
+				if (primitive.getAsString().toLowerCase(Locale.ROOT).equals("free")) {
 					out.put(context.deserialize(new JsonPrimitive(entry.getKey()), NormalizedSimpleStack.class), Constants.FREE_ARITHMETIC_VALUE);
 					continue;
 				}

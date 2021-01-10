@@ -142,7 +142,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	private void updateFilter() {
-		String search = textBoxFilter.getText().toLowerCase();
+		String search = textBoxFilter.getText().toLowerCase(Locale.ROOT);
 		if (!inv.filter.equals(search)) {
 			inv.filter = search;
 			inv.searchpage = 0;

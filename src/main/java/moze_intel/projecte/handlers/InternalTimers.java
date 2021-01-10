@@ -1,15 +1,12 @@
 package moze_intel.projecte.handlers;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class InternalTimers {
 
@@ -66,17 +63,16 @@ public class InternalTimers {
 		return false;
 	}
 
-	public static class Provider implements ICapabilityProvider {
+	public static class Provider extends BasicCapabilityResolver<InternalTimers> {
 
-		private final LazyOptional<InternalTimers> capInstance = LazyOptional.of(InternalTimers::new);
+		public Provider() {
+			super(InternalTimers::new);
+		}
 
 		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-			if (capability == CAPABILITY) {
-				return capInstance.cast();
-			}
-			return LazyOptional.empty();
+		public Capability<InternalTimers> getMatchingCapability() {
+			return CAPABILITY;
 		}
 	}
 

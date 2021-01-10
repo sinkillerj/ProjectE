@@ -21,7 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
  */
 public class TileEmcBase extends TileEntity implements IEmcStorage {
 
-	private LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
+	private LazyOptional<IEmcStorage> emcStorageCapability;
 	private long maximumEMC;
 	private long currentEMC;
 
@@ -166,8 +166,21 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 		if (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) {
+			if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
+				//If the capability has not been retrieved yet or it is not valid then recreate it
+				emcStorageCapability = LazyOptional.of(() -> this);
+			}
 			return emcStorageCapability.cast();
 		}
 		return super.getCapability(cap, side);
+	}
+
+	@Override
+	protected void invalidateCaps() {
+		super.invalidateCaps();
+		if (emcStorageCapability != null && emcStorageCapability.isPresent()) {
+			emcStorageCapability.invalidate();
+			emcStorageCapability = null;
+		}
 	}
 }

@@ -2,8 +2,8 @@ package moze_intel.projecte.handlers;
 
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
@@ -12,12 +12,9 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 public final class InternalAbilities {
@@ -171,21 +168,16 @@ public final class InternalAbilities {
 		swrgOverride = false;
 	}
 
-	public static class Provider implements ICapabilityProvider {
-
-		private final LazyOptional<InternalAbilities> capInstance;
+	public static class Provider extends BasicCapabilityResolver<InternalAbilities> {
 
 		public Provider(ServerPlayerEntity player) {
-			capInstance = LazyOptional.of(() -> new InternalAbilities(player));
+			super(() -> new InternalAbilities(player));
 		}
 
 		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-			if (capability == CAPABILITY) {
-				return capInstance.cast();
-			}
-			return LazyOptional.empty();
+		public Capability<InternalAbilities> getMatchingCapability() {
+			return CAPABILITY;
 		}
 	}
 }

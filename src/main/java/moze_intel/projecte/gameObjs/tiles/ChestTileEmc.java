@@ -5,7 +5,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class ChestTileEmc extends TileEmc {
+public abstract class ChestTileEmc extends CapabilityTileEMC {
 
 	private int ticksSinceSync;
 	private float lidAngle;

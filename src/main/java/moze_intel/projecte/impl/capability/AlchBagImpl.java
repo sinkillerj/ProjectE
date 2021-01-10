@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -17,8 +18,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -91,29 +90,18 @@ public final class AlchBagImpl {
 		}
 	}
 
-	public static class Provider implements ICapabilitySerializable<CompoundNBT> {
+	public static class Provider extends SerializableCapabilityResolver<IAlchBagProvider> {
 
 		public static final ResourceLocation NAME = PECore.rl("alch_bags");
-		private final IAlchBagProvider impl = new DefaultImpl();
-		private final LazyOptional<IAlchBagProvider> cap = LazyOptional.of(() -> impl);
+
+		public Provider() {
+			super(new DefaultImpl());
+		}
 
 		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-			if (capability == ProjectEAPI.ALCH_BAG_CAPABILITY) {
-				return cap.cast();
-			}
-			return LazyOptional.empty();
-		}
-
-		@Override
-		public CompoundNBT serializeNBT() {
-			return impl.serializeNBT();
-		}
-
-		@Override
-		public void deserializeNBT(CompoundNBT nbt) {
-			impl.deserializeNBT(nbt);
+		public Capability<IAlchBagProvider> getMatchingCapability() {
+			return ProjectEAPI.ALCH_BAG_CAPABILITY;
 		}
 	}
 
