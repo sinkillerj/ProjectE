@@ -24,6 +24,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -97,6 +98,8 @@ public class TransmutationRenderingEvent {
 		BlockRayTraceResult rtr = philoStone.getHitBlock(player);
 		if (rtr.getType() == RayTraceResult.Type.BLOCK) {
 			BlockState current = world.getBlockState(rtr.getPos());
+			//TODO: Evaluate making this even smarter and allowing for blocks to flag themselves as being able to propagate
+			// to neighboring blocks of different states so that things like fences are easier to convert
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 			if (transmutationResult != null) {
 				Vector3d viewPosition = activeRenderInfo.getProjectedView();
@@ -107,10 +110,11 @@ public class TransmutationRenderingEvent {
 				MatrixStack matrix = event.getMatrix();
 				matrix.push();
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
+				ISelectionContext selectionContext = ISelectionContext.forEntity(player);
 				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
 					BlockState state = world.getBlockState(pos);
 					if (!state.isAir(world, pos)) {
-						VoxelShape shape = state.getShape(world, pos);
+						VoxelShape shape = state.getShape(world, pos, selectionContext);
 						if (!shape.isEmpty()) {
 							matrix.push();
 							matrix.translate(pos.getX(), pos.getY(), pos.getZ());

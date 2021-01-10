@@ -15,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -158,19 +157,16 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof DMPedestalTile)) {
-			return;
-		}
-		DMPedestalTile tile = (DMPedestalTile) te;
-		List<ExperienceOrbEntity> orbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, tile.getEffectBounds());
-		for (ExperienceOrbEntity orb : orbs) {
-			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-			if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
-				suckXP(orb, tile.getInventory().getStackInSlot(0));
+		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+		if (tile != null) {
+			List<ExperienceOrbEntity> orbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, tile.getEffectBounds());
+			for (ExperienceOrbEntity orb : orbs) {
+				WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+				if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+					suckXP(orb, tile.getInventory().getStackInSlot(0));
+				}
 			}
 		}
-
 	}
 
 	private void suckXP(ExperienceOrbEntity orb, ItemStack mindStone) {

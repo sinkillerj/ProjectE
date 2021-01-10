@@ -45,7 +45,7 @@ public abstract class BlockDirection extends Block {
 	@Deprecated
 	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}

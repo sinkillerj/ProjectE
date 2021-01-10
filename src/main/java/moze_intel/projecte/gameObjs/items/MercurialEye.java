@@ -241,7 +241,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			return false;
 		}
 		Optional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC || player.getEntityWorld().getTileEntity(placePos) != null) {
+		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
+			WorldHelper.getTileEntity(player.getEntityWorld(), placePos) != null) {
 			return false;
 		}
 

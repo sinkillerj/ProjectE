@@ -6,6 +6,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -51,7 +52,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 			BlockPos neighboringPos = getPos().offset(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
 			if (world.isBlockPresent(neighboringPos)) {
-				TileEntity neighboringTile = world.getTileEntity(neighboringPos);
+				TileEntity neighboringTile = WorldHelper.getTileEntity(world, neighboringPos);
 				if (neighboringTile != null) {
 					neighboringTile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
 						if (!isRelay() || !theirEmcStorage.isRelay()) {

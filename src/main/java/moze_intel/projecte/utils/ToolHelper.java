@@ -145,7 +145,7 @@ public class ToolHelper {
 				pos = pos.toImmutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-						drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack));
+						drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, WorldHelper.getTileEntity(world, pos), player, stack));
 						world.removeBlock(pos, false);
 						hasAction = true;
 						if (world.rand.nextInt(5) == 0) {
@@ -379,7 +379,7 @@ public class ToolHelper {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				digPos = digPos.toImmutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, digPos)) {
-					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, stack));
+					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, stack));
 					world.removeBlock(digPos, false);
 				}
 			}
@@ -414,7 +414,7 @@ public class ToolHelper {
 				newPos = newPos.toImmutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-						drops.addAll(Block.getDrops(state, (ServerWorld) world, newPos, world.getTileEntity(newPos), player, stack));
+						drops.addAll(Block.getDrops(state, (ServerWorld) world, newPos, WorldHelper.getTileEntity(world, newPos), player, stack));
 						world.removeBlock(newPos, false);
 						hasAction = true;
 					} else {

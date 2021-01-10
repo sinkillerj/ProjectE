@@ -56,7 +56,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			pos = pos.toImmutable();
 			if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
-				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, world.getTileEntity(pos), player, stack);
+				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, WorldHelper.getTileEntity(world, pos), player, stack);
 				drops.addAll(list);
 				world.removeBlock(pos, false);
 				if (world.rand.nextInt(8) == 0) {

@@ -75,8 +75,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
 		ItemStack stack = ctx.getItem();
-		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
-			TileEntity tile = world.getTileEntity(pos);
+		if (player != null && !world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
+			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			Direction sideHit = ctx.getFace();
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
 				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
@@ -85,7 +85,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
-
 		return ActionResultType.SUCCESS;
 	}
 
@@ -145,22 +144,20 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				if (world.getWorldInfo() instanceof IServerWorldInfo) {
-					IServerWorldInfo worldInfo = (IServerWorldInfo) world.getWorldInfo();
-					worldInfo.setRainTime(0);
-					worldInfo.setThunderTime(0);
-					worldInfo.setRaining(false);
-					worldInfo.setThundering(false);
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					if (world.getWorldInfo() instanceof IServerWorldInfo) {
+						IServerWorldInfo worldInfo = (IServerWorldInfo) world.getWorldInfo();
+						worldInfo.setRainTime(0);
+						worldInfo.setThunderTime(0);
+						worldInfo.setRaining(false);
+						worldInfo.setThundering(false);
+					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

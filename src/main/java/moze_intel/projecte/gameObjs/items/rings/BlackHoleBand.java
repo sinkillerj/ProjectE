@@ -97,7 +97,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
+		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 		if (tile != null) {
 			List<ItemEntity> list = world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds());
 			for (ItemEntity item : list) {
@@ -112,7 +112,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	private void suckDumpItem(ItemEntity item, DMPedestalTile tile) {
 		World world = tile.getWorld();
 		for (Direction dir : Direction.values()) {
-			TileEntity candidate = world.getTileEntity(tile.getPos().offset(dir));
+			TileEntity candidate = WorldHelper.getTileEntity(world, tile.getPos().offset(dir));
 			if (candidate != null) {
 				IItemHandler inv = WorldHelper.getItemHandler(candidate, dir);
 				ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
@@ -134,12 +134,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof AlchChestTile)) {
-			return;
-		}
-		AlchChestTile tile = (AlchChestTile) te;
-		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+		if (tile != null && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			BlockPos tilePos = tile.getPos();
 			int tileX = tilePos.getX();
 			int tileY = tilePos.getY();
@@ -148,7 +144,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			double centeredX = tileX + 0.5;
 			double centeredY = tileY + 0.5;
 			double centeredZ = tileZ + 0.5;
-			for (ItemEntity e : tile.getWorld().getEntitiesWithinAABB(ItemEntity.class, aabb)) {
+			for (ItemEntity e : world.getEntitiesWithinAABB(ItemEntity.class, aabb)) {
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21) {
 					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {

@@ -21,6 +21,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +29,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -87,12 +87,14 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
-			DMPedestalTile tile = (DMPedestalTile) world.getTileEntity(pos);
-			if (tile.getActivityCooldown() == 0) {
-				world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
-			} else {
-				tile.decrementActivityCooldown();
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
+				} else {
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}
@@ -113,35 +115,33 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (world.isRemote) {
 			return;
 		}
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof AlchChestTile)) {
-			return;
-		}
-		AlchChestTile tile = (AlchChestTile) te;
-		CompoundNBT nbt = stack.getOrCreateTag();
-		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
-		if (coolDown > 0) {
-			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
-		} else {
-			boolean hasAction = false;
-			Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-			if (cap.isPresent()) {
-				IItemHandler inv = cap.get();
-				for (int i = 0; i < inv.getSlots(); i++) {
-					ItemStack invStack = inv.getStackInSlot(i);
-					if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
-						continue;
-					}
-					if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
-						invStack.setDamage(invStack.getDamage() - 1);
-						if (!hasAction) {
-							hasAction = true;
+		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+		if (tile != null) {
+			CompoundNBT nbt = stack.getOrCreateTag();
+			byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
+			if (coolDown > 0) {
+				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+			} else {
+				boolean hasAction = false;
+				Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+				if (cap.isPresent()) {
+					IItemHandler inv = cap.get();
+					for (int i = 0; i < inv.getSlots(); i++) {
+						ItemStack invStack = inv.getStackInSlot(i);
+						if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
+							continue;
+						}
+						if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
+							invStack.setDamage(invStack.getDamage() - 1);
+							if (!hasAction) {
+								hasAction = true;
+							}
 						}
 					}
-				}
-				if (hasAction) {
-					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-					tile.markDirty();
+					if (hasAction) {
+						nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+						tile.markDirty();
+					}
 				}
 			}
 		}

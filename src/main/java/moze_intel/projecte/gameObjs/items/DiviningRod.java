@@ -61,7 +61,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				continue;
 			}
 			BlockState state = world.getBlockState(digPos);
-			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, world.getTileEntity(digPos), player, ctx.getItem());
+			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItem());
 			if (drops.isEmpty()) {
 				continue;
 			}

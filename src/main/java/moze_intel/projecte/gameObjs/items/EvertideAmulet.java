@@ -83,7 +83,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
 		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos)) {
-			TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			Direction sideHit = ctx.getFace();
 			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
 				FluidHelper.tryFillTank(tile, Fluids.WATER, sideHit, FluidAttributes.BUCKET_VOLUME);
@@ -166,9 +166,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof DMPedestalTile) {
-				DMPedestalTile tile = (DMPedestalTile) te;
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
 					if (world.getWorldInfo() instanceof IServerWorldInfo) {
 						int i = (300 + world.rand.nextInt(600)) * 20;

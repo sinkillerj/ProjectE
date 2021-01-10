@@ -13,6 +13,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,7 +21,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -96,24 +96,22 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
-					for (int i = 0; i < 3; i++) {
-						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
-						arrow.setRawPosition(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
-						arrow.setMotion(0, 1, 0);
-						arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
-						world.addEntity(arrow);
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
+						for (int i = 0; i < 3; i++) {
+							EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+							arrow.setRawPosition(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
+							arrow.setMotion(0, 1, 0);
+							arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+							world.addEntity(arrow);
+						}
 					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

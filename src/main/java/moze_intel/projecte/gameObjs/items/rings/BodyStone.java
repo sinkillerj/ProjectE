@@ -12,13 +12,13 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -61,22 +61,20 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
-				for (ServerPlayerEntity player : players) {
-					if (player.getFoodStats().needFood()) {
-						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-						player.getFoodStats().addStats(1, 1); // 1/2 shank
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
+					for (ServerPlayerEntity player : players) {
+						if (player.getFoodStats().needFood()) {
+							world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+							player.getFoodStats().addStats(1, 1); // 1/2 shank
+						}
 					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.body.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.body.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

@@ -201,9 +201,9 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		if (!world.isRemote && ProjectEConfig.server.items.enableTimeWatch.get()) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof DMPedestalTile) {
-				AxisAlignedBB bBox = ((DMPedestalTile) te).getEffectBounds();
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				AxisAlignedBB bBox = tile.getEffectBounds();
 				if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
 					speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
 					speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);

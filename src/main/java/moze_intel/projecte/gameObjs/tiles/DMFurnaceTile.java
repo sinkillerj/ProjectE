@@ -215,7 +215,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	private void pullFromInventories() {
-		TileEntity tile = this.getWorld().getTileEntity(pos.up());
+		TileEntity tile = WorldHelper.getTileEntity(this.getWorld(), pos.up());
 		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity) {
 			return;
 		}
@@ -237,7 +237,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		if (outputEmpty) {
 			return;
 		}
-		TileEntity tile = this.getWorld().getTileEntity(pos.down());
+		TileEntity tile = WorldHelper.getTileEntity(this.getWorld(), pos.down());
 		if (tile == null || tile instanceof HopperTileEntity) {
 			return;
 		}

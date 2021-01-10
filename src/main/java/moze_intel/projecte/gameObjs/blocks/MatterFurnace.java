@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.utils.WorldHelper;
@@ -36,11 +35,9 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 	@Override
 	protected void interactWith(World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te != null && te.getType() == PETileEntityTypes.DARK_MATTER_FURNACE.get()) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (DMFurnaceTile) te, pos);
-			} else if (te != null && te.getType() == PETileEntityTypes.RED_MATTER_FURNACE.get()) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (RMFurnaceTile) te, pos);
+			DMFurnaceTile te = WorldHelper.getTileEntity(DMFurnaceTile.class, world, pos, true);
+			if (te != null) {
+				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
 			}
 		}
 	}
@@ -49,7 +46,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 	@Deprecated
 	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}
@@ -59,7 +56,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 
 	@Override
 	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = WorldHelper.getTileEntity(world, pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}

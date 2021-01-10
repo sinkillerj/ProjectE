@@ -18,7 +18,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -77,23 +76,21 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				AxisAlignedBB aabb = tile.getEffectBounds();
-				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
-				List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
-				for (Entity ent : list) {
-					if (ent.isBurning()) {
-						ent.extinguish();
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					AxisAlignedBB aabb = tile.getEffectBounds();
+					WorldHelper.freezeInBoundingBox(world, aabb, null, false);
+					List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
+					for (Entity ent : list) {
+						if (ent.isBurning()) {
+							ent.extinguish();
+						}
 					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

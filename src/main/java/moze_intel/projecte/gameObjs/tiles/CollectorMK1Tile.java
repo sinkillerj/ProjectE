@@ -16,6 +16,7 @@ import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,7 +24,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -262,10 +262,10 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	private void sendRelayBonus() {
 		for (Direction dir : Direction.values()) {
-			TileEntity tile = world.getTileEntity(getPos().offset(dir));
-			if (tile instanceof RelayMK1Tile) {
+			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, world, getPos().offset(dir));
+			if (tile != null) {
 				//The other tiers of relay extend RelayMK1Tile and add the correct bonus
-				((RelayMK1Tile) tile).addBonus();
+				tile.addBonus();
 			}
 		}
 	}

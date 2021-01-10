@@ -40,9 +40,9 @@ public class Relay extends BlockDirection {
 	@Deprecated
 	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof RelayMK1Tile) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (RelayMK1Tile) te, pos);
+			RelayMK1Tile te = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
+			if (te != null) {
+				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -76,19 +76,19 @@ public class Relay extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof RelayMK1Tile) {
-			RelayMK1Tile relay = (RelayMK1Tile) te;
-			return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
+	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+		RelayMK1Tile relay = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
+		if (relay == null) {
+			return 0;
 		}
-		return 0;
+		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 	}
 
 	@Override
+	@Deprecated
 	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = world.getTileEntity(pos);
+			TileEntity te = WorldHelper.getTileEntity(world, pos);
 			if (te != null) {
 				te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -66,9 +67,8 @@ public class Pedestal extends Block implements IWaterLoggable {
 	 * @return True if there was an item and it got dropped, false otherwise.
 	 */
 	private boolean dropItem(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof DMPedestalTile) {
-			DMPedestalTile tile = (DMPedestalTile) te;
+		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
+		if (tile != null) {
 			ItemStack stack = tile.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
 				tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
@@ -113,13 +113,13 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+			@Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile == null) {
 				return ActionResultType.FAIL;
 			}
-			DMPedestalTile tile = (DMPedestalTile) te;
 			ItemStack item = tile.getInventory().getStackInSlot(0);
 			ItemStack stack = player.getHeldItem(hand);
 			if (stack.isEmpty() && !item.isEmpty()) {
@@ -142,21 +142,18 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Deprecated
 	public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
 		boolean flag = world.isBlockPowered(pos);
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof DMPedestalTile) {
-			DMPedestalTile ped = (DMPedestalTile) te;
-			if (ped.previousRedstoneState != flag) {
-				if (flag) {
-					ItemStack stack = ped.getInventory().getStackInSlot(0);
-					if (!stack.isEmpty()) {
-						stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-							ped.setActive(!ped.getActive());
-							world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT_AND_RERENDER);
-						});
-					}
+		DMPedestalTile ped = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
+		if (ped != null && ped.previousRedstoneState != flag) {
+			if (flag) {
+				ItemStack stack = ped.getInventory().getStackInSlot(0);
+				if (!stack.isEmpty()) {
+					stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+						ped.setActive(!ped.getActive());
+						world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT_AND_RERENDER);
+					});
 				}
-				ped.previousRedstoneState = flag;
 			}
+			ped.previousRedstoneState = flag;
 		}
 	}
 

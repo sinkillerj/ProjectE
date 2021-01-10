@@ -24,7 +24,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -71,20 +70,18 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
-				for (MobEntity living : list) {
-					living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
-					living.setFire(8);
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+					for (MobEntity living : list) {
+						living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
+						living.setFire(8);
+					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.ignition.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.ignition.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

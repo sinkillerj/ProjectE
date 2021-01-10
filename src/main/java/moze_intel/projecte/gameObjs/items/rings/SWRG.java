@@ -30,7 +30,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -172,26 +171,24 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() <= 0) {
-				List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
-				for (MobEntity living : list) {
-					if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
-						continue;
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() <= 0) {
+					List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+					for (MobEntity living : list) {
+						if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
+							continue;
+						}
+						LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+						if (lightning != null) {
+							lightning.moveForced(living.getPositionVec());
+							world.addEntity(lightning);
+						}
 					}
-					LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
-					if (lightning != null) {
-						lightning.moveForced(living.getPositionVec());
-						world.addEntity(lightning);
-					}
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
+				} else {
+					tile.decrementActivityCooldown();
 				}
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
-			} else {
-				tile.decrementActivityCooldown();
 			}
 		}
 	}

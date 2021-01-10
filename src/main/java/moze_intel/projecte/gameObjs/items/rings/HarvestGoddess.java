@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -168,16 +167,14 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
-			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof DMPedestalTile)) {
-				return;
-			}
-			DMPedestalTile tile = (DMPedestalTile) te;
-			if (tile.getActivityCooldown() == 0) {
-				WorldHelper.growNearbyRandomly(true, world, pos, null);
-				tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
-			} else {
-				tile.decrementActivityCooldown();
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				if (tile.getActivityCooldown() == 0) {
+					WorldHelper.growNearbyRandomly(true, world, pos, null);
+					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
+				} else {
+					tile.decrementActivityCooldown();
+				}
 			}
 		}
 	}

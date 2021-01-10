@@ -10,6 +10,7 @@ import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
 import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -46,9 +47,9 @@ public class Collector extends BlockDirection {
 	@Deprecated
 	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof CollectorMK1Tile) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (CollectorMK1Tile) te, pos);
+			CollectorMK1Tile te = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
+			if (te != null) {
+				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -57,12 +58,8 @@ public class Collector extends BlockDirection {
 	@Nullable
 	@Override
 	@Deprecated
-	public INamedContainerProvider getContainer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof CollectorMK1Tile) {
-			return (CollectorMK1Tile) te;
-		}
-		return null;
+	public INamedContainerProvider getContainer(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+		return WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 	}
 
 	@Override
@@ -93,8 +90,8 @@ public class Collector extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		CollectorMK1Tile tile = (CollectorMK1Tile) world.getTileEntity(pos);
+	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+		CollectorMK1Tile tile = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 		if (tile == null) {
 			//If something went wrong fallback to default implementation
 			return super.getComparatorInputOverride(state, world, pos);
@@ -120,7 +117,7 @@ public class Collector extends BlockDirection {
 	@Deprecated
 	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity ent = world.getTileEntity(pos);
+			TileEntity ent = WorldHelper.getTileEntity(world, pos);
 			if (ent != null) {
 				ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
 					for (int i = 0; i < handler.getSlots(); i++) {

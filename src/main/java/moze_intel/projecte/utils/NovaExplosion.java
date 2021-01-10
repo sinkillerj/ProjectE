@@ -78,7 +78,7 @@ public class NovaExplosion extends Explosion {
 					//Ensure we are immutable so that changing blocks doesn't act weird
 					pos = pos.toImmutable();
 					if (world instanceof ServerWorld && state.canDropFromExplosion(world, pos, this)) {
-						TileEntity tileentity = state.hasTileEntity() ? world.getTileEntity(pos) : null;
+						TileEntity tileentity = state.hasTileEntity() ? WorldHelper.getTileEntity(world, pos) : null;
 						LootContext.Builder builder = new LootContext.Builder((ServerWorld) world)
 								.withRandom(world.rand)
 								.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))

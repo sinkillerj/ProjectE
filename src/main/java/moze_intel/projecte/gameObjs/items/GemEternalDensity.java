@@ -35,7 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -282,9 +281,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		if (!world.isRemote && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof AlchChestTile) {
-				AlchChestTile tile = (AlchChestTile) te;
+			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> condense(stack, inv));
 				tile.markDirty();
 			}

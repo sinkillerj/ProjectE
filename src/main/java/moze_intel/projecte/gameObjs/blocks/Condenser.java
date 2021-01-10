@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -31,9 +32,9 @@ public class Condenser extends AlchemicalChest {
 	@Deprecated
 	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof CondenserTile) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (CondenserTile) te, pos);
+			CondenserTile te = WorldHelper.getTileEntity(CondenserTile.class, world, pos, true);
+			if (te != null) {
+				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
 			}
 		}
 		return ActionResultType.SUCCESS;

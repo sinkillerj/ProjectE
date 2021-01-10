@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -63,9 +64,9 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Deprecated
 	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
 		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof AlchChestTile) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, (AlchChestTile) te, pos);
+			AlchChestTile te = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+			if (te != null) {
+				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -90,8 +91,8 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, World world, @Nonnull BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
+	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+		TileEntity te = WorldHelper.getTileEntity(world, pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}

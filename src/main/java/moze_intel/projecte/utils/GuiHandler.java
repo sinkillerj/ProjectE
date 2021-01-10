@@ -13,7 +13,7 @@ public class GuiHandler {
 	public static TileEntity getTeFromBuf(PacketBuffer buf) {
 		return DistExecutor.runForDist(() -> () -> {
 			BlockPos pos = buf.readBlockPos();
-			return Minecraft.getInstance().world.getTileEntity(pos);
+			return WorldHelper.getTileEntity(Minecraft.getInstance().world, pos);
 		}, () -> () -> {
 			throw new RuntimeException("Shouldn't be called on server!");
 		});
