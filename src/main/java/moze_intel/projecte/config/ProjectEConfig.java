@@ -8,6 +8,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
 
+//TODO - 1.16: Cache our config values
 public class ProjectEConfig {
 
 	public static final Path CONFIG_DIR;

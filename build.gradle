@@ -258,7 +258,6 @@ dependencies {
 jar {
     from sourceSets.main.output
     from sourceSets.api.output
-    //TODO - 1.16: Evaluate what we want to set these values to
     manifest.attributes([
             "Specification-Title"     : "ProjectE",
             "Specification-Vendor"    : "ProjectE",

@@ -79,7 +79,6 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.TIME_WATCH_OFF, "Off");
 		add(PELang.TIME_WATCH_FAST_FORWARD, "Fast-Forward");
 		add(PELang.TIME_WATCH_REWIND, "Rewind");
-		//TODO - 1.16: Re-evaluate even having these be like this
 		//GUI
 		add(PELang.GUI_DARK_MATTER_FURNACE, "DM Furnace");
 		add(PELang.GUI_RED_MATTER_FURNACE, "RM Furnace");
@@ -372,15 +371,15 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addSubtitles() {
-		//TODO - 1.16: Re-evaluate all of these, they were sort of just done as placeholders as there previously were none fully set
-		add(PESoundEvents.WIND_MAGIC, "Wind");
-		add(PESoundEvents.WATER_MAGIC, "Water");
-		add(PESoundEvents.POWER, "Power");
-		add(PESoundEvents.HEAL, "Heal");
-		add(PESoundEvents.DESTRUCT, "Destruct");
-		add(PESoundEvents.CHARGE, "Charged");
-		add(PESoundEvents.UNCHARGE, "Uncharged");
-		add(PESoundEvents.TRANSMUTE, "Transmute");
+		//TODO: Improve on these if someone has better ideas for the subtitles
+		add(PESoundEvents.WIND_MAGIC, "Wind Magic");
+		add(PESoundEvents.WATER_MAGIC, "Water Magic");
+		add(PESoundEvents.POWER, "Device Powered");
+		add(PESoundEvents.HEAL, "Healing Performed");
+		add(PESoundEvents.DESTRUCT, "Destruction");
+		add(PESoundEvents.CHARGE, "Device Charged");
+		add(PESoundEvents.UNCHARGE, "Device Uncharged");
+		add(PESoundEvents.TRANSMUTE, "Block Transmuted");
 	}
 
 	private void addTooltips() {

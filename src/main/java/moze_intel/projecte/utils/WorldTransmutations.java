@@ -78,8 +78,9 @@ public final class WorldTransmutations {
 				Blocks.BLUE_STAINED_GLASS_PANE, Blocks.BROWN_STAINED_GLASS_PANE, Blocks.GREEN_STAINED_GLASS_PANE, Blocks.RED_STAINED_GLASS_PANE,
 				Blocks.BLACK_STAINED_GLASS_PANE);
 		registerBackAndForth(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
-		//TODO - 1.16: Do we want to allow switching into/out of nylium against netherrack sort of like dirt -> grass
-		registerBackAndForth(Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM);
+		registerDefault(Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM);
+		registerDefault(Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.NETHERRACK);
+		registerDefault(Blocks.WARPED_NYLIUM, Blocks.CRIMSON_NYLIUM, Blocks.NETHERRACK);
 		registerBackAndForthAllStates(Blocks.CRIMSON_STEM, Blocks.WARPED_STEM);
 		registerBackAndForthAllStates(Blocks.STRIPPED_CRIMSON_STEM, Blocks.STRIPPED_WARPED_STEM);
 		registerBackAndForth(Blocks.CRIMSON_HYPHAE, Blocks.WARPED_HYPHAE);

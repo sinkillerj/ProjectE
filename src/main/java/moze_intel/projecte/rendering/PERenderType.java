@@ -39,6 +39,7 @@ public class PERenderType extends RenderType {
 				.cull(CULL_DISABLED)//disableCull
 				.lightmap(LIGHTMAP_DISABLED)//disableLighting
 				.writeMask(COLOR_WRITE)//depthMask(false)
+				.layer(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
 				.build(true);
 		return makeType("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, true, false, state);
 	}
