@@ -149,7 +149,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 			if (newState) {
 				world.playSound(null, pos, PESoundEvents.CHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
-					this.getWorld().addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+					world.addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
@@ -157,7 +157,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 			} else {
 				world.playSound(null, pos, PESoundEvents.UNCHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
-					this.getWorld().addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
+					world.addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
 							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);

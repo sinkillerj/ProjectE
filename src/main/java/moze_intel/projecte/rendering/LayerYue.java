@@ -16,13 +16,12 @@ import net.minecraft.util.math.vector.Vector3f;
 
 public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
 
-	private final PlayerRenderer render;
-
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
-
 	private static final ResourceLocation HEART_LOC = PECore.rl("textures/models/heartcircle.png");
 	private static final ResourceLocation YUE_LOC = PECore.rl("textures/models/yuecircle.png");
+
+	private final PlayerRenderer render;
 
 	public LayerYue(PlayerRenderer renderer) {
 		super(renderer);
@@ -49,10 +48,10 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 			matrix.translate(-0.5, yShift, -0.5);
 			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));
 			Matrix4f matrix4f = matrix.getLast().getMatrix();
-			builder.pos(matrix4f, 0, 0, 0).tex(0, 0).color(0, 1, 0, 1).endVertex();
-			builder.pos(matrix4f, 0, 0, 1).tex(0, 1).color(0, 1, 0, 1).endVertex();
-			builder.pos(matrix4f, 1, 0, 1).tex(1, 1).color(0, 1, 0, 1).endVertex();
-			builder.pos(matrix4f, 1, 0, 0).tex(1, 0).color(0, 1, 0, 1).endVertex();
+			builder.pos(matrix4f, 0, 0, 0).color(0, 255, 0, 255).tex(0, 0).endVertex();
+			builder.pos(matrix4f, 0, 0, 1).color(0, 255, 0, 255).tex(0, 1).endVertex();
+			builder.pos(matrix4f, 1, 0, 1).color(0, 255, 0, 255).tex(1, 1).endVertex();
+			builder.pos(matrix4f, 1, 0, 0).color(0, 255, 0, 255).tex(1, 0).endVertex();
 			matrix.pop();
 		}
 	}

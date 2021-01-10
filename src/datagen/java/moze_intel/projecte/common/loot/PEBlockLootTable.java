@@ -46,7 +46,7 @@ public class PEBlockLootTable extends BlockLootTables {
 	}
 
 	@Override
-	public void registerDropping(Block block, IItemProvider drop) {
+	public void registerDropping(@Nonnull Block block, @Nonnull IItemProvider drop) {
 		//Override to use our own dropping method that names the loot table
 		registerLootTable(block, dropping(drop));
 	}

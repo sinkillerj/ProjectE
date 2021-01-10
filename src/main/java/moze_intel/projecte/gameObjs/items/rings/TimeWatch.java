@@ -79,12 +79,13 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (!world.isRemote && world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
 			ServerWorld serverWorld = (ServerWorld) world;
 			if (timeControl == 1) {
-				serverWorld.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4, Long.MAX_VALUE));
+				serverWorld.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
 			} else if (timeControl == 2) {
-				if (world.getDayTime() - (getCharge(stack) + 1) * 4 < 0) {
+				long charge = getCharge(stack) + 1;
+				if (world.getDayTime() - charge * 4 < 0) {
 					serverWorld.setDayTime(0);
 				} else {
-					serverWorld.setDayTime(world.getDayTime() - (getCharge(stack) + 1) * 4);
+					serverWorld.setDayTime(world.getDayTime() - charge * 4);
 				}
 			}
 		}

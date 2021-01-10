@@ -7,8 +7,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class SetFlyPKT {
 
-	private boolean allowFlying;
-	private boolean isFlying;
+	private final boolean allowFlying;
+	private final boolean isFlying;
 
 	public SetFlyPKT(boolean allowFlying, boolean isFlying) {
 		this.allowFlying = allowFlying;

@@ -31,7 +31,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 			Function<AbstractBlock.Properties, BLOCK> blockSupplier, Function<AbstractBlock.Properties, WALL_BLOCK> wallBlockSupplier,
 			AbstractBlock.Properties baseProperties) {
 		RegistryObject<BLOCK> primaryObject = primaryRegister.register(name, () -> blockSupplier.apply(baseProperties));
-		RegistryObject<WALL_BLOCK> wallObject = primaryRegister.register("wall_" + name, () -> wallBlockSupplier.apply(baseProperties.lootFrom(primaryObject.get())));
+		RegistryObject<WALL_BLOCK> wallObject = primaryRegister.register("wall_" + name, () -> wallBlockSupplier.apply(baseProperties.lootFrom(primaryObject)));
 		return new WallOrFloorBlockRegistryObject<>(primaryObject, wallObject, secondaryRegister.register(name, () -> new WallOrFloorItem(primaryObject.get(), wallObject.get(),
 				ItemDeferredRegister.getBaseProperties())));
 	}

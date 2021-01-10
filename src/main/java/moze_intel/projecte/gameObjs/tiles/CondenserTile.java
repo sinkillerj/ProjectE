@@ -100,7 +100,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	@Override
 	public void tick() {
 		updateChest();
-		if (!getWorld().isRemote) {
+		if (!world.isRemote) {
 			checkLockAndUpdate();
 			displayEmc = this.getStoredEmc();
 			if (lockInfo != null && requiredEmc != 0) {

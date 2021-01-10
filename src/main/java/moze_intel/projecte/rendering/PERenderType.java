@@ -28,8 +28,9 @@ public class PERenderType extends RenderType {
 				.texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
 				.lightmap(LIGHTMAP_DISABLED)//disableLighting
 				.alpha(HALF_ALPHA)//alpha
+				.cull(CULL_DISABLED)
 				.build(true);
-		return makeType("yeu_renderer", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
+		return makeType("yeu_renderer", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
 	}
 
 	public static RenderType transmutationOverlay() {

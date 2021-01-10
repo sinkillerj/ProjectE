@@ -16,12 +16,12 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class WorldTransmuteEntry {
 
-	private ItemStack inputItem = ItemStack.EMPTY;
-	private ItemStack leftOutputItem = ItemStack.EMPTY;
-	private ItemStack rightOutputItem = ItemStack.EMPTY;
-	private FluidStack inputFluid;
-	private FluidStack leftOutputFluid;
-	private FluidStack rightOutputFluid;
+	private final ItemStack inputItem;
+	private final ItemStack leftOutputItem;
+	private final ItemStack rightOutputItem;
+	private final FluidStack inputFluid;
+	private final FluidStack leftOutputFluid;
+	private final FluidStack rightOutputFluid;
 
 	public WorldTransmuteEntry(WorldTransmutationEntry transmutationEntry) {
 		Block inputBlock = transmutationEntry.getOrigin().getBlock();
@@ -31,18 +31,30 @@ public class WorldTransmuteEntry {
 		inputFluid = fluidFromBlock(inputBlock);
 		if (inputFluid == null) {
 			inputItem = itemFromBlock(inputBlock, transmutationEntry.getOrigin());
+		} else {
+			inputItem = ItemStack.EMPTY;
 		}
 		if (leftOutput != null) {
 			leftOutputFluid = fluidFromBlock(leftOutput.getBlock());
 			if (leftOutputFluid == null) {
 				leftOutputItem = itemFromBlock(leftOutput.getBlock(), leftOutput);
+			} else {
+				leftOutputItem = ItemStack.EMPTY;
 			}
+		} else {
+			leftOutputItem = ItemStack.EMPTY;
+			leftOutputFluid = FluidStack.EMPTY;
 		}
 		if (rightOutput != null) {
 			rightOutputFluid = fluidFromBlock(rightOutput.getBlock());
 			if (rightOutputFluid == null) {
 				rightOutputItem = itemFromBlock(rightOutput.getBlock(), rightOutput);
+			} else {
+				rightOutputItem = ItemStack.EMPTY;
 			}
+		} else {
+			rightOutputItem = ItemStack.EMPTY;
+			rightOutputFluid = FluidStack.EMPTY;
 		}
 	}
 

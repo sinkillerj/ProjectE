@@ -143,7 +143,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 			--furnaceBurnTime;
 		}
 
-		if (!getWorld().isRemote) {
+		if (!world.isRemote) {
 			pullFromInventories();
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
@@ -184,9 +184,9 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 			}
 			if (wasBurning != isBurning()) {
 				shouldSave = true;
-				BlockState state = getWorld().getBlockState(getPos());
+				BlockState state = world.getBlockState(getPos());
 				if (state.getBlock() instanceof MatterFurnace) {
-					getWorld().setBlockState(getPos(), state.with(MatterFurnace.LIT, isBurning()));
+					world.setBlockState(pos, state.with(MatterFurnace.LIT, isBurning()));
 				}
 			}
 			if (shouldSave) {
@@ -215,7 +215,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	private void pullFromInventories() {
-		TileEntity tile = WorldHelper.getTileEntity(this.getWorld(), pos.up());
+		TileEntity tile = WorldHelper.getTileEntity(world, pos.up());
 		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity) {
 			return;
 		}
@@ -237,7 +237,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		if (outputEmpty) {
 			return;
 		}
-		TileEntity tile = WorldHelper.getTileEntity(this.getWorld(), pos.down());
+		TileEntity tile = WorldHelper.getTileEntity(world, pos.down());
 		if (tile == null || tile instanceof HopperTileEntity) {
 			return;
 		}
@@ -265,7 +265,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 
 	public ItemStack getSmeltingResult(ItemStack in) {
 		dummyFurnace.setInventorySlotContents(0, in);
-		Optional<FurnaceRecipe> recipe = getWorld().getRecipeManager().getRecipe(IRecipeType.SMELTING, dummyFurnace, world);
+		Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, dummyFurnace, world);
 		dummyFurnace.clear();
 		return recipe.map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
 	}

@@ -125,9 +125,9 @@ public class NSSItemParser {
 	public static class NSSItemResult {
 
 		@Nullable
-		private Item item;
+		private final Item item;
 		@Nullable
-		private CompoundNBT nbt;
+		private final CompoundNBT nbt;
 		private ResourceLocation tagId = new ResourceLocation("");
 
 		public NSSItemResult(NSSItemParser parser) {

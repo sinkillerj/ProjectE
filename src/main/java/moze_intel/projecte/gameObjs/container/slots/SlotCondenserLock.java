@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 //Note: We cannot just extend SlotGhost as we use this as a fake slot that doesn't even have an item handler backing it
 public class SlotCondenserLock extends Slot {
 
-	private static IInventory emptyInventory = new Inventory(0);
+	private static final IInventory emptyInventory = new Inventory(0);
 
 	private final BoxedItemInfo boxedLockInfo;
 

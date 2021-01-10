@@ -23,7 +23,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 	@Override
 	public IKnowledgeProvider getKnowledgeProviderFor(@Nonnull UUID playerUUID) {
 		if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER) {
-			return DistExecutor.runForDist(() -> () -> {
+			return DistExecutor.unsafeRunForDist(() -> () -> {
 				Preconditions.checkState(Minecraft.getInstance().player != null, "Client player doesn't exist!");
 				return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 			}, () -> () -> {
