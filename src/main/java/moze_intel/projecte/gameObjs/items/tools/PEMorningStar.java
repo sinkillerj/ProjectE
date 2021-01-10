@@ -111,6 +111,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		Direction sideHit = context.getFace();
+		ItemStack stack = context.getItem();
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
@@ -118,17 +119,17 @@ public class PEMorningStar extends PETool implements IItemMode {
 				() -> {
 					if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
-							return ToolHelper.digAOE(world, player, hand, pos, sideHit, false, 0);
+							return ToolHelper.digAOE(world, player, hand, stack, pos, sideHit, false, 0);
 						}
-						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
+						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
 					return ActionResultType.PASS;
 				}, () -> {
 					if (ItemHelper.isOre(state) && !ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
-						return ToolHelper.tryVeinMine(hand, player, pos, sideHit);
+						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
 					return ActionResultType.PASS;
-				}, () -> ToolHelper.digAOE(world, player, hand, pos, sideHit,
+				}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit,
 						!(state.getBlock() instanceof GrassBlock) && !state.isIn(BlockTags.SAND) && !state.isIn(Tags.Blocks.DIRT), 0));
 	}
 

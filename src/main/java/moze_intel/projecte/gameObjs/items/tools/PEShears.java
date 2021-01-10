@@ -98,7 +98,7 @@ public class PEShears extends ShearsItem implements IItemCharge {
 			World world = context.getWorld();
 			if (world.getBlockState(context.getPos()).isIn(BlockTags.LEAVES)) {
 				//Mass clear leaves
-				ToolHelper.clearTagAOE(world, player, context.getHand(), 0, BlockTags.LEAVES);
+				ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItem(), 0, BlockTags.LEAVES);
 			}
 		}
 		return ActionResultType.PASS;

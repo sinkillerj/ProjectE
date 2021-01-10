@@ -63,6 +63,6 @@ public class PEHammer extends PETool {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		return ToolHelper.digAOE(context.getWorld(), player, context.getHand(), context.getPos(), context.getFace(), true, 0);
+		return ToolHelper.digAOE(context.getWorld(), player, context.getHand(), context.getItem(), context.getPos(), context.getFace(), true, 0);
 	}
 }

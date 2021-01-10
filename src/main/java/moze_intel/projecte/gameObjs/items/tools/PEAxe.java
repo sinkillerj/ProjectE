@@ -91,7 +91,7 @@ public class PEAxe extends AxeItem implements IItemCharge {
 					if (state.isIn(BlockTags.LOGS)) {
 						//Mass clear
 						//Note: We already tried to strip the log in an earlier action
-						return ToolHelper.clearTagAOE(world, player, context.getHand(), 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItem(), 0, BlockTags.LOGS);
 					}
 					return ActionResultType.PASS;
 				});

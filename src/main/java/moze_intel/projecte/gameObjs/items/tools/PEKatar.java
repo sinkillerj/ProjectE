@@ -117,22 +117,23 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		Hand hand = context.getHand();
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
+		ItemStack stack = context.getItem();
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Strip logs, hoe ground, AOE remove logs, AOE remove leaves
-		return ToolHelper.performActions(state.getToolModifiedState(world, pos, player, player.getHeldItem(hand), ToolType.AXE) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
-				() -> state.getToolModifiedState(world, pos, player, player.getHeldItem(hand), ToolType.HOE) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
+		return ToolHelper.performActions(state.getToolModifiedState(world, pos, player, stack, ToolType.AXE) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
+				() -> state.getToolModifiedState(world, pos, player, stack, ToolType.HOE) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
 				() -> {
 					if (state.isIn(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
 						//Note: We already tried to strip the log in an earlier action
-						return ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(world, player, hand, stack, 0, BlockTags.LOGS);
 					}
 					return ActionResultType.PASS;
 				}, () -> {
 					if (state.isIn(BlockTags.LEAVES)) {
 						//Mass clear (acting as shears)
-						return ToolHelper.clearTagAOE(world, player, hand, 0, BlockTags.LEAVES);
+						return ToolHelper.clearTagAOE(world, player, hand, stack, 0, BlockTags.LEAVES);
 					}
 					return ActionResultType.PASS;
 				});

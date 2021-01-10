@@ -121,11 +121,10 @@ public class ToolHelper {
 	/**
 	 * Clears the given tag in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static ActionResultType clearTagAOE(World world, PlayerEntity player, Hand hand, long emcCost, ITag<Block> tag) {
+	public static ActionResultType clearTagAOE(World world, PlayerEntity player, Hand hand, ItemStack stack, long emcCost, ITag<Block> tag) {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
-		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		if (charge == 0) {
 			return ActionResultType.PASS;
@@ -194,8 +193,7 @@ public class ToolHelper {
 			//Don't allow tilling a block from underneath
 			return ActionResultType.PASS;
 		}
-		Hand hand = context.getHand();
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack stack = context.getItem();
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		BlockState tilledState = world.getBlockState(pos).getToolModifiedState(world, pos, player, stack, toolType);
@@ -271,8 +269,7 @@ public class ToolHelper {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		Hand hand = context.getHand();
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack stack = context.getItem();
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		BlockState clickedState = world.getBlockState(pos);
@@ -393,11 +390,10 @@ public class ToolHelper {
 	/**
 	 * Carves in an AOE. Charge affects the breadth and/or depth of the AOE. Optional per-block EMC cost.
 	 */
-	public static ActionResultType digAOE(World world, PlayerEntity player, Hand hand, BlockPos pos, Direction sideHit, boolean affectDepth, long emcCost) {
+	public static ActionResultType digAOE(World world, PlayerEntity player, Hand hand, ItemStack stack, BlockPos pos, Direction sideHit, boolean affectDepth, long emcCost) {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
-		ItemStack stack = player.getHeldItem(hand);
 		int charge = getCharge(stack);
 		if (charge == 0) {
 			return ActionResultType.PASS;
@@ -567,12 +563,11 @@ public class ToolHelper {
 	/**
 	 * Scans and harvests an ore vein.
 	 */
-	public static ActionResultType tryVeinMine(Hand hand, PlayerEntity player, BlockPos pos, Direction sideHit) {
+	public static ActionResultType tryVeinMine(PlayerEntity player, ItemStack stack, BlockPos pos, Direction sideHit) {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
 		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItem(hand);
 		BlockState target = world.getBlockState(pos);
 		if (target.getBlockHardness(world, pos) <= -1 || !stack.canHarvestBlock(target)) {
 			return ActionResultType.FAIL;

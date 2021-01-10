@@ -119,7 +119,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 		}
 		BlockPos pos = context.getPos();
 		if (ItemHelper.isOre(context.getWorld().getBlockState(pos))) {
-			return ToolHelper.tryVeinMine(context.getHand(), player, pos, context.getFace());
+			return ToolHelper.tryVeinMine(player, context.getItem(), pos, context.getFace());
 		}
 		return ActionResultType.PASS;
 	}
