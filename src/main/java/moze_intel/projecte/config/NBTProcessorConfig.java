@@ -1,23 +1,22 @@
 package moze_intel.projecte.config;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nbt.INBTProcessor;
+import moze_intel.projecte.config.value.CachedBooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
 /**
  * For config options having to do with NBT Processors. Syncs from server to client.
  */
-public class NBTProcessorConfig {
+public class NBTProcessorConfig extends BasePEConfig {
 
 	private static NBTProcessorConfig INSTANCE;
-	private static ForgeConfigSpec spec;
-	private static PEModConfig dummyConfig;
-
 	private static final String ENABLED = "enabled";
 	private static final String PERSISTENT = "persistent";
 	private static final String MAIN_KEY = "processors";
@@ -31,14 +30,15 @@ public class NBTProcessorConfig {
 	 */
 	public static void setup(@Nonnull List<INBTProcessor> processors) {
 		if (INSTANCE == null) {
-			ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-			INSTANCE = new NBTProcessorConfig(builder, processors);
-			spec = builder.build();
-			dummyConfig = new PEModConfig(Type.SERVER, spec, PECore.MOD_CONTAINER, "processing");
+			ProjectEConfig.registerConfig(INSTANCE = new NBTProcessorConfig(processors));
 		}
 	}
 
-	private NBTProcessorConfig(@Nonnull ForgeConfigSpec.Builder builder, @Nonnull List<INBTProcessor> processors) {
+	private final ForgeConfigSpec configSpec;
+	private final Map<String, ProcessorConfig> processorConfigs = new HashMap<>();
+
+	private NBTProcessorConfig(@Nonnull List<INBTProcessor> processors) {
+		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.comment("This config is used to control which NBT Processors get used, and which ones actually contribute to the persistent NBT data that gets " +
 						"saved to knowledge/copied in a condenser.",
 				"To disable an NBT Processor set the '" + ENABLED + "' option for it to false.",
@@ -48,34 +48,84 @@ public class NBTProcessorConfig {
 				"and are not included in the synced EMC mappings.")
 				.push(MAIN_KEY);
 		for (INBTProcessor processor : processors) {
-			builder.comment(processor.getDescription()).push(processor.getName());
-			builder.define(ENABLED, processor.isAvailable());
-			if (processor.hasPersistentNBT()) {
-				builder.define(PERSISTENT, processor.usePersistentNBT());
-			}
-			builder.pop();
+			processorConfigs.put(processor.getName(), new ProcessorConfig(this, builder, processor));
 		}
 		builder.pop();
+		configSpec = builder.build();
 	}
 
 	/**
 	 * @return True if the given {@link INBTProcessor} is enabled.
 	 */
 	public static boolean isEnabled(INBTProcessor processor) {
-		return getValue(processor, ENABLED);
+		if (INSTANCE == null) {
+			return true;
+		}
+		String name = processor.getName();
+		ProcessorConfig processorConfig = INSTANCE.processorConfigs.get(name);
+		if (processorConfig == null) {
+			PECore.LOGGER.warn("Processor Config: '{}' is missing from the config.", name);
+			return false;
+		}
+		return processorConfig.enabled.get();
 	}
 
 	/**
 	 * @return True if the given {@link INBTProcessor} should contribute to the persistent data.
 	 */
 	public static boolean hasPersistent(INBTProcessor processor) {
-		return getValue(processor, PERSISTENT);
+		if (INSTANCE == null) {
+			return false;
+		}
+		String name = processor.getName();
+		ProcessorConfig processorConfig = INSTANCE.processorConfigs.get(name);
+		if (processorConfig == null) {
+			PECore.LOGGER.warn("Processor Config: '{}' is missing from the config.", name);
+			return false;
+		} else if (processorConfig.persistent == null) {
+			if (processor.hasPersistentNBT()) {
+				PECore.LOGGER.warn("Processor Config: '{}' has persistent NBT but is missing the config option.", name);
+			}
+			return false;
+		}
+		return processorConfig.persistent.get();
 	}
 
-	/**
-	 * Gets a boolean value from the config
-	 */
-	private static boolean getValue(INBTProcessor processor, String key) {
-		return ((BooleanValue) spec.getValues().get(Arrays.asList(MAIN_KEY, processor.getName(), key))).get();
+	@Override
+	public String getFileName() {
+		return "processing";
+	}
+
+	@Override
+	public ForgeConfigSpec getConfigSpec() {
+		return configSpec;
+	}
+
+	@Override
+	public Type getConfigType() {
+		return Type.SERVER;
+	}
+
+	@Override
+	public boolean addToContainer() {
+		return false;
+	}
+
+	private static class ProcessorConfig {
+
+		public final CachedBooleanValue enabled;
+		@Nullable
+		public final CachedBooleanValue persistent;
+
+		private ProcessorConfig(IPEConfig config, ForgeConfigSpec.Builder builder, INBTProcessor processor) {
+			builder.comment(processor.getDescription()).push(processor.getName());
+			enabled = CachedBooleanValue.wrap(config, builder.define(ENABLED, processor.isAvailable()));
+			if (processor.hasPersistentNBT()) {
+				persistent = CachedBooleanValue.wrap(config, builder.define(PERSISTENT, processor.usePersistentNBT()));
+			} else {
+				persistent = null;
+			}
+			builder.pop();
+		}
 	}
 }

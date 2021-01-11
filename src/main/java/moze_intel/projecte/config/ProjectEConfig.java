@@ -2,44 +2,32 @@ package moze_intel.projecte.config;
 
 import java.nio.file.Path;
 import moze_intel.projecte.PECore;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.apache.commons.lang3.tuple.Pair;
 
-//TODO - 1.16: Cache our config values
 public class ProjectEConfig {
 
 	public static final Path CONFIG_DIR;
-	public static final ServerConfig server;
-	public static final CommonConfig common;
-	public static final ClientConfig client;
-
-	private static final ForgeConfigSpec serverSpec;
-	private static final ForgeConfigSpec commonSpec;
-	private static final ForgeConfigSpec clientSpec;
+	public static final ServerConfig server = new ServerConfig();
+	public static final CommonConfig common = new CommonConfig();
+	public static final ClientConfig client = new ClientConfig();
 
 	static {
 		CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(PECore.MODNAME), PECore.MODNAME);
-		Pair<ServerConfig, ForgeConfigSpec> serverConfiguration = new ForgeConfigSpec.Builder().configure(ServerConfig::new);
-		server = serverConfiguration.getLeft();
-		serverSpec = serverConfiguration.getRight();
-		Pair<CommonConfig, ForgeConfigSpec> commonConfiguration = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
-		common = commonConfiguration.getLeft();
-		commonSpec = commonConfiguration.getRight();
-		Pair<ClientConfig, ForgeConfigSpec> clientConfiguration = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-		client = clientConfiguration.getLeft();
-		clientSpec = clientConfiguration.getRight();
 	}
 
 	public static void register() {
-		registerConfig(Type.SERVER, serverSpec, "server");
-		registerConfig(Type.COMMON, commonSpec, "common");
-		registerConfig(Type.CLIENT, clientSpec, "client");
+		registerConfig(server);
+		registerConfig(common);
+		registerConfig(client);
 	}
 
-	private static void registerConfig(ModConfig.Type type, ForgeConfigSpec spec, String fileName) {
-		PECore.MOD_CONTAINER.addConfig(new PEModConfig(type, spec, PECore.MOD_CONTAINER, fileName));
+	/**
+	 * Creates a mod config so that {@link net.minecraftforge.fml.config.ConfigTracker} will track it and sync server configs from server to client.
+	 */
+	public static void registerConfig(IPEConfig config) {
+		PEModConfig peModConfig = new PEModConfig(PECore.MOD_CONTAINER, config);
+		if (config.addToContainer()) {
+			PECore.MOD_CONTAINER.addConfig(peModConfig);
+		}
 	}
 }

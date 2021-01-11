@@ -15,6 +15,7 @@ import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
@@ -75,6 +76,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -118,6 +120,7 @@ public class PECore {
 		modEventBus.addListener(this::commonSetup);
 		modEventBus.addListener(this::imcQueue);
 		modEventBus.addListener(this::imcHandle);
+		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
 		PEBlocks.BLOCKS.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
@@ -181,6 +184,16 @@ public class PECore {
 
 	private void imcHandle(InterModProcessEvent event) {
 		IMCHandler.handleMessages();
+	}
+
+	private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+		//Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+		// cached values from calls before the initial loading
+		ModConfig config = configEvent.getConfig();
+		//Make sure it is for the same modid as us
+		if (config.getModId().equals(MODID) && config instanceof PEModConfig) {
+			((PEModConfig) config).clearCache();
+		}
 	}
 
 	private void addReloadListenersLowest(AddReloadListenerEvent event) {
