@@ -38,4 +38,9 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 		Minecraft.getInstance().textureManager.bindTexture(texture);
 		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
+
+	@Override
+	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+		//Don't render title or inventory as we don't have space
+	}
 }

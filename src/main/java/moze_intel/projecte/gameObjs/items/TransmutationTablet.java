@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -24,19 +25,16 @@ public class TransmutationTablet extends ItemPE {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand), hand),
-					buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
 		}
 		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {
 
-		private final ItemStack stack;
 		private final Hand hand;
 
-		private ContainerProvider(ItemStack stack, Hand hand) {
-			this.stack = stack;
+		private ContainerProvider(Hand hand) {
 			this.hand = hand;
 		}
 
@@ -48,7 +46,7 @@ public class TransmutationTablet extends ItemPE {
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return stack.getDisplayName();
+			return PELang.TRANSMUTATION_TRANSMUTE.translate();
 		}
 	}
 }

@@ -31,6 +31,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+		//Don't render title or inventory as we don't have space
 		this.font.drawString(matrix, Long.toString(container.emc.get()), 60 + getBonusXShift(), 32, 0x404040);
 		long kleinCharge = container.kleinEmc.get();
 		if (kleinCharge > 0) {

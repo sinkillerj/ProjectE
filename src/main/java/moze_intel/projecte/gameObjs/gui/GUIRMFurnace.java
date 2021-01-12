@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
 import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -22,6 +21,9 @@ public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 		this.xSize = 209;
 		this.ySize = 165;
 		this.tile = (RMFurnaceTile) container.tile;
+		this.titleX = 76;
+		this.playerInventoryTitleX = 76;
+		this.playerInventoryTitleY = ySize - 94;
 	}
 
 	@Override
@@ -38,11 +40,5 @@ public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 		}
 		progress = tile.getCookProgressScaled(24);
 		blit(matrix, guiLeft + 88, guiTop + 35, 210, 14, progress, 17);
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
-		this.font.func_243248_b(matrix, PELang.GUI_RED_MATTER_FURNACE.translate(), 76, 5, 0x404040);
-		this.font.func_243248_b(matrix, PELang.INVENTORY.translate(), 76, ySize - 96 + 2, 0x404040);
 	}
 }

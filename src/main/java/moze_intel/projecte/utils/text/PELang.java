@@ -5,7 +5,6 @@ import net.minecraft.util.Util;
 
 public enum PELang implements ILangEntry {
 	//Vanilla
-	INVENTORY("container.inventory"),
 	UNKNOWN_TAG("arguments.item.tag.unknown"),
 	//Misc
 	PROJECTE("misc", "mod_name"),
@@ -69,7 +68,6 @@ public enum PELang implements ILangEntry {
 	GEM_LORE_CHEST("gem", "lore.chest"),
 	GEM_LORE_HELM("gem", "lore.helm"),
 	//GUI
-	//TODO - 1.16: Re-evaluate how these constants are used and maybe get rid of them
 	GUI_DARK_MATTER_FURNACE("gui", "dark_matter_furnace.shortname"),
 	GUI_RED_MATTER_FURNACE("gui", "red_matter_furnace.shortname"),
 	GUI_RELAY_MK1("gui", "relay.mk1"),

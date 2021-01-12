@@ -31,6 +31,8 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		this.inv = container.transmutationInventory;
 		this.xSize = 228;
 		this.ySize = 196;
+		this.titleX = 6;
+		this.titleY = 8;
 	}
 
 	@Override
@@ -66,7 +68,8 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
-		this.font.func_243248_b(matrix, PELang.TRANSMUTATION_TRANSMUTE.translate(), 6, 8, 0x404040);
+		this.font.func_243248_b(matrix, title, titleX, titleY, 0x404040);
+		//Don't render inventory as we don't have space
 		BigInteger emcAmount = inv.getAvailableEMC();
 		this.font.func_243248_b(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);

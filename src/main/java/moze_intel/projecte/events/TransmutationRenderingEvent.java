@@ -77,7 +77,8 @@ public class TransmutationRenderingEvent {
 	@SubscribeEvent
 	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
 		//TODO - 1.16: Because this event only fires when we are highlighting something that means when switching to hovering air
-		// it doesn't remove the transmutation result properly
+		// it doesn't remove the transmutation result properly. Also things like half top slabs render potentially differently than
+		// we want to in the draw hud part so we may want to consider adjusting it
 		ActiveRenderInfo activeRenderInfo = event.getInfo();
 		if (!(activeRenderInfo.getRenderViewEntity() instanceof PlayerEntity)) {
 			return;

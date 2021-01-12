@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
@@ -28,7 +28,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -135,7 +134,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return new TranslationTextComponent(PEBlocks.TRANSMUTATION_TABLE.getBlock().getTranslationKey());
+			return PELang.TRANSMUTATION_TRANSMUTE.translate();
 		}
 	}
 }

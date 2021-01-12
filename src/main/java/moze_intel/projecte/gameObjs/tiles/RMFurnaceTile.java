@@ -2,13 +2,12 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
+import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class RMFurnaceTile extends DMFurnaceTile {
 
@@ -40,6 +39,6 @@ public class RMFurnaceTile extends DMFurnaceTile {
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(PEBlocks.RED_MATTER_FURNACE.getBlock().getTranslationKey());
+		return PELang.GUI_RED_MATTER_FURNACE.translate();
 	}
 }
