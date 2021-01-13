@@ -48,7 +48,8 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.DIVINING_RANGE_16, "16x3x3");
 		add(PELang.DIVINING_RANGE_64, "64x3x3");
 		//Keybinds
-		add(PEKeybind.ARMOR_TOGGLE, "Armor Effects");
+		add(PEKeybind.HELMET_TOGGLE, "Helmet Effects");
+		add(PEKeybind.BOOTS_TOGGLE, "Boots Effects");
 		add(PEKeybind.CHARGE, "Charge");
 		add(PEKeybind.EXTRA_FUNCTION, "Extra Function");
 		add(PEKeybind.FIRE_PROJECTILE, "Fire Projectile");
@@ -65,7 +66,7 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.GEM_ACTIVATE, "Activated Gem Armor Offensive Abilities");
 		add(PELang.GEM_DEACTIVATE, "Deactivated Gem Armor Offensive Abilities");
 		add(PELang.NIGHT_VISION, "Night Vision: %s");
-		add(PELang.NIGHT_VISION_PROMPT, "Press %s + %s to toggle Night Vision");
+		add(PELang.NIGHT_VISION_PROMPT, "Press %s to toggle Night Vision");
 		add(PELang.STEP_ASSIST, "Step Assist: %s");
 		add(PELang.STEP_ASSIST_PROMPT, "Press %s to toggle Step Assist");
 		add(PELang.GEM_LORE_HELM, "Abyss Helmet");

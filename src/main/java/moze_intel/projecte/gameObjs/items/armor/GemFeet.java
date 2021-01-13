@@ -101,7 +101,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_FEET.translate());
-		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.BOOTS_TOGGLE)));
 		if (isStepAssistEnabled(stack)) {
 			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {

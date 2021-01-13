@@ -24,6 +24,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class KeyPressPKT {
 
@@ -34,19 +35,33 @@ public class KeyPressPKT {
 	}
 
 	public static void encode(KeyPressPKT pkt, PacketBuffer buf) {
-		buf.writeVarInt(pkt.key.ordinal());
+		buf.writeEnumValue(pkt.key);
 	}
 
 	public static KeyPressPKT decode(PacketBuffer buf) {
-		return new KeyPressPKT(PEKeybind.values()[buf.readVarInt()]);
+		return new KeyPressPKT(buf.readEnumValue(PEKeybind.class));
 	}
 
 	public static class Handler {
 
 		public static void handle(final KeyPressPKT message, Supplier<NetworkEvent.Context> ctx) {
-			ctx.get().enqueueWork(() -> {
-				ServerPlayerEntity player = ctx.get().getSender();
+			Context context = ctx.get();
+			context.enqueueWork(() -> {
+				ServerPlayerEntity player = context.getSender();
 				if (player == null) {
+					return;
+				}
+				if (message.key == PEKeybind.HELMET_TOGGLE) {
+					ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+					if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
+						GemHelmet.toggleNightVision(helm, player);
+					}
+					return;
+				} else if (message.key == PEKeybind.BOOTS_TOGGLE) {
+					ItemStack boots = player.getItemStackFromSlot(EquipmentSlotType.FEET);
+					if (!boots.isEmpty() && boots.getItem() instanceof GemFeet) {
+						((GemFeet) boots.getItem()).toggleStepAssist(boots, player);
+					}
 					return;
 				}
 				Optional<InternalAbilities> cap = player.getCapability(InternalAbilities.CAPABILITY).resolve();
@@ -54,21 +69,6 @@ public class KeyPressPKT {
 					return;
 				}
 				InternalAbilities internalAbilities = cap.get();
-				if (message.key == PEKeybind.ARMOR_TOGGLE) {
-					if (player.isSneaking()) {
-						ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-						if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
-							GemHelmet.toggleNightVision(helm, player);
-						}
-					} else {
-						ItemStack boots = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-						if (!boots.isEmpty() && boots.getItem() instanceof GemFeet) {
-							((GemFeet) boots.getItem()).toggleStepAssist(boots, player);
-						}
-					}
-					return;
-				}
-
 				for (Hand hand : Hand.values()) {
 					ItemStack stack = player.getHeldItem(hand);
 					switch (message.key) {
@@ -130,7 +130,7 @@ public class KeyPressPKT {
 					}
 				}
 			});
-			ctx.get().setPacketHandled(true);
+			context.setPacketHandled(true);
 		}
 	}
 }

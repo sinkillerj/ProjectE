@@ -12,7 +12,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
@@ -67,8 +66,7 @@ public class GemHelmet extends GemArmorBase {
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_HELM.translate());
-		//TODO - 1.16: Change this to using the keybind modifier system forge adds so that we can allow them to change it separately?
-		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(Minecraft.getInstance().gameSettings.keyBindSneak.func_238171_j_(), ClientKeyHelper.getKeyName(PEKeybind.ARMOR_TOGGLE)));
+		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.HELMET_TOGGLE)));
 		if (isNightVisionEnabled(stack)) {
 			tooltips.add(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {

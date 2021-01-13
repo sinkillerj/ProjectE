@@ -6,7 +6,8 @@ import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.util.Util;
 
 public enum PEKeybind implements IHasTranslationKey {
-	ARMOR_TOGGLE,
+	HELMET_TOGGLE,
+	BOOTS_TOGGLE,
 	CHARGE,
 	EXTRA_FUNCTION,
 	FIRE_PROJECTILE,
