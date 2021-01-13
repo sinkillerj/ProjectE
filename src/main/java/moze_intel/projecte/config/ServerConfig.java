@@ -123,7 +123,7 @@ public final class ServerConfig extends BasePEConfig {
 					.comment("Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.")
 					.defineInRange("timePedMobSlowness", 0.10, 0, 1));
 			interdictionMode = CachedBooleanValue.wrap(config, builder
-					.comment("If true the Interdiction Torch only affects hostile mobs. If false it affects all non blacklisted living entities.")
+					.comment("If true the Interdiction Torch only affects hostile mobs and projectiles. If false it affects all non blacklisted living entities.")
 					.define("interdictionMode", true));
 			builder.pop();
 		}

@@ -22,12 +22,12 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
@@ -37,6 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -64,8 +65,11 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
  */
 public final class WorldHelper {
 
-	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> !entity.isSpectator() && !entity.getType().isContained(PETags.Entities.BLACKLIST_SWRG);
-	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> !entity.isSpectator() && !entity.getType().isContained(PETags.Entities.BLACKLIST_INTERDICTION);
+	private static final Predicate<Entity> SWRG_REPEL_PREDICATE = entity -> validRepelEntity(entity, PETags.Entities.BLACKLIST_SWRG);
+	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> validRepelEntity(entity, PETags.Entities.BLACKLIST_INTERDICTION);
+	//Note: We don't need to check if the projectile entity is on the ground here or not, as if it is we would not get past validRepelEntity
+	private static final Predicate<Entity> INTERDICTION_REPEL_HOSTILE_PREDICATE = entity -> validRepelEntity(entity, PETags.Entities.BLACKLIST_INTERDICTION) &&
+																							(entity instanceof IMob || entity instanceof ProjectileEntity);
 
 	public static void createLootDrop(List<ItemStack> drops, World world, BlockPos pos) {
 		createLootDrop(drops, world, pos.getX(), pos.getY(), pos.getZ());
@@ -424,22 +428,25 @@ public final class WorldHelper {
 		}
 	}
 
+	private static boolean validRepelEntity(Entity entity, ITag<EntityType<?>> blacklistTag) {
+		if (!entity.isSpectator() && !entity.getType().isContained(blacklistTag)) {
+			if (entity instanceof ProjectileEntity) {
+				//Accept any projectile's that are not in the ground, but fail for ones that are in the ground
+				return !entity.isOnGround();
+			}
+			return entity instanceof MobEntity;
+		}
+		return false;
+	}
+
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
 	public static void repelEntitiesInterdiction(World world, AxisAlignedBB effectBounds, double x, double y, double z) {
 		Vector3d vec = new Vector3d(x, y, z);
-		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, INTERDICTION_REPEL_PREDICATE)) {
-			if (ent instanceof MobEntity || ent instanceof ProjectileEntity) {
-				if (!ProjectEConfig.server.effects.interdictionMode.get() || ent instanceof IMob || ent instanceof ProjectileEntity) {
-					//TODO - 1.16: Evaluate this and other use cases of ProjectileEntity and maybe expand on ground checks to them?
-					// (For example tridents that are on the ground)
-					if (ent instanceof AbstractArrowEntity && ent.isOnGround()) {
-						continue;
-					}
-					repelEntity(vec, ent);
-				}
-			}
+		Predicate<Entity> repelPredicate = ProjectEConfig.server.effects.interdictionMode.get() ? INTERDICTION_REPEL_HOSTILE_PREDICATE : INTERDICTION_REPEL_PREDICATE;
+		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, repelPredicate)) {
+			repelEntity(vec, ent);
 		}
 	}
 
@@ -449,23 +456,16 @@ public final class WorldHelper {
 	public static void repelEntitiesSWRG(World world, AxisAlignedBB effectBounds, PlayerEntity player) {
 		Vector3d playerVec = player.getPositionVec();
 		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
-			if (ent instanceof MobEntity || ent instanceof ProjectileEntity) {
-				//TODO - 1.16: Evaluate if this is messed up and should not be checking all projectiles in this manner (Was IProjectile on a smaller subset before)
-				if (ent instanceof ProjectileEntity) {
-					if (ent instanceof AbstractArrowEntity && ent.isOnGround()) {
-						//TODO - 1.16: Should this be any on ground for example tridents?
-						continue;
-					}
-					Entity owner = ((ProjectileEntity) ent).func_234616_v_();
-					//Note: Eventually we wouldn't have the check for if the world is remote and the thrower is null
-					// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
-					// but makes it so the client can't quite properly render it if we properly deflect another player's throwable
-					if (world.isRemote() && owner == null || owner != null && player.getUniqueID().equals(owner.getUniqueID())) {
-						continue;
-					}
+			if (ent instanceof ProjectileEntity) {
+				Entity owner = ((ProjectileEntity) ent).func_234616_v_();
+				//Note: Eventually we would like to remove the check for if the world is remote and the thrower is null, but
+				// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
+				// as the client doesn't know the owner of things like ender pearls and thus renders it improperly
+				if (world.isRemote() && owner == null || owner != null && player.getUniqueID().equals(owner.getUniqueID())) {
+					continue;
 				}
-				repelEntity(playerVec, ent);
 			}
+			repelEntity(playerVec, ent);
 		}
 	}
 
@@ -478,18 +478,22 @@ public final class WorldHelper {
 
 	@Nonnull
 	public static ActionResultType igniteTNT(ItemUseContext ctx) {
+		PlayerEntity player = ctx.getPlayer();
+		if (player == null) {
+			return ActionResultType.FAIL;
+		}
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
 		Direction side = ctx.getFace();
 		BlockState state = world.getBlockState(pos);
 		if (state.isFlammable(world, pos, side)) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) ctx.getPlayer(), pos)) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				// Ignite the block
-				state.catchFire(world, pos, side, ctx.getPlayer());
+				state.catchFire(world, pos, side, player);
 				if (state.getBlock() instanceof TNTBlock) {
 					world.removeBlock(pos, false);
 				}
-				world.playSound(null, ctx.getPlayer().getPosX(), ctx.getPlayer().getPosY(), ctx.getPlayer().getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 			return ActionResultType.SUCCESS;
 		}
