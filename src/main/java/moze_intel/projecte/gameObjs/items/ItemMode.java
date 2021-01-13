@@ -11,8 +11,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge {
 
@@ -33,7 +31,6 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));

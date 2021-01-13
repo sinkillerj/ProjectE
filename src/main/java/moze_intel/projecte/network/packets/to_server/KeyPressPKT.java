@@ -103,7 +103,7 @@ public class KeyPressPKT implements IPEPacket {
 		}
 	}
 
-	private <CAPABILITY> boolean tryPerformCapability(ItemStack stack, Capability<CAPABILITY> capability, NonNullPredicate<CAPABILITY> perform) {
+	private static <CAPABILITY> boolean tryPerformCapability(ItemStack stack, Capability<CAPABILITY> capability, NonNullPredicate<CAPABILITY> perform) {
 		return !stack.isEmpty() && stack.getCapability(capability).filter(perform).isPresent();
 	}
 
