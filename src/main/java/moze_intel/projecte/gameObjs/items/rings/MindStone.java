@@ -62,8 +62,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltips, flags);
-		if (stack.getTag() != null) {
-			//TODO - 1.16: Number format
+		if (stack.hasTag()) {
 			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
 	}

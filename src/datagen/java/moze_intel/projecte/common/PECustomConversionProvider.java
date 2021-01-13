@@ -36,7 +36,6 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.IRON_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_IRON, 8).end()
 				.conversion(Items.GOLDEN_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_GOLD, 8).end()
 				.conversion(Items.DIAMOND_HORSE_ARMOR).ingredient(Tags.Items.GEMS_DIAMOND, 8).end()
-				//TODO - 1.16: Re-evaluate this, as really it is a pumpkin + 4 pumpkin seeds -> 1 carved pumpkin
 				.conversion(Items.CARVED_PUMPKIN).ingredient(Items.PUMPKIN).end()
 				.conversion(Items.ENCHANTED_BOOK).ingredient(Items.BOOK).end()
 				.conversion(Items.ENCHANTED_GOLDEN_APPLE).ingredient(Items.APPLE).ingredient(Tags.Items.STORAGE_BLOCKS_GOLD, 8).end()

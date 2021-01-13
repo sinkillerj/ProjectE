@@ -1,6 +1,7 @@
 package moze_intel.projecte.utils;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public final class Constants {

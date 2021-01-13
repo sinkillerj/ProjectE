@@ -57,8 +57,9 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 			throw new JsonParseException("No output declared");
 		} else if (!foundIngredients) {
 			throw new JsonParseException("No ingredients declared");
+		} else if (out.count < 1) {
+			throw new JsonParseException("Output count must be at least one");
 		}
-		//TODO - 1.16: Validate that the count is at least 1?
 		return out;
 	}
 }

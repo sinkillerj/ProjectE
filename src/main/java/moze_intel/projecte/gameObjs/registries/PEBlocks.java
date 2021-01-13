@@ -66,8 +66,7 @@ public class PEBlocks {
 	}
 
 	private static BlockRegistryObject<Collector, CollectorItem> registerCollector(String name, EnumCollectorTier collectorTier, ToIntFunction<BlockState> lightLevel) {
-		//TODO - 1.16: Make this require a pickaxe??
-		return BLOCKS.registerDefaultProperties(name, () -> new Collector(collectorTier, AbstractBlock.Properties.create(Material.GLASS)
+		return BLOCKS.registerDefaultProperties(name, () -> new Collector(collectorTier, AbstractBlock.Properties.create(Material.GLASS).setRequiresTool()
 				.hardnessAndResistance(0.3F, 0.9F).setLightLevel(lightLevel)), CollectorItem::new);
 	}
 

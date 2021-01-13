@@ -9,7 +9,6 @@ import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
-//TODO: Evaluate the armor toughness and damage protection of each of these, as they are mostly ignored anyways
 public abstract class PEArmor extends ArmorItem {
 
 	protected PEArmor(IArmorMaterial material, EquipmentSlotType armorPiece, Properties props) {
