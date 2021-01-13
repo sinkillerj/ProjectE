@@ -76,8 +76,7 @@ public final class CustomEMCParser {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
 			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem) || e.emc < 0);
 		} catch (IOException | JsonParseException e) {
-			PECore.LOGGER.fatal("Couldn't read custom emc file");
-			e.printStackTrace();
+			PECore.LOGGER.fatal("Couldn't read custom emc file", e);
 			currentEntries = new CustomEMCFile(new ArrayList<>());
 		}
 	}

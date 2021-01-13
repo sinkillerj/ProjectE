@@ -85,8 +85,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 					IOUtils.closeQuietly(resource);
 				}
 			} catch (IOException e) {
-				PECore.LOGGER.error("Could not load resource {}", file);
-				e.printStackTrace();
+				PECore.LOGGER.error("Could not load resource {}", file, e);
 			}
 		}
 

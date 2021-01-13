@@ -44,8 +44,7 @@ public class ThreadCheckUUID extends Thread {
 
 			PECore.uuids.addAll(uuids);
 		} catch (IOException e) {
-			PECore.LOGGER.fatal("Caught exception in UUID Checker thread!");
-			e.printStackTrace();
+			PECore.LOGGER.fatal("Caught exception in UUID Checker thread!", e);
 		} finally {
 			if (isServerSide) {
 				hasRunServer = true;

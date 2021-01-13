@@ -168,8 +168,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 			PECore.LOGGER.warn("Could not calculate value for {}: {}", conversion.toString(), e.toString());
 			return ZERO;
 		} catch (Exception e) {
-			PECore.LOGGER.warn("Could not calculate value for {}: {}", conversion.toString(), e.toString());
-			e.printStackTrace();
+			PECore.LOGGER.warn("Could not calculate value for {}: {}", conversion.toString(), e.toString(), e);
 			return ZERO;
 		}
 	}

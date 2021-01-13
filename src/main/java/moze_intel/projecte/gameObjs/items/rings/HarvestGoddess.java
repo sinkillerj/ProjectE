@@ -66,7 +66,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
 		BlockPos pos = ctx.getPos();
-		if (world.isRemote || !player.canPlayerEdit(pos, ctx.getFace(), ctx.getItem())) {
+		if (world.isRemote || player == null || !player.canPlayerEdit(pos, ctx.getFace(), ctx.getItem())) {
 			return ActionResultType.FAIL;
 		}
 		if (player.isSneaking()) {
