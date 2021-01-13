@@ -10,7 +10,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.LeftClickArchangelPKT;
+import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;

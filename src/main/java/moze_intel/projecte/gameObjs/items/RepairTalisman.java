@@ -26,7 +26,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -74,7 +73,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			if (invStack.isEmpty() || invStack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() || !invStack.isRepairable()) {
 				continue;
 			}
-			if (invStack == player.getItemStackFromSlot(EquipmentSlotType.MAINHAND) && player.isSwingInProgress) {
+			if (invStack == player.getHeldItemMainhand() && player.isSwingInProgress) {
 				//Don't repair item that is currently used by the player.
 				continue;
 			}

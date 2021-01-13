@@ -18,7 +18,7 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.to_client.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

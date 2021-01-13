@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.utils.ContainerHelper;
-import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -21,8 +20,7 @@ public class EternalDensityContainer extends Container {
 	public final EternalDensityInventory inventory;
 
 	public static EternalDensityContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer data) {
-		return new EternalDensityContainer(windowId, invPlayer,
-				new EternalDensityInventory(GuiHandler.getHeldFromBuf(data), invPlayer.player));
+		return new EternalDensityContainer(windowId, invPlayer, new EternalDensityInventory(data.readItemStack()));
 	}
 
 	public EternalDensityContainer(int windowId, PlayerInventory invPlayer, EternalDensityInventory gemInv) {

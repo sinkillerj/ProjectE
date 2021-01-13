@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -85,9 +84,9 @@ public class TransmutationRenderingEvent {
 		}
 		PlayerEntity player = (PlayerEntity) activeRenderInfo.getRenderViewEntity();
 		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+		ItemStack stack = player.getHeldItemMainhand();
 		if (stack.isEmpty()) {
-			stack = player.getHeldItem(Hand.OFF_HAND);
+			stack = player.getHeldItemOffhand();
 		}
 		if (stack.isEmpty() || !(stack.getItem() instanceof PhilosophersStone)) {
 			transmutationResult = null;

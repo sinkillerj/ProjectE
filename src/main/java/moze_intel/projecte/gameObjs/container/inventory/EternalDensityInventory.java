@@ -2,9 +2,8 @@ package moze_intel.projecte.gameObjs.container.inventory;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.UpdateGemModePKT;
+import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -18,7 +17,7 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 	private boolean isInWhitelist;
 	public final ItemStack invItem;
 
-	public EternalDensityInventory(ItemStack stack, PlayerEntity player) {
+	public EternalDensityInventory(ItemStack stack) {
 		this.invItem = stack;
 		if (stack.hasTag()) {
 			readFromNBT(stack.getTag());

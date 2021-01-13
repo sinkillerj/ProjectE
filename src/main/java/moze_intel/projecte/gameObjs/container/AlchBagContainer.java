@@ -22,9 +22,7 @@ public class AlchBagContainer extends Container {
 	private final boolean immutable;
 
 	public static AlchBagContainer fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf) {
-		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-		boolean imm = buf.readBoolean();
-		return new AlchBagContainer(windowId, playerInv, hand, new ItemStackHandler(104), imm);
+		return new AlchBagContainer(windowId, playerInv, buf.readEnumValue(Hand.class), new ItemStackHandler(104), buf.readBoolean());
 	}
 
 	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable) {

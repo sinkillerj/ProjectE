@@ -3,7 +3,7 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableBiMap;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.KeyPressPKT;
+import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;

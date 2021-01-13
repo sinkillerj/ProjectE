@@ -21,8 +21,7 @@ public class MercurialEyeContainer extends Container {
 	private final MercurialEyeInventory inventory;
 
 	public static MercurialEyeContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-		return new MercurialEyeContainer(windowId, invPlayer, hand);
+		return new MercurialEyeContainer(windowId, invPlayer, buf.readEnumValue(Hand.class));
 	}
 
 	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand) {

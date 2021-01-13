@@ -9,7 +9,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SyncBagDataPKT;
+import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;

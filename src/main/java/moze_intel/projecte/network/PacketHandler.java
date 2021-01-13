@@ -1,34 +1,33 @@
 package moze_intel.projecte.network;
 
 import io.netty.buffer.Unpooled;
-import java.util.function.BiConsumer;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.network.packets.CooldownResetPKT;
-import moze_intel.projecte.network.packets.KeyPressPKT;
-import moze_intel.projecte.network.packets.KnowledgeClearPKT;
-import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
-import moze_intel.projecte.network.packets.LeftClickArchangelPKT;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
-import moze_intel.projecte.network.packets.SetFlyPKT;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SyncBagDataPKT;
-import moze_intel.projecte.network.packets.SyncEmcPKT;
-import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
-import moze_intel.projecte.network.packets.UpdateCondenserLockPKT;
-import moze_intel.projecte.network.packets.UpdateGemModePKT;
-import moze_intel.projecte.network.packets.UpdateWindowIntPKT;
-import moze_intel.projecte.network.packets.UpdateWindowLongPKT;
+import moze_intel.projecte.network.packets.IPEPacket;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
+import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
+import moze_intel.projecte.network.packets.to_client.KnowledgeClearPKT;
+import moze_intel.projecte.network.packets.to_client.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.to_client.SetFlyPKT;
+import moze_intel.projecte.network.packets.to_client.StepHeightPKT;
+import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
+import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
+import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
+import moze_intel.projecte.network.packets.to_client.UpdateCondenserLockPKT;
+import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
+import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
+import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
+import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -45,25 +44,35 @@ public final class PacketHandler {
 	private static int index;
 
 	public static void register() {
-		registerMessage(CooldownResetPKT.class, CooldownResetPKT::encode, CooldownResetPKT::decode, CooldownResetPKT.Handler::handle);
-		registerMessage(KeyPressPKT.class, KeyPressPKT::encode, KeyPressPKT::decode, KeyPressPKT.Handler::handle);
-		registerMessage(KnowledgeClearPKT.class, KnowledgeClearPKT::encode, KnowledgeClearPKT::decode, KnowledgeClearPKT.Handler::handle);
-		registerMessage(KnowledgeSyncPKT.class, KnowledgeSyncPKT::encode, KnowledgeSyncPKT::decode, KnowledgeSyncPKT.Handler::handle);
-		registerMessage(LeftClickArchangelPKT.class, LeftClickArchangelPKT::encode, LeftClickArchangelPKT::decode, LeftClickArchangelPKT.Handler::handle);
-		registerMessage(SearchUpdatePKT.class, SearchUpdatePKT::encode, SearchUpdatePKT::decode, SearchUpdatePKT.Handler::handle);
-		registerMessage(SetFlyPKT.class, SetFlyPKT::encode, SetFlyPKT::decode, SetFlyPKT.Handler::handle);
-		registerMessage(StepHeightPKT.class, StepHeightPKT::encode, StepHeightPKT::decode, StepHeightPKT.Handler::handle);
-		registerMessage(SyncBagDataPKT.class, SyncBagDataPKT::encode, SyncBagDataPKT::decode, SyncBagDataPKT.Handler::handle);
-		registerMessage(SyncEmcPKT.class, SyncEmcPKT::encode, SyncEmcPKT::decode, SyncEmcPKT.Handler::handle);
-		registerMessage(UpdateCondenserLockPKT.class, UpdateCondenserLockPKT::encode, UpdateCondenserLockPKT::decode, UpdateCondenserLockPKT.Handler::handle);
-		registerMessage(UpdateGemModePKT.class, UpdateGemModePKT::encode, UpdateGemModePKT::decode, UpdateGemModePKT.Handler::handle);
-		registerMessage(UpdateWindowIntPKT.class, UpdateWindowIntPKT::encode, UpdateWindowIntPKT::decode, UpdateWindowIntPKT.Handler::handle);
-		registerMessage(UpdateWindowLongPKT.class, UpdateWindowLongPKT::encode, UpdateWindowLongPKT::decode, UpdateWindowLongPKT.Handler::handle);
+		//Client to server messages
+		registerClientToServer(KeyPressPKT.class, KeyPressPKT::decode);
+		registerClientToServer(LeftClickArchangelPKT.class, LeftClickArchangelPKT::decode);
+		registerClientToServer(SearchUpdatePKT.class, SearchUpdatePKT::decode);
+		registerClientToServer(UpdateGemModePKT.class, UpdateGemModePKT::decode);
+
+		//Server to client messages
+		registerServerToClient(CooldownResetPKT.class, CooldownResetPKT::decode);
+		registerServerToClient(KnowledgeClearPKT.class, KnowledgeClearPKT::decode);
+		registerServerToClient(KnowledgeSyncPKT.class, KnowledgeSyncPKT::decode);
+		registerServerToClient(SetFlyPKT.class, SetFlyPKT::decode);
+		registerServerToClient(StepHeightPKT.class, StepHeightPKT::decode);
+		registerServerToClient(SyncBagDataPKT.class, SyncBagDataPKT::decode);
+		registerServerToClient(SyncEmcPKT.class, SyncEmcPKT::decode);
+		registerServerToClient(UpdateCondenserLockPKT.class, UpdateCondenserLockPKT::decode);
+		registerServerToClient(UpdateWindowIntPKT.class, UpdateWindowIntPKT::decode);
+		registerServerToClient(UpdateWindowLongPKT.class, UpdateWindowLongPKT::decode);
 	}
 
-	private static <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
-			BiConsumer<MSG, Supplier<Context>> consumer) {
-		HANDLER.registerMessage(index++, type, encoder, decoder, consumer);
+	private static <MSG extends IPEPacket> void registerClientToServer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+		registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
+	}
+
+	private static <MSG extends IPEPacket> void registerServerToClient(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+		registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
+	}
+
+	private static <MSG extends IPEPacket> void registerMessage(Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
+		HANDLER.registerMessage(index++, type, IPEPacket::encode, decoder, IPEPacket::handle, Optional.of(networkDirection));
 	}
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal) {
@@ -84,9 +93,9 @@ public final class PacketHandler {
 		}
 	}
 
-	public static void sendNonLocal(Object msg, ServerPlayerEntity player) {
+	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayerEntity player) {
 		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner())) {
-			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+			sendTo(msg, player);
 		}
 	}
 
@@ -108,7 +117,7 @@ public final class PacketHandler {
 		//Simulate encoding the EMC packet to get an accurate size
 		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 		int index = buf.writerIndex();
-		SyncEmcPKT.encode(new SyncEmcPKT(data), buf);
+		new SyncEmcPKT(data).encode(buf);
 		PECore.debugLog("EMC data size: {} bytes", buf.writerIndex() - index);
 		buf.release();
 		return data;
@@ -117,16 +126,16 @@ public final class PacketHandler {
 	/**
 	 * Sends a packet to the server.<br> Must be called Client side.
 	 */
-	public static void sendToServer(Object msg) {
+	public static <MSG extends IPEPacket> void sendToServer(MSG msg) {
 		HANDLER.sendToServer(msg);
 	}
 
 	/**
 	 * Send a packet to a specific player.<br> Must be called Server side.
 	 */
-	public static void sendTo(Object msg, ServerPlayerEntity player) {
+	public static <MSG extends IPEPacket> void sendTo(MSG msg, ServerPlayerEntity player) {
 		if (!(player instanceof FakePlayer)) {
-			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+			HANDLER.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 }

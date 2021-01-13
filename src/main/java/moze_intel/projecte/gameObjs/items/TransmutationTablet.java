@@ -25,7 +25,7 @@ public class TransmutationTablet extends ItemPE {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeEnumValue(hand));
 		}
 		return ActionResult.resultSuccess(player.getHeldItem(hand));
 	}

@@ -28,7 +28,7 @@ import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
-import moze_intel.projecte.network.packets.SyncEmcPKT.EmcPKTInfo;
+import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
 import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;

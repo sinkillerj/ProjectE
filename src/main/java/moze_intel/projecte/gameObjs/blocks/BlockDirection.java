@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +56,7 @@ public abstract class BlockDirection extends Block {
 	@Deprecated
 	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
 		if (!world.isRemote) {
-			ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+			ItemStack stack = player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem() instanceof PhilosophersStone) {
 				world.setBlockState(pos, world.getBlockState(pos).with(FACING, player.getHorizontalFacing().getOpposite()));
 			}

@@ -13,7 +13,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 
 public class RemoveEmcCMD {
 
@@ -37,12 +36,10 @@ public class RemoveEmcCMD {
 
 	public static NSSItemResult getHeldStack(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
 		ServerPlayerEntity player = ctx.getSource().asPlayer();
-		ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-
+		ItemStack stack = player.getHeldItemMainhand();
 		if (stack.isEmpty()) {
-			stack = player.getHeldItem(Hand.OFF_HAND);
+			stack = player.getHeldItemOffhand();
 		}
-
 		if (stack.isEmpty()) {
 			throw EMPTY_STACK.create();
 		}

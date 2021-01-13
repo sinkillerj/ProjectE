@@ -11,7 +11,7 @@ import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotUnlearn;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SearchUpdatePKT;
+import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
 import moze_intel.projecte.utils.ContainerHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -33,8 +33,7 @@ public class TransmutationContainer extends Container {
 	private final int blocked;
 
 	public static TransmutationContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-		return new TransmutationContainer(windowId, invPlayer, hand);
+		return new TransmutationContainer(windowId, invPlayer, buf.readEnumValue(Hand.class));
 	}
 
 	public TransmutationContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
