@@ -12,11 +12,13 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -49,10 +51,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
-		if (world.isRemote || !(entity instanceof PlayerEntity) || slot > 8) {
-			return;
-		}
-		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (!world.isRemote && entity instanceof PlayerEntity && slot < PlayerInventory.getHotbarSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AxisAlignedBB box = new AxisAlignedBB(entity.getPosX() - 3, entity.getPosY() - 3, entity.getPosZ() - 3,
 					entity.getPosX() + 3, entity.getPosY() + 3, entity.getPosZ() + 3);
 			WorldHelper.freezeInBoundingBox(world, box, (PlayerEntity) entity, true);

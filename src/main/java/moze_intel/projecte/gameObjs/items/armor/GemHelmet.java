@@ -7,6 +7,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -30,6 +31,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class GemHelmet extends GemArmorBase {
 
@@ -37,16 +39,12 @@ public class GemHelmet extends GemArmorBase {
 		super(EquipmentSlotType.HEAD, props);
 	}
 
-	public static boolean isNightVisionEnabled(ItemStack helm) {
-		return helm.hasTag() && helm.getTag().contains(Constants.NBT_KEY_NIGHT_VISION) && helm.getTag().getBoolean(Constants.NBT_KEY_NIGHT_VISION);
-	}
-
 	public static void toggleNightVision(ItemStack helm, PlayerEntity player) {
 		boolean value;
 		CompoundNBT helmetTag = helm.getOrCreateTag();
-		if (helmetTag.contains(Constants.NBT_KEY_NIGHT_VISION)) {
-			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, !helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION));
-			value = helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION);
+		if (helmetTag.contains(Constants.NBT_KEY_NIGHT_VISION, NBT.TAG_BYTE)) {
+			value = !helmetTag.getBoolean(Constants.NBT_KEY_NIGHT_VISION);
+			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, value);
 		} else {
 			//If we don't have the tag count that as it already being "false"
 			helmetTag.putBoolean(Constants.NBT_KEY_NIGHT_VISION, true);
@@ -64,7 +62,7 @@ public class GemHelmet extends GemArmorBase {
 		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_HELM.translate());
 		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.HELMET_TOGGLE)));
-		if (isNightVisionEnabled(stack)) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
 			tooltips.add(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {
 			tooltips.add(PELang.NIGHT_VISION.translate(TextFormatting.RED, PELang.GEM_DISABLED));
@@ -95,7 +93,7 @@ public class GemHelmet extends GemArmorBase {
 				}
 			});
 
-			if (isNightVisionEnabled(stack)) {
+			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
 				player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, true, false));
 			} else {
 				player.removePotionEffect(Effects.NIGHT_VISION);

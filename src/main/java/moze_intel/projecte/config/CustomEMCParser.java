@@ -117,6 +117,7 @@ public final class CustomEMCParser {
 		return removed;
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	private static void flush() {
 		if (dirty) {
 			try {
@@ -128,6 +129,7 @@ public final class CustomEMCParser {
 		}
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	private static void writeDefaultFile() {
 		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<>()));
 		elem.add("__comment", new JsonPrimitive("Use the in-game commands to edit this file"));

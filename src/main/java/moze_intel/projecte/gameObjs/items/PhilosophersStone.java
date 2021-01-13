@@ -68,10 +68,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
+		PlayerEntity player = ctx.getPlayer();
+		if (player == null) {
+			return ActionResultType.FAIL;
+		}
 		BlockPos pos = ctx.getPos();
 		Direction sideHit = ctx.getFace();
 		World world = ctx.getWorld();
-		PlayerEntity player = ctx.getPlayer();
 		ItemStack stack = ctx.getItem();
 
 		if (world.isRemote) {

@@ -30,6 +30,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -77,8 +78,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
-		World world = ctx.getWorld();
 		PlayerEntity player = ctx.getPlayer();
+		if (player == null) {
+			return ActionResultType.FAIL;
+		}
+		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
 		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos)) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
@@ -103,8 +107,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Override
 	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		if (player.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-			player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+		ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
+			attribute.removeModifier(SPEED_BOOST);
 		}
 		return true;
 	}
@@ -125,15 +130,19 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				living.fallDistance = 0.0F;
 				living.setOnGround(true);
 			}
-			if (!world.isRemote && !living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(Attributes.MOVEMENT_SPEED).applyNonPersistentModifier(SPEED_BOOST);
+			if (!world.isRemote) {
+				ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
+				if (attribute != null && !attribute.hasModifier(SPEED_BOOST)) {
+					attribute.applyNonPersistentModifier(SPEED_BOOST);
+				}
 			}
 		} else if (!world.isRemote) {
 			if (living.isInWater()) {
 				living.setAir(300);
 			}
-			if (living.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(SPEED_BOOST)) {
-				living.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST);
+			ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
+				attribute.removeModifier(SPEED_BOOST);
 			}
 		}
 	}

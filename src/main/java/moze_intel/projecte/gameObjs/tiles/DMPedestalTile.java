@@ -48,10 +48,10 @@ public class DMPedestalTile extends CapabilityTileEMC {
 		centeredX = pos.getX() + 0.5;
 		centeredY = pos.getY() + 0.5;
 		centeredZ = pos.getZ() + 0.5;
-		if (getActive()) {
+		if (world != null && getActive()) {
 			ItemStack stack = inventory.getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(world, getPos()));
+				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(world, pos));
 				if (particleCooldown <= 0) {
 					spawnParticleTypes();
 					particleCooldown = 10;
@@ -106,7 +106,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	 * @return Inclusive bounding box of all positions this pedestal should apply effects in
 	 */
 	public AxisAlignedBB getEffectBounds() {
-		return new AxisAlignedBB(getPos().add(-RANGE, -RANGE, -RANGE), getPos().add(RANGE, RANGE, RANGE));
+		return new AxisAlignedBB(pos.add(-RANGE, -RANGE, -RANGE), pos.add(RANGE, RANGE, RANGE));
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 				world.playSound(null, pos, PESoundEvents.CHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					world.addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
-							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
+							pos.getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
@@ -158,7 +158,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 				world.playSound(null, pos, PESoundEvents.UNCHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
 					world.addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
-							getPos().getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
+							pos.getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
 							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}

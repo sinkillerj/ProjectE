@@ -6,6 +6,7 @@ import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -20,7 +21,7 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 	public EternalDensityInventory(ItemStack stack) {
 		this.invItem = stack;
 		if (stack.hasTag()) {
-			readFromNBT(stack.getTag());
+			readFromNBT(stack.getOrCreateTag());
 		}
 	}
 
@@ -73,7 +74,7 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
-		writeToNBT(invItem.getTag());
+		writeToNBT(invItem.getOrCreateTag());
 	}
 
 	public void readFromNBT(CompoundNBT nbt) {
@@ -83,7 +84,12 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 
 	public void writeToNBT(CompoundNBT nbt) {
 		nbt.putBoolean(Constants.NBT_KEY_GEM_WHITELIST, isInWhitelist);
-		nbt.put(Constants.NBT_KEY_GEM_ITEMS, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null));
+		INBT storedItems = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null);
+		if (storedItems != null) {
+			nbt.put(Constants.NBT_KEY_GEM_ITEMS, storedItems);
+		} else {
+			nbt.remove(Constants.NBT_KEY_GEM_ITEMS);
+		}
 	}
 
 	public void changeMode() {

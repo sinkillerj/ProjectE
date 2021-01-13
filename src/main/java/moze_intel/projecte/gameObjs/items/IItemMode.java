@@ -31,7 +31,7 @@ public interface IItemMode extends IModeChanger {
 
 	@Override
 	default byte getMode(@Nonnull ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getByte(Constants.NBT_KEY_MODE) : 0;
+		return stack.hasTag() ? stack.getOrCreateTag().getByte(Constants.NBT_KEY_MODE) : 0;
 	}
 
 	@Override

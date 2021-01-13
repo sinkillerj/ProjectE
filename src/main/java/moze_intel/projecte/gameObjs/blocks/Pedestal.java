@@ -167,7 +167,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags) {
+	public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltip, flags);
 		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate());
 		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate());

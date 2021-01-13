@@ -5,10 +5,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
 import moze_intel.projecte.utils.text.PELang;
+import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -58,6 +58,6 @@ public class ClientKeyHelper {
 			return peToMc.get(k).func_238171_j_();
 		}
 		//Fallback to the translation key of the key's function
-		return new TranslationTextComponent(k.getTranslationKey());
+		return TextComponentUtil.build(k);
 	}
 }

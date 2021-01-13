@@ -13,12 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,8 +68,9 @@ public class ToolTipEvent {
 
 		if (current.hasTag()) {
 			long value;
-			if (current.getTag().contains(Constants.NBT_KEY_STORED_EMC)) {
-				value = current.getTag().getLong(Constants.NBT_KEY_STORED_EMC);
+			CompoundNBT tag = current.getOrCreateTag();
+			if (tag.contains(Constants.NBT_KEY_STORED_EMC, NBT.TAG_LONG)) {
+				value = tag.getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
 				Optional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {

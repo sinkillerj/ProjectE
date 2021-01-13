@@ -31,6 +31,7 @@ public class PregeneratedEMC {
 		}
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	private static Map<NormalizedSimpleStack, Long> read(File file) throws IOException {
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Long>>() {}.getType();
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -40,6 +41,7 @@ public class PregeneratedEMC {
 		}
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	public static void write(File file, Map<NormalizedSimpleStack, Long> map) throws IOException {
 		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {

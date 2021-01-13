@@ -12,11 +12,13 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,7 +29,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -93,7 +94,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	@Override
 	public void tick() {
-		if (!world.isRemote) {
+		if (world != null && !world.isRemote) {
 			ItemHelper.compactInventory(toSort);
 			checkFuelOrKlein();
 			updateEmc();
@@ -214,7 +215,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 		if (world.getDimensionType().isUltrawarm()) {
 			return 16;
 		}
-		return world.getLight(getPos().up()) + 1;
+		return world.getLight(pos.up()) + 1;
 	}
 
 	public double getFuelProgress() {
@@ -262,7 +263,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	private void sendRelayBonus() {
 		for (Direction dir : Direction.values()) {
-			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, world, getPos().offset(dir));
+			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos.offset(dir));
 			if (tile != null) {
 				//The other tiers of relay extend RelayMK1Tile and add the correct bonus
 				tile.addBonus();
@@ -279,7 +280,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new StringTextComponent(getType().getRegistryName().toString());
+		return TextComponentUtil.build(PEBlocks.COLLECTOR);
 	}
 
 	private class CollectorItemHandlerProvider extends SidedItemHandlerResolver {

@@ -13,6 +13,7 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
@@ -87,7 +88,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				}
 			}
 		}
-		if (world.isRemote || !stack.hasTag() || !stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (world.isRemote || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) entity;
@@ -174,7 +175,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private byte getTimeBoost(ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getByte(Constants.NBT_KEY_TIME_MODE) : 0;
+		return stack.hasTag() ? stack.getOrCreateTag().getByte(Constants.NBT_KEY_TIME_MODE) : 0;
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time) {

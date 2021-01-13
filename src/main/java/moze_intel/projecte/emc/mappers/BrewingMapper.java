@@ -53,9 +53,17 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			//Get references to the lists of Mixing Predicates if either of our references is null
 			try {
 				typeConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185213_a");//POTION_TYPE_CONVERSIONS
+				if (typeConversions == null) {
+					PECore.LOGGER.error("Error getting type conversion field.");
+					return false;
+				}
 				itemConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185214_b");//POTION_ITEM_CONVERSIONS
 			} catch (UnableToFindFieldException | UnableToAccessFieldException e) {
 				PECore.LOGGER.error("Error getting conversion field: ", e);
+				return false;
+			}
+			if (itemConversions == null) {
+				PECore.LOGGER.error("Error getting item conversion field.");
 				return false;
 			}
 		}
@@ -77,7 +85,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				return false;
 			}
 		}
-		if (!addReagents(itemConversions) || !addReagents(typeConversions)) {
+		if (addReagents(itemConversions) || addReagents(typeConversions)) {
 			return false;
 		}
 		totalConversions = conversionCount;
@@ -88,15 +96,19 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		for (Object conversion : conversions) {
 			try {
 				Ingredient reagent = ObfuscationReflectionHelper.getPrivateValue((Class<Object>) mixPredicateClass, conversion, "field_185199_b");
+				if (reagent == null) {
+					PECore.LOGGER.error("Brewing mapper: could not find reagents field.");
+					return true;
+				}
 				for (ItemStack r : reagent.getMatchingStacks()) {
 					allReagents.add(ItemInfo.fromStack(r));
 				}
 			} catch (Exception ex) {
 				PECore.LOGGER.error("Brewing mapper: could not find field: {}", ex.getMessage());
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private static void mapAllInputs() {

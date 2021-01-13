@@ -17,6 +17,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -88,7 +89,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	private void tick(ItemStack stack, World world, ServerPlayerEntity player) {
-		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			switch (getMode(stack)) {
 				case 0:
 					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().grow(5), player, true);
@@ -116,12 +117,10 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
 		super.addInformation(stack, world, tooltips, flags);
-		if (stack.hasTag()) {
-			if (stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-				tooltips.add(getToolTip(stack));
-			} else {
-				tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
-			}
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			tooltips.add(getToolTip(stack));
+		} else {
+			tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
 		}
 	}
 

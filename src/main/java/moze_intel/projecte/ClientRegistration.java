@@ -9,9 +9,9 @@ import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIEternalDensity;
 import moze_intel.projecte.gameObjs.gui.GUIMercurialEye;
 import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
+import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK3;
-import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -32,6 +32,7 @@ import moze_intel.projecte.rendering.entity.RandomizerRenderer;
 import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -110,11 +111,11 @@ public class ClientRegistration {
 		evt.enqueueWork(() -> {
 			ClientKeyHelper.registerKeyBindings();
 			//Property Overrides
-			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, world, entity) -> stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
+			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, world, entity) -> ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
 					PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
 					PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
 					PEItems.ZERO_RING);
-			addPropertyOverrides(MODE_OVERRIDE, (stack, world, entity) -> stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_MODE) : 0F,
+			addPropertyOverrides(MODE_OVERRIDE, (stack, world, entity) -> stack.hasTag() ? stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE) : 0F,
 					PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
 		});
 	}

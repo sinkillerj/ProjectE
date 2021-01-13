@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.DistExecutor;
 
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister {
@@ -44,16 +46,12 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		this.attributes = attributesBuilder.build();
 	}
 
-	public static boolean isStepAssistEnabled(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains(Constants.NBT_KEY_STEP_ASSIST) && stack.getTag().getBoolean(Constants.NBT_KEY_STEP_ASSIST);
-	}
-
 	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
 		boolean value;
 		CompoundNBT bootsTag = boots.getOrCreateTag();
-		if (bootsTag.contains(Constants.NBT_KEY_STEP_ASSIST)) {
-			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, !bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST));
-			value = bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST);
+		if (bootsTag.contains(Constants.NBT_KEY_STEP_ASSIST, NBT.TAG_BYTE)) {
+			value = !bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST);
+			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, value);
 		} else {
 			//If we don't have the tag count that as it already being "false"
 			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, true);
@@ -99,7 +97,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 		super.addInformation(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_FEET.translate());
 		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.BOOTS_TOGGLE)));
-		if (isStepAssistEnabled(stack)) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST)) {
 			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {
 			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED));
@@ -119,6 +117,6 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
 	@Override
 	public boolean canAssistStep(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack && isStepAssistEnabled(stack);
+		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
 	}
 }

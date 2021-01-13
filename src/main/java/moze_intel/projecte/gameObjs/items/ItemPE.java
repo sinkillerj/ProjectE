@@ -38,8 +38,8 @@ public class ItemPE extends Item {
 			return true;
 		}
 		if (oldStack.hasTag() && newStack.hasTag()) {
-			CompoundNBT newTag = newStack.getTag();
-			CompoundNBT oldTag = oldStack.getTag();
+			CompoundNBT newTag = newStack.getOrCreateTag();
+			CompoundNBT oldTag = oldStack.getOrCreateTag();
 			boolean diffActive = oldTag.contains(Constants.NBT_KEY_ACTIVE) && newTag.contains(Constants.NBT_KEY_ACTIVE)
 								 && !oldTag.get(Constants.NBT_KEY_ACTIVE).equals(newTag.get(Constants.NBT_KEY_ACTIVE));
 			boolean diffMode = oldTag.contains(Constants.NBT_KEY_MODE) && newTag.contains(Constants.NBT_KEY_MODE)

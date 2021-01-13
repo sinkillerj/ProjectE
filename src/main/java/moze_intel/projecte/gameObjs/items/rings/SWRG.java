@@ -72,10 +72,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 
 		if (playerMP.abilities.isFlying) {
-			if (!isFlyingEnabled(stack)) {
+			if (!isFlyingEnabled(nbt)) {
 				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
-		} else if (isFlyingEnabled(stack)) {
+		} else if (isFlyingEnabled(nbt)) {
 			changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 1 ? 0 : 2);
 		}
 
@@ -96,8 +96,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		playerMP.fallDistance = 0;
 	}
 
-	private boolean isFlyingEnabled(ItemStack stack) {
-		return stack.getTag().getInt(Constants.NBT_KEY_MODE) == 1 || stack.getTag().getInt(Constants.NBT_KEY_MODE) == 3;
+	private boolean isFlyingEnabled(CompoundNBT nbt) {
+		return nbt.getInt(Constants.NBT_KEY_MODE) == 1 || nbt.getInt(Constants.NBT_KEY_MODE) == 3;
 	}
 
 	@Override

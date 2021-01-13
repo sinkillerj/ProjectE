@@ -197,8 +197,10 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 					Random rand = new Random();
 					drops.forEach(d -> {
 						ItemEntity ent = entity.entityDropItem(d, 1.0F);
-						ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
-								(rand.nextFloat() - rand.nextFloat()) * 0.1F));
+						if (ent != null) {
+							ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
+									(rand.nextFloat() - rand.nextFloat()) * 0.1F));
+						}
 					});
 				}
 				return ActionResultType.SUCCESS;

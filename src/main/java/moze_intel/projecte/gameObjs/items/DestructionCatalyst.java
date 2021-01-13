@@ -31,11 +31,14 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
+		PlayerEntity player = ctx.getPlayer();
+		if (player == null) {
+			return ActionResultType.FAIL;
+		}
 		World world = ctx.getWorld();
 		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
-		PlayerEntity player = ctx.getPlayer();
 		ItemStack stack = ctx.getItem();
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;

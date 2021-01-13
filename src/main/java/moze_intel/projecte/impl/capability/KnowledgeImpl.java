@@ -192,7 +192,10 @@ public final class KnowledgeImpl {
 			}
 
 			properties.put("knowledge", knowledgeWrite);
-			properties.put("inputlock", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null));
+			INBT lock = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null);
+			if (lock != null) {
+				properties.put("inputlock", lock);
+			}
 			properties.putBoolean("fullknowledge", fullKnowledge);
 			return properties;
 		}

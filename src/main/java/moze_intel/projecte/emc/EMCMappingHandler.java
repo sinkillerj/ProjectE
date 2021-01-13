@@ -71,7 +71,9 @@ public final class EMCMappingHandler {
 
 		Path path = ProjectEConfig.CONFIG_DIR.resolve("mapping.toml");
 		try {
-			path.toFile().createNewFile();
+			if (path.toFile().createNewFile()) {
+				PECore.debugLog("Created mapping.toml");
+			}
 		} catch (IOException ex) {
 			PECore.LOGGER.error("Couldn't create mapping.toml", ex);
 		}

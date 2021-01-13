@@ -43,11 +43,14 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
+		PlayerEntity player = ctx.getPlayer();
+		if (player == null) {
+			return ActionResultType.FAIL;
+		}
 		World world = ctx.getWorld();
 		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
-		PlayerEntity player = ctx.getPlayer();
 		LongList emcValues = new LongArrayList();
 		long totalEmc = 0;
 		int numBlocks = 0;

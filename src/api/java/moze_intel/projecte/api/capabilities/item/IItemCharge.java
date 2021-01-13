@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.api.PESounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -43,10 +42,7 @@ public interface IItemCharge {
 	 * @return The charge on the stack
 	 */
 	default int getCharge(@Nonnull ItemStack stack) {
-		if (!stack.hasTag()) {
-			stack.setTag(new CompoundNBT());
-		}
-		return stack.getTag().getInt(KEY);
+		return stack.getOrCreateTag().getInt(KEY);
 	}
 
 	/**
@@ -66,13 +62,13 @@ public interface IItemCharge {
 			if (currentCharge > 0) {
 				player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F,
 						0.5F + ((0.5F / (float) numCharges) * currentCharge));
-				stack.getTag().putInt(KEY, currentCharge - 1);
+				stack.getOrCreateTag().putInt(KEY, currentCharge - 1);
 				return true;
 			}
 		} else if (currentCharge < numCharges) {
 			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F,
 					0.5F + ((0.5F / (float) numCharges) * currentCharge));
-			stack.getTag().putInt(KEY, currentCharge + 1);
+			stack.getOrCreateTag().putInt(KEY, currentCharge + 1);
 			return true;
 		}
 		return false;

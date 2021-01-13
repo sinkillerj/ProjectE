@@ -142,7 +142,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 			--furnaceBurnTime;
 		}
 
-		if (!world.isRemote) {
+		if (world != null && !world.isRemote) {
 			pullFromInventories();
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
@@ -183,8 +183,9 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 			}
 			if (wasBurning != isBurning()) {
 				shouldSave = true;
-				BlockState state = world.getBlockState(getPos());
+				BlockState state = getBlockState();
 				if (state.getBlock() instanceof MatterFurnace) {
+					//Should always be true, but validate it just in case
 					world.setBlockState(pos, state.with(MatterFurnace.LIT, isBurning()));
 				}
 			}

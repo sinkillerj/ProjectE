@@ -12,6 +12,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -100,7 +100,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	@Override
 	public void tick() {
 		updateChest();
-		if (!world.isRemote) {
+		if (world != null && !world.isRemote) {
 			checkLockAndUpdate();
 			displayEmc = this.getStoredEmc();
 			if (lockInfo != null && requiredEmc != 0) {
@@ -217,6 +217,6 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(PEBlocks.CONDENSER.getBlock().getTranslationKey());
+		return TextComponentUtil.build(PEBlocks.CONDENSER);
 	}
 }

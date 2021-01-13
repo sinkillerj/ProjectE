@@ -8,6 +8,7 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,7 +39,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
 		PlayerEntity player = (PlayerEntity) entity;
-		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
 			int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 			addStoredXP(stack, toAdd);
 			removeXP(player, TRANSFER_RATE);
@@ -69,15 +70,15 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 
 	private void removeXP(PlayerEntity player, int amount) {
-		int experiencetotal = getXP(player) - amount;
-		if (experiencetotal < 0) {
+		int totalExperience = getXP(player) - amount;
+		if (totalExperience < 0) {
 			player.experienceTotal = 0;
 			player.experienceLevel = 0;
 			player.experience = 0;
 		} else {
-			player.experienceTotal = experiencetotal;
-			player.experienceLevel = getLvlForXP(experiencetotal);
-			player.experience = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
+			player.experienceTotal = totalExperience;
+			player.experienceLevel = getLvlForXP(totalExperience);
+			player.experience = (float) (totalExperience - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
 		}
 	}
 
@@ -120,7 +121,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private int getStoredXP(ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getInt(Constants.NBT_KEY_STORED_XP) : 0;
+		return stack.hasTag() ? stack.getOrCreateTag().getInt(Constants.NBT_KEY_STORED_XP) : 0;
 	}
 
 	private void setStoredXP(ItemStack stack, int XP) {

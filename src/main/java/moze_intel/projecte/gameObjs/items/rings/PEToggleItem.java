@@ -6,6 +6,7 @@ import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,7 +27,7 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 
 	@Override
 	public byte getMode(@Nonnull ItemStack stack) {
-		return stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE) ? (byte) 1 : 0;
+		return ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) ? (byte) 1 : 0;
 	}
 
 	@Override

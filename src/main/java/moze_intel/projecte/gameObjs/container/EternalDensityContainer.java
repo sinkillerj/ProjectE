@@ -59,7 +59,7 @@ public class EternalDensityContainer extends Container {
 		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem) {
 			return ItemStack.EMPTY;
 		}
-		if (slot >= 0 && slot < 9) {
+		if (slot >= 0 && slot < PlayerInventory.getHotbarSize()) {
 			inventory.setStackInSlot(slot, ItemStack.EMPTY);
 		}
 		return super.slotClick(slot, button, flag, player);

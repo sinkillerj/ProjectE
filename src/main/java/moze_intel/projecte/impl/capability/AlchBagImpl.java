@@ -66,7 +66,9 @@ public final class AlchBagImpl {
 				if (inventories.containsKey(c)) {
 					INBT inv = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
 							.writeNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inventories.get(c), null);
-					ret.put(c.getString(), inv);
+					if (inv != null) {
+						ret.put(c.getString(), inv);
+					}
 				}
 			}
 			return ret;

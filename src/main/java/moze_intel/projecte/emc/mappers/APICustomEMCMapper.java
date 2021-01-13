@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -67,7 +68,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 		}
 
 		List<String> modIds = new ArrayList<>(customEMCforMod.keySet());
-		modIds.sort(Comparator.comparingInt(priorityMap::get).reversed());
+		modIds.sort(Comparator.comparingInt((ToIntFunction<String>) priorityMap::get).reversed());
 
 		for (String modId : modIds) {
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;

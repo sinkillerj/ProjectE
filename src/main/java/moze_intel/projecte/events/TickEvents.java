@@ -11,6 +11,7 @@ import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -71,7 +72,7 @@ public class TickEvents {
 				return true;
 			}
 		}
-		for (int i = 0; i <= 8; i++) {
+		for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;

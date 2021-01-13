@@ -27,7 +27,7 @@ import net.minecraftforge.fml.InterModComms;
 
 public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, JsonDeserializer<NormalizedSimpleStack> {
 
-	public static NSSSerializer INSTANCE = new NSSSerializer();
+	public static final NSSSerializer INSTANCE = new NSSSerializer();
 
 	public static final NSSCreator fakeCreator = NSSFake::create;
 

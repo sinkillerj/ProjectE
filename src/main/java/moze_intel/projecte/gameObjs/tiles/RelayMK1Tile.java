@@ -78,7 +78,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 
 	@Override
 	public void tick() {
-		if (world.isRemote) {
+		if (world == null || world.isRemote) {
 			return;
 		}
 		sendEmc();

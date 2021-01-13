@@ -46,10 +46,9 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 		}
 		emc = Math.min(getEmcExtractLimit(), emc);
 		long sentEmc = 0;
-
 		List<IEmcStorage> targets = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
-			BlockPos neighboringPos = getPos().offset(dir);
+			BlockPos neighboringPos = pos.offset(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
 			if (world.isBlockPresent(neighboringPos)) {
 				TileEntity neighboringTile = WorldHelper.getTileEntity(world, neighboringPos);

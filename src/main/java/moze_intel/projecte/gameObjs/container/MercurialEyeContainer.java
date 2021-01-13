@@ -44,16 +44,19 @@ public class MercurialEyeContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
-		if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == inventory.invItem) {
-			return ItemStack.EMPTY;
+	public ItemStack slotClick(int slotId, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+		if (slotId >= 0) {
+			Slot slot = getSlot(slotId);
+			if (slot != null && slot.getStack() == inventory.invItem) {
+				return ItemStack.EMPTY;
+			}
 		}
 
-		if (slot == 1 && !inventory.getStackInSlot(slot).isEmpty()) {
+		if (slotId == 1 && !inventory.getStackInSlot(slotId).isEmpty()) {
 			inventory.setStackInSlot(1, ItemStack.EMPTY);
 		}
 
-		return super.slotClick(slot, button, flag, player);
+		return super.slotClick(slotId, button, flag, player);
 	}
 
 	@Nonnull

@@ -17,6 +17,9 @@ public abstract class ChestTileEmc extends CapabilityTileEMC {
 	}
 
 	protected void updateChest() {
+		if (world == null) {
+			return;
+		}
 		if (++ticksSinceSync % 20 * 4 == 0) {
 			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
 		}

@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
@@ -83,7 +85,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (entity instanceof PlayerEntity && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (entity instanceof PlayerEntity && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			PlayerEntity player = (PlayerEntity) entity;
 			AxisAlignedBB bBox = player.getBoundingBox().grow(7);
 			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
@@ -97,30 +99,33 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-		if (tile != null) {
-			List<ItemEntity> list = world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds());
-			for (ItemEntity item : list) {
-				WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-				if (!world.isRemote && item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21 && item.isAlive()) {
-					suckDumpItem(item, tile);
+		if (!world.isRemote) {
+			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
+			if (tile != null) {
+				Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
+				for (ItemEntity item : world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds())) {
+					if (item.isAlive()) {
+						WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+						if (item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+							for (Direction dir : Direction.values()) {
+								//Cache the item handlers in various spots so that we only query each neighboring position once
+								IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
+									TileEntity candidate = WorldHelper.getTileEntity(world, pos.offset(dir));
+									if (candidate == null) {
+										return null;
+									}
+									return WorldHelper.getItemHandler(candidate, dir);
+								});
+								ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
+								if (result.isEmpty()) {
+									item.remove();
+									break;
+								}
+								item.setItem(result);
+							}
+						}
+					}
 				}
-			}
-		}
-	}
-
-	private void suckDumpItem(ItemEntity item, DMPedestalTile tile) {
-		World world = tile.getWorld();
-		for (Direction dir : Direction.values()) {
-			TileEntity candidate = WorldHelper.getTileEntity(world, tile.getPos().offset(dir));
-			if (candidate != null) {
-				IItemHandler inv = WorldHelper.getItemHandler(candidate, dir);
-				ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
-				if (result.isEmpty()) {
-					item.remove();
-					return;
-				}
-				item.setItem(result);
 			}
 		}
 	}
@@ -135,11 +140,10 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
-		if (tile != null && stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
-			BlockPos tilePos = tile.getPos();
-			int tileX = tilePos.getX();
-			int tileY = tilePos.getY();
-			int tileZ = tilePos.getZ();
+		if (tile != null && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			int tileX = pos.getX();
+			int tileY = pos.getY();
+			int tileZ = pos.getZ();
 			AxisAlignedBB aabb = new AxisAlignedBB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
 			double centeredX = tileX + 0.5;
 			double centeredY = tileY + 0.5;
@@ -162,7 +166,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
-		if (stack.hasTag() && stack.getTag().getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
 				WorldHelper.gravitateEntityTowards(e, player.getPosX(), player.getPosY(), player.getPosZ());
 			}
