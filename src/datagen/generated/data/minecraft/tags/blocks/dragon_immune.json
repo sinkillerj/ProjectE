@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:dark_matter_block",
+    "projecte:dm_furnace",
+    "projecte:dm_pedestal",
+    "projecte:red_matter_block",
+    "projecte:rm_furnace",
+    "projecte:condenser_mk2"
+  ]
+}

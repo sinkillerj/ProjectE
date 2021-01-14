@@ -12,6 +12,7 @@ import net.minecraft.data.TagsProvider;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -23,11 +24,6 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void registerTags() {
-		getOrCreateBuilder(Tags.Items.SHEARS).add(
-				PEItems.DARK_MATTER_SHEARS.get(),
-				PEItems.RED_MATTER_SHEARS.get(),
-				PEItems.RED_MATTER_KATAR.get()
-		);
 		TagsProvider.Builder<Item> alchemicalBags = getOrCreateBuilder(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));
@@ -82,6 +78,19 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.SWIFTWOLF_RENDING_GALE.get(),
 				PEItems.VOID_RING.get(),
 				PEItems.ZERO_RING.get()
+		);
+		//Vanilla/Forge Tags
+		getOrCreateBuilder(Tags.Items.SHEARS).add(
+				PEItems.DARK_MATTER_SHEARS.get(),
+				PEItems.RED_MATTER_SHEARS.get(),
+				PEItems.RED_MATTER_KATAR.get()
+		);
+		getOrCreateBuilder(Tags.Items.CHESTS).add(
+				PEBlocks.ALCHEMICAL_CHEST.asItem()
+		);
+		getOrCreateBuilder(ItemTags.BEACON_PAYMENT_ITEMS).add(
+				PEItems.DARK_MATTER.get(),
+				PEItems.RED_MATTER.get()
 		);
 	}
 }

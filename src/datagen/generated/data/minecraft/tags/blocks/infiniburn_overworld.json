@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:alchemical_coal_block",
+    "projecte:mobius_fuel_block",
+    "projecte:aeternalis_fuel_block"
+  ]
+}

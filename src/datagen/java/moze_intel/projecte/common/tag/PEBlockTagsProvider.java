@@ -3,9 +3,14 @@ package moze_intel.projecte.common.tag;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag.INamedTag;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEBlockTagsProvider extends BlockTagsProvider {
@@ -25,5 +30,36 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				Blocks.WARPED_NYLIUM
 		);
 		getOrCreateBuilder(PETags.Blocks.BLACKLIST_TIME_WATCH);
+		//Vanilla/Forge Tags
+		getOrCreateBuilder(Tags.Blocks.CHESTS).add(
+				PEBlocks.ALCHEMICAL_CHEST.getBlock()
+		);
+		getOrCreateBuilder(BlockTags.BEACON_BASE_BLOCKS).add(
+				PEBlocks.DARK_MATTER.getBlock(),
+				PEBlocks.RED_MATTER.getBlock()
+		);
+		getOrCreateBuilder(BlockTags.GUARDED_BY_PIGLINS).add(
+				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
+				PEBlocks.CONDENSER.getBlock(),
+				PEBlocks.CONDENSER_MK2.getBlock()
+		);
+		getOrCreateBuilder(BlockTags.INFINIBURN_OVERWORLD).add(
+				PEBlocks.ALCHEMICAL_COAL.getBlock(),
+				PEBlocks.MOBIUS_FUEL.getBlock(),
+				PEBlocks.AETERNALIS_FUEL.getBlock()
+		);
+		addImmuneBlocks(BlockTags.DRAGON_IMMUNE);
+		addImmuneBlocks(BlockTags.WITHER_IMMUNE);
+	}
+
+	private void addImmuneBlocks(INamedTag<Block> tag) {
+		getOrCreateBuilder(tag).add(
+				PEBlocks.DARK_MATTER.getBlock(),
+				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
+				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),
+				PEBlocks.RED_MATTER.getBlock(),
+				PEBlocks.RED_MATTER_FURNACE.getBlock(),
+				PEBlocks.CONDENSER_MK2.getBlock()
+		);
 	}
 }

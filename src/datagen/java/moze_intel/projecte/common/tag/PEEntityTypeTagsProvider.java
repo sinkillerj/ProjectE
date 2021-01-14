@@ -3,9 +3,11 @@ package moze_intel.projecte.common.tag;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.EntityTypeTagsProvider;
 import net.minecraft.entity.EntityType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
@@ -82,5 +84,14 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 		);
 		getOrCreateBuilder(PETags.Entities.BLACKLIST_SWRG);
 		getOrCreateBuilder(PETags.Entities.BLACKLIST_INTERDICTION);
+		//Vanilla tags
+		getOrCreateBuilder(EntityTypeTags.ARROWS).add(PEEntityTypes.HOMING_ARROW.get());
+		getOrCreateBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(
+				PEEntityTypes.FIRE_PROJECTILE.get(),
+				PEEntityTypes.LAVA_PROJECTILE.get(),
+				PEEntityTypes.LENS_PROJECTILE.get(),
+				PEEntityTypes.SWRG_PROJECTILE.get(),
+				PEEntityTypes.WATER_PROJECTILE.get()
+		);
 	}
 }
