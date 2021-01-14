@@ -12,6 +12,7 @@ import net.minecraft.data.TagsProvider;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEItemTagsProvider extends ItemTagsProvider {
@@ -22,6 +23,11 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void registerTags() {
+		getOrCreateBuilder(Tags.Items.SHEARS).add(
+				PEItems.DARK_MATTER_SHEARS.get(),
+				PEItems.RED_MATTER_SHEARS.get(),
+				PEItems.RED_MATTER_KATAR.get()
+		);
 		TagsProvider.Builder<Item> alchemicalBags = getOrCreateBuilder(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));

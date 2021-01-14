@@ -17,9 +17,12 @@ import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
+import net.minecraft.block.CarvedPumpkinBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -32,16 +35,22 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tileentity.BeehiveTileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
@@ -57,6 +66,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		modeDesc = new ILangEntry[]{PELang.MODE_KATAR_1, PELang.MODE_KATAR_2};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
+		//TODO: Eventually it would be nice to make it so the katar can deactivate tripwires, this will need a forge PR though
 	}
 
 	@Override
@@ -119,9 +129,45 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		ItemStack stack = context.getItem();
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
-		// Strip logs, hoe ground, AOE remove logs, AOE remove leaves
+		// Strip logs, hoe ground, carve pumpkin, shear beehive, AOE remove logs, AOE remove leaves
 		return ToolHelper.performActions(state.getToolModifiedState(world, pos, player, stack, ToolType.AXE) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
 				() -> state.getToolModifiedState(world, pos, player, stack, ToolType.HOE) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
+				() -> {
+					if (state.isIn(Blocks.PUMPKIN)) {
+						//Carve pumpkin - copy from Pumpkin Block's onBlockActivated
+						if (!world.isRemote) {
+							Direction direction = context.getFace();
+							Direction side = direction.getAxis() == Direction.Axis.Y ? context.getPlacementHorizontalFacing().getOpposite() : direction;
+							world.playSound(null, pos, SoundEvents.BLOCK_PUMPKIN_CARVE, SoundCategory.BLOCKS, 1, 1);
+							world.setBlockState(pos, Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, side), BlockFlags.DEFAULT_AND_RERENDER);
+							ItemEntity itementity = new ItemEntity(world, pos.getX() + 0.5 + side.getXOffset() * 0.65, pos.getY() + 0.1,
+									pos.getZ() + 0.5 + side.getZOffset() * 0.65, new ItemStack(Items.PUMPKIN_SEEDS, 4));
+							itementity.setMotion(0.05 * side.getXOffset() + world.rand.nextDouble() * 0.02, 0.05,
+									0.05 * side.getZOffset() + world.rand.nextDouble() * 0.02D);
+							world.addEntity(itementity);
+						}
+						return ActionResultType.func_233537_a_(world.isRemote);
+					}
+					return ActionResultType.PASS;
+				},
+				() -> {
+					if (state.isIn(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock && state.get(BeehiveBlock.HONEY_LEVEL) >= 5) {
+						//Act as shears on beehives
+						BeehiveBlock beehive = (BeehiveBlock) state.getBlock();
+						world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_BEEHIVE_SHEAR, SoundCategory.NEUTRAL, 1, 1);
+						BeehiveBlock.dropHoneyComb(world, pos);
+						if (!CampfireBlock.isSmokingBlockAt(world, pos)) {
+							if (beehive.hasBees(world, pos)) {
+								beehive.angerNearbyBees(world, pos);
+							}
+							beehive.takeHoney(world, state, pos, player, BeehiveTileEntity.State.EMERGENCY);
+						} else {
+							beehive.takeHoney(world, state, pos);
+						}
+						return ActionResultType.func_233537_a_(world.isRemote);
+					}
+					return ActionResultType.PASS;
+				},
 				() -> {
 					if (state.isIn(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
