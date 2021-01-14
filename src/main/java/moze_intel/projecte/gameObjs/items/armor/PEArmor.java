@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -16,7 +17,17 @@ public abstract class PEArmor extends ArmorItem {
 	}
 
 	@Override
-	public boolean isBookEnchantable(@Nonnull ItemStack stack, @Nonnull ItemStack book) {
+	public boolean isEnchantable(@Nonnull ItemStack stack) {
+		return false;
+	}
+
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+		return false;
+	}
+
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
 		return false;
 	}
 
