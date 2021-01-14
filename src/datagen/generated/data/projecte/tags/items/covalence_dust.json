@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:low_covalence_dust",
+    "projecte:medium_covalence_dust",
+    "projecte:high_covalence_dust"
+  ]
+}

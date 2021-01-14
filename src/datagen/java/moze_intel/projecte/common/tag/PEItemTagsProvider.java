@@ -49,6 +49,11 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.AETERNALIS_FUEL.get(),
 				PEBlocks.AETERNALIS_FUEL.asItem()
 		);
+		getOrCreateBuilder(PETags.Items.COVALENCE_DUST).add(
+				PEItems.LOW_COVALENCE_DUST.get(),
+				PEItems.MEDIUM_COVALENCE_DUST.get(),
+				PEItems.HIGH_COVALENCE_DUST.get()
+		);
 		getOrCreateBuilder(PETags.Items.NBT_WHITELIST);
 		getOrCreateBuilder(PETags.Items.CURIOS_BELT).add(
 				PEItems.REPAIR_TALISMAN.get(),

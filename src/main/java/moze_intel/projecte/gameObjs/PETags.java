@@ -27,6 +27,10 @@ public class PETags {
 		 * Items in this tag can have their NBT tags duped by condensers and transmutation tables
 		 */
 		public static final INamedTag<Item> NBT_WHITELIST = tag("nbt_whitelist");
+		/**
+		 * Items in this tag can contribute and are "valid dusts" for the covalence repair recipe
+		 */
+		public static final INamedTag<Item> COVALENCE_DUST = tag("covalence_dust");
 		//Curios tags
 		public static final INamedTag<Item> CURIOS_BELT = curiosTag("belt");
 		public static final INamedTag<Item> CURIOS_KLEIN_STAR = curiosTag("klein_star");

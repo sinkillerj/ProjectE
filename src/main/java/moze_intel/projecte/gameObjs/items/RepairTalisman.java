@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -12,7 +12,6 @@ import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.rings.PEToggleItem;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
@@ -37,6 +36,10 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem {
 
+	private static final Predicate<ItemStack> CAN_REPAIR_ITEM = stack -> !stack.isEmpty() &&
+																		 !stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() &&
+																		 ItemHelper.isRepairableDamagedItem(stack);
+
 	public RepairTalisman(Properties props) {
 		super(props);
 		addItemCapability(AlchBagItemCapabilityWrapper::new);
@@ -47,39 +50,14 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5) {
-		if (world.isRemote || !(entity instanceof PlayerEntity)) {
-			return;
-		}
-		PlayerEntity player = (PlayerEntity) entity;
-		player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
-			timers.activateRepair();
-			if (timers.canRepair()) {
-				repairAllItems(player);
-			}
-		});
-	}
-
-	private void repairAllItems(PlayerEntity player) {
-		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairInv(inv, player));
-		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null) {
-			repairInv(curios, player);
-		}
-	}
-
-	private void repairInv(IItemHandler inv, PlayerEntity player) {
-		for (int i = 0; i < inv.getSlots(); i++) {
-			ItemStack invStack = inv.getStackInSlot(i);
-			if (invStack.isEmpty() || invStack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() || !invStack.isRepairable()) {
-				continue;
-			}
-			if (invStack == player.getHeldItemMainhand() && player.isSwingInProgress) {
-				//Don't repair item that is currently used by the player.
-				continue;
-			}
-			if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
-				invStack.setDamage(invStack.getDamage() - 1);
-			}
+		if (!world.isRemote && entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
+			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
+				timers.activateRepair();
+				if (timers.canRepair()) {
+					repairAllItems(player);
+				}
+			});
 		}
 	}
 
@@ -89,7 +67,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(this::repairAllItems);
+					world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
 				} else {
 					tile.decrementActivityCooldown();
@@ -111,36 +89,20 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		if (world.isRemote) {
-			return;
-		}
-		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
-		if (tile != null) {
-			CompoundNBT nbt = stack.getOrCreateTag();
-			byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
-			if (coolDown > 0) {
-				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
-			} else {
-				boolean hasAction = false;
-				Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-				if (cap.isPresent()) {
-					IItemHandler inv = cap.get();
-					for (int i = 0; i < inv.getSlots(); i++) {
-						ItemStack invStack = inv.getStackInSlot(i);
-						if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
-							continue;
+		if (!world.isRemote) {
+			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+			if (tile != null) {
+				CompoundNBT nbt = stack.getOrCreateTag();
+				byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
+				if (coolDown > 0) {
+					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+				} else {
+					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+						if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
+							nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+							tile.markDirty();
 						}
-						if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
-							invStack.setDamage(invStack.getDamage() - 1);
-							if (!hasAction) {
-								hasAction = true;
-							}
-						}
-					}
-					if (hasAction) {
-						nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-						tile.markDirty();
-					}
+					});
 				}
 			}
 		}
@@ -155,25 +117,33 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
-		} else {
-			boolean hasAction = false;
-			for (int i = 0; i < inv.getSlots(); i++) {
-				ItemStack invStack = inv.getStackInSlot(i);
-				if (invStack.isEmpty() || invStack.getItem() instanceof PEToggleItem || !invStack.getItem().isRepairable(invStack)) {
-					continue;
-				}
-				if (ItemHelper.isDamageable(invStack) && invStack.getDamage() > 0) {
-					invStack.setDamage(invStack.getDamage() - 1);
-					if (!hasAction) {
-						hasAction = true;
-					}
-				}
-			}
-			if (hasAction) {
-				nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-				return true;
-			}
+		} else if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
+			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+			return true;
 		}
 		return false;
+	}
+
+	private static void repairAllItems(PlayerEntity player) {
+		Predicate<ItemStack> canRepairPlayerItem = CAN_REPAIR_ITEM.and(stack -> stack != player.getHeldItemMainhand() || !player.isSwingInProgress);
+		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairAllItems(inv, canRepairPlayerItem));
+		IItemHandler curios = PlayerHelper.getCurios(player);
+		if (curios != null) {
+			repairAllItems(curios, canRepairPlayerItem);
+		}
+	}
+
+	private static boolean repairAllItems(IItemHandler inv, Predicate<ItemStack> canRepairStack) {
+		boolean hasAction = false;
+		for (int i = 0; i < inv.getSlots(); i++) {
+			ItemStack invStack = inv.getStackInSlot(i);
+			if (canRepairStack.test(invStack)) {
+				invStack.setDamage(invStack.getDamage() - 1);
+				if (!hasAction) {
+					hasAction = true;
+				}
+			}
+		}
+		return hasAction;
 	}
 }

@@ -179,10 +179,6 @@ public final class ItemHelper {
 		};
 	}
 
-	public static boolean isDamageable(ItemStack stack) {
-		return stack.isDamageable();
-	}
-
 	public static boolean isOre(BlockState state) {
 		return state.isIn(Tags.Blocks.ORES);
 	}
@@ -193,6 +189,10 @@ public final class ItemHelper {
 
 	public static boolean isOre(Item i) {
 		return isOre(Block.getBlockFromItem(i));
+	}
+
+	public static boolean isRepairableDamagedItem(ItemStack stack) {
+		return stack.isDamageable() && stack.isRepairable() && stack.getDamage() > 0;
 	}
 
 	/**

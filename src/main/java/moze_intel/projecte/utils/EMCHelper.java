@@ -211,12 +211,11 @@ public final class EMCHelper {
 	public static long getEMCPerDurability(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return 0;
-		}
-		if (stack.isDamageable()) {
+		} else if (stack.isDamageable()) {
 			ItemStack stackCopy = stack.copy();
 			stackCopy.setDamage(0);
 			long emc = (long) Math.ceil(getEmcValue(stackCopy) / (double) stack.getMaxDamage());
-			return emc > 1 ? emc : 1;
+			return Math.max(emc, 1);
 		}
 		return 1;
 	}
