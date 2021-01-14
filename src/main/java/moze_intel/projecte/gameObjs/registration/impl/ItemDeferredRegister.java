@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.registration.impl;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
@@ -37,20 +38,32 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 		return new Item.Properties().group(creativeTab);
 	}
 
-	public static Item.Properties getBasePropertiesNoStack() {
-		return getBaseProperties().maxStackSize(1);
-	}
-
 	public ItemRegistryObject<Item> register(String name) {
 		return register(name, Item::new);
 	}
 
+	public ItemRegistryObject<Item> registerFireImmune(String name) {
+		return registerFireImmune(name, Item::new);
+	}
+
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, () -> sup.apply(getBaseProperties()));
+		return register(name, sup, UnaryOperator.identity());
+	}
+
+	public <ITEM extends Item> ItemRegistryObject<ITEM> registerFireImmune(String name, Function<Item.Properties, ITEM> sup) {
+		return register(name, sup, Item.Properties::isImmuneToFire);
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerNoStack(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, () -> sup.apply(getBasePropertiesNoStack()));
+		return register(name, sup, properties -> properties.maxStackSize(1));
+	}
+
+	public <ITEM extends Item> ItemRegistryObject<ITEM> registerNoStackFireImmune(String name, Function<Item.Properties, ITEM> sup) {
+		return register(name, sup, properties -> properties.maxStackSize(1).isImmuneToFire());
+	}
+
+	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup, UnaryOperator<Item.Properties> propertyModifier) {
+		return register(name, () -> sup.apply(propertyModifier.apply(getBaseProperties())));
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {

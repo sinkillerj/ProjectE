@@ -93,71 +93,71 @@ public class PEItems {
 	public static final ItemRegistryObject<Item> LOW_COVALENCE_DUST = ITEMS.register("low_covalence_dust");
 	public static final ItemRegistryObject<Item> MEDIUM_COVALENCE_DUST = ITEMS.register("medium_covalence_dust");
 	public static final ItemRegistryObject<Item> HIGH_COVALENCE_DUST = ITEMS.register("high_covalence_dust");
-	public static final ItemRegistryObject<Item> DARK_MATTER = ITEMS.register("dark_matter");
-	public static final ItemRegistryObject<Item> RED_MATTER = ITEMS.register("red_matter");
+	public static final ItemRegistryObject<Item> DARK_MATTER = ITEMS.registerFireImmune("dark_matter");
+	public static final ItemRegistryObject<Item> RED_MATTER = ITEMS.registerFireImmune("red_matter");
 
-	public static final ItemRegistryObject<PEPickaxe> DARK_MATTER_PICKAXE = ITEMS.registerNoStack("dm_pick", properties -> new PEPickaxe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEAxe> DARK_MATTER_AXE = ITEMS.registerNoStack("dm_axe", properties -> new PEAxe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEShovel> DARK_MATTER_SHOVEL = ITEMS.registerNoStack("dm_shovel", properties -> new PEShovel(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PESword> DARK_MATTER_SWORD = ITEMS.registerNoStack("dm_sword", properties -> new PESword(EnumMatterType.DARK_MATTER, 2, 9, properties));
-	public static final ItemRegistryObject<PEHoe> DARK_MATTER_HOE = ITEMS.registerNoStack("dm_hoe", properties -> new PEHoe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEShears> DARK_MATTER_SHEARS = ITEMS.registerNoStack("dm_shears", properties -> new PEShears(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEHammer> DARK_MATTER_HAMMER = ITEMS.registerNoStack("dm_hammer", properties -> new PEHammer(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEPickaxe> DARK_MATTER_PICKAXE = ITEMS.registerNoStackFireImmune("dm_pick", properties -> new PEPickaxe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEAxe> DARK_MATTER_AXE = ITEMS.registerNoStackFireImmune("dm_axe", properties -> new PEAxe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEShovel> DARK_MATTER_SHOVEL = ITEMS.registerNoStackFireImmune("dm_shovel", properties -> new PEShovel(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PESword> DARK_MATTER_SWORD = ITEMS.registerNoStackFireImmune("dm_sword", properties -> new PESword(EnumMatterType.DARK_MATTER, 2, 9, properties));
+	public static final ItemRegistryObject<PEHoe> DARK_MATTER_HOE = ITEMS.registerNoStackFireImmune("dm_hoe", properties -> new PEHoe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEShears> DARK_MATTER_SHEARS = ITEMS.registerNoStackFireImmune("dm_shears", properties -> new PEShears(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEHammer> DARK_MATTER_HAMMER = ITEMS.registerNoStackFireImmune("dm_hammer", properties -> new PEHammer(EnumMatterType.DARK_MATTER, 2, properties));
 
-	public static final ItemRegistryObject<PEPickaxe> RED_MATTER_PICKAXE = ITEMS.registerNoStack("rm_pick", properties -> new PEPickaxe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEAxe> RED_MATTER_AXE = ITEMS.registerNoStack("rm_axe", properties -> new PEAxe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEShovel> RED_MATTER_SHOVEL = ITEMS.registerNoStack("rm_shovel", properties -> new PEShovel(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<RedMatterSword> RED_MATTER_SWORD = ITEMS.registerNoStack("rm_sword", RedMatterSword::new);
-	public static final ItemRegistryObject<PEHoe> RED_MATTER_HOE = ITEMS.registerNoStack("rm_hoe", properties -> new PEHoe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEShears> RED_MATTER_SHEARS = ITEMS.registerNoStack("rm_shears", properties -> new PEShears(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEHammer> RED_MATTER_HAMMER = ITEMS.registerNoStack("rm_hammer", properties -> new PEHammer(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEKatar> RED_MATTER_KATAR = ITEMS.registerNoStack("rm_katar", properties -> new PEKatar(EnumMatterType.RED_MATTER, 4, properties));
-	public static final ItemRegistryObject<PEMorningStar> RED_MATTER_MORNING_STAR = ITEMS.registerNoStack("rm_morning_star", properties -> new PEMorningStar(EnumMatterType.RED_MATTER, 4, properties));
+	public static final ItemRegistryObject<PEPickaxe> RED_MATTER_PICKAXE = ITEMS.registerNoStackFireImmune("rm_pick", properties -> new PEPickaxe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEAxe> RED_MATTER_AXE = ITEMS.registerNoStackFireImmune("rm_axe", properties -> new PEAxe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEShovel> RED_MATTER_SHOVEL = ITEMS.registerNoStackFireImmune("rm_shovel", properties -> new PEShovel(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<RedMatterSword> RED_MATTER_SWORD = ITEMS.registerNoStackFireImmune("rm_sword", RedMatterSword::new);
+	public static final ItemRegistryObject<PEHoe> RED_MATTER_HOE = ITEMS.registerNoStackFireImmune("rm_hoe", properties -> new PEHoe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEShears> RED_MATTER_SHEARS = ITEMS.registerNoStackFireImmune("rm_shears", properties -> new PEShears(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEHammer> RED_MATTER_HAMMER = ITEMS.registerNoStackFireImmune("rm_hammer", properties -> new PEHammer(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEKatar> RED_MATTER_KATAR = ITEMS.registerNoStackFireImmune("rm_katar", properties -> new PEKatar(EnumMatterType.RED_MATTER, 4, properties));
+	public static final ItemRegistryObject<PEMorningStar> RED_MATTER_MORNING_STAR = ITEMS.registerNoStackFireImmune("rm_morning_star", properties -> new PEMorningStar(EnumMatterType.RED_MATTER, 4, properties));
 
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_HELMET = ITEMS.registerNoStack("dm_helmet", properties -> new DMArmor(EquipmentSlotType.HEAD, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_CHESTPLATE = ITEMS.registerNoStack("dm_chestplate", properties -> new DMArmor(EquipmentSlotType.CHEST, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_LEGGINGS = ITEMS.registerNoStack("dm_leggings", properties -> new DMArmor(EquipmentSlotType.LEGS, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_BOOTS = ITEMS.registerNoStack("dm_boots", properties -> new DMArmor(EquipmentSlotType.FEET, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_HELMET = ITEMS.registerNoStackFireImmune("dm_helmet", properties -> new DMArmor(EquipmentSlotType.HEAD, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_CHESTPLATE = ITEMS.registerNoStackFireImmune("dm_chestplate", properties -> new DMArmor(EquipmentSlotType.CHEST, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_LEGGINGS = ITEMS.registerNoStackFireImmune("dm_leggings", properties -> new DMArmor(EquipmentSlotType.LEGS, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_BOOTS = ITEMS.registerNoStackFireImmune("dm_boots", properties -> new DMArmor(EquipmentSlotType.FEET, properties));
 
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_HELMET = ITEMS.registerNoStack("rm_helmet", properties -> new RMArmor(EquipmentSlotType.HEAD, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_CHESTPLATE = ITEMS.registerNoStack("rm_chestplate", properties -> new RMArmor(EquipmentSlotType.CHEST, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_LEGGINGS = ITEMS.registerNoStack("rm_leggings", properties -> new RMArmor(EquipmentSlotType.LEGS, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_BOOTS = ITEMS.registerNoStack("rm_boots", properties -> new RMArmor(EquipmentSlotType.FEET, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_HELMET = ITEMS.registerNoStackFireImmune("rm_helmet", properties -> new RMArmor(EquipmentSlotType.HEAD, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_CHESTPLATE = ITEMS.registerNoStackFireImmune("rm_chestplate", properties -> new RMArmor(EquipmentSlotType.CHEST, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_LEGGINGS = ITEMS.registerNoStackFireImmune("rm_leggings", properties -> new RMArmor(EquipmentSlotType.LEGS, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_BOOTS = ITEMS.registerNoStackFireImmune("rm_boots", properties -> new RMArmor(EquipmentSlotType.FEET, properties));
 
-	public static final ItemRegistryObject<GemHelmet> GEM_HELMET = ITEMS.registerNoStack("gem_helmet", GemHelmet::new);
-	public static final ItemRegistryObject<GemChest> GEM_CHESTPLATE = ITEMS.registerNoStack("gem_chestplate", GemChest::new);
-	public static final ItemRegistryObject<GemLegs> GEM_LEGGINGS = ITEMS.registerNoStack("gem_leggings", GemLegs::new);
-	public static final ItemRegistryObject<GemFeet> GEM_BOOTS = ITEMS.registerNoStack("gem_boots", GemFeet::new);
+	public static final ItemRegistryObject<GemHelmet> GEM_HELMET = ITEMS.registerNoStackFireImmune("gem_helmet", GemHelmet::new);
+	public static final ItemRegistryObject<GemChest> GEM_CHESTPLATE = ITEMS.registerNoStackFireImmune("gem_chestplate", GemChest::new);
+	public static final ItemRegistryObject<GemLegs> GEM_LEGGINGS = ITEMS.registerNoStackFireImmune("gem_leggings", GemLegs::new);
+	public static final ItemRegistryObject<GemFeet> GEM_BOOTS = ITEMS.registerNoStackFireImmune("gem_boots", GemFeet::new);
 
 	public static final ItemRegistryObject<Item> IRON_BAND = ITEMS.register("iron_band");
-	public static final ItemRegistryObject<BlackHoleBand> BLACK_HOLE_BAND = ITEMS.registerNoStack("black_hole_band", BlackHoleBand::new);
-	public static final ItemRegistryObject<ArchangelSmite> ARCHANGEL_SMITE = ITEMS.registerNoStack("archangel_smite", ArchangelSmite::new);
-	public static final ItemRegistryObject<HarvestGoddess> HARVEST_GODDESS_BAND = ITEMS.registerNoStack("harvest_goddess_band", HarvestGoddess::new);
-	public static final ItemRegistryObject<Ignition> IGNITION_RING = ITEMS.registerNoStack("ignition_ring", Ignition::new);
-	public static final ItemRegistryObject<Zero> ZERO_RING = ITEMS.registerNoStack("zero_ring", Zero::new);
-	public static final ItemRegistryObject<SWRG> SWIFTWOLF_RENDING_GALE = ITEMS.registerNoStack("swiftwolf_rending_gale", SWRG::new);
-	public static final ItemRegistryObject<TimeWatch> WATCH_OF_FLOWING_TIME = ITEMS.registerNoStack("watch_of_flowing_time", TimeWatch::new);
-	public static final ItemRegistryObject<EvertideAmulet> EVERTIDE_AMULET = ITEMS.registerNoStack("evertide_amulet", EvertideAmulet::new);
-	public static final ItemRegistryObject<VolcaniteAmulet> VOLCANITE_AMULET = ITEMS.registerNoStack("volcanite_amulet", VolcaniteAmulet::new);
-	public static final ItemRegistryObject<GemEternalDensity> GEM_OF_ETERNAL_DENSITY = ITEMS.registerNoStack("gem_of_eternal_density", GemEternalDensity::new);
-	public static final ItemRegistryObject<MercurialEye> MERCURIAL_EYE = ITEMS.registerNoStack("mercurial_eye", MercurialEye::new);
-	public static final ItemRegistryObject<VoidRing> VOID_RING = ITEMS.registerNoStack("void_ring", VoidRing::new);
-	public static final ItemRegistryObject<Arcana> ARCANA_RING = ITEMS.registerNoStack("arcana_ring", properties -> new Arcana(properties.rarity(Rarity.RARE)));
-	public static final ItemRegistryObject<BodyStone> BODY_STONE = ITEMS.registerNoStack("body_stone", BodyStone::new);
-	public static final ItemRegistryObject<SoulStone> SOUL_STONE = ITEMS.registerNoStack("soul_stone", SoulStone::new);
-	public static final ItemRegistryObject<MindStone> MIND_STONE = ITEMS.registerNoStack("mind_stone", MindStone::new);
-	public static final ItemRegistryObject<LifeStone> LIFE_STONE = ITEMS.registerNoStack("life_stone", LifeStone::new);
+	public static final ItemRegistryObject<BlackHoleBand> BLACK_HOLE_BAND = ITEMS.registerNoStackFireImmune("black_hole_band", BlackHoleBand::new);
+	public static final ItemRegistryObject<ArchangelSmite> ARCHANGEL_SMITE = ITEMS.registerNoStackFireImmune("archangel_smite", ArchangelSmite::new);
+	public static final ItemRegistryObject<HarvestGoddess> HARVEST_GODDESS_BAND = ITEMS.registerNoStackFireImmune("harvest_goddess_band", HarvestGoddess::new);
+	public static final ItemRegistryObject<Ignition> IGNITION_RING = ITEMS.registerNoStackFireImmune("ignition_ring", Ignition::new);
+	public static final ItemRegistryObject<Zero> ZERO_RING = ITEMS.registerNoStackFireImmune("zero_ring", Zero::new);
+	public static final ItemRegistryObject<SWRG> SWIFTWOLF_RENDING_GALE = ITEMS.registerNoStackFireImmune("swiftwolf_rending_gale", SWRG::new);
+	public static final ItemRegistryObject<TimeWatch> WATCH_OF_FLOWING_TIME = ITEMS.registerNoStackFireImmune("watch_of_flowing_time", TimeWatch::new);
+	public static final ItemRegistryObject<EvertideAmulet> EVERTIDE_AMULET = ITEMS.registerNoStackFireImmune("evertide_amulet", EvertideAmulet::new);
+	public static final ItemRegistryObject<VolcaniteAmulet> VOLCANITE_AMULET = ITEMS.registerNoStackFireImmune("volcanite_amulet", VolcaniteAmulet::new);
+	public static final ItemRegistryObject<GemEternalDensity> GEM_OF_ETERNAL_DENSITY = ITEMS.registerNoStackFireImmune("gem_of_eternal_density", GemEternalDensity::new);
+	public static final ItemRegistryObject<MercurialEye> MERCURIAL_EYE = ITEMS.registerNoStackFireImmune("mercurial_eye", MercurialEye::new);
+	public static final ItemRegistryObject<VoidRing> VOID_RING = ITEMS.registerNoStackFireImmune("void_ring", VoidRing::new);
+	public static final ItemRegistryObject<Arcana> ARCANA_RING = ITEMS.registerNoStackFireImmune("arcana_ring", properties -> new Arcana(properties.rarity(Rarity.RARE)));
+	public static final ItemRegistryObject<BodyStone> BODY_STONE = ITEMS.registerNoStackFireImmune("body_stone", BodyStone::new);
+	public static final ItemRegistryObject<SoulStone> SOUL_STONE = ITEMS.registerNoStackFireImmune("soul_stone", SoulStone::new);
+	public static final ItemRegistryObject<MindStone> MIND_STONE = ITEMS.registerNoStackFireImmune("mind_stone", MindStone::new);
+	public static final ItemRegistryObject<LifeStone> LIFE_STONE = ITEMS.registerNoStackFireImmune("life_stone", LifeStone::new);
 
 	public static final ItemRegistryObject<DiviningRod> LOW_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_1", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3));
 	public static final ItemRegistryObject<DiviningRod> MEDIUM_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_2", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16));
 	public static final ItemRegistryObject<DiviningRod> HIGH_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_3", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16, PELang.DIVINING_RANGE_64));
 
 	public static final ItemRegistryObject<DestructionCatalyst> DESTRUCTION_CATALYST = ITEMS.registerNoStack("destruction_catalyst", DestructionCatalyst::new);
-	public static final ItemRegistryObject<HyperkineticLens> HYPERKINETIC_LENS = ITEMS.registerNoStack("hyperkinetic_lens", HyperkineticLens::new);
-	public static final ItemRegistryObject<CataliticLens> CATALYTIC_LENS = ITEMS.registerNoStack("catalytic_lens", CataliticLens::new);
+	public static final ItemRegistryObject<HyperkineticLens> HYPERKINETIC_LENS = ITEMS.registerNoStackFireImmune("hyperkinetic_lens", HyperkineticLens::new);
+	public static final ItemRegistryObject<CataliticLens> CATALYTIC_LENS = ITEMS.registerNoStackFireImmune("catalytic_lens", CataliticLens::new);
 
 	public static final ItemRegistryObject<Tome> TOME_OF_KNOWLEDGE = ITEMS.registerNoStack("tome", properties -> new Tome(properties.rarity(Rarity.EPIC)));
-	public static final ItemRegistryObject<TransmutationTablet> TRANSMUTATION_TABLET = ITEMS.registerNoStack("transmutation_tablet", TransmutationTablet::new);
+	public static final ItemRegistryObject<TransmutationTablet> TRANSMUTATION_TABLET = ITEMS.registerNoStackFireImmune("transmutation_tablet", TransmutationTablet::new);
 
 	private static ItemRegistryObject<AlchemicalBag> registerBag(DyeColor color) {
 		return ITEMS.registerNoStack(color.getTranslationKey() + "_alchemical_bag", properties -> new AlchemicalBag(properties, color));

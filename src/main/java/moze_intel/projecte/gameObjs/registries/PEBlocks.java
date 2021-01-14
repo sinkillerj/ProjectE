@@ -27,6 +27,7 @@ import moze_intel.projecte.gameObjs.items.blocks.RelayItem;
 import moze_intel.projecte.gameObjs.registration.impl.BlockDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject.WallOrFloorBlockRegistryObject;
+import moze_intel.projecte.gameObjs.registration.impl.ItemDeferredRegister;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -45,9 +46,9 @@ public class PEBlocks {
 	public static final BlockRegistryObject<Collector, CollectorItem> COLLECTOR = registerCollector("collector_mk1", EnumCollectorTier.MK1, state -> 7);
 	public static final BlockRegistryObject<Collector, CollectorItem> COLLECTOR_MK2 = registerCollector("collector_mk2", EnumCollectorTier.MK2, state -> 11);
 	public static final BlockRegistryObject<Collector, CollectorItem> COLLECTOR_MK3 = registerCollector("collector_mk3", EnumCollectorTier.MK3, state -> 15);
-	public static final BlockRegistryObject<Condenser, BlockItem> CONDENSER = registerCondenser("condenser_mk1", Condenser::new);
-	public static final BlockRegistryObject<CondenserMK2, BlockItem> CONDENSER_MK2 = registerCondenser("condenser_mk2", CondenserMK2::new);
-	public static final BlockRegistryObject<Pedestal, BlockItem> DARK_MATTER_PEDESTAL = BLOCKS.register("dm_pedestal", () -> new Pedestal(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().hardnessAndResistance(1, 3).setLightLevel(state -> 12)));
+	public static final BlockRegistryObject<Condenser, BlockItem> CONDENSER = registerCondenser("condenser_mk1", Condenser::new, block -> new BlockItem(block, ItemDeferredRegister.getBaseProperties()));
+	public static final BlockRegistryObject<CondenserMK2, BlockItem> CONDENSER_MK2 = registerCondenser("condenser_mk2", CondenserMK2::new, block -> new BlockItem(block, ItemDeferredRegister.getBaseProperties().isImmuneToFire()));
+	public static final BlockRegistryObject<Pedestal, BlockItem> DARK_MATTER_PEDESTAL = BLOCKS.register("dm_pedestal", () -> new Pedestal(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().hardnessAndResistance(1, 3).setLightLevel(state -> 12)), block -> new BlockItem(block, ItemDeferredRegister.getBaseProperties().isImmuneToFire()));
 	public static final BlockRegistryObject<MatterFurnace, BlockItem> DARK_MATTER_FURNACE = registerFurnace("dm_furnace", EnumMatterType.DARK_MATTER, 1_000_000, 3_000_000);
 	public static final BlockRegistryObject<MatterFurnace, BlockItem> RED_MATTER_FURNACE = registerFurnace("rm_furnace", EnumMatterType.RED_MATTER, 2_000_000, 6_000_000);
 	public static final BlockRegistryObject<MatterBlock, BlockItem> DARK_MATTER = registerMatterBlock("dark_matter_block", EnumMatterType.DARK_MATTER, 1_000_000, 3_000_000);
@@ -71,9 +72,9 @@ public class PEBlocks {
 	}
 
 	private static <CONDENSER extends Condenser> BlockRegistryObject<CONDENSER, BlockItem> registerCondenser(String name,
-			Function<AbstractBlock.Properties, CONDENSER> condenserFunction) {
+			Function<AbstractBlock.Properties, CONDENSER> condenserFunction, Function<CONDENSER, BlockItem> itemCreator) {
 		return BLOCKS.register(name, () -> condenserFunction.apply(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool()
-				.hardnessAndResistance(10, 3_600_000)));
+				.hardnessAndResistance(10, 3_600_000)), itemCreator);
 	}
 
 	private static BlockRegistryObject<Relay, RelayItem> registerRelay(String name, EnumRelayTier relayTier, ToIntFunction<BlockState> lightLevel) {
@@ -87,11 +88,11 @@ public class PEBlocks {
 
 	private static BlockRegistryObject<MatterFurnace, BlockItem> registerFurnace(String name, EnumMatterType matterType, float hardness, float resistance) {
 		return BLOCKS.register(name, () -> new MatterFurnace(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().hardnessAndResistance(hardness, resistance)
-				.setLightLevel(state -> 14), matterType));
+				.setLightLevel(state -> 14), matterType), block -> new BlockItem(block, ItemDeferredRegister.getBaseProperties().isImmuneToFire()));
 	}
 
 	private static BlockRegistryObject<MatterBlock, BlockItem> registerMatterBlock(String name, EnumMatterType matterType, float hardness, float resistance) {
 		return BLOCKS.register(name, () -> new MatterBlock(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(hardness, resistance)
-				.setLightLevel(state -> 14), matterType));
+				.setLightLevel(state -> 14), matterType), block -> new BlockItem(block, ItemDeferredRegister.getBaseProperties().isImmuneToFire()));
 	}
 }
