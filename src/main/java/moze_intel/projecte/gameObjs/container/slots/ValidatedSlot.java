@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-// Partial copy of SlotItemhandler with a validator
+// Partial copy of SlotItemHandler with a validator
 public class ValidatedSlot extends SlotItemHandler {
 
 	private final Predicate<ItemStack> validator;

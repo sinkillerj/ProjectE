@@ -1,10 +1,11 @@
 package moze_intel.projecte.utils;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
@@ -41,68 +42,73 @@ public class NovaExplosion extends Explosion {
 	// [VanillaCopy] super, but collecting all drops into one place, and no fire
 	@Override
 	public void doExplosionB(boolean spawnParticles) {
-		world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
-		boolean differentMode = mode != Explosion.Mode.NONE;
-		if (size >= 2.0F && differentMode) {
-			world.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1.0D, 0.0D, 0.0D);
-		} else {
-			world.addParticle(ParticleTypes.EXPLOSION, x, y, z, 1.0D, 0.0D, 0.0D);
+		if (world.isRemote) {
+			world.playSound(x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
 		}
-
-		NonNullList<ItemStack> allDrops = NonNullList.create();
-		if (differentMode) {
-			for (BlockPos pos : getAffectedBlockPositions()) {
+		boolean hasExplosionMode = mode != Explosion.Mode.NONE;
+		if (spawnParticles) {
+			if (hasExplosionMode && size >= 2.0F) {
+				world.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1.0D, 0.0D, 0.0D);
+			} else {
+				world.addParticle(ParticleTypes.EXPLOSION, x, y, z, 1.0D, 0.0D, 0.0D);
+			}
+		}
+		if (hasExplosionMode) {
+			NonNullList<ItemStack> allDrops = NonNullList.create();
+			List<BlockPos> affectedBlockPositions = getAffectedBlockPositions();
+			Collections.shuffle(affectedBlockPositions, world.rand);
+			for (BlockPos pos : affectedBlockPositions) {
 				BlockState state = world.getBlockState(pos);
-				Block block = state.getBlock();
-				if (spawnParticles) {
-					double d0 = (float) pos.getX() + world.rand.nextFloat();
-					double d1 = (float) pos.getY() + world.rand.nextFloat();
-					double d2 = (float) pos.getZ() + world.rand.nextFloat();
-					double d3 = d0 - x;
-					double d4 = d1 - y;
-					double d5 = d2 - z;
-					double d6 = MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
-					d3 = d3 / d6;
-					d4 = d4 / d6;
-					d5 = d5 / d6;
-					double d7 = 0.5D / (d6 / (double) size + 0.1D);
-					d7 = d7 * (double) (world.rand.nextFloat() * world.rand.nextFloat() + 0.3F);
-					d3 = d3 * d7;
-					d4 = d4 * d7;
-					d5 = d5 * d7;
-					world.addParticle(ParticleTypes.POOF, (d0 + x) / 2.0D, (d1 + y) / 2.0D, (d2 + z) / 2.0D, d3, d4, d5);
-					world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
-				}
-
-				if (!world.isAirBlock(pos)) {
+				if (!state.isAir(world, pos)) {
+					if (spawnParticles) {
+						double adjustedX = pos.getX() + world.rand.nextFloat();
+						double adjustedY = pos.getY() + world.rand.nextFloat();
+						double adjustedZ = pos.getZ() + world.rand.nextFloat();
+						double diffX = adjustedX - x;
+						double diffY = adjustedY - y;
+						double diffZ = adjustedZ - z;
+						double diff = MathHelper.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
+						diffX = diffX / diff;
+						diffY = diffY / diff;
+						diffZ = diffZ / diff;
+						double d7 = 0.5D / (diff / (double) size + 0.1D);
+						d7 = d7 * (double) (world.rand.nextFloat() * world.rand.nextFloat() + 0.3F);
+						diffX = diffX * d7;
+						diffY = diffY * d7;
+						diffZ = diffZ * d7;
+						world.addParticle(ParticleTypes.POOF, (adjustedX + x) / 2.0D, (adjustedY + y) / 2.0D, (adjustedZ + z) / 2.0D, diffX, diffY, diffZ);
+						world.addParticle(ParticleTypes.SMOKE, adjustedX, adjustedY, adjustedZ, diffX, diffY, diffZ);
+					}
 					//Ensure we are immutable so that changing blocks doesn't act weird
 					pos = pos.toImmutable();
+					world.getProfiler().startSection("explosion_blocks");
 					if (world instanceof ServerWorld && state.canDropFromExplosion(world, pos, this)) {
 						TileEntity tileentity = state.hasTileEntity() ? WorldHelper.getTileEntity(world, pos) : null;
 						LootContext.Builder builder = new LootContext.Builder((ServerWorld) world)
 								.withRandom(world.rand)
 								.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
 								.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-								.withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity);
+								.withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity)
+								.withNullableParameter(LootParameters.THIS_ENTITY, getExploder());
 						if (mode == Explosion.Mode.DESTROY) {
 							builder.withParameter(LootParameters.EXPLOSION_RADIUS, size);
 						}
 
 						// PE: Collect the drops we can, spawn the stuff we can't
 						allDrops.addAll(state.getDrops(builder));
-						state.spawnAdditionalDrops((ServerWorld) world, pos, ItemStack.EMPTY);
 					}
-					world.setBlockState(pos, Blocks.AIR.getDefaultState());
-					block.onExplosionDestroy(world, pos, this);
+					state.onBlockExploded(world, pos, this);
+					world.getProfiler().endSection();
 				}
 			}
-		}
 
-		// PE: Drop all together
-		if (getExplosivePlacedBy() == null) {
-			WorldHelper.createLootDrop(allDrops, world, x, y, z);
-		} else {
-			WorldHelper.createLootDrop(allDrops, world, getExplosivePlacedBy().getPosition());
+			// PE: Drop all together
+			LivingEntity placer = getExplosivePlacedBy();
+			if (placer == null) {
+				WorldHelper.createLootDrop(allDrops, world, x, y, z);
+			} else {
+				WorldHelper.createLootDrop(allDrops, world, placer.getPosition());
+			}
 		}
 	}
 }

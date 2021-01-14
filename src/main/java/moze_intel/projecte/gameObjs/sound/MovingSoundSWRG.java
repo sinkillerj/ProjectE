@@ -7,9 +7,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 
-// [VanillaCopy] MovingSoundMinecart
+// [VanillaCopy] MinecartTickableSound
 //Only used on the client
-public class MovingSoundSWRG extends TickableSound {//TODO - 1.16: Double check this copy of vanilla and also check other vanilla copies we have
+public class MovingSoundSWRG extends TickableSound {
 
 	private final EntitySWRGProjectile swrgProjectile;
 	private float distance = 0.0F;

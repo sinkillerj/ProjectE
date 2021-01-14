@@ -13,7 +13,6 @@ import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GrassBlock;
@@ -78,8 +77,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 	public boolean canHarvestBlock(BlockState state) {
 		//Note: These checks cover the need of overriding/shortcutting the destroy speed
 		//Shovel
-		Block block = state.getBlock();
-		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
+		if (state.isIn(Blocks.SNOW) || state.isIn(Blocks.SNOW_BLOCK)) {
 			return true;
 		}
 		//Pickaxe

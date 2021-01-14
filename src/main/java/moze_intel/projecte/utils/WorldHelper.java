@@ -84,9 +84,7 @@ public final class WorldHelper {
 		if (!drops.isEmpty()) {
 			ItemHelper.compactItemListNoStacksize(drops);
 			for (ItemStack drop : drops) {
-				ItemEntity ent = new ItemEntity(world, x, y, z);
-				ent.setItem(drop);
-				world.addEntity(ent);
+				world.addEntity(new ItemEntity(world, x, y, z, drop));
 			}
 		}
 	}

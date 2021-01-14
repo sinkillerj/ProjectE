@@ -144,7 +144,7 @@ public final class PlayerHelper {
 	}
 
 	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value) {
-		// [VanillaCopy] EntityPlayerMP.updateScorePoints
-		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), obj -> obj.setScorePoints(value));
+		// [VanillaCopy] ServerPlayerEntity.updateScorePoints
+		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), score -> score.setScorePoints(value));
 	}
 }
