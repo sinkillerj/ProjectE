@@ -86,8 +86,6 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerPedestal() {
-		//TODO - 1.16: Should we try to improve this? The original EE2 didn't have this being the corners of the DM block
-		// for visually upwards
 		ResourceLocation dm = modLoc("block/dark_matter_block");
 		BlockModelBuilder model = models()
 				.withExistingParent(getName(PEBlocks.DARK_MATTER_PEDESTAL), "block/block")
@@ -97,23 +95,21 @@ public class PEBlockStateProvider extends BlockStateProvider {
 				.element()
 				.from(3, 0, 3)
 				.to(13, 2, 13)
-				.face(Direction.NORTH).uvs(0, 0, 10, 2).texture("#pedestal").end()
-				.face(Direction.EAST).uvs(0, 0, 10, 2).texture("#pedestal").end()
-				.face(Direction.SOUTH).uvs(0, 0, 10, 2).texture("#pedestal").end()
-				.face(Direction.WEST).uvs(0, 0, 10, 2).texture("#pedestal").end()
-				.face(Direction.UP).uvs(0, 0, 10, 10).texture("#pedestal").end()
-				.face(Direction.DOWN).uvs(0, 0, 10, 10).texture("#pedestal").end()
+				.face(Direction.NORTH).uvs(3, 0, 10, 2).texture("#pedestal").end()
+				.face(Direction.EAST).uvs(3, 0, 10, 2).texture("#pedestal").end()
+				.face(Direction.SOUTH).uvs(3, 0, 10, 2).texture("#pedestal").end()
+				.face(Direction.WEST).uvs(3, 0, 10, 2).texture("#pedestal").end()
+				.face(Direction.UP).uvs(3, 3, 10, 10).texture("#pedestal").end()
+				.face(Direction.DOWN).uvs(3, 3, 10, 10).texture("#pedestal").cullface(Direction.DOWN).end()
 				.end()
 				//Post
 				.element()
 				.from(6, 2, 6)
 				.to(10, 9, 10)
-				.face(Direction.NORTH).uvs(0, 0, 4, 7).texture("#pedestal").end()
-				.face(Direction.EAST).uvs(0, 0, 4, 7).texture("#pedestal").end()
-				.face(Direction.SOUTH).uvs(0, 0, 4, 7).texture("#pedestal").end()
-				.face(Direction.WEST).uvs(0, 0, 4, 7).texture("#pedestal").end()
-				.face(Direction.UP).uvs(0, 0, 4, 4).texture("#pedestal").end()
-				.face(Direction.DOWN).uvs(0, 0, 4, 4).texture("#pedestal").end()
+				.face(Direction.NORTH).uvs(6, 4, 4, 7).texture("#pedestal").end()
+				.face(Direction.EAST).uvs(6, 4, 4, 7).texture("#pedestal").end()
+				.face(Direction.SOUTH).uvs(6, 4, 4, 7).texture("#pedestal").end()
+				.face(Direction.WEST).uvs(6, 4, 4, 7).texture("#pedestal").end()
 				.end()
 				//Top
 				.element()
@@ -123,8 +119,8 @@ public class PEBlockStateProvider extends BlockStateProvider {
 				.face(Direction.EAST).uvs(0, 0, 6, 1).texture("#pedestal").end()
 				.face(Direction.SOUTH).uvs(0, 0, 6, 1).texture("#pedestal").end()
 				.face(Direction.WEST).uvs(0, 0, 6, 1).texture("#pedestal").end()
-				.face(Direction.UP).uvs(0, 0, 6, 6).texture("#pedestal").end()
-				.face(Direction.DOWN).uvs(0, 0, 6, 6).texture("#pedestal").end()
+				.face(Direction.UP).uvs(6, 6, 6, 6).texture("#pedestal").end()
+				.face(Direction.DOWN).uvs(6, 6, 6, 6).texture("#pedestal").end()
 				.end();
 		simpleBlock(PEBlocks.DARK_MATTER_PEDESTAL.getBlock(), model);
 	}
