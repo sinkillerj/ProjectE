@@ -15,9 +15,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.block.GrassBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.ILiquidContainer;
+import net.minecraft.block.NetherRootsBlock;
+import net.minecraft.block.NetherSproutsBlock;
 import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.NetherrackBlock;
+import net.minecraft.block.NyliumBlock;
 import net.minecraft.block.SnowBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
@@ -329,7 +334,6 @@ public final class WorldHelper {
 		if (!(world instanceof ServerWorld)) {
 			return;
 		}
-		//TODO - 1.16: Evaluate new crops
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
 			currentPos = currentPos.toImmutable();
@@ -337,7 +341,8 @@ public final class WorldHelper {
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
-			if (crop instanceof IForgeShearable) {
+			// Note: Nether roots and sprouts are like these but don't actually implement IForgeShearable
+			if (crop instanceof IForgeShearable || crop instanceof NetherRootsBlock || crop instanceof NetherSproutsBlock) {
 				if (harvest) {
 					harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 				}
@@ -350,7 +355,7 @@ public final class WorldHelper {
 					if (harvest && !crop.isIn(PETags.Blocks.BLACKLIST_HARVEST)) {
 						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 					}
-				} else if (crop != Blocks.GRASS_BLOCK || ProjectEConfig.server.items.harvBandGrass.get()) {
+				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
 					if (world.rand.nextInt(chance) == 0) {
 						growable.grow((ServerWorld) world, world.rand, currentPos, state);
 					}
@@ -382,6 +387,12 @@ public final class WorldHelper {
 				}
 			}
 		}
+	}
+
+	private static boolean isGrassLikeBlock(Block crop) {
+		//Note: We count netherrack like a grass like block as it propagates growing to neighboring nylium blocks
+		// and its can grow methods behave like one
+		return crop instanceof GrassBlock || crop instanceof NyliumBlock || crop instanceof NetherrackBlock;
 	}
 
 	/**

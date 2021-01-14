@@ -2,7 +2,10 @@
   "replace": false,
   "values": [
     "minecraft:grass_block",
+    "minecraft:crimson_nylium",
+    "minecraft:netherrack",
     "minecraft:melon_stem",
-    "minecraft:pumpkin_stem"
+    "minecraft:pumpkin_stem",
+    "minecraft:warped_nylium"
   ]
 }

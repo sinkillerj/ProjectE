@@ -18,8 +18,11 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 	protected void registerTags() {
 		getOrCreateBuilder(PETags.Blocks.BLACKLIST_HARVEST).add(
 				Blocks.GRASS_BLOCK,
+				Blocks.CRIMSON_NYLIUM,
+				Blocks.NETHERRACK,
 				Blocks.MELON_STEM,
-				Blocks.PUMPKIN_STEM
+				Blocks.PUMPKIN_STEM,
+				Blocks.WARPED_NYLIUM
 		);
 		getOrCreateBuilder(PETags.Blocks.BLACKLIST_TIME_WATCH);
 	}
