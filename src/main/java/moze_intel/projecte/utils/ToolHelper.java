@@ -3,6 +3,8 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -69,27 +71,10 @@ public class ToolHelper {
 	public static final ToolType TOOL_TYPE_KATAR = ToolType.get("katar");
 	public static final ToolType TOOL_TYPE_MORNING_STAR = ToolType.get("morning_star");
 
-	private static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
 	//Note: These all also do the check that super did before of making sure the entity is not spectating
 	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IForgeShearable;
 	private static final Predicate<Entity> SLAY_MOB = entity -> !entity.isSpectator() && entity instanceof IMob;
 	private static final Predicate<Entity> SLAY_ALL = entity -> !entity.isSpectator() && (entity instanceof IMob || entity instanceof LivingEntity);
-
-	public static Multimap<Attribute, AttributeModifier> addChargeAttributeModifier(Multimap<Attribute, AttributeModifier> currentModifiers, @Nonnull EquipmentSlotType slot, ItemStack stack) {
-		if (slot == EquipmentSlotType.MAINHAND) {
-			int charge = getCharge(stack);
-			if (charge > 0) {
-				//TODO - 1.16: Do this in a better way that allows for some caching?
-				// In theory we could lazy cache in the item each possible combination as there aren't that many
-				Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
-				attributesBuilder.putAll(currentModifiers);
-				//If we have any charge take it into account for calculating the damage
-				attributesBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHARGE_MODIFIER, "Charge modifier", charge, Operation.ADDITION));
-				return attributesBuilder.build();
-			}
-		}
-		return currentModifiers;
-	}
 
 	/**
 	 * Performs a set of actions, until we find a success or run out of actions.
@@ -654,5 +639,30 @@ public class ToolHelper {
 	public interface RayTracePointer {
 
 		RayTraceResult rayTrace(World world, PlayerEntity player, FluidMode fluidMode);
+	}
+
+	public static class ChargeAttributeCache {
+
+		private static final UUID CHARGE_MODIFIER = UUID.fromString("69ADE509-46FF-3725-92AC-F59FB052BEC7");
+
+		//Note: It is an array map instead of hash map as the number of charges are very small by default
+		private final Int2ObjectMap<Multimap<Attribute, AttributeModifier>> cachedMaps = new Int2ObjectArrayMap<>();
+
+		public Multimap<Attribute, AttributeModifier> addChargeAttributeModifier(Multimap<Attribute, AttributeModifier> currentModifiers,
+				@Nonnull EquipmentSlotType slot, ItemStack stack) {
+			if (slot == EquipmentSlotType.MAINHAND) {
+				int charge = getCharge(stack);
+				if (charge > 0) {
+					return cachedMaps.computeIfAbsent(charge, c -> {
+						Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
+						attributesBuilder.putAll(currentModifiers);
+						//If we have any charge take it into account for calculating the damage
+						attributesBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHARGE_MODIFIER, "Charge modifier", c, Operation.ADDITION));
+						return attributesBuilder.build();
+					});
+				}
+			}
+			return currentModifiers;
+		}
 	}
 }

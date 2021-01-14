@@ -10,6 +10,7 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
@@ -39,6 +40,7 @@ import net.minecraftforge.common.ToolType;
 
 public class PEMorningStar extends PETool implements IItemMode {
 
+	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
 	private final ILangEntry[] modeDesc;
 
 	public PEMorningStar(EnumMatterType matterType, int numCharges, Properties props) {
@@ -151,6 +153,6 @@ public class PEMorningStar extends PETool implements IItemMode {
 	@Nonnull
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }

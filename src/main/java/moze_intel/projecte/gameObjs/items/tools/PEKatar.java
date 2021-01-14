@@ -14,6 +14,7 @@ import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.Block;
@@ -44,6 +45,7 @@ import net.minecraftforge.common.ToolType;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
+	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
 	private final ILangEntry[] modeDesc;
 
 	public PEKatar(EnumMatterType matterType, int numCharges, Properties props) {
@@ -179,7 +181,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Nonnull
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 
 	/**

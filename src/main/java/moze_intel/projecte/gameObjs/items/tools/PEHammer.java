@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +18,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraftforge.common.ToolType;
 
 public class PEHammer extends PETool {
+
+	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
 
 	public PEHammer(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 10, -3, numCharges, props
@@ -53,7 +56,7 @@ public class PEHammer extends PETool {
 	@Nonnull
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 
 	@Nonnull

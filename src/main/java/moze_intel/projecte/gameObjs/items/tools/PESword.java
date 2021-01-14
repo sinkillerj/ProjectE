@@ -15,6 +15,7 @@ import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
+import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -30,6 +31,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 
 	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
+	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
 	private final EnumMatterType matterType;
 	private final int numCharges;
 
@@ -106,6 +108,6 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 	@Nonnull
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		return ToolHelper.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }
