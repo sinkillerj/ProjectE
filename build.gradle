@@ -238,11 +238,11 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
@@ -250,7 +250,7 @@ dependencies {
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.4:${crafttweaker_version}")
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
