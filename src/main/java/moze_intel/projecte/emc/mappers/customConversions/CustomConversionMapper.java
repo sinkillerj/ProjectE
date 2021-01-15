@@ -14,6 +14,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.json.NSSSerializer;
@@ -63,13 +64,16 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 		String folder = "pe_custom_conversions";
 		String extension = ".json";
+		int folderLength = folder.length();
+		int extensionLength = extension.length();
 
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
 		for (ResourceLocation file : resourceManager.getAllResourceLocations(folder, n -> n.endsWith(extension))) {
 			// <domain>:foo/bar
-			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folder.length() + 1, file.getPath().length() - extension.length()));
+			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folderLength + 1, file.getPath().length() - extensionLength));
 
 			PECore.LOGGER.info("Considering file {}, ID {}", file, conversionId);
+			NSSFake.setCurrentNamespace(conversionId.toString());
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
 			try {
@@ -88,7 +92,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 				PECore.LOGGER.error("Could not load resource {}", file, e);
 			}
 		}
-
+		NSSFake.resetNamespace();
 		return loading;
 	}
 

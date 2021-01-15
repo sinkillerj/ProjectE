@@ -35,7 +35,6 @@ public final class NSSFake implements NormalizedSimpleStack {
 	 * @param ns Namespace
 	 */
 	public static void setCurrentNamespace(@Nonnull String ns) {
-		//TODO - 1.16: Re-evaluate this doesn't seem to be used outside of tests and probably should be used.
 		currentNamespace = ns;
 	}
 
