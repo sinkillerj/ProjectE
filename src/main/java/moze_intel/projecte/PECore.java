@@ -50,6 +50,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
+import moze_intel.projecte.network.commands.DumpMissingEmc;
 import moze_intel.projecte.network.commands.RemoveEmcCMD;
 import moze_intel.projecte.network.commands.ResetEmcCMD;
 import moze_intel.projecte.network.commands.SetEmcCMD;
@@ -205,6 +206,7 @@ public class PECore {
 	private void registerCommands(RegisterCommandsEvent event) {
 		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
+				.then(DumpMissingEmc.register())
 				.then(RemoveEmcCMD.register())
 				.then(ResetEmcCMD.register())
 				.then(SetEmcCMD.register())

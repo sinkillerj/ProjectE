@@ -155,6 +155,9 @@ public class PELangProvider extends BaseLanguageProvider {
 	private void addCommands() {
 		add(PELang.CLEAR_KNOWLEDGE_NOTIFY, "Your transmutation knowledge was cleared by %s!");
 		add(PELang.CLEAR_KNOWLEDGE_SUCCESS, "Cleared knowledge for: %s");
+		add(PELang.DUMP_MISSING_EMC_NONE_MISSING, "All Items have an EMC value.");
+		add(PELang.DUMP_MISSING_EMC_ONE_MISSING, "One Item is missing an EMC value, printing to server log.");
+		add(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING, "%s Items are missing an EMC value, printing to server log.");
 		add(PELang.COMMAND_REMOVE_INVALID_ITEM, "Error: The item or tag \"%s\" was not found!");
 		add(PELang.COMMAND_REMOVE_NO_ITEM, "Please give an item or tag to change");
 		add(PELang.COMMAND_REMOVE_SUCCESS, "Removed EMC value for %s.");

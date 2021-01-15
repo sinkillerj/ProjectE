@@ -19,6 +19,9 @@ public enum PELang implements ILangEntry {
 	//Command
 	CLEAR_KNOWLEDGE_NOTIFY("command", "clear_knowledge.notify"),
 	CLEAR_KNOWLEDGE_SUCCESS("command", "clear_knowledge.success"),
+	DUMP_MISSING_EMC_NONE_MISSING("command", "dump_missing_emc.none_missing"),
+	DUMP_MISSING_EMC_ONE_MISSING("command", "dump_missing_emc.one_missing"),
+	DUMP_MISSING_EMC_MULTIPLE_MISSING("command", "dump_missing_emc.multiple_missing"),
 	COMMAND_REMOVE_INVALID_ITEM("command", "remove.invalid_item"),
 	COMMAND_REMOVE_NO_ITEM("command", "remove.no_item"),
 	COMMAND_REMOVE_SUCCESS("command", "remove.success"),

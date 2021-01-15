@@ -180,6 +180,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.SLIME_BALL, 32)
 				.before(Items.EGG, 32)
 				.before(Items.SCUTE, 96)
+				.before(Items.TURTLE_EGG, 192)
 				.before(Items.FEATHER, 48)
 				.before(Items.RABBIT_HIDE, 16)
 				.before(Items.RABBIT_FOOT, 128)

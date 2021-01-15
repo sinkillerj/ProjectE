@@ -363,6 +363,7 @@
       "minecraft:slime_ball": 32,
       "minecraft:egg": 32,
       "minecraft:scute": 96,
+      "minecraft:turtle_egg": 192,
       "minecraft:feather": 48,
       "minecraft:rabbit_hide": 16,
       "minecraft:rabbit_foot": 128,
