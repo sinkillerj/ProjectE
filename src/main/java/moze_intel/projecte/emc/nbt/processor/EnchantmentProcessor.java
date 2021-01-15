@@ -28,8 +28,20 @@ public class EnchantmentProcessor implements INBTProcessor {
 	}
 
 	@Override
+	public boolean isAvailable() {
+		//Disable by default
+		return false;
+	}
+
+	@Override
 	public boolean hasPersistentNBT() {
 		return true;
+	}
+
+	@Override
+	public boolean usePersistentNBT() {
+		//Disable by default
+		return false;
 	}
 
 	@Override
