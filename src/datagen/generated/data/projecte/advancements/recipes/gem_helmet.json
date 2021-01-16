@@ -1,0 +1,82 @@
+{
+  "advancements": [
+    {
+      "conditions": [
+        {
+          "type": "projecte:full_klein_stars"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "projecte:gem_helmet"
+          ]
+        },
+        "criteria": {
+          "has_helmet": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "item": "projecte:rm_helmet"
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "projecte:gem_helmet"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_helmet",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "forge:true"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "projecte:gem_helmet"
+          ]
+        },
+        "criteria": {
+          "has_helmet": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "item": "projecte:rm_helmet"
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "projecte:gem_helmet"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_helmet",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    }
+  ]
+}

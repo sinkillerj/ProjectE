@@ -1,11 +1,15 @@
 package moze_intel.projecte.common.recipe;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
+import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
+import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
@@ -27,9 +31,9 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.TrueCondition;
 
-//TODO - 1.16: Make it so that we can have another recipe condition that toggles if the klein stars need to be filled for recipes or not
 public class PERecipeProvider extends RecipeProvider {
 
 	public PERecipeProvider(DataGenerator generator) {
@@ -86,10 +90,8 @@ public class PERecipeProvider extends RecipeProvider {
 				.addCriterion("has_philo_stone", hasItem(PEItems.PHILOSOPHERS_STONE))
 				.build(consumer);
 		//Tome of Knowledge
-		ICondition tomeEnabledCondition = new TomeEnabledCondition();
-		Consumer<IFinishedRecipe> tomeEnabledConsumer = recipe -> consumer.accept(new ConditionWrappedRecipeResult(recipe, tomeEnabledCondition));
-		tomeRecipe(tomeEnabledConsumer, false);
-		tomeRecipe(tomeEnabledConsumer, true);
+		tomeRecipe(consumer, false);
+		tomeRecipe(consumer, true);
 	}
 
 	private static void addCustomRecipeSerializer(Consumer<IFinishedRecipe> consumer, SpecialRecipeSerializer<?> serializer) {
@@ -97,25 +99,37 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void tomeRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+		new ConditionalRecipe.Builder()
+				//Tome is enabled and should use full stars
+				.addCondition(TomeEnabledCondition.INSTANCE)
+				.addCondition(FullKleinStarsCondition.INSTANCE)
+				.addRecipe(c -> baseTomeRecipe(alternate)
+						.key('K', new FullKleinStarIngredient(EnumKleinTier.OMEGA))
+						.build(c))
+				//Tome enabled but should not use full stars
+				.addCondition(TomeEnabledCondition.INSTANCE)
+				.addRecipe(c -> baseTomeRecipe(alternate)
+						.key('K', PEItems.KLEIN_STAR_OMEGA)
+						.build(c))
+				//Add the advancement json
+				.generateAdvancement()
+				//Build the recipe
+				.build(consumer, PECore.MODID, alternate ? "tome_alt" : "tome");
+	}
+
+	private static ShapedRecipeBuilder baseTomeRecipe(boolean alternate) {
 		String lowToHigh = "LMH";
 		String highToLow = "HML";
-		String name = PEItems.TOME_OF_KNOWLEDGE.get().getRegistryName().toString();
-		ShapedRecipeBuilder tome = ShapedRecipeBuilder.shapedRecipe(PEItems.TOME_OF_KNOWLEDGE)
+		return ShapedRecipeBuilder.shapedRecipe(PEItems.TOME_OF_KNOWLEDGE)
 				.patternLine(alternate ? lowToHigh : highToLow)
 				.patternLine("KBK")
 				.patternLine(alternate ? highToLow : lowToHigh)
 				.key('B', Items.BOOK)
-				.key('K', PEItems.KLEIN_STAR_OMEGA)
 				.key('L', PEItems.LOW_COVALENCE_DUST)
 				.key('M', PEItems.MEDIUM_COVALENCE_DUST)
 				.key('H', PEItems.HIGH_COVALENCE_DUST)
 				.addCriterion("has_covalence_dust", hasItems(PEItems.LOW_COVALENCE_DUST, PEItems.MEDIUM_COVALENCE_DUST, PEItems.HIGH_COVALENCE_DUST))
-				.setGroup(name);
-		if (alternate) {
-			tome.build(consumer, name + "_alt");
-		} else {
-			tome.build(consumer);
-		}
+				.setGroup(PEItems.TOME_OF_KNOWLEDGE.get().getRegistryName().toString());
 	}
 
 	private static void addMatterRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -398,36 +412,46 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void gemArmorRecipes(Consumer<IFinishedRecipe> consumer) {
 		//Helmet
-		ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_HELMET)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_HELMET)
 				.addIngredient(PEItems.RED_MATTER_HELMET)
-				.addIngredient(PEItems.KLEIN_STAR_OMEGA)
 				.addIngredient(PEItems.EVERTIDE_AMULET)
 				.addIngredient(PEItems.SOUL_STONE)
-				.addCriterion("has_helmet", hasItem(PEItems.RED_MATTER_HELMET))
-				.build(consumer);
+				.addCriterion("has_helmet", hasItem(PEItems.RED_MATTER_HELMET)), PEItems.GEM_HELMET);
 		//Chestplate
-		ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_CHESTPLATE)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_CHESTPLATE)
 				.addIngredient(PEItems.RED_MATTER_CHESTPLATE)
-				.addIngredient(PEItems.KLEIN_STAR_OMEGA)
 				.addIngredient(PEItems.VOLCANITE_AMULET)
 				.addIngredient(PEItems.BODY_STONE)
-				.addCriterion("has_chestplate", hasItem(PEItems.RED_MATTER_CHESTPLATE))
-				.build(consumer);
+				.addCriterion("has_chestplate", hasItem(PEItems.RED_MATTER_CHESTPLATE)), PEItems.GEM_CHESTPLATE);
 		//Leggings
-		ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_LEGGINGS)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_LEGGINGS)
 				.addIngredient(PEItems.RED_MATTER_LEGGINGS)
-				.addIngredient(PEItems.KLEIN_STAR_OMEGA)
 				.addIngredient(PEItems.BLACK_HOLE_BAND)
 				.addIngredient(PEItems.WATCH_OF_FLOWING_TIME)
-				.addCriterion("has_leggings", hasItem(PEItems.RED_MATTER_LEGGINGS))
-				.build(consumer);
+				.addCriterion("has_leggings", hasItem(PEItems.RED_MATTER_LEGGINGS)), PEItems.GEM_LEGGINGS);
 		//Boots
-		ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_BOOTS)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapelessRecipe(PEItems.GEM_BOOTS)
 				.addIngredient(PEItems.RED_MATTER_BOOTS)
-				.addIngredient(PEItems.KLEIN_STAR_OMEGA)
 				.addIngredient(PEItems.SWIFTWOLF_RENDING_GALE, 2)
-				.addCriterion("has_boots", hasItem(PEItems.RED_MATTER_BOOTS))
-				.build(consumer);
+				.addCriterion("has_boots", hasItem(PEItems.RED_MATTER_BOOTS)), PEItems.GEM_BOOTS);
+	}
+
+	private static void gemArmorRecipe(Consumer<IFinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, IItemProvider result) {
+		new ConditionalRecipe.Builder()
+				//Full stars should be used
+				.addCondition(FullKleinStarsCondition.INSTANCE)
+				.addRecipe(c -> builder.get()
+						.addIngredient(new FullKleinStarIngredient(EnumKleinTier.OMEGA))
+						.build(c))
+				//Full stars should not be used (Always true, this is the fallback)
+				.addCondition(TrueCondition.INSTANCE)
+				.addRecipe(c -> builder.get()
+						.addIngredient(PEItems.KLEIN_STAR_OMEGA)
+						.build(c))
+				//Add the advancement json
+				.generateAdvancement()
+				//Build the recipe
+				.build(consumer, result.asItem().getRegistryName());
 	}
 
 	private static void fuelUpgradeRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output) {
@@ -575,11 +599,10 @@ public class PERecipeProvider extends RecipeProvider {
 				.key('D', Tags.Items.GEMS_DIAMOND)
 				.addCriterion("has_components", hasItems(PEItems.MOBIUS_FUEL, Tags.Items.GEMS_DIAMOND))
 				.build(consumer);
-		kleinStarUpgrade(consumer, PEItems.KLEIN_STAR_ZWEI, PEItems.KLEIN_STAR_EIN);
-		kleinStarUpgrade(consumer, PEItems.KLEIN_STAR_DREI, PEItems.KLEIN_STAR_ZWEI);
-		kleinStarUpgrade(consumer, PEItems.KLEIN_STAR_VIER, PEItems.KLEIN_STAR_DREI);
-		kleinStarUpgrade(consumer, PEItems.KLEIN_STAR_SPHERE, PEItems.KLEIN_STAR_VIER);
-		kleinStarUpgrade(consumer, PEItems.KLEIN_STAR_OMEGA, PEItems.KLEIN_STAR_SPHERE);
+		EnumKleinTier[] tiers = EnumKleinTier.values();
+		for (int tier = 1; tier < tiers.length; tier++) {
+			kleinStarUpgrade(consumer, PEItems.getStar(tiers[tier]), PEItems.getStar(tiers[tier - 1]));
+		}
 	}
 
 	private static void kleinStarUpgrade(Consumer<IFinishedRecipe> consumer, IItemProvider star, IItemProvider previous) {
@@ -1025,9 +1048,6 @@ public class PERecipeProvider extends RecipeProvider {
 				.addIngredient(Items.DIRT)
 				.addCriterion("has_arcana_ring", hasItem(PEItems.ARCANA_RING))
 				.build(consumer, PECore.rl("conversions/dirt_to_grass"));
-		//TODO - 1.16: Decide if we should also have a recipe to convert it for the harvest goddess band?
-		// Would require changing it to a container item, which then would change if it persists in other recipes,
-		// so may not be worth it, as we would need to have a custom recipe
 		//Redstone -> Lava
 		ShapelessRecipeBuilder.shapelessRecipe(Items.LAVA_BUCKET)
 				.addIngredient(PEItems.VOLCANITE_AMULET)

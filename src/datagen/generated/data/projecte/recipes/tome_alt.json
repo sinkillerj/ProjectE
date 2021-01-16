@@ -1,34 +1,81 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "conditions": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "type": "projecte:tome_enabled"
+      "conditions": [
+        {
+          "type": "projecte:tome_enabled"
+        },
+        {
+          "type": "projecte:full_klein_stars"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "group": "projecte:tome",
+        "pattern": [
+          "LMH",
+          "KBK",
+          "HML"
+        ],
+        "key": {
+          "B": {
+            "item": "minecraft:book"
+          },
+          "L": {
+            "item": "projecte:low_covalence_dust"
+          },
+          "M": {
+            "item": "projecte:medium_covalence_dust"
+          },
+          "H": {
+            "item": "projecte:high_covalence_dust"
+          },
+          "K": {
+            "type": "projecte:full_klein_star",
+            "tier": 5
+          }
+        },
+        "result": {
+          "item": "projecte:tome"
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "projecte:tome_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "group": "projecte:tome",
+        "pattern": [
+          "LMH",
+          "KBK",
+          "HML"
+        ],
+        "key": {
+          "B": {
+            "item": "minecraft:book"
+          },
+          "L": {
+            "item": "projecte:low_covalence_dust"
+          },
+          "M": {
+            "item": "projecte:medium_covalence_dust"
+          },
+          "H": {
+            "item": "projecte:high_covalence_dust"
+          },
+          "K": {
+            "item": "projecte:klein_star_omega"
+          }
+        },
+        "result": {
+          "item": "projecte:tome"
+        }
+      }
     }
-  ],
-  "group": "projecte:tome",
-  "pattern": [
-    "LMH",
-    "KBK",
-    "HML"
-  ],
-  "key": {
-    "B": {
-      "item": "minecraft:book"
-    },
-    "K": {
-      "item": "projecte:klein_star_omega"
-    },
-    "L": {
-      "item": "projecte:low_covalence_dust"
-    },
-    "M": {
-      "item": "projecte:medium_covalence_dust"
-    },
-    "H": {
-      "item": "projecte:high_covalence_dust"
-    }
-  },
-  "result": {
-    "item": "projecte:tome"
-  }
+  ]
 }

@@ -218,4 +218,22 @@ public class PEItems {
 				return BLACK_ALCHEMICAL_BAG.get();
 		}
 	}
+
+	public static KleinStar getStar(EnumKleinTier tier) {
+		switch (tier) {
+			default:
+			case EIN:
+				return KLEIN_STAR_EIN.get();
+			case ZWEI:
+				return KLEIN_STAR_ZWEI.get();
+			case DREI:
+				return KLEIN_STAR_DREI.get();
+			case VIER:
+				return KLEIN_STAR_VIER.get();
+			case SPHERE:
+				return KLEIN_STAR_SPHERE.get();
+			case OMEGA:
+				return KLEIN_STAR_OMEGA.get();
+		}
+	}
 }

@@ -17,12 +17,14 @@ import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.config.TomeEnabledCondition;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
+import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
+import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
@@ -140,8 +142,11 @@ public class PECore {
 	}
 
 	private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-		//Add our serializer
+		//Add our condition serializers
 		CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
+		CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
+		//Add our ingredients
+		CraftingHelper.register(rl("full_klein_star"), FullKleinStarIngredient.SERIALIZER);
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {

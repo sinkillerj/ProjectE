@@ -1,20 +1,60 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "projecte:rm_helmet"
+      "conditions": [
+        {
+          "type": "projecte:full_klein_stars"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "projecte:rm_helmet"
+          },
+          {
+            "item": "projecte:evertide_amulet"
+          },
+          {
+            "item": "projecte:soul_stone"
+          },
+          {
+            "type": "projecte:full_klein_star",
+            "tier": 5
+          }
+        ],
+        "result": {
+          "item": "projecte:gem_helmet"
+        }
+      }
     },
     {
-      "item": "projecte:klein_star_omega"
-    },
-    {
-      "item": "projecte:evertide_amulet"
-    },
-    {
-      "item": "projecte:soul_stone"
+      "conditions": [
+        {
+          "type": "forge:true"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "projecte:rm_helmet"
+          },
+          {
+            "item": "projecte:evertide_amulet"
+          },
+          {
+            "item": "projecte:soul_stone"
+          },
+          {
+            "item": "projecte:klein_star_omega"
+          }
+        ],
+        "result": {
+          "item": "projecte:gem_helmet"
+        }
+      }
     }
-  ],
-  "result": {
-    "item": "projecte:gem_helmet"
-  }
+  ]
 }

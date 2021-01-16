@@ -3,6 +3,7 @@ package moze_intel.projecte.common.tag;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.data.BlockTagsProvider;
@@ -55,14 +56,10 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
-		getOrCreateBuilder(PETags.Items.CURIOS_KLEIN_STAR).add(
-				PEItems.KLEIN_STAR_EIN.get(),
-				PEItems.KLEIN_STAR_ZWEI.get(),
-				PEItems.KLEIN_STAR_DREI.get(),
-				PEItems.KLEIN_STAR_VIER.get(),
-				PEItems.KLEIN_STAR_SPHERE.get(),
-				PEItems.KLEIN_STAR_OMEGA.get()
-		);
+		Builder<Item> kleinStarBuilder = getOrCreateBuilder(PETags.Items.CURIOS_KLEIN_STAR);
+		for (EnumKleinTier tier : EnumKleinTier.values()) {
+			kleinStarBuilder.add(PEItems.getStar(tier));
+		}
 		getOrCreateBuilder(PETags.Items.CURIOS_NECKLACE).add(
 				PEItems.BODY_STONE.get(),
 				PEItems.EVERTIDE_AMULET.get(),
