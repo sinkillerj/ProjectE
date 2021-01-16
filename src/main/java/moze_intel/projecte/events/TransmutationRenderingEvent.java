@@ -2,6 +2,7 @@ package moze_intel.projecte.events;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
@@ -41,47 +42,53 @@ import org.lwjgl.opengl.GL11;
 public class TransmutationRenderingEvent {
 
 	private static final Minecraft mc = Minecraft.getInstance();
+	@Nullable
 	private static BlockState transmutationResult;
+	private static long lastGameTime;
 
 	@SubscribeEvent
 	public static void preDrawHud(RenderGameOverlayEvent.Pre event) {
-		if (event.getType() == ElementType.CROSSHAIRS) {
-			if (transmutationResult != null) {
-				if (transmutationResult.getBlock() instanceof FlowingFluidBlock) {
-					FluidAttributes resultAttributes = ((FlowingFluidBlock) transmutationResult.getBlock()).getFluid().getAttributes();
-					int color = resultAttributes.getColor();
-					float red = (color >> 16 & 0xFF) / 255.0F;
-					float green = (color >> 8 & 0xFF) / 255.0F;
-					float blue = (color & 0xFF) / 255.0F;
-					float alpha = (color >> 24 & 0xFF) / 255.0F;
-					TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
-					Tessellator tessellator = Tessellator.getInstance();
-					BufferBuilder wr = tessellator.getBuffer();
-					wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-					wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
-					wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
-					wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
-					wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
-					tessellator.draw();
-				} else {
-					RenderHelper.enableStandardItemLighting();
-					IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
-					mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0, model);
-					RenderHelper.disableStandardItemLighting();
-				}
+		if (event.getType() == ElementType.CROSSHAIRS && transmutationResult != null) {
+			if (transmutationResult.getBlock() instanceof FlowingFluidBlock) {
+				FluidAttributes resultAttributes = ((FlowingFluidBlock) transmutationResult.getBlock()).getFluid().getAttributes();
+				int color = resultAttributes.getColor();
+				float red = (color >> 16 & 0xFF) / 255.0F;
+				float green = (color >> 8 & 0xFF) / 255.0F;
+				float blue = (color & 0xFF) / 255.0F;
+				float alpha = (color >> 24 & 0xFF) / 255.0F;
+				TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
+				Tessellator tessellator = Tessellator.getInstance();
+				BufferBuilder wr = tessellator.getBuffer();
+				wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
+				wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
+				wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
+				wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
+				tessellator.draw();
+			} else {
+				RenderHelper.enableStandardItemLighting();
+				IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
+				mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0, model);
+				RenderHelper.disableStandardItemLighting();
+			}
+			long gameTime = mc.world == null ? 0 : mc.world.getGameTime();
+			if (lastGameTime != gameTime) {
+				//If the game time changed so we aren't actually still hovering a block set our
+				// result to null. We do this after rendering it just in case there is a single
+				// frame where this may actually be valid based on the order the events are fired
+				transmutationResult = null;
+				lastGameTime = gameTime;
 			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
-		//TODO - 1.16: Because this event only fires when we are highlighting something that means when switching to hovering air
-		// it doesn't remove the transmutation result properly. Also things like half top slabs render potentially differently than
-		// we want to in the draw hud part so we may want to consider adjusting it
 		ActiveRenderInfo activeRenderInfo = event.getInfo();
 		if (!(activeRenderInfo.getRenderViewEntity() instanceof PlayerEntity)) {
 			return;
 		}
+		lastGameTime = mc.world == null ? 0 : mc.world.getGameTime();
 		PlayerEntity player = (PlayerEntity) activeRenderInfo.getRenderViewEntity();
 		World world = player.getEntityWorld();
 		ItemStack stack = player.getHeldItemMainhand();
