@@ -28,6 +28,6 @@ public class ResetEmcCMD {
 			ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
 			return Command.SINGLE_SUCCESS;
 		}
-		throw new CommandException(PELang.COMMAND_REMOVE_INVALID_ITEM.translate(toReset));
+		throw new CommandException(PELang.COMMAND_INVALID_ITEM.translate(toReset));
 	}
 }

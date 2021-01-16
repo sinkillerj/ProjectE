@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 
 public class RemoveEmcCMD {
 
-	private static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(PELang.COMMAND_REMOVE_NO_ITEM.translate());
+	private static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(PELang.COMMAND_NO_ITEM.translate());
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("removeemc")
