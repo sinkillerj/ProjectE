@@ -6,9 +6,8 @@ import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.network.packets.IPEPacket;
-import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
-import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
 import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
 import moze_intel.projecte.network.packets.to_client.KnowledgeClearPKT;
 import moze_intel.projecte.network.packets.to_client.KnowledgeSyncPKT;
@@ -17,7 +16,10 @@ import moze_intel.projecte.network.packets.to_client.StepHeightPKT;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
+import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateCondenserLockPKT;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
 import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
 import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
@@ -58,6 +60,7 @@ public final class PacketHandler {
 		registerServerToClient(StepHeightPKT.class, StepHeightPKT::decode);
 		registerServerToClient(SyncBagDataPKT.class, SyncBagDataPKT::decode);
 		registerServerToClient(SyncEmcPKT.class, SyncEmcPKT::decode);
+		registerServerToClient(SyncFuelMapperPKT.class, SyncFuelMapperPKT::decode);
 		registerServerToClient(UpdateCondenserLockPKT.class, UpdateCondenserLockPKT::decode);
 		registerServerToClient(UpdateWindowIntPKT.class, UpdateWindowIntPKT::decode);
 		registerServerToClient(UpdateWindowLongPKT.class, UpdateWindowLongPKT::decode);
@@ -101,13 +104,16 @@ public final class PacketHandler {
 
 	public static void sendFragmentedEmcPacket(ServerPlayerEntity player) {
 		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
+		sendNonLocal(FuelMapper.getSyncPacket(), player);
 	}
 
 	public static void sendFragmentedEmcPacketToAll() {
 		if (ServerLifecycleHooks.getCurrentServer() != null) {
 			SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
+			SyncFuelMapperPKT fuelPkt = FuelMapper.getSyncPacket();
 			for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 				sendNonLocal(pkt, player);
+				sendNonLocal(fuelPkt, player);
 			}
 		}
 	}
