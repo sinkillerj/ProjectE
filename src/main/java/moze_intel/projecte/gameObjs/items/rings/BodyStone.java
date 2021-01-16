@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +36,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isRemote || slot > 8 || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || slot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);

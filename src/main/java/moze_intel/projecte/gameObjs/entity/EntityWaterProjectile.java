@@ -5,7 +5,10 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +25,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.IWorldInfo;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityWaterProjectile extends ThrowableEntity {
@@ -50,13 +55,21 @@ public class EntityWaterProjectile extends ThrowableEntity {
 			if (thrower instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
 				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
-					FluidState state = getEntityWorld().getFluidState(pos);
-					if (state.isTagged(FluidTags.LAVA)) {
+					BlockState state = world.getBlockState(pos);
+					FluidState fluidState = state.getFluidState();
+					if (fluidState.isTagged(FluidTags.LAVA)) {
 						pos = pos.toImmutable();
-						if (state.isSource()) {
-							PlayerHelper.checkedReplaceBlock(player, pos, Blocks.OBSIDIAN.getDefaultState());
+						if (state.getBlock() instanceof FlowingFluidBlock) {
+							//If it is a source block convert it
+							Block block = fluidState.isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
+							//Like: ForgeEventFactory#fireFluidPlaceBlockEvent except checks if it was cancelled
+							BlockEvent.FluidPlaceBlockEvent event = new BlockEvent.FluidPlaceBlockEvent(world, pos, pos, block.getDefaultState());
+							if (!MinecraftForge.EVENT_BUS.post(event)) {
+								PlayerHelper.checkedPlaceBlock(player, pos, event.getNewState());
+							}
 						} else {
-							PlayerHelper.checkedReplaceBlock(player, pos, Blocks.COBBLESTONE.getDefaultState());
+							//Otherwise if it is lava logged, "void" the lava as we can't place a block in that spot
+							WorldHelper.drainFluid(world, pos, state, Fluids.LAVA);
 						}
 						playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (getEntityWorld().rand.nextFloat() - getEntityWorld().rand.nextFloat()) * 0.8F);
 					}

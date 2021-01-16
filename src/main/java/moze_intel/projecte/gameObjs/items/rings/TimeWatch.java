@@ -25,6 +25,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -68,10 +69,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
-		if (!(entity instanceof PlayerEntity) || invSlot > 8) {
-			return;
-		}
-		if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!(entity instanceof PlayerEntity) || invSlot >= PlayerInventory.getHotbarSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);

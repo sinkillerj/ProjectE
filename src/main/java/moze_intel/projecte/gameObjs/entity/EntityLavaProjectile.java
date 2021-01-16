@@ -6,8 +6,7 @@ import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +15,7 @@ import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -53,12 +53,15 @@ public class EntityLavaProjectile extends ThrowableEntity {
 			if (thrower instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
 				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
-					Block block = world.getBlockState(pos).getBlock();
-					if (block == Blocks.WATER) {
-						pos = pos.toImmutable();
-						if (PlayerHelper.hasBreakPermission(player, pos)) {
-							world.removeBlock(pos, false);
-							world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_BURN, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+					if (world.isBlockPresent(pos)) {
+						BlockState state = world.getBlockState(pos);
+						if (state.getFluidState().getFluid().isIn(FluidTags.WATER)) {
+							pos = pos.toImmutable();
+							if (PlayerHelper.hasEditPermission(player, pos)) {
+								WorldHelper.drainFluid(world, pos, state, Fluids.WATER);
+								world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+										2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+							}
 						}
 					}
 				});

@@ -16,6 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.GrassBlock;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.block.NetherRootsBlock;
@@ -60,6 +61,8 @@ import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -97,6 +100,20 @@ public final class WorldHelper {
 		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion))) {
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
+		}
+	}
+
+	public static void drainFluid(World world, BlockPos pos, BlockState state, Fluid toMatch) {
+		Block block = state.getBlock();
+		if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid().isEquivalentTo(toMatch)) {
+			//If it is a fluid block drain it (may be the case for some custom block?)
+			// We double check though the fluid block represents a given one though, in case there is some weird thing
+			// going on and we are a bucket pickup handler for the actual water and fluid state
+			((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+		} else if (block instanceof IBucketPickupHandler) {
+			//If it is a bucket pickup handler (so may be a fluid logged block) "pick it up"
+			// This includes normal fluid blocks
+			((IBucketPickupHandler) block).pickupFluid(world, pos, state);
 		}
 	}
 

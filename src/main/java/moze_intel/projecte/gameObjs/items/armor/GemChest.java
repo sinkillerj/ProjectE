@@ -8,13 +8,13 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -38,10 +38,8 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 			int y = (int) (player.getPosY() - player.getYOffset());
 			int z = (int) Math.floor(player.getPosZ());
 			BlockPos pos = new BlockPos(x, y, z);
-
-			Block b = world.getBlockState(pos.down()).getBlock();
-
-			if (b == Blocks.LAVA && world.isAirBlock(pos)) {
+			FluidState fluidState = world.getFluidState(pos.down());
+			if (fluidState.getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
 				if (!player.isSneaking()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;

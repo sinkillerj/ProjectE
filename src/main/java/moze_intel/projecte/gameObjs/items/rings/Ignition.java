@@ -20,6 +20,7 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -43,7 +44,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int inventorySlot, boolean held) {
-		if (world.isRemote || inventorySlot > 8 || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || inventorySlot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, inventorySlot, held);

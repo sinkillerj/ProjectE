@@ -11,18 +11,18 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -76,9 +76,8 @@ public class GemHelmet extends GemArmorBase {
 			int y = (int) (player.getPosY() - player.getYOffset());
 			int z = (int) Math.floor(player.getPosZ());
 			BlockPos pos = new BlockPos(x, y, z);
-			Block b = world.getBlockState(pos.down()).getBlock();
-
-			if (b == Blocks.WATER && world.isAirBlock(pos)) {
+			FluidState fluidState = world.getFluidState(pos.down());
+			if (fluidState.getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos)) {
 				if (!player.isSneaking()) {
 					player.setMotion(player.getMotion().mul(1, 0, 1));
 					player.fallDistance = 0.0f;

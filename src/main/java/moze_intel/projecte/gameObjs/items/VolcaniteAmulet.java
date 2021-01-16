@@ -28,6 +28,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -98,7 +99,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean par5) {
-		if (invSlot > 8 || !(entity instanceof LivingEntity)) {
+		if (invSlot >= PlayerInventory.getHotbarSize() || !(entity instanceof LivingEntity)) {
 			return;
 		}
 		LivingEntity living = (LivingEntity) entity;
@@ -120,8 +121,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			}
 		} else if (!world.isRemote) {
 			ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
-			if (attribute != null && !attribute.hasModifier(SPEED_BOOST)) {
-				attribute.applyNonPersistentModifier(SPEED_BOOST);
+			if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
+				attribute.removeModifier(SPEED_BOOST);
 			}
 		}
 	}
