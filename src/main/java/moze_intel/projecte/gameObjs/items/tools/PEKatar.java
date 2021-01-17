@@ -130,8 +130,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Strip logs, hoe ground, carve pumpkin, shear beehive, AOE remove logs, AOE remove leaves
-		return ToolHelper.performActions(state.getToolModifiedState(world, pos, player, stack, ToolType.AXE) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
-				() -> state.getToolModifiedState(world, pos, player, stack, ToolType.HOE) == null ? ActionResultType.PASS : ToolHelper.tillHoeAOE(context, 0),
+		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
+				() -> ToolHelper.tillHoeAOE(context, 0),
 				() -> {
 					if (state.isIn(Blocks.PUMPKIN)) {
 						//Carve pumpkin - copy from Pumpkin Block's onBlockActivated

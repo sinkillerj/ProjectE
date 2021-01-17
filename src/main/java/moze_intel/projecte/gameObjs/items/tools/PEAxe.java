@@ -93,13 +93,12 @@ public class PEAxe extends AxeItem implements IItemCharge {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		World world = context.getWorld();
-		BlockState state = world.getBlockState(context.getPos());
 		//Order that it attempts to use the item:
 		// Strip logs, AOE remove logs
-		return ToolHelper.performActions(AxeItem.BLOCK_STRIPPING_MAP.get(state.getBlock()) == null ? ActionResultType.PASS : ToolHelper.stripLogsAOE(context, 0),
+		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
 				() -> {
-					if (state.isIn(BlockTags.LOGS)) {
+					World world = context.getWorld();
+					if (world.getBlockState(context.getPos()).isIn(BlockTags.LOGS)) {
 						//Mass clear
 						//Note: We already tried to strip the log in an earlier action
 						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItem(), 0, BlockTags.LOGS);
