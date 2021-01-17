@@ -2,13 +2,21 @@ package moze_intel.projecte.common;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.data.ConversionGroupBuilder;
+import moze_intel.projecte.api.data.CustomConversionBuilder;
 import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.Tags.Fluids;
+import net.minecraftforge.fluids.FluidAttributes;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
 
@@ -19,14 +27,14 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 	@Override
 	protected void addCustomConversions() {
 		createConversionBuilder(PECore.rl("metals"))
-				.comment("Sets default conversions for various metals from other mods")
+				.comment("Sets default conversions for various metals from other mods.")
 				.before(Tags.Items.INGOTS_IRON, 256)
 				.conversion(Tags.Items.INGOTS_GOLD).ingredient(Tags.Items.INGOTS_IRON, 8).propagateTags().end();
 		NormalizedSimpleStack singleEMC = NSSFake.create("single_emc");
-		createConversionBuilder(PECore.rl("defaults"))
-				.comment("Default values for vanilla items")
+		CustomConversionBuilder defaultBuilder = createConversionBuilder(PECore.rl("defaults"))
+				.comment("Default values for vanilla items.")
 				.group("default")
-				.comment("Default conversion group")
+				.comment("Default conversion group.")
 				.conversion(Items.GRASS_BLOCK).ingredient(Items.DIRT, 2).end()
 				.conversion(Items.PODZOL).ingredient(Items.DIRT, 2).end()
 				.conversion(Items.MYCELIUM).ingredient(Items.DIRT, 2).end()
@@ -57,7 +65,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.WARPED_WART_BLOCK).ingredient(Items.NETHER_WART_BLOCK).end()
 				.end()
 				.group("concrete_powder_to_block")
-				.comment("Propagate concrete powder values to concrete blocks")
+				.comment("Propagate concrete powder values to concrete blocks.")
 				.conversion(Items.WHITE_CONCRETE).ingredient(Items.WHITE_CONCRETE_POWDER).end()
 				.conversion(Items.ORANGE_CONCRETE).ingredient(Items.ORANGE_CONCRETE_POWDER).end()
 				.conversion(Items.MAGENTA_CONCRETE).ingredient(Items.MAGENTA_CONCRETE_POWDER).end()
@@ -75,7 +83,23 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.RED_CONCRETE).ingredient(Items.RED_CONCRETE_POWDER).end()
 				.conversion(Items.BLACK_CONCRETE).ingredient(Items.BLACK_CONCRETE_POWDER).end()
 				.end()
+				.group("damaged_anvil")
+				.comment("Calculates values for chipped and damaged anvils based on the average of surviving for 25 uses.")
+				//Rough values based on how we factor damage into item EMC based on an average of ~8.3 uses before
+				// it degrades a tier, we use 9 so the numbers are slightly worse for how efficiently it translates down
+				.conversion(Items.CHIPPED_ANVIL, 25).ingredient(Items.ANVIL, 16).end()
+				.conversion(Items.DAMAGED_ANVIL, 25).ingredient(Items.ANVIL, 7).end()
+				.end()
+				.group("fluid")
+				.comment("Calculates the costs of filled buckets and some fluids.")
+				.conversionFluid(FluidTags.LAVA, FluidAttributes.BUCKET_VOLUME).ingredient(Items.OBSIDIAN).end()
+				.conversionFluid(Tags.Fluids.MILK, FluidAttributes.BUCKET_VOLUME).ingredient(singleEMC, 16).end()//One bucket worth of milk is 16 emc
+				.conversion(Items.WATER_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME).end()
+				.conversion(Items.LAVA_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.LAVA, FluidAttributes.BUCKET_VOLUME).end()
+				.conversion(Items.MILK_BUCKET).ingredient(Items.BUCKET).ingredientFluid(Fluids.MILK, FluidAttributes.BUCKET_VOLUME).end()
+				.end()
 				.before(singleEMC, 1)
+				.beforeFluid(FluidTags.WATER)
 				.before(Items.COBBLESTONE, 1)
 				.before(Items.GRANITE, 16)
 				.before(Items.DIORITE, 16)
@@ -224,7 +248,14 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.NETHERITE_SCRAP, 12_288)
 				.before(Tags.Items.GEMS_DIAMOND, 8_192)
 				.before(Tags.Items.DUSTS_REDSTONE, 64)
-				.before(Tags.Items.DUSTS_GLOWSTONE, 384)
-		;
+				.before(Tags.Items.DUSTS_GLOWSTONE, 384);
+		ConversionGroupBuilder shulkerGroupBuilder = defaultBuilder.group("shulker_box_recoloring")
+				.comment("Propagate shulker box values to colored variants.");
+		for (DyeColor color : DyeColor.values()) {
+			shulkerGroupBuilder.conversion(ShulkerBoxBlock.getBlockByColor(color))
+					.ingredient(Blocks.SHULKER_BOX)
+					.ingredient(color.getTag())
+					.end();
+		}
 	}
 }

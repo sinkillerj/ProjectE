@@ -1,5 +1,5 @@
 {
-  "comment": "Sets default conversions for various metals from other mods",
+  "comment": "Sets default conversions for various metals from other mods.",
   "values": {
     "before": {
       "#forge:ingots/iron": 256

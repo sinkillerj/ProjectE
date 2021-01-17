@@ -50,6 +50,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				List<ItemStack> multiIngredient = Arrays.stream(matches).filter(stack -> !stack.isEmpty()).map(ItemStack::copy)
 						.collect(Collectors.toCollection(LinkedList::new));
 				//Handle this ingredient as the representation of all the stacks it supports
+				//TODO: Try and improve how this NSSFake is creates to better match across different recipes
 				NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
 				List<IngredientMap<NormalizedSimpleStack>> groupIngredientMaps = new ArrayList<>();
 				ingredientMap.addIngredient(dummy, 1);

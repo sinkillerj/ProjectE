@@ -95,7 +95,7 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 	 */
 	private CustomConversionBuilder fixedValue(NormalizedSimpleStack stack, long emc, Map<NormalizedSimpleStack, Long> fixedValues, String type) {
 		Objects.requireNonNull(stack, "Normalized Simple Stack cannot be null.");
-		if (emc < 1) {
+		if (emc < 1 && emc != FREE_ARITHMETIC_VALUE) {
 			throw new IllegalArgumentException("EMC value must be at least one.");
 		} else if (fixedValues.containsKey(stack)) {
 			throw new RuntimeException("Fixed value " + type + " already set for '" + stack + "'.");

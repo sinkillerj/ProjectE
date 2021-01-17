@@ -1,8 +1,8 @@
 {
-  "comment": "Default values for vanilla items",
+  "comment": "Default values for vanilla items.",
   "groups": {
     "default": {
-      "comment": "Default conversion group",
+      "comment": "Default conversion group.",
       "conversions": [
         {
           "output": "minecraft:grass_block",
@@ -155,7 +155,7 @@
       ]
     },
     "concrete_powder_to_block": {
-      "comment": "Propagate concrete powder values to concrete blocks",
+      "comment": "Propagate concrete powder values to concrete blocks.",
       "conversions": [
         {
           "output": "minecraft:white_concrete",
@@ -254,11 +254,188 @@
           ]
         }
       ]
+    },
+    "damaged_anvil": {
+      "comment": "Calculates values for chipped and damaged anvils based on the average of surviving for 25 uses.",
+      "conversions": [
+        {
+          "output": "minecraft:chipped_anvil",
+          "count": 25,
+          "ingredients": {
+            "minecraft:anvil": 16
+          }
+        },
+        {
+          "output": "minecraft:damaged_anvil",
+          "count": 25,
+          "ingredients": {
+            "minecraft:anvil": 7
+          }
+        }
+      ]
+    },
+    "fluid": {
+      "comment": "Calculates the costs of filled buckets and some fluids.",
+      "conversions": [
+        {
+          "output": "FLUID|#minecraft:lava",
+          "count": 1000,
+          "ingredients": [
+            "minecraft:obsidian"
+          ]
+        },
+        {
+          "output": "FLUID|#forge:milk",
+          "count": 1000,
+          "ingredients": {
+            "FAKE|single_emc": 16
+          }
+        },
+        {
+          "output": "minecraft:water_bucket",
+          "ingredients": {
+            "minecraft:bucket": 1,
+            "FLUID|#minecraft:water": 1000
+          }
+        },
+        {
+          "output": "minecraft:lava_bucket",
+          "ingredients": {
+            "minecraft:bucket": 1,
+            "FLUID|#minecraft:lava": 1000
+          }
+        },
+        {
+          "output": "minecraft:milk_bucket",
+          "ingredients": {
+            "minecraft:bucket": 1,
+            "FLUID|#forge:milk": 1000
+          }
+        }
+      ]
+    },
+    "shulker_box_recoloring": {
+      "comment": "Propagate shulker box values to colored variants.",
+      "conversions": [
+        {
+          "output": "minecraft:white_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/white"
+          ]
+        },
+        {
+          "output": "minecraft:orange_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/orange"
+          ]
+        },
+        {
+          "output": "minecraft:magenta_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/magenta"
+          ]
+        },
+        {
+          "output": "minecraft:light_blue_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/light_blue"
+          ]
+        },
+        {
+          "output": "minecraft:yellow_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/yellow"
+          ]
+        },
+        {
+          "output": "minecraft:lime_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/lime"
+          ]
+        },
+        {
+          "output": "minecraft:pink_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/pink"
+          ]
+        },
+        {
+          "output": "minecraft:gray_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/gray"
+          ]
+        },
+        {
+          "output": "minecraft:light_gray_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/light_gray"
+          ]
+        },
+        {
+          "output": "minecraft:cyan_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/cyan"
+          ]
+        },
+        {
+          "output": "minecraft:purple_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/purple"
+          ]
+        },
+        {
+          "output": "minecraft:blue_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/blue"
+          ]
+        },
+        {
+          "output": "minecraft:brown_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/brown"
+          ]
+        },
+        {
+          "output": "minecraft:green_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/green"
+          ]
+        },
+        {
+          "output": "minecraft:red_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/red"
+          ]
+        },
+        {
+          "output": "minecraft:black_shulker_box",
+          "ingredients": [
+            "minecraft:shulker_box",
+            "#forge:dyes/black"
+          ]
+        }
+      ]
     }
   },
   "values": {
     "before": {
       "FAKE|single_emc": 1,
+      "FLUID|#minecraft:water": "free",
       "minecraft:cobblestone": 1,
       "minecraft:granite": 16,
       "minecraft:diorite": 16,
