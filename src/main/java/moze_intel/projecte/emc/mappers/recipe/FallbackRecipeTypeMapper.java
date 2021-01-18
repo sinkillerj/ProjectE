@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.mappers.recipe;
 import java.util.Arrays;
 import java.util.Collection;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
@@ -35,9 +36,9 @@ public class FallbackRecipeTypeMapper extends BaseRecipeTypeMapper {
 	}
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe) {
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
 		if (recipe instanceof ICraftingRecipe || recipe instanceof AbstractCookingRecipe || recipe instanceof SingleItemRecipe || recipe instanceof SmithingRecipe) {
-			return super.handleRecipe(mapper, recipe);
+			return super.handleRecipe(mapper, recipe, fakeGroupManager);
 		}
 		return false;
 	}

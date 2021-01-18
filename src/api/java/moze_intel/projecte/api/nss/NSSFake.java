@@ -24,6 +24,8 @@ public final class NSSFake implements NormalizedSimpleStack {
 
 	/**
 	 * Resets the current namespace that will be used for any newly created {@link NSSFake} objects.
+	 *
+	 * @apiNote For internal use by ProjectE
 	 */
 	public static void resetNamespace() {
 		setCurrentNamespace("");
@@ -33,6 +35,8 @@ public final class NSSFake implements NormalizedSimpleStack {
 	 * Sets the current namespace that will be used for any newly created {@link NSSFake} objects.
 	 *
 	 * @param ns Namespace
+	 *
+	 * @apiNote For internal use by ProjectE
 	 */
 	public static void setCurrentNamespace(@Nonnull String ns) {
 		currentNamespace = ns;

@@ -26,9 +26,10 @@ public interface IRecipeTypeMapper {
 
 	/**
 	 * This method is used to determine the default for enabling/disabling this {@link IRecipeTypeMapper}. If this returns {@code false} {@link #canHandle(IRecipeType)}
-	 * and {@link #handleRecipe(IMappingCollector, IRecipe)} will not be called.
+	 * and {@link #handleRecipe(IMappingCollector, IRecipe, INSSFakeGroupManager)} will not be called.
 	 *
-	 * @return {@code true} if you want {@link #canHandle(IRecipeType)} and {@link #handleRecipe(IMappingCollector, IRecipe)} to be called, {@code false} otherwise.
+	 * @return {@code true} if you want {@link #canHandle(IRecipeType)} and {@link #handleRecipe(IMappingCollector, IRecipe, INSSFakeGroupManager)} to be called, {@code
+	 * false} otherwise.
 	 */
 	default boolean isAvailable() {
 		return true;
@@ -46,12 +47,15 @@ public interface IRecipeTypeMapper {
 	/**
 	 * Attempts to handle an {@link IRecipe} that is of a type restricted by {@link #canHandle(IRecipeType)}.
 	 *
-	 * @param mapper The mapper to add mapping data to.
-	 * @param recipe The recipe to attempt to map.
+	 * @param mapper           The mapper to add mapping data to.
+	 * @param recipe           The recipe to attempt to map.
+	 * @param fakeGroupManager The manager for helping create and manage "groupings" of valid ingredients.
 	 *
 	 * @return {@code true} if the {@link IRecipeTypeMapper} handled the given {@link IRecipe}, {@code false} otherwise
 	 *
 	 * @apiNote Make sure to call {@link #canHandle(IRecipeType)} before calling this method.
+	 * @implNote Due to how the fakeGroupManager works, {@link moze_intel.projecte.api.nss.NSSFake} implementations should only be created in this method with
+	 * descriptions that are more complex than a single integer, as otherwise they may intersect with {@link NormalizedSimpleStack}s created by the fakeGroupManager.
 	 */
-	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe);
+	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager);
 }
