@@ -11,7 +11,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
+import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
@@ -21,6 +23,7 @@ import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.registry.Registry;
 
 @EMCMapper
@@ -40,9 +43,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries,
 			IResourceManager resourceManager) {
+		NSSFake.setCurrentNamespace("craftingMapper");
 		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
 		RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
+		//Make a new fake group manager here instead of across the entire mapper so that we can reclaim the memory when we are done with this method
+		NSSFakeGroupManager fakeGroupManager = new NSSFakeGroupManager();
 		for (IRecipeType<?> recipeType : Registry.RECIPE_TYPE) {
 			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);
 			boolean wasHandled = false;
@@ -63,7 +69,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						int numHandled = 0;
 						for (IRecipe<?> recipe : recipes) {
 							try {
-								if (recipeMapper.handleRecipe(mapper, recipe)) {
+								if (recipeMapper.handleRecipe(mapper, recipe, fakeGroupManager)) {
 									numHandled++;
 								} else {
 									unhandled.add(recipe);
@@ -116,6 +122,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		for (ResourceLocation typeRegistryName : canNotMap) {
 			PECore.debugLog("Could not map any Recipes of Type: {}", typeRegistryName);
 		}
+		NSSFake.resetNamespace();
 	}
 
 	@Override
@@ -148,6 +155,33 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		public List<IRecipe<?>> getUnhandled() {
 			return unhandled;
+		}
+	}
+
+	private static class NSSFakeGroupManager implements INSSFakeGroupManager {
+
+		private final Map<Set<NormalizedSimpleStack>, NormalizedSimpleStack> groups = new HashMap<>();
+		private int fakeIndex;
+
+		@Override
+		public Tuple<NormalizedSimpleStack, Boolean> getOrCreateFakeGroup(Set<NormalizedSimpleStack> normalizedSimpleStacks) {
+			NormalizedSimpleStack stack = groups.get(normalizedSimpleStacks);
+			if (stack == null) {
+				//Doesn't exist, create one with the next index add it as known and return
+				// the group and the fact that we had to create a representation for it
+				// Note: We use an incrementing index here as our crafting mapper sets a namespace
+				// for NSSFake objects so we can safely use integers as the description and not
+				// have to worry about intersecting fake stacks. We also for good measure specify in
+				// the IRecipeTypeMapper java docs that if fake stacks are needed by an implementer
+				// they should make sure to make the name more complex than just a simple integer to
+				// ensure that they do not collide with stacks created by this method.
+				stack = NSSFake.create(Integer.toString(fakeIndex++));
+				//Copy the set into a new set to ensure that it can't be modified by changing
+				// the set that was passed in
+				groups.put(new HashSet<>(normalizedSimpleStacks), stack);
+				return new Tuple<>(stack, true);
+			}
+			return new Tuple<>(stack, false);
 		}
 	}
 }

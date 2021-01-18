@@ -1,16 +1,15 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
-import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
@@ -24,7 +23,7 @@ import net.minecraft.util.Tuple;
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe) {
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
 		ItemStack recipeOutput = recipe.getRecipeOutput();
 		if (recipeOutput.isEmpty()) {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
@@ -38,44 +37,79 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			if (matches == null) {
 				//Failed to get matching stacks ingredient, bail but mark that we handled it as there is a 99% chance a later
 				// mapper would fail as well due to it being an invalid recipe
-				return false;
+				return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 			} else if (matches.length == 1) {
 				//Handle this ingredient as a direct representation of the stack it represents
 				if (addIngredient(ingredientMap, matches[0].copy(), recipeID)) {
 					//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
 					// mapper would fail as well due to it being an invalid recipe
-					return true;
+					return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 				}
 			} else if (matches.length > 0) {
-				List<ItemStack> multiIngredient = Arrays.stream(matches).filter(stack -> !stack.isEmpty()).map(ItemStack::copy)
-						.collect(Collectors.toCollection(LinkedList::new));
-				//Handle this ingredient as the representation of all the stacks it supports
-				//TODO: Try and improve how this NSSFake is creates to better match across different recipes
-				NormalizedSimpleStack dummy = NSSFake.create(multiIngredient.toString());
-				List<IngredientMap<NormalizedSimpleStack>> groupIngredientMaps = new ArrayList<>();
-				ingredientMap.addIngredient(dummy, 1);
-				for (ItemStack stack : multiIngredient) {
-					IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
-					if (addIngredient(groupIngredientMap, stack, recipeID)) {
+				Set<NormalizedSimpleStack> rawNSSMatches = new HashSet<>();
+				List<ItemStack> stacks = new ArrayList<>();
+				for (ItemStack match : matches) {
+					if (!match.isEmpty()) {
+						//Validate it is not an empty stack in case mods do weird things in custom ingredients
+						rawNSSMatches.add(NSSItem.createItem(match));
+						stacks.add(match);
+					}
+				}
+				int count = stacks.size();
+				if (count == 1) {
+					//There is only actually one non empty ingredient
+					if (addIngredient(ingredientMap, stacks.get(0).copy(), recipeID)) {
 						//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
 						// mapper would fail as well due to it being an invalid recipe
-						return true;
+						return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 					}
-					groupIngredientMaps.add(groupIngredientMap);
-				}
-				if (!groupIngredientMaps.isEmpty()) {
-					dummyGroupInfos.add(new Tuple<>(dummy, groupIngredientMaps));
+				} else if (count > 1) {
+					//Handle this ingredient as the representation of all the stacks it supports
+					Tuple<NormalizedSimpleStack, Boolean> group = fakeGroupManager.getOrCreateFakeGroup(rawNSSMatches);
+					NormalizedSimpleStack dummy = group.getA();
+					ingredientMap.addIngredient(dummy, 1);
+					if (group.getB()) {
+						//Only lookup the matching stacks for the group with conversion if we don't already have
+						// a group created for this dummy ingredient
+						// Note: We soft ignore cases where it fails/there are no matching group ingredients
+						// as then our fake ingredient will never actually have an emc value assigned with it
+						// so the recipe won't either
+						List<IngredientMap<NormalizedSimpleStack>> groupIngredientMaps = new ArrayList<>();
+						for (ItemStack stack : stacks) {
+							IngredientMap<NormalizedSimpleStack> groupIngredientMap = new IngredientMap<>();
+							//Copy the stack to ensure a mod that is implemented poorly doesn't end up changing
+							// the source stack in the recipe
+							if (addIngredient(groupIngredientMap, stack.copy(), recipeID)) {
+								//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
+								// mapper would fail as well due to it being an invalid recipe
+								return addConversionsAndReturn(mapper, dummyGroupInfos, true);
+							}
+							groupIngredientMaps.add(groupIngredientMap);
+						}
+						dummyGroupInfos.add(new Tuple<>(dummy, groupIngredientMaps));
+					}
 				}
 			}
 		}
+		//TODO: Evaluate using a fake crafting inventory and then calling recipe#getRemainingItems? May not be worthwhile to do
+		mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap.getMap());
+		return addConversionsAndReturn(mapper, dummyGroupInfos, true);
+	}
+
+	/**
+	 * This method can be used as a helper method to return a specific value and add any existing group conversions. It is important that we add any valid group
+	 * conversions that we have, regardless of whether the recipe as a whole is valid, because we only create one instance of our group's NSS representation so even if
+	 * parts of the recipe are not valid, the conversion may be valid and exist in another recipe.
+	 */
+	private boolean addConversionsAndReturn(IMappingCollector<NormalizedSimpleStack, Long> mapper,
+			List<Tuple<NormalizedSimpleStack, List<IngredientMap<NormalizedSimpleStack>>>> dummyGroupInfos, boolean returnValue) {
+		//If we have any conversions make sure to add them even if we are returning early
 		for (Tuple<NormalizedSimpleStack, List<IngredientMap<NormalizedSimpleStack>>> dummyGroupInfo : dummyGroupInfos) {
 			for (IngredientMap<NormalizedSimpleStack> groupIngredientMap : dummyGroupInfo.getB()) {
 				mapper.addConversion(1, dummyGroupInfo.getA(), groupIngredientMap.getMap());
 			}
 		}
-		//TODO: Evaluate using a fake crafting inventory and then calling recipe#getRemainingItems? May not be worthwhile to do
-		mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap.getMap());
-		return true;
+		return returnValue;
 	}
 
 	@Nullable
