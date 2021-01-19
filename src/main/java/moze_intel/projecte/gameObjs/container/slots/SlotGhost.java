@@ -34,4 +34,9 @@ public class SlotGhost extends SlotItemHandler {
 	public int getSlotStackLimit() {
 		return 1;
 	}
+
+	@Override
+	public int getItemStackLimit(@Nonnull ItemStack stack) {
+		return 1;
+	}
 }

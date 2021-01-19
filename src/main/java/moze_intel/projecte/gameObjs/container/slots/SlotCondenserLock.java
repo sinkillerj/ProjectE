@@ -41,6 +41,11 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
+	public int getItemStackLimit(@Nonnull ItemStack stack) {
+		return 1;
+	}
+
+	@Override
 	@Nonnull
 	public ItemStack getStack() {
 		ItemInfo lockInfo = boxedLockInfo.get();

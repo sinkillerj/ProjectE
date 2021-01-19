@@ -71,7 +71,11 @@ public class SlotLock extends SlotItemHandler {
 
 	@Override
 	public int getSlotStackLimit() {
-		//TODO - 1.16: Fix this? Doesn't seem to be obeyed (and fix it for the other custom slot types)
+		return 1;
+	}
+
+	@Override
+	public int getItemStackLimit(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }
