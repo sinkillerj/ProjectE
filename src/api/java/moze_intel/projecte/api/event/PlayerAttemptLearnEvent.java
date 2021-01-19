@@ -7,11 +7,11 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * This event is fired on both the server and client when a player is attempting to learn a new item
+ * This event is fired on the server when a player is attempting to learn a new item
  *
- * This event is cancelable
+ * This event is {@link Cancelable}
  *
- * This event is fired on MinecraftForge#EVENT_BUS
+ * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
  */
 @Cancelable
 public class PlayerAttemptLearnEvent extends Event {
@@ -20,8 +20,8 @@ public class PlayerAttemptLearnEvent extends Event {
 	private final ItemInfo sourceInfo;
 	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptLearnEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
-		player = entityPlayer;
+	public PlayerAttemptLearnEvent(@Nonnull PlayerEntity player, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
+		this.player = player;
 		this.sourceInfo = sourceInfo;
 		this.reducedInfo = reducedInfo;
 	}

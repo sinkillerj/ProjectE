@@ -81,10 +81,10 @@ public class AlchBagContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
-		if (slot == blocked || immutable) {
+	public ItemStack slotClick(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+		if (immutable || slot == blocked || clickType == ClickType.SWAP && dragType == 40 && blocked == -1) {
 			return ItemStack.EMPTY;
 		}
-		return super.slotClick(slot, button, flag, player);
+		return super.slotClick(slot, dragType, clickType, player);
 	}
 }

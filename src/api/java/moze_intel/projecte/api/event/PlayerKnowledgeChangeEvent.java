@@ -8,16 +8,16 @@ import net.minecraftforge.eventbus.api.Event;
 /**
  * This event is fired serverside after a players transmutation knowledge is changed
  *
- * This event is not cancelable, and has no result
+ * This event is not {@link net.minecraftforge.eventbus.api.Cancelable}, and has no result
  *
- * This event is fired on MinecraftForge#EVENT_BUS
+ * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
  */
 public class PlayerKnowledgeChangeEvent extends Event {
 
 	private final UUID playerUUID;
 
-	public PlayerKnowledgeChangeEvent(@Nonnull PlayerEntity entityPlayer) {
-		playerUUID = entityPlayer.getUniqueID();
+	public PlayerKnowledgeChangeEvent(@Nonnull PlayerEntity player) {
+		playerUUID = player.getUniqueID();
 	}
 
 	/**

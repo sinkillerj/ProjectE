@@ -1,4 +1,4 @@
-package moze_intel.projecte.network.packets.to_client;
+package moze_intel.projecte.network.packets.to_client.knowledge;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;

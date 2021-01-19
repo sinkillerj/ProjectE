@@ -102,7 +102,7 @@ public class TransmutationContainer extends Container {
 				//Check how much we can fit of the stack
 				int stackSize = newStack.getCount() - ItemHelper.simulateFit(player.inventory.mainInventory, newStack);
 				if (stackSize > 0) {
-					BigInteger availableEMC = transmutationInventory.getAvailableEMC();
+					BigInteger availableEMC = transmutationInventory.getAvailableEmc();
 					BigInteger emc = BigInteger.valueOf(itemEmc);
 					BigInteger totalEmc = emc.multiply(BigInteger.valueOf(stackSize));
 					if (totalEmc.compareTo(availableEMC) > 0) {
@@ -120,9 +120,10 @@ public class TransmutationContainer extends Container {
 					//Set the stack size to what we found the max value is we have room for (capped at the stack's own max size)
 					newStack.setCount(stackSize);
 					IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
-					transmutationInventory.removeEmc(totalEmc);
+					if (transmutationInventory.isServer()) {
+						transmutationInventory.removeEmc(totalEmc);
+					}
 					ItemHandlerHelper.insertItemStacked(inv, newStack, false);
-					transmutationInventory.updateClientTargets();
 				}
 			}
 		} else if (slotIndex > 26) {
@@ -130,9 +131,11 @@ public class TransmutationContainer extends Container {
 			if (emc == 0 && !(stack.getItem() instanceof Tome)) {
 				return ItemStack.EMPTY;
 			}
-			BigInteger emcBigInt = BigInteger.valueOf(emc);
-			transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stack.getCount())));
-			transmutationInventory.handleKnowledge(newStack);
+			if (transmutationInventory.isServer()) {
+				BigInteger emcBigInt = BigInteger.valueOf(emc);
+				transmutationInventory.handleKnowledge(newStack);
+				transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stack.getCount())));
+			}
 			slot.putStack(ItemStack.EMPTY);
 		}
 		return ItemStack.EMPTY;
@@ -140,14 +143,14 @@ public class TransmutationContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, PlayerEntity player) {
+	public ItemStack slotClick(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+		if (slot == blocked || clickType == ClickType.SWAP && dragType == 40 && blocked == -1) {
+			return ItemStack.EMPTY;
+		}
 		if (player.getEntityWorld().isRemote && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs) {
 			PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slot), getSlot(slot).getStack()));
 		}
-		if (slot == blocked) {
-			return ItemStack.EMPTY;
-		}
-		return super.slotClick(slot, button, flag, player);
+		return super.slotClick(slot, dragType, clickType, player);
 	}
 
 	@Override

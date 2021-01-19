@@ -11,6 +11,7 @@ import java.util.Optional;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
@@ -51,12 +52,17 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];
 		this.outputs = itemHandler[2];
-		if (player.getEntityWorld().isRemote) {
+		if (!isServer()) {
 			updateClientTargets();
 		}
 	}
 
+	public boolean isServer() {
+		return !player.getEntityWorld().isRemote;
+	}
+
 	/**
+	 * @apiNote Call on server only
 	 * @implNote The passed stack will not be directly modified by this method.
 	 */
 	public void handleKnowledge(ItemStack stack) {
@@ -65,24 +71,31 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
+	/**
+	 * @apiNote Call on server only
+	 */
 	public void handleKnowledge(ItemInfo info) {
 		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
-		if (!provider.hasKnowledge(cleanedInfo)) {
-			//Pass both stacks to the Attempt Learn Event in case a mod cares about the NBT/damage difference when comparing
-			if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
-				//Only show the "learned" text if the knowledge was added
-				learnFlag = 300;
-				unlearnFlag = 0;
-				provider.addKnowledge(cleanedInfo);
-			}
-			if (!player.getEntityWorld().isRemote) {
-				provider.sync((ServerPlayerEntity) player);
+		//Pass both stacks to the Attempt Learn Event in case a mod cares about the NBT/damage difference when comparing
+		if (!provider.hasKnowledge(cleanedInfo) && !MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
+			if (provider.addKnowledge(cleanedInfo)) {
+				//Only sync the knowledge changed if the provider successfully added it
+				provider.syncKnowledgeChange((ServerPlayerEntity) player, cleanedInfo, true);
 			}
 		}
+	}
+
+	/**
+	 * @apiNote Call on client only
+	 */
+	public void itemLearned() {
+		learnFlag = 300;
+		unlearnFlag = 0;
 		updateClientTargets();
 	}
 
 	/**
+	 * @apiNote Call on server only
 	 * @implNote The passed stack will not be directly modified by this method.
 	 */
 	public void handleUnlearn(ItemStack stack) {
@@ -91,29 +104,39 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
+	/**
+	 * @apiNote Call on server only
+	 */
 	public void handleUnlearn(ItemInfo info) {
 		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
-		if (provider.hasKnowledge(cleanedInfo)) {
-			unlearnFlag = 300;
-			learnFlag = 0;
-			provider.removeKnowledge(cleanedInfo);
-			if (!player.getEntityWorld().isRemote) {
-				provider.sync((ServerPlayerEntity) player);
-			}
+		if (provider.hasKnowledge(cleanedInfo) && provider.removeKnowledge(cleanedInfo)) {
+			//Only sync the knowledge changed if the provider successfully removed it
+			provider.syncKnowledgeChange((ServerPlayerEntity) player, cleanedInfo, false);
 		}
+	}
+
+	/**
+	 * @apiNote Call on client only
+	 */
+	public void itemUnlearned() {
+		unlearnFlag = 300;
+		learnFlag = 0;
 		updateClientTargets();
 	}
 
+	/**
+	 * @apiNote Call on client only
+	 */
 	public void checkForUpdates() {
 		long matterEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(0));
 		long fuelEmc = EMCHelper.getEmcValue(outputs.getStackInSlot(FUEL_START));
-		if (BigInteger.valueOf(Math.max(matterEmc, fuelEmc)).compareTo(getAvailableEMC()) > 0) {
+		if (BigInteger.valueOf(Math.max(matterEmc, fuelEmc)).compareTo(getAvailableEmc()) > 0) {
 			updateClientTargets();
 		}
 	}
 
 	public void updateClientTargets() {
-		if (!this.player.getEntityWorld().isRemote) {
+		if (isServer()) {
 			return;
 		}
 		knowledge.clear();
@@ -126,13 +149,14 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		int pagecounter = 0;
 		int desiredPage = searchpage * 12;
 		ItemInfo lockInfo = null;
+		BigInteger availableEMC = getAvailableEmc();
 		if (!inputLocks.getStackInSlot(LOCK_INDEX).isEmpty()) {
 			lockInfo = NBTManager.getPersistentInfo(ItemInfo.fromStack(inputLocks.getStackInSlot(LOCK_INDEX)));
 			//Note: We look up using only the persistent information here, instead of all the data as
 			// we cannot replicate the extra data anyways since it cannot be learned. So we need to make
 			// sure that we only go off of the data that can be matched
 			long reqEmc = EMCHelper.getEmcValue(lockInfo);
-			if (getAvailableEMC().compareTo(BigInteger.valueOf(reqEmc)) < 0) {
+			if (availableEMC.compareTo(BigInteger.valueOf(reqEmc)) < 0) {
 				return;
 			}
 
@@ -150,7 +174,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			Iterator<ItemInfo> iter = knowledge.iterator();
 			while (iter.hasNext()) {
 				ItemInfo info = iter.next();
-				if (getAvailableEMC().compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(info))) < 0 || !doesItemMatchFilter(info)) {
+				if (availableEMC.compareTo(BigInteger.valueOf(EMCHelper.getEmcValue(info))) < 0 || !doesItemMatchFilter(info)) {
 					iter.remove();
 				} else if (pagecounter < desiredPage) {
 					pagecounter++;
@@ -187,14 +211,14 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
+	/**
+	 * @apiNote Call on client only
+	 */
 	private boolean doesItemMatchFilter(ItemInfo info) {
 		if (filter.isEmpty()) {
 			return true;
 		}
 		try {
-			//TODO: Eventually we should probably rewrite this so that it does the actual searching on the client side
-			// (assuming the client actually knows all the items it has learned) and then have the client send the ItemInfo it
-			// wants to remove and validate it on the server so that we can properly handle searching in languages other than english
 			return info.createStack().getDisplayName().getString().toLowerCase(Locale.ROOT).contains(filter);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,107 +227,133 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 	}
 
+	/**
+	 * @apiNote Call on server only
+	 */
 	public void writeIntoOutputSlot(int slot, ItemStack item) {
 		long emcValue = EMCHelper.getEmcValue(item);
-		if (emcValue > 0 && BigInteger.valueOf(emcValue).compareTo(getAvailableEMC()) <= 0 && provider.hasKnowledge(item)) {
+		if (emcValue > 0 && BigInteger.valueOf(emcValue).compareTo(getAvailableEmc()) <= 0 && provider.hasKnowledge(item)) {
 			outputs.setStackInSlot(slot, item);
 		} else {
 			outputs.setStackInSlot(slot, ItemStack.EMPTY);
 		}
 	}
 
+	/**
+	 * @apiNote Call on server only
+	 */
 	public void addEmc(BigInteger value) {
 		int compareToZero = value.compareTo(BigInteger.ZERO);
 		if (compareToZero == 0) {
 			//Optimization to not look at the items if nothing will happen anyways
 			return;
-		}
-		if (compareToZero < 0) {
+		} else if (compareToZero < 0) {
 			//Make sure it is using the correct method so that it handles the klein stars properly
 			removeEmc(value.negate());
+			return;
 		}
+		List<Integer> inputLocksChanged = new ArrayList<>();
 		//Start by trying to add it to the EMC items on the left
-		for (int i = 0; i < inputLocks.getSlots(); i++) {
-			if (i == LOCK_INDEX) {
+		for (int slotIndex = 0; slotIndex < inputLocks.getSlots(); slotIndex++) {
+			if (slotIndex == LOCK_INDEX) {
 				continue;
 			}
-			ItemStack stack = inputLocks.getStackInSlot(i);
+			ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 			if (!stack.isEmpty()) {
 				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.get();
 					long shrunkenValue = MathUtils.clampToLong(value);
 					long actualInserted = emcHolder.insertEmc(stack, shrunkenValue, EmcAction.EXECUTE);
-					value = value.subtract(BigInteger.valueOf(actualInserted));
-					if (value.compareTo(BigInteger.ZERO) == 0) {
-						//If we fit it all then exit
-						return;
+					if (actualInserted > 0) {
+						inputLocksChanged.add(slotIndex);
+						value = value.subtract(BigInteger.valueOf(actualInserted));
+						if (value.compareTo(BigInteger.ZERO) == 0) {
+							//If we fit it all then sync the changes to the client and exit
+							syncChangedSlots(inputLocksChanged, TargetUpdateType.ALL);
+							return;
+						}
 					}
 				}
 			}
 		}
+		syncChangedSlots(inputLocksChanged, TargetUpdateType.NONE);
 		//Note: We act as if there is no "max" EMC for the player given we use a BigInteger
 		// This means we don't have to try to put the overflow into the lock slot if there is an EMC storage item there
-
-		provider.setEmc(provider.getEmc().add(value));
-
-		if (provider.getEmc().compareTo(BigInteger.ZERO) < 0) {
-			provider.setEmc(BigInteger.ZERO);
-		}
-
-		if (!player.getEntityWorld().isRemote) {
-			PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, provider.getEmc());
-		}
+		updateEmcAndSync(provider.getEmc().add(value));
 	}
 
+	/**
+	 * @apiNote Call on server only
+	 */
 	public void removeEmc(BigInteger value) {
 		int compareToZero = value.compareTo(BigInteger.ZERO);
 		if (compareToZero == 0) {
 			//Optimization to not look at the items if nothing will happen anyways
 			return;
-		}
-		if (compareToZero < 0) {
+		} else if (compareToZero < 0) {
 			//Make sure it is using the correct method so that it handles the klein stars properly
 			addEmc(value.negate());
+			return;
 		}
+		BigInteger currentEmc = provider.getEmc();
 		//Note: We act as if there is no "max" EMC for the player given we use a BigInteger
 		// This means we don't need to first try removing it from the lock slot as it will auto drain from the lock slot
-		if (value.compareTo(provider.getEmc()) > 0) {
+		if (value.compareTo(currentEmc) > 0) {
 			//Remove from provider first
 			//This code runs first to simplify the logic
 			//But it simulates removal first by extracting the amount from value and then removing that excess from items
-			BigInteger toRemove = value.subtract(provider.getEmc());
-			value = provider.getEmc();
-			for (int i = 0; i < inputLocks.getSlots(); i++) {
-				if (i == LOCK_INDEX) {
+			List<Integer> inputLocksChanged = new ArrayList<>();
+			BigInteger toRemove = value.subtract(currentEmc);
+			value = currentEmc;
+			for (int slotIndex = 0; slotIndex < inputLocks.getSlots(); slotIndex++) {
+				if (slotIndex == LOCK_INDEX) {
 					continue;
 				}
-				ItemStack stack = inputLocks.getStackInSlot(i);
+				ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 				if (!stack.isEmpty()) {
 					Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 					if (holderCapability.isPresent()) {
 						IItemEmcHolder emcHolder = holderCapability.get();
 						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
 						long actualExtracted = emcHolder.extractEmc(stack, shrunkenToRemove, EmcAction.EXECUTE);
-						toRemove = toRemove.subtract(BigInteger.valueOf(actualExtracted));
-						if (toRemove.compareTo(BigInteger.ZERO) == 0) {
-							//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
-							//Remove it and then stop checking other input slots as we were able to provide all that was needed
-							break;
+						if (actualExtracted > 0) {
+							inputLocksChanged.add(slotIndex);
+							toRemove = toRemove.subtract(BigInteger.valueOf(actualExtracted));
+							if (toRemove.compareTo(BigInteger.ZERO) == 0) {
+								//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
+								//Remove it and then stop checking other input slots as we were able to provide all that was needed
+								syncChangedSlots(inputLocksChanged, TargetUpdateType.IF_NEEDED);
+								return;
+							}
 						}
 					}
 				}
 			}
+			//Sync the changed slots if any have changed
+			syncChangedSlots(inputLocksChanged, TargetUpdateType.NONE);
 		}
-		provider.setEmc(provider.getEmc().subtract(value));
+		updateEmcAndSync(currentEmc.subtract(value));
+	}
 
-		if (provider.getEmc().compareTo(BigInteger.ZERO) < 0) {
-			provider.setEmc(BigInteger.ZERO);
-		}
+	/**
+	 * @apiNote Call on server only
+	 */
+	public void syncChangedSlots(List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+		provider.syncInputAndLocks((ServerPlayerEntity) player, slotsChanged, updateTargets);
+	}
 
-		if (!player.getEntityWorld().isRemote) {
-			PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, provider.getEmc());
+	/**
+	 * @apiNote Call on server only
+	 */
+	private void updateEmcAndSync(BigInteger emc) {
+		if (emc.compareTo(BigInteger.ZERO) < 0) {
+			//Clamp the emc, should never be less than zero but just in case make sure to fix it
+			emc = BigInteger.ZERO;
 		}
+		provider.setEmc(emc);
+		provider.syncEmc((ServerPlayerEntity) player);
+		PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, emc);
 	}
 
 	public IItemHandlerModifiable getHandlerForSlot(int slot) {
@@ -322,7 +372,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	/**
 	 * @return EMC available from the Provider + any klein stars in the input slots.
 	 */
-	public BigInteger getAvailableEMC() {
+	public BigInteger getAvailableEmc() {
 		BigInteger emc = provider.getEmc();
 		for (int i = 0; i < inputLocks.getSlots(); i++) {
 			if (i == LOCK_INDEX) {

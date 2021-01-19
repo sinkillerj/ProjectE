@@ -12,8 +12,8 @@ public class SlotOutput extends SlotItemHandler {
 
 	private final TransmutationInventory inv;
 
-	public SlotOutput(TransmutationInventory inv, int par2, int par3, int par4) {
-		super(inv, par2, par3, par4);
+	public SlotOutput(TransmutationInventory inv, int index, int x, int y) {
+		super(inv, index, x, y);
 		this.inv = inv;
 	}
 
@@ -28,14 +28,15 @@ public class SlotOutput extends SlotItemHandler {
 		ItemStack stack = getStack().copy();
 		stack.setCount(amount);
 		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack)).multiply(BigInteger.valueOf(amount));
-		if (emcValue.compareTo(inv.getAvailableEMC()) > 0) {
+		if (emcValue.compareTo(inv.getAvailableEmc()) > 0) {
 			//Requesting more emc than available
 			//Container expects stacksize=0-Itemstack for 'nothing'
 			stack.setCount(0);
 			return stack;
 		}
-		inv.removeEmc(emcValue);
-		inv.checkForUpdates();
+		if (inv.isServer()) {
+			inv.removeEmc(emcValue);
+		}
 		return stack;
 	}
 
@@ -50,6 +51,6 @@ public class SlotOutput extends SlotItemHandler {
 
 	@Override
 	public boolean canTakeStack(PlayerEntity player) {
-		return !getHasStack() || BigInteger.valueOf(EMCHelper.getEmcValue(getStack())).compareTo(inv.getAvailableEMC()) <= 0;
+		return !getHasStack() || BigInteger.valueOf(EMCHelper.getEmcValue(getStack())).compareTo(inv.getAvailableEmc()) <= 0;
 	}
 }

@@ -1,6 +1,8 @@
 package moze_intel.projecte.api.capabilities;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
@@ -114,7 +116,56 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
 	void setEmc(BigInteger emc);
 
 	/**
+	 * Syncs this provider to the given player.
+	 *
 	 * @param player The player to sync to.
 	 */
 	void sync(@Nonnull ServerPlayerEntity player);
+
+	/**
+	 * Syncs the emc stored in this provider to the given player.
+	 *
+	 * @param player The player to sync to.
+	 */
+	void syncEmc(@Nonnull ServerPlayerEntity player);
+
+	/**
+	 * Syncs that a specific item's knowledge changed (either learned or unlearned) to the given player.
+	 *
+	 * @param player  The player to sync to.
+	 * @param change  The item that changed. (Should be the persistent variant)
+	 * @param learned True if learned, false if unlearned.
+	 */
+	void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned);
+
+	/**
+	 * Syncs the inputs and locks stored in this provider to the given player.
+	 *
+	 * @param player        The player to sync to.
+	 * @param slotsChanged  The indices of the slots that need to be synced (may be empty, in which case nothing should happen).
+	 * @param updateTargets How the targets should be updated on the client.
+	 */
+	void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets);
+
+	/**
+	 * @param changes Slot index to stack for the changes that occurred.
+	 *
+	 * @apiNote Should only really be used on the client for purposes of receiving/handling {@link #syncInputAndLocks(ServerPlayerEntity, List, TargetUpdateType)}
+	 */
+	void receiveInputsAndLocks(Map<Integer, ItemStack> changes);
+
+	enum TargetUpdateType {
+		/**
+		 * Don't update targets.
+		 */
+		NONE,
+		/**
+		 * Only update if "needed", the emc value is below the highest item.
+		 */
+		IF_NEEDED,
+		/**
+		 * Update targets.
+		 */
+		ALL
+	}
 }

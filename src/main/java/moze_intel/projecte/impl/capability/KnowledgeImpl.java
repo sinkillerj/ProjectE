@@ -3,8 +3,10 @@ package moze_intel.projecte.impl.capability;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +20,10 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.to_client.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncChangePKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncEmcPKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncInputsAndLocksPKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -105,6 +110,9 @@ public final class KnowledgeImpl {
 		@Override
 		public boolean addKnowledge(@Nonnull ItemInfo info) {
 			if (fullKnowledge) {
+				//TODO - 1.16: I think how we handle full knowledge stops learning items that don't fit into the
+				// full knowledge because of having extra persistent info due to NBTProcessing, ideally we want to
+				// properly allow continuing to learn these items
 				return false;
 			}
 			if (info.getItem() instanceof Tome) {
@@ -181,14 +189,53 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
+		public void syncEmc(@Nonnull ServerPlayerEntity player) {
+			PacketHandler.sendTo(new KnowledgeSyncEmcPKT(getEmc()), player);
+		}
+
+		@Override
+		public void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned) {
+			PacketHandler.sendTo(new KnowledgeSyncChangePKT(change, learned), player);
+		}
+
+		@Override
+		public void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+			if (!slotsChanged.isEmpty()) {
+				int slots = inputLocks.getSlots();
+				Map<Integer, ItemStack> stacksToSync = new HashMap<>();
+				for (int slot : slotsChanged) {
+					if (slot >= 0 && slot < slots) {
+						//Validate the slot is a valid index
+						stacksToSync.put(slot, inputLocks.getStackInSlot(slot));
+					}
+				}
+				if (!stacksToSync.isEmpty()) {
+					//Validate it is not empty in case we were fed bad indices
+					PacketHandler.sendTo(new KnowledgeSyncInputsAndLocksPKT(stacksToSync, updateTargets), player);
+				}
+			}
+		}
+
+		@Override
+		public void receiveInputsAndLocks(Map<Integer, ItemStack> changes) {
+			int slots = inputLocks.getSlots();
+			for (Map.Entry<Integer, ItemStack> entry : changes.entrySet()) {
+				int slot = entry.getKey();
+				if (slot >= 0 && slot < slots) {
+					//Validate the slot is a valid index
+					inputLocks.setStackInSlot(slot, entry.getValue());
+				}
+			}
+		}
+
+		@Override
 		public CompoundNBT serializeNBT() {
 			CompoundNBT properties = new CompoundNBT();
 			properties.putString("transmutationEmc", emc.toString());
 
 			ListNBT knowledgeWrite = new ListNBT();
 			for (ItemInfo i : knowledge) {
-				CompoundNBT tag = i.write(new CompoundNBT());
-				knowledgeWrite.add(tag);
+				knowledgeWrite.add(i.write(new CompoundNBT()));
 			}
 
 			properties.put("knowledge", knowledgeWrite);

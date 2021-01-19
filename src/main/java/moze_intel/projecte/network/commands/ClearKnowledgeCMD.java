@@ -6,7 +6,7 @@ import java.util.Collection;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.to_client.KnowledgeClearPKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeClearPKT;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

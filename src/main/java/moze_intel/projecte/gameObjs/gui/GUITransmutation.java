@@ -70,7 +70,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
 		this.font.func_243248_b(matrix, title, titleX, titleY, 0x404040);
 		//Don't render inventory as we don't have space
-		BigInteger emcAmount = inv.getAvailableEMC();
+		BigInteger emcAmount = inv.getAvailableEmc();
 		this.font.func_243248_b(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.ySize - 104, 0x404040);
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);
 		this.font.func_243248_b(matrix, emc, 6, this.ySize - 94, 0x404040);
@@ -181,7 +181,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 
 	@Override
 	protected void renderHoveredTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-		BigInteger emcAmount = inv.getAvailableEMC();
+		BigInteger emcAmount = inv.getAvailableEmc();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {
 			super.renderHoveredTooltip(matrix, mouseX, mouseY);

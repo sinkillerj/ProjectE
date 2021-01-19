@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.server.MinecraftServer;
@@ -134,6 +136,25 @@ public class TransmutationOffline {
 			@Override
 			public void sync(@Nonnull ServerPlayerEntity player) {
 				toCopy.sync(player);
+			}
+
+			@Override
+			public void syncEmc(@Nonnull ServerPlayerEntity player) {
+				toCopy.syncEmc(player);
+			}
+
+			@Override
+			public void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned) {
+				toCopy.syncKnowledgeChange(player, change, learned);
+			}
+
+			@Override
+			public void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+				toCopy.syncInputAndLocks(player, slotsChanged, updateTargets);
+			}
+
+			@Override
+			public void receiveInputsAndLocks(Map<Integer, ItemStack> changes) {
 			}
 
 			@Override

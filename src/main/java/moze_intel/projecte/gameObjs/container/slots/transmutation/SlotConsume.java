@@ -12,20 +12,18 @@ public class SlotConsume extends SlotItemHandler {
 
 	private final TransmutationInventory inv;
 
-	public SlotConsume(TransmutationInventory inv, int par2, int par3, int par4) {
-		super(inv, par2, par3, par4);
+	public SlotConsume(TransmutationInventory inv, int index, int x, int y) {
+		super(inv, index, x, y);
 		this.inv = inv;
 	}
 
 	@Override
 	public void putStack(@Nonnull ItemStack stack) {
-		if (stack.isEmpty()) {
-			return;
+		if (inv.isServer() && !stack.isEmpty()) {
+			inv.handleKnowledge(stack);
+			inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
+			this.onSlotChanged();
 		}
-
-		inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
-		this.onSlotChanged();
-		inv.handleKnowledge(stack);
 	}
 
 	@Override

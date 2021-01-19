@@ -20,6 +20,10 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 
+//TODO: Fix recipe mapping for things containing EMC not working properly? (aka full klein stars)
+// We probably could do it with a set value before, make it a grouping of a fake stack that has
+// a specific emc value, and it, and then use that? We probably should check the capability for
+// it though it might be enough for now to just use an instanceof?
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
