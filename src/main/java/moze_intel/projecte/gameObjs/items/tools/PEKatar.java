@@ -23,6 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.CarvedPumpkinBlock;
+import net.minecraft.block.TripWireBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -66,7 +67,6 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		modeDesc = new ILangEntry[]{PELang.MODE_KATAR_1, PELang.MODE_KATAR_2};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
-		//TODO: Eventually it would be nice to make it so the katar can deactivate tripwires, this will need a forge PR though
 	}
 
 	@Override
@@ -194,6 +194,17 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
 		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
 		return ToolHelper.shearBlock(stack, pos, player) == ActionResultType.SUCCESS;
+	}
+
+	@Override
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
+		if (state.isIn(Blocks.TRIPWIRE) && !state.get(TripWireBlock.DISARMED)) {
+			//Deactivate tripwire
+			BlockState deactivated = state.with(TripWireBlock.DISARMED, true);
+			world.setBlockState(pos, deactivated, BlockFlags.NO_RERENDER);
+			return super.onBlockDestroyed(stack, world, deactivated, pos, entity);
+		}
+		return super.onBlockDestroyed(stack, world, state, pos, entity);
 	}
 
 	@Nonnull

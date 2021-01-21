@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -14,7 +15,6 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -45,7 +45,9 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
 
@@ -78,12 +80,15 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		if (player != null && !world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			Direction sideHit = ctx.getFace();
-			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
-				FluidHelper.tryFillTank(tile, Fluids.LAVA, sideHit, FluidAttributes.BUCKET_VOLUME);
-			} else {
-				WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA, false);
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			if (tile != null) {
+				Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+				if (capability.isPresent()) {
+					capability.get().fill(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+					return ActionResultType.SUCCESS;
+				}
 			}
+			WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA, false);
+			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 		return ActionResultType.SUCCESS;
 	}

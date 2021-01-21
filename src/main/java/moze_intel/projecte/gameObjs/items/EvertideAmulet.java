@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -15,7 +16,6 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.FluidHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -52,6 +52,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem {
@@ -88,19 +89,22 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		if (!world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos)) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			Direction sideHit = ctx.getFace();
-			if (tile != null && tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).isPresent()) {
-				FluidHelper.tryFillTank(tile, Fluids.WATER, sideHit, FluidAttributes.BUCKET_VOLUME);
-			} else {
-				BlockState state = world.getBlockState(pos);
-				if (state.getBlock() == Blocks.CAULDRON) {
-					int waterLevel = state.get(CauldronBlock.LEVEL);
-					if (waterLevel < 3) {
-						((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
-					}
-				} else {
-					WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-					world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.WATER_MAGIC.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			if (tile != null) {
+				Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+				if (capability.isPresent()) {
+					capability.get().fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+					return ActionResultType.SUCCESS;
 				}
+			}
+			BlockState state = world.getBlockState(pos);
+			if (state.getBlock() == Blocks.CAULDRON) {
+				int waterLevel = state.get(CauldronBlock.LEVEL);
+				if (waterLevel < 3) {
+					((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+				}
+			} else {
+				WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.WATER_MAGIC.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		}
 		return ActionResultType.SUCCESS;

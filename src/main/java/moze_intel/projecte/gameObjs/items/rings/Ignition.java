@@ -65,7 +65,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(@Nonnull ItemUseContext ctx) {
-		return WorldHelper.igniteTNT(ctx);
+		return WorldHelper.igniteBlock(ctx);
 	}
 
 	@Override

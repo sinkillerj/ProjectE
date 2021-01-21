@@ -138,7 +138,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		if (getMode(ctx.getItem()) == 1) {
-			ActionResultType result = WorldHelper.igniteTNT(ctx);
+			ActionResultType result = WorldHelper.igniteBlock(ctx);
 			if (result != ActionResultType.PASS) {
 				return result;
 			}

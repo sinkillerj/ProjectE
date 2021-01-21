@@ -3,9 +3,14 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.TNTBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -31,10 +36,28 @@ public class ProjectETNT extends TNTBlock {
 	@Override
 	public void catchFire(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
 		if (!world.isRemote) {
-			TNTEntity tnt = tntEntityCreator.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-			world.addEntity(tnt);
-			world.playSound(null, tnt.getPosX(), tnt.getPosY(), tnt.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+			createAndAddEntity(world, pos, igniter);
 		}
+	}
+
+	public void createAndAddEntity(@Nonnull World world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+		TNTEntity tnt = tntEntityCreator.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+		world.addEntity(tnt);
+		world.playSound(null, tnt.getPosX(), tnt.getPosY(), tnt.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+	}
+
+	public IDispenseItemBehavior createDispenseItemBehavior() {
+		//Based off vanilla's TNT behavior
+		return new DefaultDispenseItemBehavior() {
+			@Nonnull
+			@Override
+			protected ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+				createAndAddEntity(source.getWorld(), blockpos, null);
+				stack.shrink(1);
+				return stack;
+			}
+		};
 	}
 
 	@Override

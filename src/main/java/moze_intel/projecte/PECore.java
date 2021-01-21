@@ -4,7 +4,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
@@ -25,6 +27,7 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
+import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
@@ -61,13 +64,35 @@ import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.DummyIStorage;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
+import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
+import net.minecraft.block.CauldronBlock;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.TNTBlock;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.dispenser.BeehiveDispenseBehavior;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
+import net.minecraft.dispenser.OptionalDispenseBehavior;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -76,6 +101,10 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -174,12 +203,88 @@ public class PECore {
 
 		event.enqueueWork(() -> {
 			PacketHandler.register();
+			//Dispenser Behavior
+			registerDispenseBehavior(new BeehiveDispenseBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);
+			DispenserBlock.registerDispenseBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
+			DispenserBlock.registerDispenseBehavior(PEBlocks.NOVA_CATACLYSM, PEBlocks.NOVA_CATACLYSM.getBlock().createDispenseItemBehavior());
+			registerDispenseBehavior(new OptionalDispenseBehavior() {
+				@Nonnull
+				@Override
+				protected ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+					//Based off the flint and steel dispense behavior
+					if (stack.getItem() instanceof Arcana) {
+						Arcana item = (Arcana) stack.getItem();
+						if (item.getMode(stack) != 1) {
+							//Only allow using the arcana ring to ignite things when on ignition mode
+							setSuccessful(false);
+							return super.dispenseStack(source, stack);
+						}
+					}
+					World world = source.getWorld();
+					setSuccessful(true);
+					Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+					BlockPos pos = source.getBlockPos().offset(direction);
+					BlockState state = world.getBlockState(pos);
+					if (AbstractFireBlock.canLightBlock(world, pos, direction)) {
+						world.setBlockState(pos, AbstractFireBlock.getFireForPlacement(world, pos));
+					} else if (CampfireBlock.canBeLit(state)) {
+						world.setBlockState(pos, state.with(BlockStateProperties.LIT, true));
+					} else if (state.isFlammable(world, pos, direction.getOpposite())) {
+						state.catchFire(world, pos, direction.getOpposite(), null);
+						if (state.getBlock() instanceof TNTBlock) {
+							world.removeBlock(pos, false);
+						}
+					} else {
+						setSuccessful(false);
+					}
+					return stack;
+				}
+			}, PEItems.IGNITION_RING, PEItems.ARCANA_RING);
+			DispenserBlock.registerDispenseBehavior(PEItems.EVERTIDE_AMULET, new DefaultDispenseItemBehavior() {
+				@Nonnull
+				@Override
+				public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+					//Based off of vanilla's bucket dispense behaviors
+					// Note: We only do evertide, not volcanite, as placing lava requires EMC
+					World world = source.getWorld();
+					Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+					BlockPos pos = source.getBlockPos().offset(direction);
+					TileEntity tile = WorldHelper.getTileEntity(world, pos);
+					Direction sideHit = direction.getOpposite();
+					if (tile != null) {
+						Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+						if (capability.isPresent()) {
+							capability.get().fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+							return stack;
+						}
+					}
+					BlockState state = world.getBlockState(pos);
+					if (state.getBlock() == Blocks.CAULDRON) {
+						int waterLevel = state.get(CauldronBlock.LEVEL);
+						if (waterLevel < 3) {
+							((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+							return stack;
+						}
+					} else {
+						WorldHelper.placeFluid(null, world, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+						return stack;
+					}
+					return super.dispenseStack(source, stack);
+				}
+			});
 
 			// internals unsafe
 			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new ArgumentSerializer<>(UUIDArgument::new));
 			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new ArgumentSerializer<>(ColorArgument::new));
 			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new ArgumentSerializer<>(NSSItemArgument::new));
 		});
+	}
+
+	private static void registerDispenseBehavior(IDispenseItemBehavior behavior, IItemProvider... items) {
+		for (IItemProvider item : items) {
+			DispenserBlock.registerDispenseBehavior(item, behavior);
+		}
 	}
 
 	private void imcQueue(InterModEnqueueEvent event) {

@@ -10,9 +10,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.GrassBlock;
@@ -42,6 +44,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
@@ -184,7 +187,7 @@ public final class WorldHelper {
 	 * Attempts to place a fluid in a specific spot if the spot is a {@link ILiquidContainer} that supports the fluid otherwise try to place it in the block that is on
 	 * the given side of the clicked block.
 	 */
-	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
+	public static void placeFluid(@Nullable ServerPlayerEntity player, World world, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
 		if (isLiquidContainerForFluid(world, pos, world.getBlockState(pos), fluid)) {
 			//If the spot can be logged with our fluid then try using the position directly
 			placeFluid(player, world, pos, fluid, checkWaterVaporize);
@@ -199,7 +202,7 @@ public final class WorldHelper {
 	 *
 	 * @apiNote Call this from the server side
 	 */
-	public static void placeFluid(ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
+	public static void placeFluid(@Nullable ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = world.getBlockState(pos);
 		if (checkWaterVaporize && world.getDimensionType().isUltrawarm() && fluid.isIn(FluidTags.WATER)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -213,7 +216,11 @@ public final class WorldHelper {
 			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
 				world.destroyBlock(pos, true);
 			}
-			PlayerHelper.checkedPlaceBlock(player, pos, fluid.getDefaultState().getBlockState());
+			if (player == null) {
+				world.setBlockState(pos, fluid.getDefaultState().getBlockState());
+			} else {
+				PlayerHelper.checkedPlaceBlock(player, pos, fluid.getDefaultState().getBlockState());
+			}
 		}
 	}
 
@@ -503,7 +510,8 @@ public final class WorldHelper {
 	}
 
 	@Nonnull
-	public static ActionResultType igniteTNT(ItemUseContext ctx) {
+	public static ActionResultType igniteBlock(ItemUseContext ctx) {
+		//TODO: Allow this to light fires and stuff as well?
 		PlayerEntity player = ctx.getPlayer();
 		if (player == null) {
 			return ActionResultType.FAIL;
@@ -512,7 +520,17 @@ public final class WorldHelper {
 		BlockPos pos = ctx.getPos();
 		Direction side = ctx.getFace();
 		BlockState state = world.getBlockState(pos);
-		if (state.isFlammable(world, pos, side)) {
+		if (AbstractFireBlock.canLightBlock(world, pos, side)) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
+				world.setBlockState(pos, AbstractFireBlock.getFireForPlacement(world, pos));
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			}
+		} else if (CampfireBlock.canBeLit(state)) {
+			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
+				world.setBlockState(pos, state.with(BlockStateProperties.LIT, true));
+				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			}
+		} else if (state.isFlammable(world, pos, side)) {
 			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				// Ignite the block
 				state.catchFire(world, pos, side, player);
@@ -521,9 +539,10 @@ public final class WorldHelper {
 				}
 				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
-			return ActionResultType.SUCCESS;
+		} else {
+			return ActionResultType.PASS;
 		}
-		return ActionResultType.PASS;
+		return ActionResultType.SUCCESS;
 	}
 
 	/**
