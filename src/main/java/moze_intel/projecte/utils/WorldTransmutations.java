@@ -15,8 +15,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.InterModComms;
 
 public final class WorldTransmutations {
@@ -93,11 +91,6 @@ public final class WorldTransmutations {
 		registerBackAndForthAllStates(Blocks.CRIMSON_STAIRS, Blocks.WARPED_STAIRS);
 		registerBackAndForthAllStates(Blocks.CRIMSON_FENCE, Blocks.WARPED_FENCE);
 		registerBackAndForthAllStates(Blocks.CRIMSON_PRESSURE_PLATE, Blocks.WARPED_PRESSURE_PLATE);
-	}
-
-	@Nullable
-	public static BlockState getWorldTransmutation(IBlockReader world, BlockPos pos, boolean isSneaking) {
-		return getWorldTransmutation(world.getBlockState(pos), isSneaking);
 	}
 
 	@Nullable

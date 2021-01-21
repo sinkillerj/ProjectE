@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -66,9 +65,10 @@ public class TransmutationRenderingEvent {
 				wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
 				tessellator.draw();
 			} else {
+				//Just render it normally instead of with the given model as some block's don't render properly then as an item
+				// for example glass panes
 				RenderHelper.enableStandardItemLighting();
-				IBakedModel model = mc.getBlockRendererDispatcher().getModelForState(transmutationResult);
-				mc.getItemRenderer().renderItemModelIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0, model);
+				mc.getItemRenderer().renderItemIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0);
 				RenderHelper.disableStandardItemLighting();
 			}
 			long gameTime = mc.world == null ? 0 : mc.world.getGameTime();
@@ -105,8 +105,6 @@ public class TransmutationRenderingEvent {
 		BlockRayTraceResult rtr = philoStone.getHitBlock(player);
 		if (rtr.getType() == RayTraceResult.Type.BLOCK) {
 			BlockState current = world.getBlockState(rtr.getPos());
-			//TODO: Evaluate making this even smarter and allowing for blocks to flag themselves as being able to propagate
-			// to neighboring blocks of different states so that things like fences are easier to convert
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
 			if (transmutationResult != null) {
 				Vector3d viewPosition = activeRenderInfo.getProjectedView();
@@ -118,7 +116,7 @@ public class TransmutationRenderingEvent {
 				matrix.push();
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				ISelectionContext selectionContext = ISelectionContext.forEntity(player);
-				for (BlockPos pos : PhilosophersStone.getAffectedPositions(world, rtr.getPos(), player, rtr.getFace(), mode, charge)) {
+				for (BlockPos pos : PhilosophersStone.getChanges(world, rtr.getPos(), player, rtr.getFace(), mode, charge).keySet()) {
 					BlockState state = world.getBlockState(pos);
 					if (!state.isAir(world, pos)) {
 						VoxelShape shape = state.getShape(world, pos, selectionContext);

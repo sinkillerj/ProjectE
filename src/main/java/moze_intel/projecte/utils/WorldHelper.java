@@ -511,7 +511,6 @@ public final class WorldHelper {
 
 	@Nonnull
 	public static ActionResultType igniteBlock(ItemUseContext ctx) {
-		//TODO: Allow this to light fires and stuff as well?
 		PlayerEntity player = ctx.getPlayer();
 		if (player == null) {
 			return ActionResultType.FAIL;

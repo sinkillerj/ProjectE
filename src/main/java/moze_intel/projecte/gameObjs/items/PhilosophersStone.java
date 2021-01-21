@@ -1,9 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -86,23 +88,17 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			pos = rtr.getPos();
 			sideHit = rtr.getFace();
 		}
-
-		BlockState result = WorldTransmutations.getWorldTransmutation(world, pos, player.isSneaking());
-
-		if (result != null) {
-			int mode = this.getMode(stack);
-			int charge = this.getCharge(stack);
-
-			for (BlockPos currentPos : getAffectedPositions(world, pos, player, sideHit, mode, charge)) {
-				PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, currentPos, result);
+		Map<BlockPos, BlockState> toChange = getChanges(world, pos, player, sideHit, getMode(stack), getCharge(stack));
+		if (!toChange.isEmpty()) {
+			for (Map.Entry<BlockPos, BlockState> entry : toChange.entrySet()) {
+				BlockPos currentPos = entry.getKey();
+				PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, currentPos, entry.getValue());
 				if (world.rand.nextInt(8) == 0) {
 					((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
-
 			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
 		}
-
 		return ActionResultType.SUCCESS;
 	}
 
@@ -130,10 +126,15 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Set<BlockPos> getAffectedPositions(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
+	public static Map<BlockPos, BlockState> getChanges(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
 		BlockState targeted = world.getBlockState(pos);
+		boolean isSneaking = player.isSneaking();
+		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
+		if (result == null) {
+			//Targeted block has no transmutations, no positions
+			return Collections.emptyMap();
+		}
 		Stream<BlockPos> stream = null;
-
 		switch (mode) {
 			case 0: // Cube
 				stream = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
@@ -157,9 +158,29 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				break;
 		}
 		if (stream == null) {
-			return Collections.emptySet();
+			return Collections.emptyMap();
 		}
-		return stream.filter(currentPos -> world.getBlockState(currentPos) == targeted).map(BlockPos::toImmutable).collect(Collectors.toSet());
+		Map<BlockState, BlockState> conversions = new Object2ObjectArrayMap<>();
+		conversions.put(targeted, result);
+		Map<BlockPos, BlockState> changes = new HashMap<>();
+		Block targetBlock = targeted.getBlock();
+		stream.forEach(currentPos -> {
+			BlockState state = world.getBlockState(currentPos);
+			if (state.isIn(targetBlock)) {
+				BlockState actualResult;
+				if (conversions.containsKey(state)) {
+					actualResult = conversions.get(state);
+				} else {
+					conversions.put(state, actualResult = WorldTransmutations.getWorldTransmutation(state, isSneaking));
+				}
+				//We allow for null keys to avoid having to look it up again from the world transmutations
+				// which may be slightly slower, but we only add it as a position to change if we have a result
+				if (actualResult != null) {
+					changes.put(currentPos.toImmutable(), actualResult);
+				}
+			}
+		});
+		return changes;
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {

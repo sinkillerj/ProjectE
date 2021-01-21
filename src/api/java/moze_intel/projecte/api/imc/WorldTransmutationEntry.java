@@ -3,7 +3,7 @@ package moze_intel.projecte.api.imc;
 import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 
-public class WorldTransmutationEntry {
+public final class WorldTransmutationEntry {
 
 	private final BlockState origin;
 	private final BlockState result;
