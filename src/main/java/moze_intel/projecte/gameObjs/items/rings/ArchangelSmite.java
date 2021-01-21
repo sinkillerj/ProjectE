@@ -69,7 +69,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5) {
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
 		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity) {
 			fireArrow(stack, world, (LivingEntity) entity, 1F);
 		}

@@ -94,15 +94,38 @@ public final class KnowledgeImpl {
 
 		@Override
 		public void clearKnowledge() {
+			boolean hasKnowledge = fullKnowledge || !knowledge.isEmpty();
 			knowledge.clear();
 			fullKnowledge = false;
-			fireChangedEvent();
+			if (hasKnowledge) {
+				//If we previously had any knowledge fire the fact that our knowledge changed
+				fireChangedEvent();
+			}
+		}
+
+		@Nullable
+		private ItemInfo getIfPersistent(@Nonnull ItemInfo info) {
+			if (!info.hasNBT() || EMCMappingHandler.hasEmcValue(info)) {
+				//If we have no NBT or the base mapping has an emc value for our item with the given NBT
+				// then we don't have an extended state
+				return null;
+			}
+			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+			if (cleanedInfo.hasNBT() && !EMCMappingHandler.hasEmcValue(cleanedInfo)) {
+				//If we still have NBT after unimportant parts being stripped and it doesn't
+				// directly have an EMC value, then we it has some persistent information
+				return cleanedInfo;
+			}
+			return null;
 		}
 
 		@Override
 		public boolean hasKnowledge(@Nonnull ItemInfo info) {
 			if (fullKnowledge) {
-				return true;
+				//If we have all knowledge, check if the item has extra data and
+				// may not actually be in our knowledge set but can be added to it
+				ItemInfo persistentInfo = getIfPersistent(info);
+				return persistentInfo == null || knowledge.contains(persistentInfo);
 			}
 			return knowledge.contains(NBTManager.getPersistentInfo(info));
 		}
@@ -110,44 +133,62 @@ public final class KnowledgeImpl {
 		@Override
 		public boolean addKnowledge(@Nonnull ItemInfo info) {
 			if (fullKnowledge) {
-				//TODO - 1.16: I think how we handle full knowledge stops learning items that don't fit into the
-				// full knowledge because of having extra persistent info due to NBTProcessing, ideally we want to
-				// properly allow continuing to learn these items
-				return false;
+				ItemInfo persistentInfo = getIfPersistent(info);
+				if (persistentInfo == null) {
+					//If the item doesn't have extra data, and we have all knowledge, don't actually add any
+					return false;
+				}
+				//If it does have extra data, pretend we don't have full knowledge and try adding it as what we have is persistent.
+				// Note: We ignore the tome here being a separate entity because it should not have any persistent info
+				return tryAdd(persistentInfo);
 			}
 			if (info.getItem() instanceof Tome) {
 				if (info.hasNBT()) {
 					//Make sure we don't have any NBT as it doesn't have any effect for the tome
 					info = ItemInfo.fromItem(info.getItem());
 				}
-				if (!hasKnowledge(info)) {
-					knowledge.add(info);
-				}
+				//Note: We don't bother checking if we already somehow know the tome without having full knowledge
+				// as we are learning it without any NBT which means that it doesn't have any extra persistent info
+				// so can just check if it is already in it by nature of it being a set
+				knowledge.add(info);
 				fullKnowledge = true;
 				fireChangedEvent();
 				return true;
 			}
+			return tryAdd(NBTManager.getPersistentInfo(info));
+		}
 
-			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
-			if (!hasKnowledge(cleanedInfo)) {
-				knowledge.add(cleanedInfo);
+		private boolean tryAdd(@Nonnull ItemInfo cleanedInfo) {
+			if (knowledge.add(cleanedInfo)) {
 				fireChangedEvent();
 				return true;
 			}
-
 			return false;
 		}
 
 		@Override
 		public boolean removeKnowledge(@Nonnull ItemInfo info) {
-			if (info.getItem() instanceof Tome) {
-				setFullKnowledge(false);
-				return true;
-			}
 			if (fullKnowledge) {
-				return false;
+				if (info.getItem() instanceof Tome) {
+					//If we have full knowledge and are trying to remove the tome allow it
+					if (info.hasNBT()) {
+						//Make sure we don't have any NBT as it doesn't have any effect for the tome
+						info = ItemInfo.fromItem(info.getItem());
+					}
+					knowledge.remove(info);
+					fullKnowledge = false;
+					fireChangedEvent();
+					return true;
+				}
+				//Otherwise check if we have any persistent information, and if so try removing that
+				// as we may have it known as an "extra" item
+				ItemInfo persistentInfo = getIfPersistent(info);
+				return persistentInfo != null && tryRemove(persistentInfo);
 			}
-			ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
+			return tryRemove(NBTManager.getPersistentInfo(info));
+		}
+
+		private boolean tryRemove(@Nonnull ItemInfo cleanedInfo) {
 			if (knowledge.remove(cleanedInfo)) {
 				fireChangedEvent();
 				return true;

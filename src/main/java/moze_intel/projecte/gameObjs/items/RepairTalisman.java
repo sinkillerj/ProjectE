@@ -49,7 +49,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int par4, boolean par5) {
+	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
 		if (!world.isRemote && entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
