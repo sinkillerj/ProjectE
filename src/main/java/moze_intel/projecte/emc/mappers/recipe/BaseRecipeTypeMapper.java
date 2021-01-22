@@ -24,6 +24,12 @@ import net.minecraft.util.Tuple;
 // We probably could do it with a set value before, make it a grouping of a fake stack that has
 // a specific emc value, and it, and then use that? We probably should check the capability for
 // it though it might be enough for now to just use an instanceof?
+//TODO: Evaluate using a fake crafting inventory and then calling recipe#getRemainingItems? May not be worthwhile to do
+// The bigger question is how would the "fake group" stuff work for it? Maybe have an NSSFake called "inverted" that
+// gets thrown in with a bucket? Or conversion NSSFake # = inverted + thing
+// Alternatively we should have the fake group manager keep track of an intermediary object that says what kind
+// of transformations actually is happening so that we can then basically compare sets/easier allow for custom objects
+// to do things
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
@@ -95,7 +101,6 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				}
 			}
 		}
-		//TODO: Evaluate using a fake crafting inventory and then calling recipe#getRemainingItems? May not be worthwhile to do
 		mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap.getMap());
 		return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 	}
