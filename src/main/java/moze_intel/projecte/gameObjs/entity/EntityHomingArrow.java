@@ -212,4 +212,9 @@ public class EntityHomingArrow extends ArrowEntity {
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
+
+	@Override
+	public boolean isImmuneToExplosions() {
+		return true;
+	}
 }

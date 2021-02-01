@@ -109,4 +109,9 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
+
+	@Override
+	public boolean isImmuneToExplosions() {
+		return true;
+	}
 }
