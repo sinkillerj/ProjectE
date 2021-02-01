@@ -250,7 +250,7 @@ dependencies {
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.4:${crafttweaker_version}")
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
