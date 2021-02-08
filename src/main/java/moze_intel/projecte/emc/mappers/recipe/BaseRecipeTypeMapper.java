@@ -39,10 +39,16 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
 			return false;
 		}
+		Collection<Ingredient> ingredientsChecked = getIngredientsChecked(recipe);
+		if (ingredientsChecked == null) {
+			//Failed to get matching ingredients, bail but mark that we handled it as there is a 99% chance a later
+			// mapper would fail as well due to it being an invalid recipe
+			return true;
+		}
 		ResourceLocation recipeID = recipe.getId();
 		List<Tuple<NormalizedSimpleStack, List<IngredientMap<NormalizedSimpleStack>>>> dummyGroupInfos = new ArrayList<>();
 		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
-		for (Ingredient recipeItem : getIngredients(recipe)) {
+		for (Ingredient recipeItem : ingredientsChecked) {
 			ItemStack[] matches = getMatchingStacks(recipeItem, recipeID);
 			if (matches == null) {
 				//Failed to get matching stacks ingredient, bail but mark that we handled it as there is a 99% chance a later
@@ -180,6 +186,22 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	private boolean isTagException(Exception e) {
 		return e instanceof IllegalStateException && e.getMessage().matches("Tag \\S*:\\S* used before it was bound");
+	}
+
+	@Nullable
+	private Collection<Ingredient> getIngredientsChecked(IRecipe<?> recipe) {
+		try {
+			return getIngredients(recipe);
+		} catch (Exception e) {
+			ResourceLocation recipeID = recipe.getId();
+			if (isTagException(e)) {
+				PECore.LOGGER.fatal("Error mapping recipe {}. Failed to get ingredients due to the recipe not properly deserializing and handling tags. "
+									+ "Please report this to {}.", recipeID, recipeID.getNamespace(), e);
+			} else {
+				PECore.LOGGER.fatal("Error mapping recipe {}. Failed to get ingredients. Please report this to {}.", recipeID, recipeID.getNamespace(), e);
+			}
+		}
+		return null;
 	}
 
 	//Allow overwriting the ingredients list because Smithing recipes don't override it themselves
