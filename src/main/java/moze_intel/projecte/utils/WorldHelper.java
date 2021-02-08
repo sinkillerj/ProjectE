@@ -363,8 +363,8 @@ public final class WorldHelper {
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
-			// Note: Nether roots and sprouts are like these but don't actually implement IForgeShearable
-			if (crop instanceof IForgeShearable || crop instanceof NetherRootsBlock || crop instanceof NetherSproutsBlock) {
+			if (crop instanceof IForgeShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
+				crop instanceof NetherRootsBlock || crop instanceof NetherSproutsBlock) {
 				if (harvest) {
 					harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 				}
@@ -375,7 +375,10 @@ public final class WorldHelper {
 				IGrowable growable = (IGrowable) crop;
 				if (!growable.canGrow(world, currentPos, state, false)) {
 					if (harvest && !crop.isIn(PETags.Blocks.BLACKLIST_HARVEST)) {
-						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
+						if (crop != Blocks.KELP_PLANT || world.getBlockState(currentPos.down()).isIn(crop)) {
+							//Don't harvest the bottom of help but otherwise allow harvesting them
+							harvestBlock(world, currentPos, (ServerPlayerEntity) player);
+						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
 					if (world.rand.nextInt(chance) == 0) {
@@ -392,11 +395,8 @@ public final class WorldHelper {
 					}
 				}
 				if (harvest) {
-					if (crop instanceof FlowerBlock || crop instanceof DoublePlantBlock) {
-						//Handle double plant blocks that were not already handled due to being shearable
-						harvestBlock(world, currentPos, (ServerPlayerEntity) player);
-					} else if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
-						if (world.getBlockState(currentPos.up()).getBlock() == crop && world.getBlockState(currentPos.up(2)).getBlock() == crop) {
+					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
+						if (world.getBlockState(currentPos.up()).isIn(crop) && world.getBlockState(currentPos.up(2)).isIn(crop)) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
 								harvestBlock(world, currentPos.up(i), (ServerPlayerEntity) player);
 							}
