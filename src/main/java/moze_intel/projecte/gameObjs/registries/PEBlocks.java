@@ -34,6 +34,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.WallOrFloorItem;
+import net.minecraftforge.common.ToolType;
 
 public class PEBlocks {
 
@@ -68,7 +69,7 @@ public class PEBlocks {
 
 	private static BlockRegistryObject<Collector, CollectorItem> registerCollector(String name, EnumCollectorTier collectorTier, ToIntFunction<BlockState> lightLevel) {
 		return BLOCKS.registerDefaultProperties(name, () -> new Collector(collectorTier, AbstractBlock.Properties.create(Material.GLASS).setRequiresTool()
-				.hardnessAndResistance(0.3F, 0.9F).setLightLevel(lightLevel)), CollectorItem::new);
+				.harvestTool(ToolType.PICKAXE).hardnessAndResistance(0.3F, 0.9F).setLightLevel(lightLevel)), CollectorItem::new);
 	}
 
 	private static <CONDENSER extends Condenser> BlockRegistryObject<CONDENSER, BlockItem> registerCondenser(String name,
