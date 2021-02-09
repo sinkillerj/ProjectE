@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -122,8 +123,13 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		allInputs.clear();
 		Set<ItemInfo> inputs = new HashSet<>();
 		for (Ingredient potionItem : PotionBrewing.POTION_ITEMS) {
-			for (ItemStack input : potionItem.getMatchingStacks()) {
-				inputs.add(ItemInfo.fromStack(input));
+			ItemStack[] matchingStacks = getMatchingStacks(potionItem);
+			if (matchingStacks != null) {
+				//Silently ignore any invalid potion items (ingredients that may be tags) this should never be the case
+				// unless someone ATs the map and inserts a custom ingredient into it, but just in case, don't crash
+				for (ItemStack input : matchingStacks) {
+					inputs.add(ItemInfo.fromStack(input));
+				}
 			}
 		}
 		for (Potion potion : ForgeRegistries.POTION_TYPES.getValues()) {
@@ -157,9 +163,13 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				Ingredient input = brewingRecipe.getInput();
 				Ingredient reagent = brewingRecipe.getIngredient();
 				ItemStack output = brewingRecipe.getOutput();
-				ItemStack[] validInputs = input.getMatchingStacks();
-				ItemStack[] validReagents = reagent.getMatchingStacks();
-
+				ItemStack[] validInputs = getMatchingStacks(input);
+				ItemStack[] validReagents = getMatchingStacks(reagent);
+				if (validInputs == null || validReagents == null) {
+					//Skip brewing recipes that we are not able to process such as ones using tags
+					// as ingredients, as tags don't exist when the brewing recipe is being defined
+					continue;
+				}
 				NormalizedSimpleStack nssOut = NSSItem.createItem(output);
 				for (ItemStack validInput : validInputs) {
 					NormalizedSimpleStack nssInput = NSSItem.createItem(validInput);
@@ -218,5 +228,14 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public String getDescription() {
 		return "Add Conversions for Brewing Recipes";
+	}
+
+	@Nullable
+	private static ItemStack[] getMatchingStacks(Ingredient ingredient) {
+		try {
+			return ingredient.getMatchingStacks();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }
