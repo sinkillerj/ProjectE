@@ -1,8 +1,12 @@
 {
-  "comment": "Sets default conversions for various metals from other mods.",
+  "comment": "Sets default conversions for various metals from other mods and their default values.",
   "values": {
     "before": {
-      "#forge:ingots/iron": 256
+      "#forge:ingots/iron": 256,
+      "#forge:ingots/uranium": 4096,
+      "#forge:gems/ruby": 2048,
+      "#forge:gems/sapphire": 2048,
+      "#forge:gems/peridot": 2048
     },
     "conversion": [
       {
@@ -11,6 +15,80 @@
         "ingredients": {
           "#forge:ingots/iron": 8
         }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/copper",
+        "count": 2,
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/tin",
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/bronze",
+        "ingredients": {
+          "#forge:ingots/copper": 3,
+          "#forge:ingots/tin": 1
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/silver",
+        "ingredients": {
+          "#forge:ingots/iron": 2
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/lead",
+        "ingredients": {
+          "#forge:ingots/iron": 2
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/osmium",
+        "ingredients": {
+          "#forge:ingots/iron": 2
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/nickel",
+        "ingredients": {
+          "#forge:ingots/iron": 4
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/aluminum",
+        "count": 2,
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/platinum",
+        "ingredients": {
+          "#forge:ingots/iron": 16
+        }
+      },
+      {
+        "propagateTags": true,
+        "output": "#forge:ingots/cyanite",
+        "count": 4,
+        "ingredients": [
+          "#forge:ingots/uranium"
+        ]
       }
     ]
   }

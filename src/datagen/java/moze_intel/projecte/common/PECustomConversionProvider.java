@@ -6,6 +6,7 @@ import moze_intel.projecte.api.data.ConversionGroupBuilder;
 import moze_intel.projecte.api.data.CustomConversionBuilder;
 import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
+import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -14,6 +15,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.Tags.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -27,9 +29,24 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 	@Override
 	protected void addCustomConversions() {
 		createConversionBuilder(PECore.rl("metals"))
-				.comment("Sets default conversions for various metals from other mods.")
+				.comment("Sets default conversions for various metals from other mods and their default values.")
 				.before(Tags.Items.INGOTS_IRON, 256)
-				.conversion(Tags.Items.INGOTS_GOLD).ingredient(Tags.Items.INGOTS_IRON, 8).propagateTags().end();
+				.before(ingotTag("uranium"), 4_096)
+				.before(gemTag("ruby"), 2_048)
+				.before(gemTag("sapphire"), 2_048)
+				.before(gemTag("peridot"), 2_048)
+				.conversion(Tags.Items.INGOTS_GOLD).ingredient(Tags.Items.INGOTS_IRON, 8).propagateTags().end()
+				.conversion(ingotTag("copper"), 2).ingredient(Tags.Items.INGOTS_IRON).propagateTags().end()
+				.conversion(ingotTag("tin")).ingredient(Tags.Items.INGOTS_IRON).propagateTags().end()
+				.conversion(ingotTag("bronze")).ingredient(ingotTag("copper"), 3).ingredient(ingotTag("tin")).propagateTags().end()
+				.conversion(ingotTag("silver")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
+				.conversion(ingotTag("lead")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
+				.conversion(ingotTag("osmium")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
+				.conversion(ingotTag("nickel")).ingredient(Tags.Items.INGOTS_IRON, 4).propagateTags().end()
+				.conversion(ingotTag("aluminum"), 2).ingredient(Tags.Items.INGOTS_IRON).propagateTags().end()
+				.conversion(ingotTag("platinum")).ingredient(Tags.Items.INGOTS_IRON, 16).propagateTags().end()
+				.conversion(ingotTag("cyanite"), 4).ingredient(ingotTag("uranium")).propagateTags().end()
+		;
 		NormalizedSimpleStack singleEMC = NSSFake.create("single_emc");
 		CustomConversionBuilder defaultBuilder = createConversionBuilder(PECore.rl("defaults"))
 				.comment("Default values for vanilla items.")
@@ -257,5 +274,17 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 					.ingredient(color.getTag())
 					.end();
 		}
+	}
+
+	private static NormalizedSimpleStack ingotTag(String ingot) {
+		return tag("forge:ingots/" + ingot);
+	}
+
+	private static NormalizedSimpleStack gemTag(String gem) {
+		return tag("forge:gems/" + gem);
+	}
+
+	private static NormalizedSimpleStack tag(String tag) {
+		return NSSItem.createTag(new ResourceLocation(tag));
 	}
 }
