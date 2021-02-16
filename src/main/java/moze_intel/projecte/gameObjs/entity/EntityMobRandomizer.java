@@ -6,8 +6,11 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.passive.RabbitEntity;
+import net.minecraft.entity.passive.RabbitEntity.RabbitData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.network.IPacket;
@@ -70,7 +73,15 @@ public class EntityMobRandomizer extends ThrowableEntity {
 		if (randomized != null && EMCHelper.consumePlayerFuel((PlayerEntity) thrower, 384) != -1) {
 			ent.remove();
 			randomized.setLocationAndAngles(ent.getPosX(), ent.getPosY(), ent.getPosZ(), ent.rotationYaw, ent.rotationPitch);
-			randomized.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(randomized.getPosition()), SpawnReason.CONVERSION, null, null);
+			ILivingEntityData data;
+			if (randomized instanceof RabbitEntity && ((RabbitEntity) randomized).getRabbitType() == 99) {
+				//If we are creating a rabbit and it is supposed to be the killer bunny, we need to pass that data
+				// to onInitialSpawn or it will reset it to a random type of rabbit
+				data = new RabbitData(99);
+			} else {
+				data = null;
+			}
+			randomized.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(randomized.getPosition()), SpawnReason.CONVERSION, data, null);
 			getEntityWorld().addEntity(randomized);
 			randomized.spawnExplosionParticle();
 		}
