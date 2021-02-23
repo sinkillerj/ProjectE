@@ -3,9 +3,10 @@ import groovy.json.JsonOutput
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
+        maven {
+            name "forge"
+            url "https://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
