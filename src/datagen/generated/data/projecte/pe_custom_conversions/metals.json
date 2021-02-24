@@ -34,6 +34,7 @@
       {
         "propagateTags": true,
         "output": "#forge:ingots/bronze",
+        "count": 4,
         "ingredients": {
           "#forge:ingots/copper": 3,
           "#forge:ingots/tin": 1
