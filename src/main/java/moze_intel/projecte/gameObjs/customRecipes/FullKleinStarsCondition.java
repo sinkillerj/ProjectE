@@ -22,7 +22,7 @@ public class FullKleinStarsCondition implements ICondition {
 
 	@Override
 	public boolean test() {
-		return ProjectEConfig.server.difficulty.fullKleinStars.get();
+		return ProjectEConfig.common.fullKleinStars.get();
 	}
 
 	public static final IConditionSerializer<FullKleinStarsCondition> SERIALIZER = new IConditionSerializer<FullKleinStarsCondition>() {

@@ -22,7 +22,7 @@ public class TomeEnabledCondition implements ICondition {
 
 	@Override
 	public boolean test() {
-		return ProjectEConfig.server.difficulty.craftableTome.get();
+		return ProjectEConfig.common.craftableTome.get();
 	}
 
 	public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {

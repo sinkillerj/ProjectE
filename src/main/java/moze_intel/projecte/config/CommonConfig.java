@@ -12,6 +12,8 @@ public class CommonConfig extends BasePEConfig {
 	private final ForgeConfigSpec configSpec;
 
 	public final CachedBooleanValue debugLogging;
+	public final CachedBooleanValue craftableTome;
+	public final CachedBooleanValue fullKleinStars;
 
 	CommonConfig() {
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -22,6 +24,12 @@ public class CommonConfig extends BasePEConfig {
 		debugLogging = CachedBooleanValue.wrap(this, builder
 				.comment("Enable more verbose debug logging")
 				.define("debugLogging", false));
+		craftableTome = CachedBooleanValue.wrap(this, builder
+				.comment("The Tome of Knowledge can be crafted.")
+				.define("craftableTome", false));
+		fullKleinStars = CachedBooleanValue.wrap(this, builder
+				.comment("Require full omega klein stars in the tome of knowledge and gem armor recipes. This is the same behavior that EE2 had.")
+				.define("fullKleinStars", false));
 		builder.pop();
 		configSpec = builder.build();
 	}

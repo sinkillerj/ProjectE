@@ -52,8 +52,6 @@ public final class ServerConfig extends BasePEConfig {
 
 	public static class Difficulty {
 
-		public final CachedBooleanValue craftableTome;
-		public final CachedBooleanValue fullKleinStars;
 		public final CachedBooleanValue offensiveAbilities;
 		public final CachedFloatValue katarDeathAura;
 		public final CachedDoubleValue covalenceLoss;
@@ -61,12 +59,6 @@ public final class ServerConfig extends BasePEConfig {
 
 		private Difficulty(IPEConfig config, ForgeConfigSpec.Builder builder) {
 			builder.push("difficulty");
-			craftableTome = CachedBooleanValue.wrap(config, builder
-					.comment("The Tome of Knowledge can be crafted.")
-					.define("craftableTome", false));
-			fullKleinStars = CachedBooleanValue.wrap(config, builder
-					.comment("Require full omega klein stars in the tome of knowledge and gem armor recipes. This is the same behavior that EE2 had.")
-					.define("fullKleinStars", false));
 			offensiveAbilities = CachedBooleanValue.wrap(config, builder
 					.comment("Set to false to disable Gem Armor offensive abilities (helmet zap and chestplate explosion)")
 					.define("offensiveAbilities", false));
