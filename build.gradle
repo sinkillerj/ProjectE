@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.23', changing: true
     }
 }
 
@@ -85,7 +85,7 @@ version = "${projecte_version}"
 group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "projecte"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8 // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     // the mappings can be changed at any time, and must be in the following format.
@@ -281,6 +281,7 @@ task replaceResources(type: Copy) {
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy replaceResources
@@ -349,6 +350,10 @@ task updateJSON {
 
     	updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
 	}
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 artifacts {
