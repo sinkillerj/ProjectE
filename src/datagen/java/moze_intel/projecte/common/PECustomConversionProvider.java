@@ -38,7 +38,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Tags.Items.INGOTS_GOLD).ingredient(Tags.Items.INGOTS_IRON, 8).propagateTags().end()
 				.conversion(ingotTag("copper"), 2).ingredient(Tags.Items.INGOTS_IRON).propagateTags().end()
 				.conversion(ingotTag("tin")).ingredient(Tags.Items.INGOTS_IRON).propagateTags().end()
-				.conversion(ingotTag("bronze")).ingredient(ingotTag("copper"), 3).ingredient(ingotTag("tin")).propagateTags().end()
+				.conversion(ingotTag("bronze"), 4).ingredient(ingotTag("copper"), 3).ingredient(ingotTag("tin")).propagateTags().end()
 				.conversion(ingotTag("silver")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
 				.conversion(ingotTag("lead")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
 				.conversion(ingotTag("osmium")).ingredient(Tags.Items.INGOTS_IRON, 2).propagateTags().end()
