@@ -5,11 +5,11 @@ buildscript {
     repositories {
         maven {
             name "forge"
-            url "https://files.minecraftforge.net/maven"
+            url "https://maven.minecraftforge.net"
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.23', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1+', changing: true
     }
 }
 
