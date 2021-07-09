@@ -83,16 +83,4 @@ public class Relay extends BlockDirection {
 		}
 		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
 	}
-
-	@Override
-	@Deprecated
-	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = WorldHelper.getTileEntity(world, pos);
-			if (te != null) {
-				te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
-			}
-			super.onReplaced(state, world, pos, newState, isMoving);
-		}
-	}
 }
