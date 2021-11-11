@@ -204,27 +204,27 @@ public class PEItemModelProvider extends ItemModelProvider {
 		generated(PEItems.DARK_MATTER_CHESTPLATE, modLoc("item/dm_armor/chest"));
 		generated(PEItems.DARK_MATTER_LEGGINGS, modLoc("item/dm_armor/legs"));
 		generated(PEItems.DARK_MATTER_BOOTS, modLoc("item/dm_armor/feet"));
-		generated(PEItems.DARK_MATTER_AXE, modLoc("item/dm_tools/axe"));
-		generated(PEItems.DARK_MATTER_HAMMER, modLoc("item/dm_tools/hammer"));
-		generated(PEItems.DARK_MATTER_HOE, modLoc("item/dm_tools/hoe"));
-		generated(PEItems.DARK_MATTER_PICKAXE, modLoc("item/dm_tools/pickaxe"));
-		generated(PEItems.DARK_MATTER_SHEARS, modLoc("item/dm_tools/shears"));
-		generated(PEItems.DARK_MATTER_SHOVEL, modLoc("item/dm_tools/shovel"));
-		generated(PEItems.DARK_MATTER_SWORD, modLoc("item/dm_tools/sword"));
+		generated(PEItems.DARK_MATTER_AXE, "handheld", modLoc("item/dm_tools/axe"));
+		generated(PEItems.DARK_MATTER_HAMMER, "handheld", modLoc("item/dm_tools/hammer"));
+		generated(PEItems.DARK_MATTER_HOE, "handheld", modLoc("item/dm_tools/hoe"));
+		generated(PEItems.DARK_MATTER_PICKAXE, "handheld", modLoc("item/dm_tools/pickaxe"));
+		generated(PEItems.DARK_MATTER_SHEARS, "handheld", modLoc("item/dm_tools/shears"));
+		generated(PEItems.DARK_MATTER_SHOVEL, "handheld", modLoc("item/dm_tools/shovel"));
+		generated(PEItems.DARK_MATTER_SWORD, "handheld", modLoc("item/dm_tools/sword"));
 		//Red Matter
 		generated(PEItems.RED_MATTER_HELMET, modLoc("item/rm_armor/head"));
 		generated(PEItems.RED_MATTER_CHESTPLATE, modLoc("item/rm_armor/chest"));
 		generated(PEItems.RED_MATTER_LEGGINGS, modLoc("item/rm_armor/legs"));
 		generated(PEItems.RED_MATTER_BOOTS, modLoc("item/rm_armor/feet"));
-		generated(PEItems.RED_MATTER_AXE, modLoc("item/rm_tools/axe"));
-		generated(PEItems.RED_MATTER_HAMMER, modLoc("item/rm_tools/hammer"));
-		generated(PEItems.RED_MATTER_HOE, modLoc("item/rm_tools/hoe"));
-		generated(PEItems.RED_MATTER_PICKAXE, modLoc("item/rm_tools/pickaxe"));
-		generated(PEItems.RED_MATTER_SHEARS, modLoc("item/rm_tools/shears"));
-		generated(PEItems.RED_MATTER_SHOVEL, modLoc("item/rm_tools/shovel"));
-		generated(PEItems.RED_MATTER_SWORD, modLoc("item/rm_tools/sword"));
-		generated(PEItems.RED_MATTER_KATAR, modLoc("item/rm_tools/katar"));
-		generated(PEItems.RED_MATTER_MORNING_STAR, modLoc("item/rm_tools/morning_star"));
+		generated(PEItems.RED_MATTER_AXE, "handheld", modLoc("item/rm_tools/axe"));
+		generated(PEItems.RED_MATTER_HAMMER, "handheld", modLoc("item/rm_tools/hammer"));
+		generated(PEItems.RED_MATTER_HOE, "handheld", modLoc("item/rm_tools/hoe"));
+		generated(PEItems.RED_MATTER_PICKAXE, "handheld", modLoc("item/rm_tools/pickaxe"));
+		generated(PEItems.RED_MATTER_SHEARS, "handheld", modLoc("item/rm_tools/shears"));
+		generated(PEItems.RED_MATTER_SHOVEL, "handheld", modLoc("item/rm_tools/shovel"));
+		generated(PEItems.RED_MATTER_SWORD, "handheld", modLoc("item/rm_tools/sword"));
+		generated(PEItems.RED_MATTER_KATAR, "handheld", modLoc("item/rm_tools/katar"));
+		generated(PEItems.RED_MATTER_MORNING_STAR, "handheld", modLoc("item/rm_tools/morning_star"));
 		//Gem
 		generated(PEItems.GEM_HELMET, modLoc("item/gem_armor/head"));
 		generated(PEItems.GEM_CHESTPLATE, modLoc("item/gem_armor/chest"));
@@ -257,8 +257,16 @@ public class PEItemModelProvider extends ItemModelProvider {
 		return generated(getName(itemProvider), texture);
 	}
 
+	protected ItemModelBuilder generated(IItemProvider itemProvider, String type, ResourceLocation texture) {
+		return generated(getName(itemProvider), type, texture);
+	}
+
 	protected ItemModelBuilder generated(String name, ResourceLocation texture) {
-		return withExistingParent(name, "item/generated").texture("layer0", texture);
+		return generated(name, "generated", texture);
+	}
+
+	protected ItemModelBuilder generated(String name, String type, ResourceLocation texture) {
+		return withExistingParent(name, String.format("item/%s", type)).texture("layer0", texture);
 	}
 
 	private static String getName(IItemProvider itemProvider) {

@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.23', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1+', changing: true
     }
 }
 
@@ -179,51 +179,26 @@ repositories {
 	maven {
 		name "MinecraftForge"
 		url "https://files.minecraftforge.net/maven/"
-        content {
-            includeGroupByRegex 'net\\.minecraftforge.*'
-            includeGroup 'de.oceanlabs.mcp'
-            includeGroup 'cpw.mods'
-        }
 	}
     maven {
         name 'JEI'
         url "https://dvs1.progwml6.com/files/maven"
-        content {
-            includeGroup 'mezz.jei'
-        }
     }
     maven {
         name 'CraftTweaker'
         url "https://maven.blamejared.com"
-        content {
-            includeGroup 'com.blamejared.crafttweaker'
-        }
     }
     maven {
         name 'curios'
         url "https://maven.theillusivec4.top/"
-        content {
-            includeGroup 'top.theillusivec4.curios'
-        }
     }
     maven {
         name 'TOP'
         url "https://maven.tterrag.com/"
-        content {
-            includeGroupByRegex 'com\\.enderio.*'
-            includeGroupByRegex 'com\\.enderzoo.*'
-            includeGroupByRegex 'com\\.tterrag.*'
-            includeGroupByRegex 'tterrag.*'
-            includeGroup 'mcjty.theoneprobe'
-            includeGroup 'team.chisel.ctm'
-        }
     }
     maven {
         name 'HWYLA'
         url "https://maven.tehnut.info"
-        content {
-            includeGroup 'mcp.mobius.waila'
-        }
     }
 }
 

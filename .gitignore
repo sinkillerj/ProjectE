@@ -28,6 +28,7 @@ local.properties
 *.launch
 eclipse/
 libs/
+.cache/
 
 # Windows
 Thumbs.db
