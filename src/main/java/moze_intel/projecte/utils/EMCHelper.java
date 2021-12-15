@@ -35,7 +35,7 @@ public final class EMCHelper {
 	 * @implNote Order it tries to extract from is, Curios, Offhand, main inventory
 	 */
 	public static long consumePlayerFuel(PlayerEntity player, long minFuel) {
-		if (player.abilities.instabuild) {
+		if (player.isCreative()) {
 			return minFuel;
 		}
 		IItemHandler curios = PlayerHelper.getCurios(player);

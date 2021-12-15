@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
 
@@ -34,7 +35,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 		if (player.isInvisible()) {
 			return;
 		}
-		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUUID()) || CLAR_UUID.equals(player.getUUID())) {
+		if (!FMLEnvironment.production || SIN_UUID.equals(player.getUUID()) || CLAR_UUID.equals(player.getUUID())) {
 			matrix.pushPose();
 			render.getModel().jacket.translateAndRotate(matrix);
 			double yShift = -0.498;

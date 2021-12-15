@@ -119,7 +119,7 @@ public final class InternalAbilities {
 		if (!hasSwrg()) {
 			disableSwrgFlightOverride();
 		}
-		isFlyingGamemode = player.abilities.instabuild || player.isSpectator();
+		isFlyingGamemode = player.isCreative() || player.isSpectator();
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}

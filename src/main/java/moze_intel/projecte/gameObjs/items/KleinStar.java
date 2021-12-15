@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
@@ -12,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class KleinStar extends ItemPE implements IItemEmcHolder {
 
@@ -42,7 +42,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide && PECore.DEV_ENVIRONMENT) {
+		if (!world.isClientSide && !FMLEnvironment.production) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
 			return ActionResult.success(stack);
 		}

@@ -115,7 +115,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,7 +126,6 @@ public class PECore {
 	public static final String MODID = ProjectEAPI.PROJECTE_MODID;
 	public static final String MODNAME = "ProjectE";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
-	public static boolean DEV_ENVIRONMENT;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static final List<String> uuids = new ArrayList<>();
@@ -134,7 +133,7 @@ public class PECore {
 	public static ModContainer MOD_CONTAINER;
 
 	public static void debugLog(String msg, Object... args) {
-		if (DEV_ENVIRONMENT || ProjectEConfig.common.debugLogging.get()) {
+		if (!FMLEnvironment.production || ProjectEConfig.common.debugLogging.get()) {
 			LOGGER.info(msg, args);
 		} else {
 			LOGGER.debug(msg, args);
@@ -179,8 +178,6 @@ public class PECore {
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
-		DEV_ENVIRONMENT = FMLLoader.getNameFunction("srg").isPresent();
-
 		AlchBagImpl.init();
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
