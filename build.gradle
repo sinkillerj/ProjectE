@@ -1,42 +1,48 @@
-import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 buildscript {
     repositories {
         maven {
             name "forge"
-            url "https://files.minecraftforge.net/maven"
+            url "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.23', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
 plugins {
-    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.johnrengelman.shadow" version "7.1.1"
     id 'java'
     id 'eclipse'
     id 'idea'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+wrapper {
+    //Define wrapper values here so as to not have to always do so when updating gradlew.properties
+    gradleVersion = '7.3.2'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+defaultTasks 'build'
+
 idea {
     module {
         //Exclude directories from being managed
         for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
-            File excludeDir = new File(projectDir, excludeDirName)
-            excludeDirs.add(excludeDir)
+            excludeDirs.add(new File(projectDir, excludeDirName))
         }
     }
 }
 
 sourceSets {
     api {
-        java {
-            srcDir 'src/api/java'
-        }
+        //The API has no resources
+        resources.srcDirs = []
     }
     main {
         resources {
@@ -45,65 +51,88 @@ sourceSets {
             //But exclude the cache of the generated data from what gets built
             exclude '.cache'
         }
-        compileClasspath += project.sourceSets.api.output
-        runtimeClasspath += project.sourceSets.api.output
+        compileClasspath += api.output
+        runtimeClasspath += api.output
     }
     datagen {
         java.srcDirs = ['src/datagen/java']
-        resources.srcDirs = ['src/datagen/resources']
-        compileClasspath += project.sourceSets.api.output
-        compileClasspath += project.sourceSets.main.output
+        //Data gen has no resources it just creates resources
+        resources.srcDirs = []
+        compileClasspath += api.output + main.output
     }
     test {
-        compileClasspath += project.sourceSets.api.output
-        runtimeClasspath += project.sourceSets.api.output
+        //The test module has no resources
+        resources.srcDirs = []
+        compileClasspath += api.output + main.output
+        runtimeClasspath += api.output + main.output
     }
 }
 
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    def compileExtenders = [apiCompile, testCompile, datagenCompile]
-    def implementationExtenders = [apiImplementation, testImplementation, datagenImplementation]
-    def compileOnlyExtenders = [apiCompileOnly, testCompileOnly, datagenCompileOnly]
-    def runtimeOnlyExtenders = [apiRuntimeOnly, datagenRuntimeOnly]
-    for (def compileExtender : compileExtenders) {
-        compileExtender.extendsFrom(compile)
+    extendConfigurations(implementation, apiImplementation, testImplementation, datagenImplementation)
+    extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly, datagenCompileOnly)
+    extendConfigurations(runtimeOnly, apiRuntimeOnly, datagenRuntimeOnly)
+}
+
+static void extendConfigurations(Configuration base, Configuration... configurations) {
+    for (def configuration : configurations) {
+        configuration.extendsFrom(base)
     }
-    for (def implementationExtender : implementationExtenders) {
-        implementationExtender.extendsFrom(implementation)
+}
+
+ext {
+    versionProperties = ["version"       : projecte_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range]
+    jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+}
+
+def replaceResources = tasks.register("replaceResources", Copy) {
+    it.outputs.upToDateWhen { false }
+    def modsToml = copySpec {
+        from(sourceSets.main.resources) {
+            include "META-INF/mods.toml"
+            expand versionProperties
+        }
     }
-    for (def compileOnlyExtender : compileOnlyExtenders) {
-        compileOnlyExtender.extendsFrom(compileOnly)
+    //Copy it into the build dir
+    it.with modsToml
+    it.into "$buildDir/resources/main/"
+    //If IntelliJ's output dir exists, copy it there as well
+    if (new File("$rootDir/out/production/").exists()) {
+        copy {
+            with modsToml
+            into "$rootDir/out/production/"
+        }
     }
-    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
-        runtimeOnlyExtender.extendsFrom(runtimeOnly)
+    //If Eclipse's output dir exists, copy it there as well
+    if (new File("$rootDir/bin/main/").exists()) {
+        copy {
+            with modsToml
+            into "$rootDir/bin/main/"
+        }
     }
 }
 
 version = "${projecte_version}"
-group= "java.moze_intel" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "java.moze_intel"
 archivesBaseName = "projecte"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: "snapshot", version: "${mappings_version}"
-    
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
 
-    // default run configurations.
-    // these can be tweaked, removed, or duplicated as needed.
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
+
     runs {
         client {
             workingDirectory file('run')
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
             // Setting the below properties allows use of your normal Minecraft account in the
@@ -121,7 +150,7 @@ minecraft {
                 args '--username', project.getProperty('mc_username')
             }
             if (project.hasProperty('mc_accessToken')) {
-                //Your access token, you can find it in your '.minecraft/launcher_profiles.json' file
+                //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
                 args '--accessToken', project.getProperty('mc_accessToken')
             }
             if (project.hasProperty('forge_force_ansi')) {
@@ -131,15 +160,15 @@ minecraft {
             }
 
             mods {
-                projecte {
-                    sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-                }
+                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
         server {
             workingDirectory file('run')
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
                 // or eclipse's plugin that adds support for ansi escape in console
@@ -147,16 +176,16 @@ minecraft {
             }
 
             mods {
-                projecte {
-                    sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-                }
+                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
         data {
             workingDirectory file('run')
             environment 'target', 'fmluserdevdata'
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
                 // or eclipse's plugin that adds support for ansi escape in console
@@ -167,24 +196,13 @@ minecraft {
                     '--existing', file('src/main/resources/')
 
             mods {
-                projecte {
-                    sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagen])
-                }
+                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagen])
             }
         }
     }
 }
 
 repositories {
-	maven {
-		name "MinecraftForge"
-		url "https://files.minecraftforge.net/maven/"
-        content {
-            includeGroupByRegex 'net\\.minecraftforge.*'
-            includeGroup 'de.oceanlabs.mcp'
-            includeGroup 'cpw.mods'
-        }
-	}
     maven {
         name 'JEI'
         url "https://dvs1.progwml6.com/files/maven"
@@ -210,19 +228,35 @@ repositories {
         name 'TOP'
         url "https://maven.tterrag.com/"
         content {
-            includeGroupByRegex 'com\\.enderio.*'
-            includeGroupByRegex 'com\\.enderzoo.*'
-            includeGroupByRegex 'com\\.tterrag.*'
-            includeGroupByRegex 'tterrag.*'
             includeGroup 'mcjty.theoneprobe'
-            includeGroup 'team.chisel.ctm'
         }
     }
     maven {
-        name 'HWYLA'
-        url "https://maven.tehnut.info"
+        name 'CurseMaven'
+        url 'https://www.cursemaven.com'
         content {
-            includeGroup 'mcp.mobius.waila'
+            includeGroup 'curse.maven'
+        }
+    }
+
+    whenObjectAdded {
+        //ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
+        if (it instanceof MavenArtifactRepository) {
+            def url = it.url.toString()
+            if (url == 'https://maven.minecraftforge.net/' || url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
+                try {
+                    it.content {
+                        excludeGroup 'curse.maven'
+                        excludeGroup 'mezz.jei'
+                        excludeGroup 'mcjty.theoneprobe'
+                        excludeGroup 'com.blamejared.crafttweaker'
+                        excludeGroup 'top.theillusivec4.curios'
+                    }
+                    println("Adding exclusions to ${it.url}")
+                } catch (Exception ignored) {
+                    //oh well
+                }
+            }
         }
     }
 }
@@ -230,17 +264,15 @@ repositories {
 test {
     useJUnitPlatform()
 }
- 
+
 dependencies {
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
@@ -248,113 +280,124 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
-    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
-    compile group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
+    implementation group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
 
-jar {
-    from sourceSets.main.output
-    from sourceSets.api.output
-    manifest.attributes([
+if (project.hasProperty('UPDATE_MAPPINGS')) {
+    //If the project has the update mappings property, configure it to be able to target all our extra sourceSets as well
+    // so that whenever we need to update mappings it is quick and easy to do so.
+    // Note: This needs to be below the dependencies and minecraft blocks so that it can properly read the mappings value
+    // and also read and find the minecraft dep
+    def extraSourceSets = [sourceSets.api, sourceSets.test, sourceSets.datagen]
+    Set<File> allExtraDirs = new HashSet<>()
+    for (def sourceSet : extraSourceSets) {
+        allExtraDirs.addAll(sourceSet.java.srcDirs)
+    }
+    extractRangeMap {
+        sources.from(allExtraDirs)
+    }
+    applyRangeMap {
+        sources.from(allExtraDirs)
+    }
+    allExtraDirs.each { extractMappedNew.addTarget it }
+}
+
+//Set the various variables/settings for the different process resources tasks
+processResources {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    exclude('META-INF/mods.toml')
+    configure { finalizedBy(replaceResources) }
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
+}
+
+//Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
+classes.configure { dependsOn(replaceResources) }
+
+def getManifestAttributes() {
+    return [
             "Specification-Title"     : "ProjectE",
             "Specification-Vendor"    : "ProjectE",
             "Specification-Version"   : "${project.projecte_version}",
             "Implementation-Title"    : "ProjectE",
             "Implementation-Version"  : "${project.projecte_version}",
             "Implementation-Vendor"   : "ProjectE",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-    ])
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ]
 }
 
-task replaceResources(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources) {
-        include "META-INF/mods.toml"
-        expand "version": projecte_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range
-    }
-    into "$buildDir/resources/main/"
-}
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    finalizedBy replaceResources
+jar {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    from([sourceSets.api.output, sourceSets.main.output])
+    manifest.attributes(getManifestAttributes())
+    afterEvaluate { finalizedBy reobfJar }
 }
 
 task apiJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveClassifier.set("api")
     from sourceSets.api.output
-    archiveClassifier.set('api')
+    manifest.attributes(getManifestAttributes())
+    afterEvaluate { finalizedBy reobfApiJar }
 }
 
 shadowJar {
-    from sourceSets.main.output
-    from sourceSets.api.output
+    //Note: We use the include duplicate strategy instead of FAIL as minimize causes
+    // the things to get "added" twice but it is filtered separately by the shadow
+    // plugin anyways
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+    archiveClassifier.set("universal") // Replace the default JAR
+    dependsOn(classes, apiClasses)
+    from([sourceSets.api.output, sourceSets.main.output])
 
     // Only shadow apache commons-math3
     dependencies {
         include dependency('org.apache.commons:commons-math3:.*')
     }
-    exclude('org/apache/commons/math3/analysis/**')
-    exclude('org/apache/commons/math3/complex/**')
-    exclude('org/apache/commons/math3/dfp/**')
-    exclude('org/apache/commons/math3/distribution/**')
-    exclude('org/apache/commons/math3/filter/**')
-    exclude('org/apache/commons/math3/fitting/**')
-    exclude('org/apache/commons/math3/genetics/**')
-    exclude('org/apache/commons/math3/geometry/**')
-    exclude('org/apache/commons/math3/linear/**')
-    exclude('org/apache/commons/math3/ml/**')
-    exclude('org/apache/commons/math3/ode/**')
-    exclude('org/apache/commons/math3/optim/**')
-    exclude('org/apache/commons/math3/optimization/**')
-    exclude('org/apache/commons/math3/primes/**')
-    exclude('org/apache/commons/math3/random/**')
-    exclude('org/apache/commons/math3/special/**')
-    exclude('org/apache/commons/math3/stat/**')
-    exclude('org/apache/commons/math3/transform/**')
-
     exclude('assets/org/**')
     exclude('META-INF/maven/**')
-
+    exclude('META-INF/*.txt')
     // Relocate apache commons-math3 to prevent conflicts with other mods that include it
     relocate 'org.apache.commons.math3', 'moze_intel.projecte.shaded.org.apache.commons.math3'
-
-    archiveClassifier.set('universal') // Replace the default JAR
+    // Minimize the required files so we only include what is needed
+    minimize {
+        include dependency('org.apache.commons:commons-math3:.*')
+    }
+    afterEvaluate { finalizedBy reobfShadowJar }
 }
 
 reobf {
-    shadowJar {
-        // Reobfuscate the shadowed JAR
-    }
-    apiJar {
-        classpath = sourceSets.api.compileClasspath
-    }
+    shadowJar { }
+    apiJar { classpath.from(sourceSets.api.compileClasspath) }
+    jar { classpath.from(sourceSets.main.compileClasspath) }
 }
 
 task updateJSON {
-	doLast {
-    	def updateJsonFile = file('update.json')
-    	def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+    doLast {
+        def updateJsonFile = file('update.json')
+        def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
 
-    	updateJson."${minecraft_version}"."${project.version}" = "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
+        updateJson."${minecraft_version}"."${project.version}" = "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
 
-    	// Update promos
-    	updateJson.promos."${minecraft_version}-latest" = "${project.version}"
-    	updateJson.promos."${minecraft_version}-recommended" = "${project.version}"
+        // Update promos
+        updateJson.promos."${minecraft_version}-latest" = "${project.version}"
+        updateJson.promos."${minecraft_version}-recommended" = "${project.version}"
 
-    	updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
-	}
+        updateJsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(updateJson)))
+    }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
+tasks.withType(JavaCompile).configureEach({
+    it.options.encoding = 'UTF-8'
+})
 
 artifacts {
     archives apiJar
