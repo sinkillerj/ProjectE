@@ -17,7 +17,7 @@ public class PlayerKnowledgeChangeEvent extends Event {
 	private final UUID playerUUID;
 
 	public PlayerKnowledgeChangeEvent(@Nonnull PlayerEntity player) {
-		this(player.getUniqueID());
+		this(player.getUUID());
 	}
 
 	public PlayerKnowledgeChangeEvent(@Nonnull UUID playerUUID) {

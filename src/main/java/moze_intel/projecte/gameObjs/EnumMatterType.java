@@ -25,17 +25,17 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 
 	@Nonnull
 	@Override
-	public String getString() {
+	public String getSerializedName() {
 		return name;
 	}
 
 	@Override
 	public String toString() {
-		return getString();
+		return getSerializedName();
 	}
 
 	@Override
-	public int getMaxUses() {
+	public int getUses() {
 		return 0;
 	}
 
@@ -44,28 +44,28 @@ public enum EnumMatterType implements IStringSerializable, IItemTier {
 	}
 
 	@Override
-	public float getEfficiency() {
+	public float getSpeed() {
 		return efficiency;
 	}
 
 	@Override
-	public float getAttackDamage() {
+	public float getAttackDamageBonus() {
 		return attackDamage;
 	}
 
 	@Override
-	public int getHarvestLevel() {
+	public int getLevel() {
 		return harvestLevel;
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return 0;
 	}
 
 	@Nonnull
 	@Override
-	public Ingredient getRepairMaterial() {
+	public Ingredient getRepairIngredient() {
 		return Ingredient.EMPTY;
 	}
 

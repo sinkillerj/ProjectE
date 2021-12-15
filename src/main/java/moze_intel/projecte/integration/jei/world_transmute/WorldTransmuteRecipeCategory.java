@@ -140,7 +140,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> otherInputFluid != null && fluid == otherInputFluid.getFluid());
 				} else {
 					ItemStack inputItem = e.getInputItem();
-					alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.isItemEqual(otherEntry.getInputItem()));
+					alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.sameItem(otherEntry.getInputItem()));
 				}
 				if (!alreadyHas) {
 					//Only add items that we haven't already had.

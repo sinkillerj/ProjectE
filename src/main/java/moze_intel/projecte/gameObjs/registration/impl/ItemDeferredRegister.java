@@ -18,13 +18,13 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
 	private static final ItemGroup creativeTab = new ItemGroup(PECore.MODID) {
 		@Override
-		public ItemStack createIcon() {
+		public ItemStack makeIcon() {
 			return new ItemStack(PEItems.PHILOSOPHERS_STONE);
 		}
 
 		@Nonnull
 		@Override
-		public ITextComponent getGroupName() {
+		public ITextComponent getDisplayName() {
 			//Overwrite the lang key to match the one representing ProjectE
 			return PELang.PROJECTE.translate();
 		}
@@ -35,7 +35,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 	}
 
 	public static Item.Properties getBaseProperties() {
-		return new Item.Properties().group(creativeTab);
+		return new Item.Properties().tab(creativeTab);
 	}
 
 	public ItemRegistryObject<Item> register(String name) {
@@ -51,15 +51,15 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerFireImmune(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, sup, Item.Properties::isImmuneToFire);
+		return register(name, sup, Item.Properties::fireResistant);
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerNoStack(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, sup, properties -> properties.maxStackSize(1));
+		return register(name, sup, properties -> properties.stacksTo(1));
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerNoStackFireImmune(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, sup, properties -> properties.maxStackSize(1).isImmuneToFire());
+		return register(name, sup, properties -> properties.stacksTo(1).fireResistant());
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup, UnaryOperator<Item.Properties> propertyModifier) {

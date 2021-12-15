@@ -94,7 +94,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	@Override
 	public void tick() {
-		if (world != null && !world.isRemote) {
+		if (level != null && !level.isClientSide) {
 			ItemHelper.compactInventory(toSort);
 			checkFuelOrKlein();
 			updateEmc();
@@ -212,10 +212,10 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	}
 
 	public int getSunLevel() {
-		if (world.getDimensionType().isUltrawarm()) {
+		if (level.dimensionType().ultraWarm()) {
 			return 16;
 		}
-		return world.getLight(pos.up()) + 1;
+		return level.getMaxLocalRawBrightness(worldPosition.above()) + 1;
 	}
 
 	public double getFuelProgress() {
@@ -242,8 +242,8 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
@@ -252,8 +252,8 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.putLong("FuelEMC", storedFuelEmc);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("AuxSlots", auxSlots.serializeNBT());
@@ -263,7 +263,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 
 	private void sendRelayBonus() {
 		for (Direction dir : Direction.values()) {
-			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos.offset(dir));
+			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, level, worldPosition.relative(dir));
 			if (tile != null) {
 				//The other tiers of relay extend RelayMK1Tile and add the correct bonus
 				tile.addBonus();

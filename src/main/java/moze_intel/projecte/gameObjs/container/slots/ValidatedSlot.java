@@ -17,7 +17,7 @@ public class ValidatedSlot extends SlotItemHandler {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
-		return super.isItemValid(stack) && validator.test(stack);
+	public boolean mayPlace(@Nonnull ItemStack stack) {
+		return super.mayPlace(stack) && validator.test(stack);
 	}
 }

@@ -20,8 +20,8 @@ import net.minecraftforge.items.IItemHandler;
 public class RelayMK1Container extends PEContainer {
 
 	public final RelayMK1Tile tile;
-	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.single();
-	private final IntReferenceHolder inputBurnProgress = IntReferenceHolder.single();
+	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.standalone();
+	private final IntReferenceHolder inputBurnProgress = IntReferenceHolder.standalone();
 	public final BoxedLong emc = new BoxedLong();
 
 	public static RelayMK1Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
@@ -63,45 +63,45 @@ public class RelayMK1Container extends PEContainer {
 	}
 
 	@Override
-	public void detectAndSendChanges() {
+	public void broadcastChanges() {
 		emc.set(tile.getStoredEmc());
 		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
 		inputBurnProgress.set((int) (tile.getInputBurnProportion() * 8000));
-		super.detectAndSendChanges();
+		super.broadcastChanges();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex < 8) {
-			if (!this.mergeItemStack(stack, 8, this.inventorySlots.size(), true)) {
+			if (!this.moveItemStackTo(stack, 8, this.slots.size(), true)) {
 				return ItemStack.EMPTY;
 			}
-			slot.onSlotChanged();
-		} else if (!this.mergeItemStack(stack, 0, 7, false)) {
+			slot.setChanged();
+		} else if (!this.moveItemStackTo(stack, 0, 7, false)) {
 			return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, newStack);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RELAY.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.RELAY.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	public double getKleinChargeProgress() {

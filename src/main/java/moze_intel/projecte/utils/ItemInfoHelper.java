@@ -34,7 +34,7 @@ public class ItemInfoHelper {
 		ListNBT enchantments = tag.getList(location, NBT.TAG_COMPOUND);
 		for (int i = 0; i < enchantments.size(); i++) {
 			CompoundNBT enchantNBT = enchantments.getCompound(i);
-			ResourceLocation enchantmentID = ResourceLocation.tryCreate(enchantNBT.getString("id"));
+			ResourceLocation enchantmentID = ResourceLocation.tryParse(enchantNBT.getString("id"));
 			if (enchantmentID != null) {
 				Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(enchantmentID);
 				if (enchantment != null) {

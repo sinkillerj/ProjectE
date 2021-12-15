@@ -40,46 +40,46 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getEntityWorld().isRemote) {
-			if (ticksExisted > 400 || !getEntityWorld().isBlockPresent(getPosition())) {
+		if (!this.getCommandSenderWorld().isClientSide) {
+			if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
 				remove();
 				return;
 			}
-			Entity thrower = func_234616_v_();
+			Entity thrower = getOwner();
 			if (thrower instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
-				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
-					BlockState state = world.getBlockState(pos);
+				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
+					BlockState state = level.getBlockState(pos);
 					FluidState fluidState = state.getFluidState();
-					if (fluidState.isTagged(FluidTags.LAVA)) {
-						pos = pos.toImmutable();
+					if (fluidState.is(FluidTags.LAVA)) {
+						pos = pos.immutable();
 						if (state.getBlock() instanceof FlowingFluidBlock) {
 							//If it is a source block convert it
 							Block block = fluidState.isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
 							//Like: ForgeEventFactory#fireFluidPlaceBlockEvent except checks if it was cancelled
-							BlockEvent.FluidPlaceBlockEvent event = new BlockEvent.FluidPlaceBlockEvent(world, pos, pos, block.getDefaultState());
+							BlockEvent.FluidPlaceBlockEvent event = new BlockEvent.FluidPlaceBlockEvent(level, pos, pos, block.defaultBlockState());
 							if (!MinecraftForge.EVENT_BUS.post(event)) {
 								PlayerHelper.checkedPlaceBlock(player, pos, event.getNewState());
 							}
 						} else {
 							//Otherwise if it is lava logged, "void" the lava as we can't place a block in that spot
-							WorldHelper.drainFluid(world, pos, state, Fluids.LAVA);
+							WorldHelper.drainFluid(level, pos, state, Fluids.LAVA);
 						}
-						playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.5F, 2.6F + (getEntityWorld().rand.nextFloat() - getEntityWorld().rand.nextFloat()) * 0.8F);
+						playSound(SoundEvents.GENERIC_BURN, 0.5F, 2.6F + (getCommandSenderWorld().random.nextFloat() - getCommandSenderWorld().random.nextFloat()) * 0.8F);
 					}
 				});
 			}
 			if (isInWater()) {
 				remove();
 			}
-			if (getPosY() > 128) {
-				IWorldInfo worldInfo = this.getEntityWorld().getWorldInfo();
+			if (getY() > 128) {
+				IWorldInfo worldInfo = this.getCommandSenderWorld().getLevelData();
 				worldInfo.setRaining(true);
 				remove();
 			}
@@ -87,41 +87,41 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (world.isRemote) {
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		if (level.isClientSide) {
 			return;
 		}
-		Entity thrower = func_234616_v_();
+		Entity thrower = getOwner();
 		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
 		if (mop instanceof BlockRayTraceResult) {
 			BlockRayTraceResult result = (BlockRayTraceResult) mop;
-			WorldHelper.placeFluid((ServerPlayerEntity) thrower, world, result.getPos(), result.getFace(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+			WorldHelper.placeFluid((ServerPlayerEntity) thrower, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 		} else if (mop instanceof EntityRayTraceResult) {
 			Entity ent = ((EntityRayTraceResult) mop).getEntity();
-			if (ent.isBurning()) {
-				ent.extinguish();
+			if (ent.isOnFire()) {
+				ent.clearFire();
 			}
-			ent.addVelocity(this.getMotion().getX() * 2, this.getMotion().getY() * 2, this.getMotion().getZ() * 2);
+			ent.push(this.getDeltaMovement().x() * 2, this.getDeltaMovement().y() * 2, this.getDeltaMovement().z() * 2);
 		}
 		remove();
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

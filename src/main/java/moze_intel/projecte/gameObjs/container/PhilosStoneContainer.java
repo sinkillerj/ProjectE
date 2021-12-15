@@ -20,7 +20,7 @@ public class PhilosStoneContainer extends WorkbenchContainer {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull PlayerEntity player) {
 		return true;
 	}
 }

@@ -24,7 +24,7 @@ public class DumpMissingEmc {
 
 	public static ArgumentBuilder<CommandSource, ?> register() {
 		return Commands.literal("dumpmissingemc")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.executes(DumpMissingEmc::execute);
 	}
 
@@ -33,12 +33,12 @@ public class DumpMissingEmc {
 		Set<ItemInfo> missing = new HashSet<>();
 		for (Map.Entry<RegistryKey<Item>, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
 			Item item = entry.getValue();
-			ItemGroup group = item.getGroup();
+			ItemGroup group = item.getItemCategory();
 			if (group != null || !(item instanceof EnchantedBookItem)) {
 				//Vanilla has special handing for filling the enchanted book item's group, so don't try to fill it
 				try {
 					NonNullList<ItemStack> items = NonNullList.create();
-					item.fillItemGroup(group, items);
+					item.fillItemCategory(group, items);
 					boolean hasValidItem = false;
 					for (ItemStack stack : items) {
 						if (!stack.isEmpty()) {
@@ -67,12 +67,12 @@ public class DumpMissingEmc {
 		}
 		int missingCount = missing.size();
 		if (missingCount == 0) {
-			source.sendFeedback(PELang.DUMP_MISSING_EMC_NONE_MISSING.translate(), true);
+			source.sendSuccess(PELang.DUMP_MISSING_EMC_NONE_MISSING.translate(), true);
 		} else {
 			if (missingCount == 1) {
-				source.sendFeedback(PELang.DUMP_MISSING_EMC_ONE_MISSING.translate(), true);
+				source.sendSuccess(PELang.DUMP_MISSING_EMC_ONE_MISSING.translate(), true);
 			} else {
-				source.sendFeedback(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING.translate(missingCount), true);
+				source.sendSuccess(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING.translate(missingCount), true);
 			}
 			for (ItemInfo itemInfo : missing) {
 				PECore.LOGGER.info(itemInfo);

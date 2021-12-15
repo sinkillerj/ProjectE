@@ -18,25 +18,25 @@ public class SlotGhost extends SlotItemHandler {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@Nonnull ItemStack stack) {
 		if (!stack.isEmpty() && validator.test(stack)) {
-			this.putStack(ItemHelper.getNormalizedStack(stack));
+			this.set(ItemHelper.getNormalizedStack(stack));
 		}
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack(PlayerEntity player) {
+	public boolean mayPickup(PlayerEntity player) {
 		return false;
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 
 	@Override
-	public int getItemStackLimit(@Nonnull ItemStack stack) {
+	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }

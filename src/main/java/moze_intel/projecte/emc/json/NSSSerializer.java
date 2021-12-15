@@ -42,7 +42,7 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 		}
 		String nbtAsString = itemName.substring(nbtStart);
 		try {
-			return NSSItem.createItem(resourceLocation, JsonToNBT.getTagFromJson(nbtAsString));
+			return NSSItem.createItem(resourceLocation, JsonToNBT.parseTag(nbtAsString));
 		} catch (CommandSyntaxException e) {
 			throw new JsonParseException("Malformed NBT compound", e);
 		}
@@ -59,7 +59,7 @@ public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, Jso
 		}
 		String nbtAsString = fluidName.substring(nbtStart);
 		try {
-			return NSSFluid.createFluid(resourceLocation, JsonToNBT.getTagFromJson(nbtAsString));
+			return NSSFluid.createFluid(resourceLocation, JsonToNBT.parseTag(nbtAsString));
 		} catch (CommandSyntaxException e) {
 			throw new JsonParseException("Malformed NBT compound", e);
 		}

@@ -95,8 +95,8 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
@@ -107,34 +107,34 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.resultPass(stack);
+		return ActionResult.pass(stack);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null || ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we don't have a player or the config says we should mine in an AOE (this happens when right clicking air as well)
 			// Then we just pass so that it can be processed in onItemRightClick
 			return ActionResultType.PASS;
 		}
-		BlockPos pos = context.getPos();
-		if (ItemHelper.isOre(context.getWorld().getBlockState(pos))) {
-			return ToolHelper.tryVeinMine(player, context.getItem(), pos, context.getFace());
+		BlockPos pos = context.getClickedPos();
+		if (ItemHelper.isOre(context.getLevel().getBlockState(pos))) {
+			return ToolHelper.tryVeinMine(player, context.getItemInHand(), pos, context.getClickedFace());
 		}
 		return ActionResultType.PASS;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
-		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::rayTrace);
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}
 }

@@ -36,7 +36,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isRemote || slot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
@@ -49,7 +49,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
 					}
@@ -60,14 +60,14 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
+					List<ServerPlayerEntity> players = world.getEntitiesOfClass(ServerPlayerEntity.class, tile.getEffectBounds());
 					for (ServerPlayerEntity player : players) {
 						if (player.getHealth() < player.getMaxHealth()) {
-							world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 							player.heal(1.0F); // 1/2 heart
 						}
 					}

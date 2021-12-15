@@ -17,32 +17,32 @@ public class ShapelessKleinStarRecipeResult implements IFinishedRecipe {
 	}
 
 	@Override
-	public void serialize(@Nonnull JsonObject json) {
-		internal.serialize(json);
+	public void serializeRecipeData(@Nonnull JsonObject json) {
+		internal.serializeRecipeData(json);
 	}
 
 	@Nonnull
 	@Override
-	public ResourceLocation getID() {
-		return internal.getID();
+	public ResourceLocation getId() {
+		return internal.getId();
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public IRecipeSerializer<?> getType() {
 		//Overwrite it with our recipe serializer
 		return PERecipeSerializers.KLEIN.get();
 	}
 
 	@Nullable
 	@Override
-	public JsonObject getAdvancementJson() {
-		return internal.getAdvancementJson();
+	public JsonObject serializeAdvancement() {
+		return internal.serializeAdvancement();
 	}
 
 	@Nullable
 	@Override
-	public ResourceLocation getAdvancementID() {
-		return internal.getAdvancementID();
+	public ResourceLocation getAdvancementId() {
+		return internal.getAdvancementId();
 	}
 }

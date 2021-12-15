@@ -57,17 +57,17 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
-		BlockRayTraceResult result = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+		BlockRayTraceResult result = getPlayerPOVHitResult(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 		if (result.getType() != Type.BLOCK) {
 			return ActionResultType.PASS;
 		}
-		BlockPos fluidPos = result.getPos();
+		BlockPos fluidPos = result.getBlockPos();
 		BlockState state = world.getBlockState(fluidPos);
-		if (world.isBlockModifiable(player, fluidPos) && player.canPlayerEdit(fluidPos, result.getFace(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
-			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).pickupFluid(world, fluidPos, state);
+		if (world.mayInteract(player, fluidPos) && player.mayUseItemAt(fluidPos, result.getDirection(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
+			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).takeLiquid(world, fluidPos, state);
 			if (fluid != Fluids.EMPTY) {
-				player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
-						fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+						fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				return ActionResultType.SUCCESS;
 			}
 		}
@@ -76,22 +76,22 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		if (tryPickupFluid(world, player, player.getHeldItem(hand)) != ActionResultType.SUCCESS) {
-			changeMode(player, player.getHeldItem(hand), hand);
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		if (tryPickupFluid(world, player, player.getItemInHand(hand)) != ActionResultType.SUCCESS) {
+			changeMode(player, player.getItemInHand(hand), hand);
 		}
-		return ActionResult.resultSuccess(player.getHeldItem(hand));
+		return ActionResult.success(player.getItemInHand(hand));
 	}
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		if (entity instanceof PlayerEntity && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			PlayerEntity player = (PlayerEntity) entity;
-			AxisAlignedBB bBox = player.getBoundingBox().grow(7);
-			List<ItemEntity> itemList = world.getEntitiesWithinAABB(ItemEntity.class, bBox);
+			AxisAlignedBB bBox = player.getBoundingBox().inflate(7);
+			List<ItemEntity> itemList = world.getEntitiesOfClass(ItemEntity.class, bBox);
 			for (ItemEntity item : itemList) {
-				if (ItemHelper.simulateFit(player.inventory.mainInventory, item.getItem()) < item.getItem().getCount()) {
-					WorldHelper.gravitateEntityTowards(item, player.getPosX(), player.getPosY(), player.getPosZ());
+				if (ItemHelper.simulateFit(player.inventory.items, item.getItem()) < item.getItem().getCount()) {
+					WorldHelper.gravitateEntityTowards(item, player.getX(), player.getY(), player.getZ());
 				}
 			}
 		}
@@ -99,18 +99,18 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
-				for (ItemEntity item : world.getEntitiesWithinAABB(ItemEntity.class, tile.getEffectBounds())) {
+				for (ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, tile.getEffectBounds())) {
 					if (item.isAlive()) {
 						WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-						if (item.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+						if (item.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
 							for (Direction dir : Direction.values()) {
 								//Cache the item handlers in various spots so that we only query each neighboring position once
 								IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
-									TileEntity candidate = WorldHelper.getTileEntity(world, pos.offset(dir));
+									TileEntity candidate = WorldHelper.getTileEntity(world, pos.relative(dir));
 									if (candidate == null) {
 										return null;
 									}
@@ -148,9 +148,9 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			double centeredX = tileX + 0.5;
 			double centeredY = tileY + 0.5;
 			double centeredZ = tileZ + 0.5;
-			for (ItemEntity e : world.getEntitiesWithinAABB(ItemEntity.class, aabb)) {
+			for (ItemEntity e : world.getEntitiesOfClass(ItemEntity.class, aabb)) {
 				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.getEntityWorld().isRemote && e.isAlive() && e.getDistanceSq(centeredX, centeredY, centeredZ) < 1.21) {
+				if (!e.getCommandSenderWorld().isClientSide && e.isAlive() && e.distanceToSqr(centeredX, centeredY, centeredZ) < 1.21) {
 					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 						ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
 						if (!result.isEmpty()) {
@@ -167,8 +167,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			for (ItemEntity e : player.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(5))) {
-				WorldHelper.gravitateEntityTowards(e, player.getPosX(), player.getPosY(), player.getPosZ());
+			for (ItemEntity e : player.getCommandSenderWorld().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(5))) {
+				WorldHelper.gravitateEntityTowards(e, player.getX(), player.getY(), player.getZ());
 			}
 		}
 		return false;

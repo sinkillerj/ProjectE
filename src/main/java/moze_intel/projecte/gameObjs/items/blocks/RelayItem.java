@@ -25,8 +25,8 @@ public class RelayItem extends BlockItem {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		if (ProjectEConfig.client.statToolTips.get()) {
 			tooltips.add(PELang.EMC_MAX_OUTPUT_RATE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getChargeRate())));
 			tooltips.add(PELang.EMC_MAX_STORAGE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getStorage())));

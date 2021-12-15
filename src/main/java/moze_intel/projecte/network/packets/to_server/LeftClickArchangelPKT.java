@@ -13,7 +13,7 @@ public class LeftClickArchangelPKT implements IPEPacket {
 	public void handle(Context context) {
 		PlayerEntity player = context.getSender();
 		if (player != null) {
-			ItemStack main = player.getHeldItemMainhand();
+			ItemStack main = player.getMainHandItem();
 			if (!main.isEmpty() && main.getItem() instanceof ArchangelSmite) {
 				((ArchangelSmite) main.getItem()).fireVolley(main, player);
 			}

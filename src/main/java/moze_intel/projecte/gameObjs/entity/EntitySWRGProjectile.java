@@ -39,39 +39,39 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (!world.isRemote && ticksExisted > 400) {
+		if (!level.isClientSide && tickCount > 400) {
 			remove();
 			return;
 		}
 
 		// Undo the 0.99 (0.8 in water) drag applied in superclass
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
-		this.setMotion(this.getMotion().scale(inverse));
-		if (!world.isRemote && isAlive() && getPosY() > world.getHeight() && world.isRaining()) {
-			if (world.getWorldInfo() instanceof IServerWorldInfo) {
-				((IServerWorldInfo) world.getWorldInfo()).setThundering(true);
+		this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
+		if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
+			if (level.getLevelData() instanceof IServerWorldInfo) {
+				((IServerWorldInfo) level.getLevelData()).setThundering(true);
 			}
 			remove();
 		}
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (world.isRemote) {
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		if (level.isClientSide) {
 			return;
 		}
-		Entity thrower = func_234616_v_();
+		Entity thrower = getOwner();
 		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
@@ -80,22 +80,22 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
 		if (mop instanceof BlockRayTraceResult) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
-				BlockPos pos = ((BlockRayTraceResult) mop).getPos();
+				BlockPos pos = ((BlockRayTraceResult) mop).getBlockPos();
 
-				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
-					lightning.moveForced(Vector3d.copyCentered(pos));
-					lightning.setCaster((ServerPlayerEntity) player);
-					world.addEntity(lightning);
+					lightning.moveTo(Vector3d.atCenterOf(pos));
+					lightning.setCause((ServerPlayerEntity) player);
+					level.addFreshEntity(lightning);
 				}
 
-				if (world.isThundering()) {
+				if (level.isThundering()) {
 					for (int i = 0; i < 3; i++) {
-						LightningBoltEntity bonus = EntityType.LIGHTNING_BOLT.create(world);
+						LightningBoltEntity bonus = EntityType.LIGHTNING_BOLT.create(level);
 						if (bonus != null) {
-							bonus.moveForced(pos.getX() + 0.5 + world.rand.nextGaussian(), pos.getY() + 0.5 + world.rand.nextGaussian(), pos.getZ() + 0.5 + world.rand.nextGaussian());
-							bonus.setCaster((ServerPlayerEntity) player);
-							world.addEntity(bonus);
+							bonus.moveTo(pos.getX() + 0.5 + level.random.nextGaussian(), pos.getY() + 0.5 + level.random.nextGaussian(), pos.getZ() + 0.5 + level.random.nextGaussian());
+							bonus.setCause((ServerPlayerEntity) player);
+							level.addFreshEntity(bonus);
 						}
 					}
 				}
@@ -104,39 +104,39 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 			if (((EntityRayTraceResult) mop).getEntity() instanceof LivingEntity && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
 				LivingEntity e = (LivingEntity) ((EntityRayTraceResult) mop).getEntity();
 				// Minor damage so we count as the attacker for launching the mob
-				e.attackEntityFrom(DamageSource.causePlayerDamage(player), 1F);
+				e.hurt(DamageSource.playerAttack(player), 1F);
 
 				// Fake onGround before knockBack so you can re-launch mobs that have already been launched
 				boolean oldOnGround = e.isOnGround();
 				e.setOnGround(true);
-				e.applyKnockback(5F, -getMotion().getX() * 0.25, -getMotion().getZ() * 0.25);
+				e.knockback(5F, -getDeltaMovement().x() * 0.25, -getDeltaMovement().z() * 0.25);
 				e.setOnGround(oldOnGround);
-				e.setMotion(e.getMotion().mul(1, 3, 1));
+				e.setDeltaMovement(e.getDeltaMovement().multiply(1, 3, 1));
 			}
 		}
 		remove();
 	}
 
 	@Override
-	public void readAdditional(@Nonnull CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(@Nonnull CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		fromArcana = compound.getBoolean("fromArcana");
 	}
 
 	@Override
-	public void writeAdditional(@Nonnull CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(@Nonnull CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putBoolean("fromArcana", fromArcana);
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

@@ -25,27 +25,27 @@ public class PedestalRenderer extends TileEntityRenderer<DMPedestalTile> {
 
 	@Override
 	public void render(@Nonnull DMPedestalTile te, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-		if (!te.isRemoved() && te.getWorld() != null) {
-			if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox()) {
-				matrix.push();
-				BlockPos pos = te.getPos();
-				AxisAlignedBB aabb = te.getEffectBounds().offset(-pos.getX(), -pos.getY(), -pos.getZ());
-				IVertexBuilder vertexBuilder = renderer.getBuffer(RenderType.getLines());
-				WorldRenderer.drawBoundingBox(matrix, vertexBuilder, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX + 1, aabb.maxY + 1, aabb.maxZ + 1,
+		if (!te.isRemoved() && te.getLevel() != null) {
+			if (Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes()) {
+				matrix.pushPose();
+				BlockPos pos = te.getBlockPos();
+				AxisAlignedBB aabb = te.getEffectBounds().move(-pos.getX(), -pos.getY(), -pos.getZ());
+				IVertexBuilder vertexBuilder = renderer.getBuffer(RenderType.lines());
+				WorldRenderer.renderLineBox(matrix, vertexBuilder, aabb.minX, aabb.minY, aabb.minZ, aabb.maxX + 1, aabb.maxY + 1, aabb.maxZ + 1,
 						1, 0, 1, 1, 1, 0, 1);
-				matrix.pop();
+				matrix.popPose();
 			}
 			ItemStack stack = te.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				matrix.push();
+				matrix.pushPose();
 				matrix.translate(0.5, 0.7, 0.5);
-				long gameTime = te.getWorld().getGameTime();
+				long gameTime = te.getLevel().getGameTime();
 				matrix.translate(0, MathHelper.sin((gameTime + partialTick) / 10.0F) * 0.1 + 0.1, 0);
 				matrix.scale(0.75F, 0.75F, 0.75F);
 				float angle = (gameTime + partialTick) / 20.0F * (180F / (float) Math.PI);
-				matrix.rotate(Vector3f.YP.rotationDegrees(angle));
-				Minecraft.getInstance().getItemRenderer().renderItem(stack, TransformType.GROUND, light, overlayLight, matrix, renderer);
-				matrix.pop();
+				matrix.mulPose(Vector3f.YP.rotationDegrees(angle));
+				Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer);
+				matrix.popPose();
 			}
 		}
 	}

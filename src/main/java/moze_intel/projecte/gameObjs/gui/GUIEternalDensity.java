@@ -18,29 +18,29 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 
 	public GUIEternalDensity(EternalDensityContainer container, PlayerInventory inv, ITextComponent title) {
 		super(container, inv, title);
-		this.xSize = 180;
-		this.ySize = 180;
+		this.imageWidth = 180;
+		this.imageHeight = 180;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		addButton(new Button(guiLeft + 62, guiTop + 4, 52, 20, container.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate(),
+		addButton(new Button(leftPos + 62, topPos + 4, 52, 20, menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate(),
 				b -> {
-					container.inventory.changeMode();
-					b.setMessage(container.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());
+					menu.inventory.changeMode();
+					b.setMessage(menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());
 				}));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(texture);
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		Minecraft.getInstance().textureManager.bind(texture);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
 	}
 }

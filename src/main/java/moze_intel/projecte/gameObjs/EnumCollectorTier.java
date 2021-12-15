@@ -20,7 +20,7 @@ public enum EnumCollectorTier implements IStringSerializable {
 
 	@Nonnull
 	@Override
-	public String getString() {
+	public String getSerializedName() {
 		return name;
 	}
 
@@ -34,6 +34,6 @@ public enum EnumCollectorTier implements IStringSerializable {
 
 	@Override
 	public String toString() {
-		return getString();
+		return getSerializedName();
 	}
 }

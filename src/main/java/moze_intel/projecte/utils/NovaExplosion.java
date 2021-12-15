@@ -41,9 +41,9 @@ public class NovaExplosion extends Explosion {
 
 	// [VanillaCopy] super, but collecting all drops into one place, and no fire
 	@Override
-	public void doExplosionB(boolean spawnParticles) {
-		if (world.isRemote) {
-			world.playSound(x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+	public void finalizeExplosion(boolean spawnParticles) {
+		if (world.isClientSide) {
+			world.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F, false);
 		}
 		boolean hasExplosionMode = mode != Explosion.Mode.NONE;
 		if (spawnParticles) {
@@ -55,15 +55,15 @@ public class NovaExplosion extends Explosion {
 		}
 		if (hasExplosionMode) {
 			NonNullList<ItemStack> allDrops = NonNullList.create();
-			List<BlockPos> affectedBlockPositions = getAffectedBlockPositions();
-			Collections.shuffle(affectedBlockPositions, world.rand);
+			List<BlockPos> affectedBlockPositions = getToBlow();
+			Collections.shuffle(affectedBlockPositions, world.random);
 			for (BlockPos pos : affectedBlockPositions) {
 				BlockState state = world.getBlockState(pos);
 				if (!state.isAir(world, pos)) {
 					if (spawnParticles) {
-						double adjustedX = pos.getX() + world.rand.nextFloat();
-						double adjustedY = pos.getY() + world.rand.nextFloat();
-						double adjustedZ = pos.getZ() + world.rand.nextFloat();
+						double adjustedX = pos.getX() + world.random.nextFloat();
+						double adjustedY = pos.getY() + world.random.nextFloat();
+						double adjustedZ = pos.getZ() + world.random.nextFloat();
 						double diffX = adjustedX - x;
 						double diffY = adjustedY - y;
 						double diffZ = adjustedZ - z;
@@ -72,7 +72,7 @@ public class NovaExplosion extends Explosion {
 						diffY = diffY / diff;
 						diffZ = diffZ / diff;
 						double d7 = 0.5D / (diff / (double) size + 0.1D);
-						d7 = d7 * (double) (world.rand.nextFloat() * world.rand.nextFloat() + 0.3F);
+						d7 = d7 * (double) (world.random.nextFloat() * world.random.nextFloat() + 0.3F);
 						diffX = diffX * d7;
 						diffY = diffY * d7;
 						diffZ = diffZ * d7;
@@ -80,16 +80,16 @@ public class NovaExplosion extends Explosion {
 						world.addParticle(ParticleTypes.SMOKE, adjustedX, adjustedY, adjustedZ, diffX, diffY, diffZ);
 					}
 					//Ensure we are immutable so that changing blocks doesn't act weird
-					pos = pos.toImmutable();
-					world.getProfiler().startSection("explosion_blocks");
+					pos = pos.immutable();
+					world.getProfiler().push("explosion_blocks");
 					if (world instanceof ServerWorld && state.canDropFromExplosion(world, pos, this)) {
 						TileEntity tileentity = state.hasTileEntity() ? WorldHelper.getTileEntity(world, pos) : null;
 						LootContext.Builder builder = new LootContext.Builder((ServerWorld) world)
-								.withRandom(world.rand)
-								.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+								.withRandom(world.random)
+								.withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(pos))
 								.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-								.withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity)
-								.withNullableParameter(LootParameters.THIS_ENTITY, getExploder());
+								.withOptionalParameter(LootParameters.BLOCK_ENTITY, tileentity)
+								.withOptionalParameter(LootParameters.THIS_ENTITY, getExploder());
 						if (mode == Explosion.Mode.DESTROY) {
 							builder.withParameter(LootParameters.EXPLOSION_RADIUS, size);
 						}
@@ -98,16 +98,16 @@ public class NovaExplosion extends Explosion {
 						allDrops.addAll(state.getDrops(builder));
 					}
 					state.onBlockExploded(world, pos, this);
-					world.getProfiler().endSection();
+					world.getProfiler().pop();
 				}
 			}
 
 			// PE: Drop all together
-			LivingEntity placer = getExplosivePlacedBy();
+			LivingEntity placer = getSourceMob();
 			if (placer == null) {
 				WorldHelper.createLootDrop(allDrops, world, x, y, z);
 			} else {
-				WorldHelper.createLootDrop(allDrops, world, placer.getPosition());
+				WorldHelper.createLootDrop(allDrops, world, placer.blockPosition());
 			}
 		}
 	}

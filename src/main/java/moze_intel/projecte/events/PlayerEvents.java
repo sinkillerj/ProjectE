@@ -116,27 +116,27 @@ public class PlayerEvents {
 	public static void onConstruct(EntityEvent.EntityConstructing evt) {
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER // No world to check yet
 			&& evt.getEntity() instanceof PlayerEntity && !(evt.getEntity() instanceof FakePlayer)) {
-			TransmutationOffline.clear(evt.getEntity().getUniqueID());
+			TransmutationOffline.clear(evt.getEntity().getUUID());
 			PECore.debugLog("Clearing offline data cache in preparation to load online data");
 		}
 	}
 
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
-		if (PECore.uuids.contains(evt.getPlayer().getUniqueID().toString())) {
+		if (PECore.uuids.contains(evt.getPlayer().getUUID().toString())) {
 			ITextComponent joinMessage = PELang.HIGH_ALCHEMIST.translateColored(TextFormatting.BLUE, TextFormatting.GOLD, evt.getPlayer().getDisplayName());
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().func_232641_a_(joinMessage, ChatType.SYSTEM, Util.DUMMY_UUID);
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(joinMessage, ChatType.SYSTEM, Util.NIL_UUID);
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event) {
 		PlayerEntity player = event.getPlayer();
-		World world = player.getEntityWorld();
-		if (world.isRemote) {
+		World world = player.getCommandSenderWorld();
+		if (world.isClientSide) {
 			return;
 		}
-		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.mainInventory);
+		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.inventory.items);
 		if (bag.isEmpty()) {
 			return;
 		}
@@ -148,8 +148,8 @@ public class PlayerEvents {
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 		if (remainder.isEmpty()) {
 			event.getItem().remove();
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-			((ServerPlayerEntity) player).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), player.getEntityId(), 1));
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			((ServerPlayerEntity) player).connection.send(new SCollectItemPacket(event.getItem().getId(), player.getId(), 1));
 		} else {
 			event.getItem().setItem(remainder);
 		}
@@ -159,7 +159,7 @@ public class PlayerEvents {
 	//This event is called when the entity first is about to take damage, if it gets cancelled it is as if they never got hit/damaged
 	@SubscribeEvent
 	public static void onAttacked(LivingAttackEvent evt) {
-		if (evt.getEntity() instanceof ServerPlayerEntity && evt.getSource().isFireDamage() && TickEvents.shouldPlayerResistFire((ServerPlayerEntity) evt.getEntity())) {
+		if (evt.getEntity() instanceof ServerPlayerEntity && evt.getSource().isFire() && TickEvents.shouldPlayerResistFire((ServerPlayerEntity) evt.getEntity())) {
 			evt.setCanceled(true);
 		}
 	}
@@ -185,10 +185,10 @@ public class PlayerEvents {
 	}
 
 	private static float getReductionForSlot(LivingEntity entityLiving, DamageSource source, EquipmentSlotType slot, float damage) {
-		ItemStack armorStack = entityLiving.getItemStackFromSlot(slot);
+		ItemStack armorStack = entityLiving.getItemBySlot(slot);
 		if (armorStack.getItem() instanceof PEArmor) {
 			PEArmor armorItem = (PEArmor) armorStack.getItem();
-			EquipmentSlotType type = armorItem.getEquipmentSlot();
+			EquipmentSlotType type = armorItem.getSlot();
 			if (type != slot) {
 				//If the armor slot does not match the slot this piece of armor is for then it shouldn't be providing any reduction
 				return 0;

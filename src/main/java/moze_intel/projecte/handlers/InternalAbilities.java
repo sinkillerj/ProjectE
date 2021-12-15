@@ -74,7 +74,7 @@ public final class InternalAbilities {
 
 		if (!shouldPlayerFly()) {
 			if (hadFlightItem) {
-				if (player.abilities.allowFlying) {
+				if (player.abilities.mayfly) {
 					PlayerHelper.updateClientServerFlight(player, false);
 				}
 				hadFlightItem = false;
@@ -83,7 +83,7 @@ public final class InternalAbilities {
 			wasFlying = false;
 		} else {
 			if (!hadFlightItem) {
-				if (!player.abilities.allowFlying) {
+				if (!player.abilities.mayfly) {
 					PlayerHelper.updateClientServerFlight(player, true);
 				}
 				hadFlightItem = true;
@@ -94,7 +94,7 @@ public final class InternalAbilities {
 				PlayerHelper.updateClientServerFlight(player, true, wasFlying);
 			}
 			wasFlyingGamemode = isFlyingGamemode;
-			wasFlying = player.abilities.isFlying;
+			wasFlying = player.abilities.flying;
 		}
 		if (!shouldPlayerStep()) {
 			if (stepAssisted) {
@@ -111,7 +111,7 @@ public final class InternalAbilities {
 
 	public void onDimensionChange() {
 		// Resend everything needed on clientside (all except fire resist)
-		PlayerHelper.updateClientServerFlight(player, player.abilities.allowFlying);
+		PlayerHelper.updateClientServerFlight(player, player.abilities.mayfly);
 		PlayerHelper.updateClientServerStepHeight(player, stepAssisted ? 1.0F : 0.6F);
 	}
 
@@ -119,7 +119,7 @@ public final class InternalAbilities {
 		if (!hasSwrg()) {
 			disableSwrgFlightOverride();
 		}
-		isFlyingGamemode = player.abilities.isCreativeMode || player.isSpectator();
+		isFlyingGamemode = player.abilities.instabuild || player.isSpectator();
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}
@@ -135,7 +135,7 @@ public final class InternalAbilities {
 	}
 
 	private boolean checkArmorHotbarCurios(Predicate<ItemStack> checker) {
-		for (ItemStack stack : player.inventory.armorInventory) {
+		for (ItemStack stack : player.inventory.armor) {
 			if (checker.test(stack)) {
 				return true;
 			}
@@ -144,8 +144,8 @@ public final class InternalAbilities {
 	}
 
 	private boolean checkHotbarCurios(Predicate<ItemStack> checker) {
-		for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
-			if (checker.test(player.inventory.getStackInSlot(i))) {
+		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
+			if (checker.test(player.inventory.getItem(i))) {
 				return true;
 			}
 		}

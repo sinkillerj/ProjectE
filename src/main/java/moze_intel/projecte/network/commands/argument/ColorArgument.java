@@ -21,11 +21,11 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 	public DyeColor parse(StringReader reader) throws CommandSyntaxException {
 		String s = reader.readUnquotedString();
 		for (DyeColor c : DyeColor.values()) {
-			if (c.getString().equals(s)) {
+			if (c.getSerializedName().equals(s)) {
 				return c;
 			}
 		}
-		throw net.minecraft.command.arguments.ColorArgument.COLOR_INVALID.create(s);
+		throw net.minecraft.command.arguments.ColorArgument.ERROR_INVALID_VALUE.create(s);
 	}
 
 	public static <S> DyeColor getColor(CommandContext<S> context, String name) {
@@ -34,7 +34,7 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return ISuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getString), builder);
+		return ISuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getSerializedName), builder);
 	}
 
 	@Override

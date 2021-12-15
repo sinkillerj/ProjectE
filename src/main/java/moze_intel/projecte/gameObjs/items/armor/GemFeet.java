@@ -41,7 +41,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	public GemFeet(Properties props) {
 		super(EquipmentSlotType.FEET, props);
 		Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
-		attributesBuilder.putAll(getAttributeModifiers(EquipmentSlotType.FEET));
+		attributesBuilder.putAll(getDefaultAttributeModifiers(EquipmentSlotType.FEET));
 		attributesBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MODIFIER, "Armor modifier", 1.0, Operation.MULTIPLY_TOTAL));
 		this.attributes = attributesBuilder.build();
 	}
@@ -58,34 +58,34 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			value = true;
 		}
 		if (value) {
-			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.DUMMY_UUID);
+			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.NIL_UUID);
 		} else {
-			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.DUMMY_UUID);
+			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.NIL_UUID);
 		}
 	}
 
 	private static boolean isJumpPressed() {
-		return DistExecutor.unsafeRunForDist(() -> () -> Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown(), () -> () -> false);
+		return DistExecutor.unsafeRunForDist(() -> () -> Minecraft.getInstance().options.keyJump.isDown(), () -> () -> false);
 	}
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
 			playerMP.fallDistance = 0;
 		} else {
-			if (!player.abilities.isFlying && isJumpPressed()) {
-				player.setMotion(player.getMotion().add(0, 0.1, 0));
+			if (!player.abilities.flying && isJumpPressed()) {
+				player.setDeltaMovement(player.getDeltaMovement().add(0, 0.1, 0));
 			}
 			if (!player.isOnGround()) {
-				if (player.getMotion().getY() <= 0) {
-					player.setMotion(player.getMotion().mul(1, 0.9, 1));
+				if (player.getDeltaMovement().y() <= 0) {
+					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
 				}
-				if (!player.abilities.isFlying) {
-					if (player.moveForward < 0) {
-						player.setMotion(player.getMotion().mul(0.9, 1, 0.9));
-					} else if (player.moveForward > 0 && player.getMotion().lengthSquared() < 3) {
-						player.setMotion(player.getMotion().mul(1.1, 1, 1.1));
+				if (!player.abilities.flying) {
+					if (player.zza < 0) {
+						player.setDeltaMovement(player.getDeltaMovement().multiply(0.9, 1, 0.9));
+					} else if (player.zza > 0 && player.getDeltaMovement().lengthSqr() < 3) {
+						player.setDeltaMovement(player.getDeltaMovement().multiply(1.1, 1, 1.1));
 					}
 				}
 			}
@@ -93,8 +93,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_FEET.translate());
 		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.BOOTS_TOGGLE)));
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST)) {
@@ -112,11 +112,11 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 
 	@Override
 	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack;
+		return player.getItemBySlot(EquipmentSlotType.FEET) == stack;
 	}
 
 	@Override
 	public boolean canAssistStep(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemStackFromSlot(EquipmentSlotType.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
+		return player.getItemBySlot(EquipmentSlotType.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
 	}
 }

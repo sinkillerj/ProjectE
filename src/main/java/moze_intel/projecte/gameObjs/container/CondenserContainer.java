@@ -62,68 +62,68 @@ public class CondenserContainer extends PEContainer {
 	}
 
 	@Override
-	public void detectAndSendChanges() {
+	public void broadcastChanges() {
 		this.boxedLockInfo.set(tile.getLockInfo());
 		this.displayEmc.set(tile.displayEmc);
 		this.requiredEmc.set(tile.requiredEmc);
 		if (boxedLockInfo.isDirty()) {
-			for (IContainerListener listener : listeners) {
+			for (IContainerListener listener : containerListeners) {
 				PacketHandler.sendLockSlotUpdate(listener, this, boxedLockInfo.get());
 			}
 		}
-		super.detectAndSendChanges();
+		super.broadcastChanges();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex <= 91) {
-			if (!this.mergeItemStack(stack, 92, 127, false)) {
+			if (!this.moveItemStackTo(stack, 92, 127, false)) {
 				return ItemStack.EMPTY;
 			}
-		} else if (!EMCHelper.doesItemHaveEmc(stack) || !this.mergeItemStack(stack, 1, 91, false)) {
+		} else if (!EMCHelper.doesItemHaveEmc(stack) || !this.moveItemStackTo(stack, 1, 91, false)) {
 			return ItemStack.EMPTY;
 		}
 
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, stack);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() instanceof Condenser
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() instanceof Condenser
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	@Override
-	public void onContainerClosed(@Nonnull PlayerEntity player) {
-		super.onContainerClosed(player);
+	public void removed(@Nonnull PlayerEntity player) {
+		super.removed(player);
 		tile.numPlayersUsing--;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public ItemStack clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slot == 0) {
 			if (tile.attemptCondenserSet(player)) {
-				this.detectAndSendChanges();
+				this.broadcastChanges();
 			}
 			return ItemStack.EMPTY;
 		}
-		return super.slotClick(slot, button, flag, player);
+		return super.clicked(slot, button, flag, player);
 	}
 
 	public int getProgressScaled() {

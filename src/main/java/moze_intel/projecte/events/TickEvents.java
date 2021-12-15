@@ -44,8 +44,8 @@ public class TickEvents {
 				}
 
 				for (DyeColor e : colorsChanged) {
-					if (event.player.openContainer instanceof AlchBagContainer) {
-						ItemStack heldItem = event.player.getHeldItem(((AlchBagContainer) event.player.openContainer).hand);
+					if (event.player.containerMenu instanceof AlchBagContainer) {
+						ItemStack heldItem = event.player.getItemInHand(((AlchBagContainer) event.player.containerMenu).hand);
 						if (heldItem.getItem() instanceof AlchemicalBag && ((AlchemicalBag) heldItem.getItem()).color == e) {
 							// Do not sync if this color is open, the container system does it for us
 							// and we'll stay out of its way.
@@ -56,24 +56,24 @@ public class TickEvents {
 				}
 			});
 
-			if (!event.player.getEntityWorld().isRemote) {
+			if (!event.player.getCommandSenderWorld().isClientSide) {
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
-				if (event.player.isBurning() && shouldPlayerResistFire((ServerPlayerEntity) event.player)) {
-					event.player.extinguish();
+				if (event.player.isOnFire() && shouldPlayerResistFire((ServerPlayerEntity) event.player)) {
+					event.player.clearFire();
 				}
 			}
 		}
 	}
 
 	public static boolean shouldPlayerResistFire(ServerPlayerEntity player) {
-		for (ItemStack stack : player.inventory.armorInventory) {
+		for (ItemStack stack : player.inventory.armor) {
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
 		}
-		for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
-			ItemStack stack = player.inventory.getStackInSlot(i);
+		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
+			ItemStack stack = player.inventory.getItem(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}

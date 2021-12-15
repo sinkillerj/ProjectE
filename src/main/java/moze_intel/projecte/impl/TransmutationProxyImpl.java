@@ -42,7 +42,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 
 	private PlayerEntity findOnlinePlayer(UUID playerUUID) {
 		for (PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-			if (player.getUniqueID().equals(playerUUID)) {
+			if (player.getUUID().equals(playerUUID)) {
 				return player;
 			}
 		}

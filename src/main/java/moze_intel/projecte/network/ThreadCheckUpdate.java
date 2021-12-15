@@ -63,12 +63,12 @@ public class ThreadCheckUpdate extends Thread {
 	public static void worldLoad(EntityJoinWorldEvent evt) {
 		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage) {
 			hasSentMessage = true;
-			evt.getEntity().sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.DUMMY_UUID);
-			evt.getEntity().sendMessage(PELang.UPDATE_GET_IT.translate(), Util.DUMMY_UUID);
+			evt.getEntity().sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
+			evt.getEntity().sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
 
 			ITextComponent link = new StringTextComponent(curseURL);
-			link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-			evt.getEntity().sendMessage(link, Util.DUMMY_UUID);
+			link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+			evt.getEntity().sendMessage(link, Util.NIL_UUID);
 		}
 	}
 }

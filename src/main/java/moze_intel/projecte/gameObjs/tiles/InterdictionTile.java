@@ -14,6 +14,6 @@ public class InterdictionTile extends TileEntity implements ITickableTileEntity 
 
 	@Override
 	public void tick() {
-		WorldHelper.repelEntitiesInterdiction(world, new AxisAlignedBB(pos.add(-8, -8, -8), pos.add(8, 8, 8)), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+		WorldHelper.repelEntitiesInterdiction(level, new AxisAlignedBB(worldPosition.offset(-8, -8, -8), worldPosition.offset(8, 8, 8)), worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5);
 	}
 }

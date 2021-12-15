@@ -32,16 +32,16 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
-	private static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+	private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
 	public AlchemicalChest(Properties props) {
 		super(props);
-		this.setDefaultState(getStateContainer().getBaseState().with(FACING, Direction.NORTH).with(BlockStateProperties.WATERLOGGED, false));
+		this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props) {
-		super.fillStateContainer(props);
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
+		super.createBlockStateDefinition(props);
 		props.add(BlockStateProperties.WATERLOGGED);
 	}
 
@@ -55,15 +55,15 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockRenderType getRenderType(@Nonnull BlockState state) {
+	public BlockRenderType getRenderShape(@Nonnull BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
-		if (!world.isRemote) {
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+		if (!world.isClientSide) {
 			AlchChestTile te = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (te != null) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
@@ -85,13 +85,13 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
 	@Override
 	@Deprecated
-	public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		TileEntity te = WorldHelper.getTileEntity(world, pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
@@ -102,24 +102,24 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Nonnull
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return super.getStateForPlacement(context).with(BlockStateProperties.WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+		return super.getStateForPlacement(context).setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public FluidState getFluidState(BlockState state) {
-		return state.get(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-		if (state.get(BlockStateProperties.WATERLOGGED)) {
-			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 }

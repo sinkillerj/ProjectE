@@ -44,10 +44,10 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	public PEMorningStar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 16, -3, numCharges, props
-				.addToolType(ToolType.PICKAXE, matterType.getHarvestLevel())
-				.addToolType(ToolType.SHOVEL, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, matterType.getHarvestLevel()));
+				.addToolType(ToolType.PICKAXE, matterType.getLevel())
+				.addToolType(ToolType.SHOVEL, matterType.getLevel())
+				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getLevel())
+				.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, matterType.getLevel()));
 		modeDesc = new ILangEntry[]{PELang.MODE_MORNING_STAR_1, PELang.MODE_MORNING_STAR_2, PELang.MODE_MORNING_STAR_3, PELang.MODE_MORNING_STAR_4};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
@@ -58,8 +58,8 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
@@ -74,47 +74,47 @@ public class PEMorningStar extends PETool implements IItemMode {
 	 * gets used is one where the stack does not matter (which would be this)
 	 */
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		//Note: These checks cover the need of overriding/shortcutting the destroy speed
 		//Shovel
-		if (state.isIn(Blocks.SNOW) || state.isIn(Blocks.SNOW_BLOCK)) {
+		if (state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK)) {
 			return true;
 		}
 		//Pickaxe
 		Material material = state.getMaterial();
-		return material == Material.ROCK || material == Material.IRON || material == Material.ANVIL;
+		return material == Material.STONE || material == Material.METAL || material == Material.HEAVY_METAL;
 	}
 
 	@Override
-	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
+	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
-		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::rayTrace);
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
 		Hand hand = context.getHand();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		Direction sideHit = context.getFace();
-		ItemStack stack = context.getItem();
+		World world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction sideHit = context.getClickedFace();
+		ItemStack stack = context.getItemInHand();
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
 				() -> {
-					if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 							return ToolHelper.digAOE(world, player, hand, stack, pos, sideHit, false, 0);
 						}
@@ -127,17 +127,17 @@ public class PEMorningStar extends PETool implements IItemMode {
 					}
 					return ActionResultType.PASS;
 				}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit,
-						!(state.getBlock() instanceof GrassBlock) && !state.isIn(BlockTags.SAND) && !state.isIn(Tags.Blocks.DIRT), 0));
+						!(state.getBlock() instanceof GrassBlock) && !state.is(BlockTags.SAND) && !state.is(Tags.Blocks.DIRT), 0));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.resultPass(stack);
+		return ActionResult.pass(stack);
 	}
 
 	@Override

@@ -21,12 +21,12 @@ public class MercurialEyeContainer extends Container {
 	private final MercurialEyeInventory inventory;
 
 	public static MercurialEyeContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new MercurialEyeContainer(windowId, invPlayer, buf.readEnumValue(Hand.class));
+		return new MercurialEyeContainer(windowId, invPlayer, buf.readEnum(Hand.class));
 	}
 
 	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
 		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER.get(), windowId);
-		inventory = new MercurialEyeInventory(invPlayer.player.getHeldItem(hand));
+		inventory = new MercurialEyeInventory(invPlayer.player.getItemInHand(hand));
 
 		//Klein Star
 		this.addSlot(new ValidatedSlot(inventory, 0, 50, 26, SlotPredicates.EMC_HOLDER));
@@ -38,16 +38,16 @@ public class MercurialEyeContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull PlayerEntity player) {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slotId, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public ItemStack clicked(int slotId, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slotId >= 0) {
 			Slot slot = getSlot(slotId);
-			if (slot != null && slot.getStack() == inventory.invItem) {
+			if (slot != null && slot.getItem() == inventory.invItem) {
 				return ItemStack.EMPTY;
 			}
 		}
@@ -56,36 +56,36 @@ public class MercurialEyeContainer extends Container {
 			inventory.setStackInSlot(1, ItemStack.EMPTY);
 		}
 
-		return super.slotClick(slotId, button, flag, player);
+		return super.clicked(slotId, button, flag, player);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex < 2) {
 			// Moving to player inventory
-			if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), true)) {
+			if (!this.moveItemStackTo(stack, 2, this.slots.size(), true)) {
 				return ItemStack.EMPTY;
 			}
-			slot.onSlotChanged();
+			slot.setChanged();
 		} else {
 			// Moving from player inventory
-			Slot kleinSlot = inventorySlots.get(0);
-			if (kleinSlot.isItemValid(stack) && kleinSlot.getStack().isEmpty()) { // Is a valid klein star and the slot is empty?
-				kleinSlot.putStack(stack.split(1));
+			Slot kleinSlot = slots.get(0);
+			if (kleinSlot.mayPlace(stack) && kleinSlot.getItem().isEmpty()) { // Is a valid klein star and the slot is empty?
+				kleinSlot.set(stack.split(1));
 			} else {
-				Slot targetSlot = inventorySlots.get(1);
-				if (targetSlot.isItemValid(stack) && targetSlot.getStack().isEmpty()) { // Is a valid target block and the slot is empty?
-					targetSlot.putStack(stack.split(1));
+				Slot targetSlot = slots.get(1);
+				if (targetSlot.mayPlace(stack) && targetSlot.getItem().isEmpty()) { // Is a valid target block and the slot is empty?
+					targetSlot.set(stack.split(1));
 				} else {
 					// Is neither, ignore
 					return ItemStack.EMPTY;
@@ -93,9 +93,9 @@ public class MercurialEyeContainer extends Container {
 			}
 		}
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, newStack);
 	}

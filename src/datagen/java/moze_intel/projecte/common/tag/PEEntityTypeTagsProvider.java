@@ -17,8 +17,8 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 	}
 
 	@Override
-	protected void registerTags() {
-		getOrCreateBuilder(PETags.Entities.RANDOMIZER_PEACEFUL).add(
+	protected void addTags() {
+		tag(PETags.Entities.RANDOMIZER_PEACEFUL).add(
 				EntityType.SHEEP,
 				EntityType.PIG,
 				EntityType.COW,
@@ -49,7 +49,7 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.WANDERING_TRADER,
 				EntityType.STRIDER
 		);
-		getOrCreateBuilder(PETags.Entities.RANDOMIZER_HOSTILE).add(
+		tag(PETags.Entities.RANDOMIZER_HOSTILE).add(
 				EntityType.ZOMBIE,
 				EntityType.SKELETON,
 				EntityType.CREEPER,
@@ -58,7 +58,7 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.SILVERFISH,
 				EntityType.ZOMBIFIED_PIGLIN,
 				EntityType.PIGLIN,
-				EntityType.field_242287_aj,
+				EntityType.PIGLIN_BRUTE,
 				EntityType.HOGLIN,
 				EntityType.ZOGLIN,
 				EntityType.GHAST,
@@ -82,11 +82,11 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.PHANTOM,
 				EntityType.PILLAGER
 		);
-		getOrCreateBuilder(PETags.Entities.BLACKLIST_SWRG);
-		getOrCreateBuilder(PETags.Entities.BLACKLIST_INTERDICTION);
+		tag(PETags.Entities.BLACKLIST_SWRG);
+		tag(PETags.Entities.BLACKLIST_INTERDICTION);
 		//Vanilla tags
-		getOrCreateBuilder(EntityTypeTags.ARROWS).add(PEEntityTypes.HOMING_ARROW.get());
-		getOrCreateBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(
+		tag(EntityTypeTags.ARROWS).add(PEEntityTypes.HOMING_ARROW.get());
+		tag(EntityTypeTags.IMPACT_PROJECTILES).add(
 				PEEntityTypes.FIRE_PROJECTILE.get(),
 				PEEntityTypes.LAVA_PROJECTILE.get(),
 				PEEntityTypes.LENS_PROJECTILE.get(),

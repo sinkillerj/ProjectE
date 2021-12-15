@@ -126,16 +126,16 @@ public final class WorldTransmutations {
 	}
 
 	private static void registerDefault(Block from, Block result, @Nullable Block altResult) {
-		registerIMC(from.getDefaultState(), result.getDefaultState(), altResult == null ? null : altResult.getDefaultState());
+		registerIMC(from.defaultBlockState(), result.defaultBlockState(), altResult == null ? null : altResult.defaultBlockState());
 	}
 
 	private static void registerAllStates(Block from, Block result, @Nullable Block altResult) {
-		StateContainer<Block, BlockState> stateContainer = from.getStateContainer();
-		ImmutableList<BlockState> validStates = stateContainer.getValidStates();
+		StateContainer<Block, BlockState> stateContainer = from.getStateDefinition();
+		ImmutableList<BlockState> validStates = stateContainer.getPossibleStates();
 		for (BlockState validState : validStates) {
 			try {
-				BlockState resultState = copyProperties(validState, result.getDefaultState());
-				BlockState altResultState = altResult == null ? null : copyProperties(validState, altResult.getDefaultState());
+				BlockState resultState = copyProperties(validState, result.defaultBlockState());
+				BlockState altResultState = altResult == null ? null : copyProperties(validState, altResult.defaultBlockState());
 				registerIMC(validState, resultState, altResultState);
 			} catch (IllegalArgumentException e) {
 				//Something went wrong skip adding a conversion for this but log that we failed
@@ -159,7 +159,7 @@ public final class WorldTransmutations {
 	}
 
 	private static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState target, Property<T> property, Comparable<?> value) {
-		return target.with(property, (V) value);
+		return target.setValue(property, (V) value);
 	}
 
 	private static void registerBackAndForth(Block first, Block second) {

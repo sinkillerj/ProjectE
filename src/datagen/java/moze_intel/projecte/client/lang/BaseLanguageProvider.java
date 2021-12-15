@@ -38,11 +38,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 	}
 
 	@Override
-	public void act(DirectoryCache cache) throws IOException {
-		super.act(cache);
+	public void run(DirectoryCache cache) throws IOException {
+		super.run(cache);
 		if (altProviders.length > 0) {
 			for (ConvertibleLanguageProvider provider : altProviders) {
-				provider.act(cache);
+				provider.run(cache);
 			}
 		}
 	}

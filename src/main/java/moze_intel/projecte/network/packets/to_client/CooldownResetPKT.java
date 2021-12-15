@@ -10,7 +10,7 @@ public class CooldownResetPKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		if (Minecraft.getInstance().player != null) {
-			Minecraft.getInstance().player.resetCooldown();
+			Minecraft.getInstance().player.resetAttackStrengthTicker();
 		}
 	}
 

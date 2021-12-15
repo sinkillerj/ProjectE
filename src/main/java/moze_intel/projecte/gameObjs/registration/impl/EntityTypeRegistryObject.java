@@ -14,6 +14,6 @@ public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegi
 
 	@Override
 	public String getTranslationKey() {
-		return get().getTranslationKey();
+		return get().getDescriptionId();
 	}
 }

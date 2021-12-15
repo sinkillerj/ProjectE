@@ -19,7 +19,7 @@ public class ClearKnowledgeCMD {
 
 	public static ArgumentBuilder<CommandSource, ?> register() {
 		return Commands.literal("clearknowledge")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("targets", EntityArgument.players())
 						.executes(cs -> execute(cs, EntityArgument.getPlayers(cs, "targets"))));
 	}
@@ -29,9 +29,9 @@ public class ClearKnowledgeCMD {
 		for (ServerPlayerEntity player : targets) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(IKnowledgeProvider::clearKnowledge);
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-			source.sendFeedback(PELang.CLEAR_KNOWLEDGE_SUCCESS.translate(player.getDisplayName()), true);
+			source.sendSuccess(PELang.CLEAR_KNOWLEDGE_SUCCESS.translate(player.getDisplayName()), true);
 			if (player != source.getEntity()) {
-				player.sendMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(TextFormatting.RED, source.getDisplayName()), Util.DUMMY_UUID);
+				player.sendMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(TextFormatting.RED, source.getDisplayName()), Util.NIL_UUID);
 			}
 		}
 		return targets.size();

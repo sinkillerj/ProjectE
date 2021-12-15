@@ -51,15 +51,15 @@ public class GemHelmet extends GemArmorBase {
 			value = true;
 		}
 		if (value) {
-			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.DUMMY_UUID);
+			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.NIL_UUID);
 		} else {
-			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.DUMMY_UUID);
+			player.sendMessage(PELang.NIGHT_VISION.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.NIL_UUID);
 		}
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_HELM.translate());
 		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.HELMET_TOGGLE)));
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
@@ -71,15 +71,15 @@ public class GemHelmet extends GemArmorBase {
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		if (world.isRemote) {
-			int x = (int) Math.floor(player.getPosX());
-			int y = (int) (player.getPosY() - player.getYOffset());
-			int z = (int) Math.floor(player.getPosZ());
+		if (world.isClientSide) {
+			int x = (int) Math.floor(player.getX());
+			int y = (int) (player.getY() - player.getMyRidingOffset());
+			int z = (int) Math.floor(player.getZ());
 			BlockPos pos = new BlockPos(x, y, z);
-			FluidState fluidState = world.getFluidState(pos.down());
-			if (fluidState.getFluid().isIn(FluidTags.WATER) && world.isAirBlock(pos)) {
-				if (!player.isSneaking()) {
-					player.setMotion(player.getMotion().mul(1, 0, 1));
+			FluidState fluidState = world.getFluidState(pos.below());
+			if (fluidState.getType().is(FluidTags.WATER) && world.isEmptyBlock(pos)) {
+				if (!player.isShiftKeyDown()) {
+					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0, 1));
 					player.fallDistance = 0.0f;
 					player.setOnGround(true);
 				}
@@ -93,13 +93,13 @@ public class GemHelmet extends GemArmorBase {
 			});
 
 			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
-				player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, true, false));
+				player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, true, false));
 			} else {
-				player.removePotionEffect(Effects.NIGHT_VISION);
+				player.removeEffect(Effects.NIGHT_VISION);
 			}
 
 			if (player.isInWater()) {
-				player.setAir(300);
+				player.setAirSupply(300);
 			}
 		}
 	}
@@ -108,13 +108,13 @@ public class GemHelmet extends GemArmorBase {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
 			BlockRayTraceResult strikeResult = PlayerHelper.getBlockLookingAt(player, 120.0F);
 			if (strikeResult.getType() != Type.MISS) {
-				BlockPos strikePos = strikeResult.getPos();
-				World world = player.getEntityWorld();
+				BlockPos strikePos = strikeResult.getBlockPos();
+				World world = player.getCommandSenderWorld();
 				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
 				if (lightning != null) {
-					lightning.moveForced(Vector3d.copyCentered(strikePos));
-					lightning.setCaster((ServerPlayerEntity) player);
-					world.addEntity(lightning);
+					lightning.moveTo(Vector3d.atCenterOf(strikePos));
+					lightning.setCause((ServerPlayerEntity) player);
+					world.addFreshEntity(lightning);
 				}
 			}
 		}

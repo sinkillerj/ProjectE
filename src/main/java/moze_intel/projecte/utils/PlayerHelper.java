@@ -52,10 +52,10 @@ public final class PlayerHelper {
 		if (!hasEditPermission(player, pos)) {
 			return false;
 		}
-		World world = player.getEntityWorld();
-		BlockSnapshot before = BlockSnapshot.create(world.getDimensionKey(), world, pos);
-		world.setBlockState(pos, state);
-		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.getDefaultState(), player);
+		World world = player.getCommandSenderWorld();
+		BlockSnapshot before = BlockSnapshot.create(world.dimension(), world, pos);
+		world.setBlockAndUpdate(pos, state);
+		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.defaultBlockState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled()) {
 			world.restoringBlockSnapshots = true;
@@ -73,7 +73,7 @@ public final class PlayerHelper {
 	}
 
 	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom) {
-		return player.inventory.mainInventory.stream().filter(s -> !s.isEmpty() && s.getItem() == consumeFrom).findFirst().orElse(ItemStack.EMPTY);
+		return player.inventory.items.stream().filter(s -> !s.isEmpty() && s.getItem() == consumeFrom).findFirst().orElse(ItemStack.EMPTY);
 	}
 
 	@Nullable
@@ -87,7 +87,7 @@ public final class PlayerHelper {
 	public static BlockRayTraceResult getBlockLookingAt(PlayerEntity player, double maxDistance) {
 		Pair<Vector3d, Vector3d> vecs = getLookVec(player, maxDistance);
 		RayTraceContext ctx = new RayTraceContext(vecs.getLeft(), vecs.getRight(), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
-		return player.getEntityWorld().rayTraceBlocks(ctx);
+		return player.getCommandSenderWorld().clip(ctx);
 	}
 
 	/**
@@ -95,47 +95,47 @@ public final class PlayerHelper {
 	 */
 	public static Pair<Vector3d, Vector3d> getLookVec(PlayerEntity player, double maxDistance) {
 		// Thank you ForgeEssentials
-		Vector3d look = player.getLook(1.0F);
-		Vector3d playerPos = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+		Vector3d look = player.getViewVector(1.0F);
+		Vector3d playerPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
 		Vector3d src = playerPos.add(0, player.getEyeHeight(), 0);
 		Vector3d dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 		return ImmutablePair.of(src, dest);
 	}
 
 	public static boolean hasBreakPermission(ServerPlayerEntity player, BlockPos pos) {
-		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.getEntityWorld(), player.interactionManager.getGameType(), player, pos) != -1;
+		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.getCommandSenderWorld(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
 	}
 
 	public static boolean hasEditPermission(ServerPlayerEntity player, BlockPos pos) {
-		if (ServerLifecycleHooks.getCurrentServer().isBlockProtected((ServerWorld) player.getEntityWorld(), pos, player)) {
+		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection((ServerWorld) player.getCommandSenderWorld(), pos, player)) {
 			return false;
 		}
-		return Arrays.stream(Direction.values()).allMatch(e -> player.canPlayerEdit(pos, e, ItemStack.EMPTY));
+		return Arrays.stream(Direction.values()).allMatch(e -> player.mayUseItemAt(pos, e, ItemStack.EMPTY));
 	}
 
 	public static void resetCooldown(PlayerEntity player) {
-		player.resetCooldown();
+		player.resetAttackStrengthTicker();
 		PacketHandler.sendTo(new CooldownResetPKT(), (ServerPlayerEntity) player);
 	}
 
 	public static void swingItem(PlayerEntity player, Hand hand) {
-		if (player.getEntityWorld() instanceof ServerWorld) {
-			((ServerWorld) player.getEntityWorld()).getChunkProvider().sendToTrackingAndSelf(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
+		if (player.getCommandSenderWorld() instanceof ServerWorld) {
+			((ServerWorld) player.getCommandSenderWorld()).getChunkSource().broadcastAndSend(player, new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
 		}
 	}
 
 	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying) {
-		updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.isFlying);
+		updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.flying);
 	}
 
 	public static void updateClientServerFlight(ServerPlayerEntity player, boolean allowFlying, boolean isFlying) {
 		PacketHandler.sendTo(new SetFlyPKT(allowFlying, isFlying), player);
-		player.abilities.allowFlying = allowFlying;
-		player.abilities.isFlying = isFlying;
+		player.abilities.mayfly = allowFlying;
+		player.abilities.flying = isFlying;
 	}
 
 	public static void updateClientServerStepHeight(ServerPlayerEntity player, float value) {
-		player.stepHeight = value;
+		player.maxUpStep = value;
 		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 
@@ -145,6 +145,6 @@ public final class PlayerHelper {
 
 	public static void updateScore(ServerPlayerEntity player, ScoreCriteria objective, int value) {
 		// [VanillaCopy] ServerPlayerEntity.updateScorePoints
-		player.getWorldScoreboard().forAllObjectives(objective, player.getScoreboardName(), score -> score.setScorePoints(value));
+		player.getScoreboard().forAllObjectives(objective, player.getScoreboardName(), score -> score.setScore(value));
 	}
 }

@@ -46,7 +46,7 @@ public class ShowBagCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("showbag")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("color", new ColorArgument())
 						.then(Commands.argument("target", EntityArgument.player())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))))
@@ -55,12 +55,12 @@ public class ShowBagCMD {
 	}
 
 	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException {
-		ServerPlayerEntity senderPlayer = ctx.getSource().asPlayer();
+		ServerPlayerEntity senderPlayer = ctx.getSource().getPlayerOrException();
 		return showBag(senderPlayer, createContainer(senderPlayer, player, color));
 	}
 
 	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, UUID uuid) throws CommandSyntaxException {
-		ServerPlayerEntity senderPlayer = ctx.getSource().asPlayer();
+		ServerPlayerEntity senderPlayer = ctx.getSource().getPlayerOrException();
 		return showBag(senderPlayer, createContainer(senderPlayer, uuid, color));
 	}
 
@@ -84,7 +84,7 @@ public class ShowBagCMD {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		//Try to get the bag
 		IItemHandlerModifiable inv = loadOfflineBag(server, target, color);
-		GameProfile profileByUUID = server.getPlayerProfileCache().getProfileByUUID(target);
+		GameProfile profileByUUID = server.getProfileCache().get(target);
 		ITextComponent name;
 		if (profileByUUID == null) {
 			name = TextComponentUtil.build(PEItems.getBag(color));
@@ -108,7 +108,7 @@ public class ShowBagCMD {
 			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player) {
 				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, immutable) {
 					@Override
-					public boolean canInteractWith(@Nonnull PlayerEntity player) {
+					public boolean stillValid(@Nonnull PlayerEntity player) {
 						return canInteractWith.getAsBoolean();
 					}
 				};
@@ -117,7 +117,7 @@ public class ShowBagCMD {
 	}
 
 	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
-		File playerData = server.func_240776_a_(FolderName.PLAYERDATA).toFile();
+		File playerData = server.getWorldPath(FolderName.PLAYER_DATA_DIR).toFile();
 		if (playerData.exists()) {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {

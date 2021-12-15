@@ -46,7 +46,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	public void fireVolley(ItemStack stack, PlayerEntity player) {
 		for (int i = 0; i < 10; i++) {
-			fireArrow(stack, player.world, player, 4F);
+			fireArrow(stack, player.level, player, 4F);
 		}
 	}
 
@@ -55,14 +55,14 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt) {
-		if (!evt.getWorld().isRemote && evt.getUseItem() != Event.Result.DENY && !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this) {
+		if (!evt.getWorld().isClientSide && evt.getUseItem() != Event.Result.DENY && !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this) {
 			fireVolley(evt.getItemStack(), evt.getPlayer());
 		}
 	}
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-		if (!player.world.isRemote) {
+		if (!player.level.isClientSide) {
 			fireVolley(stack, player);
 		}
 		return super.onLeftClickEntity(stack, player, entity);
@@ -70,42 +70,42 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (!world.isRemote && getMode(stack) == 1 && entity instanceof LivingEntity) {
+		if (!world.isClientSide && getMode(stack) == 1 && entity instanceof LivingEntity) {
 			fireArrow(stack, world, (LivingEntity) entity, 1F);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		if (!world.isRemote) {
-			fireArrow(player.getHeldItem(hand), world, player, 1F);
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isClientSide) {
+			fireArrow(player.getItemInHand(hand), world, player, 1F);
 		}
-		return ActionResult.resultSuccess(player.getHeldItem(hand));
+		return ActionResult.success(player.getItemInHand(hand));
 	}
 
 	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
-			arrow.func_234612_a_(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 3.0F, inaccuracy);
-			world.playSound(null, shooter.getPosX(), shooter.getPosY(), shooter.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
-			world.addEntity(arrow);
+			arrow.shootFromRotation(shooter, shooter.xRot, shooter.yRot, 0.0F, 3.0F, inaccuracy);
+			world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+			world.addFreshEntity(arrow);
 		}
 	}
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					if (!world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
+					if (!world.getEntitiesOfClass(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
 						for (int i = 0; i < 3; i++) {
 							EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
-							arrow.setRawPosition(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
-							arrow.setMotion(0, 1, 0);
-							arrow.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
-							world.addEntity(arrow);
+							arrow.setPosRaw(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
+							arrow.setDeltaMovement(0, 1, 0);
+							arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+							world.addFreshEntity(arrow);
 						}
 					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());

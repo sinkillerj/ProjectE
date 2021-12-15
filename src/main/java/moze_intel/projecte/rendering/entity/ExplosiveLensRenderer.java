@@ -14,7 +14,7 @@ public class ExplosiveLensRenderer extends EntitySpriteRenderer<EntityLensProjec
 
 	@Nonnull
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull EntityLensProjectile entity) {
+	public ResourceLocation getTextureLocation(@Nonnull EntityLensProjectile entity) {
 		return PECore.rl("textures/entity/lens_explosive.png");
 	}
 }

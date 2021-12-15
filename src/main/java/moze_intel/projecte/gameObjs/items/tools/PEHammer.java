@@ -23,8 +23,8 @@ public class PEHammer extends PETool {
 
 	public PEHammer(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, 10, -3, numCharges, props
-				.addToolType(ToolType.PICKAXE, matterType.getHarvestLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getHarvestLevel()));
+				.addToolType(ToolType.PICKAXE, matterType.getLevel())
+				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getLevel()));
 	}
 
 	/**
@@ -36,14 +36,14 @@ public class PEHammer extends PETool {
 	 * gets used is one where the stack does not matter (which would be this)
 	 */
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		//Note: These checks cover the need of overriding/shortcutting the destroy speed
 		Material material = state.getMaterial();
-		return material == Material.ROCK || material == Material.IRON || material == Material.ANVIL;
+		return material == Material.STONE || material == Material.METAL || material == Material.HEAVY_METAL;
 	}
 
 	@Override
-	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
+	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
@@ -61,11 +61,11 @@ public class PEHammer extends PETool {
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		return ToolHelper.digAOE(context.getWorld(), player, context.getHand(), context.getItem(), context.getPos(), context.getFace(), true, 0);
+		return ToolHelper.digAOE(context.getLevel(), player, context.getHand(), context.getItemInHand(), context.getClickedPos(), context.getClickedFace(), true, 0);
 	}
 }

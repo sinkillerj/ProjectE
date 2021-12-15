@@ -40,13 +40,13 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && PECore.DEV_ENVIRONMENT) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide && PECore.DEV_ENVIRONMENT) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
-			return ActionResult.resultSuccess(stack);
+			return ActionResult.success(stack);
 		}
-		return ActionResult.resultPass(stack);
+		return ActionResult.pass(stack);
 	}
 
 	public enum EnumKleinTier {

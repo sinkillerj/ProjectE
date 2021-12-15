@@ -90,7 +90,7 @@ public final class WorldHelper {
 		if (!drops.isEmpty()) {
 			ItemHelper.compactItemListNoStacksize(drops);
 			for (ItemStack drop : drops) {
-				world.addEntity(new ItemEntity(world, x, y, z, drop));
+				world.addFreshEntity(new ItemEntity(world, x, y, z, drop));
 			}
 		}
 	}
@@ -101,14 +101,14 @@ public final class WorldHelper {
 	public static void createNovaExplosion(World world, Entity exploder, double x, double y, double z, float power) {
 		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power, true, Explosion.Mode.BREAK);
 		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion))) {
-			explosion.doExplosionA();
-			explosion.doExplosionB(true);
+			explosion.explode();
+			explosion.finalizeExplosion(true);
 		}
 	}
 
 	public static void drainFluid(World world, BlockPos pos, BlockState state, Fluid toMatch) {
 		Block block = state.getBlock();
-		if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid().isEquivalentTo(toMatch)) {
+		if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid().isSame(toMatch)) {
 			//If it is a fluid block drain it (may be the case for some custom block?)
 			// We double check though the fluid block represents a given one though, in case there is some weird thing
 			// going on and we are a bucket pickup handler for the actual water and fluid state
@@ -116,7 +116,7 @@ public final class WorldHelper {
 		} else if (block instanceof IBucketPickupHandler) {
 			//If it is a bucket pickup handler (so may be a fluid logged block) "pick it up"
 			// This includes normal fluid blocks
-			((IBucketPickupHandler) block).pickupFluid(world, pos, state);
+			((IBucketPickupHandler) block).takeLiquid(world, pos, state);
 		}
 	}
 
@@ -129,14 +129,14 @@ public final class WorldHelper {
 			if (!stack.isEmpty()) {
 				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ());
 				ent.setItem(stack);
-				world.addEntity(ent);
+				world.addFreshEntity(ent);
 			}
 		}
 	}
 
 	public static void extinguishNearby(World world, PlayerEntity player) {
-		BlockPos.getAllInBox(player.getPosition().add(-1, -1, -1), player.getPosition().add(1, 1, 1)).forEach(pos -> {
-			pos = pos.toImmutable();
+		BlockPos.betweenClosedStream(player.blockPosition().offset(-1, -1, -1), player.blockPosition().offset(1, 1, 1)).forEach(pos -> {
+			pos = pos.immutable();
 			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				world.removeBlock(pos, false);
 			}
@@ -148,28 +148,28 @@ public final class WorldHelper {
 			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 			//Ensure we are immutable so that changing blocks doesn't act weird
-			pos = pos.toImmutable();
-			if (b == Blocks.WATER && (!random || world.rand.nextInt(128) == 0)) {
+			pos = pos.immutable();
+			if (b == Blocks.WATER && (!random || world.random.nextInt(128) == 0)) {
 				if (player != null) {
-					PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, pos, Blocks.ICE.getDefaultState());
+					PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, pos, Blocks.ICE.defaultBlockState());
 				} else {
-					world.setBlockState(pos, Blocks.ICE.getDefaultState());
+					world.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
 				}
-			} else if (Block.doesSideFillSquare(state.getCollisionShape(world, pos.down()), Direction.UP)) {
-				BlockPos up = pos.up();
+			} else if (Block.isFaceFull(state.getCollisionShape(world, pos.below()), Direction.UP)) {
+				BlockPos up = pos.above();
 				BlockState stateUp = world.getBlockState(up);
 				BlockState newState = null;
 
-				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.rand.nextInt(128) == 0)) {
-					newState = Blocks.SNOW.getDefaultState();
-				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.get(SnowBlock.LAYERS) < 8 && world.rand.nextInt(512) == 0) {
-					newState = stateUp.with(SnowBlock.LAYERS, stateUp.get(SnowBlock.LAYERS) + 1);
+				if (stateUp.getBlock().isAir(stateUp, world, up) && (!random || world.random.nextInt(128) == 0)) {
+					newState = Blocks.SNOW.defaultBlockState();
+				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.getValue(SnowBlock.LAYERS) < 8 && world.random.nextInt(512) == 0) {
+					newState = stateUp.setValue(SnowBlock.LAYERS, stateUp.getValue(SnowBlock.LAYERS) + 1);
 				}
 				if (newState != null) {
 					if (player != null) {
 						PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, up, newState);
 					} else {
-						world.setBlockState(up, newState);
+						world.setBlockAndUpdate(up, newState);
 					}
 				}
 			}
@@ -180,7 +180,7 @@ public final class WorldHelper {
 	 * Checks if a block is a {@link ILiquidContainer} that supports a specific fluid type.
 	 */
 	public static boolean isLiquidContainerForFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid) {
-		return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+		return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public final class WorldHelper {
 			placeFluid(player, world, pos, fluid, checkWaterVaporize);
 		} else {
 			//Otherwise offset it because we clicked against the block
-			placeFluid(player, world, pos.offset(sideHit), fluid, checkWaterVaporize);
+			placeFluid(player, world, pos.relative(sideHit), fluid, checkWaterVaporize);
 		}
 	}
 
@@ -204,22 +204,22 @@ public final class WorldHelper {
 	 */
 	public static void placeFluid(@Nullable ServerPlayerEntity player, World world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = world.getBlockState(pos);
-		if (checkWaterVaporize && world.getDimensionType().isUltrawarm() && fluid.isIn(FluidTags.WATER)) {
-			world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+		if (checkWaterVaporize && world.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
+			world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
 			for (int l = 0; l < 8; ++l) {
 				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
 		} else if (isLiquidContainerForFluid(world, pos, blockState, fluid)) {
-			((ILiquidContainer) blockState.getBlock()).receiveFluid(world, pos, blockState, fluid.getStillFluidState(false));
+			((ILiquidContainer) blockState.getBlock()).placeLiquid(world, pos, blockState, fluid.getSource(false));
 		} else {
 			Material material = blockState.getMaterial();
 			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
 				world.destroyBlock(pos, true);
 			}
 			if (player == null) {
-				world.setBlockState(pos, fluid.getDefaultState().getBlockState());
+				world.setBlockAndUpdate(pos, fluid.defaultFluidState().createLegacyBlock());
 			} else {
-				PlayerHelper.checkedPlaceBlock(player, pos, fluid.getDefaultState().getBlockState());
+				PlayerHelper.checkedPlaceBlock(player, pos, fluid.defaultFluidState().createLegacyBlock());
 			}
 		}
 	}
@@ -321,7 +321,7 @@ public final class WorldHelper {
 	 * Wrapper around BlockPos.getAllInBox()
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(BlockPos corner1, BlockPos corner2) {
-		return () -> BlockPos.getAllInBox(corner1, corner2).iterator();
+		return () -> BlockPos.betweenClosedStream(corner1, corner2).iterator();
 	}
 
 
@@ -340,15 +340,15 @@ public final class WorldHelper {
 	 * Gravitates an entity, vanilla xp orb style, towards a position Code adapted from EntityXPOrb and OpenBlocks Vacuum Hopper, mostly the former
 	 */
 	public static void gravitateEntityTowards(Entity ent, double x, double y, double z) {
-		double dX = x - ent.getPosX();
-		double dY = y - ent.getPosY();
-		double dZ = z - ent.getPosZ();
+		double dX = x - ent.getX();
+		double dY = y - ent.getY();
+		double dZ = z - ent.getZ();
 		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
 
 		double vel = 1.0 - dist / 15.0;
 		if (vel > 0.0D) {
 			vel *= vel;
-			ent.setMotion(ent.getMotion().add(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
+			ent.setDeltaMovement(ent.getDeltaMovement().add(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
 		}
 	}
 
@@ -357,8 +357,8 @@ public final class WorldHelper {
 			return;
 		}
 		int chance = harvest ? 16 : 32;
-		for (BlockPos currentPos : getPositionsFromBox(pos.add(-5, -3, -5), pos.add(5, 3, 5))) {
-			currentPos = currentPos.toImmutable();
+		for (BlockPos currentPos : getPositionsFromBox(pos.offset(-5, -3, -5), pos.offset(5, 3, 5))) {
+			currentPos = currentPos.immutable();
 			BlockState state = world.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
@@ -373,36 +373,36 @@ public final class WorldHelper {
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof IGrowable) {
 				IGrowable growable = (IGrowable) crop;
-				if (!growable.canGrow(world, currentPos, state, false)) {
-					if (harvest && !crop.isIn(PETags.Blocks.BLACKLIST_HARVEST)) {
-						if (crop != Blocks.KELP_PLANT || world.getBlockState(currentPos.down()).isIn(crop)) {
+				if (!growable.isValidBonemealTarget(world, currentPos, state, false)) {
+					if (harvest && !crop.is(PETags.Blocks.BLACKLIST_HARVEST)) {
+						if (crop != Blocks.KELP_PLANT || world.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of help but otherwise allow harvesting them
 							harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
-					if (world.rand.nextInt(chance) == 0) {
-						growable.grow((ServerWorld) world, world.rand, currentPos, state);
+					if (world.random.nextInt(chance) == 0) {
+						growable.performBonemeal((ServerWorld) world, world.random, currentPos, state);
 					}
 				}
 			}
 			// All modded
 			// Cactus, Reeds, Netherwart, Flower
 			else if (crop instanceof IPlantable) {
-				if (world.rand.nextInt(chance / 4) == 0) {
+				if (world.random.nextInt(chance / 4) == 0) {
 					for (int i = 0; i < (harvest ? 8 : 4); i++) {
-						state.randomTick((ServerWorld) world, currentPos, world.rand);
+						state.randomTick((ServerWorld) world, currentPos, world.random);
 					}
 				}
 				if (harvest) {
 					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
-						if (world.getBlockState(currentPos.up()).isIn(crop) && world.getBlockState(currentPos.up(2)).isIn(crop)) {
+						if (world.getBlockState(currentPos.above()).is(crop) && world.getBlockState(currentPos.above(2)).is(crop)) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								harvestBlock(world, currentPos.up(i), (ServerPlayerEntity) player);
+								harvestBlock(world, currentPos.above(i), (ServerPlayerEntity) player);
 							}
 						}
 					} else if (crop == Blocks.NETHER_WART) {
-						if (state.get(NetherWartBlock.AGE) == 3) {
+						if (state.getValue(NetherWartBlock.AGE) == 3) {
 							harvestBlock(world, currentPos, (ServerPlayerEntity) player);
 						}
 					}
@@ -438,7 +438,7 @@ public final class WorldHelper {
 			BlockState currentState = world.getBlockState(currentPos);
 			if (currentState.getBlock() == target) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
-				currentPos = currentPos.toImmutable();
+				currentPos = currentPos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, currentPos)) {
 					numMined++;
 					currentDrops.addAll(Block.getDrops(currentState, (ServerWorld) world, currentPos, getTileEntity(world, currentPos), player, stack));
@@ -454,15 +454,15 @@ public final class WorldHelper {
 	}
 
 	public static void igniteNearby(World world, PlayerEntity player) {
-		for (BlockPos pos : BlockPos.getAllInBoxMutable(player.getPosition().add(-8, -5, -8), player.getPosition().add(8, 5, 8))) {
-			if (world.rand.nextInt(128) == 0 && world.isAirBlock(pos)) {
-				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.toImmutable(), Blocks.FIRE.getDefaultState());
+		for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-8, -5, -8), player.blockPosition().offset(8, 5, 8))) {
+			if (world.random.nextInt(128) == 0 && world.isEmptyBlock(pos)) {
+				PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 			}
 		}
 	}
 
 	private static boolean validRepelEntity(Entity entity, ITag<EntityType<?>> blacklistTag) {
-		if (!entity.isSpectator() && !entity.getType().isContained(blacklistTag)) {
+		if (!entity.isSpectator() && !entity.getType().is(blacklistTag)) {
 			if (entity instanceof ProjectileEntity) {
 				//Accept any projectile's that are not in the ground, but fail for ones that are in the ground
 				return !entity.isOnGround();
@@ -478,7 +478,7 @@ public final class WorldHelper {
 	public static void repelEntitiesInterdiction(World world, AxisAlignedBB effectBounds, double x, double y, double z) {
 		Vector3d vec = new Vector3d(x, y, z);
 		Predicate<Entity> repelPredicate = ProjectEConfig.server.effects.interdictionMode.get() ? INTERDICTION_REPEL_HOSTILE_PREDICATE : INTERDICTION_REPEL_PREDICATE;
-		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, repelPredicate)) {
+		for (Entity ent : world.getEntitiesOfClass(Entity.class, effectBounds, repelPredicate)) {
 			repelEntity(vec, ent);
 		}
 	}
@@ -487,14 +487,14 @@ public final class WorldHelper {
 	 * Repels projectiles and mobs in the given AABB away from a given player, if the player is not the thrower of the projectile
 	 */
 	public static void repelEntitiesSWRG(World world, AxisAlignedBB effectBounds, PlayerEntity player) {
-		Vector3d playerVec = player.getPositionVec();
-		for (Entity ent : world.getEntitiesWithinAABB(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
+		Vector3d playerVec = player.position();
+		for (Entity ent : world.getEntitiesOfClass(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
 			if (ent instanceof ProjectileEntity) {
-				Entity owner = ((ProjectileEntity) ent).func_234616_v_();
+				Entity owner = ((ProjectileEntity) ent).getOwner();
 				//Note: Eventually we would like to remove the check for if the world is remote and the thrower is null, but
 				// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
 				// as the client doesn't know the owner of things like ender pearls and thus renders it improperly
-				if (world.isRemote() && owner == null || owner != null && player.getUniqueID().equals(owner.getUniqueID())) {
+				if (world.isClientSide() && owner == null || owner != null && player.getUUID().equals(owner.getUUID())) {
 					continue;
 				}
 			}
@@ -503,10 +503,10 @@ public final class WorldHelper {
 	}
 
 	private static void repelEntity(Vector3d vec, Entity entity) {
-		Vector3d t = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+		Vector3d t = new Vector3d(entity.getX(), entity.getY(), entity.getZ());
 		Vector3d r = new Vector3d(t.x - vec.x, t.y - vec.y, t.z - vec.z);
 		double distance = vec.distanceTo(t) + 0.1;
-		entity.setMotion(entity.getMotion().add(r.scale(1 / 1.5 * 1 / distance)));
+		entity.setDeltaMovement(entity.getDeltaMovement().add(r.scale(1 / 1.5 * 1 / distance)));
 	}
 
 	@Nonnull
@@ -515,28 +515,28 @@ public final class WorldHelper {
 		if (player == null) {
 			return ActionResultType.FAIL;
 		}
-		World world = ctx.getWorld();
-		BlockPos pos = ctx.getPos();
-		Direction side = ctx.getFace();
+		World world = ctx.getLevel();
+		BlockPos pos = ctx.getClickedPos();
+		Direction side = ctx.getClickedFace();
 		BlockState state = world.getBlockState(pos);
-		if (AbstractFireBlock.canLightBlock(world, pos, side)) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
-				world.setBlockState(pos, AbstractFireBlock.getFireForPlacement(world, pos));
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		if (AbstractFireBlock.canBePlacedAt(world, pos, side)) {
+			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
+				world.setBlockAndUpdate(pos, AbstractFireBlock.getState(world, pos));
+				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
-		} else if (CampfireBlock.canBeLit(state)) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
-				world.setBlockState(pos, state.with(BlockStateProperties.LIT, true));
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		} else if (CampfireBlock.canLight(state)) {
+			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
+				world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
+				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		} else if (state.isFlammable(world, pos, side)) {
-			if (!world.isRemote && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
+			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				// Ignite the block
 				state.catchFire(world, pos, side, player);
 				if (state.getBlock() instanceof TNTBlock) {
 					world.removeBlock(pos, false);
 				}
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
 		} else {
 			return ActionResultType.PASS;
@@ -555,13 +555,13 @@ public final class WorldHelper {
 	 * @implNote From Mekanism
 	 */
 	public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
-		if (world == null || !World.isValid(pos)) {
+		if (world == null || !World.isInWorldBounds(pos)) {
 			return false;
 		} else if (world instanceof IWorldReader) {
 			//Note: We don't bother checking if it is a world and then isBlockPresent because
 			// all that does is also validate the y value is in bounds, and we already check to make
 			// sure the position is valid both in the y and xz directions
-			return ((IWorldReader) world).isBlockLoaded(pos);
+			return ((IWorldReader) world).hasChunkAt(pos);
 		}
 		return true;
 	}
@@ -582,7 +582,7 @@ public final class WorldHelper {
 			//If the world is null or its a world reader and the block is not loaded, return null
 			return null;
 		}
-		return world.getTileEntity(pos);
+		return world.getBlockEntity(pos);
 	}
 
 	/**

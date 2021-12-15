@@ -35,15 +35,15 @@ public class ProjectETNT extends TNTBlock {
 
 	@Override
 	public void catchFire(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			createAndAddEntity(world, pos, igniter);
 		}
 	}
 
 	public void createAndAddEntity(@Nonnull World world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
 		TNTEntity tnt = tntEntityCreator.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-		world.addEntity(tnt);
-		world.playSound(null, tnt.getPosX(), tnt.getPosY(), tnt.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		world.addFreshEntity(tnt);
+		world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 	}
 
 	public IDispenseItemBehavior createDispenseItemBehavior() {
@@ -51,9 +51,9 @@ public class ProjectETNT extends TNTBlock {
 		return new DefaultDispenseItemBehavior() {
 			@Nonnull
 			@Override
-			protected ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
-				BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
-				createAndAddEntity(source.getWorld(), blockpos, null);
+			protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+				createAndAddEntity(source.getLevel(), blockpos, null);
 				stack.shrink(1);
 				return stack;
 			}
@@ -61,11 +61,11 @@ public class ProjectETNT extends TNTBlock {
 	}
 
 	@Override
-	public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
-		if (!world.isRemote) {
-			TNTEntity tnt = tntEntityCreator.create(world, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getExplosivePlacedBy());
-			tnt.setFuse((short) (world.rand.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
-			world.addEntity(tnt);
+	public void wasExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+		if (!world.isClientSide) {
+			TNTEntity tnt = tntEntityCreator.create(world, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
+			tnt.setFuse((short) (world.random.nextInt(tnt.getLife() / 4) + tnt.getLife() / 8));
+			world.addFreshEntity(tnt);
 		}
 	}
 

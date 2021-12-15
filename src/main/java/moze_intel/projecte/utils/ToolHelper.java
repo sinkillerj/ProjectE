@@ -116,25 +116,25 @@ public class ToolHelper {
 		}
 		int scaled1 = 5 * charge;
 		int scaled2 = 10 * charge;
-		BlockPos corner1 = player.getPosition().add(-scaled1, -scaled2, -scaled1);
-		BlockPos corner2 = player.getPosition().add(scaled1, scaled2, scaled1);
+		BlockPos corner1 = player.blockPosition().offset(-scaled1, -scaled2, -scaled1);
+		BlockPos corner2 = player.blockPosition().offset(scaled1, scaled2, scaled1);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(corner1, corner2)) {
 			BlockState state = world.getBlockState(pos);
-			if (state.isIn(tag)) {
-				if (world.isRemote) {
+			if (state.is(tag)) {
+				if (world.isClientSide) {
 					return ActionResultType.SUCCESS;
 				}
 				//Ensure we are immutable so that changing blocks doesn't act weird
-				pos = pos.toImmutable();
+				pos = pos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						drops.addAll(Block.getDrops(state, (ServerWorld) world, pos, WorldHelper.getTileEntity(world, pos), player, stack));
 						world.removeBlock(pos, false);
 						hasAction = true;
-						if (world.rand.nextInt(5) == 0) {
-							((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
+						if (world.random.nextInt(5) == 0) {
+							((ServerWorld) world).sendParticles(ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0);
 						}
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
@@ -144,7 +144,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.getPosX(), player.getPosY(), player.getPosZ());
+			WorldHelper.createLootDrop(drops, world, player.getX(), player.getY(), player.getZ());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}
@@ -155,14 +155,14 @@ public class ToolHelper {
 	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType tillHoeAOE(ItemUseContext context, long emcCost) {
-		return tillAOE(context, emcCost, ToolType.HOE, SoundEvents.ITEM_HOE_TILL);
+		return tillAOE(context, emcCost, ToolType.HOE, SoundEvents.HOE_TILL);
 	}
 
 	/**
 	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static ActionResultType tillShovelAOE(ItemUseContext context, long emcCost) {
-		return tillAOE(context, emcCost, ToolType.SHOVEL, SoundEvents.ITEM_SHOVEL_FLATTEN);
+		return tillAOE(context, emcCost, ToolType.SHOVEL, SoundEvents.SHOVEL_FLATTEN);
 	}
 
 	/**
@@ -173,34 +173,34 @@ public class ToolHelper {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		Direction sideHit = context.getFace();
+		Direction sideHit = context.getClickedFace();
 		if (sideHit == Direction.DOWN) {
 			//Don't allow tilling a block from underneath
 			return ActionResultType.PASS;
 		}
-		ItemStack stack = context.getItem();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
+		ItemStack stack = context.getItemInHand();
+		World world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
 		BlockState tilledState = world.getBlockState(pos).getToolModifiedState(world, pos, player, stack, toolType);
 		if (tilledState == null) {
 			//Skip tilling the blocks if the one we clicked cannot be tilled
 			return ActionResultType.PASS;
 		}
-		BlockPos abovePos = pos.up();
+		BlockPos abovePos = pos.above();
 		BlockState aboveState = world.getBlockState(abovePos);
 		//Check to make sure the block above is not opaque
-		if (aboveState.isOpaqueCube(world, abovePos)) {
+		if (aboveState.isSolidRender(world, abovePos)) {
 			//If the block above our source is opaque, just skip tiling in general
 			return ActionResultType.PASS;
 		}
-		if (world.isRemote) {
+		if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		}
 		//Processing did not happen, so we need to process it
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-		world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
+		world.setBlock(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
 		Material aboveMaterial = aboveState.getMaterial();
-		if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !aboveState.getBlock().hasTileEntity(aboveState)) {
+		if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !aboveState.getBlock().hasTileEntity(aboveState)) {
 			if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, abovePos)) {
 				world.destroyBlock(abovePos, true);
 			}
@@ -208,31 +208,31 @@ public class ToolHelper {
 		world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		int charge = getCharge(stack);
 		if (charge > 0) {
-			for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge))) {
+			for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge))) {
 				if (pos.equals(newPos)) {
 					//Skip the source position as it is free and we manually handled it before the loop
 					continue;
 				}
-				BlockState stateAbove = world.getBlockState(newPos.up());
+				BlockState stateAbove = world.getBlockState(newPos.above());
 				//Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
 				// the same as the one we got on the initial block we interacted with
-				if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == world.getBlockState(newPos).getToolModifiedState(world, newPos, player, stack, toolType)) {
+				if (!stateAbove.isSolidRender(world, newPos.above()) && tilledState == world.getBlockState(newPos).getToolModifiedState(world, newPos, player, stack, toolType)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
-						newPos = newPos.toImmutable();
+						newPos = newPos.immutable();
 						//Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do), rather than using our
 						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
-						world.setBlockState(newPos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
+						world.setBlock(newPos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
 						aboveMaterial = stateAbove.getMaterial();
-						if ((aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) && !stateAbove.getBlock().hasTileEntity(stateAbove)) {
+						if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !stateAbove.getBlock().hasTileEntity(stateAbove)) {
 							//If the block above the one we tilled is a plant (and not a tile entity because you never know), then we try to remove it
 							//Note: We do check for breaking the block above that we attempt to break it though, as we
 							// have not done any events that have told use we are allowed to break blocks in that spot.
-							if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos.up())) {
-								world.destroyBlock(newPos.up(), true);
+							if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos.above())) {
+								world.destroyBlock(newPos.above(), true);
 							}
 						}
 					} else {
@@ -242,7 +242,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -254,25 +254,25 @@ public class ToolHelper {
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
-		ItemStack stack = context.getItem();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
+		ItemStack stack = context.getItemInHand();
+		World world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
 		BlockState clickedState = world.getBlockState(pos);
 		BlockState strippedState = clickedState.getToolModifiedState(world, pos, player, stack, ToolType.AXE);
 		if (strippedState == null) {
 			//Skip stripping the blocks if the one we clicked cannot be stripped
 			return ActionResultType.PASS;
-		} else if (world.isRemote) {
+		} else if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		}
-		Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
+		Axis axis = clickedState.getValue(RotatedPillarBlock.AXIS);
 		//Process the block we interacted with initially and play the sound
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-		world.setBlockState(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
-		world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		world.setBlock(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
+		world.playSound(null, pos, SoundEvents.AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		int charge = getCharge(stack);
 		if (charge > 0) {
-			Direction side = context.getFace();
+			Direction side = context.getClickedFace();
 			for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, side, charge))) {
 				if (pos.equals(newPos)) {
 					//Skip the source position as it is free and we manually handled it before the loop
@@ -281,16 +281,16 @@ public class ToolHelper {
 				//Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
 				// Also make sure that it is on the same axis as the block we initially clicked
 				BlockState state = world.getBlockState(newPos);
-				if (strippedState == state.getToolModifiedState(world, newPos, player, stack, ToolType.AXE) && axis == state.get(RotatedPillarBlock.AXIS)) {
+				if (strippedState == state.getToolModifiedState(world, newPos, player, stack, ToolType.AXE) && axis == state.getValue(RotatedPillarBlock.AXIS)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
-						newPos = newPos.toImmutable();
+						newPos = newPos.immutable();
 						//Replace the block. Note it just directly sets it (in the same way that AxeItem does), rather than using our
 						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
-						world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
+						world.setBlock(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
 						break;
@@ -298,7 +298,7 @@ public class ToolHelper {
 				}
 			}
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		return ActionResultType.SUCCESS;
 	}
 
@@ -306,7 +306,7 @@ public class ToolHelper {
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
 	public static void digBasedOnMode(ItemStack stack, World world, BlockPos pos, LivingEntity living, RayTracePointer tracePointer) {
-		if (world.isRemote || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof PlayerEntity)) {
+		if (world.isClientSide || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof PlayerEntity)) {
 			return;
 		}
 		byte mode = getMode(stack);
@@ -320,15 +320,15 @@ public class ToolHelper {
 			return;
 		}
 		BlockRayTraceResult rayTraceResult = (BlockRayTraceResult) mop;
-		if (rayTraceResult.getType() == Type.MISS || !pos.equals(rayTraceResult.getPos())) {
+		if (rayTraceResult.getType() == Type.MISS || !pos.equals(rayTraceResult.getBlockPos())) {
 			//Ensure that the ray trace agrees with the position we were told about
 			return;
 		}
-		Direction sideHit = rayTraceResult.getFace();
+		Direction sideHit = rayTraceResult.getDirection();
 		AxisAlignedBB box = new AxisAlignedBB(pos, pos);
 		switch (mode) {
 			case 1: //3x Tallshot
-				box = new AxisAlignedBB(pos.down(), pos.up());
+				box = new AxisAlignedBB(pos.below(), pos.above());
 				break;
 			case 2: //3x Wideshot
 				switch (sideHit.getAxis()) {
@@ -336,7 +336,7 @@ public class ToolHelper {
 						box = new AxisAlignedBB(pos.south(), pos.north());
 						break;
 					case Y:
-						switch (player.getHorizontalFacing().getAxis()) {
+						switch (player.getDirection().getAxis()) {
 							case X:
 								box = new AxisAlignedBB(pos.south(), pos.north());
 								break;
@@ -351,18 +351,18 @@ public class ToolHelper {
 				}
 				break;
 			case 3: //3x Longshot
-				box = new AxisAlignedBB(pos, pos.offset(sideHit.getOpposite(), 2));
+				box = new AxisAlignedBB(pos, pos.relative(sideHit.getOpposite(), 2));
 				break;
 		}
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
-			if (world.isAirBlock(digPos)) {
+			if (world.isEmptyBlock(digPos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(digPos);
-			if (state.getBlockHardness(world, digPos) != -1 && stack.canHarvestBlock(state)) {
+			if (state.getDestroySpeed(world, digPos) != -1 && stack.isCorrectToolForDrops(state)) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
-				digPos = digPos.toImmutable();
+				digPos = digPos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, digPos)) {
 					drops.addAll(Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, stack));
 					world.removeBlock(digPos, false);
@@ -387,16 +387,16 @@ public class ToolHelper {
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos newPos : WorldHelper.getPositionsFromBox(box)) {
-			if (world.isAirBlock(newPos)) {
+			if (world.isEmptyBlock(newPos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(newPos);
-			if (state.getBlockHardness(world, newPos) != -1 && stack.canHarvestBlock(state)) {
-				if (world.isRemote) {
+			if (state.getDestroySpeed(world, newPos) != -1 && stack.isCorrectToolForDrops(state)) {
+				if (world.isClientSide) {
 					return ActionResultType.SUCCESS;
 				}
 				//Ensure we are immutable so that changing blocks doesn't act weird
-				newPos = newPos.toImmutable();
+				newPos = newPos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, newPos)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						drops.addAll(Block.getDrops(state, (ServerWorld) world, newPos, WorldHelper.getTileEntity(world, newPos), player, stack));
@@ -412,7 +412,7 @@ public class ToolHelper {
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
 			PlayerHelper.swingItem(player, hand);
-			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -422,34 +422,34 @@ public class ToolHelper {
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
 	public static void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg) {
-		if (!(damager instanceof PlayerEntity) || damager.getEntityWorld().isRemote) {
+		if (!(damager instanceof PlayerEntity) || damager.getCommandSenderWorld().isClientSide) {
 			return;
 		}
-		DamageSource dmg = DamageSource.causePlayerDamage((PlayerEntity) damager);
+		DamageSource dmg = DamageSource.playerAttack((PlayerEntity) damager);
 		int charge = getCharge(stack);
 		float totalDmg = baseDmg;
 		if (charge > 0) {
-			dmg.setDamageBypassesArmor();
+			dmg.bypassArmor();
 			totalDmg += charge;
 		}
-		damaged.attackEntityFrom(dmg, totalDmg);
+		damaged.hurt(dmg, totalDmg);
 	}
 
 	/**
 	 * Attacks in an AOE. Charge affects AOE, not damage (intentional). Optional per-entity EMC cost.
 	 */
 	public static void attackAOE(ItemStack stack, PlayerEntity player, boolean slayAll, float damage, long emcCost, Hand hand) {
-		World world = player.getEntityWorld();
-		if (world.isRemote) {
+		World world = player.getCommandSenderWorld();
+		if (world.isClientSide) {
 			return;
 		}
 		int charge = getCharge(stack);
-		List<Entity> toAttack = world.getEntitiesInAABBexcluding(player, player.getBoundingBox().grow(2.5F * charge), slayAll ? SLAY_ALL : SLAY_MOB);
-		DamageSource src = DamageSource.causePlayerDamage(player).setDamageBypassesArmor();
+		List<Entity> toAttack = world.getEntities(player, player.getBoundingBox().inflate(2.5F * charge), slayAll ? SLAY_ALL : SLAY_MOB);
+		DamageSource src = DamageSource.playerAttack(player).bypassArmor();
 		boolean hasAction = false;
 		for (Entity entity : toAttack) {
 			if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-				entity.attackEntityFrom(src, damage);
+				entity.hurt(src, damage);
 				hasAction = true;
 			} else {
 				//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
@@ -457,7 +457,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			PlayerHelper.swingItem(player, hand);
 		}
 	}
@@ -466,16 +466,16 @@ public class ToolHelper {
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
 	public static ActionResultType shearBlock(ItemStack stack, BlockPos pos, PlayerEntity player) {
-		World world = player.getEntityWorld();
+		World world = player.getCommandSenderWorld();
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof IForgeShearable) {
 			IForgeShearable target = (IForgeShearable) block;
-			if (target.isShearable(stack, world, pos) && (world.isRemote || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos))) {
-				List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
+			if (target.isShearable(stack, world, pos) && (world.isClientSide || PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos))) {
+				List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
 				if (!drops.isEmpty()) {
-					if (!world.isRemote) {
+					if (!world.isClientSide) {
 						WorldHelper.createLootDrop(drops, world, pos);
-						player.addStat(Stats.BLOCK_MINED.get(block), 1);
+						player.awardStat(Stats.BLOCK_MINED.get(block), 1);
 					}
 					//NOTE: We only mark it as a success if we actually got drops otherwise we let it continue breaking the block
 					return ActionResultType.SUCCESS;
@@ -489,19 +489,19 @@ public class ToolHelper {
 	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
 	public static ActionResultType shearEntityAOE(PlayerEntity player, Hand hand, long emcCost) {
-		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItem(hand);
-		int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+		World world = player.getCommandSenderWorld();
+		ItemStack stack = player.getItemInHand(hand);
+		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
 		int offset = (int) Math.pow(2, 2 + getCharge(stack));
 		//Get all entities also making sure that they are shearable
-		List<Entity> list = world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(offset, offset / 2.0, offset), SHEARABLE);
+		List<Entity> list = world.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(offset, offset / 2.0, offset), SHEARABLE);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (Entity ent : list) {
-			BlockPos entityPosition = ent.getPosition();
+			BlockPos entityPosition = ent.blockPosition();
 			IForgeShearable target = (IForgeShearable) ent;
 			if (target.isShearable(stack, world, entityPosition)) {
-				if (world.isRemote) {
+				if (world.isClientSide) {
 					return ActionResultType.SUCCESS;
 				}
 				if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
@@ -520,25 +520,25 @@ public class ToolHelper {
 					break;
 				}
 			}
-			if (!world.isRemote && Math.random() < 0.01) {
+			if (!world.isClientSide && Math.random() < 0.01) {
 				Entity e = ent.getType().create(world);
 				if (e != null) {
-					e.setPosition(ent.getPosX(), ent.getPosY(), ent.getPosZ());
+					e.setPos(ent.getX(), ent.getY(), ent.getZ());
 					if (e instanceof MobEntity) {
-						((MobEntity) e).onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(entityPosition), SpawnReason.EVENT, null, null);
+						((MobEntity) e).finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(entityPosition), SpawnReason.EVENT, null, null);
 					}
 					if (e instanceof SheepEntity) {
-						((SheepEntity) e).setFleeceColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
+						((SheepEntity) e).setColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
 					}
 					if (e instanceof AgeableEntity) {
-						((AgeableEntity) e).setGrowingAge(-24000);
+						((AgeableEntity) e).setAge(-24000);
 					}
-					world.addEntity(e);
+					world.addFreshEntity(e);
 				}
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.getPosX(), player.getPosY(), player.getPosZ());
+			WorldHelper.createLootDrop(drops, world, player.getX(), player.getY(), player.getZ());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}
@@ -552,22 +552,22 @@ public class ToolHelper {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
-		World world = player.getEntityWorld();
+		World world = player.getCommandSenderWorld();
 		BlockState target = world.getBlockState(pos);
-		if (target.getBlockHardness(world, pos) <= -1 || !stack.canHarvestBlock(target)) {
+		if (target.getDestroySpeed(world, pos) <= -1 || !stack.isCorrectToolForDrops(target)) {
 			return ActionResultType.FAIL;
 		}
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack)))) {
-			if (!world.isAirBlock(newPos)) {
+			if (!world.isEmptyBlock(newPos)) {
 				BlockState state = world.getBlockState(newPos);
 				if (target.getBlock() == state.getBlock()) {
-					if (world.isRemote) {
+					if (world.isClientSide) {
 						return ActionResultType.SUCCESS;
 					}
 					//Ensure we are immutable so that changing blocks doesn't act weird
-					if (WorldHelper.harvestVein(world, player, stack, newPos.toImmutable(), state.getBlock(), drops, 0) > 0) {
+					if (WorldHelper.harvestVein(world, player, stack, newPos.immutable(), state.getBlock(), drops, 0) > 0) {
 						hasAction = true;
 					}
 				}
@@ -575,7 +575,7 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, world, pos);
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -588,27 +588,27 @@ public class ToolHelper {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return ActionResultType.PASS;
 		}
-		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItem(hand);
+		World world = player.getCommandSenderWorld();
+		ItemStack stack = player.getItemInHand(hand);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(player.getBoundingBox().grow(getCharge(stack) + 3))) {
-			if (world.isAirBlock(pos)) {
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(player.getBoundingBox().inflate(getCharge(stack) + 3))) {
+			if (world.isEmptyBlock(pos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getBlockHardness(world, pos) != -1 && stack.canHarvestBlock(state)) {
-				if (world.isRemote) {
+			if (ItemHelper.isOre(state) && state.getDestroySpeed(world, pos) != -1 && stack.isCorrectToolForDrops(state)) {
+				if (world.isClientSide) {
 					return ActionResultType.SUCCESS;
 				}
 				//Ensure we are immutable so that changing blocks doesn't act weird
-				if (WorldHelper.harvestVein(world, player, stack, pos.toImmutable(), state.getBlock(), drops, 0) > 0) {
+				if (WorldHelper.harvestVein(world, player, stack, pos.immutable(), state.getBlock(), drops, 0) > 0) {
 					hasAction = true;
 				}
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, player.getPosX(), player.getPosY(), player.getPosZ());
+			WorldHelper.createLootDrop(drops, world, player.getX(), player.getY(), player.getZ());
 			PlayerHelper.swingItem(player, hand);
 			return ActionResultType.SUCCESS;
 		}

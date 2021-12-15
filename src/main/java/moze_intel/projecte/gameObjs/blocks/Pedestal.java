@@ -37,20 +37,20 @@ import net.minecraftforge.common.util.Constants.BlockFlags;
 public class Pedestal extends Block implements IWaterLoggable {
 
 	private static final VoxelShape SHAPE = VoxelShapes.or(
-			Block.makeCuboidShape(3, 0, 3, 13, 2, 13),
+			Block.box(3, 0, 3, 13, 2, 13),
 			VoxelShapes.or(
-					Block.makeCuboidShape(6, 2, 6, 10, 9, 10),
-					Block.makeCuboidShape(5, 9, 5, 11, 10, 11)
+					Block.box(6, 2, 6, 10, 9, 10),
+					Block.box(5, 9, 5, 11, 10, 11)
 			)
 	);
 
 	public Pedestal(Properties props) {
 		super(props);
-		this.setDefaultState(getStateContainer().getBaseState().with(BlockStateProperties.WATERLOGGED, false));
+		this.registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
 		props.add(BlockStateProperties.WATERLOGGED);
 	}
 
@@ -72,7 +72,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 				tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
 				ItemEntity ent = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ());
 				ent.setItem(stack);
-				world.addEntity(ent);
+				world.addFreshEntity(ent);
 				return true;
 			}
 		}
@@ -81,17 +81,17 @@ public class Pedestal extends Block implements IWaterLoggable {
 
 	@Override
 	@Deprecated
-	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			dropItem(world, pos);
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 
 	@Override
 	@Deprecated
-	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
-		if (!world.isRemote) {
+	public void attack(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+		if (!world.isClientSide) {
 			dropItem(world, pos);
 		}
 	}
@@ -102,7 +102,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 			//If the player is creative, try to drop the item, and if we succeeded return false to cancel removing the pedestal
 			// Note: we notify the block of an update to make sure that it re-appears visually on the client instead of having there
 			// be a desync
-			world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
+			world.sendBlockUpdated(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
 			return false;
 		}
 		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
@@ -111,24 +111,24 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
 			@Nonnull BlockRayTraceResult rtr) {
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile == null) {
 				return ActionResultType.FAIL;
 			}
 			ItemStack item = tile.getInventory().getStackInSlot(0);
-			ItemStack stack = player.getHeldItem(hand);
+			ItemStack stack = player.getItemInHand(hand);
 			if (stack.isEmpty() && !item.isEmpty()) {
 				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 					tile.setActive(!tile.getActive());
-					world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
+					world.sendBlockUpdated(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
 				});
 			} else if (!stack.isEmpty() && item.isEmpty()) {
 				tile.getInventory().setStackInSlot(0, stack.split(1));
 				if (stack.getCount() <= 0) {
-					player.setHeldItem(hand, ItemStack.EMPTY);
+					player.setItemInHand(hand, ItemStack.EMPTY);
 				}
 			}
 		}
@@ -139,7 +139,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Override
 	@Deprecated
 	public void neighborChanged(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
-		boolean flag = world.isBlockPowered(pos);
+		boolean flag = world.hasNeighborSignal(pos);
 		DMPedestalTile ped = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
 		if (ped != null && ped.previousRedstoneState != flag) {
 			if (flag) {
@@ -147,7 +147,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 				if (!stack.isEmpty()) {
 					stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 						ped.setActive(!ped.getActive());
-						world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT_AND_RERENDER);
+						world.sendBlockUpdated(pos, state, state, BlockFlags.DEFAULT_AND_RERENDER);
 					});
 				}
 			}
@@ -167,8 +167,8 @@ public class Pedestal extends Block implements IWaterLoggable {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltip, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable IBlockReader world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltip, flags);
 		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate());
 		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate());
 	}
@@ -177,24 +177,24 @@ public class Pedestal extends Block implements IWaterLoggable {
 	@Override
 	public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
 		BlockState state = super.getStateForPlacement(context);
-		return state == null ? null : state.with(BlockStateProperties.WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+		return state == null ? null : state.setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public FluidState getFluidState(BlockState state) {
-		return state.get(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-		if (state.get(BlockStateProperties.WATERLOGGED)) {
-			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 }

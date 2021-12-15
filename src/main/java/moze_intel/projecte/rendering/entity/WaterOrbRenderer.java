@@ -14,7 +14,7 @@ public class WaterOrbRenderer extends EntitySpriteRenderer<EntityWaterProjectile
 
 	@Nonnull
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull EntityWaterProjectile entity) {
+	public ResourceLocation getTextureLocation(@Nonnull EntityWaterProjectile entity) {
 		return PECore.rl("textures/entity/water_orb.png");
 	}
 }

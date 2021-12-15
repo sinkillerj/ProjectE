@@ -35,14 +35,14 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
-		Set<FurnaceRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().func_241755_D_());
+	public ItemStack assemble(@Nonnull CraftingInventory inv) {
+		Set<FurnaceRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
 		if (matchingRecipes.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 		//If we have at least one matching recipe, return the output
 		//Note: It is multiplied by seven as we have seven inputs
-		ItemStack output = matchingRecipes.stream().findFirst().get().getRecipeOutput().copy();
+		ItemStack output = matchingRecipes.stream().findFirst().get().getResultItem().copy();
 		output.setCount(output.getCount() * 7);
 		return output;
 	}
@@ -51,8 +51,8 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 		List<ItemStack> philoStones = new ArrayList<>();
 		List<ItemStack> coals = new ArrayList<>();
 		List<ItemStack> allItems = new ArrayList<>();
-		for (int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 			if (!stack.isEmpty()) {
 				Item item = stack.getItem();
 				allItems.add(stack);
@@ -63,7 +63,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 				if (item instanceof PhilosophersStone) {
 					philoStones.add(stack);
 				}
-				if (item.isIn(ItemTags.COALS)) {
+				if (item.is(ItemTags.COALS)) {
 					coals.add(stack);
 				}
 			}
@@ -84,7 +84,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 								if (matchingRecipes.isEmpty()) {
 									//If there are no matching recipes yet see if there are any recipes that match the current stack and add them if they are,
 									// if we didn't end up adding any elements that means there are no matching recipes so fail
-									if (!matchingRecipes.addAll(world.getRecipeManager().getRecipes(IRecipeType.SMELTING, furnaceInput, world))) {
+									if (!matchingRecipes.addAll(world.getRecipeManager().getRecipesFor(IRecipeType.SMELTING, furnaceInput, world))) {
 										return Collections.emptySet();
 									}
 								} else if (matchingRecipes.removeIf(recipe -> !recipe.matches(furnaceInput, world))) {
@@ -108,7 +108,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 9;
 	}
 

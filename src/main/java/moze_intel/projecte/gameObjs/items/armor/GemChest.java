@@ -26,22 +26,22 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_CHEST.translate());
 	}
 
 	@Override
 	public void onArmorTick(ItemStack chest, World world, PlayerEntity player) {
-		if (world.isRemote) {
-			int x = (int) Math.floor(player.getPosX());
-			int y = (int) (player.getPosY() - player.getYOffset());
-			int z = (int) Math.floor(player.getPosZ());
+		if (world.isClientSide) {
+			int x = (int) Math.floor(player.getX());
+			int y = (int) (player.getY() - player.getMyRidingOffset());
+			int z = (int) Math.floor(player.getZ());
 			BlockPos pos = new BlockPos(x, y, z);
-			FluidState fluidState = world.getFluidState(pos.down());
-			if (fluidState.getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
-				if (!player.isSneaking()) {
-					player.setMotion(player.getMotion().mul(1, 0, 1));
+			FluidState fluidState = world.getFluidState(pos.below());
+			if (fluidState.getType().is(FluidTags.LAVA) && world.isEmptyBlock(pos)) {
+				if (!player.isShiftKeyDown()) {
+					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0, 1));
 					player.fallDistance = 0.0f;
 					player.setOnGround(true);
 				}
@@ -49,8 +49,8 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 		} else {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateFeed();
-				if (player.getFoodStats().needFood() && timers.canFeed()) {
-					player.getFoodStats().addStats(2, 10);
+				if (player.getFoodData().needsFood() && timers.canFeed()) {
+					player.getFoodData().eat(2, 10);
 				}
 			});
 		}
@@ -58,12 +58,12 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public void doExplode(PlayerEntity player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
-			WorldHelper.createNovaExplosion(player.getEntityWorld(), player, player.getPosX(), player.getPosY(), player.getPosZ(), 9.0F);
+			WorldHelper.createNovaExplosion(player.getCommandSenderWorld(), player, player.getX(), player.getY(), player.getZ(), 9.0F);
 		}
 	}
 
 	@Override
 	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemStackFromSlot(EquipmentSlotType.CHEST) == stack;
+		return player.getItemBySlot(EquipmentSlotType.CHEST) == stack;
 	}
 }

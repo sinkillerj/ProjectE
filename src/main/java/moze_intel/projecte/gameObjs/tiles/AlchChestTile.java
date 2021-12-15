@@ -27,27 +27,27 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		inventory.deserializeNBT(nbt);
 	}
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.merge(inventory.serializeNBT());
 		return nbt;
 	}
 
 	@Override
 	public void tick() {
-		if (world != null) {
+		if (level != null) {
 			updateChest();
 			for (int i = 0; i < inventory.getSlots(); i++) {
 				ItemStack stack = inventory.getStackInSlot(i);
 				if (!stack.isEmpty()) {
-					stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(world, pos, stack));
+					stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, worldPosition, stack));
 				}
 			}
 		}

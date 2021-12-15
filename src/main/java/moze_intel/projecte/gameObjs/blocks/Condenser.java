@@ -30,8 +30,8 @@ public class Condenser extends AlchemicalChest {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
-		if (!world.isRemote) {
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+		if (!world.isClientSide) {
 			CondenserTile te = WorldHelper.getTileEntity(CondenserTile.class, world, pos, true);
 			if (te != null) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);

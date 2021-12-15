@@ -31,7 +31,7 @@ public abstract class CustomConversionProvider implements IDataProvider {
 	}
 
 	@Override
-	public final void act(DirectoryCache cache) {
+	public final void run(DirectoryCache cache) {
 		customConversions.clear();
 		addCustomConversions();
 		for (Map.Entry<ResourceLocation, CustomConversionBuilder> entry : customConversions.entrySet()) {

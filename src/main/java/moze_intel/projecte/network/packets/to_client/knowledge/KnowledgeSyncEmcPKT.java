@@ -24,8 +24,8 @@ public class KnowledgeSyncEmcPKT implements IPEPacket {
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.setEmc(emc);
-				if (player.openContainer instanceof TransmutationContainer) {
-					((TransmutationContainer) player.openContainer).transmutationInventory.updateClientTargets();
+				if (player.containerMenu instanceof TransmutationContainer) {
+					((TransmutationContainer) player.containerMenu).transmutationInventory.updateClientTargets();
 				}
 			});
 		}
@@ -34,11 +34,11 @@ public class KnowledgeSyncEmcPKT implements IPEPacket {
 
 	@Override
 	public void encode(PacketBuffer buffer) {
-		buffer.writeString(emc.toString());
+		buffer.writeUtf(emc.toString());
 	}
 
 	public static KnowledgeSyncEmcPKT decode(PacketBuffer buffer) {
-		String emc = buffer.readString();
+		String emc = buffer.readUtf();
 		return new KnowledgeSyncEmcPKT(emc.isEmpty() ? BigInteger.ZERO : new BigInteger(emc));
 	}
 }

@@ -19,13 +19,13 @@ public class SlotOutput extends SlotItemHandler {
 
 	@Override
 	protected void onSwapCraft(int amount) {
-		decrStackSize(amount);
+		remove(amount);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack decrStackSize(int amount) {
-		ItemStack stack = getStack().copy();
+	public ItemStack remove(int amount) {
+		ItemStack stack = getItem().copy();
 		stack.setCount(amount);
 		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack)).multiply(BigInteger.valueOf(amount));
 		if (emcValue.compareTo(inv.getAvailableEmc()) > 0) {
@@ -41,16 +41,16 @@ public class SlotOutput extends SlotItemHandler {
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
+	public void set(@Nonnull ItemStack stack) {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@Nonnull ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack(PlayerEntity player) {
-		return !getHasStack() || BigInteger.valueOf(EMCHelper.getEmcValue(getStack())).compareTo(inv.getAvailableEmc()) <= 0;
+	public boolean mayPickup(PlayerEntity player) {
+		return !hasItem() || BigInteger.valueOf(EMCHelper.getEmcValue(getItem())).compareTo(inv.getAvailableEmc()) <= 0;
 	}
 }

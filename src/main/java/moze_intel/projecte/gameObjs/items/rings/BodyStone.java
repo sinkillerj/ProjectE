@@ -36,7 +36,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isRemote || slot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
@@ -49,9 +49,9 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 			} else {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
-					if (player.getFoodStats().needFood() && timers.canFeed()) {
-						world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-						player.getFoodStats().addStats(2, 10);
+					if (player.getFoodData().needsFood() && timers.canFeed()) {
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+						player.getFoodData().eat(2, 10);
 						removeEmc(stack, 64);
 					}
 				});
@@ -61,15 +61,15 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					List<ServerPlayerEntity> players = world.getEntitiesWithinAABB(ServerPlayerEntity.class, tile.getEffectBounds());
+					List<ServerPlayerEntity> players = world.getEntitiesOfClass(ServerPlayerEntity.class, tile.getEffectBounds());
 					for (ServerPlayerEntity player : players) {
-						if (player.getFoodStats().needFood()) {
-							world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-							player.getFoodStats().addStats(1, 1); // 1/2 shank
+						if (player.getFoodData().needsFood()) {
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+							player.getFoodData().eat(1, 1); // 1/2 shank
 						}
 					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.body.get());

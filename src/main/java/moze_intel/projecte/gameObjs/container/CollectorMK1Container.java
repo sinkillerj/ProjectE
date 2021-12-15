@@ -23,10 +23,10 @@ import net.minecraftforge.items.IItemHandler;
 public class CollectorMK1Container extends PEContainer {
 
 	public final CollectorMK1Tile tile;
-	public final IntReferenceHolder sunLevel = IntReferenceHolder.single();
+	public final IntReferenceHolder sunLevel = IntReferenceHolder.standalone();
 	public final BoxedLong emc = new BoxedLong();
-	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.single();
-	private final IntReferenceHolder fuelProgress = IntReferenceHolder.single();
+	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.standalone();
+	private final IntReferenceHolder fuelProgress = IntReferenceHolder.standalone();
 	public final BoxedLong kleinEmc = new BoxedLong();
 
 	public static CollectorMK1Container fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf) {
@@ -74,45 +74,45 @@ public class CollectorMK1Container extends PEContainer {
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slotID, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public ItemStack clicked(int slotID, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
 		if (slotID >= 0) {
 			Slot slot = getSlot(slotID);
-			if (slot instanceof SlotGhost && !slot.getStack().isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+			if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
+				slot.set(ItemStack.EMPTY);
 				return ItemStack.EMPTY;
 			}
 		}
-		return super.slotClick(slotID, button, flag, player);
+		return super.clicked(slotID, button, flag, player);
 	}
 
 	@Override
-	public void detectAndSendChanges() {
+	public void broadcastChanges() {
 		emc.set(tile.getStoredEmc());
 		sunLevel.set(tile.getSunLevel());
 		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
 		fuelProgress.set((int) (tile.getFuelProgress() * 8000));
 		kleinEmc.set(tile.getItemCharge());
-		super.detectAndSendChanges();
+		super.broadcastChanges();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex <= 10) {
-			if (!this.mergeItemStack(stack, 11, 46, false)) {
+			if (!this.moveItemStackTo(stack, 11, 46, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (slotIndex <= 46) {
-			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.mergeItemStack(stack, 1, 8, false)) {
+			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.moveItemStackTo(stack, 1, 8, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else {
@@ -120,17 +120,17 @@ public class CollectorMK1Container extends PEContainer {
 		}
 
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, stack);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.COLLECTOR.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.COLLECTOR.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	public double getKleinChargeProgress() {

@@ -26,10 +26,10 @@ public class SyncBagDataPKT implements IPEPacket {
 
 	@Override
 	public void encode(PacketBuffer buffer) {
-		buffer.writeCompoundTag(nbt);
+		buffer.writeNbt(nbt);
 	}
 
 	public static SyncBagDataPKT decode(PacketBuffer buffer) {
-		return new SyncBagDataPKT(buffer.readCompoundTag());
+		return new SyncBagDataPKT(buffer.readNbt());
 	}
 }

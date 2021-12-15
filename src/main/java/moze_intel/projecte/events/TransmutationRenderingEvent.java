@@ -55,23 +55,23 @@ public class TransmutationRenderingEvent {
 				float green = (color >> 8 & 0xFF) / 255.0F;
 				float blue = (color & 0xFF) / 255.0F;
 				float alpha = (color >> 24 & 0xFF) / 255.0F;
-				TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(resultAttributes.getStillTexture());
+				TextureAtlasSprite sprite = mc.getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(resultAttributes.getStillTexture());
 				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder wr = tessellator.getBuffer();
+				BufferBuilder wr = tessellator.getBuilder();
 				wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-				wr.pos(0, 0, 0).tex(sprite.getMinU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
-				wr.pos(0, 16, 0).tex(sprite.getMinU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
-				wr.pos(16, 16, 0).tex(sprite.getMaxU(), sprite.getMaxV()).color(red, green, blue, alpha).endVertex();
-				wr.pos(16, 0, 0).tex(sprite.getMaxU(), sprite.getMinV()).color(red, green, blue, alpha).endVertex();
-				tessellator.draw();
+				wr.vertex(0, 0, 0).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(0, 16, 0).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 16, 0).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 0, 0).uv(sprite.getU1(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				tessellator.end();
 			} else {
 				//Just render it normally instead of with the given model as some block's don't render properly then as an item
 				// for example glass panes
-				RenderHelper.enableStandardItemLighting();
-				mc.getItemRenderer().renderItemIntoGUI(new ItemStack(transmutationResult.getBlock()), 0, 0);
-				RenderHelper.disableStandardItemLighting();
+				RenderHelper.turnBackOn();
+				mc.getItemRenderer().renderGuiItem(new ItemStack(transmutationResult.getBlock()), 0, 0);
+				RenderHelper.turnOff();
 			}
-			long gameTime = mc.world == null ? 0 : mc.world.getGameTime();
+			long gameTime = mc.level == null ? 0 : mc.level.getGameTime();
 			if (lastGameTime != gameTime) {
 				//If the game time changed so we aren't actually still hovering a block set our
 				// result to null. We do this after rendering it just in case there is a single
@@ -85,15 +85,15 @@ public class TransmutationRenderingEvent {
 	@SubscribeEvent
 	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
 		ActiveRenderInfo activeRenderInfo = event.getInfo();
-		if (!(activeRenderInfo.getRenderViewEntity() instanceof PlayerEntity)) {
+		if (!(activeRenderInfo.getEntity() instanceof PlayerEntity)) {
 			return;
 		}
-		lastGameTime = mc.world == null ? 0 : mc.world.getGameTime();
-		PlayerEntity player = (PlayerEntity) activeRenderInfo.getRenderViewEntity();
-		World world = player.getEntityWorld();
-		ItemStack stack = player.getHeldItemMainhand();
+		lastGameTime = mc.level == null ? 0 : mc.level.getGameTime();
+		PlayerEntity player = (PlayerEntity) activeRenderInfo.getEntity();
+		World world = player.getCommandSenderWorld();
+		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
-			stack = player.getHeldItemOffhand();
+			stack = player.getOffhandItem();
 		}
 		if (stack.isEmpty() || !(stack.getItem() instanceof PhilosophersStone)) {
 			transmutationResult = null;
@@ -104,33 +104,33 @@ public class TransmutationRenderingEvent {
 		// can properly take fluid into account/ignore it when needed
 		BlockRayTraceResult rtr = philoStone.getHitBlock(player);
 		if (rtr.getType() == RayTraceResult.Type.BLOCK) {
-			BlockState current = world.getBlockState(rtr.getPos());
-			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSneaking());
+			BlockState current = world.getBlockState(rtr.getBlockPos());
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
 			if (transmutationResult != null) {
-				Vector3d viewPosition = activeRenderInfo.getProjectedView();
+				Vector3d viewPosition = activeRenderInfo.getPosition();
 				int charge = philoStone.getCharge(stack);
 				byte mode = philoStone.getMode(stack);
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
 				IVertexBuilder builder = event.getBuffers().getBuffer(PERenderType.transmutationOverlay());
 				MatrixStack matrix = event.getMatrix();
-				matrix.push();
+				matrix.pushPose();
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
-				ISelectionContext selectionContext = ISelectionContext.forEntity(player);
-				for (BlockPos pos : PhilosophersStone.getChanges(world, rtr.getPos(), player, rtr.getFace(), mode, charge).keySet()) {
+				ISelectionContext selectionContext = ISelectionContext.of(player);
+				for (BlockPos pos : PhilosophersStone.getChanges(world, rtr.getBlockPos(), player, rtr.getDirection(), mode, charge).keySet()) {
 					BlockState state = world.getBlockState(pos);
 					if (!state.isAir(world, pos)) {
 						VoxelShape shape = state.getShape(world, pos, selectionContext);
 						if (!shape.isEmpty()) {
-							matrix.push();
+							matrix.pushPose();
 							matrix.translate(pos.getX(), pos.getY(), pos.getZ());
-							Matrix4f matrix4f = matrix.getLast().getMatrix();
-							shape.forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> addBox(builder, matrix4f, alpha,
+							Matrix4f matrix4f = matrix.last().pose();
+							shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> addBox(builder, matrix4f, alpha,
 									(float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ));
-							matrix.pop();
+							matrix.popPose();
 						}
 					}
 				}
-				matrix.pop();
+				matrix.popPose();
 			}
 		} else {
 			transmutationResult = null;
@@ -139,40 +139,40 @@ public class TransmutationRenderingEvent {
 
 	private static void addBox(IVertexBuilder builder, Matrix4f matrix4f, float alpha, float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
 		//Top
-		builder.pos(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
 
 		//Bottom
-		builder.pos(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
 
 		//Front
-		builder.pos(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
 
 		//Back
-		builder.pos(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
 
 		//Left
-		builder.pos(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, minX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
 
 		//Right
-		builder.pos(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
-		builder.pos(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, maxZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, minZ).color(1, 1, 1, alpha).endVertex();
+		builder.vertex(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
 	}
 
 	private static float getPulseProportion() {

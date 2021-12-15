@@ -35,20 +35,20 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class TransmutationStone extends DirectionalBlock implements IWaterLoggable {
 
-	private static final VoxelShape UP_SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 4, 16);
-	private static final VoxelShape DOWN_SHAPE = Block.makeCuboidShape(0, 12, 0, 16, 16, 16);
-	private static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0, 0, 12, 16, 16, 16);
-	private static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 16, 4);
-	private static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(12, 0, 0, 16, 16, 16);
-	private static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0, 0, 0, 4, 16, 16);
+	private static final VoxelShape UP_SHAPE = Block.box(0, 0, 0, 16, 4, 16);
+	private static final VoxelShape DOWN_SHAPE = Block.box(0, 12, 0, 16, 16, 16);
+	private static final VoxelShape NORTH_SHAPE = Block.box(0, 0, 12, 16, 16, 16);
+	private static final VoxelShape SOUTH_SHAPE = Block.box(0, 0, 0, 16, 16, 4);
+	private static final VoxelShape WEST_SHAPE = Block.box(12, 0, 0, 16, 16, 16);
+	private static final VoxelShape EAST_SHAPE = Block.box(0, 0, 0, 4, 16, 16);
 
 	public TransmutationStone(Properties props) {
 		super(props);
-		this.setDefaultState(getStateContainer().getBaseState().with(FACING, Direction.UP).with(BlockStateProperties.WATERLOGGED, false));
+		this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.UP).setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
 		props.add(FACING).add(BlockStateProperties.WATERLOGGED);
 	}
 
@@ -56,7 +56,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Override
 	@Deprecated
 	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
-		Direction facing = state.get(FACING);
+		Direction facing = state.getValue(FACING);
 		switch (facing) {
 			case DOWN:
 				return DOWN_SHAPE;
@@ -77,10 +77,10 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
 			@Nonnull BlockRayTraceResult rtr) {
-		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeEnumValue(Hand.OFF_HAND));
+		if (!world.isClientSide) {
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeEnum(Hand.OFF_HAND));
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -89,39 +89,39 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Override
 	public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
 		BlockState state = super.getStateForPlacement(context);
-		return state == null ? null : state.with(FACING, context.getFace()).with(BlockStateProperties.WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+		return state == null ? null : state.setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public FluidState getFluidState(BlockState state) {
-		return state.get(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-		if (state.get(BlockStateProperties.WATERLOGGED)) {
-			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {

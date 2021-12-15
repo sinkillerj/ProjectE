@@ -45,8 +45,8 @@ public class Collector extends BlockDirection {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
-		if (!world.isRemote) {
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
+		if (!world.isClientSide) {
 			CollectorMK1Tile te = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 			if (te != null) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
@@ -58,7 +58,7 @@ public class Collector extends BlockDirection {
 	@Nullable
 	@Override
 	@Deprecated
-	public INamedContainerProvider getContainer(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public INamedContainerProvider getMenuProvider(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		return WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 	}
 
@@ -84,22 +84,22 @@ public class Collector extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		CollectorMK1Tile tile = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 		if (tile == null) {
 			//If something went wrong fallback to default implementation
-			return super.getComparatorInputOverride(state, world, pos);
+			return super.getAnalogOutputSignal(state, world, pos);
 		}
 		Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).resolve();
 		if (!cap.isPresent()) {
 			//If something went wrong fallback to default implementation
-			return super.getComparatorInputOverride(state, world, pos);
+			return super.getAnalogOutputSignal(state, world, pos);
 		}
 		ItemStack charging = cap.get().getStackInSlot(CollectorMK1Tile.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
@@ -115,19 +115,19 @@ public class Collector extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity ent = WorldHelper.getTileEntity(world, pos);
 			if (ent != null) {
 				ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
 					for (int i = 0; i < handler.getSlots(); i++) {
 						if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty()) {
-							InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+							InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
 						}
 					}
 				});
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 }

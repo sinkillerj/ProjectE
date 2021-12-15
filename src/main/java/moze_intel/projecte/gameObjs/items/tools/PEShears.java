@@ -30,7 +30,7 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	private final int numCharges;
 
 	public PEShears(EnumMatterType matterType, int numCharges, Properties props) {
-		super(props.addToolType(ToolHelper.TOOL_TYPE_SHEARS, matterType.getHarvestLevel()));
+		super(props.addToolType(ToolHelper.TOOL_TYPE_SHEARS, matterType.getLevel()));
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -81,18 +81,18 @@ public class PEShears extends ShearsItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		if (state.getHarvestTool() == ToolHelper.TOOL_TYPE_SHEARS) {
 			//Patch ShearsItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of shears
-			return matterType.getHarvestLevel() >= state.getHarvestLevel();
+			return matterType.getLevel() >= state.getHarvestLevel();
 		}
-		return super.canHarvestBlock(state);
+		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getHeldItem(hand));
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getItemInHand(hand));
 	}
 
 	@Override
@@ -103,14 +103,14 @@ public class PEShears extends ShearsItem implements IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player != null) {
-			World world = context.getWorld();
-			BlockState state = world.getBlockState(context.getPos());
-			if (state.isIn(BlockTags.LEAVES)) {
+			World world = context.getLevel();
+			BlockState state = world.getBlockState(context.getClickedPos());
+			if (state.is(BlockTags.LEAVES)) {
 				//Mass clear leaves
-				ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItem(), 0, BlockTags.LEAVES);
+				ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
 			}
 		}
 		return ActionResultType.PASS;

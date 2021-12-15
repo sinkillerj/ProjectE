@@ -17,13 +17,13 @@ public class EntityNovaCatalystPrimed extends TNTEntity {
 
 	public EntityNovaCatalystPrimed(EntityType<EntityNovaCatalystPrimed> type, World world) {
 		super(type, world);
-		setFuse(getFuse() / 4);
+		setFuse(getLife() / 4);
 	}
 
 	public EntityNovaCatalystPrimed(World world, double x, double y, double z, LivingEntity placer) {
 		super(world, x, y, z, placer);
-		setFuse(getFuse() / 4);
-		preventEntitySpawning = true;
+		setFuse(getLife() / 4);
+		blocksBuilding = true;
 	}
 
 	@Nonnull
@@ -34,12 +34,12 @@ public class EntityNovaCatalystPrimed extends TNTEntity {
 
 	@Override
 	protected void explode() {
-		WorldHelper.createNovaExplosion(world, this, getPosX(), getPosY(), getPosZ(), 16.0F);
+		WorldHelper.createNovaExplosion(level, this, getX(), getY(), getZ(), 16.0F);
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

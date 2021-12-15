@@ -68,15 +68,15 @@ public class CondenserMK2Tile extends CondenserTile {
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		getOutput().deserializeNBT(nbt.getCompound("Output"));
 	}
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.put("Output", getOutput().serializeNBT());
 		return nbt;
 	}

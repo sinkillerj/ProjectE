@@ -18,16 +18,16 @@ public class SlotConsume extends SlotItemHandler {
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
+	public void set(@Nonnull ItemStack stack) {
 		if (inv.isServer() && !stack.isEmpty()) {
 			inv.handleKnowledge(stack);
 			inv.addEmc(BigInteger.valueOf(EMCHelper.getEmcSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
-			this.onSlotChanged();
+			this.setChanged();
 		}
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@Nonnull ItemStack stack) {
 		return EMCHelper.doesItemHaveEmc(stack) || stack.getItem() instanceof Tome;
 	}
 }

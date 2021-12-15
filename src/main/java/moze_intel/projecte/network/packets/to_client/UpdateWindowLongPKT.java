@@ -23,8 +23,8 @@ public class UpdateWindowLongPKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != null && player.openContainer instanceof PEContainer && player.openContainer.windowId == windowId) {
-			((PEContainer) player.openContainer).updateProgressBarLong(propId, propVal);
+		if (player != null && player.containerMenu instanceof PEContainer && player.containerMenu.containerId == windowId) {
+			((PEContainer) player.containerMenu).updateProgressBarLong(propId, propVal);
 		}
 	}
 

@@ -52,28 +52,28 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
-				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.DUMMY_UUID);
-				return ActionResult.resultFail(stack);
+				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.NIL_UUID);
+				return ActionResult.fail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
-			player.sendMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)), Util.DUMMY_UUID);
+			player.sendMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)), Util.NIL_UUID);
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
-		if (!(entity instanceof PlayerEntity) || invSlot >= PlayerInventory.getHotbarSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!(entity instanceof PlayerEntity) || invSlot >= PlayerInventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
-		if (!world.isRemote && world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
+		if (!world.isClientSide && world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
 			ServerWorld serverWorld = (ServerWorld) world;
 			if (timeControl == 1) {
 				serverWorld.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
@@ -86,7 +86,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				}
 			}
 		}
-		if (world.isRemote || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (world.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) entity;
@@ -107,7 +107,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-		AxisAlignedBB bBox = player.getBoundingBox().grow(8);
+		AxisAlignedBB bBox = player.getBoundingBox().inflate(8);
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);
 		slowMobs(world, bBox, mobSlowdown);
@@ -118,8 +118,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			// Sanity check for chunk unload weirdness
 			return;
 		}
-		for (MobEntity ent : world.getEntitiesWithinAABB(MobEntity.class, bBox)) {
-			ent.setMotion(ent.getMotion().mul(mobSlowdown, 1, mobSlowdown));
+		for (MobEntity ent : world.getEntitiesOfClass(MobEntity.class, bBox)) {
+			ent.setDeltaMovement(ent.getDeltaMovement().multiply(mobSlowdown, 1, mobSlowdown));
 		}
 	}
 
@@ -148,11 +148,11 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			for (int i = 0; i < bonusTicks; i++) {
 				BlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.ticksRandomly() && !block.isIn(PETags.Blocks.BLACKLIST_TIME_WATCH)
+				if (state.isRandomlyTicking() && !block.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
 					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.randomTick((ServerWorld) world, pos.toImmutable(), random);
+					state.randomTick((ServerWorld) world, pos.immutable(), random);
 				}
 			}
 		}
@@ -185,8 +185,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
 		if (stack.hasTag()) {
@@ -197,7 +197,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-		if (!world.isRemote && ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!world.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				AxisAlignedBB bBox = tile.getEffectBounds();

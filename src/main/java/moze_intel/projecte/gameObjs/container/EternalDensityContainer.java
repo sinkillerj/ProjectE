@@ -20,7 +20,7 @@ public class EternalDensityContainer extends Container {
 	public final EternalDensityInventory inventory;
 
 	public static EternalDensityContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer data) {
-		return new EternalDensityContainer(windowId, invPlayer, new EternalDensityInventory(data.readItemStack()));
+		return new EternalDensityContainer(windowId, invPlayer, new EternalDensityInventory(data.readItem()));
 	}
 
 	public EternalDensityContainer(int windowId, PlayerInventory invPlayer, EternalDensityInventory gemInv) {
@@ -38,10 +38,10 @@ public class EternalDensityContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = getSlot(slotIndex);
 		if (slotIndex > 8) {
-			ItemStack toSet = slot.getStack().copy();
+			ItemStack toSet = slot.getItem().copy();
 			toSet.setCount(1);
 			ItemHandlerHelper.insertItem(inventory, toSet, false);
 		}
@@ -49,24 +49,24 @@ public class EternalDensityContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull PlayerEntity player) {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
-		if (slot >= 0 && getSlot(slot).getStack() == inventory.invItem) {
+	public ItemStack clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+		if (slot >= 0 && getSlot(slot).getItem() == inventory.invItem) {
 			return ItemStack.EMPTY;
 		}
-		if (slot >= 0 && slot < PlayerInventory.getHotbarSize()) {
+		if (slot >= 0 && slot < PlayerInventory.getSelectionSize()) {
 			inventory.setStackInSlot(slot, ItemStack.EMPTY);
 		}
-		return super.slotClick(slot, button, flag, player);
+		return super.clicked(slot, button, flag, player);
 	}
 
 	@Override
-	public boolean canDragIntoSlot(@Nonnull Slot slot) {
+	public boolean canDragTo(@Nonnull Slot slot) {
 		return false;
 	}
 }

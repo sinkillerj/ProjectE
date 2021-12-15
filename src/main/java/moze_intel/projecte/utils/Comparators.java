@@ -21,6 +21,6 @@ public final class Comparators {
 			return o1.getCount() - o2.getCount();
 		}
 		// Different id
-		return Item.getIdFromItem(o1.getItem()) - Item.getIdFromItem(o2.getItem());
+		return Item.getId(o1.getItem()) - Item.getId(o2.getItem());
 	};
 }

@@ -15,33 +15,33 @@ public class PERenderType extends RenderType {
 	}
 
 	public static RenderType spriteRenderer(ResourceLocation resourceLocation) {
-		RenderType.State state = RenderType.State.getBuilder()
-				.texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-				.lightmap(LIGHTMAP_DISABLED)//disableLighting
-				.alpha(HALF_ALPHA)//alpha
-				.build(true);
-		return makeType("sprite_renderer", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.setTextureState(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+				.setLightmapState(NO_LIGHTMAP)//disableLighting
+				.setAlphaState(MIDWAY_ALPHA)//alpha
+				.createCompositeState(true);
+		return create("sprite_renderer", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, true, false, state);
 	}
 
 	public static RenderType yeuRenderer(ResourceLocation resourceLocation) {
-		RenderType.State state = RenderType.State.getBuilder()
-				.texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-				.lightmap(LIGHTMAP_DISABLED)//disableLighting
-				.alpha(HALF_ALPHA)//alpha
-				.cull(CULL_DISABLED)
-				.build(true);
-		return makeType("yeu_renderer", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.setTextureState(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+				.setLightmapState(NO_LIGHTMAP)//disableLighting
+				.setAlphaState(MIDWAY_ALPHA)//alpha
+				.setCullState(NO_CULL)
+				.createCompositeState(true);
+		return create("yeu_renderer", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
 	}
 
 	public static RenderType transmutationOverlay() {
-		RenderType.State state = RenderType.State.getBuilder()
-				.transparency(TRANSLUCENT_TRANSPARENCY)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
-				.texture(NO_TEXTURE)//disableTexture
-				.cull(CULL_DISABLED)//disableCull
-				.lightmap(LIGHTMAP_DISABLED)//disableLighting
-				.writeMask(COLOR_WRITE)//depthMask(false)
-				.layer(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
-				.build(true);
-		return makeType("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, true, false, state);
+		RenderType.State state = RenderType.State.builder()
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+				.setTextureState(NO_TEXTURE)//disableTexture
+				.setCullState(NO_CULL)//disableCull
+				.setLightmapState(NO_LIGHTMAP)//disableLighting
+				.setWriteMaskState(COLOR_WRITE)//depthMask(false)
+				.setLayeringState(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
+				.createCompositeState(true);
+		return create("transmutation_overlay", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, true, false, state);
 	}
 }

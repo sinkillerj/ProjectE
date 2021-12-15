@@ -17,16 +17,16 @@ public abstract class ChestTileEmc extends CapabilityTileEMC {
 	}
 
 	protected void updateChest() {
-		if (world == null) {
+		if (level == null) {
 			return;
 		}
 		if (++ticksSinceSync % 20 * 4 == 0) {
-			world.addBlockEvent(pos, getBlockState().getBlock(), 1, numPlayersUsing);
+			level.blockEvent(worldPosition, getBlockState().getBlock(), 1, numPlayersUsing);
 		}
 
 		prevLidAngle = lidAngle;
 		if (numPlayersUsing > 0 && lidAngle == 0.0F) {
-			world.playSound(null, pos, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+			level.playSound(null, worldPosition, SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
@@ -40,7 +40,7 @@ public abstract class ChestTileEmc extends CapabilityTileEMC {
 				lidAngle = 1.0F;
 			}
 			if (lidAngle < 0.5F && prevLidAngle >= 0.5F) {
-				world.playSound(null, pos, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+				level.playSound(null, worldPosition, SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
 			}
 			if (lidAngle < 0.0F) {
 				lidAngle = 0.0F;
@@ -49,12 +49,12 @@ public abstract class ChestTileEmc extends CapabilityTileEMC {
 	}
 
 	@Override
-	public boolean receiveClientEvent(int number, int arg) {
+	public boolean triggerEvent(int number, int arg) {
 		if (number == 1) {
 			numPlayersUsing = arg;
 			return true;
 		}
-		return super.receiveClientEvent(number, arg);
+		return super.triggerEvent(number, arg);
 	}
 
 	public float getLidAngle(float partialTicks) {

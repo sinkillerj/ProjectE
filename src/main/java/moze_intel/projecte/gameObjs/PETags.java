@@ -38,11 +38,11 @@ public class PETags {
 		public static final INamedTag<Item> CURIOS_RING = curiosTag("ring");
 
 		private static INamedTag<Item> tag(String name) {
-			return ItemTags.makeWrapperTag(PECore.rl(name).toString());
+			return ItemTags.bind(PECore.rl(name).toString());
 		}
 
 		private static INamedTag<Item> curiosTag(String name) {
-			return ItemTags.makeWrapperTag(new ResourceLocation(IntegrationHelper.CURIO_MODID, name).toString());
+			return ItemTags.bind(new ResourceLocation(IntegrationHelper.CURIO_MODID, name).toString());
 		}
 	}
 
@@ -58,7 +58,7 @@ public class PETags {
 		public static final INamedTag<Block> BLACKLIST_TIME_WATCH = tag("blacklist/time_watch");
 
 		private static INamedTag<Block> tag(String name) {
-			return BlockTags.makeWrapperTag(PECore.rl(name).toString());
+			return BlockTags.bind(PECore.rl(name).toString());
 		}
 	}
 
@@ -82,7 +82,7 @@ public class PETags {
 		public static final INamedTag<EntityType<?>> RANDOMIZER_HOSTILE = tag("randomizer/hostile");
 
 		private static INamedTag<EntityType<?>> tag(String name) {
-			return EntityTypeTags.getTagById(PECore.rl(name).toString());
+			return EntityTypeTags.bind(PECore.rl(name).toString());
 		}
 	}
 

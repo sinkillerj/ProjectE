@@ -58,7 +58,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	}
 
 	public boolean isServer() {
-		return !player.getEntityWorld().isRemote;
+		return !player.getCommandSenderWorld().isClientSide;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			return true;
 		}
 		try {
-			return info.createStack().getDisplayName().getString().toLowerCase(Locale.ROOT).contains(filter);
+			return info.createStack().getHoverName().getString().toLowerCase(Locale.ROOT).contains(filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//From old code... Not sure if intended to not remove items that crash on getDisplayName

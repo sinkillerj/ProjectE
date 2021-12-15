@@ -18,8 +18,8 @@ public class PETileEntityTypeTagsProvider extends ForgeRegistryTagsProvider<Tile
 	}
 
 	@Override
-	protected void registerTags() {
-		getOrCreateBuilder(PETags.TileEntities.BLACKLIST_TIME_WATCH).add(
+	protected void addTags() {
+		tag(PETags.TileEntities.BLACKLIST_TIME_WATCH).add(
 				PETileEntityTypes.DARK_MATTER_PEDESTAL.get()
 		);
 	}

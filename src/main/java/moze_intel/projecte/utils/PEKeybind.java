@@ -16,7 +16,7 @@ public enum PEKeybind implements IHasTranslationKey {
 	private final String translationKey;
 
 	PEKeybind() {
-		this.translationKey = Util.makeTranslationKey("key", PECore.rl(name().toLowerCase(Locale.ROOT)));
+		this.translationKey = Util.makeDescriptionId("key", PECore.rl(name().toLowerCase(Locale.ROOT)));
 	}
 
 	@Override

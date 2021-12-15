@@ -100,13 +100,13 @@ public class ClientRegistration {
 		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.LENS_PROJECTILE.get(), ExplosiveLensRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.FIRE_PROJECTILE.get(), FireballRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.SWRG_PROJECTILE.get(), LightningRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.NOVA_CATALYST_PRIMED.get(), manager -> new NovaRenderer<>(manager, PEBlocks.NOVA_CATALYST.getBlock()::getDefaultState));
-		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.NOVA_CATACLYSM_PRIMED.get(), manager -> new NovaRenderer<>(manager, PEBlocks.NOVA_CATACLYSM.getBlock()::getDefaultState));
+		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.NOVA_CATALYST_PRIMED.get(), manager -> new NovaRenderer<>(manager, PEBlocks.NOVA_CATALYST.getBlock()::defaultBlockState));
+		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.NOVA_CATACLYSM_PRIMED.get(), manager -> new NovaRenderer<>(manager, PEBlocks.NOVA_CATACLYSM.getBlock()::defaultBlockState));
 		RenderingRegistry.registerEntityRenderingHandler(PEEntityTypes.HOMING_ARROW.get(), TippedArrowRenderer::new);
 
 		//Render layers
-		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getBlock(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getBlock(), RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.cutout());
 
 		evt.enqueueWork(() -> {
 			ClientKeyHelper.registerKeyBindings();
@@ -124,7 +124,7 @@ public class ClientRegistration {
 	public static void loadComplete(FMLLoadCompleteEvent evt) {
 		// ClientSetup is too early to do this
 		evt.enqueueWork(() -> {
-			Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+			Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
 			PlayerRenderer render = skinMap.get("default");
 			render.addLayer(new LayerYue(render));
 			render = skinMap.get("slim");
@@ -134,7 +134,7 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void onStitch(TextureStitchEvent.Pre evt) {
-		if (evt.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+		if (evt.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
 			//If curios is loaded add the klein star slot icon the the block map as curios no longer does it automatically
 			if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
 				evt.addSprite(IntegrationHelper.CURIOS_KLEIN_STAR);
@@ -144,11 +144,11 @@ public class ClientRegistration {
 
 	private static void addPropertyOverrides(ResourceLocation override, IItemPropertyGetter propertyGetter, IItemProvider... itemProviders) {
 		for (IItemProvider itemProvider : itemProviders) {
-			ItemModelsProperties.registerProperty(itemProvider.asItem(), override, propertyGetter);
+			ItemModelsProperties.register(itemProvider.asItem(), override, propertyGetter);
 		}
 	}
 
 	private static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
-		ScreenManager.registerFactory(type.get(), factory);
+		ScreenManager.register(type.get(), factory);
 	}
 }

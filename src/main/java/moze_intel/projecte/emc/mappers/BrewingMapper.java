@@ -53,12 +53,12 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		if (itemConversions == null || typeConversions == null) {
 			//Get references to the lists of Mixing Predicates if either of our references is null
 			try {
-				typeConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185213_a");//POTION_TYPE_CONVERSIONS
+				typeConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185213_a");//POTION_MIXES
 				if (typeConversions == null) {
 					PECore.LOGGER.error("Error getting type conversion field.");
 					return false;
 				}
-				itemConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185214_b");//POTION_ITEM_CONVERSIONS
+				itemConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185214_b");//CONTAINER_MIXES
 			} catch (UnableToFindFieldException | UnableToAccessFieldException e) {
 				PECore.LOGGER.error("Error getting conversion field: ", e);
 				return false;
@@ -101,7 +101,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 					PECore.LOGGER.error("Brewing mapper: could not find reagents field.");
 					return true;
 				}
-				for (ItemStack r : reagent.getMatchingStacks()) {
+				for (ItemStack r : reagent.getItems()) {
 					allReagents.add(ItemInfo.fromStack(r));
 				}
 			} catch (Exception ex) {
@@ -116,13 +116,13 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		//Use our best guess of if our cache is invalid because someone added to the list at runtime
 		// Shouldn't happen but there is nothing by default making it so that the list because immutable
 		// But if it does happen clear our cached values and then try to get everything again
-		int count = PotionBrewing.POTION_ITEMS.size();
+		int count = PotionBrewing.ALLOWED_CONTAINERS.size();
 		if (totalPotionItems == count) {
 			return;
 		}
 		allInputs.clear();
 		Set<ItemInfo> inputs = new HashSet<>();
-		for (Ingredient potionItem : PotionBrewing.POTION_ITEMS) {
+		for (Ingredient potionItem : PotionBrewing.ALLOWED_CONTAINERS) {
 			ItemStack[] matchingStacks = getMatchingStacks(potionItem);
 			if (matchingStacks != null) {
 				//Silently ignore any invalid potion items (ingredients that may be tags) this should never be the case
@@ -152,7 +152,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		Map<NormalizedSimpleStack, Integer> waterIngredients = new HashMap<>();
 		waterIngredients.put(NSSItem.createItem(Items.GLASS_BOTTLE), 1);
 		waterIngredients.put(NSSFluid.createTag(FluidTags.WATER), FluidAttributes.BUCKET_VOLUME / 3);
-		mapper.addConversion(1, NSSItem.createItem(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.WATER)), waterIngredients);
+		mapper.addConversion(1, NSSItem.createItem(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), waterIngredients);
 
 		Set<Class<?>> canNotMap = new HashSet<>();
 		int recipeCount = 0;
@@ -233,7 +233,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Nullable
 	private static ItemStack[] getMatchingStacks(Ingredient ingredient) {
 		try {
-			return ingredient.getMatchingStacks();
+			return ingredient.getItems();
 		} catch (Exception e) {
 			return null;
 		}

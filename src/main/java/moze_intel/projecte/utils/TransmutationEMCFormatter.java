@@ -35,6 +35,6 @@ public class TransmutationEMCFormatter {
 		} else {//if (extraDigits == 2)
 			value = Double.parseDouble(emcAsString.substring(0, 2) + "." + emcAsString.substring(2, 4));
 		}
-		return TextComponentUtil.smartTranslate(Util.makeTranslationKey("emc", PECore.rl("postfix." + postfixIndex)), Constants.EMC_FORMATTER.format(value));
+		return TextComponentUtil.smartTranslate(Util.makeDescriptionId("emc", PECore.rl("postfix." + postfixIndex)), Constants.EMC_FORMATTER.format(value));
 	}
 }

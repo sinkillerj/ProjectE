@@ -24,14 +24,14 @@ public class SlotLock extends SlotItemHandler {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@Nonnull ItemStack stack) {
 		return SlotPredicates.RELAY_INV.test(stack);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack decrStackSize(int amount) {
-		ItemStack stack = super.decrStackSize(amount);
+	public ItemStack remove(int amount) {
+		ItemStack stack = super.remove(amount);
 		//Decrease the size of the stack
 		if (!stack.isEmpty() && inv.isServer()) {
 			//Sync the change to the client
@@ -41,8 +41,8 @@ public class SlotLock extends SlotItemHandler {
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
-		super.putStack(stack);
+	public void set(@Nonnull ItemStack stack) {
+		super.set(stack);
 		if (inv.isServer()) {
 			if (stack.isEmpty()) {
 				inv.syncChangedSlots(Collections.singletonList(getSlotIndex()), TargetUpdateType.ALL);
@@ -70,12 +70,12 @@ public class SlotLock extends SlotItemHandler {
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 
 	@Override
-	public int getItemStackLimit(@Nonnull ItemStack stack) {
+	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }

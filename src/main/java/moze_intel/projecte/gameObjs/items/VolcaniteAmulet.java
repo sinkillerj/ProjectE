@@ -72,14 +72,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
-		World world = ctx.getWorld();
+	public ActionResultType useOn(ItemUseContext ctx) {
+		World world = ctx.getLevel();
 		PlayerEntity player = ctx.getPlayer();
-		BlockPos pos = ctx.getPos();
-		ItemStack stack = ctx.getItem();
-		if (player != null && !world.isRemote && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
+		BlockPos pos = ctx.getClickedPos();
+		ItemStack stack = ctx.getItemInHand();
+		if (player != null && !world.isClientSide && PlayerHelper.hasEditPermission((ServerPlayerEntity) player, pos) && consumeFuel(player, stack, 32, true)) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
-			Direction sideHit = ctx.getFace();
+			Direction sideHit = ctx.getClickedFace();
 			if (tile != null) {
 				Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
 				if (capability.isPresent()) {
@@ -88,7 +88,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				}
 			}
 			WorldHelper.placeFluid((ServerPlayerEntity) player, world, pos, sideHit, Fluids.LAVA, false);
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -104,27 +104,27 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (invSlot >= PlayerInventory.getHotbarSize() || !(entity instanceof LivingEntity)) {
+		if (invSlot >= PlayerInventory.getSelectionSize() || !(entity instanceof LivingEntity)) {
 			return;
 		}
 		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.getPosX());
-		int y = (int) (living.getPosY() - living.getYOffset());
-		int z = (int) Math.floor(living.getPosZ());
+		int x = (int) Math.floor(living.getX());
+		int y = (int) (living.getY() - living.getMyRidingOffset());
+		int z = (int) Math.floor(living.getZ());
 		BlockPos pos = new BlockPos(x, y, z);
-		if (world.getFluidState(pos.down()).getFluid().isIn(FluidTags.LAVA) && world.isAirBlock(pos)) {
-			if (!living.isSneaking()) {
-				living.setMotion(living.getMotion().mul(1, 0, 1));
+		if (world.getFluidState(pos.below()).getType().is(FluidTags.LAVA) && world.isEmptyBlock(pos)) {
+			if (!living.isShiftKeyDown()) {
+				living.setDeltaMovement(living.getDeltaMovement().multiply(1, 0, 1));
 				living.fallDistance = 0.0F;
 				living.setOnGround(true);
 			}
-			if (!world.isRemote) {
+			if (!world.isClientSide) {
 				ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
 				if (attribute != null && !attribute.hasModifier(SPEED_BOOST)) {
-					attribute.applyNonPersistentModifier(SPEED_BOOST);
+					attribute.addTransientModifier(SPEED_BOOST);
 				}
 			}
-		} else if (!world.isRemote) {
+		} else if (!world.isClientSide) {
 			ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
 				attribute.removeModifier(SPEED_BOOST);
@@ -134,16 +134,16 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
-		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getEntityWorld());
-		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.getEntityWorld().addEntity(ent);
+		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
+		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getCommandSenderWorld());
+		ent.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		player.getCommandSenderWorld().addFreshEntity(ent);
 		return true;
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_VOLCANITE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		tooltips.add(PELang.TOOLTIP_VOLCANITE_2.translate());
 		tooltips.add(PELang.TOOLTIP_VOLCANITE_3.translate());
@@ -152,12 +152,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					if (world.getWorldInfo() instanceof IServerWorldInfo) {
-						IServerWorldInfo worldInfo = (IServerWorldInfo) world.getWorldInfo();
+					if (world.getLevelData() instanceof IServerWorldInfo) {
+						IServerWorldInfo worldInfo = (IServerWorldInfo) world.getLevelData();
 						worldInfo.setRainTime(0);
 						worldInfo.setThunderTime(0);
 						worldInfo.setRaining(false);

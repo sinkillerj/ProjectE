@@ -30,25 +30,25 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
+	public ActionResultType useOn(ItemUseContext ctx) {
 		PlayerEntity player = ctx.getPlayer();
 		if (player == null) {
 			return ActionResultType.FAIL;
 		}
-		World world = ctx.getWorld();
-		if (world.isRemote) {
+		World world = ctx.getLevel();
+		if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		}
-		ItemStack stack = ctx.getItem();
+		ItemStack stack = ctx.getItemInHand();
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), --numRows))) {
-			if (world.isAirBlock(pos)) {
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), --numRows))) {
+			if (world.isEmptyBlock(pos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(pos);
-			float hardness = state.getBlockHardness(world, pos);
+			float hardness = state.getDestroySpeed(world, pos);
 			if (hardness == -1.0F || hardness >= 50.0F) {
 				continue;
 			}
@@ -57,19 +57,19 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 			}
 			hasAction = true;
 			//Ensure we are immutable so that changing blocks doesn't act weird
-			pos = pos.toImmutable();
+			pos = pos.immutable();
 			if (PlayerHelper.hasBreakPermission((ServerPlayerEntity) player, pos)) {
 				List<ItemStack> list = Block.getDrops(state, (ServerWorld) world, pos, WorldHelper.getTileEntity(world, pos), player, stack);
 				drops.addAll(list);
 				world.removeBlock(pos, false);
-				if (world.rand.nextInt(8) == 0) {
-					((ServerWorld) world).spawnParticle(world.rand.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+				if (world.random.nextInt(8) == 0) {
+					((ServerWorld) world).sendParticles(world.random.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, ctx.getPos());
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			WorldHelper.createLootDrop(drops, world, ctx.getClickedPos());
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 		return ActionResultType.SUCCESS;
 	}

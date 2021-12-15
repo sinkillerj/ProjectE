@@ -17,6 +17,6 @@ public abstract class PEContainerScreen<T extends Container> extends ContainerSc
 	public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(matrix);
 		super.render(matrix, mouseX, mouseY, partialTicks);
-		this.renderHoveredTooltip(matrix, mouseX, mouseY);
+		this.renderTooltip(matrix, mouseX, mouseY);
 	}
 }

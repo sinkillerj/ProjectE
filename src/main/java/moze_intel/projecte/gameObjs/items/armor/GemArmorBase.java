@@ -31,7 +31,7 @@ public abstract class GemArmorBase extends PEArmor {
 		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
 			return 15 / getPieceEffectiveness(slot);
 		}
-		if (source.isUnblockable()) {
+		if (source.isBypassArmor()) {
 			return 0;
 		}
 		//If the source is not unblockable, allow our piece to block a certain amount of damage
@@ -42,11 +42,11 @@ public abstract class GemArmorBase extends PEArmor {
 	}
 
 	public static boolean hasAnyPiece(PlayerEntity player) {
-		return player.inventory.armorInventory.stream().anyMatch(i -> !i.isEmpty() && i.getItem() instanceof GemArmorBase);
+		return player.inventory.armor.stream().anyMatch(i -> !i.isEmpty() && i.getItem() instanceof GemArmorBase);
 	}
 
 	public static boolean hasFullSet(PlayerEntity player) {
-		return player.inventory.armorInventory.stream().noneMatch(i -> i.isEmpty() || !(i.getItem() instanceof GemArmorBase));
+		return player.inventory.armor.stream().noneMatch(i -> i.isEmpty() || !(i.getItem() instanceof GemArmorBase));
 	}
 
 	private static class GemArmorMaterial implements IArmorMaterial {
@@ -54,12 +54,12 @@ public abstract class GemArmorBase extends PEArmor {
 		private static final GemArmorMaterial INSTANCE = new GemArmorMaterial();
 
 		@Override
-		public int getDurability(@Nonnull EquipmentSlotType slot) {
+		public int getDurabilityForSlot(@Nonnull EquipmentSlotType slot) {
 			return 0;
 		}
 
 		@Override
-		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
+		public int getDefenseForSlot(@Nonnull EquipmentSlotType slot) {
 			if (slot == EquipmentSlotType.FEET) {
 				return 3;
 			} else if (slot == EquipmentSlotType.LEGS) {
@@ -73,19 +73,19 @@ public abstract class GemArmorBase extends PEArmor {
 		}
 
 		@Override
-		public int getEnchantability() {
+		public int getEnchantmentValue() {
 			return 0;
 		}
 
 		@Nonnull
 		@Override
-		public SoundEvent getSoundEvent() {
-			return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+		public SoundEvent getEquipSound() {
+			return SoundEvents.ARMOR_EQUIP_DIAMOND;
 		}
 
 		@Nonnull
 		@Override
-		public Ingredient getRepairMaterial() {
+		public Ingredient getRepairIngredient() {
 			return Ingredient.EMPTY;
 		}
 

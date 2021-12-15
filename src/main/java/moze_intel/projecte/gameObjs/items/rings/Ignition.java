@@ -44,7 +44,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int inventorySlot, boolean held) {
-		if (world.isRemote || inventorySlot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (world.isClientSide || inventorySlot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
@@ -64,20 +64,20 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(@Nonnull ItemUseContext ctx) {
+	public ActionResultType useOn(@Nonnull ItemUseContext ctx) {
 		return WorldHelper.igniteBlock(ctx);
 	}
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+					List<MobEntity> list = world.getEntitiesOfClass(MobEntity.class, tile.getEffectBounds());
 					for (MobEntity living : list) {
-						living.attackEntityFrom(DamageSource.IN_FIRE, 3.0F);
-						living.setFire(8);
+						living.hurt(DamageSource.IN_FIRE, 3.0F);
+						living.setSecondsOnFire(8);
 					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.ignition.get());
 				} else {
@@ -100,13 +100,13 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		World world = player.getEntityWorld();
-		if (world.isRemote) {
+		World world = player.getCommandSenderWorld();
+		if (world.isClientSide) {
 			return false;
 		}
 		EntityFireProjectile fire = new EntityFireProjectile(player, world);
-		fire.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.addEntity(fire);
+		fire.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		world.addFreshEntity(fire);
 		return true;
 	}
 

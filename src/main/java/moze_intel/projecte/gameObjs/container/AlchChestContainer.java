@@ -42,42 +42,42 @@ public class AlchChestContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.ALCHEMICAL_CHEST.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.ALCHEMICAL_CHEST.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex < 104) {
-			if (!this.mergeItemStack(stack, 104, this.inventorySlots.size(), false)) {
+			if (!this.moveItemStackTo(stack, 104, this.slots.size(), false)) {
 				return ItemStack.EMPTY;
 			}
-		} else if (!this.mergeItemStack(stack, 0, 104, false)) {
+		} else if (!this.moveItemStackTo(stack, 0, 104, false)) {
 			return ItemStack.EMPTY;
 		}
 
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return newStack;
 	}
 
 	@Override
-	public void onContainerClosed(@Nonnull PlayerEntity player) {
-		super.onContainerClosed(player);
+	public void removed(@Nonnull PlayerEntity player) {
+		super.removed(player);
 		tile.numPlayersUsing--;
 	}
 }

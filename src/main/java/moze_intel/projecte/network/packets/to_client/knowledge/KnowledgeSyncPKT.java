@@ -26,10 +26,10 @@ public class KnowledgeSyncPKT implements IPEPacket {
 
 	@Override
 	public void encode(PacketBuffer buffer) {
-		buffer.writeCompoundTag(nbt);
+		buffer.writeNbt(nbt);
 	}
 
 	public static KnowledgeSyncPKT decode(PacketBuffer buffer) {
-		return new KnowledgeSyncPKT(buffer.readCompoundTag());
+		return new KnowledgeSyncPKT(buffer.readNbt());
 	}
 }

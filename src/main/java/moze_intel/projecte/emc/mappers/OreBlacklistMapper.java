@@ -21,9 +21,9 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
 			IResourceManager resourceManager) {
 		//Note: We need to get the tag by resource location, as named tags are not populated yet here
-		ITag<Item> ores = dataPackRegistries.func_244358_d().getItemTags().get(ORES);
+		ITag<Item> ores = dataPackRegistries.getTags().getItems().getTag(ORES);
 		if (ores != null) {
-			for (Item ore : ores.getAllElements()) {
+			for (Item ore : ores.getValues()) {
 				NSSItem nssOre = NSSItem.createItem(ore);
 				mapper.setValueBefore(nssOre, 0L);
 				mapper.setValueAfter(nssOre, 0L);

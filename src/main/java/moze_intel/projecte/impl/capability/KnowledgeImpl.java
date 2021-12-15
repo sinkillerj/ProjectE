@@ -73,7 +73,7 @@ public final class KnowledgeImpl {
 		}
 
 		private void fireChangedEvent() {
-			if (player != null && !player.world.isRemote) {
+			if (player != null && !player.level.isClientSide) {
 				MinecraftForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
 			}
 		}

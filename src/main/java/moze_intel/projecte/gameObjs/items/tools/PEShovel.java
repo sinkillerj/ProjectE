@@ -82,29 +82,29 @@ public class PEShovel extends ShovelItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		if (state.getHarvestTool() == ToolType.SHOVEL) {
 			//Patch ShovelItem to return true for canHarvestBlock for more things than just snow
-			return getTier().getHarvestLevel() >= state.getHarvestLevel();
+			return getTier().getLevel() >= state.getHarvestLevel();
 		}
-		return super.canHarvestBlock(state);
+		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
 		}
 		Hand hand = context.getHand();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		Direction sideHit = context.getFace();
-		ItemStack stack = context.getItem();
+		World world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction sideHit = context.getClickedFace();
+		ItemStack stack = context.getItemInHand();
 		BlockState state = world.getBlockState(pos);
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0), () -> {
-			if (state.isIn(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+			if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 				return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 			}
 			return ActionResultType.PASS;

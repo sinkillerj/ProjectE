@@ -228,7 +228,7 @@ public enum PELang implements ILangEntry {
 	private final String key;
 
 	PELang(String type, String path) {
-		this(Util.makeTranslationKey(type, PECore.rl(path)));
+		this(Util.makeDescriptionId(type, PECore.rl(path)));
 	}
 
 	PELang(String key) {

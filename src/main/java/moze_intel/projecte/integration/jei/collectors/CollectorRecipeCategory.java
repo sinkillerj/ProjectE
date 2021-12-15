@@ -91,9 +91,9 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	@Override
 	public void draw(FuelUpgradeRecipe recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
 		ITextComponent emc = PELang.EMC.translate(recipe.getUpgradeEMC());
-		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		int stringWidth = fontRenderer.getStringPropertyWidth(emc);
-		fontRenderer.func_243248_b(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
+		FontRenderer fontRenderer = Minecraft.getInstance().font;
+		int stringWidth = fontRenderer.width(emc);
+		fontRenderer.draw(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(matrix, 55, 18);
 	}
 }

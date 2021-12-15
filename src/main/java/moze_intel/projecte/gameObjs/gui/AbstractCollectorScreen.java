@@ -30,36 +30,36 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
-		this.font.drawString(matrix, Long.toString(container.emc.get()), 60 + getBonusXShift(), 32, 0x404040);
-		long kleinCharge = container.kleinEmc.get();
+		this.font.draw(matrix, Long.toString(menu.emc.get()), 60 + getBonusXShift(), 32, 0x404040);
+		long kleinCharge = menu.kleinEmc.get();
 		if (kleinCharge > 0) {
-			this.font.drawString(matrix, Constants.EMC_FORMATTER.format(kleinCharge), 60 + getBonusXShift(), 44, 0x404040);
+			this.font.draw(matrix, Constants.EMC_FORMATTER.format(kleinCharge), 60 + getBonusXShift(), 44, 0x404040);
 		}
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(getTexture());
+		Minecraft.getInstance().textureManager.bind(getTexture());
 
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		//Light Level. Max is 12
-		int progress = (int) (container.sunLevel.get() * 12.0 / 16);
-		blit(matrix, guiLeft + 126 + getBonusXShift(), guiTop + 49 - progress, 177 + getTextureBonusXShift(), 13 - progress, 12, progress);
+		int progress = (int) (menu.sunLevel.get() * 12.0 / 16);
+		blit(matrix, leftPos + 126 + getBonusXShift(), topPos + 49 - progress, 177 + getTextureBonusXShift(), 13 - progress, 12, progress);
 
 		//EMC storage. Max is 48
-		blit(matrix, guiLeft + 64 + getBonusXShift(), guiTop + 18, 0, 166, (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * 48), 10);
+		blit(matrix, leftPos + 64 + getBonusXShift(), topPos + 18, 0, 166, (int) ((double) menu.emc.get() / menu.tile.getMaximumEmc() * 48), 10);
 
 		//Klein Star Charge Progress. Max is 48
-		progress = (int) (container.getKleinChargeProgress() * 48);
-		blit(matrix, guiLeft + 64 + getBonusXShift(), guiTop + 58, 0, 166, progress, 10);
+		progress = (int) (menu.getKleinChargeProgress() * 48);
+		blit(matrix, leftPos + 64 + getBonusXShift(), topPos + 58, 0, 166, progress, 10);
 
 		//Fuel Progress. Max is 24.
-		progress = (int) (container.getFuelProgress() * 24);
-		blit(matrix, guiLeft + 138 + getBonusXShift(), guiTop + 55 - progress, 176 + getTextureBonusXShift(), 38 - progress, 10, progress + 1);
+		progress = (int) (menu.getFuelProgress() * 24);
+		blit(matrix, leftPos + 138 + getBonusXShift(), topPos + 55 - progress, 176 + getTextureBonusXShift(), 38 - progress, 10, progress + 1);
 	}
 
 	public static class MK1 extends AbstractCollectorScreen<CollectorMK1Container> {
@@ -78,8 +78,8 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 		public MK2(CollectorMK2Container container, PlayerInventory invPlayer, ITextComponent title) {
 			super(container, invPlayer, title);
-			this.xSize = 200;
-			this.ySize = 165;
+			this.imageWidth = 200;
+			this.imageHeight = 165;
 		}
 
 		@Override
@@ -102,8 +102,8 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 		public MK3(CollectorMK3Container container, PlayerInventory invPlayer, ITextComponent title) {
 			super(container, invPlayer, title);
-			this.xSize = 218;
-			this.ySize = 165;
+			this.imageWidth = 218;
+			this.imageHeight = 165;
 		}
 
 		@Override

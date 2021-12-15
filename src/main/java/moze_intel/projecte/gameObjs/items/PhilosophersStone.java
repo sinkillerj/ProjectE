@@ -64,71 +64,71 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public BlockRayTraceResult getHitBlock(PlayerEntity player) {
-		return rayTrace(player.getEntityWorld(), player, player.isSneaking() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isShiftKeyDown() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
+	public ActionResultType useOn(ItemUseContext ctx) {
 		PlayerEntity player = ctx.getPlayer();
 		if (player == null) {
 			return ActionResultType.FAIL;
 		}
-		BlockPos pos = ctx.getPos();
-		Direction sideHit = ctx.getFace();
-		World world = ctx.getWorld();
-		ItemStack stack = ctx.getItem();
+		BlockPos pos = ctx.getClickedPos();
+		Direction sideHit = ctx.getClickedFace();
+		World world = ctx.getLevel();
+		ItemStack stack = ctx.getItemInHand();
 
-		if (world.isRemote) {
+		if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		}
 
 		BlockRayTraceResult rtr = getHitBlock(player);
-		if (rtr.getType() == RayTraceResult.Type.BLOCK && !rtr.getPos().equals(pos)) {
-			pos = rtr.getPos();
-			sideHit = rtr.getFace();
+		if (rtr.getType() == RayTraceResult.Type.BLOCK && !rtr.getBlockPos().equals(pos)) {
+			pos = rtr.getBlockPos();
+			sideHit = rtr.getDirection();
 		}
 		Map<BlockPos, BlockState> toChange = getChanges(world, pos, player, sideHit, getMode(stack), getCharge(stack));
 		if (!toChange.isEmpty()) {
 			for (Map.Entry<BlockPos, BlockState> entry : toChange.entrySet()) {
 				BlockPos currentPos = entry.getKey();
 				PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, currentPos, entry.getValue());
-				if (world.rand.nextInt(8) == 0) {
-					((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
+				if (world.random.nextInt(8) == 0) {
+					((ServerWorld) world).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
 		}
 		return ActionResultType.SUCCESS;
 	}
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		World world = player.getEntityWorld();
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
+		World world = player.getCommandSenderWorld();
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
-		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.addEntity(ent);
+		ent.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		world.addFreshEntity(ent);
 		return true;
 	}
 
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		if (!player.getEntityWorld().isRemote) {
+		if (!player.getCommandSenderWorld().isClientSide) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack));
 		}
 		return true;
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
 	public static Map<BlockPos, BlockState> getChanges(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
 		BlockState targeted = world.getBlockState(pos);
-		boolean isSneaking = player.isSneaking();
+		boolean isSneaking = player.isShiftKeyDown();
 		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
 		if (result == null) {
 			//Targeted block has no transmutations, no positions
@@ -137,23 +137,23 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		Stream<BlockPos> stream = null;
 		switch (mode) {
 			case 0: // Cube
-				stream = BlockPos.getAllInBox(pos.add(-charge, -charge, -charge), pos.add(charge, charge, charge));
+				stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, -charge), pos.offset(charge, charge, charge));
 				break;
 			case 1: // Panel
 				if (sideHit == Direction.UP || sideHit == Direction.DOWN) {
-					stream = BlockPos.getAllInBox(pos.add(-charge, 0, -charge), pos.add(charge, 0, charge));
+					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge));
 				} else if (sideHit == Direction.EAST || sideHit == Direction.WEST) {
-					stream = BlockPos.getAllInBox(pos.add(0, -charge, -charge), pos.add(0, charge, charge));
+					stream = BlockPos.betweenClosedStream(pos.offset(0, -charge, -charge), pos.offset(0, charge, charge));
 				} else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH) {
-					stream = BlockPos.getAllInBox(pos.add(-charge, -charge, 0), pos.add(charge, charge, 0));
+					stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, 0), pos.offset(charge, charge, 0));
 				}
 				break;
 			case 2: // Line
-				Direction playerFacing = player.getHorizontalFacing();
+				Direction playerFacing = player.getDirection();
 				if (playerFacing.getAxis() == Direction.Axis.Z) {
-					stream = BlockPos.getAllInBox(pos.add(0, 0, -charge), pos.add(0, 0, charge));
+					stream = BlockPos.betweenClosedStream(pos.offset(0, 0, -charge), pos.offset(0, 0, charge));
 				} else if (playerFacing.getAxis() == Direction.Axis.X) {
-					stream = BlockPos.getAllInBox(pos.add(-charge, 0, 0), pos.add(charge, 0, 0));
+					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, 0), pos.offset(charge, 0, 0));
 				}
 				break;
 		}
@@ -166,7 +166,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		Block targetBlock = targeted.getBlock();
 		stream.forEach(currentPos -> {
 			BlockState state = world.getBlockState(currentPos);
-			if (state.isIn(targetBlock)) {
+			if (state.is(targetBlock)) {
 				BlockState actualResult;
 				if (conversions.containsKey(state)) {
 					actualResult = conversions.get(state);
@@ -176,7 +176,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				//We allow for null keys to avoid having to look it up again from the world transmutations
 				// which may be slightly slower, but we only add it as a position to change if we have a result
 				if (actualResult != null) {
-					changes.put(currentPos.toImmutable(), actualResult);
+					changes.put(currentPos.immutable(), actualResult);
 				}
 			}
 		});
@@ -194,13 +194,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		@Nonnull
 		@Override
 		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-			return new PhilosStoneContainer(windowId, playerInventory, IWorldPosCallable.of(playerIn.getEntityWorld(), playerIn.getPosition()));
+			return new PhilosStoneContainer(windowId, playerInventory, IWorldPosCallable.create(playerIn.getCommandSenderWorld(), playerIn.blockPosition()));
 		}
 
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return stack.getDisplayName();
+			return stack.getHoverName();
 		}
 	}
 }

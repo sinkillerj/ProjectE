@@ -35,7 +35,7 @@ public final class EMCHelper {
 	 * @implNote Order it tries to extract from is, Curios, Offhand, main inventory
 	 */
 	public static long consumePlayerFuel(PlayerEntity player, long minFuel) {
-		if (player.abilities.isCreativeMode) {
+		if (player.abilities.instabuild) {
 			return minFuel;
 		}
 		IItemHandler curios = PlayerHelper.getCurios(player);
@@ -43,18 +43,18 @@ public final class EMCHelper {
 			for (int i = 0; i < curios.getSlots(); i++) {
 				long actualExtracted = tryExtract(curios.getStackInSlot(i), minFuel);
 				if (actualExtracted > 0) {
-					player.openContainer.detectAndSendChanges();
+					player.containerMenu.broadcastChanges();
 					return actualExtracted;
 				}
 			}
 		}
 
-		ItemStack offhand = player.getHeldItemOffhand();
+		ItemStack offhand = player.getOffhandItem();
 
 		if (!offhand.isEmpty()) {
 			long actualExtracted = tryExtract(offhand, minFuel);
 			if (actualExtracted > 0) {
-				player.openContainer.detectAndSendChanges();
+				player.containerMenu.broadcastChanges();
 				return actualExtracted;
 			}
 		}
@@ -73,7 +73,7 @@ public final class EMCHelper {
 				}
 				long actualExtracted = tryExtract(stack, minFuel);
 				if (actualExtracted > 0) {
-					player.openContainer.detectAndSendChanges();
+					player.containerMenu.broadcastChanges();
 					return actualExtracted;
 				} else if (!metRequirement) {
 					if (FuelMapper.isStackFuel(stack)) {
@@ -98,7 +98,7 @@ public final class EMCHelper {
 				for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 					inv.extractItem(entry.getKey(), entry.getValue(), false);
 				}
-				player.openContainer.detectAndSendChanges();
+				player.containerMenu.broadcastChanges();
 				return emcConsumed;
 			}
 		}
@@ -211,9 +211,9 @@ public final class EMCHelper {
 	public static long getEMCPerDurability(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return 0;
-		} else if (stack.isDamageable()) {
+		} else if (stack.isDamageableItem()) {
 			ItemStack stackCopy = stack.copy();
-			stackCopy.setDamage(0);
+			stackCopy.setDamageValue(0);
 			long emc = (long) Math.ceil(getEmcValue(stackCopy) / (double) stack.getMaxDamage());
 			return Math.max(emc, 1);
 		}

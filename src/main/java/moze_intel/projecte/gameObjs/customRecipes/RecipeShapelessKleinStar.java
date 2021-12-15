@@ -43,11 +43,11 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
-		ItemStack result = compose.getCraftingResult(inv);
+	public ItemStack assemble(@Nonnull CraftingInventory inv) {
+		ItemStack result = compose.assemble(inv);
 		long storedEMC = 0;
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getContainerSize(); i++) {
+			ItemStack stack = inv.getItem(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof KleinStar) {
 				storedEMC += KleinStar.getEmc(stack);
 			}
@@ -59,14 +59,14 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
-		return compose.canFit(width, height);
+	public boolean canCraftInDimensions(int width, int height) {
+		return compose.canCraftInDimensions(width, height);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput() {
-		return compose.getRecipeOutput();
+	public ItemStack getResultItem() {
+		return compose.getResultItem();
 	}
 
 	@Nonnull
@@ -82,7 +82,7 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		//Allow the klein recipes to show up in the recipe book and in JEI
 		return false;
 	}
@@ -97,19 +97,19 @@ public class RecipeShapelessKleinStar implements ICraftingRecipe {
 
 		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
+		public RecipeShapelessKleinStar fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+			return new RecipeShapelessKleinStar(IRecipeSerializer.SHAPELESS_RECIPE.fromJson(recipeId, json));
 		}
 
 		@Nonnull
 		@Override
-		public RecipeShapelessKleinStar read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-			return new RecipeShapelessKleinStar(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
+		public RecipeShapelessKleinStar fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+			return new RecipeShapelessKleinStar(IRecipeSerializer.SHAPELESS_RECIPE.fromNetwork(recipeId, buffer));
 		}
 
 		@Override
-		public void write(@Nonnull PacketBuffer buffer, RecipeShapelessKleinStar recipe) {
-			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.compose);
+		public void toNetwork(@Nonnull PacketBuffer buffer, RecipeShapelessKleinStar recipe) {
+			IRecipeSerializer.SHAPELESS_RECIPE.toNetwork(buffer, recipe.compose);
 		}
 	}
 }

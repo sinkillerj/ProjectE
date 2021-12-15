@@ -24,13 +24,13 @@ public class FullKleinStarIngredient extends Ingredient {
 		@Nonnull
 		@Override
 		public FullKleinStarIngredient parse(@Nonnull PacketBuffer buffer) {
-			return new FullKleinStarIngredient(buffer.readEnumValue(EnumKleinTier.class));
+			return new FullKleinStarIngredient(buffer.readEnum(EnumKleinTier.class));
 		}
 
 		@Nonnull
 		@Override
 		public FullKleinStarIngredient parse(@Nonnull JsonObject json) {
-			int tier = JSONUtils.getInt(json, "tier");
+			int tier = JSONUtils.getAsInt(json, "tier");
 			EnumKleinTier[] tiers = EnumKleinTier.values();
 			if (tier < 0 || tier >= tiers.length) {
 				throw new JsonParseException("Invalid klein star tier");
@@ -40,7 +40,7 @@ public class FullKleinStarIngredient extends Ingredient {
 
 		@Override
 		public void write(@Nonnull PacketBuffer buffer, @Nonnull FullKleinStarIngredient ingredient) {
-			buffer.writeEnumValue(((KleinStar) ingredient.star.getItem()).tier);
+			buffer.writeEnum(((KleinStar) ingredient.star.getItem()).tier);
 		}
 	};
 
@@ -63,7 +63,7 @@ public class FullKleinStarIngredient extends Ingredient {
 
 	@Override
 	public boolean test(@Nullable ItemStack input) {
-		return input != null && !input.isEmpty() && ItemStack.areItemStacksEqual(input, star);
+		return input != null && !input.isEmpty() && ItemStack.matches(input, star);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class FullKleinStarIngredient extends Ingredient {
 
 	@Nonnull
 	@Override
-	public JsonElement serialize() {
+	public JsonElement toJson() {
 		JsonObject json = new JsonObject();
 		json.addProperty("type", CraftingHelper.getID(SERIALIZER).toString());
 		json.addProperty("tier", ((KleinStar) star.getItem()).tier.ordinal());

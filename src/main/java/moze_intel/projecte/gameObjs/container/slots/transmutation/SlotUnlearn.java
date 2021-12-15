@@ -17,25 +17,25 @@ public class SlotUnlearn extends SlotItemHandler {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
-		return !this.getHasStack() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() instanceof Tome);
+	public boolean mayPlace(@Nonnull ItemStack stack) {
+		return !this.hasItem() && (EMCHelper.doesItemHaveEmc(stack) || stack.getItem() instanceof Tome);
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
+	public void set(@Nonnull ItemStack stack) {
 		if (inv.isServer() && !stack.isEmpty()) {
 			inv.handleUnlearn(stack.copy());
 		}
-		super.putStack(stack);
+		super.set(stack);
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 
 	@Override
-	public int getItemStackLimit(@Nonnull ItemStack stack) {
+	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }

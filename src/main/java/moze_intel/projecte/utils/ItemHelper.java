@@ -30,14 +30,14 @@ public final class ItemHelper {
 	public static ActionResult<ItemStack> actionResultFromType(ActionResultType type, ItemStack stack) {
 		switch (type) {
 			case SUCCESS:
-				return ActionResult.resultSuccess(stack);
+				return ActionResult.success(stack);
 			case CONSUME:
-				return ActionResult.resultConsume(stack);
+				return ActionResult.consume(stack);
 			case FAIL:
-				return ActionResult.resultFail(stack);
+				return ActionResult.fail(stack);
 			case PASS:
 			default:
-				return ActionResult.resultPass(stack);
+				return ActionResult.pass(stack);
 		}
 	}
 
@@ -45,7 +45,7 @@ public final class ItemHelper {
 	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
 	 */
 	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
-		return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
+		return ItemStack.matches(getNormalizedStack(stack1), getNormalizedStack(stack2));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class ItemHelper {
 	@Nullable
 	public static CompoundNBT copyNBTSkipKey(@Nonnull CompoundNBT nbt, @Nonnull String keyToSkip) {
 		CompoundNBT copiedNBT = new CompoundNBT();
-		for (String key : nbt.keySet()) {
+		for (String key : nbt.getAllKeys()) {
 			if (keyToSkip.equals(key)) {
 				continue;
 			}
@@ -180,7 +180,7 @@ public final class ItemHelper {
 	}
 
 	public static boolean isOre(BlockState state) {
-		return state.isIn(Tags.Blocks.ORES);
+		return state.is(Tags.Blocks.ORES);
 	}
 
 	public static boolean isOre(Block b) {
@@ -188,11 +188,11 @@ public final class ItemHelper {
 	}
 
 	public static boolean isOre(Item i) {
-		return isOre(Block.getBlockFromItem(i));
+		return isOre(Block.byItem(i));
 	}
 
 	public static boolean isRepairableDamagedItem(ItemStack stack) {
-		return stack.isDamageable() && stack.isRepairable() && stack.getDamage() > 0;
+		return stack.isDamageableItem() && stack.isRepairable() && stack.getDamageValue() > 0;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public final class ItemHelper {
 
 	public static BlockState stackToState(ItemStack stack) {
 		if (stack.getItem() instanceof BlockItem) {
-			return ((BlockItem) stack.getItem()).getBlock().getDefaultState();
+			return ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
 		}
 		return null;
 	}

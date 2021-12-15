@@ -26,11 +26,11 @@ public class KnowledgeSyncChangePKT implements IPEPacket {
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				if (learned) {
-					if (!cap.hasKnowledge(change) && cap.addKnowledge(change) && player.openContainer instanceof TransmutationContainer) {
-						((TransmutationContainer) player.openContainer).transmutationInventory.itemLearned();
+					if (!cap.hasKnowledge(change) && cap.addKnowledge(change) && player.containerMenu instanceof TransmutationContainer) {
+						((TransmutationContainer) player.containerMenu).transmutationInventory.itemLearned();
 					}
-				} else if (cap.hasKnowledge(change) && cap.removeKnowledge(change) && player.openContainer instanceof TransmutationContainer) {
-					((TransmutationContainer) player.openContainer).transmutationInventory.itemUnlearned();
+				} else if (cap.hasKnowledge(change) && cap.removeKnowledge(change) && player.containerMenu instanceof TransmutationContainer) {
+					((TransmutationContainer) player.containerMenu).transmutationInventory.itemUnlearned();
 				}
 			});
 		}
@@ -40,11 +40,11 @@ public class KnowledgeSyncChangePKT implements IPEPacket {
 	@Override
 	public void encode(PacketBuffer buffer) {
 		buffer.writeRegistryId(change.getItem());
-		buffer.writeCompoundTag(change.getNBT());
+		buffer.writeNbt(change.getNBT());
 		buffer.writeBoolean(learned);
 	}
 
 	public static KnowledgeSyncChangePKT decode(PacketBuffer buffer) {
-		return new KnowledgeSyncChangePKT(ItemInfo.fromItem(buffer.readRegistryId(), buffer.readCompoundTag()), buffer.readBoolean());
+		return new KnowledgeSyncChangePKT(ItemInfo.fromItem(buffer.readRegistryId(), buffer.readNbt()), buffer.readBoolean());
 	}
 }

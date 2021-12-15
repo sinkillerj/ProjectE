@@ -28,49 +28,49 @@ public class EntityFireProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		Entity thrower = func_234616_v_();
-		if (!world.isRemote && thrower instanceof PlayerEntity && mop instanceof BlockRayTraceResult) {
-			BlockPos pos = ((BlockRayTraceResult) mop).getPos();
-			Block block = world.getBlockState(pos).getBlock();
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		Entity thrower = getOwner();
+		if (!level.isClientSide && thrower instanceof PlayerEntity && mop instanceof BlockRayTraceResult) {
+			BlockPos pos = ((BlockRayTraceResult) mop).getBlockPos();
+			Block block = level.getBlockState(pos).getBlock();
 			if (block == Blocks.OBSIDIAN) {
-				world.setBlockState(pos, Blocks.LAVA.getDefaultState());
+				level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
 			} else if (block == Blocks.SAND) {
-				BlockPos.getAllInBox(pos.add(-2, -2, -2), pos.add(2, 2, 2)).forEach(currentPos -> {
-					if (world.getBlockState(currentPos).getBlock() == Blocks.SAND) {
-						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, pos.toImmutable(), Blocks.GLASS.getDefaultState());
+				BlockPos.betweenClosedStream(pos.offset(-2, -2, -2), pos.offset(2, 2, 2)).forEach(currentPos -> {
+					if (level.getBlockState(currentPos).getBlock() == Blocks.SAND) {
+						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, pos.immutable(), Blocks.GLASS.defaultBlockState());
 					}
 				});
 			} else {
-				BlockPos.getAllInBox(pos.add(-1, -1, -1), pos.add(1, 1, 1)).forEach(currentPos -> {
-					if (world.isAirBlock(currentPos)) {
-						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, currentPos.toImmutable(), Blocks.FIRE.getDefaultState());
+				BlockPos.betweenClosedStream(pos.offset(-1, -1, -1), pos.offset(1, 1, 1)).forEach(currentPos -> {
+					if (level.isEmptyBlock(currentPos)) {
+						PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) thrower, currentPos.immutable(), Blocks.FIRE.defaultBlockState());
 					}
 				});
 			}
 		}
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			remove();
 		}
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

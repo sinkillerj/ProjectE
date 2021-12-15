@@ -97,15 +97,15 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 	}
 
 	@Override
-	public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
+	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		if (player.getCooledAttackStrength(0F) == 1) {
-			ToolHelper.attackAOE(stack, player, slayAll(stack), getAttackDamage(), 0, hand);
+		if (player.getAttackStrengthScale(0F) == 1) {
+			ToolHelper.attackAOE(stack, player, slayAll(stack), getDamage(), 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}

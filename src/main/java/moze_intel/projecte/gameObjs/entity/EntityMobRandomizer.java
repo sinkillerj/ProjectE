@@ -32,29 +32,29 @@ public class EntityMobRandomizer extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getEntityWorld().isRemote) {
-			if (ticksExisted > 400 || isInWater() || !getEntityWorld().isBlockPresent(getPosition())) {
+		if (!this.getCommandSenderWorld().isClientSide) {
+			if (tickCount > 400 || isInWater() || !getCommandSenderWorld().isLoaded(blockPosition())) {
 				this.remove();
 			}
 		}
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (getEntityWorld().isRemote) {
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		if (getCommandSenderWorld().isClientSide) {
 			for (int i = 0; i < 4; ++i) {
-				getEntityWorld().addParticle(ParticleTypes.PORTAL, getPosX(), getPosY() + rand.nextDouble() * 2.0D, getPosZ(), rand.nextGaussian(), 0.0D, rand.nextGaussian());
+				getCommandSenderWorld().addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 			}
 			return;
 		}
@@ -62,17 +62,17 @@ public class EntityMobRandomizer extends ThrowableEntity {
 			remove();
 			return;
 		}
-		Entity thrower = func_234616_v_();
+		Entity thrower = getOwner();
 		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
 		}
 
 		MobEntity ent = (MobEntity) ((EntityRayTraceResult) mop).getEntity();
-		MobEntity randomized = EntityRandomizerHelper.getRandomEntity(this.getEntityWorld(), ent);
+		MobEntity randomized = EntityRandomizerHelper.getRandomEntity(this.getCommandSenderWorld(), ent);
 		if (randomized != null && EMCHelper.consumePlayerFuel((PlayerEntity) thrower, 384) != -1) {
 			ent.remove();
-			randomized.setLocationAndAngles(ent.getPosX(), ent.getPosY(), ent.getPosZ(), ent.rotationYaw, ent.rotationPitch);
+			randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.yRot, ent.xRot);
 			ILivingEntityData data;
 			if (randomized instanceof RabbitEntity && ((RabbitEntity) randomized).getRabbitType() == 99) {
 				//If we are creating a rabbit and it is supposed to be the killer bunny, we need to pass that data
@@ -81,21 +81,21 @@ public class EntityMobRandomizer extends ThrowableEntity {
 			} else {
 				data = null;
 			}
-			randomized.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(randomized.getPosition()), SpawnReason.CONVERSION, data, null);
-			getEntityWorld().addEntity(randomized);
-			randomized.spawnExplosionParticle();
+			randomized.finalizeSpawn((ServerWorld) level, level.getCurrentDifficultyAt(randomized.blockPosition()), SpawnReason.CONVERSION, data, null);
+			getCommandSenderWorld().addFreshEntity(randomized);
+			randomized.spawnAnim();
 		}
 		remove();
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

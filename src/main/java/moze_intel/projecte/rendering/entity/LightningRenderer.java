@@ -14,7 +14,7 @@ public class LightningRenderer extends EntitySpriteRenderer<EntitySWRGProjectile
 
 	@Nonnull
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull EntitySWRGProjectile entity) {
+	public ResourceLocation getTextureLocation(@Nonnull EntitySWRGProjectile entity) {
 		return PECore.rl("textures/entity/lightning.png");
 	}
 }

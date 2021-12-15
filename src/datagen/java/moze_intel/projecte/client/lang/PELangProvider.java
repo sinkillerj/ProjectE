@@ -203,7 +203,7 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addPostfix(int index, String postfix) {
-		add(Util.makeTranslationKey("emc", PECore.rl("postfix." + index)), "%s " + postfix);
+		add(Util.makeDescriptionId("emc", PECore.rl("postfix." + index)), "%s " + postfix);
 	}
 
 	private void addEntityTypes() {

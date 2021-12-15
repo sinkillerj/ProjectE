@@ -95,9 +95,9 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
 		if (representsTag()) {
-			ITag<TYPE> tag = getTagCollection().get(getResourceLocation());
+			ITag<TYPE> tag = getTagCollection().getTag(getResourceLocation());
 			if (tag != null) {
-				tag.getAllElements().stream().map(createNew()).forEach(consumer);
+				tag.getValues().stream().map(createNew()).forEach(consumer);
 			}
 		}
 	}

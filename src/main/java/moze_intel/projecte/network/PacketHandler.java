@@ -86,24 +86,24 @@ public final class PacketHandler {
 
 	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal) {
 		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateWindowIntPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
+			sendTo(new UpdateWindowIntPKT((short) container.containerId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
 	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal) {
 		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateWindowLongPKT((short) container.windowId, (short) propId, propVal), (ServerPlayerEntity) listener);
+			sendTo(new UpdateWindowLongPKT((short) container.containerId, (short) propId, propVal), (ServerPlayerEntity) listener);
 		}
 	}
 
 	public static void sendLockSlotUpdate(IContainerListener listener, Container container, ItemInfo lockInfo) {
 		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateCondenserLockPKT((short) container.windowId, lockInfo), (ServerPlayerEntity) listener);
+			sendTo(new UpdateCondenserLockPKT((short) container.containerId, lockInfo), (ServerPlayerEntity) listener);
 		}
 	}
 
 	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayerEntity player) {
-		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getServerOwner())) {
+		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getSingleplayerName())) {
 			sendTo(msg, player);
 		}
 	}
@@ -147,7 +147,7 @@ public final class PacketHandler {
 	 */
 	public static <MSG extends IPEPacket> void sendTo(MSG msg, ServerPlayerEntity player) {
 		if (!(player instanceof FakePlayer)) {
-			HANDLER.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+			HANDLER.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 }

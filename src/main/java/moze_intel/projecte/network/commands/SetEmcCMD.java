@@ -15,7 +15,7 @@ public class SetEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("setemc")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
 						.then(Commands.argument("item", new NSSItemArgument())
 								.executes(ctx -> setEmc(ctx, NSSItemArgument.getNSS(ctx, "item"), LongArgumentType.getLong(ctx, "emc"))))
@@ -26,8 +26,8 @@ public class SetEmcCMD {
 	private static int setEmc(CommandContext<CommandSource> ctx, NSSItemResult stack, long emc) {
 		String toSet = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toSet, emc);
-		ctx.getSource().sendFeedback(PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);
-		ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
+		ctx.getSource().sendSuccess(PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);
+		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

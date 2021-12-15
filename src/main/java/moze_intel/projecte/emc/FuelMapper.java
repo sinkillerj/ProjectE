@@ -24,8 +24,8 @@ public final class FuelMapper {
 	public static void loadMap(ITagCollectionSupplier tagCollectionSupplier) {
 		FUEL_MAP.clear();
 		//Note: We need to get the tag by resource location, as named tags are not populated yet here
-		ITag<Item> collectorFuelTag = tagCollectionSupplier.getItemTags().getTagByID(FUEL_TAG);
-		collectorFuelTag.getAllElements().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
+		ITag<Item> collectorFuelTag = tagCollectionSupplier.getItems().getTagOrEmpty(FUEL_TAG);
+		collectorFuelTag.getValues().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}
 

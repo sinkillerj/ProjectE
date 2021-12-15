@@ -64,42 +64,42 @@ public class RMFurnaceContainer extends DMFurnaceContainer {
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RED_MATTER_FURNACE.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.RED_MATTER_FURNACE.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex <= 26) {
-			if (!this.mergeItemStack(stack, 27, 63, false)) {
+			if (!this.moveItemStackTo(stack, 27, 63, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
-			if (!this.mergeItemStack(stack, 0, 1, false)) {
+			if (!this.moveItemStackTo(stack, 0, 1, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (!tile.getSmeltingResult(newStack).isEmpty()) {
-			if (!this.mergeItemStack(stack, 1, 14, false)) {
+			if (!this.moveItemStackTo(stack, 1, 14, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else {
 			return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return newStack;
 	}

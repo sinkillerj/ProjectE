@@ -29,7 +29,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 
 	@Override
 	public final CompoundNBT getUpdateTag() {
-		return write(new CompoundNBT());
+		return save(new CompoundNBT());
 	}
 
 	/**
@@ -40,7 +40,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 	 * @return The amount of Emc we actually sent
 	 */
 	protected long sendToAllAcceptors(long emc) {
-		if (world == null || !canProvideEmc()) {
+		if (level == null || !canProvideEmc()) {
 			//If we cannot provide emc then just return
 			return 0;
 		}
@@ -48,10 +48,10 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 		long sentEmc = 0;
 		List<IEmcStorage> targets = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
-			BlockPos neighboringPos = pos.offset(dir);
+			BlockPos neighboringPos = worldPosition.relative(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
-			if (world.isBlockPresent(neighboringPos)) {
-				TileEntity neighboringTile = WorldHelper.getTileEntity(world, neighboringPos);
+			if (level.isLoaded(neighboringPos)) {
+				TileEntity neighboringTile = WorldHelper.getTileEntity(level, neighboringPos);
 				if (neighboringTile != null) {
 					neighboringTile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
 						if (!isRelay() || !theirEmcStorage.isRelay()) {
@@ -86,7 +86,7 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 
 		@Override
 		public void onContentsChanged(int slot) {
-			TileEmc.this.markDirty();
+			TileEmc.this.setChanged();
 		}
 	}
 }

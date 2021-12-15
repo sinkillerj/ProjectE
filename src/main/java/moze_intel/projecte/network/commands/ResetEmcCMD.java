@@ -15,7 +15,7 @@ public class ResetEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("resetemc")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("item", new NSSItemArgument())
 						.executes(ctx -> resetEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> resetEmc(ctx, RemoveEmcCMD.getHeldStack(ctx)));
@@ -24,8 +24,8 @@ public class ResetEmcCMD {
 	private static int resetEmc(CommandContext<CommandSource> ctx, NSSItemResult stack) {
 		String toReset = stack.getStringRepresentation();
 		if (CustomEMCParser.removeFromFile(toReset)) {
-			ctx.getSource().sendFeedback(PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
-			ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
+			ctx.getSource().sendSuccess(PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
+			ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		throw new CommandException(PELang.COMMAND_INVALID_ITEM.translate(toReset));

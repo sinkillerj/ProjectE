@@ -20,8 +20,8 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	@Override
-	protected void registerTags() {
-		getOrCreateBuilder(PETags.Blocks.BLACKLIST_HARVEST).add(
+	protected void addTags() {
+		tag(PETags.Blocks.BLACKLIST_HARVEST).add(
 				Blocks.GRASS_BLOCK,
 				Blocks.CRIMSON_NYLIUM,
 				Blocks.NETHERRACK,
@@ -29,21 +29,21 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				Blocks.PUMPKIN_STEM,
 				Blocks.WARPED_NYLIUM
 		);
-		getOrCreateBuilder(PETags.Blocks.BLACKLIST_TIME_WATCH);
+		tag(PETags.Blocks.BLACKLIST_TIME_WATCH);
 		//Vanilla/Forge Tags
-		getOrCreateBuilder(Tags.Blocks.CHESTS).add(
+		tag(Tags.Blocks.CHESTS).add(
 				PEBlocks.ALCHEMICAL_CHEST.getBlock()
 		);
-		getOrCreateBuilder(BlockTags.BEACON_BASE_BLOCKS).add(
+		tag(BlockTags.BEACON_BASE_BLOCKS).add(
 				PEBlocks.DARK_MATTER.getBlock(),
 				PEBlocks.RED_MATTER.getBlock()
 		);
-		getOrCreateBuilder(BlockTags.GUARDED_BY_PIGLINS).add(
+		tag(BlockTags.GUARDED_BY_PIGLINS).add(
 				PEBlocks.ALCHEMICAL_CHEST.getBlock(),
 				PEBlocks.CONDENSER.getBlock(),
 				PEBlocks.CONDENSER_MK2.getBlock()
 		);
-		getOrCreateBuilder(BlockTags.INFINIBURN_OVERWORLD).add(
+		tag(BlockTags.INFINIBURN_OVERWORLD).add(
 				PEBlocks.ALCHEMICAL_COAL.getBlock(),
 				PEBlocks.MOBIUS_FUEL.getBlock(),
 				PEBlocks.AETERNALIS_FUEL.getBlock()
@@ -53,7 +53,7 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	private void addImmuneBlocks(INamedTag<Block> tag) {
-		getOrCreateBuilder(tag).add(
+		tag(tag).add(
 				PEBlocks.DARK_MATTER.getBlock(),
 				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
 				PEBlocks.DARK_MATTER_PEDESTAL.getBlock(),

@@ -23,8 +23,8 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != null && player.openContainer instanceof CondenserContainer && player.openContainer.windowId == windowId) {
-			((CondenserContainer) player.openContainer).updateLockInfo(lockInfo);
+		if (player != null && player.containerMenu instanceof CondenserContainer && player.containerMenu.containerId == windowId) {
+			((CondenserContainer) player.containerMenu).updateLockInfo(lockInfo);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 		} else {
 			buffer.writeBoolean(true);
 			buffer.writeRegistryId(lockInfo.getItem());
-			buffer.writeCompoundTag(lockInfo.getNBT());
+			buffer.writeNbt(lockInfo.getNBT());
 		}
 	}
 
@@ -44,7 +44,7 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 		short windowId = buffer.readShort();
 		ItemInfo lockInfo = null;
 		if (buffer.readBoolean()) {
-			lockInfo = ItemInfo.fromItem(buffer.readRegistryId(), buffer.readCompoundTag());
+			lockInfo = ItemInfo.fromItem(buffer.readRegistryId(), buffer.readNbt());
 		}
 		return new UpdateCondenserLockPKT(windowId, lockInfo);
 	}

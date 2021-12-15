@@ -22,7 +22,7 @@ public class AlchBagContainer extends Container {
 	private final boolean immutable;
 
 	public static AlchBagContainer fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf) {
-		return new AlchBagContainer(windowId, playerInv, buf.readEnumValue(Hand.class), new ItemStackHandler(104), buf.readBoolean());
+		return new AlchBagContainer(windowId, playerInv, buf.readEnum(Hand.class), new ItemStackHandler(104), buf.readBoolean());
 	}
 
 	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable) {
@@ -39,52 +39,52 @@ public class AlchBagContainer extends Container {
 
 		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 152);
 
-		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
+		blocked = hand == Hand.MAIN_HAND ? (slots.size() - 1) - (8 - invPlayer.selected) : -1;
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull PlayerEntity player) {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		if (immutable) {
 			return ItemStack.EMPTY;
 		}
 
 		Slot slot = this.getSlot(slotIndex);
 
-		if (!slot.getHasStack()) {
+		if (!slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex < 104) {
-			if (!this.mergeItemStack(stack, 104, this.inventorySlots.size(), true)) {
+			if (!this.moveItemStackTo(stack, 104, this.slots.size(), true)) {
 				return ItemStack.EMPTY;
 			}
-			slot.onSlotChanged();
-		} else if (!this.mergeItemStack(stack, 0, 104, false)) {
+			slot.setChanged();
+		} else if (!this.moveItemStackTo(stack, 0, 104, false)) {
 			return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, newStack);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+	public ItemStack clicked(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
 		if (immutable || slot == blocked || clickType == ClickType.SWAP && dragType == 40 && blocked == -1) {
 			return ItemStack.EMPTY;
 		}
-		return super.slotClick(slot, dragType, clickType, player);
+		return super.clicked(slot, dragType, clickType, player);
 	}
 }

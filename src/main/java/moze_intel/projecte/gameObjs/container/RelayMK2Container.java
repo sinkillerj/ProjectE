@@ -49,35 +49,35 @@ public class RelayMK2Container extends RelayMK1Container {
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex < 14) {
-			if (!this.mergeItemStack(stack, 14, this.inventorySlots.size(), true)) {
+			if (!this.moveItemStackTo(stack, 14, this.slots.size(), true)) {
 				return ItemStack.EMPTY;
 			}
-			slot.onSlotChanged();
-		} else if (!this.mergeItemStack(stack, 0, 13, false)) {
+			slot.setChanged();
+		} else if (!this.moveItemStackTo(stack, 0, 13, false)) {
 			return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return slot.onTake(player, newStack);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.RELAY_MK2.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.RELAY_MK2.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 }

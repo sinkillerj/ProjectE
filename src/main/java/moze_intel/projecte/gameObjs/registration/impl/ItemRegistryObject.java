@@ -21,6 +21,6 @@ public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject
 
 	@Override
 	public String getTranslationKey() {
-		return get().getTranslationKey();
+		return get().getDescriptionId();
 	}
 }

@@ -28,13 +28,13 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 
 	@Nonnull
 	@Override
-	public TileEntity createNewTileEntity(@Nonnull IBlockReader world) {
+	public TileEntity newBlockEntity(@Nonnull IBlockReader world) {
 		return matterType == EnumMatterType.RED_MATTER ? new RMFurnaceTile() : new DMFurnaceTile();
 	}
 
 	@Override
-	protected void interactWith(World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
-		if (!world.isRemote) {
+	protected void openContainer(World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+		if (!world.isClientSide) {
 			DMFurnaceTile te = WorldHelper.getTileEntity(DMFurnaceTile.class, world, pos, true);
 			if (te != null) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
@@ -44,18 +44,18 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock 
 
 	@Override
 	@Deprecated
-	public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 
 	@Override
-	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		TileEntity te = WorldHelper.getTileEntity(world, pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);

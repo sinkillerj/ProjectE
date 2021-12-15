@@ -38,8 +38,8 @@ public class Relay extends BlockDirection {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
-		if (!world.isRemote) {
+	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+		if (!world.isClientSide) {
 			RelayMK1Tile te = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
 			if (te != null) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
@@ -70,13 +70,13 @@ public class Relay extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public boolean hasComparatorInputOverride(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getComparatorInputOverride(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
 		RelayMK1Tile relay = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
 		if (relay == null) {
 			return 0;
@@ -86,13 +86,13 @@ public class Relay extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity te = WorldHelper.getTileEntity(world, pos);
 			if (te != null) {
 				te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 }

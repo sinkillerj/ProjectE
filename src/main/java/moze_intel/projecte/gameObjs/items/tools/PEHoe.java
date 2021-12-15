@@ -24,7 +24,7 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	private final int numCharges;
 
 	public PEHoe(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, (int) -matterType.getAttackDamage(), matterType.getMatterTier(), props);
+		super(matterType, (int) -matterType.getAttackDamageBonus(), matterType.getMatterTier(), props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 	}
@@ -75,17 +75,17 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		if (state.getHarvestTool() == ToolType.HOE) {
 			//Patch HoeItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of a hoe
-			return getTier().getHarvestLevel() >= state.getHarvestLevel();
+			return getTier().getLevel() >= state.getHarvestLevel();
 		}
-		return super.canHarvestBlock(state);
+		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
+	public ActionResultType useOn(@Nonnull ItemUseContext context) {
 		return ToolHelper.tillHoeAOE(context, 0);
 	}
 }

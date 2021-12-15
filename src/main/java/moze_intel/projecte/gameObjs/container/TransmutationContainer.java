@@ -33,7 +33,7 @@ public class TransmutationContainer extends Container {
 	private final int blocked;
 
 	public static TransmutationContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new TransmutationContainer(windowId, invPlayer, buf.readEnumValue(Hand.class));
+		return new TransmutationContainer(windowId, invPlayer, buf.readEnum(Hand.class));
 	}
 
 	public TransmutationContainer(int windowId, PlayerInventory invPlayer, Hand hand) {
@@ -71,26 +71,26 @@ public class TransmutationContainer extends Container {
 
 		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 35, 117);
 
-		blocked = hand == Hand.MAIN_HAND ? (inventorySlots.size() - 1) - (8 - invPlayer.currentItem) : -1;
+		blocked = hand == Hand.MAIN_HAND ? (slots.size() - 1) - (8 - invPlayer.selected) : -1;
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull PlayerEntity player) {
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		if (slotIndex <= 7) {
 			//Input Slots
 			return ItemStack.EMPTY;
 		}
 		Slot slot = this.getSlot(slotIndex);
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 		if (slotIndex >= 11 && slotIndex <= 26) {
 			// Output Slots
@@ -100,7 +100,7 @@ public class TransmutationContainer extends Container {
 				//Note: We can just set the size here as newStack is a copy stack used for modifications
 				newStack.setCount(newStack.getMaxStackSize());
 				//Check how much we can fit of the stack
-				int stackSize = newStack.getCount() - ItemHelper.simulateFit(player.inventory.mainInventory, newStack);
+				int stackSize = newStack.getCount() - ItemHelper.simulateFit(player.inventory.items, newStack);
 				if (stackSize > 0) {
 					BigInteger availableEMC = transmutationInventory.getAvailableEmc();
 					BigInteger emc = BigInteger.valueOf(itemEmc);
@@ -136,25 +136,25 @@ public class TransmutationContainer extends Container {
 				transmutationInventory.handleKnowledge(newStack);
 				transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stack.getCount())));
 			}
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+	public ItemStack clicked(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
 		if (slot == blocked || clickType == ClickType.SWAP && dragType == 40 && blocked == -1) {
 			return ItemStack.EMPTY;
 		}
-		if (player.getEntityWorld().isRemote && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs) {
-			PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slot), getSlot(slot).getStack()));
+		if (player.getCommandSenderWorld().isClientSide && transmutationInventory.getHandlerForSlot(slot) == transmutationInventory.outputs) {
+			PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slot), getSlot(slot).getItem()));
 		}
-		return super.slotClick(slot, dragType, clickType, player);
+		return super.clicked(slot, dragType, clickType, player);
 	}
 
 	@Override
-	public boolean canDragIntoSlot(@Nonnull Slot slot) {
+	public boolean canDragTo(@Nonnull Slot slot) {
 		return !(slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock || slot instanceof SlotOutput);
 	}
 }

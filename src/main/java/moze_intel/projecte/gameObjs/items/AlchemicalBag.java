@@ -36,15 +36,15 @@ public class AlchemicalBag extends ItemPE {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getHeldItem(hand), hand), buf -> {
-				buf.writeEnumValue(hand);
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isClientSide) {
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getItemInHand(hand), hand), buf -> {
+				buf.writeEnum(hand);
 				buf.writeBoolean(false);
 			});
 		}
 
-		return ActionResult.resultSuccess(player.getHeldItem(hand));
+		return ActionResult.success(player.getItemInHand(hand));
 	}
 
 	public static ItemStack getFirstBagWithSuctionItem(PlayerEntity player, NonNullList<ItemStack> inventory) {
@@ -94,7 +94,7 @@ public class AlchemicalBag extends ItemPE {
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return stack.getDisplayName();
+			return stack.getHoverName();
 		}
 	}
 }

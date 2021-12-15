@@ -48,7 +48,7 @@ public class ToolTipEvent {
 		}
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
-			for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(current.getItem())) {
+			for (ResourceLocation tag : ItemTags.getAllTags().getMatchingTags(current.getItem())) {
 				event.getToolTip().add(new StringTextComponent("#" + tag));
 			}
 		}

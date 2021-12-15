@@ -53,7 +53,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		if (player.getCooldownTracker().hasCooldown(this)) {
+		if (player.getCooldowns().isOnCooldown(this)) {
 			return false;
 		}
 		BlockRayTraceResult lookingAt = PlayerHelper.getBlockLookingAt(player, 64);
@@ -61,17 +61,17 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		if (lookingAt.getType() == Type.MISS) {
 			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
 		} else {
-			c = lookingAt.getPos();
+			c = lookingAt.getBlockPos();
 		}
 		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
 		if (!MinecraftForge.EVENT_BUS.post(event)) {
 			if (player.isPassenger()) {
 				player.stopRiding();
 			}
-			player.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+			player.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
-			player.getCooldownTracker().setCooldown(this, 10);
+			player.getCooldowns().addCooldown(this, 10);
 			return true;
 		}
 		return false;

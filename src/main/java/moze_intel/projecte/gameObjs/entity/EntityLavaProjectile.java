@@ -38,36 +38,36 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (!world.isRemote) {
-			if (ticksExisted > 400 || !world.isBlockPresent(getPosition())) {
+		if (!level.isClientSide) {
+			if (tickCount > 400 || !level.isLoaded(blockPosition())) {
 				remove();
 				return;
 			}
-			Entity thrower = func_234616_v_();
+			Entity thrower = getOwner();
 			if (thrower instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
-				BlockPos.getAllInBox(getPosition().add(-3, -3, -3), getPosition().add(3, 3, 3)).forEach(pos -> {
-					if (world.isBlockPresent(pos)) {
-						BlockState state = world.getBlockState(pos);
-						if (state.getFluidState().getFluid().isIn(FluidTags.WATER)) {
-							pos = pos.toImmutable();
+				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
+					if (level.isLoaded(pos)) {
+						BlockState state = level.getBlockState(pos);
+						if (state.getFluidState().getType().is(FluidTags.WATER)) {
+							pos = pos.immutable();
 							if (PlayerHelper.hasEditPermission(player, pos)) {
-								WorldHelper.drainFluid(world, pos, state, Fluids.WATER);
-								world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
-										2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+								WorldHelper.drainFluid(level, pos, state, Fluids.WATER);
+								level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+										2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
 							}
 						}
 					}
 				});
 			}
-			if (getPosY() > 128) {
-				IWorldInfo worldInfo = world.getWorldInfo();
+			if (getY() > 128) {
+				IWorldInfo worldInfo = level.getLevelData();
 				worldInfo.setRaining(false);
 				remove();
 			}
@@ -75,16 +75,16 @@ public class EntityLavaProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (world.isRemote) {
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		if (level.isClientSide) {
 			return;
 		}
-		Entity thrower = func_234616_v_();
+		Entity thrower = getOwner();
 		if (!(thrower instanceof PlayerEntity)) {
 			remove();
 			return;
@@ -94,11 +94,11 @@ public class EntityLavaProjectile extends ThrowableEntity {
 		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 			if (mop instanceof BlockRayTraceResult) {
 				BlockRayTraceResult result = (BlockRayTraceResult) mop;
-				WorldHelper.placeFluid((ServerPlayerEntity) player, world, result.getPos(), result.getFace(), Fluids.LAVA, false);
+				WorldHelper.placeFluid((ServerPlayerEntity) player, level, result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
 			} else if (mop instanceof EntityRayTraceResult) {
 				Entity ent = ((EntityRayTraceResult) mop).getEntity();
-				ent.setFire(5);
-				ent.attackEntityFrom(DamageSource.IN_FIRE, 5);
+				ent.setSecondsOnFire(5);
+				ent.hurt(DamageSource.IN_FIRE, 5);
 			}
 		}
 		remove();
@@ -106,12 +106,12 @@ public class EntityLavaProjectile extends ThrowableEntity {
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

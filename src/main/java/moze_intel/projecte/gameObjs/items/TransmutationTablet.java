@@ -23,11 +23,11 @@ public class TransmutationTablet extends ItemPE {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		if (!world.isRemote) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeEnumValue(hand));
+	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+		if (!world.isClientSide) {
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeEnum(hand));
 		}
-		return ActionResult.resultSuccess(player.getHeldItem(hand));
+		return ActionResult.success(player.getItemInHand(hand));
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {

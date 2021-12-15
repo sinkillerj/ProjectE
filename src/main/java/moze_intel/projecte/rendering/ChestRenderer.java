@@ -34,32 +34,32 @@ public class ChestRenderer extends TileEntityRenderer<ChestTileEmc> {
 		this.base.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
 		this.lid = new ModelRenderer(64, 64, 0, 0);
 		this.lid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-		this.lid.rotationPointY = 9.0F;
-		this.lid.rotationPointZ = 1.0F;
+		this.lid.y = 9.0F;
+		this.lid.z = 1.0F;
 		this.latch = new ModelRenderer(64, 64, 0, 0);
 		this.latch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-		this.latch.rotationPointY = 8.0F;
+		this.latch.y = 8.0F;
 	}
 
 	@Override
 	public void render(@Nonnull ChestTileEmc chestTile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-		matrix.push();
-		if (chestTile.getWorld() != null && !chestTile.isRemoved()) {
-			BlockState state = chestTile.getWorld().getBlockState(chestTile.getPos());
+		matrix.pushPose();
+		if (chestTile.getLevel() != null && !chestTile.isRemoved()) {
+			BlockState state = chestTile.getLevel().getBlockState(chestTile.getBlockPos());
 			if (blockChecker.test(state.getBlock())) {
 				matrix.translate(0.5D, 0.5D, 0.5D);
-				matrix.rotate(Vector3f.YP.rotationDegrees(-state.get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle()));
+				matrix.mulPose(Vector3f.YP.rotationDegrees(-state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()));
 				matrix.translate(-0.5D, -0.5D, -0.5D);
 			}
 		}
 		float lidAngle = 1.0F - chestTile.getLidAngle(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
-		IVertexBuilder builder = renderer.getBuffer(RenderType.getEntityCutout(texture));
-		lid.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
-		latch.rotateAngleX = lid.rotateAngleX;
+		IVertexBuilder builder = renderer.getBuffer(RenderType.entityCutout(texture));
+		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
+		latch.xRot = lid.xRot;
 		lid.render(matrix, builder, light, overlayLight);
 		latch.render(matrix, builder, light, overlayLight);
 		base.render(matrix, builder, light, overlayLight);
-		matrix.pop();
+		matrix.popPose();
 	}
 }

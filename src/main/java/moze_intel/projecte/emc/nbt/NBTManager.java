@@ -26,7 +26,7 @@ public class NBTManager {
 
 	@Nonnull
 	public static ItemInfo getPersistentInfo(@Nonnull ItemInfo info) {
-		if (!info.hasNBT() || info.getItem().isIn(PETags.Items.NBT_WHITELIST) || EMCMappingHandler.hasEmcValue(info)) {
+		if (!info.hasNBT() || info.getItem().is(PETags.Items.NBT_WHITELIST) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}

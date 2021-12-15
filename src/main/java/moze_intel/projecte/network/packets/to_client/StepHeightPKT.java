@@ -16,7 +16,7 @@ public class StepHeightPKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		if (Minecraft.getInstance().player != null) {
-			Minecraft.getInstance().player.stepHeight = value;
+			Minecraft.getInstance().player.maxUpStep = value;
 		}
 	}
 

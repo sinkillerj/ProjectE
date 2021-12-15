@@ -28,40 +28,40 @@ public class GemLegs extends GemArmorBase {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_LEGS.translate());
 	}
 
 	private final Map<Integer, Long> lastJumpTracker = new HashMap<>();
 
 	private void onJump(LivingEvent.LivingJumpEvent evt) {
-		if (evt.getEntityLiving() instanceof PlayerEntity && evt.getEntityLiving().getEntityWorld().isRemote) {
-			lastJumpTracker.put(evt.getEntityLiving().getEntityId(), evt.getEntityLiving().getEntityWorld().getGameTime());
+		if (evt.getEntityLiving() instanceof PlayerEntity && evt.getEntityLiving().getCommandSenderWorld().isClientSide) {
+			lastJumpTracker.put(evt.getEntityLiving().getId(), evt.getEntityLiving().getCommandSenderWorld().getGameTime());
 		}
 	}
 
 	private boolean jumpedRecently(PlayerEntity player) {
-		return lastJumpTracker.containsKey(player.getEntityId()) && player.getEntityWorld().getGameTime() - lastJumpTracker.get(player.getEntityId()) < 5;
+		return lastJumpTracker.containsKey(player.getId()) && player.getCommandSenderWorld().getGameTime() - lastJumpTracker.get(player.getId()) < 5;
 	}
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		if (world.isRemote) {
-			if (player.isSneaking() && !player.isOnGround() && player.getMotion().getY() > -8 && !jumpedRecently(player)) {
-				player.setMotion(player.getMotion().add(0, -0.32F, 0));
+		if (world.isClientSide) {
+			if (player.isShiftKeyDown() && !player.isOnGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
+				player.setDeltaMovement(player.getDeltaMovement().add(0, -0.32F, 0));
 			}
 		}
-		if (player.isSneaking()) {
-			AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 3.5, player.getPosY() - 3.5, player.getPosZ() - 3.5,
-					player.getPosX() + 3.5, player.getPosY() + 3.5, player.getPosZ() + 3.5);
+		if (player.isShiftKeyDown()) {
+			AxisAlignedBB box = new AxisAlignedBB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
+					player.getX() + 3.5, player.getY() + 3.5, player.getZ() + 3.5);
 			WorldHelper.repelEntitiesSWRG(world, box, player);
-			if (!world.isRemote && player.getMotion().getY() < -0.08) {
-				List<Entity> entities = player.getEntityWorld().getEntitiesInAABBexcluding(player, player.getBoundingBox().offset(player.getMotion()).grow(2.0D),
+			if (!world.isClientSide && player.getDeltaMovement().y() < -0.08) {
+				List<Entity> entities = player.getCommandSenderWorld().getEntities(player, player.getBoundingBox().move(player.getDeltaMovement()).inflate(2.0D),
 						entity -> entity instanceof LivingEntity);
 				for (Entity e : entities) {
-					if (e.canBeCollidedWith()) {
-						e.attackEntityFrom(DamageSource.causePlayerDamage(player), (float) -player.getMotion().getY() * 6F);
+					if (e.isPickable()) {
+						e.hurt(DamageSource.playerAttack(player), (float) -player.getDeltaMovement().y() * 6F);
 					}
 				}
 			}

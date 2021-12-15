@@ -18,15 +18,15 @@ public abstract class EntitySpriteRenderer<T extends Entity> extends EntityRende
 
 	@Override
 	public void render(@Nonnull T entity, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
-		matrix.push();
-		matrix.rotate(renderManager.getCameraOrientation());
+		matrix.pushPose();
+		matrix.mulPose(entityRenderDispatcher.cameraOrientation());
 		matrix.scale(0.5F, 0.5F, 0.5F);
-		IVertexBuilder builder = renderer.getBuffer(PERenderType.spriteRenderer(getEntityTexture(entity)));
-		Matrix4f matrix4f = matrix.getLast().getMatrix();
-		builder.pos(matrix4f, -1, -1, 0).tex(1, 1).endVertex();
-		builder.pos(matrix4f, -1, 1, 0).tex(1, 0).endVertex();
-		builder.pos(matrix4f, 1, 1, 0).tex(0, 0).endVertex();
-		builder.pos(matrix4f, 1, -1, 0).tex(0, 1).endVertex();
-		matrix.pop();
+		IVertexBuilder builder = renderer.getBuffer(PERenderType.spriteRenderer(getTextureLocation(entity)));
+		Matrix4f matrix4f = matrix.last().pose();
+		builder.vertex(matrix4f, -1, -1, 0).uv(1, 1).endVertex();
+		builder.vertex(matrix4f, -1, 1, 0).uv(1, 0).endVertex();
+		builder.vertex(matrix4f, 1, 1, 0).uv(0, 0).endVertex();
+		builder.vertex(matrix4f, 1, -1, 0).uv(0, 1).endVertex();
+		matrix.popPose();
 	}
 }

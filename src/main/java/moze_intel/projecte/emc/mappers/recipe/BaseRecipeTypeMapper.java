@@ -34,7 +34,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
 	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
-		ItemStack recipeOutput = recipe.getRecipeOutput();
+		ItemStack recipeOutput = recipe.getResultItem();
 		if (recipeOutput.isEmpty()) {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
 			return false;
@@ -130,7 +130,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	@Nullable
 	private ItemStack[] getMatchingStacks(Ingredient ingredient, ResourceLocation recipeID) {
 		try {
-			return ingredient.getMatchingStacks();
+			return ingredient.getItems();
 		} catch (Exception e) {
 			if (isTagException(e)) {
 				PECore.LOGGER.fatal("Error mapping recipe {}. Ingredient of type: {} crashed when getting the matching stacks "

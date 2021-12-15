@@ -51,9 +51,9 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
-		if (!world.isRemote && entity instanceof PlayerEntity && slot < PlayerInventory.getHotbarSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			AxisAlignedBB box = new AxisAlignedBB(entity.getPosX() - 3, entity.getPosY() - 3, entity.getPosZ() - 3,
-					entity.getPosX() + 3, entity.getPosY() + 3, entity.getPosZ() + 3);
+		if (!world.isClientSide && entity instanceof PlayerEntity && slot < PlayerInventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			AxisAlignedBB box = new AxisAlignedBB(entity.getX() - 3, entity.getY() - 3, entity.getZ() - 3,
+					entity.getX() + 3, entity.getY() + 3, entity.getZ() + 3);
 			WorldHelper.freezeInBoundingBox(world, box, (PlayerEntity) entity, true);
 		}
 	}
@@ -61,29 +61,29 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide) {
 			int offset = 3 + this.getCharge(stack);
-			AxisAlignedBB box = player.getBoundingBox().grow(offset);
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+			AxisAlignedBB box = player.getBoundingBox().inflate(offset);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 			WorldHelper.freezeInBoundingBox(world, box, player, false);
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
 					AxisAlignedBB aabb = tile.getEffectBounds();
 					WorldHelper.freezeInBoundingBox(world, aabb, null, false);
-					List<Entity> list = world.getEntitiesWithinAABB(Entity.class, aabb);
+					List<Entity> list = world.getEntitiesOfClass(Entity.class, aabb);
 					for (Entity ent : list) {
-						if (ent.isBurning()) {
-							ent.extinguish();
+						if (ent.isOnFire()) {
+							ent.clearFire();
 						}
 					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());

@@ -78,7 +78,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 
 	@Override
 	public void tick() {
-		if (world == null || world.isRemote) {
+		if (level == null || level.isClientSide) {
 			return;
 		}
 		sendEmc();
@@ -146,8 +146,8 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		output.deserializeNBT(nbt.getCompound("Output"));
 		bonusEMC = nbt.getDouble("BonusEMC");
@@ -155,8 +155,8 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("Output", output.serializeNBT());
 		nbt.putDouble("BonusEMC", bonusEMC);

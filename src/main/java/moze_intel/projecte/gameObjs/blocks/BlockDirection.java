@@ -20,14 +20,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class BlockDirection extends Block {
 
-	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = HorizontalBlock.FACING;
 
 	public BlockDirection(Properties props) {
 		super(props);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
 		props.add(FACING);
 	}
 
@@ -35,30 +35,30 @@ public abstract class BlockDirection extends Block {
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext ctx) {
 		if (ctx.getPlayer() != null) {
-			return getDefaultState().with(FACING, ctx.getPlayer().getHorizontalFacing().getOpposite());
+			return defaultBlockState().setValue(FACING, ctx.getPlayer().getDirection().getOpposite());
 		}
-		return getDefaultState();
+		return defaultBlockState();
 	}
 
 	@Override
 	@Deprecated
-	public void onReplaced(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity tile = WorldHelper.getTileEntity(world, pos);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 
 	@Override
 	@Deprecated
-	public void onBlockClicked(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
-		if (!world.isRemote) {
-			ItemStack stack = player.getHeldItemMainhand();
+	public void attack(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+		if (!world.isClientSide) {
+			ItemStack stack = player.getMainHandItem();
 			if (!stack.isEmpty() && stack.getItem() instanceof PhilosophersStone) {
-				world.setBlockState(pos, world.getBlockState(pos).with(FACING, player.getHorizontalFacing().getOpposite()));
+				world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(FACING, player.getDirection().getOpposite()));
 			}
 		}
 	}
@@ -67,13 +67,13 @@ public abstract class BlockDirection extends Block {
 	@Override
 	@Deprecated
 	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 }

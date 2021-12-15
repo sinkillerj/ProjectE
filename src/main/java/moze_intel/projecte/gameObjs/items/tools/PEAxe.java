@@ -78,17 +78,17 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean canHarvestBlock(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		if (state.getHarvestTool() == ToolType.AXE) {
 			//Patch AxeItem to return true for canHarvestBlock when the block's harvest tool is an axe
-			return getTier().getHarvestLevel() >= state.getHarvestLevel();
+			return getTier().getLevel() >= state.getHarvestLevel();
 		}
-		return super.canHarvestBlock(state);
+		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null) {
 			return ActionResultType.PASS;
@@ -97,11 +97,11 @@ public class PEAxe extends AxeItem implements IItemCharge {
 		// Strip logs, AOE remove logs
 		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
 				() -> {
-					World world = context.getWorld();
-					if (world.getBlockState(context.getPos()).isIn(BlockTags.LOGS)) {
+					World world = context.getLevel();
+					if (world.getBlockState(context.getClickedPos()).is(BlockTags.LOGS)) {
 						//Mass clear
 						//Note: We already tried to strip the log in an earlier action
-						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItem(), 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
 					}
 					return ActionResultType.PASS;
 				});

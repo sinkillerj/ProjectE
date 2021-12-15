@@ -38,13 +38,13 @@ public class KeyPressPKT implements IPEPacket {
 			return;
 		}
 		if (key == PEKeybind.HELMET_TOGGLE) {
-			ItemStack helm = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+			ItemStack helm = player.getItemBySlot(EquipmentSlotType.HEAD);
 			if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
 				GemHelmet.toggleNightVision(helm, player);
 			}
 			return;
 		} else if (key == PEKeybind.BOOTS_TOGGLE) {
-			ItemStack boots = player.getItemStackFromSlot(EquipmentSlotType.FEET);
+			ItemStack boots = player.getItemBySlot(EquipmentSlotType.FEET);
 			if (!boots.isEmpty() && boots.getItem() instanceof GemFeet) {
 				((GemFeet) boots.getItem()).toggleStepAssist(boots, player);
 			}
@@ -56,7 +56,7 @@ public class KeyPressPKT implements IPEPacket {
 		}
 		InternalAbilities internalAbilities = cap.get();
 		for (Hand hand : Hand.values()) {
-			ItemStack stack = player.getHeldItem(hand);
+			ItemStack stack = player.getItemInHand(hand);
 			switch (key) {
 				case CHARGE:
 					if (tryPerformCapability(stack, ProjectEAPI.CHARGE_ITEM_CAPABILITY, capability -> capability.changeCharge(player, stack, hand))) {
@@ -64,7 +64,7 @@ public class KeyPressPKT implements IPEPacket {
 					} else if (hand == Hand.MAIN_HAND && isSafe(stack) && GemArmorBase.hasAnyPiece(player)) {
 						internalAbilities.setGemState(!internalAbilities.getGemState());
 						ILangEntry langEntry = internalAbilities.getGemState() ? PELang.GEM_ACTIVATE : PELang.GEM_DEACTIVATE;
-						player.sendMessage(langEntry.translate(), Util.DUMMY_UUID);
+						player.sendMessage(langEntry.translate(), Util.NIL_UUID);
 						return;
 					}
 					break;
@@ -72,7 +72,7 @@ public class KeyPressPKT implements IPEPacket {
 					if (tryPerformCapability(stack, ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY, capability -> capability.doExtraFunction(stack, player, hand))) {
 						return;
 					} else if (hand == Hand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
-						ItemStack chestplate = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+						ItemStack chestplate = player.getItemBySlot(EquipmentSlotType.CHEST);
 						if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest && internalAbilities.getGemCooldown() == 0) {
 							((GemChest) chestplate.getItem()).doExplode(player);
 							internalAbilities.resetGemCooldown();
@@ -87,7 +87,7 @@ public class KeyPressPKT implements IPEPacket {
 						internalAbilities.resetProjectileCooldown();
 					}
 					if (hand == Hand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
-						ItemStack helmet = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+						ItemStack helmet = player.getItemBySlot(EquipmentSlotType.HEAD);
 						if (!helmet.isEmpty() && helmet.getItem() instanceof GemHelmet) {
 							((GemHelmet) helmet.getItem()).doZap(player);
 							return;
@@ -113,10 +113,10 @@ public class KeyPressPKT implements IPEPacket {
 
 	@Override
 	public void encode(PacketBuffer buffer) {
-		buffer.writeEnumValue(key);
+		buffer.writeEnum(key);
 	}
 
 	public static KeyPressPKT decode(PacketBuffer buf) {
-		return new KeyPressPKT(buf.readEnumValue(PEKeybind.class));
+		return new KeyPressPKT(buf.readEnum(PEKeybind.class));
 	}
 }

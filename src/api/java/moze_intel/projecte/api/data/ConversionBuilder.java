@@ -31,6 +31,7 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 		return output + " " + outputAmount;
 	}
 
+	@SuppressWarnings("unchecked")
 	private BUILDER getThis() {
 		return (BUILDER) this;
 	}

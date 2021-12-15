@@ -30,59 +30,59 @@ public class EntityLensProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (getEntityWorld().isRemote) {
+		if (getCommandSenderWorld().isClientSide) {
 			return;
 		}
-		if (ticksExisted > 400 || !getEntityWorld().isBlockPresent(getPosition())) {
+		if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
 			remove();
 			return;
 		}
 		if (isInWater()) {
-			playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.7F, 1.6F + (rand.nextFloat() - rand.nextFloat()) * 0.4F);
-			((ServerWorld) world).spawnParticle(ParticleTypes.LARGE_SMOKE, getPosX(), getPosY(), getPosZ(), 2, 0, 0, 0, 0);
+			playSound(SoundEvents.GENERIC_BURN, 0.7F, 1.6F + (random.nextFloat() - random.nextFloat()) * 0.4F);
+			((ServerWorld) level).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
 			remove();
 		}
 	}
 
 	@Override
-	protected void onImpact(@Nonnull RayTraceResult mop) {
-		if (!this.getEntityWorld().isRemote) {
-			WorldHelper.createNovaExplosion(world, func_234616_v_(), getPosX(), getPosY(), getPosZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+	protected void onHit(@Nonnull RayTraceResult mop) {
+		if (!this.getCommandSenderWorld().isClientSide) {
+			WorldHelper.createNovaExplosion(level, getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 			remove();
 		}
 	}
 
 	@Override
-	public float getGravityVelocity() {
+	public float getGravity() {
 		return 0;
 	}
 
 	@Override
-	public void writeAdditional(@Nonnull CompoundNBT nbt) {
-		super.writeAdditional(nbt);
+	public void addAdditionalSaveData(@Nonnull CompoundNBT nbt) {
+		super.addAdditionalSaveData(nbt);
 		nbt.putInt("Charge", charge);
 	}
 
 	@Override
-	public void readAdditional(@Nonnull CompoundNBT nbt) {
-		super.readAdditional(nbt);
+	public void readAdditionalSaveData(@Nonnull CompoundNBT nbt) {
+		super.readAdditionalSaveData(nbt);
 		charge = nbt.getInt("Charge");
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

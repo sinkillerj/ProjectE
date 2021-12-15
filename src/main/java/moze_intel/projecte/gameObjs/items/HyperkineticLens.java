@@ -25,25 +25,25 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide) {
 			shootProjectile(player, stack, hand);
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		World world = player.getEntityWorld();
+		World world = player.getCommandSenderWorld();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;
 		}
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), world);
-		ent.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		world.addEntity(ent);
+		ent.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		world.addFreshEntity(ent);
 		return true;
 	}
 

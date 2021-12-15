@@ -14,7 +14,7 @@ public class RandomizerRenderer extends EntitySpriteRenderer<EntityMobRandomizer
 
 	@Nonnull
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull EntityMobRandomizer entity) {
+	public ResourceLocation getTextureLocation(@Nonnull EntityMobRandomizer entity) {
 		return PECore.rl("textures/entity/randomizer.png");
 	}
 }

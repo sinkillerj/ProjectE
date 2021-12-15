@@ -28,23 +28,23 @@ public abstract class PEContainer extends Container {
 	}
 
 	@Override
-	public void detectAndSendChanges() {
+	public void broadcastChanges() {
 		for (int i = 0; i < longFields.size(); i++) {
 			if (longFields.get(i).isDirty()) {
-				for (IContainerListener listener : listeners) {
+				for (IContainerListener listener : containerListeners) {
 					PacketHandler.sendProgressBarUpdateLong(listener, this, i, longFields.get(i).get());
 				}
 			}
 		}
 
 		for (int i = 0; i < intFields.size(); i++) {
-			if (intFields.get(i).isDirty()) {
-				for (IContainerListener listener : listeners) {
+			if (intFields.get(i).checkAndClearUpdateFlag()) {
+				for (IContainerListener listener : containerListeners) {
 					PacketHandler.sendProgressBarUpdateInt(listener, this, i, intFields.get(i).get());
 				}
 			}
 		}
-		super.detectAndSendChanges();
+		super.broadcastChanges();
 	}
 
 	public static class BoxedLong {

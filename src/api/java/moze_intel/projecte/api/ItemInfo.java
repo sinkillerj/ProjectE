@@ -84,7 +84,7 @@ public final class ItemInfo {
 	@Nullable
 	public static ItemInfo read(@Nonnull CompoundNBT nbt) {
 		if (nbt.contains("item", NBT.TAG_STRING)) {
-			ResourceLocation registryName = ResourceLocation.tryCreate(nbt.getString("item"));
+			ResourceLocation registryName = ResourceLocation.tryParse(nbt.getString("item"));
 			if (registryName == null) {
 				return null;
 			}

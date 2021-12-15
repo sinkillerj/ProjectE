@@ -28,7 +28,7 @@ public class SyncEmcPKT implements IPEPacket {
 		buffer.writeVarInt(data.length);
 		for (EmcPKTInfo info : data) {
 			buffer.writeRegistryId(info.getItem());
-			buffer.writeCompoundTag(info.getNbt());
+			buffer.writeNbt(info.getNbt());
 			buffer.writeVarLong(info.getEmc());
 		}
 	}
@@ -37,7 +37,7 @@ public class SyncEmcPKT implements IPEPacket {
 		int size = buffer.readVarInt();
 		EmcPKTInfo[] data = new EmcPKTInfo[size];
 		for (int i = 0; i < size; i++) {
-			data[i] = new EmcPKTInfo(buffer.readRegistryId(), buffer.readCompoundTag(), buffer.readVarLong());
+			data[i] = new EmcPKTInfo(buffer.readRegistryId(), buffer.readNbt(), buffer.readVarLong());
 		}
 		return new SyncEmcPKT(data);
 	}

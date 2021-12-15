@@ -100,7 +100,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	@Override
 	public void tick() {
 		updateChest();
-		if (world != null && !world.isRemote) {
+		if (level != null && !level.isClientSide) {
 			checkLockAndUpdate();
 			displayEmc = this.getStoredEmc();
 			if (lockInfo != null && requiredEmc != 0) {
@@ -170,38 +170,38 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 	}
 
 	public boolean attemptCondenserSet(PlayerEntity player) {
-		if (world == null || world.isRemote) {
+		if (level == null || level.isClientSide) {
 			return false;
 		}
 		if (lockInfo == null) {
-			ItemStack stack = player.inventory.getItemStack();
+			ItemStack stack = player.inventory.getCarried();
 			if (!stack.isEmpty()) {
 				ItemInfo sourceInfo = ItemInfo.fromStack(stack);
 				ItemInfo reducedInfo = NBTManager.getPersistentInfo(sourceInfo);
 				if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo))) {
 					lockInfo = reducedInfo;
-					markDirty();
+					setChanged();
 					return true;
 				}
 			}
 			return false;
 		}
 		lockInfo = null;
-		markDirty();
+		setChanged();
 		return true;
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lockInfo = ItemInfo.read(nbt.getCompound("LockInfo"));
 	}
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.put("Input", inputInventory.serializeNBT());
 		if (lockInfo != null) {
 			nbt.put("LockInfo", lockInfo.write(new CompoundNBT()));

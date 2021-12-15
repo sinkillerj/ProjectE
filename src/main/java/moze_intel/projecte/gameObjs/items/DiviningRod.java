@@ -42,27 +42,27 @@ public class DiviningRod extends ItemPE implements IItemMode {
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
+	public ActionResultType useOn(ItemUseContext ctx) {
 		PlayerEntity player = ctx.getPlayer();
 		if (player == null) {
 			return ActionResultType.FAIL;
 		}
-		World world = ctx.getWorld();
-		if (world.isRemote) {
+		World world = ctx.getLevel();
+		if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		}
 		LongList emcValues = new LongArrayList();
 		long totalEmc = 0;
 		int numBlocks = 0;
-		int depth = getDepthFromMode(ctx.getItem());
+		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getRecipesForType(IRecipeType.SMELTING));
-		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getPos(), ctx.getFace(), depth))) {
-			if (world.isAirBlock(digPos)) {
+		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getAllRecipesFor(IRecipeType.SMELTING));
+		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
+			if (world.isEmptyBlock(digPos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(digPos);
-			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItem());
+			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItemInHand());
 			if (drops.isEmpty()) {
 				continue;
 			}
@@ -71,7 +71,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			if (blockEmc == 0) {
 				for (FurnaceRecipe furnaceRecipe : furnaceRecipes.get()) {
 					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
-						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getRecipeOutput());
+						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getResultItem());
 						if (currentValue != 0) {
 							if (!emcValues.contains(currentValue)) {
 								emcValues.add(currentValue);
@@ -93,7 +93,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		if (numBlocks == 0) {
 			return ActionResultType.FAIL;
 		}
-		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.DUMMY_UUID);
+		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.NIL_UUID);
 		if (this == PEItems.MEDIUM_DIVINING_ROD.get() || this == PEItems.HIGH_DIVINING_ROD.get()) {
 			long[] maxValues = new long[3];
 			for (int i = 0; i < 3; i++) {
@@ -104,10 +104,10 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			for (int i = 0; i < num; i++) {
 				maxValues[i] = emcValues.getLong(i);
 			}
-			player.sendMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]), Util.DUMMY_UUID);
+			player.sendMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]), Util.NIL_UUID);
 			if (this == PEItems.HIGH_DIVINING_ROD.get()) {
-				player.sendMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]), Util.DUMMY_UUID);
-				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.DUMMY_UUID);
+				player.sendMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]), Util.NIL_UUID);
+				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.NIL_UUID);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -132,8 +132,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 }

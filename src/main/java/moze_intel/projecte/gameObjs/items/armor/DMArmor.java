@@ -30,7 +30,7 @@ public class DMArmor extends PEArmor {
 		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
 			return 5 / getPieceEffectiveness(slot);
 		}
-		if (source.isUnblockable()) {
+		if (source.isBypassArmor()) {
 			return 0;
 		}
 		//If the source is not unblockable, allow our piece to block a certain amount of damage
@@ -45,12 +45,12 @@ public class DMArmor extends PEArmor {
 		private static final DMArmorMaterial INSTANCE = new DMArmorMaterial();
 
 		@Override
-		public int getDurability(@Nonnull EquipmentSlotType slot) {
+		public int getDurabilityForSlot(@Nonnull EquipmentSlotType slot) {
 			return 0;
 		}
 
 		@Override
-		public int getDamageReductionAmount(@Nonnull EquipmentSlotType slot) {
+		public int getDefenseForSlot(@Nonnull EquipmentSlotType slot) {
 			if (slot == EquipmentSlotType.FEET) {
 				return 3;
 			} else if (slot == EquipmentSlotType.LEGS) {
@@ -64,19 +64,19 @@ public class DMArmor extends PEArmor {
 		}
 
 		@Override
-		public int getEnchantability() {
+		public int getEnchantmentValue() {
 			return 0;
 		}
 
 		@Nonnull
 		@Override
-		public SoundEvent getSoundEvent() {
-			return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+		public SoundEvent getEquipSound() {
+			return SoundEvents.ARMOR_EQUIP_DIAMOND;
 		}
 
 		@Nonnull
 		@Override
-		public Ingredient getRepairMaterial() {
+		public Ingredient getRepairIngredient() {
 			return Ingredient.EMPTY;
 		}
 

@@ -20,7 +20,7 @@ public class RemoveEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSource> register() {
 		return Commands.literal("removeemc")
-				.requires(cs -> cs.hasPermissionLevel(2))
+				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("item", new NSSItemArgument())
 						.executes(ctx -> removeEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> removeEmc(ctx, getHeldStack(ctx)));
@@ -29,16 +29,16 @@ public class RemoveEmcCMD {
 	private static int removeEmc(CommandContext<CommandSource> ctx, NSSItemResult stack) {
 		String toRemove = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toRemove, 0);
-		ctx.getSource().sendFeedback(PELang.COMMAND_REMOVE_SUCCESS.translate(toRemove), true);
-		ctx.getSource().sendFeedback(PELang.RELOAD_NOTICE.translate(), true);
+		ctx.getSource().sendSuccess(PELang.COMMAND_REMOVE_SUCCESS.translate(toRemove), true);
+		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static NSSItemResult getHeldStack(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-		ServerPlayerEntity player = ctx.getSource().asPlayer();
-		ItemStack stack = player.getHeldItemMainhand();
+		ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
+		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
-			stack = player.getHeldItemOffhand();
+			stack = player.getOffhandItem();
 		}
 		if (stack.isEmpty()) {
 			throw EMPTY_STACK.create();

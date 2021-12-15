@@ -34,25 +34,25 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 		if (player.isInvisible()) {
 			return;
 		}
-		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUniqueID()) || CLAR_UUID.equals(player.getUniqueID())) {
-			matrix.push();
-			render.getEntityModel().bipedBodyWear.translateRotate(matrix);
+		if (PECore.DEV_ENVIRONMENT || SIN_UUID.equals(player.getUUID()) || CLAR_UUID.equals(player.getUUID())) {
+			matrix.pushPose();
+			render.getModel().jacket.translateAndRotate(matrix);
 			double yShift = -0.498;
 			if (player.isCrouching()) {
 				//Only modify where it renders if the player's pose is crouching
-				matrix.rotate(Vector3f.XP.rotationDegrees(-28.64789F));
+				matrix.mulPose(Vector3f.XP.rotationDegrees(-28.64789F));
 				yShift = -0.44;
 			}
-			matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+			matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
 			matrix.scale(3, 3, 3);
 			matrix.translate(-0.5, yShift, -0.5);
-			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUniqueID()) ? HEART_LOC : YUE_LOC));
-			Matrix4f matrix4f = matrix.getLast().getMatrix();
-			builder.pos(matrix4f, 0, 0, 0).color(0, 255, 0, 255).tex(0, 0).endVertex();
-			builder.pos(matrix4f, 0, 0, 1).color(0, 255, 0, 255).tex(0, 1).endVertex();
-			builder.pos(matrix4f, 1, 0, 1).color(0, 255, 0, 255).tex(1, 1).endVertex();
-			builder.pos(matrix4f, 1, 0, 0).color(0, 255, 0, 255).tex(1, 0).endVertex();
-			matrix.pop();
+			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUUID()) ? HEART_LOC : YUE_LOC));
+			Matrix4f matrix4f = matrix.last().pose();
+			builder.vertex(matrix4f, 0, 0, 0).color(0, 255, 0, 255).uv(0, 0).endVertex();
+			builder.vertex(matrix4f, 0, 0, 1).color(0, 255, 0, 255).uv(0, 1).endVertex();
+			builder.vertex(matrix4f, 1, 0, 1).color(0, 255, 0, 255).uv(1, 1).endVertex();
+			builder.vertex(matrix4f, 1, 0, 0).color(0, 255, 0, 255).uv(1, 0).endVertex();
+			matrix.popPose();
 		}
 	}
 }

@@ -22,7 +22,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityHomingArrow extends ArrowEntity {
 
-	private static final DataParameter<Integer> DW_TARGET_ID = EntityDataManager.createKey(EntityHomingArrow.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> DW_TARGET_ID = EntityDataManager.defineId(EntityHomingArrow.class, DataSerializers.INT);
 	private static final int NO_TARGET = -1;
 
 	private int newTargetCooldown = 0;
@@ -33,8 +33,8 @@ public class EntityHomingArrow extends ArrowEntity {
 
 	public EntityHomingArrow(World world, LivingEntity shooter, float damage) {
 		super(world, shooter);
-		this.setDamage(damage);
-		this.pickupStatus = PickupStatus.CREATIVE_ONLY;
+		this.setBaseDamage(damage);
+		this.pickup = PickupStatus.CREATIVE_ONLY;
 	}
 
 	@Nonnull
@@ -44,23 +44,23 @@ public class EntityHomingArrow extends ArrowEntity {
 	}
 
 	@Override
-	public void registerData() {
-		super.registerData();
-		dataManager.register(DW_TARGET_ID, NO_TARGET); // Target entity id
+	public void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(DW_TARGET_ID, NO_TARGET); // Target entity id
 	}
 
 	@Override
-	protected void arrowHit(@Nonnull LivingEntity living) {
-		super.arrowHit(living);
+	protected void doPostHurtEffects(@Nonnull LivingEntity living) {
+		super.doPostHurtEffects(living);
 		// Strip damage vulnerability
-		living.hurtResistantTime = 0;
+		living.invulnerableTime = 0;
 	}
 
 	@Override
 	public void tick() {
-		if (!world.isRemote && this.ticksExisted > 3) {
+		if (!level.isClientSide && this.tickCount > 3) {
 			if (hasTarget() && (!getTarget().isAlive() || this.inGround)) {
-				dataManager.set(DW_TARGET_ID, NO_TARGET);
+				entityData.set(DW_TARGET_ID, NO_TARGET);
 			}
 
 			if (!hasTarget() && !this.inGround && newTargetCooldown <= 0) {
@@ -70,16 +70,16 @@ public class EntityHomingArrow extends ArrowEntity {
 			}
 		}
 
-		if (ticksExisted > 3 && hasTarget() && !this.inGround) {
-			double mX = getMotion().getX();
-			double mY = getMotion().getY();
-			double mZ = getMotion().getZ();
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, getPosX() + mX / 4.0D, getPosY() + mY / 4.0D, getPosZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
-			this.getEntityWorld().addParticle(ParticleTypes.FLAME, getPosX() + mX / 4.0D, getPosY() + mY / 4.0D, getPosZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+		if (tickCount > 3 && hasTarget() && !this.inGround) {
+			double mX = getDeltaMovement().x();
+			double mY = getDeltaMovement().y();
+			double mZ = getDeltaMovement().z();
+			this.getCommandSenderWorld().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.getCommandSenderWorld().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vector3d arrowLoc = new Vector3d(getPosX(), getPosY(), getPosZ());
-			Vector3d targetLoc = new Vector3d(target.getPosX(), target.getPosY() + target.getHeight() / 2, target.getPosZ());
+			Vector3d arrowLoc = new Vector3d(getX(), getY(), getZ());
+			Vector3d targetLoc = new Vector3d(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
 
 			// Get the vector that points straight from the arrow to the target
 			Vector3d lookVec = targetLoc.subtract(arrowLoc);
@@ -91,7 +91,7 @@ public class EntityHomingArrow extends ArrowEntity {
 			theta = clampAbs(theta, Math.PI / 2); // Dividing by higher numbers kills accuracy
 
 			// Find the cross product to determine the axis of rotation
-			Vector3d crossProduct = arrowMotion.crossProduct(lookVec).normalize();
+			Vector3d crossProduct = arrowMotion.cross(lookVec).normalize();
 
 			// Create the rotation using the axis and our angle and adjust the vector to it
 			Vector3d adjustedLookVec = transform(crossProduct, theta, arrowMotion);
@@ -150,23 +150,23 @@ public class EntityHomingArrow extends ArrowEntity {
 
 	@Nonnull
 	@Override
-	protected ItemStack getArrowStack() {
+	protected ItemStack getPickupItem() {
 		return new ItemStack(Items.ARROW);
 	}
 
 	private void findNewTarget() {
-		List<MobEntity> candidates = world.getEntitiesWithinAABB(MobEntity.class, this.getBoundingBox().grow(8, 8, 8));
+		List<MobEntity> candidates = level.getEntitiesOfClass(MobEntity.class, this.getBoundingBox().inflate(8, 8, 8));
 
 		if (!candidates.isEmpty()) {
-			candidates.sort(Comparator.comparing(EntityHomingArrow.this::getDistanceSq, Double::compare));
-			dataManager.set(DW_TARGET_ID, candidates.get(0).getEntityId());
+			candidates.sort(Comparator.comparing(EntityHomingArrow.this::distanceToSqr, Double::compare));
+			entityData.set(DW_TARGET_ID, candidates.get(0).getId());
 		}
 
 		newTargetCooldown = 5;
 	}
 
 	private MobEntity getTarget() {
-		return (MobEntity) world.getEntityByID(dataManager.get(DW_TARGET_ID));
+		return (MobEntity) level.getEntity(entityData.get(DW_TARGET_ID));
 	}
 
 	private boolean hasTarget() {
@@ -174,7 +174,7 @@ public class EntityHomingArrow extends ArrowEntity {
 	}
 
 	private double angleBetween(Vector3d v1, Vector3d v2) {
-		double vDot = v1.dotProduct(v2) / (v1.length() * v2.length());
+		double vDot = v1.dot(v2) / (v1.length() * v2.length());
 		if (vDot < -1.0) {
 			vDot = -1.0;
 		}
@@ -209,12 +209,12 @@ public class EntityHomingArrow extends ArrowEntity {
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 }

@@ -22,7 +22,7 @@ public class ContainerHelper {
 		}
 		yStart = yStart + slotSize * rows + 4;
 		//Hot Bar
-		for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
+		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
 			addSlot.accept(slotCreator.create(invPlayer, i, xStart + i * slotSize, yStart));
 		}
 	}

@@ -160,7 +160,7 @@ public class PEItems {
 	public static final ItemRegistryObject<TransmutationTablet> TRANSMUTATION_TABLET = ITEMS.registerNoStackFireImmune("transmutation_tablet", TransmutationTablet::new);
 
 	private static ItemRegistryObject<AlchemicalBag> registerBag(DyeColor color) {
-		return ITEMS.registerNoStack(color.getTranslationKey() + "_alchemical_bag", properties -> new AlchemicalBag(properties, color));
+		return ITEMS.registerNoStack(color.getName() + "_alchemical_bag", properties -> new AlchemicalBag(properties, color));
 	}
 
 	private static ItemRegistryObject<KleinStar> registerKleinStar(EnumKleinTier tier) {
@@ -173,7 +173,7 @@ public class PEItems {
 	}
 
 	private static ItemRegistryObject<AlchemicalFuel> registerAlchemicalFuel(EnumFuelType fuelType) {
-		return ITEMS.register(fuelType.getString(), properties -> {
+		return ITEMS.register(fuelType.getSerializedName(), properties -> {
 			if (fuelType == EnumFuelType.AETERNALIS_FUEL) {
 				properties = properties.rarity(Rarity.RARE);
 			}

@@ -78,26 +78,26 @@ public class DMFurnaceContainer extends Container {
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
 		Slot slot = this.getSlot(slotIndex);
 
-		if (slot == null || !slot.getHasStack()) {
+		if (slot == null || !slot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack newStack = stack.copy();
 
 		if (slotIndex <= 18) {
-			if (!this.mergeItemStack(stack, 19, 55, false)) {
+			if (!this.moveItemStackTo(stack, 19, 55, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (AbstractFurnaceTileEntity.isFuel(newStack) || newStack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
-			if (!this.mergeItemStack(stack, 0, 1, false)) {
+			if (!this.moveItemStackTo(stack, 0, 1, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (!tile.getSmeltingResult(newStack).isEmpty()) {
-			if (!this.mergeItemStack(stack, 1, 10, false)) {
+			if (!this.moveItemStackTo(stack, 1, 10, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else {
@@ -105,42 +105,42 @@ public class DMFurnaceContainer extends Container {
 		}
 
 		if (stack.isEmpty()) {
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		} else {
-			slot.onSlotChanged();
+			slot.setChanged();
 		}
 		return newStack;
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player) {
-		return player.world.getBlockState(tile.getPos()).getBlock() == PEBlocks.DARK_MATTER_FURNACE.getBlock()
-			   && player.getDistanceSq(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5) <= 64.0;
+	public boolean stillValid(@Nonnull PlayerEntity player) {
+		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.DARK_MATTER_FURNACE.getBlock()
+			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
 	}
 
 	@Override
-	public void addListener(@Nonnull IContainerListener par1IContainerListener) {
-		super.addListener(par1IContainerListener);
-		par1IContainerListener.sendWindowProperty(this, 0, tile.furnaceCookTime);
-		par1IContainerListener.sendWindowProperty(this, 1, tile.furnaceBurnTime);
-		par1IContainerListener.sendWindowProperty(this, 2, tile.currentItemBurnTime);
+	public void addSlotListener(@Nonnull IContainerListener par1IContainerListener) {
+		super.addSlotListener(par1IContainerListener);
+		par1IContainerListener.setContainerData(this, 0, tile.furnaceCookTime);
+		par1IContainerListener.setContainerData(this, 1, tile.furnaceBurnTime);
+		par1IContainerListener.setContainerData(this, 2, tile.currentItemBurnTime);
 	}
 
 	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
+	public void broadcastChanges() {
+		super.broadcastChanges();
 
-		for (IContainerListener crafter : this.listeners) {
+		for (IContainerListener crafter : this.containerListeners) {
 			if (lastCookTime != tile.furnaceCookTime) {
-				crafter.sendWindowProperty(this, 0, tile.furnaceCookTime);
+				crafter.setContainerData(this, 0, tile.furnaceCookTime);
 			}
 
 			if (lastBurnTime != tile.furnaceBurnTime) {
-				crafter.sendWindowProperty(this, 1, tile.furnaceBurnTime);
+				crafter.setContainerData(this, 1, tile.furnaceBurnTime);
 			}
 
 			if (lastItemBurnTime != tile.currentItemBurnTime) {
-				crafter.sendWindowProperty(this, 2, tile.currentItemBurnTime);
+				crafter.setContainerData(this, 2, tile.currentItemBurnTime);
 			}
 		}
 
@@ -150,7 +150,7 @@ public class DMFurnaceContainer extends Container {
 	}
 
 	@Override
-	public void updateProgressBar(int id, int data) {
+	public void setData(int id, int data) {
 		if (id == 0) {
 			tile.furnaceCookTime = data;
 		} else if (id == 1) {

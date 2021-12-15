@@ -51,9 +51,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
 	private static final ILangEntry[] modes = new ILangEntry[]{
-			Items.IRON_INGOT::getTranslationKey,
-			Items.GOLD_INGOT::getTranslationKey,
-			Items.DIAMOND::getTranslationKey,
+			Items.IRON_INGOT::getDescriptionId,
+			Items.GOLD_INGOT::getDescriptionId,
+			Items.DIAMOND::getDescriptionId,
 			PEItems.DARK_MATTER::getTranslationKey,
 			PEItems.RED_MATTER::getTranslationKey
 	};
@@ -68,7 +68,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld) {
-		if (!world.isRemote && entity instanceof PlayerEntity) {
+		if (!world.isClientSide && entity instanceof PlayerEntity) {
 			entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> condense(stack, inv));
 		}
 	}
@@ -124,15 +124,15 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
-			if (player.isSneaking()) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide) {
+			if (player.isShiftKeyDown()) {
 				CompoundNBT nbt = stack.getOrCreateTag();
 				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
-						WorldHelper.createLootDrop(items, world, player.getPosX(), player.getPosY(), player.getPosZ());
+						WorldHelper.createLootDrop(items, world, player.getX(), player.getY(), player.getZ());
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
@@ -141,10 +141,10 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
-				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeItemStack(stack));
+				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeItem(stack));
 			}
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	private static ItemStack getTarget(ItemStack stack) {
@@ -175,7 +175,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		ListNBT tList = new ListNBT();
 		for (ItemStack s : list) {
 			CompoundNBT nbt = new CompoundNBT();
-			s.write(nbt);
+			s.save(nbt);
 			tList.add(nbt);
 		}
 		stack.getOrCreateTag().put(Constants.NBT_KEY_GEM_CONSUMED, tList);
@@ -186,7 +186,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (stack.hasTag()) {
 			ListNBT tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_COMPOUND);
 			for (int i = 0; i < tList.size(); i++) {
-				list.add(ItemStack.read(tList.getCompound(i)));
+				list.add(ItemStack.of(tList.getCompound(i)));
 			}
 		}
 		return list;
@@ -239,7 +239,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (stack.hasTag()) {
 			ListNBT list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND);
 			for (int i = 0; i < list.size(); i++) {
-				result.add(ItemStack.read(list.getCompound(i)));
+				result.add(ItemStack.of(list.getCompound(i)));
 			}
 		}
 		return result;
@@ -260,8 +260,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
 			tooltips.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getModeLangEntry(stack)));
@@ -273,18 +273,18 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		if (!world.isRemote && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (!world.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> condense(stack, inv));
-				tile.markDirty();
+				tile.setChanged();
 			}
 		}
 	}
 
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
-		return !player.getEntityWorld().isRemote && condense(stack, inv);
+		return !player.getCommandSenderWorld().isClientSide && condense(stack, inv);
 	}
 
 	private static class ContainerProvider implements INamedContainerProvider {

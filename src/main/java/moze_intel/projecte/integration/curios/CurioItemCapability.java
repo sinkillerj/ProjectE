@@ -15,6 +15,6 @@ public class CurioItemCapability extends BasicItemCapability<ICurio> implements 
 
 	@Override
 	public void curioTick(String identifier, int index, LivingEntity living) {
-		getStack().inventoryTick(living.getEntityWorld(), living, index, false);
+		getStack().inventoryTick(living.getCommandSenderWorld(), living, index, false);
 	}
 }

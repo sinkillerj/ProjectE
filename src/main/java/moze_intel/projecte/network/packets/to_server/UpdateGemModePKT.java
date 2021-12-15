@@ -20,9 +20,9 @@ public class UpdateGemModePKT implements IPEPacket {
 	public void handle(Context context) {
 		PlayerEntity player = context.getSender();
 		if (player != null) {
-			ItemStack stack = player.getHeldItemMainhand();
+			ItemStack stack = player.getMainHandItem();
 			if (stack.isEmpty()) {
-				stack = player.getHeldItemOffhand();
+				stack = player.getOffhandItem();
 			}
 			if (!stack.isEmpty() && stack.getItem() instanceof GemEternalDensity) {
 				//Note: Void Ring extends gem of eternal density so we only need to check if it is an instance of the base class

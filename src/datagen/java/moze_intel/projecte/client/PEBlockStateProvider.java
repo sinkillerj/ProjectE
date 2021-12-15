@@ -168,7 +168,7 @@ public class PEBlockStateProvider extends BlockStateProvider {
 		BlockModelBuilder onModel = models().getBuilder(name + "_on")
 				.parent(offModel)
 				.texture("front", modLoc("block/matter_furnace/" + prefix + "_on"));
-		horizontalBlock(furnace.getBlock(), state -> state.get(AbstractFurnaceBlock.LIT) ? onModel : offModel);
+		horizontalBlock(furnace.getBlock(), state -> state.getValue(AbstractFurnaceBlock.LIT) ? onModel : offModel);
 	}
 
 	private void registerTieredOrientable(String type, BlockRegistryObject<?, ?> base, BlockRegistryObject<?, ?> mk2, BlockRegistryObject<?, ?> mk3) {
@@ -192,11 +192,11 @@ public class PEBlockStateProvider extends BlockStateProvider {
 
 	private void directionalBlock(Block block, Function<BlockState, ModelFile> modelFunc, int angleOffset, Property<?>... toSkip) {
 		getVariantBuilder(block).forAllStatesExcept(state -> {
-			Direction dir = state.get(BlockStateProperties.FACING);
+			Direction dir = state.getValue(BlockStateProperties.FACING);
 			return ConfiguredModel.builder()
 					.modelFile(modelFunc.apply(state))
 					.rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)
-					.rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.getHorizontalAngle()) + angleOffset) % 360)
+					.rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
 					.build();
 		}, toSkip);
 	}

@@ -23,46 +23,46 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@Nonnull ItemStack stack) {
 		if (!stack.isEmpty() && SlotPredicates.HAS_EMC.test(stack)) {
-			this.putStack(ItemHelper.getNormalizedStack(stack));
+			this.set(ItemHelper.getNormalizedStack(stack));
 		}
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack(@Nonnull PlayerEntity player) {
+	public boolean mayPickup(@Nonnull PlayerEntity player) {
 		return false;
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 
 	@Override
-	public int getItemStackLimit(@Nonnull ItemStack stack) {
+	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 
 	@Override
 	@Nonnull
-	public ItemStack getStack() {
+	public ItemStack getItem() {
 		ItemInfo lockInfo = boxedLockInfo.get();
 		return lockInfo == null ? ItemStack.EMPTY : lockInfo.createStack();
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
+	public void set(@Nonnull ItemStack stack) {
 	}
 
 	@Override
-	public void onSlotChange(@Nonnull ItemStack oldStack, @Nonnull ItemStack newStack) {
+	public void onQuickCraft(@Nonnull ItemStack oldStack, @Nonnull ItemStack newStack) {
 	}
 
 	@Override
 	@Nonnull
-	public ItemStack decrStackSize(int amount) {
-		return getStack();
+	public ItemStack remove(int amount) {
+		return getItem();
 	}
 }

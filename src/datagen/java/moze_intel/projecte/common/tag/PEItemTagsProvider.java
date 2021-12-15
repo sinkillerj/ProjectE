@@ -24,12 +24,12 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 	}
 
 	@Override
-	protected void registerTags() {
-		TagsProvider.Builder<Item> alchemicalBags = getOrCreateBuilder(PETags.Items.ALCHEMICAL_BAGS);
+	protected void addTags() {
+		TagsProvider.Builder<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));
 		}
-		getOrCreateBuilder(PETags.Items.COLLECTOR_FUEL).add(
+		tag(PETags.Items.COLLECTOR_FUEL).add(
 				Items.CHARCOAL,
 				Items.REDSTONE,
 				Items.REDSTONE_BLOCK,
@@ -46,28 +46,28 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.AETERNALIS_FUEL.get(),
 				PEBlocks.AETERNALIS_FUEL.asItem()
 		);
-		getOrCreateBuilder(PETags.Items.COVALENCE_DUST).add(
+		tag(PETags.Items.COVALENCE_DUST).add(
 				PEItems.LOW_COVALENCE_DUST.get(),
 				PEItems.MEDIUM_COVALENCE_DUST.get(),
 				PEItems.HIGH_COVALENCE_DUST.get()
 		);
-		getOrCreateBuilder(PETags.Items.NBT_WHITELIST);
-		getOrCreateBuilder(PETags.Items.CURIOS_BELT).add(
+		tag(PETags.Items.NBT_WHITELIST);
+		tag(PETags.Items.CURIOS_BELT).add(
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
-		Builder<Item> kleinStarBuilder = getOrCreateBuilder(PETags.Items.CURIOS_KLEIN_STAR);
+		Builder<Item> kleinStarBuilder = tag(PETags.Items.CURIOS_KLEIN_STAR);
 		for (EnumKleinTier tier : EnumKleinTier.values()) {
 			kleinStarBuilder.add(PEItems.getStar(tier));
 		}
-		getOrCreateBuilder(PETags.Items.CURIOS_NECKLACE).add(
+		tag(PETags.Items.CURIOS_NECKLACE).add(
 				PEItems.BODY_STONE.get(),
 				PEItems.EVERTIDE_AMULET.get(),
 				PEItems.LIFE_STONE.get(),
 				PEItems.SOUL_STONE.get(),
 				PEItems.VOLCANITE_AMULET.get()
 		);
-		getOrCreateBuilder(PETags.Items.CURIOS_RING).add(
+		tag(PETags.Items.CURIOS_RING).add(
 				PEItems.ARCANA_RING.get(),
 				PEItems.BLACK_HOLE_BAND.get(),
 				PEItems.GEM_OF_ETERNAL_DENSITY.get(),
@@ -77,15 +77,15 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.ZERO_RING.get()
 		);
 		//Vanilla/Forge Tags
-		getOrCreateBuilder(Tags.Items.SHEARS).add(
+		tag(Tags.Items.SHEARS).add(
 				PEItems.DARK_MATTER_SHEARS.get(),
 				PEItems.RED_MATTER_SHEARS.get(),
 				PEItems.RED_MATTER_KATAR.get()
 		);
-		getOrCreateBuilder(Tags.Items.CHESTS).add(
+		tag(Tags.Items.CHESTS).add(
 				PEBlocks.ALCHEMICAL_CHEST.asItem()
 		);
-		getOrCreateBuilder(ItemTags.BEACON_PAYMENT_ITEMS).add(
+		tag(ItemTags.BEACON_PAYMENT_ITEMS).add(
 				PEItems.DARK_MATTER.get(),
 				PEItems.RED_MATTER.get()
 		);

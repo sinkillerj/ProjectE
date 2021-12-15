@@ -43,7 +43,7 @@ public interface IItemMode extends IModeChanger {
 		}
 		//Update the mode
 		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
-		player.sendMessage(getModeSwitchEntry().translate(getModeLangEntry(stack)), Util.DUMMY_UUID);
+		player.sendMessage(getModeSwitchEntry().translate(getModeLangEntry(stack)), Util.NIL_UUID);
 		return true;
 	}
 

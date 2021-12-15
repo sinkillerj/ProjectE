@@ -12,6 +12,6 @@ public class LangEntryWrapper implements ILangEntry {
 
 	@Override
 	public String getTranslationKey() {
-		return itemProvider.asItem().getTranslationKey();
+		return itemProvider.asItem().getDescriptionId();
 	}
 }

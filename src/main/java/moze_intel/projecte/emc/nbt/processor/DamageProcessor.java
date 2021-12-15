@@ -23,7 +23,7 @@ public class DamageProcessor implements INBTProcessor {
 	@Override
 	public long recalculateEMC(@Nonnull ItemInfo info, long currentEMC) throws ArithmeticException {
 		Item item = info.getItem();
-		if (item.isDamageable()) {
+		if (item.canBeDepleted()) {
 			ItemStack fakeStack = info.createStack();
 			int maxDamage = item.getMaxDamage(fakeStack);
 			int damage = item.getDamage(fakeStack);

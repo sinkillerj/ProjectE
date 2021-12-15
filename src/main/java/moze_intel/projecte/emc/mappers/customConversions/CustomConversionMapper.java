@@ -68,7 +68,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		int extensionLength = extension.length();
 
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (ResourceLocation file : resourceManager.getAllResourceLocations(folder, n -> n.endsWith(extension))) {
+		for (ResourceLocation file : resourceManager.listResources(folder, n -> n.endsWith(extension))) {
 			// <domain>:foo/bar
 			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folderLength + 1, file.getPath().length() - extensionLength));
 
@@ -77,7 +77,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
 			try {
-				for (IResource resource : resourceManager.getAllResources(file)) {
+				for (IResource resource : resourceManager.getResources(file)) {
 					CustomConversionFile result;
 					try {
 						result = parseJson(new InputStreamReader(resource.getInputStream()));

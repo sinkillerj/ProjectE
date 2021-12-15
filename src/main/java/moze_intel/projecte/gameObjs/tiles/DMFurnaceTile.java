@@ -106,15 +106,15 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	@Override
-	public void setPos(@Nonnull BlockPos pos) {
-		super.setPos(pos);
-		dummyFurnace.setPos(pos);
+	public void setPosition(@Nonnull BlockPos pos) {
+		super.setPosition(pos);
+		dummyFurnace.setPosition(pos);
 	}
 
 	@Override
-	public void setWorldAndPos(@Nonnull World world, @Nonnull BlockPos pos) {
-		super.setWorldAndPos(world, pos);
-		dummyFurnace.setWorldAndPos(world, pos);
+	public void setLevelAndPosition(@Nonnull World world, @Nonnull BlockPos pos) {
+		super.setLevelAndPosition(world, pos);
+		dummyFurnace.setLevelAndPosition(world, pos);
 	}
 
 	public IItemHandler getFuel() {
@@ -142,7 +142,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 			--furnaceBurnTime;
 		}
 
-		if (world != null && !world.isRemote) {
+		if (level != null && !level.isClientSide) {
 			pullFromInventories();
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
@@ -186,27 +186,27 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 				BlockState state = getBlockState();
 				if (state.getBlock() instanceof MatterFurnace) {
 					//Should always be true, but validate it just in case
-					world.setBlockState(pos, state.with(MatterFurnace.LIT, isBurning()));
+					level.setBlockAndUpdate(worldPosition, state.setValue(MatterFurnace.LIT, isBurning()));
 				}
 			}
 			if (shouldSave) {
-				markDirty();
+				setChanged();
 			}
 			pushToInventories();
 		}
 	}
 
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 		if (!isCompacting) {
-			if (world != null && !world.isRemote) {
+			if (level != null && !level.isClientSide) {
 				isCompacting = true;
 				ItemHelper.compactInventory(inputInventory);
 				outputEmpty = ItemHelper.compactInventory(outputInventory);
 				isCompacting = false;
 			}
 			//No need to mark it dirty if we are currently compacting as we will mark it when we are done compacting
-			super.markDirty();
+			super.setChanged();
 		}
 	}
 
@@ -215,7 +215,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	private void pullFromInventories() {
-		TileEntity tile = WorldHelper.getTileEntity(world, pos.up());
+		TileEntity tile = WorldHelper.getTileEntity(level, worldPosition.above());
 		if (tile == null || tile instanceof HopperTileEntity || tile instanceof DropperTileEntity) {
 			return;
 		}
@@ -237,7 +237,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		if (outputEmpty) {
 			return;
 		}
-		TileEntity tile = WorldHelper.getTileEntity(world, pos.down());
+		TileEntity tile = WorldHelper.getTileEntity(level, worldPosition.below());
 		if (tile == null || tile instanceof HopperTileEntity) {
 			return;
 		}
@@ -264,16 +264,16 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	public ItemStack getSmeltingResult(ItemStack in) {
-		dummyFurnace.setInventorySlotContents(0, in);
-		Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, dummyFurnace, world);
-		dummyFurnace.clear();
-		return recipe.map(IRecipe::getRecipeOutput).orElse(ItemStack.EMPTY);
+		dummyFurnace.setItem(0, in);
+		Optional<FurnaceRecipe> recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, dummyFurnace, level);
+		dummyFurnace.clearContent();
+		return recipe.map(IRecipe::getResultItem).orElse(ItemStack.EMPTY);
 	}
 
 	private void smeltItem() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
-		if (world.rand.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
+		if (level.random.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
 			smeltResult.grow(smeltResult.getCount());
 		}
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
@@ -293,7 +293,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		if (currentSmelted.isEmpty()) {
 			return true;
 		}
-		if (!smeltResult.isItemEqual(currentSmelted)) {
+		if (!smeltResult.sameItem(currentSmelted)) {
 			return false;
 		}
 		int result = currentSmelted.getCount() + smeltResult.getCount();
@@ -313,8 +313,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+		super.load(state, nbt);
 		furnaceBurnTime = nbt.getShort("BurnTime");
 		furnaceCookTime = nbt.getShort("CookTime");
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
@@ -325,8 +325,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-		nbt = super.write(nbt);
+	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+		nbt = super.save(nbt);
 		nbt.putShort("BurnTime", (short) furnaceBurnTime);
 		nbt.putShort("CookTime", (short) furnaceCookTime);
 		nbt.put("Input", inputInventory.serializeNBT());

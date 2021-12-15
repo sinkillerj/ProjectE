@@ -20,18 +20,18 @@ public class SearchUpdatePKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		PlayerEntity player = context.getSender();
-		if (player != null && player.openContainer instanceof TransmutationContainer) {
-			((TransmutationContainer) player.openContainer).transmutationInventory.writeIntoOutputSlot(slot, itemStack);
+		if (player != null && player.containerMenu instanceof TransmutationContainer) {
+			((TransmutationContainer) player.containerMenu).transmutationInventory.writeIntoOutputSlot(slot, itemStack);
 		}
 	}
 
 	@Override
 	public void encode(PacketBuffer buffer) {
 		buffer.writeVarInt(slot);
-		buffer.writeItemStack(itemStack);
+		buffer.writeItem(itemStack);
 	}
 
 	public static SearchUpdatePKT decode(PacketBuffer buffer) {
-		return new SearchUpdatePKT(buffer.readVarInt(), buffer.readItemStack());
+		return new SearchUpdatePKT(buffer.readVarInt(), buffer.readItem());
 	}
 }

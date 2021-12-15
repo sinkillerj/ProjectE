@@ -16,19 +16,19 @@ public class AlchChestScreen extends PEContainerScreen<AlchChestContainer> {
 
 	public AlchChestScreen(AlchChestContainer container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);
-		this.xSize = 255;
-		this.ySize = 230;
+		this.imageWidth = 255;
+		this.imageHeight = 230;
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(texture);
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		Minecraft.getInstance().textureManager.bind(texture);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
 	}
 }

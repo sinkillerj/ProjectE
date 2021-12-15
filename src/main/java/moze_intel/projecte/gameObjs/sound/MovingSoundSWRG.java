@@ -23,12 +23,12 @@ public class MovingSoundSWRG extends TickableSound {
 	@Override
 	public void tick() {
 		if (!this.swrgProjectile.isAlive()) {
-			this.finishPlaying();
+			this.stop();
 		} else {
-			this.x = (float) this.swrgProjectile.getPosX();
-			this.y = (float) this.swrgProjectile.getPosY();
-			this.z = (float) this.swrgProjectile.getPosZ();
-			float f = MathHelper.sqrt(Entity.horizontalMag(this.swrgProjectile.getMotion()));
+			this.x = (float) this.swrgProjectile.getX();
+			this.y = (float) this.swrgProjectile.getY();
+			this.z = (float) this.swrgProjectile.getZ();
+			float f = MathHelper.sqrt(Entity.getHorizontalDistanceSqr(this.swrgProjectile.getDeltaMovement()));
 
 			if ((double) f >= 0.01D) {
 				this.distance = MathHelper.clamp(this.distance + 0.0025F, 0.0F, 1.0F);

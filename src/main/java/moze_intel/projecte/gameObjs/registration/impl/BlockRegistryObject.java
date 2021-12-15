@@ -30,7 +30,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 
 	@Override
 	public String getTranslationKey() {
-		return getBlock().getTranslationKey();
+		return getBlock().getDescriptionId();
 	}
 
 	public static class WallOrFloorBlockRegistryObject<BLOCK extends Block, WALL_BLOCK extends Block, ITEM extends WallOrFloorItem> extends BlockRegistryObject<BLOCK, ITEM> {

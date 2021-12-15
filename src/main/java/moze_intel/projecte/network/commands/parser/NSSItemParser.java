@@ -49,7 +49,7 @@ public class NSSItemParser {
 			return new NSSItemResult(this);
 		}
 		//Else it is a tag
-		ITag<Item> tag = ItemTags.getCollection().get(tagId);
+		ITag<Item> tag = ItemTags.getAllTags().getTag(tagId);
 		if (tag == null) {
 			throw UNKNOWN_TAG.create(tagId.toString());
 		}
@@ -71,7 +71,7 @@ public class NSSItemParser {
 			item = ForgeRegistries.ITEMS.getValue(itemId);
 			if (item == null) {
 				this.reader.setCursor(i);
-				throw ItemParser.ITEM_BAD_ID.createWithContext(this.reader, itemId);
+				throw ItemParser.ERROR_UNKNOWN_ITEM.createWithContext(this.reader, itemId);
 			}
 			this.suggestionsBuilder = this::suggestItem;
 			if (this.reader.canRead() && this.reader.peek() == '{') {
@@ -100,7 +100,7 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder) {
-		return ISuggestionProvider.suggestIterable(ItemTags.getCollection().getRegisteredTags(), builder.createOffset(this.readerCursor));
+		return ISuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder.createOffset(this.readerCursor));
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder) {
-		ISuggestionProvider.suggestIterable(ItemTags.getCollection().getRegisteredTags(), builder, String.valueOf('#'));
-		return ISuggestionProvider.suggestIterable(ForgeRegistries.ITEMS.getKeys(), builder);
+		ISuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder, String.valueOf('#'));
+		return ISuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getKeys(), builder);
 	}
 
 	/**

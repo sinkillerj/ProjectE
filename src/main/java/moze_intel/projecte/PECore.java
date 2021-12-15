@@ -205,50 +205,50 @@ public class PECore {
 			PacketHandler.register();
 			//Dispenser Behavior
 			registerDispenseBehavior(new BeehiveDispenseBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);
-			DispenserBlock.registerDispenseBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
-			DispenserBlock.registerDispenseBehavior(PEBlocks.NOVA_CATACLYSM, PEBlocks.NOVA_CATACLYSM.getBlock().createDispenseItemBehavior());
+			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
+			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATACLYSM, PEBlocks.NOVA_CATACLYSM.getBlock().createDispenseItemBehavior());
 			registerDispenseBehavior(new OptionalDispenseBehavior() {
 				@Nonnull
 				@Override
-				protected ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
 					//Based off the flint and steel dispense behavior
 					if (stack.getItem() instanceof Arcana) {
 						Arcana item = (Arcana) stack.getItem();
 						if (item.getMode(stack) != 1) {
 							//Only allow using the arcana ring to ignite things when on ignition mode
-							setSuccessful(false);
-							return super.dispenseStack(source, stack);
+							setSuccess(false);
+							return super.execute(source, stack);
 						}
 					}
-					World world = source.getWorld();
-					setSuccessful(true);
-					Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-					BlockPos pos = source.getBlockPos().offset(direction);
+					World world = source.getLevel();
+					setSuccess(true);
+					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+					BlockPos pos = source.getPos().relative(direction);
 					BlockState state = world.getBlockState(pos);
-					if (AbstractFireBlock.canLightBlock(world, pos, direction)) {
-						world.setBlockState(pos, AbstractFireBlock.getFireForPlacement(world, pos));
-					} else if (CampfireBlock.canBeLit(state)) {
-						world.setBlockState(pos, state.with(BlockStateProperties.LIT, true));
+					if (AbstractFireBlock.canBePlacedAt(world, pos, direction)) {
+						world.setBlockAndUpdate(pos, AbstractFireBlock.getState(world, pos));
+					} else if (CampfireBlock.canLight(state)) {
+						world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
 					} else if (state.isFlammable(world, pos, direction.getOpposite())) {
 						state.catchFire(world, pos, direction.getOpposite(), null);
 						if (state.getBlock() instanceof TNTBlock) {
 							world.removeBlock(pos, false);
 						}
 					} else {
-						setSuccessful(false);
+						setSuccess(false);
 					}
 					return stack;
 				}
 			}, PEItems.IGNITION_RING, PEItems.ARCANA_RING);
-			DispenserBlock.registerDispenseBehavior(PEItems.EVERTIDE_AMULET, new DefaultDispenseItemBehavior() {
+			DispenserBlock.registerBehavior(PEItems.EVERTIDE_AMULET, new DefaultDispenseItemBehavior() {
 				@Nonnull
 				@Override
-				public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				public ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
-					World world = source.getWorld();
-					Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-					BlockPos pos = source.getBlockPos().offset(direction);
+					World world = source.getLevel();
+					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+					BlockPos pos = source.getPos().relative(direction);
 					TileEntity tile = WorldHelper.getTileEntity(world, pos);
 					Direction sideHit = direction.getOpposite();
 					if (tile != null) {
@@ -260,7 +260,7 @@ public class PECore {
 					}
 					BlockState state = world.getBlockState(pos);
 					if (state.getBlock() == Blocks.CAULDRON) {
-						int waterLevel = state.get(CauldronBlock.LEVEL);
+						int waterLevel = state.getValue(CauldronBlock.LEVEL);
 						if (waterLevel < 3) {
 							((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 							return stack;
@@ -270,7 +270,7 @@ public class PECore {
 						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 						return stack;
 					}
-					return super.dispenseStack(source, stack);
+					return super.execute(source, stack);
 				}
 			});
 
@@ -283,7 +283,7 @@ public class PECore {
 
 	private static void registerDispenseBehavior(IDispenseItemBehavior behavior, IItemProvider... items) {
 		for (IItemProvider item : items) {
-			DispenserBlock.registerDispenseBehavior(item, behavior);
+			DispenserBlock.registerBehavior(item, behavior);
 		}
 	}
 

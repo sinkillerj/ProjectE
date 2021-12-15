@@ -21,51 +21,54 @@ public class PEBlockLootTable extends BlockLootTables {
 
 	@Override
 	protected void addTables() {
-		registerDropSelfLootTable(PEBlocks.AETERNALIS_FUEL.getBlock());
-		registerDropSelfLootTable(PEBlocks.ALCHEMICAL_CHEST.getBlock());
-		registerDropSelfLootTable(PEBlocks.ALCHEMICAL_COAL.getBlock());
-		registerDropSelfLootTable(PEBlocks.COLLECTOR.getBlock());
-		registerDropSelfLootTable(PEBlocks.COLLECTOR_MK2.getBlock());
-		registerDropSelfLootTable(PEBlocks.COLLECTOR_MK3.getBlock());
-		registerDropSelfLootTable(PEBlocks.CONDENSER.getBlock());
-		registerDropSelfLootTable(PEBlocks.CONDENSER_MK2.getBlock());
-		registerDropSelfLootTable(PEBlocks.DARK_MATTER.getBlock());
-		registerDropSelfLootTable(PEBlocks.DARK_MATTER_FURNACE.getBlock());
-		registerDropSelfLootTable(PEBlocks.DARK_MATTER_PEDESTAL.getBlock());
-		registerDropSelfLootTable(PEBlocks.INTERDICTION_TORCH.getBlock());
-		registerDropSelfLootTable(PEBlocks.MOBIUS_FUEL.getBlock());
-		registerDropSelfLootTable(PEBlocks.RED_MATTER.getBlock());
-		registerDropSelfLootTable(PEBlocks.RED_MATTER_FURNACE.getBlock());
-		registerDropSelfLootTable(PEBlocks.RELAY.getBlock());
-		registerDropSelfLootTable(PEBlocks.RELAY_MK2.getBlock());
-		registerDropSelfLootTable(PEBlocks.RELAY_MK3.getBlock());
-		registerDropSelfLootTable(PEBlocks.TRANSMUTATION_TABLE.getBlock());
+		dropSelf(PEBlocks.AETERNALIS_FUEL.getBlock());
+		dropSelf(PEBlocks.ALCHEMICAL_CHEST.getBlock());
+		dropSelf(PEBlocks.ALCHEMICAL_COAL.getBlock());
+		dropSelf(PEBlocks.COLLECTOR.getBlock());
+		dropSelf(PEBlocks.COLLECTOR_MK2.getBlock());
+		dropSelf(PEBlocks.COLLECTOR_MK3.getBlock());
+		dropSelf(PEBlocks.CONDENSER.getBlock());
+		dropSelf(PEBlocks.CONDENSER_MK2.getBlock());
+		dropSelf(PEBlocks.DARK_MATTER.getBlock());
+		dropSelf(PEBlocks.DARK_MATTER_FURNACE.getBlock());
+		dropSelf(PEBlocks.DARK_MATTER_PEDESTAL.getBlock());
+		dropSelf(PEBlocks.INTERDICTION_TORCH.getBlock());
+		dropSelf(PEBlocks.MOBIUS_FUEL.getBlock());
+		dropSelf(PEBlocks.RED_MATTER.getBlock());
+		dropSelf(PEBlocks.RED_MATTER_FURNACE.getBlock());
+		dropSelf(PEBlocks.RELAY.getBlock());
+		dropSelf(PEBlocks.RELAY_MK2.getBlock());
+		dropSelf(PEBlocks.RELAY_MK3.getBlock());
+		dropSelf(PEBlocks.TRANSMUTATION_TABLE.getBlock());
 
 		registerCustomTNT(PEBlocks.NOVA_CATACLYSM.getBlock());
 		registerCustomTNT(PEBlocks.NOVA_CATALYST.getBlock());
 	}
 
 	@Override
-	public void registerDropping(@Nonnull Block block, @Nonnull IItemProvider drop) {
+	public void dropOther(@Nonnull Block block, @Nonnull IItemProvider drop) {
 		//Override to use our own dropping method that names the loot table
-		registerLootTable(block, dropping(drop));
+		add(block, dropping(drop));
 	}
 
 	protected static LootTable.Builder dropping(IItemProvider item) {
-		return LootTable.builder().addLootPool(withSurvivesExplosion(item, LootPool.builder().rolls(ConstantRange.of(1)).name("main").addEntry(ItemLootEntry.builder(item))));
+		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(ConstantRange.exactly(1))
+				.name("main")
+				.add(ItemLootEntry.lootTableItem(item))
+		));
 	}
 
 	private void registerCustomTNT(Block tnt) {
-		registerLootTable(tnt, LootTable.builder().addLootPool(withSurvivesExplosion(tnt, LootPool.builder().rolls(ConstantRange.of(1))
+		add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool().setRolls(ConstantRange.exactly(1))
 				.name("main")
-				.addEntry(ItemLootEntry.builder(tnt).acceptCondition(BlockStateProperty.builder(tnt)
-						.fromProperties(StatePropertiesPredicate.Builder.newBuilder().withBoolProp(TNTBlock.UNSTABLE, false)))))));
+				.add(ItemLootEntry.lootTableItem(tnt).when(BlockStateProperty.hasBlockStateProperties(tnt)
+						.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TNTBlock.UNSTABLE, false)))))));
 	}
 
 	@Override
-	protected void registerLootTable(@Nonnull Block block, @Nonnull LootTable.Builder table) {
+	protected void add(@Nonnull Block block, @Nonnull LootTable.Builder table) {
 		//Overwrite the core register method to add to our list of known blocks
-		super.registerLootTable(block, table);
+		super.add(block, table);
 		knownBlocks.add(block);
 	}
 

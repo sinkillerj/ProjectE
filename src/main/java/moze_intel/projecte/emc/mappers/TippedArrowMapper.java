@@ -28,8 +28,8 @@ public class TippedArrowMapper implements IEMCMapper<NormalizedSimpleStack, Long
 		for (Potion potionType : ForgeRegistries.POTION_TYPES.getValues()) {
 			Map<NormalizedSimpleStack, Integer> ingredientsWithAmount = new HashMap<>();
 			ingredientsWithAmount.put(nssArrow, 8);
-			ingredientsWithAmount.put(NSSItem.createItem(PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType)), 1);
-			mapper.addConversion(8, NSSItem.createItem(PotionUtils.addPotionToItemStack(new ItemStack(Items.TIPPED_ARROW), potionType)), ingredientsWithAmount);
+			ingredientsWithAmount.put(NSSItem.createItem(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), potionType)), 1);
+			mapper.addConversion(8, NSSItem.createItem(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), potionType)), ingredientsWithAmount);
 			recipeCount++;
 		}
 		PECore.debugLog("TippedArrowMapper Statistics:");

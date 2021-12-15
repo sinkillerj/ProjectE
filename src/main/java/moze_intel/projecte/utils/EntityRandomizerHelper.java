@@ -36,7 +36,7 @@ public class EntityRandomizerHelper {
 			}
 			return ent;
 		}
-		if (world.rand.nextBoolean()) {
+		if (world.random.nextBoolean()) {
 			return EntityType.SLIME.create(world);
 		}
 		return EntityType.SHEEP.create(world);
@@ -64,7 +64,7 @@ public class EntityRandomizerHelper {
 	}
 
 	private static <T> T getRandomTagEntry(Random random, ITag<T> tag, T toExclude) {
-		List<T> list = tag.getAllElements();
+		List<T> list = tag.getValues();
 		if (list.isEmpty() || list.size() == 1 && list.contains(toExclude)) {
 			return toExclude;
 		}

@@ -18,27 +18,27 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 
 	public GUIDMFurnace(DMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title) {
 		super(container, invPlayer, title);
-		this.xSize = 178;
-		this.ySize = 165;
+		this.imageWidth = 178;
+		this.imageHeight = 165;
 		this.tile = container.tile;
-		this.titleX = 57;
-		this.playerInventoryTitleX = 57;
-		this.playerInventoryTitleY = ySize - 94;
+		this.titleLabelX = 57;
+		this.inventoryLabelX = 57;
+		this.inventoryLabelY = imageHeight - 94;
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(texture);
+		Minecraft.getInstance().textureManager.bind(texture);
 
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		int progress;
 		if (tile.isBurning()) {
 			progress = tile.getBurnTimeRemainingScaled(12);
-			blit(matrix, guiLeft + 49, guiTop + 36 + 12 - progress, 179, 12 - progress, 14, progress + 2);
+			blit(matrix, leftPos + 49, topPos + 36 + 12 - progress, 179, 12 - progress, 14, progress + 2);
 		}
 		progress = tile.getCookProgressScaled(24);
-		blit(matrix, guiLeft + 73, guiTop + 34, 179, 14, progress + 1, 16);
+		blit(matrix, leftPos + 73, topPos + 34, 179, 14, progress + 1, 16);
 	}
 }

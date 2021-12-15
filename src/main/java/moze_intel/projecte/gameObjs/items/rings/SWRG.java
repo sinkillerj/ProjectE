@@ -52,9 +52,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesSWRG(player.getEntityWorld(), player.getBoundingBox().grow(5), player);
+			WorldHelper.repelEntitiesSWRG(player.getCommandSenderWorld(), player.getBoundingBox().inflate(5), player);
 		}
-		if (player.getEntityWorld().isRemote) {
+		if (player.getCommandSenderWorld().isClientSide) {
 			return;
 		}
 		ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
@@ -62,17 +62,17 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			if (nbt.getInt(Constants.NBT_KEY_MODE) > 0) {
 				changeMode(player, stack, 0);
 			}
-			if (playerMP.abilities.allowFlying) {
+			if (playerMP.abilities.mayfly) {
 				playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::disableSwrgFlightOverride);
 			}
 			return;
 		}
 
-		if (!playerMP.abilities.allowFlying) {
+		if (!playerMP.abilities.mayfly) {
 			playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::enableSwrgFlightOverride);
 		}
 
-		if (playerMP.abilities.isFlying) {
+		if (playerMP.abilities.flying) {
 			if (!isFlyingEnabled(nbt)) {
 				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
@@ -82,7 +82,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		float toRemove = 0;
 
-		if (playerMP.abilities.isFlying) {
+		if (playerMP.abilities.flying) {
 			toRemove = 0.32F;
 		}
 
@@ -103,7 +103,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
-		if (invSlot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (invSlot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		tick(stack, (PlayerEntity) entity);
@@ -111,9 +111,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide) {
 			int newMode = 0;
 			switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
 				case 0:
@@ -131,7 +131,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			}
 			changeMode(player, stack, newMode);
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	/**
@@ -150,10 +150,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 		if (mode == 0 || oldMode == 3) {
 			//At least one mode deactivated
-			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
 		} else if (oldMode == 0 || mode == 3) {
 			//At least one mode activated
-			player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.UNCHARGE.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
@@ -171,19 +171,19 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() <= 0) {
-					List<MobEntity> list = world.getEntitiesWithinAABB(MobEntity.class, tile.getEffectBounds());
+					List<MobEntity> list = world.getEntitiesOfClass(MobEntity.class, tile.getEffectBounds());
 					for (MobEntity living : list) {
-						if (living instanceof TameableEntity && ((TameableEntity) living).isTamed()) {
+						if (living instanceof TameableEntity && ((TameableEntity) living).isTame()) {
 							continue;
 						}
 						LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
 						if (lightning != null) {
-							lightning.moveForced(living.getPositionVec());
-							world.addEntity(lightning);
+							lightning.moveTo(living.position());
+							world.addFreshEntity(lightning);
 						}
 					}
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());
@@ -207,9 +207,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Override
 	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
-		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.world);
-		projectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 1);
-		player.world.addEntity(projectile);
+		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.level);
+		projectile.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		player.level.addFreshEntity(projectile);
 		return true;
 	}
 }

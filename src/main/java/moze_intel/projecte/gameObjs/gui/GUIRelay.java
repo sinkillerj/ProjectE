@@ -37,30 +37,30 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
-		this.font.func_243248_b(matrix, title, titleX, titleY, 0x404040);
+	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
+		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
 		//Don't render inventory as we don't have space
-		this.font.drawString(matrix, Constants.EMC_FORMATTER.format(container.emc.get()), emcX, emcY, 0x404040);
+		this.font.draw(matrix, Constants.EMC_FORMATTER.format(menu.emc.get()), emcX, emcY, 0x404040);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(texture);
+		Minecraft.getInstance().textureManager.bind(texture);
 
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		//Emc bar progress
-		int progress = (int) ((double) container.emc.get() / container.tile.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
-		blit(matrix, guiLeft + emcBarShift, guiTop + 6, 30, vOffset, progress, 10);
+		int progress = (int) ((double) menu.emc.get() / menu.tile.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
+		blit(matrix, leftPos + emcBarShift, topPos + 6, 30, vOffset, progress, 10);
 
 		//Klein start bar progress. Max is 30.
-		progress = (int) (container.getKleinChargeProgress() * 30);
-		blit(matrix, guiLeft + 116 + shift, guiTop + 67, 0, vOffset, progress, 10);
+		progress = (int) (menu.getKleinChargeProgress() * 30);
+		blit(matrix, leftPos + 116 + shift, topPos + 67, 0, vOffset, progress, 10);
 
 		//Burn Slot bar progress. Max is 30.
-		progress = (int) (container.getInputBurnProgress() * 30);
-		blit(matrix, guiLeft + 64 + shift, guiTop + 67, 0, vOffset, progress, 10);
+		progress = (int) (menu.getInputBurnProgress() * 30);
+		blit(matrix, leftPos + 64 + shift, topPos + 67, 0, vOffset, progress, 10);
 	}
 
 	public static class GUIRelayMK1 extends GUIRelay<RelayMK1Container> {
@@ -69,9 +69,9 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		public GUIRelayMK1(RelayMK1Container container, PlayerInventory invPlayer, ITextComponent title) {
 			super(container, invPlayer, title, MK1_TEXTURE, 88, 24, 177, 64, 0);
-			this.xSize = 175;
-			this.ySize = 176;
-			this.titleX = 10;
+			this.imageWidth = 175;
+			this.imageHeight = 176;
+			this.titleLabelX = 10;
 		}
 	}
 
@@ -81,9 +81,9 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		public GUIRelayMK2(RelayMK2Container container, PlayerInventory invPlayer, ITextComponent title) {
 			super(container, invPlayer, title, MK2_TEXTURE, 107, 25, 183, 86, 17);
-			this.xSize = 193;
-			this.ySize = 182;
-			this.titleX = 28;
+			this.imageWidth = 193;
+			this.imageHeight = 182;
+			this.titleLabelX = 28;
 		}
 	}
 
@@ -93,9 +93,9 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		public GUIRelayMK3(RelayMK3Container container, PlayerInventory invPlayer, ITextComponent title) {
 			super(container, invPlayer, title, MK3_TEXTURE, 125, 39, 195, 105, 37);
-			this.xSize = 212;
-			this.ySize = 194;
-			this.titleX = 38;
+			this.imageWidth = 212;
+			this.imageHeight = 194;
+			this.titleLabelX = 38;
 		}
 	}
 }

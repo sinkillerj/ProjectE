@@ -30,7 +30,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		if (stack.isEmpty()) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		if (stack.isDamageable() && stack.hasTag()) {
+		if (stack.isDamageableItem() && stack.hasTag()) {
 			//If the stack is damageable check if the NBT is identical to what it would be without the damage attached
 			// as creating a new ItemStack auto sets the NBT for the damage value, which we ideally do not want as it may
 			// throw off various calculations
@@ -92,7 +92,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	 */
 	@Nonnull
 	public static NSSItem createTag(@Nonnull ITag<Item> tag) {
-		ResourceLocation tagLocation = TagCollectionManager.getManager().getItemTags().getDirectIdFromTag(tag);
+		ResourceLocation tagLocation = TagCollectionManager.getInstance().getItems().getId(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
 		}
@@ -120,7 +120,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	@Nonnull
 	@Override
 	protected ITagCollection<Item> getTagCollection() {
-		return TagCollectionManager.getManager().getItemTags();
+		return TagCollectionManager.getInstance().getItems();
 	}
 
 	@Override

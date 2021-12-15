@@ -35,7 +35,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isRemote || slot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
@@ -49,20 +49,20 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			if (toAdd > 0) {
 				addXP(player, toAdd);
 			}
 		}
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
-		super.addInformation(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltips, flags);
 		if (stack.hasTag()) {
 			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
@@ -72,25 +72,25 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	private void removeXP(PlayerEntity player, int amount) {
 		int totalExperience = getXP(player) - amount;
 		if (totalExperience < 0) {
-			player.experienceTotal = 0;
+			player.totalExperience = 0;
 			player.experienceLevel = 0;
-			player.experience = 0;
+			player.experienceProgress = 0;
 		} else {
-			player.experienceTotal = totalExperience;
+			player.totalExperience = totalExperience;
 			player.experienceLevel = getLvlForXP(totalExperience);
-			player.experience = (float) (totalExperience - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
+			player.experienceProgress = (float) (totalExperience - getXPForLvl(player.experienceLevel)) / (float) player.getXpNeededForNextLevel();
 		}
 	}
 
 	private void addXP(PlayerEntity player, int amount) {
 		int experiencetotal = getXP(player) + amount;
-		player.experienceTotal = experiencetotal;
+		player.totalExperience = experiencetotal;
 		player.experienceLevel = getLvlForXP(experiencetotal);
-		player.experience = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.xpBarCap();
+		player.experienceProgress = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.getXpNeededForNextLevel();
 	}
 
 	private int getXP(PlayerEntity player) {
-		return (int) (getXPForLvl(player.experienceLevel) + player.experience * player.xpBarCap());
+		return (int) (getXPForLvl(player.experienceLevel) + player.experienceProgress * player.getXpNeededForNextLevel());
 	}
 
 	// Math referenced from the MC wiki
@@ -157,10 +157,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
 		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 		if (tile != null) {
-			List<ExperienceOrbEntity> orbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, tile.getEffectBounds());
+			List<ExperienceOrbEntity> orbs = world.getEntitiesOfClass(ExperienceOrbEntity.class, tile.getEffectBounds());
 			for (ExperienceOrbEntity orb : orbs) {
 				WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-				if (!world.isRemote && orb.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+				if (!world.isClientSide && orb.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
 					suckXP(orb, tile.getInventory().getStackInSlot(0));
 				}
 			}
@@ -169,11 +169,11 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	private void suckXP(ExperienceOrbEntity orb, ItemStack mindStone) {
 		long l = getStoredXP(mindStone);
-		if (l + orb.xpValue > Integer.MAX_VALUE) {
-			orb.xpValue = (int) (l + orb.xpValue - Integer.MAX_VALUE);
+		if (l + orb.value > Integer.MAX_VALUE) {
+			orb.value = (int) (l + orb.value - Integer.MAX_VALUE);
 			setStoredXP(mindStone, Integer.MAX_VALUE);
 		} else {
-			addStoredXP(mindStone, orb.xpValue);
+			addStoredXP(mindStone, orb.value);
 			orb.remove();
 		}
 	}

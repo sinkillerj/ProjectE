@@ -21,49 +21,49 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	public AbstractCondenserScreen(T condenser, PlayerInventory playerInventory, ITextComponent title) {
 		super(condenser, playerInventory, title);
 		this.container = condenser;
-		this.xSize = 255;
-		this.ySize = 233;
+		this.imageWidth = 255;
+		this.imageHeight = 233;
 	}
 
 	protected abstract ResourceLocation getTexture();
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bindTexture(getTexture());
+		Minecraft.getInstance().textureManager.bind(getTexture());
 
-		blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		int progress = container.getProgressScaled();
-		blit(matrix, guiLeft + 33, guiTop + 10, 0, 235, progress, 10);
+		blit(matrix, leftPos + 33, topPos + 10, 0, 235, progress, 10);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(toDisplay);
-		this.font.func_243248_b(matrix, emc, 140, 10, 0x404040);
+		this.font.draw(matrix, emc, 140, 10, 0x404040);
 	}
 
 	@Override
-	protected void renderHoveredTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
 		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
 
 		if (toDisplay < 1e12) {
-			super.renderHoveredTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(matrix, mouseX, mouseY);
 			return;
 		}
 
-		int emcLeft = 140 + guiLeft;
+		int emcLeft = 140 + leftPos;
 		int emcRight = emcLeft + 110;
-		int emcTop = 6 + guiTop;
+		int emcTop = 6 + topPos;
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
 			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(toDisplay)), mouseX, mouseY);
 		} else {
-			super.renderHoveredTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(matrix, mouseX, mouseY);
 		}
 	}
 

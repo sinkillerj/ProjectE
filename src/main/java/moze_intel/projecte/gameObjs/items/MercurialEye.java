@@ -67,33 +67,33 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand), stack.getDisplayName());
-		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> b.writeEnumValue(hand));
+		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand), stack.getHoverName());
+		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> b.writeEnum(hand));
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
-		ItemStack stack = ctx.getItem();
-		return ctx.getWorld().isRemote ? ActionResultType.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getPos(), ctx.getFace());
+	public ActionResultType useOn(ItemUseContext ctx) {
+		ItemStack stack = ctx.getItemInHand();
+		return ctx.getLevel().isClientSide ? ActionResultType.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getClickedPos(), ctx.getClickedFace());
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		if (getMode(stack) == CREATION_MODE) {
-			if (world.isRemote) {
-				return ActionResult.resultSuccess(stack);
+			if (world.isClientSide) {
+				return ActionResult.success(stack);
 			}
-			Vector3d eyeVec = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
-			Vector3d lookVec = player.getLookVec();
+			Vector3d eyeVec = new Vector3d(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
+			Vector3d lookVec = player.getLookAngle();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
 			Vector3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
 			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
 		}
-		return ActionResult.resultPass(stack);
+		return ActionResult.pass(stack);
 	}
 
 	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {
@@ -107,7 +107,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			return ActionResultType.FAIL;
 		}
 
-		World world = player.getEntityWorld();
+		World world = player.getCommandSenderWorld();
 		BlockState startingState = world.getBlockState(startingPos);
 		long startingBlockEmc = EMCHelper.getEmcValue(new ItemStack(startingState.getBlock()));
 		ItemStack target = inventory.getStackInSlot(1);
@@ -134,8 +134,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
 			Block block = startingState.getBlock();
-			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isSneaking() && !block.isAir(startingState, world, startingPos))) {
-				BlockPos offsetPos = startingPos.offset(facing);
+			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isShiftKeyDown() && !block.isAir(startingState, world, startingPos))) {
+				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = world.getBlockState(offsetPos);
 				if (!offsetState.getMaterial().isReplaceable()) {
 					return ActionResultType.FAIL;
@@ -161,7 +161,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight()))) {
 				BlockState placedState = world.getBlockState(pos);
 				//Ensure we are immutable so that removal/placing doesn't act weird
-				if (placedState == startingState && doBlockPlace(player, placedState, pos.toImmutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
+				if (placedState == startingState && doBlockPlace(player, placedState, pos.immutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
 					hitTargets++;
 				}
 			}
@@ -184,13 +184,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				if (startingState != checkState) {
 					continue;
 				}
-				BlockPos offsetPos = pos.offset(facing);
+				BlockPos offsetPos = pos.relative(facing);
 				BlockState offsetState = world.getBlockState(offsetPos);
-				if (!offsetState.isSolidSide(world, offsetPos, facing)) {
+				if (!offsetState.isFaceSturdy(world, offsetPos, facing)) {
 					boolean hit = false;
 					if (mode == EXTENSION_MODE) {
 						VoxelShape cbBox = startingState.getCollisionShape(world, offsetPos);
-						if (world.checkNoEntityCollision(null, cbBox)) {
+						if (world.isUnobstructed(null, cbBox)) {
 							long offsetBlockEmc = EMCHelper.getEmcValue(offsetState.getBlock());
 							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc, drops);
 						}
@@ -205,11 +205,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 						}
 						for (Direction e : Direction.values()) {
 							if (facing.getAxis() != e.getAxis()) {
-								BlockPos offset = pos.offset(e);
+								BlockPos offset = pos.relative(e);
 								if (visited.add(offset)) {
 									possibleBlocks.offer(offset);
 								}
-								BlockPos offsetOpposite = pos.offset(e.getOpposite());
+								BlockPos offsetOpposite = pos.relative(e.getOpposite());
 								if (visited.add(offsetOpposite)) {
 									possibleBlocks.offer(offsetOpposite);
 								}
@@ -221,10 +221,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 
 		if (hitTargets > 0) {
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together
-				WorldHelper.createLootDrop(drops, player.getEntityWorld(), startingPos);
+				WorldHelper.createLootDrop(drops, player.getCommandSenderWorld(), startingPos);
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -242,11 +242,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 		Optional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
-			WorldHelper.getTileEntity(player.getEntityWorld(), placePos) != null) {
+			WorldHelper.getTileEntity(player.getCommandSenderWorld(), placePos) != null) {
 			return false;
 		}
 
-		if (oldEMC == 0 && oldState.getBlockHardness(player.world, placePos) == -1.0F) {
+		if (oldEMC == 0 && oldState.getDestroySpeed(player.level, placePos) == -1.0F) {
 			//Don't allow replacing unbreakable blocks (unless they have an EMC value)
 			return false;
 		}
@@ -255,7 +255,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
-				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getServerWorld(), placePos, null));
+				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getLevel(), placePos, null));
 				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC > newEMC) {
 				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);
@@ -271,13 +271,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int hitTargets = 0;
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight()))) {
 			VoxelShape bb = startingState.getCollisionShape(world, pos);
-			if (world.checkNoEntityCollision(null, bb)) {
+			if (world.isUnobstructed(null, bb)) {
 				BlockState placeState = world.getBlockState(pos);
 				if (placeState.getMaterial().isReplaceable()) {
 					//Only replace replaceable blocks
 					long placeBlockEmc = EMCHelper.getEmcValue(placeState.getBlock());
 					//Ensure we are immutable so that changing blocks doesn't act weird
-					if (doBlockPlace(player, placeState, pos.toImmutable(), newState, eye, placeBlockEmc, newBlockEmc, drops)) {
+					if (doBlockPlace(player, placeState, pos.immutable(), newState, eye, placeBlockEmc, newBlockEmc, drops)) {
 						hitTargets++;
 					}
 				}
@@ -294,28 +294,28 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		BlockPos end = startingPos;
 		switch (facing) {
 			case UP:
-				start = start.add(-strength, -depth, -strength);
-				end = end.add(strength, 0, strength);
+				start = start.offset(-strength, -depth, -strength);
+				end = end.offset(strength, 0, strength);
 				break;
 			case DOWN:
-				start = start.add(-strength, 0, -strength);
-				end = end.add(strength, depth, strength);
+				start = start.offset(-strength, 0, -strength);
+				end = end.offset(strength, depth, strength);
 				break;
 			case SOUTH:
-				start = start.add(-strength, -strength, -depth);
-				end = end.add(strength, strength, 0);
+				start = start.offset(-strength, -strength, -depth);
+				end = end.offset(strength, strength, 0);
 				break;
 			case NORTH:
-				start = start.add(-strength, -strength, 0);
-				end = end.add(strength, strength, depth);
+				start = start.offset(-strength, -strength, 0);
+				end = end.offset(strength, strength, depth);
 				break;
 			case EAST:
-				start = start.add(-depth, -strength, -strength);
-				end = end.add(0, strength, strength);
+				start = start.offset(-depth, -strength, -strength);
+				end = end.offset(0, strength, strength);
 				break;
 			case WEST:
-				start = start.add(0, -strength, -strength);
-				end = end.add(depth, strength, strength);
+				start = start.offset(0, -strength, -strength);
+				end = end.offset(depth, strength, strength);
 				break;
 		}
 		return new ImmutablePair<>(start, end);

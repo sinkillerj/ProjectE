@@ -27,7 +27,7 @@ public class ClientKeyHelper {
 	@SubscribeEvent
 	public static void keyPress(TickEvent.ClientTickEvent event) {
 		for (KeyBinding k : mcToPe.keySet()) {
-			while (k.isPressed()) {
+			while (k.consumeClick()) {
 				PacketHandler.sendToServer(new KeyPressPKT(mcToPe.get(k)));
 			}
 		}
@@ -55,7 +55,7 @@ public class ClientKeyHelper {
 
 	public static ITextComponent getKeyName(PEKeybind k) {
 		if (peToMc.containsKey(k)) {
-			return peToMc.get(k).func_238171_j_();
+			return peToMc.get(k).getTranslatedKeyMessage();
 		}
 		//Fallback to the translation key of the key's function
 		return TextComponentUtil.build(k);

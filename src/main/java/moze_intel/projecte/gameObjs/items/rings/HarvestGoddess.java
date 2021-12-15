@@ -42,7 +42,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isRemote || slot >= PlayerInventory.getHotbarSize() || !(entity instanceof PlayerEntity)) {
+		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
@@ -53,30 +53,30 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				WorldHelper.growNearbyRandomly(true, world, player.getPosition(), player);
+				WorldHelper.growNearbyRandomly(true, world, player.blockPosition(), player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		} else {
-			WorldHelper.growNearbyRandomly(false, world, player.getPosition(), player);
+			WorldHelper.growNearbyRandomly(false, world, player.blockPosition(), player);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
-		World world = ctx.getWorld();
+	public ActionResultType useOn(ItemUseContext ctx) {
+		World world = ctx.getLevel();
 		PlayerEntity player = ctx.getPlayer();
-		BlockPos pos = ctx.getPos();
-		if (world.isRemote || player == null || !player.canPlayerEdit(pos, ctx.getFace(), ctx.getItem())) {
+		BlockPos pos = ctx.getClickedPos();
+		if (world.isClientSide || player == null || !player.mayUseItemAt(pos, ctx.getClickedFace(), ctx.getItemInHand())) {
 			return ActionResultType.FAIL;
 		}
-		if (player.isSneaking()) {
-			for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
-				ItemStack stack = player.inventory.mainInventory.get(i);
+		if (player.isShiftKeyDown()) {
+			for (int i = 0; i < player.inventory.items.size(); i++) {
+				ItemStack stack = player.inventory.items.get(i);
 				if (!stack.isEmpty() && stack.getCount() >= 4 && stack.getItem() == Items.BONE_MEAL) {
 					if (useBoneMeal(world, pos)) {
-						player.inventory.decrStackSize(i, 4);
-						player.container.detectAndSendChanges();
+						player.inventory.removeItem(i, 4);
+						player.inventoryMenu.broadcastChanges();
 						return ActionResultType.SUCCESS;
 					}
 					break;
@@ -91,13 +91,13 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	private boolean useBoneMeal(World world, BlockPos pos) {
 		boolean result = false;
 		if (world instanceof ServerWorld) {
-			for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-15, 0, -15), pos.add(15, 0, 15))) {
+			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
 				BlockState state = world.getBlockState(currentPos);
 				Block crop = state.getBlock();
 				if (crop instanceof IGrowable) {
 					IGrowable growable = (IGrowable) crop;
-					if (growable.canGrow(world, currentPos, state, false) && growable.canUseBonemeal(world, world.rand, currentPos, state)) {
-						growable.grow((ServerWorld) world, world.rand, currentPos.toImmutable(), state);
+					if (growable.isValidBonemealTarget(world, currentPos, state, false) && growable.isBonemealSuccess(world, world.random, currentPos, state)) {
+						growable.performBonemeal((ServerWorld) world, world.random, currentPos.immutable(), state);
 						if (!result) {
 							result = true;
 						}
@@ -109,24 +109,24 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	private boolean plantSeeds(World world, PlayerEntity player, BlockPos pos) {
-		List<StackWithSlot> seeds = getAllSeeds(player.inventory.mainInventory);
+		List<StackWithSlot> seeds = getAllSeeds(player.inventory.items);
 		if (seeds.isEmpty()) {
 			return false;
 		}
 		boolean result = false;
-		for (BlockPos currentPos : BlockPos.getAllInBoxMutable(pos.add(-8, 0, -8), pos.add(8, 0, 8))) {
-			if (world.isAirBlock(currentPos)) {
+		for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-8, 0, -8), pos.offset(8, 0, 8))) {
+			if (world.isEmptyBlock(currentPos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(currentPos);
 			//Ensure we are immutable so that changing blocks doesn't act weird
-			currentPos = currentPos.toImmutable();
+			currentPos = currentPos.immutable();
 			for (int i = 0; i < seeds.size(); i++) {
 				StackWithSlot s = seeds.get(i);
-				if (state.canSustainPlant(world, currentPos, Direction.UP, s.plantable) && world.isAirBlock(currentPos.up())) {
-					world.setBlockState(currentPos.up(), s.plantable.getPlant(world, currentPos.up()));
-					player.inventory.decrStackSize(s.slot, 1);
-					player.container.detectAndSendChanges();
+				if (state.canSustainPlant(world, currentPos, Direction.UP, s.plantable) && world.isEmptyBlock(currentPos.above())) {
+					world.setBlockAndUpdate(currentPos.above(), s.plantable.getPlant(world, currentPos.above()));
+					player.inventory.removeItem(s.slot, 1);
+					player.inventoryMenu.broadcastChanges();
 					s.count--;
 					if (s.count == 0) {
 						seeds.remove(i);
@@ -155,7 +155,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 				if (item instanceof IPlantable) {
 					result.add(new StackWithSlot(stack, i, (IPlantable) item));
 				} else {
-					Block block = Block.getBlockFromItem(item);
+					Block block = Block.byItem(item);
 					if (block instanceof IPlantable) {
 						result.add(new StackWithSlot(stack, i, (IPlantable) block));
 					}
@@ -167,7 +167,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
-		if (!world.isRemote && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
+		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {

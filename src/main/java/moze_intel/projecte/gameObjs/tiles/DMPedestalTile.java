@@ -26,10 +26,10 @@ public class DMPedestalTile extends CapabilityTileEMC {
 		@Override
 		public void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
-			if (world != null && !world.isRemote) {
+			if (level != null && !level.isClientSide) {
 				//If an item got added via the item handler, then rerender the block
 				BlockState state = getBlockState();
-				world.notifyBlockUpdate(pos, state, state, BlockFlags.RERENDER_MAIN_THREAD);
+				level.sendBlockUpdated(worldPosition, state, state, BlockFlags.RERENDER_MAIN_THREAD);
 			}
 		}
 	};
@@ -45,13 +45,13 @@ public class DMPedestalTile extends CapabilityTileEMC {
 
 	@Override
 	public void tick() {
-		centeredX = pos.getX() + 0.5;
-		centeredY = pos.getY() + 0.5;
-		centeredZ = pos.getZ() + 0.5;
-		if (world != null && getActive()) {
+		centeredX = worldPosition.getX() + 0.5;
+		centeredY = worldPosition.getY() + 0.5;
+		centeredZ = worldPosition.getZ() + 0.5;
+		if (level != null && getActive()) {
 			ItemStack stack = inventory.getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(world, pos));
+				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(level, worldPosition));
 				if (particleCooldown <= 0) {
 					spawnParticleTypes();
 					particleCooldown = 10;
@@ -65,28 +65,28 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	}
 
 	private void spawnParticleTypes() {
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
-		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
-		world.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
-		Random rand = world.rand;
+		int x = worldPosition.getX();
+		int y = worldPosition.getY();
+		int z = worldPosition.getZ();
+		level.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.2, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.5, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.2, y + 0.3, z + 0.8, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.2, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.5, y + 0.3, z + 0.8, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
+		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
+		Random rand = level.random;
 		for (int i = 0; i < 3; ++i) {
 			int j = rand.nextInt(2) * 2 - 1;
 			int k = rand.nextInt(2) * 2 - 1;
-			double d0 = (double) pos.getX() + 0.5D + 0.25D * (double) j;
-			double d1 = (float) pos.getY() + rand.nextFloat();
-			double d2 = (double) pos.getZ() + 0.5D + 0.25D * (double) k;
+			double d0 = (double) worldPosition.getX() + 0.5D + 0.25D * (double) j;
+			double d1 = (float) worldPosition.getY() + rand.nextFloat();
+			double d2 = (double) worldPosition.getZ() + 0.5D + 0.25D * (double) k;
 			double d3 = rand.nextFloat() * (float) j;
 			double d4 = ((double) rand.nextFloat() - 0.5D) * 0.125D;
 			double d5 = rand.nextFloat() * (float) k;
-			world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
+			level.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 		}
 	}
 
@@ -106,12 +106,12 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	 * @return Inclusive bounding box of all positions this pedestal should apply effects in
 	 */
 	public AxisAlignedBB getEffectBounds() {
-		return new AxisAlignedBB(pos.add(-RANGE, -RANGE, -RANGE), pos.add(RANGE, RANGE, RANGE));
+		return new AxisAlignedBB(worldPosition.offset(-RANGE, -RANGE, -RANGE), worldPosition.offset(RANGE, RANGE, RANGE));
 	}
 
 	@Override
-	public void read(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
+		super.load(state, tag);
 		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
@@ -121,8 +121,8 @@ public class DMPedestalTile extends CapabilityTileEMC {
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT tag) {
-		tag = super.write(tag);
+	public CompoundNBT save(@Nonnull CompoundNBT tag) {
+		tag = super.save(tag);
 		tag.merge(inventory.serializeNBT());
 		tag.putBoolean("isActive", getActive());
 		tag.putInt("activityCooldown", activityCooldown);
@@ -132,12 +132,12 @@ public class DMPedestalTile extends CapabilityTileEMC {
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(pos, -1, getUpdateTag());
+		return new SUpdateTileEntityPacket(worldPosition, -1, getUpdateTag());
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
-		read(getBlockState(), packet.getNbtCompound());
+		load(getBlockState(), packet.getTag());
 	}
 
 	public boolean getActive() {
@@ -145,21 +145,21 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	}
 
 	public void setActive(boolean newState) {
-		if (newState != this.getActive() && world != null) {
+		if (newState != this.getActive() && level != null) {
 			if (newState) {
-				world.playSound(null, pos, PESoundEvents.CHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
-					world.addParticle(ParticleTypes.WITCH, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
-							pos.getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
-							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
+				level.playSound(null, worldPosition, PESoundEvents.CHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+				for (int i = 0; i < level.random.nextInt(35) + 10; ++i) {
+					level.addParticle(ParticleTypes.WITCH, centeredX + level.random.nextGaussian() * 0.12999999523162842D,
+							worldPosition.getY() + 1 + level.random.nextGaussian() * 0.12999999523162842D,
+							centeredZ + level.random.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				world.playSound(null, pos, PESoundEvents.UNCHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-				for (int i = 0; i < world.rand.nextInt(35) + 10; ++i) {
-					world.addParticle(ParticleTypes.SMOKE, centeredX + world.rand.nextGaussian() * 0.12999999523162842D,
-							pos.getY() + 1 + world.rand.nextGaussian() * 0.12999999523162842D,
-							centeredZ + world.rand.nextGaussian() * 0.12999999523162842D,
+				level.playSound(null, worldPosition, PESoundEvents.UNCHARGE.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+				for (int i = 0; i < level.random.nextInt(35) + 10; ++i) {
+					level.addParticle(ParticleTypes.SMOKE, centeredX + level.random.nextGaussian() * 0.12999999523162842D,
+							worldPosition.getY() + 1 + level.random.nextGaussian() * 0.12999999523162842D,
+							centeredZ + level.random.nextGaussian() * 0.12999999523162842D,
 							0.0D, 0.0D, 0.0D);
 				}
 			}

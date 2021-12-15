@@ -25,10 +25,10 @@ public class RecipesCovalenceRepair extends SpecialRecipe {
 	private RepairTargetInfo findIngredients(CraftingInventory inv) {
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			ItemStack input = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getContainerSize(); i++) {
+			ItemStack input = inv.getItem(i);
 			if (!input.isEmpty()) {
-				if (input.getItem().isIn(PETags.Items.COVALENCE_DUST)) {
+				if (input.getItem().is(PETags.Items.COVALENCE_DUST)) {
 					dust.add(input);
 				} else if (tool.isEmpty() && ItemHelper.isRepairableDamagedItem(input)) {
 					tool = input;
@@ -52,19 +52,19 @@ public class RecipesCovalenceRepair extends SpecialRecipe {
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
+	public ItemStack assemble(@Nonnull CraftingInventory inv) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		if (targetInfo == null) {
 			//If there isn't actually a match return no result
 			return ItemStack.EMPTY;
 		}
 		ItemStack output = targetInfo.tool.copy();
-		output.setDamage((int) Math.max(output.getDamage() - targetInfo.dustEmc / targetInfo.emcPerDurability, 0));
+		output.setDamageValue((int) Math.max(output.getDamageValue() - targetInfo.dustEmc / targetInfo.emcPerDurability, 0));
 		return output;
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width > 1 || height > 1;
 	}
 

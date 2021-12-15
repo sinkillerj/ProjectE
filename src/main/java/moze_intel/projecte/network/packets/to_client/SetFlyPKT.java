@@ -18,8 +18,8 @@ public class SetFlyPKT implements IPEPacket {
 	@Override
 	public void handle(Context context) {
 		if (Minecraft.getInstance().player != null) {
-			Minecraft.getInstance().player.abilities.allowFlying = allowFlying;
-			Minecraft.getInstance().player.abilities.isFlying = isFlying;
+			Minecraft.getInstance().player.abilities.mayfly = allowFlying;
+			Minecraft.getInstance().player.abilities.flying = isFlying;
 		}
 	}
 
