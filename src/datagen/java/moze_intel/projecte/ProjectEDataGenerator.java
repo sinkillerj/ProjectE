@@ -42,7 +42,7 @@ public class ProjectEDataGenerator {
 			gen.addProvider(new PEEntityTypeTagsProvider(gen, existingFileHelper));
 			gen.addProvider(new PETileEntityTypeTagsProvider(gen, existingFileHelper));
 			//Other generators (after tags in case we need them to exist)
-			gen.addProvider(new PEAdvancementsProvider(gen));
+			gen.addProvider(new PEAdvancementsProvider(gen, existingFileHelper));
 			gen.addProvider(new PELootProvider(gen));
 			gen.addProvider(new PERecipeProvider(gen));
 			gen.addProvider(new PECustomConversionProvider(gen));
