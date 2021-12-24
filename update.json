@@ -1,28 +1,28 @@
 {
     "1.12": {
-        "1.12-PE1.1.0": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12-PE1.2.0": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12-PE1.3.0": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12-PE1.3.1B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12-PE1.3.2": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12-PE1.3.2h": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "1.12-PE1.1.0": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12-PE1.2.0": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12-PE1.3.0": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12-PE1.3.1B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12-PE1.3.2": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12-PE1.3.2h": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
     "1.12.2": {
-        "1.12.2-PE1.4.0": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12.2-PE1.4.1": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "1.12.2-PE1.4.0": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.12.2-PE1.4.1": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
     "1.14.4": {
-        "1.14.4-PE1.0.0B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "1.14.4-PE1.0.0B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
     "1.15.2": {
-        "1.15.2-PE1.0.1B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.15.2-PE1.0.2B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.15.2-PE1.0.3B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.15.2-PE1.0.4": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "1.15.2-PE1.0.1B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.15.2-PE1.0.2B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.15.2-PE1.0.3B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.15.2-PE1.0.4": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
     "1.16.5": {
-        "PE1.0.0B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "PE1.0.1B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "PE1.0.0B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "PE1.0.1B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
     "homepage": "https://minecraft.curseforge.com/projects/projecte/",
     "promos": {
@@ -34,7 +34,7 @@
         "1.14.4-recommended": "1.14.4-PE1.0.1B",
         "1.15.2-latest": "1.15.2-PE1.0.4",
         "1.15.2-recommended": "1.15.2-PE1.0.4",
-        "1.16.5-latest": "1.16.5-PE1.0.1B",
-        "1.16.5-recommended": "1.16.5-PE1.0.1B"
+        "1.16.5-latest": "PE1.0.1B",
+        "1.16.5-recommended": "PE1.0.1B"
     }
 }
