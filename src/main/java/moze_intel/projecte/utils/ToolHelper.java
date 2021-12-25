@@ -474,7 +474,8 @@ public class ToolHelper {
 				List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
 				if (!drops.isEmpty()) {
 					if (!world.isClientSide) {
-						WorldHelper.createLootDrop(drops, world, pos);
+						//Protect against any mods that may use unmodifiable lists in their onSheared return
+						WorldHelper.createLootDrop(new ArrayList<>(drops), world, pos);
 						player.awardStat(Stats.BLOCK_MINED.get(block), 1);
 					}
 					//NOTE: We only mark it as a success if we actually got drops otherwise we let it continue breaking the block
