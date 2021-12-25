@@ -19,7 +19,7 @@ import org.apache.maven.artifact.versioning.ComparableVersion;
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ThreadCheckUpdate extends Thread {
 
-	private static final String curseURL = "https://minecraft.curseforge.com/projects/projecte/files";
+	private static final String curseURL = "https://www.curseforge.com/minecraft/mc-mods/projecte/files";
 	private static volatile ComparableVersion target = null;
 	private static volatile boolean hasSentMessage = false;
 

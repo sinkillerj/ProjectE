@@ -56,7 +56,11 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 			} else if (matches.length == 1) {
 				//Handle this ingredient as a direct representation of the stack it represents
-				if (addIngredient(ingredientMap, matches[0].copy(), recipeID)) {
+				if (matches[0].isEmpty()) {
+					//If we don't have any matches for the ingredient just return that we couldn't handle it,
+					// given a later recipe might be able to
+					return addConversionsAndReturn(mapper, dummyGroupInfos, false);
+				} else if (addIngredient(ingredientMap, matches[0].copy(), recipeID)) {
 					//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
 					// mapper would fail as well due to it being an invalid recipe
 					return addConversionsAndReturn(mapper, dummyGroupInfos, true);
@@ -72,14 +76,18 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 					}
 				}
 				int count = stacks.size();
-				if (count == 1) {
-					//There is only actually one non empty ingredient
+				if (count == 0) {
+					//If we don't have any matches for the ingredient just return that we couldn't handle it,
+					// given a later recipe might be able to
+					return addConversionsAndReturn(mapper, dummyGroupInfos, false);
+				} else if (count == 1) {
+					//There is only actually one non-empty ingredient
 					if (addIngredient(ingredientMap, stacks.get(0).copy(), recipeID)) {
 						//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
 						// mapper would fail as well due to it being an invalid recipe
 						return addConversionsAndReturn(mapper, dummyGroupInfos, true);
 					}
-				} else if (count > 1) {
+				} else {
 					//Handle this ingredient as the representation of all the stacks it supports
 					Tuple<NormalizedSimpleStack, Boolean> group = fakeGroupManager.getOrCreateFakeGroup(rawNSSMatches);
 					NormalizedSimpleStack dummy = group.getA();
