@@ -151,6 +151,42 @@
           "ingredients": [
             "minecraft:nether_wart_block"
           ]
+        },
+        {
+          "output": "minecraft:shroomlight",
+          "ingredients": [
+            "minecraft:glowstone_dust",
+            "#forge:mushrooms"
+          ]
+        }
+      ]
+    },
+    "chainmail": {
+      "comment": "Propagate iron armor values to chainmail armor as they are close enough that their difficulties balance out.",
+      "conversions": [
+        {
+          "output": "minecraft:chainmail_helmet",
+          "ingredients": [
+            "minecraft:iron_helmet"
+          ]
+        },
+        {
+          "output": "minecraft:chainmail_chestplate",
+          "ingredients": [
+            "minecraft:iron_chestplate"
+          ]
+        },
+        {
+          "output": "minecraft:chainmail_leggings",
+          "ingredients": [
+            "minecraft:iron_leggings"
+          ]
+        },
+        {
+          "output": "minecraft:chainmail_boots",
+          "ingredients": [
+            "minecraft:iron_boots"
+          ]
         }
       ]
     },
