@@ -13,14 +13,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class Relay extends BlockDirection {
 
@@ -82,17 +80,5 @@ public class Relay extends BlockDirection {
 			return 0;
 		}
 		return MathUtils.scaleToRedstone(relay.getStoredEmc(), relay.getMaximumEmc());
-	}
-
-	@Override
-	@Deprecated
-	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = WorldHelper.getTileEntity(world, pos);
-			if (te != null) {
-				te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
 	}
 }

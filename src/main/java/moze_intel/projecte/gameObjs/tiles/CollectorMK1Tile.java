@@ -92,6 +92,10 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 		return auxSlots.getStackInSlot(UPGRADING_SLOT);
 	}
 
+	public void clearLocked() {
+		auxSlots.setStackInSlot(LOCK_SLOT, ItemStack.EMPTY);
+	}
+
 	@Override
 	public void tick() {
 		if (level != null && !level.isClientSide) {

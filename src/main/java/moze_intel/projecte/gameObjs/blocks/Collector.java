@@ -14,7 +14,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -117,15 +116,10 @@ public class Collector extends BlockDirection {
 	@Deprecated
 	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity ent = WorldHelper.getTileEntity(world, pos);
+			CollectorMK1Tile ent = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos);
 			if (ent != null) {
-				ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
-					for (int i = 0; i < handler.getSlots(); i++) {
-						if (i != CollectorMK1Tile.LOCK_SLOT && !handler.getStackInSlot(i).isEmpty()) {
-							InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
-						}
-					}
-				});
+				//Clear the ghost slot so calling super doesn't drop the item in it
+				ent.clearLocked();
 			}
 			super.onRemove(state, world, pos, newState, isMoving);
 		}
