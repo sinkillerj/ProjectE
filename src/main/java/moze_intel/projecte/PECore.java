@@ -17,6 +17,7 @@ import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
@@ -330,6 +331,8 @@ public class PECore {
 	}
 
 	private void serverQuit(FMLServerStoppedEvent event) {
+		//Ensure we save any changes to the custom emc file
+		CustomEMCParser.flush();
 		TransmutationOffline.cleanAll();
 		EMCMappingHandler.clearEmcMap();
 	}

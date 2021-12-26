@@ -118,7 +118,7 @@ public final class CustomEMCParser {
 	}
 
 	@SuppressWarnings("UnstableApiUsage")
-	private static void flush() {
+	public static void flush() {
 		if (dirty) {
 			try {
 				Files.write(GSON.toJson(currentEntries), CONFIG, Charsets.UTF_8);
