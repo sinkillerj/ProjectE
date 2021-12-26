@@ -21,8 +21,7 @@ import net.minecraftforge.items.ItemStackHandler;
 public class DMPedestalTile extends CapabilityTileEMC {
 
 	private static final int RANGE = 4;
-	private boolean isActive = false;
-	private ItemStackHandler inventory = new StackHandler(1) {
+	private final ItemStackHandler inventory = new StackHandler(1) {
 		@Override
 		public void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
@@ -33,6 +32,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 			}
 		}
 	};
+	private boolean isActive = false;
 	private int particleCooldown = 10;
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
@@ -112,7 +112,6 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	@Override
 	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
 		super.load(state, tag);
-		inventory = new ItemStackHandler(1);
 		inventory.deserializeNBT(tag);
 		setActive(tag.getBoolean("isActive"));
 		activityCooldown = tag.getInt("activityCooldown");
