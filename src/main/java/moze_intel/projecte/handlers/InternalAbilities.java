@@ -1,6 +1,5 @@
 package moze_intel.projecte.handlers;
 
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
@@ -9,13 +8,10 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.items.IItemHandler;
 
 public final class InternalAbilities {
 
@@ -62,7 +58,7 @@ public final class InternalAbilities {
 		return gemArmorReady;
 	}
 
-	// Checks if the server state of player capas mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
+	// Checks if the server state of player caps mismatches with what ProjectE determines. If so, change it serverside and send a packet to client
 	public void tick() {
 		if (projectileCooldown > 0) {
 			projectileCooldown--;
@@ -88,7 +84,7 @@ public final class InternalAbilities {
 				}
 				hadFlightItem = true;
 			} else if (wasFlyingGamemode && !isFlyingGamemode) {
-				//Player was in a gamemode that allowed flight, but no longer is but they still should be allowed to fly
+				//Player was in a gamemode that allowed flight, but no longer is, but they still should be allowed to fly
 				//Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
 				//and are still allowed to the gamemode change doesn't force them out of it
 				PlayerHelper.updateClientServerFlight(player, true, wasFlying);
@@ -123,41 +119,15 @@ public final class InternalAbilities {
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}
-		return checkArmorHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player));
+		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player));
 	}
 
 	private boolean shouldPlayerStep() {
-		return checkArmorHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player));
+		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player));
 	}
 
 	private boolean hasSwrg() {
-		return checkHotbarCurios(stack -> !stack.isEmpty() && stack.getItem() == PEItems.SWIFTWOLF_RENDING_GALE.get());
-	}
-
-	private boolean checkArmorHotbarCurios(Predicate<ItemStack> checker) {
-		for (ItemStack stack : player.inventory.armor) {
-			if (checker.test(stack)) {
-				return true;
-			}
-		}
-		return checkHotbarCurios(checker);
-	}
-
-	private boolean checkHotbarCurios(Predicate<ItemStack> checker) {
-		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
-			if (checker.test(player.inventory.getItem(i))) {
-				return true;
-			}
-		}
-		IItemHandler curios = PlayerHelper.getCurios(player);
-		if (curios != null) {
-			for (int i = 0; i < curios.getSlots(); i++) {
-				if (checker.test(curios.getStackInSlot(i))) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.SWIFTWOLF_RENDING_GALE.get());
 	}
 
 	public void enableSwrgFlightOverride() {

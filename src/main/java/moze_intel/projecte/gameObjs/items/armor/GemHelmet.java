@@ -16,13 +16,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -71,20 +69,7 @@ public class GemHelmet extends GemArmorBase {
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		if (world.isClientSide) {
-			int x = (int) Math.floor(player.getX());
-			int y = (int) (player.getY() - player.getMyRidingOffset());
-			int z = (int) Math.floor(player.getZ());
-			BlockPos pos = new BlockPos(x, y, z);
-			FluidState fluidState = world.getFluidState(pos.below());
-			if (fluidState.getType().is(FluidTags.WATER) && world.isEmptyBlock(pos)) {
-				if (!player.isShiftKeyDown()) {
-					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0, 1));
-					player.fallDistance = 0.0f;
-					player.setOnGround(true);
-				}
-			}
-		} else {
+		if (!world.isClientSide) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(handler -> {
 				handler.activateHeal();
 				if (player.getHealth() < player.getMaxHealth() && handler.canHeal()) {
@@ -96,10 +81,6 @@ public class GemHelmet extends GemArmorBase {
 				player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, true, false));
 			} else {
 				player.removeEffect(Effects.NIGHT_VISION);
-			}
-
-			if (player.isInWater()) {
-				player.setAirSupply(300);
 			}
 		}
 	}

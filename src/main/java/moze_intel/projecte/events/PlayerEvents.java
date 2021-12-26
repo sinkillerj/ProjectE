@@ -7,6 +7,7 @@ import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
+import moze_intel.projecte.handlers.CommonInternalAbilities;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.TransmutationOffline;
@@ -74,7 +75,7 @@ public class PlayerEvents {
 	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
 		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
 		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayerEntity) event.getPlayer()));
-		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY, null).ifPresent(c -> c.sync(null, (ServerPlayerEntity) event.getPlayer()));
+		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (ServerPlayerEntity) event.getPlayer()));
 
 		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
@@ -85,6 +86,7 @@ public class PlayerEvents {
 			PlayerEntity player = (PlayerEntity) evt.getObject();
 			attachCapability(evt, AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
 			attachCapability(evt, KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider(player));
+			attachCapability(evt, CommonInternalAbilities.NAME, new CommonInternalAbilities.Provider(player));
 			if (player instanceof ServerPlayerEntity) {
 				attachCapability(evt, InternalTimers.NAME, new InternalTimers.Provider());
 				attachCapability(evt, InternalAbilities.NAME, new InternalAbilities.Provider((ServerPlayerEntity) player));

@@ -55,7 +55,7 @@ public class EntityLavaProjectile extends ThrowableEntity {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
 					if (level.isLoaded(pos)) {
 						BlockState state = level.getBlockState(pos);
-						if (state.getFluidState().getType().is(FluidTags.WATER)) {
+						if (state.getFluidState().is(FluidTags.WATER)) {
 							pos = pos.immutable();
 							if (PlayerHelper.hasEditPermission(player, pos)) {
 								WorldHelper.drainFluid(level, pos, state, Fluids.WATER);

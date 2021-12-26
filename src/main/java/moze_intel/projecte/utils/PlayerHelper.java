@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -13,6 +14,7 @@ import moze_intel.projecte.network.packets.to_client.StepHeightPKT;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,6 +76,30 @@ public final class PlayerHelper {
 
 	public static ItemStack findFirstItem(PlayerEntity player, Item consumeFrom) {
 		return player.inventory.items.stream().filter(s -> !s.isEmpty() && s.getItem() == consumeFrom).findFirst().orElse(ItemStack.EMPTY);
+	}
+
+	public static boolean checkArmorHotbarCurios(PlayerEntity player, Predicate<ItemStack> checker) {
+		return player.inventory.armor.stream().anyMatch(checker) || checkHotbarCurios(player, checker);
+	}
+
+	public static boolean checkHotbarCurios(PlayerEntity player, Predicate<ItemStack> checker) {
+		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
+			if (checker.test(player.inventory.getItem(i))) {
+				return true;
+			}
+		}
+		if (checker.test(player.getOffhandItem())) {
+			return true;
+		}
+		IItemHandler curios = getCurios(player);
+		if (curios != null) {
+			for (int i = 0; i < curios.getSlots(); i++) {
+				if (checker.test(curios.getStackInSlot(i))) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Nullable

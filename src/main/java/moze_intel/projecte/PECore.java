@@ -35,6 +35,7 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
+import moze_intel.projecte.handlers.CommonInternalAbilities;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.IMCHandler;
@@ -182,6 +183,7 @@ public class PECore {
 		KnowledgeImpl.init();
 		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
 		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
+		CapabilityManager.INSTANCE.register(CommonInternalAbilities.class, new DummyIStorage<>(), () -> new CommonInternalAbilities(null));
 		CapabilityManager.INSTANCE.register(IAlchBagItem.class, new DummyIStorage<>(), AlchBagItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IAlchChestItem.class, new DummyIStorage<>(), AlchChestItemDefaultImpl::new);
 		CapabilityManager.INSTANCE.register(IExtraFunction.class, new DummyIStorage<>(), ExtraFunctionItemDefaultImpl::new);

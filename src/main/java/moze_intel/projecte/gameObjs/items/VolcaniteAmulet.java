@@ -21,19 +21,11 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -50,8 +42,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
-
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION);
 
 	public VolcaniteAmulet(Properties props) {
 		super(props);
@@ -91,45 +81,6 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 		return ActionResultType.SUCCESS;
-	}
-
-	@Override
-	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
-			attribute.removeModifier(SPEED_BOOST);
-		}
-		return true;
-	}
-
-	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (invSlot >= PlayerInventory.getSelectionSize() || !(entity instanceof LivingEntity)) {
-			return;
-		}
-		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.getX());
-		int y = (int) (living.getY() - living.getMyRidingOffset());
-		int z = (int) Math.floor(living.getZ());
-		BlockPos pos = new BlockPos(x, y, z);
-		if (world.getFluidState(pos.below()).getType().is(FluidTags.LAVA) && world.isEmptyBlock(pos)) {
-			if (!living.isShiftKeyDown()) {
-				living.setDeltaMovement(living.getDeltaMovement().multiply(1, 0, 1));
-				living.fallDistance = 0.0F;
-				living.setOnGround(true);
-			}
-			if (!world.isClientSide) {
-				ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
-				if (attribute != null && !attribute.hasModifier(SPEED_BOOST)) {
-					attribute.addTransientModifier(SPEED_BOOST);
-				}
-			}
-		} else if (!world.isClientSide) {
-			ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
-			if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
-				attribute.removeModifier(SPEED_BOOST);
-			}
-		}
 	}
 
 	@Override

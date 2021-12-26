@@ -7,6 +7,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.handlers.CommonInternalAbilities;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -56,6 +57,7 @@ public class TickEvents {
 				}
 			});
 
+			event.player.getCapability(CommonInternalAbilities.CAPABILITY).ifPresent(CommonInternalAbilities::tick);
 			if (!event.player.getCommandSenderWorld().isClientSide) {
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);

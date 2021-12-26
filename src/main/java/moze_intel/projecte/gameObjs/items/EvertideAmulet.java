@@ -25,14 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -56,8 +49,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem {
-
-	private static final AttributeModifier SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION);
 
 	public EvertideAmulet(Properties props) {
 		super(props);
@@ -108,48 +99,6 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			}
 		}
 		return ActionResultType.SUCCESS;
-	}
-
-	@Override
-	public boolean onDroppedByPlayer(ItemStack item, PlayerEntity player) {
-		ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
-			attribute.removeModifier(SPEED_BOOST);
-		}
-		return true;
-	}
-
-	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (invSlot >= PlayerInventory.getSelectionSize() || !(entity instanceof LivingEntity)) {
-			return;
-		}
-		LivingEntity living = (LivingEntity) entity;
-		int x = (int) Math.floor(living.getX());
-		int y = (int) (living.getY() - living.getMyRidingOffset());
-		int z = (int) Math.floor(living.getZ());
-		BlockPos pos = new BlockPos(x, y, z);
-		if (world.getFluidState(pos.below()).getType().is(FluidTags.WATER) && world.isEmptyBlock(pos)) {
-			if (!living.isShiftKeyDown()) {
-				living.setDeltaMovement(living.getDeltaMovement().multiply(1, 0, 1));
-				living.fallDistance = 0.0F;
-				living.setOnGround(true);
-			}
-			if (!world.isClientSide) {
-				ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
-				if (attribute != null && !attribute.hasModifier(SPEED_BOOST)) {
-					attribute.addTransientModifier(SPEED_BOOST);
-				}
-			}
-		} else if (!world.isClientSide) {
-			if (living.isInWater()) {
-				living.setAirSupply(300);
-			}
-			ModifiableAttributeInstance attribute = living.getAttribute(Attributes.MOVEMENT_SPEED);
-			if (attribute != null && attribute.hasModifier(SPEED_BOOST)) {
-				attribute.removeModifier(SPEED_BOOST);
-			}
-		}
 	}
 
 	@Override
