@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TransmutationContainer extends PEHandContainer {
 
 	public final TransmutationInventory transmutationInventory;
+	private SlotUnlearn unlearn;
 
 	public static TransmutationContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
 		if (buf.readBoolean()) {
@@ -61,7 +63,7 @@ public class TransmutationContainer extends PEHandContainer {
 		this.addSlot(new SlotInput(transmutationInventory, 7, 43, 77));
 		this.addSlot(new SlotLock(transmutationInventory, 8, 158, 50));
 		this.addSlot(new SlotConsume(transmutationInventory, 9, 107, 97));
-		this.addSlot(new SlotUnlearn(transmutationInventory, 10, 89, 97));
+		this.addSlot(unlearn = new SlotUnlearn(transmutationInventory, 10, 89, 97));
 		this.addSlot(new SlotOutput(transmutationInventory, 11, 158, 9));
 		this.addSlot(new SlotOutput(transmutationInventory, 12, 176, 13));
 		this.addSlot(new SlotOutput(transmutationInventory, 13, 193, 30));
@@ -82,8 +84,13 @@ public class TransmutationContainer extends PEHandContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
-		return true;
+	public void removed(@Nonnull PlayerEntity player) {
+		super.removed(player);
+		if (!player.isAlive() || player instanceof ServerPlayerEntity && ((ServerPlayerEntity) player).hasDisconnected()) {
+			player.drop(unlearn.getItem(), false);
+		} else {
+			player.inventory.placeItemBackInInventory(player.level, unlearn.getItem());
+		}
 	}
 
 	@Nonnull
