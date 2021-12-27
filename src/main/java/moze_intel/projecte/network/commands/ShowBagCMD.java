@@ -106,7 +106,8 @@ public class ShowBagCMD {
 
 			@Override
 			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player) {
-				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, immutable) {
+				//Note: Selected is unused for offhand
+				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, 0, immutable) {
 					@Override
 					public boolean stillValid(@Nonnull PlayerEntity player) {
 						return canInteractWith.getAsBoolean();

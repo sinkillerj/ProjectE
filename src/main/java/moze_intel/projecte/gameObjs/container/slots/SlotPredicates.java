@@ -11,6 +11,8 @@ import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 
 public final class SlotPredicates {
 
+	public static final Predicate<ItemStack> ALWAYS_FALSE = input -> false;
+
 	public static final Predicate<ItemStack> HAS_EMC = input -> !input.isEmpty() && EMCHelper.doesItemHaveEmc(input);
 
 	public static final Predicate<ItemStack> COLLECTOR_LOCK = input -> !input.isEmpty() && FuelMapper.isStackFuel(input);

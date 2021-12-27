@@ -1,27 +1,17 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
-import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
-import moze_intel.projecte.utils.ContainerHelper;
-import moze_intel.projecte.utils.GuiHandler;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK3Container extends CollectorMK1Container {
-
-	public static CollectorMK3Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new CollectorMK3Container(windowId, invPlayer, (CollectorMK3Tile) GuiHandler.getTeFromBuf(buf));
-	}
 
 	public CollectorMK3Container(int windowId, PlayerInventory invPlayer, CollectorMK3Tile collector) {
 		super(PEContainerTypes.COLLECTOR_MK3_CONTAINER, windowId, invPlayer, collector);
@@ -34,59 +24,22 @@ public class CollectorMK3Container extends CollectorMK1Container {
 
 		//Klein Star Slot
 		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));
-
-		int counter = main.getSlots() - 1;
+		int counter = 0;
 		//Fuel Upgrade Slot
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				this.addSlot(new ValidatedSlot(main, counter--, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
+		for (int i = 3; i >= 0; i--) {
+			for (int j = 3; j >= 0; j--) {
+				this.addSlot(new ValidatedSlot(main, counter++, 18 + i * 18, 8 + j * 18, SlotPredicates.COLLECTOR_INV));
 			}
 		}
-
 		//Upgrade Result
-		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.COLLECTOR_INV));
-
+		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.ALWAYS_FALSE));
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
-
-		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 30, 84);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
-		Slot slot = this.getSlot(slotIndex);
-
-		if (slot == null || !slot.hasItem()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stack = slot.getItem();
-		ItemStack newStack = stack.copy();
-
-		if (slotIndex <= 18) {
-			if (!this.moveItemStackTo(stack, 19, 54, false)) {
-				return ItemStack.EMPTY;
-			}
-		} else if (slotIndex <= 54) {
-			if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack) || !this.moveItemStackTo(stack, 1, 16, false)) {
-				return ItemStack.EMPTY;
-			}
-		} else {
-			return ItemStack.EMPTY;
-		}
-
-		if (stack.isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
-			slot.setChanged();
-		}
-		return slot.onTake(player, stack);
+		addPlayerInventory(invPlayer, 30, 84);
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
-		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.COLLECTOR_MK3.getBlock()
-			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
+	protected BlockRegistryObject<Collector, ?> getValidBlock() {
+		return PEBlocks.COLLECTOR_MK3;
 	}
 }

@@ -40,6 +40,7 @@ public class AlchemicalBag extends ItemPE {
 		if (!world.isClientSide) {
 			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(player.getItemInHand(hand), hand), buf -> {
 				buf.writeEnum(hand);
+				buf.writeByte(player.inventory.selected);
 				buf.writeBoolean(false);
 			});
 		}
@@ -84,11 +85,11 @@ public class AlchemicalBag extends ItemPE {
 
 		@Nonnull
 		@Override
-		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-			IItemHandlerModifiable inv = (IItemHandlerModifiable) playerIn.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
+			IItemHandlerModifiable inv = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
-			return new AlchBagContainer(windowId, playerInventory, hand, inv, false);
+			return new AlchBagContainer(windowId, playerInventory, hand, inv, playerInventory.selected, false);
 		}
 
 		@Nonnull

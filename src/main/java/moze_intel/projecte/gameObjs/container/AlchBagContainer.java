@@ -1,90 +1,101 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
+import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
+import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.utils.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
-public class AlchBagContainer extends Container {
+public class AlchBagContainer extends PEHandContainer {
 
-	public final Hand hand;
-	private final int blocked;
 	private final boolean immutable;
 
 	public static AlchBagContainer fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf) {
-		return new AlchBagContainer(windowId, playerInv, buf.readEnum(Hand.class), new ItemStackHandler(104), buf.readBoolean());
+		return new AlchBagContainer(windowId, playerInv, buf.readEnum(Hand.class), new ItemStackHandler(104), buf.readByte(), buf.readBoolean());
 	}
 
-	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, boolean immutable) {
-		super(PEContainerTypes.ALCH_BAG_CONTAINER.get(), windowId);
-		this.hand = hand;
+	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
+		super(PEContainerTypes.ALCH_BAG_CONTAINER, windowId, hand, selected);
 		this.immutable = immutable;
-
 		//Bag Inventory
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 13; j++) {
-				this.addSlot(new SlotItemHandler(invBag, j + i * 13, 12 + j * 18, 5 + i * 18));
+				addSlot(createContainerSlot(invBag, j + i * 13, 12 + j * 18, 5 + i * 18));
 			}
 		}
+		addPlayerInventory(invPlayer, 48, 152);
+	}
 
-		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 152);
+	private InventoryContainerSlot createContainerSlot(IItemHandlerModifiable inv, int index, int x, int y) {
+		if (immutable) {
+			return new InventoryContainerSlot(inv, index, x, y) {
+				@Override
+				public boolean mayPickup(@Nonnull PlayerEntity player) {
+					return false;
+				}
 
-		blocked = hand == Hand.MAIN_HAND ? (slots.size() - 1) - (8 - invPlayer.selected) : -1;
+				@Override
+				public boolean mayPlace(@Nonnull ItemStack stack) {
+					return false;
+				}
+			};
+		}
+		return new InventoryContainerSlot(inv, index, x, y);
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
-		return true;
+	protected MainInventorySlot createMainInventorySlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+		if (immutable) {
+			return new MainInventorySlot(inv, index, x, y) {
+				@Override
+				public boolean mayPickup(@Nonnull PlayerEntity player) {
+					return false;
+				}
+
+				@Override
+				public boolean mayPlace(@Nonnull ItemStack stack) {
+					return false;
+				}
+			};
+		}
+		return super.createMainInventorySlot(inv, index, x, y);
+	}
+
+	@Override
+	protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+		if (immutable) {
+			return new HotBarSlot(inv, index, x, y) {
+				@Override
+				public boolean mayPickup(@Nonnull PlayerEntity player) {
+					return false;
+				}
+
+				@Override
+				public boolean mayPlace(@Nonnull ItemStack stack) {
+					return false;
+				}
+			};
+		}
+		return super.createHotBarSlot(inv, index, x, y);
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
-		if (immutable) {
-			return ItemStack.EMPTY;
-		}
-
-		Slot slot = this.getSlot(slotIndex);
-
-		if (!slot.hasItem()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stack = slot.getItem();
-		ItemStack newStack = stack.copy();
-
-		if (slotIndex < 104) {
-			if (!this.moveItemStackTo(stack, 104, this.slots.size(), true)) {
-				return ItemStack.EMPTY;
-			}
-			slot.setChanged();
-		} else if (!this.moveItemStackTo(stack, 0, 104, false)) {
-			return ItemStack.EMPTY;
-		}
-		if (stack.isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
-			slot.setChanged();
-		}
-		return slot.onTake(player, newStack);
+		return immutable ? ItemStack.EMPTY : super.quickMoveStack(player, slotIndex);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack clicked(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
-		if (immutable || slot == blocked || clickType == ClickType.SWAP && dragType == 40 && blocked == -1) {
-			return ItemStack.EMPTY;
-		}
-		return super.clicked(slot, dragType, clickType, player);
+	public ItemStack clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+		return immutable ? ItemStack.EMPTY : super.clicked(slotId, dragType, clickType, player);
 	}
 }

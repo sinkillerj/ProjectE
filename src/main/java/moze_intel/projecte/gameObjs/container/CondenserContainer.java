@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
@@ -8,110 +9,71 @@ import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ContainerHelper;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.GuiHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
-public class CondenserContainer extends PEContainer {
+public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 
-	protected final CondenserTile tile;
 	public final BoxedLong displayEmc = new BoxedLong();
 	public final BoxedLong requiredEmc = new BoxedLong();
-	protected final BoxedItemInfo boxedLockInfo = new BoxedItemInfo();
+	@Nullable
+	private ItemInfo lastLockInfo;
 
-	public CondenserContainer(ContainerTypeRegistryObject<?> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
-		super(type.get(), windowId);
+	public CondenserContainer(int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
+		this(PEContainerTypes.CONDENSER_CONTAINER, windowId, invPlayer, condenser);
+	}
+
+	protected CondenserContainer(ContainerTypeRegistryObject<? extends CondenserContainer> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
+		super(type, windowId, condenser);
 		this.longFields.add(displayEmc);
 		this.longFields.add(requiredEmc);
-		tile = condenser;
-		tile.numPlayersUsing++;
 		initSlots(invPlayer);
 	}
 
-	public static CondenserContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new CondenserContainer(PEContainerTypes.CONDENSER_CONTAINER, windowId, invPlayer, (CondenserTile) GuiHandler.getTeFromBuf(buf));
-	}
-
 	protected void initSlots(PlayerInventory invPlayer) {
-		this.addSlot(new SlotCondenserLock(boxedLockInfo, 0, 12, 6));
-
+		this.addSlot(new SlotCondenserLock(tile::getLockInfo, 0, 12, 6));
+		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s);
 		IItemHandler handler = tile.getInput();
-
-		int counter = 0;
-		//Condenser Inventory
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 13; j++) {
-				this.addSlot(new ValidatedSlot(handler, counter++, 12 + j * 18, 26 + i * 18, s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s)));
+				this.addSlot(new ValidatedSlot(handler,  j + i * 13, 12 + j * 18, 26 + i * 18, validator));
 			}
 		}
-
-		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 48, 154);
+		addPlayerInventory(invPlayer, 48, 154);
 	}
 
 	@Override
 	public void broadcastChanges() {
-		this.boxedLockInfo.set(tile.getLockInfo());
 		this.displayEmc.set(tile.displayEmc);
 		this.requiredEmc.set(tile.requiredEmc);
-		if (boxedLockInfo.isDirty()) {
+		ItemInfo lockInfo = tile.getLockInfo();
+		if (!Objects.equals(lockInfo, lastLockInfo)) {
+			lastLockInfo = lockInfo;
 			for (IContainerListener listener : containerListeners) {
-				PacketHandler.sendLockSlotUpdate(listener, this, boxedLockInfo.get());
+				PacketHandler.sendLockSlotUpdate(listener, this, lockInfo);
 			}
 		}
 		super.broadcastChanges();
 	}
 
-	@Nonnull
-	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
-		Slot slot = this.getSlot(slotIndex);
-
-		if (slot == null || !slot.hasItem()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stack = slot.getItem();
-		ItemStack newStack = stack.copy();
-
-		if (slotIndex <= 91) {
-			if (!this.moveItemStackTo(stack, 92, 127, false)) {
-				return ItemStack.EMPTY;
-			}
-		} else if (!EMCHelper.doesItemHaveEmc(stack) || !this.moveItemStackTo(stack, 1, 91, false)) {
-			return ItemStack.EMPTY;
-		}
-
-		if (stack.isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
-			slot.setChanged();
-		}
-		return slot.onTake(player, stack);
+	protected BlockRegistryObject<? extends Condenser, ?> getValidBlock() {
+		return PEBlocks.CONDENSER;
 	}
 
 	@Override
 	public boolean stillValid(@Nonnull PlayerEntity player) {
-		return player.level.getBlockState(tile.getBlockPos()).getBlock() instanceof Condenser
-			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
-	}
-
-	@Override
-	public void removed(@Nonnull PlayerEntity player) {
-		super.removed(player);
-		tile.numPlayersUsing--;
+		return stillValid(player, tile, getValidBlock());
 	}
 
 	@Nonnull
@@ -137,31 +99,6 @@ public class CondenserContainer extends PEContainer {
 	}
 
 	public void updateLockInfo(@Nullable ItemInfo lockInfo) {
-		boxedLockInfo.set(lockInfo);
-	}
-
-	public static class BoxedItemInfo {
-
-		@Nullable
-		private ItemInfo inner;
-		private boolean dirty = false;
-
-		@Nullable
-		public ItemInfo get() {
-			return inner;
-		}
-
-		public void set(@Nullable ItemInfo v) {
-			if (!Objects.equals(inner, v)) {
-				inner = v;
-				dirty = true;
-			}
-		}
-
-		public boolean isDirty() {
-			boolean ret = dirty;
-			dirty = false;
-			return ret;
-		}
+		tile.setLockInfoFromPacket(lockInfo);
 	}
 }

@@ -1,25 +1,16 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import moze_intel.projecte.utils.ContainerHelper;
-import moze_intel.projecte.utils.GuiHandler;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK3Container extends RelayMK1Container {
-
-	public static RelayMK3Container fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
-		return new RelayMK3Container(windowId, invPlayer, (RelayMK3Tile) GuiHandler.getTeFromBuf(buf));
-	}
 
 	public RelayMK3Container(int windowId, PlayerInventory invPlayer, RelayMK3Tile relay) {
 		super(PEContainerTypes.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
@@ -29,55 +20,22 @@ public class RelayMK3Container extends RelayMK1Container {
 	void initSlots(PlayerInventory invPlayer) {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
-
-		//Burn slot
-		this.addSlot(new ValidatedSlot(input, 0, 104, 58, SlotPredicates.RELAY_INV));
-
-		int counter = input.getSlots() - 1;
-		//Inventory Buffer
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 5; j++) {
-				this.addSlot(new ValidatedSlot(input, counter--, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
-			}
-		}
-
 		//Klein star charge
 		this.addSlot(new ValidatedSlot(output, 0, 164, 58, SlotPredicates.EMC_HOLDER));
-
-		ContainerHelper.addPlayerInventory(this::addSlot, invPlayer, 26, 113);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
-		Slot slot = this.getSlot(slotIndex);
-
-		if (slot == null || !slot.hasItem()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stack = slot.getItem();
-		ItemStack newStack = stack.copy();
-
-		if (slotIndex < 22) {
-			if (!this.moveItemStackTo(stack, 22, this.slots.size(), true)) {
-				return ItemStack.EMPTY;
+		//Burn slot
+		this.addSlot(new ValidatedSlot(input, 0, 104, 58, SlotPredicates.RELAY_INV));
+		int counter = 1;
+		//Inventory buffer
+		for (int i = 3; i >= 0; i--) {
+			for (int j = 4; j >= 0; j--) {
+				this.addSlot(new ValidatedSlot(input, counter++, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 			}
-			slot.setChanged();
-		} else if (!this.moveItemStackTo(stack, 0, 21, false)) {
-			return ItemStack.EMPTY;
 		}
-		if (stack.isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
-			slot.setChanged();
-		}
-		return slot.onTake(player, newStack);
+		addPlayerInventory(invPlayer, 26, 113);
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
-		return player.level.getBlockState(tile.getBlockPos()).getBlock() == PEBlocks.RELAY_MK3.getBlock()
-			   && player.distanceToSqr(tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5) <= 64.0;
+	protected BlockRegistryObject<Relay, ?> getValidBlock() {
+		return PEBlocks.RELAY_MK3;
 	}
 }

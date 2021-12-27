@@ -13,7 +13,6 @@ import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +32,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerProvider {
 
-	private final ItemStackHandler input;
+	private final CompactableStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
 	private final long chargeRate;
 	private double bonusEMC;
@@ -45,7 +44,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 	RelayMK1Tile(TileEntityType<?> type, int sizeInv, EnumRelayTier tier) {
 		super(type, tier.getStorage());
 		this.chargeRate = tier.getChargeRate();
-		input = new StackHandler(sizeInv) {
+		input = new CompactableStackHandler(sizeInv) {
 			@Nonnull
 			@Override
 			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
@@ -82,7 +81,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 			return;
 		}
 		sendEmc();
-		ItemHelper.compactInventory(input);
+		input.compact();
 		ItemStack stack = getBurn();
 		if (!stack.isEmpty()) {
 			Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();

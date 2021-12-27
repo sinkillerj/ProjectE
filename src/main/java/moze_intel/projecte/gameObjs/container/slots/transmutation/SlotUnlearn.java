@@ -2,12 +2,12 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotUnlearn extends SlotItemHandler {
+public class SlotUnlearn extends InventoryContainerSlot {
 
 	private final TransmutationInventory inv;
 
@@ -31,11 +31,6 @@ public class SlotUnlearn extends SlotItemHandler {
 
 	@Override
 	public int getMaxStackSize() {
-		return 1;
-	}
-
-	@Override
-	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }

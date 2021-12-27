@@ -45,8 +45,8 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerProvider {
 
 	private static final long EMC_CONSUMPTION = 2;
-	private final ItemStackHandler inputInventory = new StackHandler(getInvSize());
-	private final ItemStackHandler outputInventory = new StackHandler(getInvSize());
+	private final CompactableStackHandler inputInventory = new CompactableStackHandler(getInvSize());
+	private final CompactableStackHandler outputInventory = new CompactableStackHandler(getInvSize());
 	private final ItemStackHandler fuelInv = new StackHandler(1);
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
@@ -54,11 +54,6 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
-	private boolean outputEmpty = true;
-	/**
-	 * Used to make sure we don't have an infinite loop of mark dirty
-	 */
-	private boolean isCompacting;
 
 	public DMFurnaceTile() {
 		this(PETileEntityTypes.DARK_MATTER_FURNACE.get(), 10, 3);
@@ -143,6 +138,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		}
 
 		if (level != null && !level.isClientSide) {
+			inputInventory.compact();
+			outputInventory.compact();
 			pullFromInventories();
 			ItemStack fuelItem = getFuelItem();
 			if (canSmelt() && !fuelItem.isEmpty()) {
@@ -196,20 +193,6 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		}
 	}
 
-	@Override
-	public void setChanged() {
-		if (!isCompacting) {
-			if (level != null && !level.isClientSide) {
-				isCompacting = true;
-				ItemHelper.compactInventory(inputInventory);
-				outputEmpty = ItemHelper.compactInventory(outputInventory);
-				isCompacting = false;
-			}
-			//No need to mark it dirty if we are currently compacting as we will mark it when we are done compacting
-			super.setChanged();
-		}
-	}
-
 	public boolean isBurning() {
 		return furnaceBurnTime > 0;
 	}
@@ -226,7 +209,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
 			if (!extractTest.isEmpty()) {
-				IItemHandler targetInv = extractTest.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent() || AbstractFurnaceTileEntity.isFuel(extractTest)
+				IItemHandler targetInv = AbstractFurnaceTileEntity.isFuel(extractTest) || extractTest.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
 										 ? fuelInv : inputInventory;
 				transferItem(targetInv, i, extractTest, handler);
 			}
@@ -234,7 +217,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	private void pushToInventories() {
-		if (outputEmpty) {
+		if (outputInventory.isEmpty()) {
 			return;
 		}
 		TileEntity tile = WorldHelper.getTileEntity(level, worldPosition.below());
@@ -273,7 +256,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	private void smeltItem() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
-		if (level.random.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
+		if (level != null && level.random.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
 			smeltResult.grow(smeltResult.getCount());
 		}
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
@@ -301,7 +284,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	}
 
 	private int getItemBurnTime(ItemStack stack) {
-		return ForgeHooks.getBurnTime(stack) * ticksBeforeSmelt / 200 * efficiencyBonus;
+		return ForgeHooks.getBurnTime(stack, IRecipeType.SMELTING) * ticksBeforeSmelt / 200 * efficiencyBonus;
 	}
 
 	public int getBurnTimeRemainingScaled(int value) {
@@ -315,8 +298,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	@Override
 	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
 		super.load(state, nbt);
-		furnaceBurnTime = nbt.getShort("BurnTime");
-		furnaceCookTime = nbt.getShort("CookTime");
+		furnaceBurnTime = nbt.getInt("BurnTime");
+		furnaceCookTime = nbt.getInt("CookTime");
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		outputInventory.deserializeNBT(nbt.getCompound("Output"));
 		fuelInv.deserializeNBT(nbt.getCompound("Fuel"));
@@ -327,8 +310,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	@Override
 	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
 		nbt = super.save(nbt);
-		nbt.putShort("BurnTime", (short) furnaceBurnTime);
-		nbt.putShort("CookTime", (short) furnaceCookTime);
+		nbt.putInt("BurnTime", furnaceBurnTime);
+		nbt.putInt("CookTime", furnaceCookTime);
 		nbt.put("Input", inputInventory.serializeNBT());
 		nbt.put("Output", outputInventory.serializeNBT());
 		nbt.put("Fuel", fuelInv.serializeNBT());

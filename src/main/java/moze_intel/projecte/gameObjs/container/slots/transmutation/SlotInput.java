@@ -9,13 +9,13 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotInput extends SlotItemHandler {
+public class SlotInput extends InventoryContainerSlot {
 
 	private final TransmutationInventory inv;
 
@@ -82,11 +82,6 @@ public class SlotInput extends SlotItemHandler {
 
 	@Override
 	public int getMaxStackSize() {
-		return 1;
-	}
-
-	@Override
-	public int getMaxStackSize(@Nonnull ItemStack stack) {
 		return 1;
 	}
 }

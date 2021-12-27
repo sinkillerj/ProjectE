@@ -67,8 +67,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	@Override
 	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand), stack.getHoverName());
-		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> b.writeEnum(hand));
+		int selected = player.inventory.selected;
+		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
+		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> {
+			b.writeEnum(hand);
+			b.writeByte(selected);
+		});
 		return true;
 	}
 

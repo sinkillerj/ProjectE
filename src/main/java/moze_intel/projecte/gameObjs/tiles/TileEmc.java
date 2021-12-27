@@ -2,10 +2,12 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -85,8 +87,49 @@ public abstract class TileEmc extends TileEmcBase implements ITickableTileEntity
 		}
 
 		@Override
-		public void onContentsChanged(int slot) {
-			TileEmc.this.setChanged();
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			//TODO: Make setChanged batched like it is in mek so that we don't notify neighbors so many times
+			// this will be improve the performance of Compacting handlers substantially
+			setChanged();
+		}
+	}
+
+	class CompactableStackHandler extends StackHandler {
+
+		private boolean needsCompacting;
+		private boolean empty;
+
+		CompactableStackHandler(int size) {
+			super(size);
+		}
+
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			needsCompacting = true;
+		}
+
+		public void compact() {
+			if (needsCompacting) {
+				if (level != null && !level.isClientSide) {
+					empty = ItemHelper.compactInventory(this);
+				}
+				needsCompacting = false;
+			}
+		}
+
+		@Override
+		protected void onLoad() {
+			super.onLoad();
+			empty = IntStream.range(0, getSlots()).allMatch(slot -> getStackInSlot(slot).isEmpty());
+		}
+
+		/**
+		 * @apiNote Only use this on the server
+		 */
+		public boolean isEmpty() {
+			return empty;
 		}
 	}
 }

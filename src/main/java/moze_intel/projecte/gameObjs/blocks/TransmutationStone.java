@@ -80,7 +80,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
 			@Nonnull BlockRayTraceResult rtr) {
 		if (!world.isClientSide) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeEnum(Hand.OFF_HAND));
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -128,7 +128,7 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 
 		@Override
 		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
-			return new TransmutationContainer(windowId, playerInventory, Hand.OFF_HAND);
+			return new TransmutationContainer(windowId, playerInventory);
 		}
 
 		@Nonnull

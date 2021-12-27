@@ -4,10 +4,9 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 // Partial copy of SlotItemHandler with a validator
-public class ValidatedSlot extends SlotItemHandler {
+public class ValidatedSlot extends InventoryContainerSlot {
 
 	private final Predicate<ItemStack> validator;
 

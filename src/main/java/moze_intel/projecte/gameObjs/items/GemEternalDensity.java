@@ -141,7 +141,10 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
-				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack), buf -> buf.writeItem(stack));
+				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand, stack), buf -> {
+					buf.writeEnum(hand);
+					buf.writeByte(player.inventory.selected);
+				});
 			}
 		}
 		return ActionResult.success(stack);
@@ -290,15 +293,17 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static class ContainerProvider implements INamedContainerProvider {
 
 		private final ItemStack stack;
+		private final Hand hand;
 
-		private ContainerProvider(ItemStack stack) {
+		private ContainerProvider(Hand hand, ItemStack stack) {
 			this.stack = stack;
+			this.hand = hand;
 		}
 
 		@Nonnull
 		@Override
 		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
-			return new EternalDensityContainer(windowId, playerInventory, new EternalDensityInventory(stack));
+			return new EternalDensityContainer(windowId, playerInventory, hand, playerInventory.selected, new EternalDensityInventory(stack));
 		}
 
 		@Nonnull

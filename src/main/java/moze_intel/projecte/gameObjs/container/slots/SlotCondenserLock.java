@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.gameObjs.container.CondenserContainer.BoxedItemInfo;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -15,11 +15,11 @@ public class SlotCondenserLock extends Slot {
 
 	private static final IInventory emptyInventory = new Inventory(0);
 
-	private final BoxedItemInfo boxedLockInfo;
+	private final Supplier<ItemInfo> lockInfo;
 
-	public SlotCondenserLock(BoxedItemInfo boxedLockInfo, int index, int xPosition, int yPosition) {
+	public SlotCondenserLock(Supplier<ItemInfo> lockInfo, int index, int xPosition, int yPosition) {
 		super(emptyInventory, index, xPosition, yPosition);
-		this.boxedLockInfo = boxedLockInfo;
+		this.lockInfo = lockInfo;
 	}
 
 	@Override
@@ -41,14 +41,9 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public int getMaxStackSize(@Nonnull ItemStack stack) {
-		return 1;
-	}
-
-	@Override
 	@Nonnull
 	public ItemStack getItem() {
-		ItemInfo lockInfo = boxedLockInfo.get();
+		ItemInfo lockInfo = this.lockInfo.get();
 		return lockInfo == null ? ItemStack.EMPTY : lockInfo.createStack();
 	}
 

@@ -25,7 +25,11 @@ public class TransmutationTablet extends ItemPE {
 	@Override
 	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
 		if (!world.isClientSide) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> buf.writeEnum(hand));
+			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand), buf -> {
+				buf.writeBoolean(true);
+				buf.writeEnum(hand);
+				buf.writeByte(player.inventory.selected);
+			});
 		}
 		return ActionResult.success(player.getItemInHand(hand));
 	}
@@ -40,7 +44,7 @@ public class TransmutationTablet extends ItemPE {
 
 		@Override
 		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
-			return new TransmutationContainer(windowId, playerInventory, hand);
+			return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.selected);
 		}
 
 		@Nonnull

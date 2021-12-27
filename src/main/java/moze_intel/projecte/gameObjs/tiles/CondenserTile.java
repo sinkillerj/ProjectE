@@ -9,7 +9,6 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.TextComponentUtil;
@@ -169,6 +168,10 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 		return lockInfo.equals(NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)));
 	}
 
+	public void setLockInfoFromPacket(@Nullable ItemInfo lockInfo) {
+		this.lockInfo = lockInfo;
+	}
+
 	public boolean attemptCondenserSet(PlayerEntity player) {
 		if (level == null || level.isClientSide) {
 			return false;
@@ -211,7 +214,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 
 	@Override
 	public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-		return new CondenserContainer(PEContainerTypes.CONDENSER_CONTAINER, windowId, playerInventory, this);
+		return new CondenserContainer(windowId, playerInventory, this);
 	}
 
 	@Nonnull

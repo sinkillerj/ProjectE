@@ -233,6 +233,13 @@ public final class ItemHelper {
 		return combinedNBT;
 	}
 
+	public static ItemStack size(ItemStack stack, int size) {
+		if (size <= 0 || stack.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		return ItemHandlerHelper.copyStackWithSize(stack, size);
+	}
+
 	public static BlockState stackToState(ItemStack stack) {
 		if (stack.getItem() instanceof BlockItem) {
 			return ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
