@@ -131,8 +131,8 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 	@Override
 	public void tick() {
 		boolean wasBurning = isBurning();
-		boolean shouldSave = false;
-
+		int lastFurnaceBurnTime = furnaceBurnTime;
+		int lastFurnaceCookTime = furnaceCookTime;
 		if (isBurning()) {
 			--furnaceBurnTime;
 		}
@@ -148,6 +148,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 					if (simulatedExtraction == EMC_CONSUMPTION) {
 						forceInsertEmc(emcHolder.extractEmc(fuelItem, simulatedExtraction, EmcAction.EXECUTE), EmcAction.EXECUTE);
 					}
+					markDirty(false, false);
 				});
 			}
 
@@ -158,15 +159,13 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 
 			if (furnaceBurnTime == 0 && canSmelt()) {
 				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(fuelItem);
-				if (isBurning()) {
-					shouldSave = true;
-					if (!fuelItem.isEmpty()) {
-						ItemStack copy = fuelItem.copy();
-						fuelItem.shrink(1);
-						if (fuelItem.isEmpty()) {
-							fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
-						}
+				if (isBurning() && !fuelItem.isEmpty()) {
+					ItemStack copy = fuelItem.copy();
+					fuelItem.shrink(1);
+					if (fuelItem.isEmpty()) {
+						fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
 					}
+					markDirty(false, false);
 				}
 			}
 
@@ -175,22 +174,22 @@ public class DMFurnaceTile extends CapabilityTileEMC implements INamedContainerP
 				if (furnaceCookTime == ticksBeforeSmelt) {
 					furnaceCookTime = 0;
 					smeltItem();
-					shouldSave = true;
 				}
 			}
 			if (wasBurning != isBurning()) {
-				shouldSave = true;
 				BlockState state = getBlockState();
 				if (state.getBlock() instanceof MatterFurnace) {
 					//Should always be true, but validate it just in case
 					level.setBlockAndUpdate(worldPosition, state.setValue(MatterFurnace.LIT, isBurning()));
 				}
-			}
-			if (shouldSave) {
 				setChanged();
 			}
 			pushToInventories();
 		}
+		if (lastFurnaceBurnTime != furnaceBurnTime || lastFurnaceCookTime != furnaceCookTime) {
+			markDirty(false, false);
+		}
+		super.tick();
 	}
 
 	public boolean isBurning() {

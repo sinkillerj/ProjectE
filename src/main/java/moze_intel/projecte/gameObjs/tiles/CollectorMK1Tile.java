@@ -39,8 +39,22 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 
 public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContainerProvider {
 
-	private final ItemStackHandler input = new StackHandler(getInvSize());
-	private final ItemStackHandler auxSlots = new StackHandler(3);
+	private final ItemStackHandler input = new StackHandler(getInvSize()) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			needsCompacting = true;
+		}
+	};
+	private final ItemStackHandler auxSlots = new StackHandler(3) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			if (slot == UPGRADING_SLOT) {
+				needsCompacting = true;
+			}
+		}
+	};
 	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
 	public static final int UPGRADING_SLOT = 0;
 	public static final int UPGRADE_SLOT = 1;
@@ -49,8 +63,9 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	private final long emcGen;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
-	private long storedFuelEmc;
 	private double unprocessedEMC;
+	//Start as needing to check for compacting when loaded
+	private boolean needsCompacting = true;
 
 	public CollectorMK1Tile() {
 		this(PETileEntityTypes.COLLECTOR.get(), EnumCollectorTier.MK1);
@@ -97,13 +112,22 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	}
 
 	@Override
+	protected boolean emcAffectsComparators() {
+		return true;
+	}
+
+	@Override
 	public void tick() {
 		if (level != null && !level.isClientSide) {
-			ItemHelper.compactInventory(toSort);
+			if (needsCompacting) {
+				ItemHelper.compactInventory(toSort);
+				needsCompacting = false;
+			}
 			checkFuelOrKlein();
 			updateEmc();
 			rotateUpgraded();
 		}
+		super.tick();
 	}
 
 	private void rotateUpgraded() {
@@ -143,6 +167,8 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 				//Force add the EMC regardless of if we can receive EMC from external sources
 				unprocessedEMC -= forceInsertEmc((long) unprocessedEMC, EmcAction.EXECUTE);
 			}
+			//Note: We don't need to recheck comparators because it doesn't take the unprocessed emc into account
+			markDirty(false, false);
 		}
 
 		if (this.getStoredEmc() > 0) {
@@ -248,7 +274,6 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	@Override
 	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
 		super.load(state, nbt);
-		storedFuelEmc = nbt.getLong("FuelEMC");
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
 		unprocessedEMC = nbt.getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
@@ -258,7 +283,6 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements INamedContain
 	@Override
 	public CompoundNBT save(@Nonnull CompoundNBT nbt) {
 		nbt = super.save(nbt);
-		nbt.putLong("FuelEMC", storedFuelEmc);
 		nbt.put("Input", input.serializeNBT());
 		nbt.put("AuxSlots", auxSlots.serializeNBT());
 		nbt.putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);

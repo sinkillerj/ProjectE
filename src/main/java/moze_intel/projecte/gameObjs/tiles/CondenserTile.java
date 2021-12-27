@@ -106,6 +106,7 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 				condense();
 			}
 		}
+		super.tick();
 	}
 
 	private void checkLockAndUpdate() {
@@ -183,14 +184,14 @@ public class CondenserTile extends ChestTileEmc implements INamedContainerProvid
 				ItemInfo reducedInfo = NBTManager.getPersistentInfo(sourceInfo);
 				if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo))) {
 					lockInfo = reducedInfo;
-					setChanged();
+					markDirty(false, false);
 					return true;
 				}
 			}
 			return false;
 		}
 		lockInfo = null;
-		setChanged();
+		markDirty(false, false);
 		return true;
 	}
 

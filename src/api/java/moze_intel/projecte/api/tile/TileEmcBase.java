@@ -34,6 +34,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 		maximumEMC = max;
 		if (getStoredEmc() > getMaximumEmc()) {
 			currentEMC = getMaximumEmc();
+			storedEmcChanged();
 		}
 	}
 
@@ -115,6 +116,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 		long toRemove = Math.min(getStoredEmc(), toExtract);
 		if (action.execute()) {
 			currentEMC -= toRemove;
+			storedEmcChanged();
 		}
 		return toRemove;
 	}
@@ -137,8 +139,16 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 		long toAdd = Math.min(getNeededEmc(), toAccept);
 		if (action.execute()) {
 			currentEMC += toAdd;
+			storedEmcChanged();
 		}
 		return toAdd;
+	}
+
+	/**
+	 * Called when the amount of EMC stored changes.
+	 */
+	protected void storedEmcChanged() {
+		setChanged();
 	}
 
 	@Nonnull
@@ -167,7 +177,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 		if (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) {
 			if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
-				//If the capability has not been retrieved yet or it is not valid then recreate it
+				//If the capability has not been retrieved yet, or it is not valid then recreate it
 				emcStorageCapability = LazyOptional.of(() -> this);
 			}
 			return emcStorageCapability.cast();

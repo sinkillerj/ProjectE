@@ -62,6 +62,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 				setActive(false);
 			}
 		}
+		super.tick();
 	}
 
 	private void spawnParticleTypes() {
@@ -95,11 +96,15 @@ public class DMPedestalTile extends CapabilityTileEMC {
 	}
 
 	public void setActivityCooldown(int i) {
-		activityCooldown = i;
+		if (activityCooldown != i) {
+			activityCooldown = i;
+			markDirty(false, false);
+		}
 	}
 
 	public void decrementActivityCooldown() {
 		activityCooldown--;
+		markDirty(false, false);
 	}
 
 	/**
@@ -164,6 +169,7 @@ public class DMPedestalTile extends CapabilityTileEMC {
 			}
 		}
 		this.isActive = newState;
+		markDirty(false, false);
 	}
 
 	public IItemHandlerModifiable getInventory() {

@@ -51,6 +51,7 @@ public class AlchChestTile extends ChestTileEmc implements INamedContainerProvid
 				}
 			}
 		}
+		super.tick();
 	}
 
 	@Nonnull

@@ -76,36 +76,41 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 	}
 
 	@Override
+	protected boolean emcAffectsComparators() {
+		return true;
+	}
+
+	@Override
 	public void tick() {
-		if (level == null || level.isClientSide) {
-			return;
-		}
-		sendEmc();
-		input.compact();
-		ItemStack stack = getBurn();
-		if (!stack.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
-				long simulatedVal = forceInsertEmc(emcHolder.extractEmc(stack, chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
-				if (simulatedVal > 0) {
-					forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
-				}
-			} else {
-				long emcVal = EMCHelper.getEmcSellValue(stack);
-				if (emcVal > 0 && emcVal <= getNeededEmc()) {
-					forceInsertEmc(emcVal, EmcAction.EXECUTE);
-					getBurn().shrink(1);
+		if (level != null && !level.isClientSide) {
+			sendEmc();
+			input.compact();
+			ItemStack stack = getBurn();
+			if (!stack.isEmpty()) {
+				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+				if (holderCapability.isPresent()) {
+					IItemEmcHolder emcHolder = holderCapability.get();
+					long simulatedVal = forceInsertEmc(emcHolder.extractEmc(stack, chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
+					if (simulatedVal > 0) {
+						forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
+					}
+				} else {
+					long emcVal = EMCHelper.getEmcSellValue(stack);
+					if (emcVal > 0 && emcVal <= getNeededEmc()) {
+						forceInsertEmc(emcVal, EmcAction.EXECUTE);
+						getBurn().shrink(1);
+					}
 				}
 			}
+			ItemStack chargeable = getCharging();
+			if (!chargeable.isEmpty() && this.getStoredEmc() > 0) {
+				chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+					long actualSent = emcHolder.insertEmc(chargeable, Math.min(getStoredEmc(), chargeRate), EmcAction.EXECUTE);
+					forceExtractEmc(actualSent, EmcAction.EXECUTE);
+				});
+			}
 		}
-		ItemStack chargeable = getCharging();
-		if (!chargeable.isEmpty() && this.getStoredEmc() > 0) {
-			chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
-				long actualSent = emcHolder.insertEmc(chargeable, Math.min(getStoredEmc(), chargeRate), EmcAction.EXECUTE);
-				forceExtractEmc(actualSent, EmcAction.EXECUTE);
-			});
-		}
+		super.tick();
 	}
 
 	private void sendEmc() {
@@ -175,6 +180,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements INamedContainerPr
 			// an infinite amount of "bonus" emc if our buffer is full.
 			bonusEMC -= emcToInsert;
 		}
+		markDirty(false, false);
 	}
 
 	@Nonnull

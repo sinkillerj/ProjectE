@@ -279,8 +279,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!world.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (tile != null) {
-				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> condense(stack, inv));
-				tile.setChanged();
+				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+					if (condense(stack, inv)) {
+						tile.markDirty(false, true);
+					}
+				});
 			}
 		}
 	}

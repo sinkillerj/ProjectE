@@ -100,7 +100,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 						if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
 							nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-							tile.setChanged();
+							//Note: We don't need to recheck comparators as repairing doesn't change the number
+							// of items in slots
+							tile.markDirty(false, false);
 						}
 					});
 				}

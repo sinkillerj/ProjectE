@@ -152,6 +152,7 @@ public class Pedestal extends Block implements IWaterLoggable {
 				}
 			}
 			ped.previousRedstoneState = flag;
+			ped.markDirty(false, false);
 		}
 	}
 
