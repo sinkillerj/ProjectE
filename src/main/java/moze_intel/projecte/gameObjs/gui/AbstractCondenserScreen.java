@@ -16,11 +16,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends PEContainerScreen<T> {
 
-	protected final T container;
-
 	public AbstractCondenserScreen(T condenser, PlayerInventory playerInventory, ITextComponent title) {
 		super(condenser, playerInventory, title);
-		this.container = condenser;
 		this.imageWidth = 255;
 		this.imageHeight = 233;
 	}
@@ -34,21 +31,21 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-		int progress = container.getProgressScaled();
+		int progress = menu.getProgressScaled();
 		blit(matrix, leftPos + 33, topPos + 10, 0, 235, progress, 10);
 	}
 
 	@Override
 	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
-		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
+		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 		ITextComponent emc = TransmutationEMCFormatter.formatEMC(toDisplay);
 		this.font.draw(matrix, emc, 140, 10, 0x404040);
 	}
 
 	@Override
 	protected void renderTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-		long toDisplay = Math.min(container.displayEmc.get(), container.requiredEmc.get());
+		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 
 		if (toDisplay < 1e12) {
 			super.renderTooltip(matrix, mouseX, mouseY);

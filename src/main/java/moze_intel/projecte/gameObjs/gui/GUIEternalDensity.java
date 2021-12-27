@@ -25,7 +25,7 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 	@Override
 	public void init() {
 		super.init();
-		addButton(new Button(leftPos + 62, topPos + 4, 52, 20, menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate(),
+		addButton(new Button(leftPos + 62, topPos + 4, 52, 20, (menu.inventory.isWhitelistMode() ? PELang.WHITELIST : PELang.BLACKLIST).translate(),
 				b -> {
 					menu.inventory.changeMode();
 					b.setMessage(menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());

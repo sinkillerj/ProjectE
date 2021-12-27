@@ -1,6 +1,7 @@
 package moze_intel.projecte;
 
 import java.util.Map;
+import mezz.jei.api.runtime.IRecipesGui;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.AbstractCondenserScreen;
 import moze_intel.projecte.gameObjs.gui.AlchBagScreen;
@@ -13,6 +14,7 @@ import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK1;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK3;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
+import moze_intel.projecte.gameObjs.gui.PEContainerScreen;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -50,8 +52,11 @@ import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -87,6 +92,19 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent evt) {
+		if (ModList.get().isLoaded("jei")) {
+			//Note: This listener is only registered if JEI is loaded
+			MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (GuiOpenEvent event) -> {
+				if (Minecraft.getInstance().screen instanceof PEContainerScreen) {
+					//If JEI is loaded and our current screen is a mekanism gui,
+					// check if the new screen is a JEI recipe screen
+					if (event.getGui() instanceof IRecipesGui) {
+						//If it is mark on our current screen that we are switching to JEI
+						((PEContainerScreen<?>) Minecraft.getInstance().screen).switchingToJEI = true;
+					}
+				}
+			});
+		}
 		//Tile Entity
 		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.ALCHEMICAL_CHEST.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/block/alchemical_chest.png"), block -> block == PEBlocks.ALCHEMICAL_CHEST.getBlock()));
 		ClientRegistry.bindTileEntityRenderer(PETileEntityTypes.CONDENSER.get(), dispatcher -> new ChestRenderer(dispatcher, PECore.rl("textures/block/condenser_mk1.png"), block -> block == PEBlocks.CONDENSER.getBlock()));
