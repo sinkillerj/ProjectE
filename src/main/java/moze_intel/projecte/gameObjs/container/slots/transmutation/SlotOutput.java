@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -25,14 +26,15 @@ public class SlotOutput extends InventoryContainerSlot {
 	@Nonnull
 	@Override
 	public ItemStack remove(int amount) {
-		ItemStack stack = getItem().copy();
-		stack.setCount(amount);
-		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack)).multiply(BigInteger.valueOf(amount));
+		ItemStack stack = ItemHelper.size(getItem(), amount);
+		BigInteger emcValue = BigInteger.valueOf(EMCHelper.getEmcValue(stack));
+		if (amount > 1) {
+			emcValue = emcValue.multiply(BigInteger.valueOf(amount));
+		}
 		if (emcValue.compareTo(inv.getAvailableEmc()) > 0) {
 			//Requesting more emc than available
 			//Container expects stacksize=0-Itemstack for 'nothing'
-			stack.setCount(0);
-			return stack;
+			return ItemStack.EMPTY;
 		}
 		if (inv.isServer()) {
 			inv.removeEmc(emcValue);

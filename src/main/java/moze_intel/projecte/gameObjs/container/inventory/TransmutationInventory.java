@@ -324,6 +324,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 								//The EMC that is being removed that the provider does not contain is satisfied by this IItemEMC
 								//Remove it and then stop checking other input slots as we were able to provide all that was needed
 								syncChangedSlots(inputLocksChanged, TargetUpdateType.IF_NEEDED);
+								if (currentEmc.compareTo(BigInteger.ZERO) > 0) {
+									updateEmcAndSync(BigInteger.ZERO);
+								}
 								return;
 							}
 						}

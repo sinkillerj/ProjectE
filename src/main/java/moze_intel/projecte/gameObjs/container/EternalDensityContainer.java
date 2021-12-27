@@ -40,7 +40,7 @@ public class EternalDensityContainer extends PEHandContainer {
 		if (slotIndex > 8) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
-				ItemHandlerHelper.insertItem(inventory, ItemHelper.size(slot.getItem(), 1), false);
+				ItemHandlerHelper.insertItem(inventory, ItemHelper.getNormalizedStack(slot.getItem()), false);
 			}
 		}
 		return ItemStack.EMPTY;

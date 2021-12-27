@@ -129,9 +129,7 @@ public final class ItemHelper {
 	 * Returns an ItemStack with stacksize 1.
 	 */
 	public static ItemStack getNormalizedStack(ItemStack stack) {
-		ItemStack result = stack.copy();
-		result.setCount(1);
-		return result;
+		return size(stack, 1);
 	}
 
 	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy) {
