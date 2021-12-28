@@ -103,7 +103,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	private InteractionResult formBlocks(ItemStack eye, Player player, BlockPos startingPos, @Nullable Direction facing) {
 		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-		if (!inventoryCapability.isPresent()) {
+		if (inventoryCapability.isEmpty()) {
 			return InteractionResult.FAIL;
 		}
 		IItemHandler inventory = inventoryCapability.get();
@@ -236,7 +236,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	private boolean doBlockPlace(Player player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
 		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-		if (!inventoryCapability.isPresent()) {
+		if (inventoryCapability.isEmpty()) {
 			return false;
 		}
 		IItemHandler inventory = inventoryCapability.get();
@@ -245,7 +245,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			return false;
 		}
 		Optional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (!holderCapability.isPresent() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
+		if (holderCapability.isEmpty() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
 			WorldHelper.getTileEntity(player.getCommandSenderWorld(), placePos) != null) {
 			return false;
 		}

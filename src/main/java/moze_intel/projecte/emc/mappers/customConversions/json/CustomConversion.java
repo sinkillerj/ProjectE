@@ -16,9 +16,7 @@ public class CustomConversion {
 		conversion.count = count;
 		conversion.output = output;
 		conversion.ingredients = new HashMap<>();
-		for (Map.Entry<NormalizedSimpleStack, Integer> entry : ingredients.entrySet()) {
-			conversion.ingredients.put(entry.getKey(), entry.getValue());
-		}
+		conversion.ingredients.putAll(ingredients);
 		return conversion;
 	}
 

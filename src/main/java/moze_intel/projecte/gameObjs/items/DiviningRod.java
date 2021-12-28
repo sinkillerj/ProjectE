@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.items;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongList;
-import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -99,7 +99,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			for (int i = 0; i < 3; i++) {
 				maxValues[i] = 1;
 			}
-			emcValues.sort(Comparator.reverseOrder());
+			emcValues.sort(LongComparators.OPPOSITE_COMPARATOR);
 			int num = Math.min(emcValues.size(), 3);
 			for (int i = 0; i < num; i++) {
 				maxValues[i] = emcValues.getLong(i);

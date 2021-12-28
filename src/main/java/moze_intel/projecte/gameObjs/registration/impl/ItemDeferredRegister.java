@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
 	private static final CreativeModeTab creativeTab = new CreativeModeTab(PECore.MODID) {
+		@Nonnull
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(PEItems.PHILOSOPHERS_STONE);

@@ -2,6 +2,7 @@ package moze_intel.projecte.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,8 +151,8 @@ public class AnnotationHelper {
 				}
 			}
 			//If we don't have any fields that have the Instance annotation, then try to create a new instance of the class
-			return subClass.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError e) {
+			return subClass.getDeclaredConstructor().newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | LinkageError | InvocationTargetException | NoSuchMethodException e) {
 			PECore.LOGGER.error("Failed to load: {}", className, e);
 		}
 		return null;

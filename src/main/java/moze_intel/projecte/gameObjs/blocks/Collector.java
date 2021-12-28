@@ -85,7 +85,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 			return super.getAnalogOutputSignal(state, world, pos);
 		}
 		Optional<IItemHandler> cap = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).resolve();
-		if (!cap.isPresent()) {
+		if (cap.isEmpty()) {
 			//If something went wrong fallback to default implementation
 			return super.getAnalogOutputSignal(state, world, pos);
 		}

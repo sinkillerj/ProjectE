@@ -142,7 +142,7 @@ public class PlayerEvents {
 			return;
 		}
 		Optional<IAlchBagProvider> cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
-		if (!cap.isPresent()) {
+		if (cap.isEmpty()) {
 			return;
 		}
 		IItemHandler handler = cap.get().getBag(((AlchemicalBag) bag.getItem()).color);

@@ -312,7 +312,7 @@ public final class KnowledgeImpl {
 					toRemove.add(info);
 				}
 			}
-			knowledge.removeAll(toRemove);
+			toRemove.forEach(knowledge::remove);
 			knowledge.addAll(toAdd);
 		}
 	}

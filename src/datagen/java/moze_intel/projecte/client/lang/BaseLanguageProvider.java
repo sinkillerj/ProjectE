@@ -2,6 +2,7 @@ package moze_intel.projecte.client.lang;
 
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.data.DataGenerator;
@@ -27,7 +28,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 	}
 
 	@Override
-	public void add(String key, String value) {
+	public void add(@Nonnull String key, @Nonnull String value) {
 		super.add(key, value);
 		if (altProviders.length > 0) {
 			List<Component> splitEnglish = FormatSplitter.split(value);
@@ -38,7 +39,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 	}
 
 	@Override
-	public void run(HashCache cache) throws IOException {
+	public void run(@Nonnull HashCache cache) throws IOException {
 		super.run(cache);
 		if (altProviders.length > 0) {
 			for (ConvertibleLanguageProvider provider : altProviders) {

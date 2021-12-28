@@ -117,11 +117,10 @@ public final class CustomEMCParser {
 		return removed;
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
 	public static void flush() {
 		if (dirty) {
 			try {
-				Files.write(GSON.toJson(currentEntries), CONFIG, Charsets.UTF_8);
+				Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(currentEntries));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -129,12 +128,11 @@ public final class CustomEMCParser {
 		}
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
 	private static void writeDefaultFile() {
 		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<>()));
 		elem.add("__comment", new JsonPrimitive("Use the in-game commands to edit this file"));
 		try {
-			Files.write(GSON.toJson(elem), CONFIG, Charsets.UTF_8);
+			Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(elem));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
