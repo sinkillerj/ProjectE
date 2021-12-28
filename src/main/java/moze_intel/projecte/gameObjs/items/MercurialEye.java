@@ -297,30 +297,30 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		BlockPos start = startingPos;
 		BlockPos end = startingPos;
 		switch (facing) {
-			case UP:
+			case UP -> {
 				start = start.offset(-strength, -depth, -strength);
 				end = end.offset(strength, 0, strength);
-				break;
-			case DOWN:
+			}
+			case DOWN -> {
 				start = start.offset(-strength, 0, -strength);
 				end = end.offset(strength, depth, strength);
-				break;
-			case SOUTH:
+			}
+			case SOUTH -> {
 				start = start.offset(-strength, -strength, -depth);
 				end = end.offset(strength, strength, 0);
-				break;
-			case NORTH:
+			}
+			case NORTH -> {
 				start = start.offset(-strength, -strength, 0);
 				end = end.offset(strength, strength, depth);
-				break;
-			case EAST:
+			}
+			case EAST -> {
 				start = start.offset(-depth, -strength, -strength);
 				end = end.offset(0, strength, strength);
-				break;
-			case WEST:
+			}
+			case WEST -> {
 				start = start.offset(0, -strength, -strength);
 				end = end.offset(depth, strength, strength);
-				break;
+			}
 		}
 		return new ImmutablePair<>(start, end);
 	}

@@ -107,8 +107,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					if (world.getLevelData() instanceof ServerLevelData) {
-						ServerLevelData worldInfo = (ServerLevelData) world.getLevelData();
+					if (world.getLevelData() instanceof ServerLevelData worldInfo) {
 						worldInfo.setRainTime(0);
 						worldInfo.setThunderTime(0);
 						worldInfo.setRaining(false);

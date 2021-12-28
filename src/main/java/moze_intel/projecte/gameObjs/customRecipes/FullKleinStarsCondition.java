@@ -25,7 +25,7 @@ public class FullKleinStarsCondition implements ICondition {
 		return ProjectEConfig.common.fullKleinStars.get();
 	}
 
-	public static final IConditionSerializer<FullKleinStarsCondition> SERIALIZER = new IConditionSerializer<FullKleinStarsCondition>() {
+	public static final IConditionSerializer<FullKleinStarsCondition> SERIALIZER = new IConditionSerializer<>() {
 		@Override
 		public void write(JsonObject json, FullKleinStarsCondition value) {
 		}

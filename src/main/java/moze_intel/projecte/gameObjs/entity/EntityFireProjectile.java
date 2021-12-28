@@ -35,8 +35,8 @@ public class EntityFireProjectile extends ThrowableProjectile {
 	@Override
 	protected void onHit(@Nonnull HitResult mop) {
 		Entity thrower = getOwner();
-		if (!level.isClientSide && thrower instanceof Player && mop instanceof BlockHitResult) {
-			BlockPos pos = ((BlockHitResult) mop).getBlockPos();
+		if (!level.isClientSide && thrower instanceof Player && mop instanceof BlockHitResult result) {
+			BlockPos pos = result.getBlockPos();
 			Block block = level.getBlockState(pos).getBlock();
 			if (block == Blocks.OBSIDIAN) {
 				level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());

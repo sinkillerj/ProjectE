@@ -136,9 +136,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 					return InteractionResult.PASS;
 				},
 				() -> {
-					if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
+					if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock beehive && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
 						//Act as shears on beehives
-						BeehiveBlock beehive = (BeehiveBlock) state.getBlock();
 						world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.NEUTRAL, 1, 1);
 						BeehiveBlock.dropHoneycomb(world, pos);
 						if (!CampfireBlock.isSmokeyPos(world, pos)) {
@@ -227,13 +226,12 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	}
 
 	/**
-	 * Copy of {@link net.minecraft.item.ShearsItem#itemInteractionForEntity(ItemStack, PlayerEntity, LivingEntity, Hand)}
+	 * Copy of {@link net.minecraft.world.item.ShearsItem#interactLivingEntity(ItemStack, Player, LivingEntity, InteractionHand)}
 	 */
 	@Nonnull
 	@Override
 	public InteractionResult interactLivingEntity(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull LivingEntity entity, @Nonnull InteractionHand hand) {
-		if (entity instanceof IForgeShearable) {
-			IForgeShearable target = (IForgeShearable) entity;
+		if (entity instanceof IForgeShearable target) {
 			BlockPos pos = entity.blockPosition();
 			if (target.isShearable(stack, entity.level, pos)) {
 				if (!entity.level.isClientSide) {

@@ -129,9 +129,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					if (world.getLevelData() instanceof ServerLevelData) {
+					if (world.getLevelData() instanceof ServerLevelData worldInfo) {
 						int i = (300 + world.random.nextInt(600)) * 20;
-						ServerLevelData worldInfo = (ServerLevelData) world.getLevelData();
 						worldInfo.setRainTime(i);
 						worldInfo.setThunderTime(i);
 						worldInfo.setRaining(true);

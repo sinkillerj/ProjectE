@@ -17,14 +17,23 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -32,34 +41,25 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.stats.Stats;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
@@ -308,7 +308,7 @@ public class ToolHelper {
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
 	public static void digBasedOnMode(ItemStack stack, Level world, BlockPos pos, LivingEntity living, RayTracePointer tracePointer) {
-		if (world.isClientSide || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof Player)) {
+		if (world.isClientSide || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof Player player)) {
 			return;
 		}
 		byte mode = getMode(stack);
@@ -316,46 +316,29 @@ public class ToolHelper {
 			//Standard
 			return;
 		}
-		Player player = (Player) living;
 		HitResult mop = tracePointer.rayTrace(world, player, ClipContext.Fluid.NONE);
-		if (!(mop instanceof BlockHitResult)) {
-			return;
-		}
-		BlockHitResult rayTraceResult = (BlockHitResult) mop;
-		if (rayTraceResult.getType() == Type.MISS || !pos.equals(rayTraceResult.getBlockPos())) {
+		if (!(mop instanceof BlockHitResult result) || result.getType() == Type.MISS || !pos.equals(result.getBlockPos())) {
 			//Ensure that the ray trace agrees with the position we were told about
 			return;
 		}
-		Direction sideHit = rayTraceResult.getDirection();
-		AABB box = new AABB(pos, pos);
-		switch (mode) {
-			case 1: //3x Tallshot
-				box = new AABB(pos.below(), pos.above());
-				break;
-			case 2: //3x Wideshot
-				switch (sideHit.getAxis()) {
-					case X:
-						box = new AABB(pos.south(), pos.north());
-						break;
-					case Y:
-						switch (player.getDirection().getAxis()) {
-							case X:
-								box = new AABB(pos.south(), pos.north());
-								break;
-							case Z:
-								box = new AABB(pos.west(), pos.east());
-								break;
-						}
-						break;
-					case Z:
-						box = new AABB(pos.west(), pos.east());
-						break;
-				}
-				break;
-			case 3: //3x Longshot
-				box = new AABB(pos, pos.relative(sideHit.getOpposite(), 2));
-				break;
-		}
+		Direction sideHit = result.getDirection();
+		AABB box = switch (mode) {
+			//3x Tallshot
+			case 1 -> new AABB(pos.below(), pos.above());
+			//3x Wideshot
+			case 2 -> switch (sideHit.getAxis()) {
+				case X -> new AABB(pos.south(), pos.north());
+				case Y -> switch (player.getDirection().getAxis()) {
+					case X -> new AABB(pos.south(), pos.north());
+					case Z -> new AABB(pos.west(), pos.east());
+					default -> new AABB(pos, pos);
+				};
+				case Z -> new AABB(pos.west(), pos.east());
+			};
+			//3x Longshot
+			case 3 -> new AABB(pos, pos.relative(sideHit.getOpposite(), 2));
+			default -> new AABB(pos, pos);
+		};
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
 			if (world.isEmptyBlock(digPos)) {
@@ -424,10 +407,10 @@ public class ToolHelper {
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
 	public static void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg) {
-		if (!(damager instanceof Player) || damager.getCommandSenderWorld().isClientSide) {
+		if (!(damager instanceof Player player) || damager.getCommandSenderWorld().isClientSide) {
 			return;
 		}
-		DamageSource dmg = DamageSource.playerAttack((Player) damager);
+		DamageSource dmg = DamageSource.playerAttack(player);
 		int charge = getCharge(stack);
 		float totalDmg = baseDmg;
 		if (charge > 0) {
@@ -470,8 +453,7 @@ public class ToolHelper {
 	public static InteractionResult shearBlock(ItemStack stack, BlockPos pos, Player player) {
 		Level world = player.getCommandSenderWorld();
 		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof IForgeShearable) {
-			IForgeShearable target = (IForgeShearable) block;
+		if (block instanceof IForgeShearable target) {
 			if (target.isShearable(stack, world, pos) && (world.isClientSide || PlayerHelper.hasBreakPermission((ServerPlayer) player, pos))) {
 				List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
 				if (!drops.isEmpty()) {
@@ -527,14 +509,14 @@ public class ToolHelper {
 				Entity e = ent.getType().create(world);
 				if (e != null) {
 					e.setPos(ent.getX(), ent.getY(), ent.getZ());
-					if (e instanceof Mob) {
-						((Mob) e).finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(entityPosition), MobSpawnType.EVENT, null, null);
+					if (e instanceof Mob mob) {
+						mob.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(entityPosition), MobSpawnType.EVENT, null, null);
 					}
-					if (e instanceof Sheep) {
-						((Sheep) e).setColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
+					if (e instanceof Sheep sheep) {
+						sheep.setColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
 					}
-					if (e instanceof AgeableMob) {
-						((AgeableMob) e).setAge(-24000);
+					if (e instanceof AgeableMob mob) {
+						mob.setAge(-24000);
 					}
 					world.addFreshEntity(e);
 				}
@@ -628,7 +610,7 @@ public class ToolHelper {
 
 	public static boolean canMatterMine(EnumMatterType matterType, Block block) {
 		//TODO - 1.18: Re-evaluate this method and moving over to needs_x_matter_tool
-		return block instanceof IMatterBlock && ((IMatterBlock) block).getMatterType().getMatterTier() <= matterType.getMatterTier();
+		return block instanceof IMatterBlock matterBlock && matterBlock.getMatterType().getMatterTier() <= matterType.getMatterTier();
 	}
 
 	private static int getCharge(ItemStack stack) {

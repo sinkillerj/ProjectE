@@ -36,11 +36,10 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		Player player = (Player) entity;
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (!consumeFuel(player, stack, 2 * 64, false)) {

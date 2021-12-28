@@ -25,7 +25,7 @@ public class TomeEnabledCondition implements ICondition {
 		return ProjectEConfig.common.craftableTome.get();
 	}
 
-	public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<TomeEnabledCondition>() {
+	public static final IConditionSerializer<TomeEnabledCondition> SERIALIZER = new IConditionSerializer<>() {
 		@Override
 		public void write(JsonObject json, TomeEnabledCondition value) {
 		}

@@ -152,11 +152,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	private static ItemStack getTarget(ItemStack stack) {
 		Item item = stack.getItem();
-		if (!(item instanceof GemEternalDensity)) {
+		if (!(item instanceof GemEternalDensity gem)) {
 			PECore.LOGGER.fatal("Invalid gem of eternal density: {}", stack);
 			return ItemStack.EMPTY;
 		}
-		byte target = ((GemEternalDensity) item).getMode(stack);
+		byte target = gem.getMode(stack);
 		switch (target) {
 			case 0:
 				return new ItemStack(Items.IRON_INGOT);

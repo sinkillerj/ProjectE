@@ -112,18 +112,15 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		int recipeCount = 0;
 		List<IBrewingRecipe> recipes = BrewingRecipeRegistry.getRecipes();
 		for (IBrewingRecipe recipe : recipes) {
-			if (recipe instanceof BrewingRecipe) {
-				BrewingRecipe brewingRecipe = (BrewingRecipe) recipe;
-				Ingredient input = brewingRecipe.getInput();
-				Ingredient reagent = brewingRecipe.getIngredient();
-				ItemStack output = brewingRecipe.getOutput();
-				ItemStack[] validInputs = getMatchingStacks(input);
-				ItemStack[] validReagents = getMatchingStacks(reagent);
+			if (recipe instanceof BrewingRecipe brewingRecipe) {
+				ItemStack[] validInputs = getMatchingStacks(brewingRecipe.getInput());
+				ItemStack[] validReagents = getMatchingStacks(brewingRecipe.getIngredient());
 				if (validInputs == null || validReagents == null) {
 					//Skip brewing recipes that we are not able to process such as ones using tags
 					// as ingredients, as tags don't exist when the brewing recipe is being defined
 					continue;
 				}
+				ItemStack output = brewingRecipe.getOutput();
 				NormalizedSimpleStack nssOut = NSSItem.createItem(output);
 				for (ItemStack validInput : validInputs) {
 					NormalizedSimpleStack nssInput = NSSItem.createItem(validInput);

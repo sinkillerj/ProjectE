@@ -51,7 +51,7 @@ public class KeyPressPKT implements IPEPacket {
 			return;
 		}
 		Optional<InternalAbilities> cap = player.getCapability(InternalAbilities.CAPABILITY).resolve();
-		if (!cap.isPresent()) {
+		if (cap.isEmpty()) {
 			return;
 		}
 		InternalAbilities internalAbilities = cap.get();
@@ -73,8 +73,8 @@ public class KeyPressPKT implements IPEPacket {
 						return;
 					} else if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
 						ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-						if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest && internalAbilities.getGemCooldown() == 0) {
-							((GemChest) chestplate.getItem()).doExplode(player);
+						if (!chestplate.isEmpty() && chestplate.getItem() instanceof GemChest chest && internalAbilities.getGemCooldown() == 0) {
+							chest.doExplode(player);
 							internalAbilities.resetGemCooldown();
 							return;
 						}
@@ -88,8 +88,8 @@ public class KeyPressPKT implements IPEPacket {
 					}
 					if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
 						ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-						if (!helmet.isEmpty() && helmet.getItem() instanceof GemHelmet) {
-							((GemHelmet) helmet.getItem()).doZap(player);
+						if (!helmet.isEmpty() && helmet.getItem() instanceof GemHelmet gemHelmet) {
+							gemHelmet.doZap(player);
 							return;
 						}
 					}

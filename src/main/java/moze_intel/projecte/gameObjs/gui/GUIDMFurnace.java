@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;

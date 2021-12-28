@@ -108,15 +108,15 @@ public final class WorldHelper {
 
 	public static void drainFluid(Level world, BlockPos pos, BlockState state, Fluid toMatch) {
 		Block block = state.getBlock();
-		if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid().isSame(toMatch)) {
+		if (block instanceof IFluidBlock fluidBlock && fluidBlock.getFluid().isSame(toMatch)) {
 			//If it is a fluid block drain it (may be the case for some custom block?)
 			// We double check though the fluid block represents a given one though, in case there is some weird thing
 			// going on and we are a bucket pickup handler for the actual water and fluid state
-			((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
-		} else if (block instanceof BucketPickup) {
+			fluidBlock.drain(world, pos, FluidAction.EXECUTE);
+		} else if (block instanceof BucketPickup bucketPickup) {
 			//If it is a bucket pickup handler (so may be a fluid logged block) "pick it up"
 			// This includes normal fluid blocks
-			((BucketPickup) block).pickupBlock(world, pos, state);
+			bucketPickup.pickupBlock(world, pos, state);
 		}
 	}
 
@@ -178,7 +178,7 @@ public final class WorldHelper {
 	 * Checks if a block is a {@link LiquidBlockContainer} that supports a specific fluid type.
 	 */
 	public static boolean isLiquidContainerForFluid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid) {
-		return state.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
+		return state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(world, pos, state, fluid);
 	}
 
 	/**
@@ -242,63 +242,39 @@ public final class WorldHelper {
 	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
 	public static AABB getBroadDeepBox(BlockPos pos, Direction direction, int offset) {
-		switch (direction) {
-			case EAST:
-				return new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
-			case WEST:
-				return new AABB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case UP:
-				return new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
-			case DOWN:
-				return new AABB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case SOUTH:
-				return new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
-			case NORTH:
-				return new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			default:
-				return new AABB(0, 0, 0, 0, 0, 0);
-		}
+		return switch (direction) {
+			case EAST -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
+			case WEST -> new AABB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case UP -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
+			case DOWN -> new AABB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+			case SOUTH -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
+			case NORTH -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
+		};
 	}
 
 	/**
 	 * Returns in AABB that is always 3x3 orthogonal to the side hit, but varies in depth in the direction of the side hit
 	 */
 	public static AABB getDeepBox(BlockPos pos, Direction direction, int depth) {
-		switch (direction) {
-			case EAST:
-				return new AABB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
-			case WEST:
-				return new AABB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
-			case UP:
-				return new AABB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
-			case DOWN:
-				return new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
-			case SOUTH:
-				return new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
-			case NORTH:
-				return new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
-			default:
-				return new AABB(0, 0, 0, 0, 0, 0);
-		}
+		return switch (direction) {
+			case EAST -> new AABB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
+			case WEST -> new AABB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
+			case UP -> new AABB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
+			case DOWN -> new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
+			case SOUTH -> new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
+			case NORTH -> new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
+		};
 	}
 
 	/**
 	 * Returns in AABB that is always a single block deep but is size x size orthogonal to the side hit
 	 */
 	public static AABB getBroadBox(BlockPos pos, Direction direction, int size) {
-		switch (direction) {
-			case EAST:
-			case WEST:
-				return new AABB(pos.getX(), pos.getY() - size, pos.getZ() - size, pos.getX(), pos.getY() + size, pos.getZ() + size);
-			case UP:
-			case DOWN:
-				return new AABB(pos.getX() - size, pos.getY(), pos.getZ() - size, pos.getX() + size, pos.getY(), pos.getZ() + size);
-			case SOUTH:
-			case NORTH:
-				return new AABB(pos.getX() - size, pos.getY() - size, pos.getZ(), pos.getX() + size, pos.getY() + size, pos.getZ());
-			default:
-				return new AABB(0, 0, 0, 0, 0, 0);
-		}
+		return switch (direction) {
+			case EAST, WEST -> new AABB(pos.getX(), pos.getY() - size, pos.getZ() - size, pos.getX(), pos.getY() + size, pos.getZ() + size);
+			case UP, DOWN -> new AABB(pos.getX() - size, pos.getY(), pos.getZ() - size, pos.getX() + size, pos.getY(), pos.getZ() + size);
+			case SOUTH, NORTH -> new AABB(pos.getX() - size, pos.getY() - size, pos.getZ(), pos.getX() + size, pos.getY() + size, pos.getZ());
+		};
 	}
 
 	/**
@@ -351,57 +327,56 @@ public final class WorldHelper {
 	}
 
 	public static void growNearbyRandomly(boolean harvest, Level world, BlockPos pos, Player player) {
-		if (!(world instanceof ServerLevel)) {
+		if (!(world instanceof ServerLevel level)) {
 			return;
 		}
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.offset(-5, -3, -5), pos.offset(5, 3, 5))) {
 			currentPos = currentPos.immutable();
-			BlockState state = world.getBlockState(currentPos);
+			BlockState state = level.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
 			if (crop instanceof IForgeShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
 				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock) {
 				if (harvest) {
-					harvestBlock(world, currentPos, (ServerPlayer) player);
+					harvestBlock(level, currentPos, (ServerPlayer) player);
 				}
 			}
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
 			// Mushroom, potato, sapling, stems, tallgrass
-			else if (crop instanceof BonemealableBlock) {
-				BonemealableBlock growable = (BonemealableBlock) crop;
-				if (!growable.isValidBonemealTarget(world, currentPos, state, false)) {
+			else if (crop instanceof BonemealableBlock growable) {
+				if (!growable.isValidBonemealTarget(level, currentPos, state, false)) {
 					if (harvest && !PETags.Blocks.BLACKLIST_HARVEST.contains(crop)) {
-						if (crop != Blocks.KELP_PLANT || world.getBlockState(currentPos.below()).is(crop)) {
+						if (crop != Blocks.KELP_PLANT || level.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of help but otherwise allow harvesting them
-							harvestBlock(world, currentPos, (ServerPlayer) player);
+							harvestBlock(level, currentPos, (ServerPlayer) player);
 						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
-					if (world.random.nextInt(chance) == 0) {
-						growable.performBonemeal((ServerLevel) world, world.random, currentPos, state);
+					if (level.random.nextInt(chance) == 0) {
+						growable.performBonemeal(level, level.random, currentPos, state);
 					}
 				}
 			}
 			// All modded
 			// Cactus, Reeds, Netherwart, Flower
 			else if (crop instanceof IPlantable) {
-				if (world.random.nextInt(chance / 4) == 0) {
+				if (level.random.nextInt(chance / 4) == 0) {
 					for (int i = 0; i < (harvest ? 8 : 4); i++) {
-						state.randomTick((ServerLevel) world, currentPos, world.random);
+						state.randomTick(level, currentPos, level.random);
 					}
 				}
 				if (harvest) {
 					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
-						if (world.getBlockState(currentPos.above()).is(crop) && world.getBlockState(currentPos.above(2)).is(crop)) {
+						if (level.getBlockState(currentPos.above()).is(crop) && level.getBlockState(currentPos.above(2)).is(crop)) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								harvestBlock(world, currentPos.above(i), (ServerPlayer) player);
+								harvestBlock(level, currentPos.above(i), (ServerPlayer) player);
 							}
 						}
 					} else if (crop == Blocks.NETHER_WART) {
 						if (state.getValue(NetherWartBlock.AGE) == 3) {
-							harvestBlock(world, currentPos, (ServerPlayer) player);
+							harvestBlock(level, currentPos, (ServerPlayer) player);
 						}
 					}
 				}
@@ -487,8 +462,8 @@ public final class WorldHelper {
 	public static void repelEntitiesSWRG(Level world, AABB effectBounds, Player player) {
 		Vec3 playerVec = player.position();
 		for (Entity ent : world.getEntitiesOfClass(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
-			if (ent instanceof Projectile) {
-				Entity owner = ((Projectile) ent).getOwner();
+			if (ent instanceof Projectile projectile) {
+				Entity owner = projectile.getOwner();
 				//Note: Eventually we would like to remove the check for if the world is remote and the thrower is null, but
 				// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
 				// as the client doesn't know the owner of things like ender pearls and thus renders it improperly

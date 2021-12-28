@@ -151,7 +151,7 @@ public final class EMCMappingHandler {
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
-		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem) || ((NSSItem) e.getKey()).representsTag() || e.getValue() <= 0);
+		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem nssItem) || nssItem.representsTag() || e.getValue() <= 0);
 	}
 
 	public static int getEmcMapSize() {

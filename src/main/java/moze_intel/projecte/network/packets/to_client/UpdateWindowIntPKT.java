@@ -23,8 +23,8 @@ public class UpdateWindowIntPKT implements IPEPacket {
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.containerMenu instanceof PEContainer && player.containerMenu.containerId == windowId) {
-			((PEContainer) player.containerMenu).updateProgressBarInt(propId, propVal);
+		if (player != null && player.containerMenu instanceof PEContainer container && player.containerMenu.containerId == windowId) {
+			container.updateProgressBarInt(propId, propVal);
 		}
 	}
 

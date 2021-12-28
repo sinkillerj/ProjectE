@@ -35,11 +35,10 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		Player player = (Player) entity;
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
 			int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 			addStoredXP(stack, toAdd);

@@ -28,17 +28,12 @@ public final class ItemHelper {
 	 * Gets an ActionResult based on a type
 	 */
 	public static InteractionResultHolder<ItemStack> actionResultFromType(InteractionResult type, ItemStack stack) {
-		switch (type) {
-			case SUCCESS:
-				return InteractionResultHolder.success(stack);
-			case CONSUME:
-				return InteractionResultHolder.consume(stack);
-			case FAIL:
-				return InteractionResultHolder.fail(stack);
-			case PASS:
-			default:
-				return InteractionResultHolder.pass(stack);
-		}
+		return switch (type) {
+			case SUCCESS -> InteractionResultHolder.success(stack);
+			case CONSUME -> InteractionResultHolder.consume(stack);
+			case FAIL -> InteractionResultHolder.fail(stack);
+			default -> InteractionResultHolder.pass(stack);
+		};
 	}
 
 	/**
@@ -239,9 +234,6 @@ public final class ItemHelper {
 	}
 
 	public static BlockState stackToState(ItemStack stack) {
-		if (stack.getItem() instanceof BlockItem) {
-			return ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-		}
-		return null;
+		return stack.getItem() instanceof BlockItem blockItem ? blockItem.getBlock().defaultBlockState() : null;
 	}
 }

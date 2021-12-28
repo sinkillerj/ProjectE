@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;

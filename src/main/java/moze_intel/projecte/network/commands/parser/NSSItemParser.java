@@ -22,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Customized version of {@link net.minecraft.command.arguments.ItemParser} that does not support NBT on tags, and does not wrap it into a Predicate.
+ * Customized version of {@link net.minecraft.commands.arguments.item.ItemParser} that does not support NBT on tags, and does not wrap it into a Predicate.
  */
 public class NSSItemParser {
 

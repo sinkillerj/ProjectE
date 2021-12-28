@@ -52,8 +52,7 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 				return;
 			}
 			Entity thrower = getOwner();
-			if (thrower instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer) thrower;
+			if (thrower instanceof ServerPlayer player) {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
 					BlockState state = level.getBlockState(pos);
 					FluidState fluidState = state.getFluidState();
@@ -101,11 +100,10 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 			discard();
 			return;
 		}
-		if (mop instanceof BlockHitResult) {
-			BlockHitResult result = (BlockHitResult) mop;
+		if (mop instanceof BlockHitResult result) {
 			WorldHelper.placeFluid((ServerPlayer) thrower, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-		} else if (mop instanceof EntityHitResult) {
-			Entity ent = ((EntityHitResult) mop).getEntity();
+		} else if (mop instanceof EntityHitResult result) {
+			Entity ent = result.getEntity();
 			if (ent.isOnFire()) {
 				ent.clearFire();
 			}

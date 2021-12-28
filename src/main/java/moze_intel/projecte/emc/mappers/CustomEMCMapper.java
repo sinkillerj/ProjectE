@@ -20,9 +20,9 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> 
 		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
 			PECore.debugLog("Adding custom EMC value for {}: {}", entry.item, entry.emc);
 			mapper.setValueBefore(entry.item, entry.emc);
-			if (entry.item instanceof NSSTag) {
+			if (entry.item instanceof NSSTag nssTag) {
 				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				((NSSTag) entry.item).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.emc));
+				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.emc));
 			}
 		}
 	}

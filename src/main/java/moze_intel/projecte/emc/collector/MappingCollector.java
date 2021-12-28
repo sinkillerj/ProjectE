@@ -153,11 +153,8 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof MappingCollector.Conversion)) {
-				return false;
-			}
-			Conversion other = (Conversion) o;
-			return Objects.equals(output, other.output) && Objects.equals(value, other.value) && Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
+			return o instanceof MappingCollector.Conversion other && Objects.equals(output, other.output) && Objects.equals(value, other.value) &&
+				   Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
 		}
 
 		@Override

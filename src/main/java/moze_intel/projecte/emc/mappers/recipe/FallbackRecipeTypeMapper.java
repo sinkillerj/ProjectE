@@ -46,11 +46,10 @@ public class FallbackRecipeTypeMapper extends BaseRecipeTypeMapper {
 	@Override
 	protected Collection<Ingredient> getIngredients(Recipe<?> recipe) {
 		Collection<Ingredient> ingredients = super.getIngredients(recipe);
-		if (recipe instanceof UpgradeRecipe && ingredients.isEmpty()) {
-			//If the extension of smithing recipe doesn't override getIngredients (just like vanilla doesn't)
+		if (recipe instanceof UpgradeRecipe upgradeRecipe && ingredients.isEmpty()) {
+			//If the extension of upgrade recipe doesn't override getIngredients (just like vanilla doesn't)
 			// grab the values from the recipe's object itself
-			UpgradeRecipe smithingRecipe = (UpgradeRecipe) recipe;
-			return Arrays.asList(smithingRecipe.base, smithingRecipe.addition);
+			return Arrays.asList(upgradeRecipe.base, upgradeRecipe.addition);
 		}
 		return ingredients;
 	}

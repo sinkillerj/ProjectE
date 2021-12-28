@@ -84,11 +84,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (entity instanceof Player && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			Player player = (Player) entity;
-			AABB bBox = player.getBoundingBox().inflate(7);
-			List<ItemEntity> itemList = world.getEntitiesOfClass(ItemEntity.class, bBox);
-			for (ItemEntity item : itemList) {
+		if (entity instanceof Player player && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			for (ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(7))) {
 				if (ItemHelper.simulateFit(player.getInventory().items, item.getItem()) < item.getItem().getCount()) {
 					WorldHelper.gravitateEntityTowards(item, player.getX(), player.getY(), player.getZ());
 				}

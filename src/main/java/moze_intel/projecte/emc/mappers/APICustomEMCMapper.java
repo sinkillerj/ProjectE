@@ -78,9 +78,9 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 					long emc = entry.getValue();
 					if (isAllowedToSet(modId, normStack, emc, config)) {
 						mapper.setValueBefore(normStack, emc);
-						if (normStack instanceof NSSTag) {
+						if (normStack instanceof NSSTag nssTag) {
 							//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-							((NSSTag) normStack).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, emc));
+							nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, emc));
 						}
 						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, emc);
 					} else {
@@ -93,9 +93,9 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	private boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, CommentedFileConfig config) {
 		String resourceLocation;
-		if (stack instanceof NSSItem) {
+		if (stack instanceof NSSItem nssItem) {
 			//Allow both item names and tag locations
-			resourceLocation = ((NSSItem) stack).getResourceLocation().toString();
+			resourceLocation = nssItem.getResourceLocation().toString();
 		} else {
 			resourceLocation = "IntermediateFakeItemsUsedInRecipes:";
 		}

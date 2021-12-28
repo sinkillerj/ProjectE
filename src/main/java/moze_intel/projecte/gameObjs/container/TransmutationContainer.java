@@ -86,7 +86,7 @@ public class TransmutationContainer extends PEHandContainer {
 	@Override
 	public void removed(@Nonnull Player player) {
 		super.removed(player);
-		if (!player.isAlive() || player instanceof ServerPlayer && ((ServerPlayer) player).hasDisconnected()) {
+		if (!player.isAlive() || player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected()) {
 			player.drop(unlearn.getItem(), false);
 		} else {
 			player.getInventory().placeItemBackInInventory(unlearn.getItem());

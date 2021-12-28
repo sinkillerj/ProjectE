@@ -52,7 +52,7 @@ public final class NSSFake implements NormalizedSimpleStack {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof NSSFake && description.equals(((NSSFake) o).description) && namespace.equals(((NSSFake) o).namespace);
+		return o instanceof NSSFake fake && description.equals(fake.description) && namespace.equals(fake.namespace);
 	}
 
 	@Override

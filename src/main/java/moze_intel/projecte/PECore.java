@@ -205,8 +205,7 @@ public class PECore {
 				@Override
 				protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
 					//Based off the flint and steel dispense behavior
-					if (stack.getItem() instanceof Arcana) {
-						Arcana item = (Arcana) stack.getItem();
+					if (stack.getItem() instanceof Arcana item) {
 						if (item.getMode(stack) != 1) {
 							//Only allow using the arcana ring to ignite things when on ignition mode
 							setSuccess(false);
@@ -296,8 +295,8 @@ public class PECore {
 		// cached values from calls before the initial loading
 		ModConfig config = configEvent.getConfig();
 		//Make sure it is for the same modid as us
-		if (config.getModId().equals(MODID) && config instanceof PEModConfig) {
-			((PEModConfig) config).clearCache();
+		if (config.getModId().equals(MODID) && config instanceof PEModConfig peConfig) {
+			peConfig.clearCache();
 		}
 	}
 

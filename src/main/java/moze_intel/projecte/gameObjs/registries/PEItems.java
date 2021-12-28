@@ -182,58 +182,34 @@ public class PEItems {
 	}
 
 	public static AlchemicalBag getBag(DyeColor color) {
-		switch (color) {
-			default:
-			case WHITE:
-				return WHITE_ALCHEMICAL_BAG.get();
-			case ORANGE:
-				return ORANGE_ALCHEMICAL_BAG.get();
-			case MAGENTA:
-				return MAGENTA_ALCHEMICAL_BAG.get();
-			case LIGHT_BLUE:
-				return LIGHT_BLUE_ALCHEMICAL_BAG.get();
-			case YELLOW:
-				return YELLOW_ALCHEMICAL_BAG.get();
-			case LIME:
-				return LIME_ALCHEMICAL_BAG.get();
-			case PINK:
-				return PINK_ALCHEMICAL_BAG.get();
-			case GRAY:
-				return GRAY_ALCHEMICAL_BAG.get();
-			case LIGHT_GRAY:
-				return LIGHT_GRAY_ALCHEMICAL_BAG.get();
-			case CYAN:
-				return CYAN_ALCHEMICAL_BAG.get();
-			case PURPLE:
-				return PURPLE_ALCHEMICAL_BAG.get();
-			case BLUE:
-				return BLUE_ALCHEMICAL_BAG.get();
-			case BROWN:
-				return BROWN_ALCHEMICAL_BAG.get();
-			case GREEN:
-				return GREEN_ALCHEMICAL_BAG.get();
-			case RED:
-				return RED_ALCHEMICAL_BAG.get();
-			case BLACK:
-				return BLACK_ALCHEMICAL_BAG.get();
-		}
+		return switch (color) {
+			case WHITE -> WHITE_ALCHEMICAL_BAG.get();
+			case ORANGE -> ORANGE_ALCHEMICAL_BAG.get();
+			case MAGENTA -> MAGENTA_ALCHEMICAL_BAG.get();
+			case LIGHT_BLUE -> LIGHT_BLUE_ALCHEMICAL_BAG.get();
+			case YELLOW -> YELLOW_ALCHEMICAL_BAG.get();
+			case LIME -> LIME_ALCHEMICAL_BAG.get();
+			case PINK -> PINK_ALCHEMICAL_BAG.get();
+			case GRAY -> GRAY_ALCHEMICAL_BAG.get();
+			case LIGHT_GRAY -> LIGHT_GRAY_ALCHEMICAL_BAG.get();
+			case CYAN -> CYAN_ALCHEMICAL_BAG.get();
+			case PURPLE -> PURPLE_ALCHEMICAL_BAG.get();
+			case BLUE -> BLUE_ALCHEMICAL_BAG.get();
+			case BROWN -> BROWN_ALCHEMICAL_BAG.get();
+			case GREEN -> GREEN_ALCHEMICAL_BAG.get();
+			case RED -> RED_ALCHEMICAL_BAG.get();
+			case BLACK -> BLACK_ALCHEMICAL_BAG.get();
+		};
 	}
 
 	public static KleinStar getStar(EnumKleinTier tier) {
-		switch (tier) {
-			default:
-			case EIN:
-				return KLEIN_STAR_EIN.get();
-			case ZWEI:
-				return KLEIN_STAR_ZWEI.get();
-			case DREI:
-				return KLEIN_STAR_DREI.get();
-			case VIER:
-				return KLEIN_STAR_VIER.get();
-			case SPHERE:
-				return KLEIN_STAR_SPHERE.get();
-			case OMEGA:
-				return KLEIN_STAR_OMEGA.get();
-		}
+		return switch (tier) {
+			case EIN -> KLEIN_STAR_EIN.get();
+			case ZWEI -> KLEIN_STAR_ZWEI.get();
+			case DREI -> KLEIN_STAR_DREI.get();
+			case VIER -> KLEIN_STAR_VIER.get();
+			case SPHERE -> KLEIN_STAR_SPHERE.get();
+			case OMEGA -> KLEIN_STAR_OMEGA.get();
+		};
 	}
 }

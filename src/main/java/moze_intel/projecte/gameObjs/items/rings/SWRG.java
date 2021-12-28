@@ -103,10 +103,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
-		if (invSlot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
-			return;
+		if (invSlot < Inventory.getSelectionSize() && entity instanceof Player player) {
+			tick(stack, player);
 		}
-		tick(stack, (Player) entity);
 	}
 
 	@Nonnull
@@ -114,21 +113,13 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide) {
-			int newMode = 0;
-			switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
-				case 0:
-					newMode = 2;
-					break;
-				case 1:
-					newMode = 3;
-					break;
-				case 2:
-					newMode = 0;
-					break;
-				case 3:
-					newMode = 1;
-					break;
-			}
+			int newMode = switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
+				case 0 -> 2;
+				case 1 -> 3;
+				case 2 -> 0;
+				case 3 -> 1;
+				default -> 0;
+			};
 			changeMode(player, stack, newMode);
 		}
 		return InteractionResultHolder.success(stack);
@@ -177,7 +168,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 				if (tile.getActivityCooldown() <= 0) {
 					List<Mob> list = world.getEntitiesOfClass(Mob.class, tile.getEffectBounds());
 					for (Mob living : list) {
-						if (living instanceof TamableAnimal && ((TamableAnimal) living).isTame()) {
+						if (living instanceof TamableAnimal tamable && tamable.isTame()) {
 							continue;
 						}
 						LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(world);

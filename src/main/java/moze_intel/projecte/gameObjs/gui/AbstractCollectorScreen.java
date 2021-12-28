@@ -8,7 +8,6 @@ import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;

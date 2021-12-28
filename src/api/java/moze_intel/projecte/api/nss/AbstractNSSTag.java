@@ -124,8 +124,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 		if (o == this) {
 			return true;
 		}
-		if (o instanceof AbstractNSSTag && isInstance((AbstractNSSTag<?>) o)) {
-			AbstractNSSTag<?> other = (AbstractNSSTag<?>) o;
+		if (o instanceof AbstractNSSTag<?> other && isInstance(other)) {
 			return representsTag() == other.representsTag() && getResourceLocation().equals(other.getResourceLocation());
 		}
 		return false;

@@ -62,16 +62,12 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 	@Nullable
 	@Override
 	public BlockEntityTypeRegistryObject<? extends CollectorMK1Tile> getType() {
-		switch (tier) {
-			case MK1:
-				return PEBlockEntityTypes.COLLECTOR;
-			case MK2:
-				return PEBlockEntityTypes.COLLECTOR_MK2;
-			case MK3:
-				return PEBlockEntityTypes.COLLECTOR_MK3;
-			default:
-				return null;
-		}
+		return switch (tier) {
+			case MK1 -> PEBlockEntityTypes.COLLECTOR;
+			case MK2 -> PEBlockEntityTypes.COLLECTOR_MK2;
+			case MK3 -> PEBlockEntityTypes.COLLECTOR_MK3;
+			default -> null;
+		};
 	}
 
 	@Override

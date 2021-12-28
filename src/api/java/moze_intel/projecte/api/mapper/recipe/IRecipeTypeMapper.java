@@ -25,10 +25,10 @@ public interface IRecipeTypeMapper {
 	String getDescription();
 
 	/**
-	 * This method is used to determine the default for enabling/disabling this {@link IRecipeTypeMapper}. If this returns {@code false} {@link #canHandle(IRecipeType)}
-	 * and {@link #handleRecipe(IMappingCollector, IRecipe, INSSFakeGroupManager)} will not be called.
+	 * This method is used to determine the default for enabling/disabling this {@link IRecipeTypeMapper}. If this returns {@code false} {@link #canHandle(RecipeType)}
+	 * and {@link #handleRecipe(IMappingCollector, Recipe, INSSFakeGroupManager)} will not be called.
 	 *
-	 * @return {@code true} if you want {@link #canHandle(IRecipeType)} and {@link #handleRecipe(IMappingCollector, IRecipe, INSSFakeGroupManager)} to be called, {@code
+	 * @return {@code true} if you want {@link #canHandle(RecipeType)} and {@link #handleRecipe(IMappingCollector, Recipe, INSSFakeGroupManager)} to be called, {@code
 	 * false} otherwise.
 	 */
 	default boolean isAvailable() {
@@ -38,22 +38,22 @@ public interface IRecipeTypeMapper {
 	/**
 	 * Checks if this {@link IRecipeTypeMapper} can handle the given recipe type.
 	 *
-	 * @param recipeType The {@link IRecipeType} to check.
+	 * @param recipeType The {@link RecipeType} to check.
 	 *
-	 * @return {@code true} if this {@link IRecipeTypeMapper} can handle the given {@link IRecipeType}, {@code false} otherwise.
+	 * @return {@code true} if this {@link IRecipeTypeMapper} can handle the given {@link RecipeType}, {@code false} otherwise.
 	 */
 	boolean canHandle(RecipeType<?> recipeType);
 
 	/**
-	 * Attempts to handle an {@link IRecipe} that is of a type restricted by {@link #canHandle(IRecipeType)}.
+	 * Attempts to handle a {@link Recipe} that is of a type restricted by {@link #canHandle(RecipeType)}.
 	 *
 	 * @param mapper           The mapper to add mapping data to.
 	 * @param recipe           The recipe to attempt to map.
 	 * @param fakeGroupManager The manager for helping create and manage "groupings" of valid ingredients.
 	 *
-	 * @return {@code true} if the {@link IRecipeTypeMapper} handled the given {@link IRecipe}, {@code false} otherwise
+	 * @return {@code true} if the {@link IRecipeTypeMapper} handled the given {@link Recipe}, {@code false} otherwise
 	 *
-	 * @apiNote Make sure to call {@link #canHandle(IRecipeType)} before calling this method.
+	 * @apiNote Make sure to call {@link #canHandle(RecipeType)} before calling this method.
 	 * @implNote Due to how the fakeGroupManager works, {@link moze_intel.projecte.api.nss.NSSFake} implementations should only be created in this method with
 	 * descriptions that are more complex than a single integer, as otherwise they may intersect with {@link NormalizedSimpleStack}s created by the fakeGroupManager.
 	 */

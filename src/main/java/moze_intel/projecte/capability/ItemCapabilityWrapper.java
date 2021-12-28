@@ -53,8 +53,7 @@ public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundTa
 	public CompoundTag serializeNBT() {
 		CompoundTag serializedNBT = new CompoundTag();
 		for (ItemCapability<?> cap : capabilities) {
-			if (cap instanceof IItemCapabilitySerializable) {
-				IItemCapabilitySerializable serializableCap = (IItemCapabilitySerializable) cap;
+			if (cap instanceof IItemCapabilitySerializable serializableCap) {
 				serializedNBT.put(serializableCap.getStorageKey(), serializableCap.serializeNBT());
 			}
 		}
@@ -64,11 +63,8 @@ public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundTa
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		for (ItemCapability<?> cap : capabilities) {
-			if (cap instanceof IItemCapabilitySerializable) {
-				IItemCapabilitySerializable serializableCap = (IItemCapabilitySerializable) cap;
-				if (nbt.contains(serializableCap.getStorageKey())) {
-					serializableCap.deserializeNBT(nbt.get(serializableCap.getStorageKey()));
-				}
+			if (cap instanceof IItemCapabilitySerializable serializableCap && nbt.contains(serializableCap.getStorageKey())) {
+				serializableCap.deserializeNBT(nbt.get(serializableCap.getStorageKey()));
 			}
 		}
 	}

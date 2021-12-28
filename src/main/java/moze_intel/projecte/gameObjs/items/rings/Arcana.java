@@ -91,26 +91,18 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	private void tick(ItemStack stack, Level world, ServerPlayer player) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			switch (getMode(stack)) {
-				case 0:
-					WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().inflate(5), player, true);
-					break;
-				case 1:
-					WorldHelper.igniteNearby(world, player);
-					break;
-				case 2:
-					WorldHelper.growNearbyRandomly(true, world, player.blockPosition(), player);
-					break;
-				case 3:
-					WorldHelper.repelEntitiesSWRG(world, player.getBoundingBox().inflate(5), player);
-					break;
+				case 0 -> WorldHelper.freezeInBoundingBox(world, player.getBoundingBox().inflate(5), player, true);
+				case 1 -> WorldHelper.igniteNearby(world, player);
+				case 2 -> WorldHelper.growNearbyRandomly(true, world, player.blockPosition(), player);
+				case 3 -> WorldHelper.repelEntitiesSWRG(world, player.getBoundingBox().inflate(5), player);
 			}
 		}
 	}
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (!world.isClientSide && slot < Inventory.getSelectionSize() && entity instanceof ServerPlayer) {
-			tick(stack, world, (ServerPlayer) entity);
+		if (!world.isClientSide && slot < Inventory.getSelectionSize() && entity instanceof ServerPlayer player) {
+			tick(stack, world, player);
 		}
 	}
 
@@ -153,28 +145,26 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		if (world.isClientSide) {
 			return true;
 		}
-		switch (getMode(stack)) {
-			case 1: // ignition
-				switch (player.getDirection()) {
-					case SOUTH: // fall through
-					case NORTH:
-						for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-30, -5, -3), player.blockPosition().offset(30, 5, 3))) {
-							if (world.isEmptyBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
-							}
+		if (getMode(stack) == 1) { // ignition
+			switch (player.getDirection()) {
+				case SOUTH: // fall through
+				case NORTH:
+					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-30, -5, -3), player.blockPosition().offset(30, 5, 3))) {
+						if (world.isEmptyBlock(pos)) {
+							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 						}
-						break;
-					case WEST: // fall through
-					case EAST:
-						for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-3, -5, -30), player.blockPosition().offset(3, 5, 30))) {
-							if (world.isEmptyBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
-							}
+					}
+					break;
+				case WEST: // fall through
+				case EAST:
+					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-3, -5, -30), player.blockPosition().offset(3, 5, 30))) {
+						if (world.isEmptyBlock(pos)) {
+							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 						}
-						break;
-				}
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-				break;
+					}
+					break;
+			}
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return true;
 	}
@@ -186,23 +176,23 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 			return false;
 		}
 		switch (getMode(stack)) {
-			case 0: // zero
+			case 0 -> { // zero
 				Snowball snowball = new Snowball(world, player);
 				snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(snowball);
 				snowball.playSound(SoundEvents.SNOWBALL_THROW, 1.0F, 1.0F);
-				break;
-			case 1: // ignition
+			}
+			case 1 -> { // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(player, world);
 				fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(fire);
 				fire.playSound(PESoundEvents.POWER.get(), 1.0F, 1.0F);
-				break;
-			case 3: // swrg
+			}
+			case 3 -> { // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);
 				lightning.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(lightning);
-				break;
+			}
 		}
 		return true;
 	}

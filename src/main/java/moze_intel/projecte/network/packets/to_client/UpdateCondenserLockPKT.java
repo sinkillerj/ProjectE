@@ -23,8 +23,8 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.containerMenu instanceof CondenserContainer && player.containerMenu.containerId == windowId) {
-			((CondenserContainer) player.containerMenu).updateLockInfo(lockInfo);
+		if (player != null && player.containerMenu instanceof CondenserContainer container && player.containerMenu.containerId == windowId) {
+			container.updateLockInfo(lockInfo);
 		}
 	}
 

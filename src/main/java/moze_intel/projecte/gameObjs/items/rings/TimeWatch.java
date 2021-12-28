@@ -69,7 +69,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
-		if (!(entity instanceof Player) || invSlot >= Inventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!(entity instanceof Player player) || invSlot >= Inventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
@@ -89,7 +89,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (world.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
-		Player player = (Player) entity;
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
 		if (!consumeFuel(player, stack, reqEmc, true)) {
 			return;
@@ -145,19 +144,19 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private void speedUpRandomTicks(Level world, int bonusTicks, AABB bBox) {
-		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerLevel)) {
+		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerLevel level)) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
 			for (int i = 0; i < bonusTicks; i++) {
-				BlockState state = world.getBlockState(pos);
+				BlockState state = level.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.isRandomlyTicking() && !PETags.Blocks.BLACKLIST_TIME_WATCH.contains(block)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.randomTick((ServerLevel) world, pos.immutable(), world.random);
+					state.randomTick(level, pos.immutable(), level.random);
 				}
 			}
 		}
@@ -165,16 +164,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	private ILangEntry getTimeName(ItemStack stack) {
 		byte mode = getTimeBoost(stack);
-		switch (mode) {
-			case 0:
-				return PELang.TIME_WATCH_OFF;
-			case 1:
-				return PELang.TIME_WATCH_FAST_FORWARD;
-			case 2:
-				return PELang.TIME_WATCH_REWIND;
-			default:
-				return PELang.INVALID_MODE;
-		}
+		return switch (mode) {
+			case 0 -> PELang.TIME_WATCH_OFF;
+			case 1 -> PELang.TIME_WATCH_FAST_FORWARD;
+			case 2 -> PELang.TIME_WATCH_REWIND;
+			default -> PELang.INVALID_MODE;
+		};
 	}
 
 	private byte getTimeBoost(ItemStack stack) {

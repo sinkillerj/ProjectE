@@ -1,5 +1,3 @@
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-
 /*package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;

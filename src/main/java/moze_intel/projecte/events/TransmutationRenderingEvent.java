@@ -52,8 +52,8 @@ public class TransmutationRenderingEvent implements IIngameOverlay {
 			//gui.setupOverlayRenderState(true, false);
 			//gui.setBlitOffset(-90);
 
-			if (transmutationResult.getBlock() instanceof LiquidBlock) {
-				FluidAttributes resultAttributes = ((LiquidBlock) transmutationResult.getBlock()).getFluid().getAttributes();
+			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
+				FluidAttributes resultAttributes = liquidBlock.getFluid().getAttributes();
 				int color = resultAttributes.getColor();
 				float red = (color >> 16 & 0xFF) / 255.0F;
 				float green = (color >> 8 & 0xFF) / 255.0F;
@@ -89,21 +89,19 @@ public class TransmutationRenderingEvent implements IIngameOverlay {
 
 	private void onOverlay(DrawSelectionEvent.HighlightBlock event) {
 		Camera activeRenderInfo = event.getCamera();
-		if (!(activeRenderInfo.getEntity() instanceof Player)) {
+		if (!(activeRenderInfo.getEntity() instanceof Player player)) {
 			return;
 		}
 		lastGameTime = mc.level == null ? 0 : mc.level.getGameTime();
-		Player player = (Player) activeRenderInfo.getEntity();
 		Level world = player.getCommandSenderWorld();
 		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
 			stack = player.getOffhandItem();
 		}
-		if (stack.isEmpty() || !(stack.getItem() instanceof PhilosophersStone)) {
+		if (stack.isEmpty() || !(stack.getItem() instanceof PhilosophersStone philoStone)) {
 			transmutationResult = null;
 			return;
 		}
-		PhilosophersStone philoStone = (PhilosophersStone) stack.getItem();
 		//Note: We use the philo stone's ray trace instead of the event's ray trace as we want to make sure that we
 		// can properly take fluid into account/ignore it when needed
 		BlockHitResult rtr = philoStone.getHitBlock(player);

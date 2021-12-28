@@ -51,15 +51,15 @@ public class AlchemicalBag extends ItemPE {
 	public static ItemStack getFirstBagWithSuctionItem(Player player, NonNullList<ItemStack> inventory) {
 		Optional<IAlchBagProvider> cap = Optional.empty();
 		for (ItemStack stack : inventory) {
-			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag) {
-				if (!cap.isPresent()) {
+			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag bag) {
+				if (cap.isEmpty()) {
 					cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
-					if (!cap.isPresent()) {
+					if (cap.isEmpty()) {
 						//If the player really doesn't have the capability and it isn't just not not loaded yet, exit
 						break;
 					}
 				}
-				IItemHandler inv = cap.get().getBag(((AlchemicalBag) stack.getItem()).color);
+				IItemHandler inv = cap.get().getBag(bag.color);
 				for (int i = 0; i < inv.getSlots(); i++) {
 					ItemStack ring = inv.getStackInSlot(i);
 					if (!ring.isEmpty() && (ring.getItem() instanceof BlackHoleBand || ring.getItem() instanceof VoidRing)) {

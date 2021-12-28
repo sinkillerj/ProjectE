@@ -22,7 +22,7 @@ public class EntityRandomizerHelper {
 		if (isPeaceful && isHostile) {
 			//If it is in both lists do some extra checks to see if it really is peaceful
 			// currently this only includes our special casing for killer rabbits
-			if (toRandomize instanceof Rabbit && ((Rabbit) toRandomize).getRabbitType() == 99) {
+			if (toRandomize instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
 				//Killer rabbits are not peaceful
 				isPeaceful = false;
 			}
@@ -31,8 +31,8 @@ public class EntityRandomizerHelper {
 			return createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_PEACEFUL);
 		} else if (isHostile) {
 			Mob ent = createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
-			if (ent instanceof Rabbit) {
-				((Rabbit) ent).setRabbitType(99);
+			if (ent instanceof Rabbit rabbit) {
+				rabbit.setRabbitType(99);
 			}
 			return ent;
 		}

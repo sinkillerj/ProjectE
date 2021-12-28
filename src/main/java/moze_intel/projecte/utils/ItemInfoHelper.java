@@ -51,8 +51,7 @@ public class ItemInfoHelper {
 	}
 
 	/**
-	 * Based on {@link net.minecraft.world.item.alchemy.PotionUtils#addPotionToItemStack(ItemStack, Potion)} except without requiring boxing ItemInfo into an out of an
-	 * ItemStack
+	 * Based on {@link net.minecraft.world.item.alchemy.PotionUtils#setPotion(ItemStack, Potion)} except without requiring boxing ItemInfo into an out of an ItemStack
 	 */
 	public static ItemInfo makeWithPotion(ItemInfo info, Potion potion) {
 		CompoundTag nbt = info.getNBT();

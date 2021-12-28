@@ -30,9 +30,9 @@ public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.receiveInputsAndLocks(stacksToSync);
-				if (updateTargets != TargetUpdateType.NONE && player.containerMenu instanceof TransmutationContainer) {
+				if (updateTargets != TargetUpdateType.NONE && player.containerMenu instanceof TransmutationContainer container) {
 					//Update targets in case total available EMC is now different
-					TransmutationInventory transmutationInventory = ((TransmutationContainer) player.containerMenu).transmutationInventory;
+					TransmutationInventory transmutationInventory = container.transmutationInventory;
 					if (updateTargets == TargetUpdateType.ALL) {
 						transmutationInventory.updateClientTargets();
 					} else {//If needed

@@ -24,8 +24,8 @@ public class KnowledgeSyncEmcPKT implements IPEPacket {
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.setEmc(emc);
-				if (player.containerMenu instanceof TransmutationContainer) {
-					((TransmutationContainer) player.containerMenu).transmutationInventory.updateClientTargets();
+				if (player.containerMenu instanceof TransmutationContainer container) {
+					container.transmutationInventory.updateClientTargets();
 				}
 			});
 		}

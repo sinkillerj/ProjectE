@@ -47,16 +47,12 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile>
 	@Nullable
 	@Override
 	public BlockEntityTypeRegistryObject<? extends RelayMK1Tile> getType() {
-		switch (tier) {
-			case MK1:
-				return PEBlockEntityTypes.RELAY;
-			case MK2:
-				return PEBlockEntityTypes.RELAY_MK2;
-			case MK3:
-				return PEBlockEntityTypes.RELAY_MK3;
-			default:
-				return null;
-		}
+		return switch (tier) {
+			case MK1 -> PEBlockEntityTypes.RELAY;
+			case MK2 -> PEBlockEntityTypes.RELAY_MK2;
+			case MK3 -> PEBlockEntityTypes.RELAY_MK3;
+			default -> null;
+		};
 	}
 
 	@Override

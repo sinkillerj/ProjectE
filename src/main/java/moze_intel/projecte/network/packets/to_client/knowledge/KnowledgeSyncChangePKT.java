@@ -26,11 +26,11 @@ public class KnowledgeSyncChangePKT implements IPEPacket {
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				if (learned) {
-					if (!cap.hasKnowledge(change) && cap.addKnowledge(change) && player.containerMenu instanceof TransmutationContainer) {
-						((TransmutationContainer) player.containerMenu).transmutationInventory.itemLearned();
+					if (!cap.hasKnowledge(change) && cap.addKnowledge(change) && player.containerMenu instanceof TransmutationContainer container) {
+						container.transmutationInventory.itemLearned();
 					}
-				} else if (cap.hasKnowledge(change) && cap.removeKnowledge(change) && player.containerMenu instanceof TransmutationContainer) {
-					((TransmutationContainer) player.containerMenu).transmutationInventory.itemUnlearned();
+				} else if (cap.hasKnowledge(change) && cap.removeKnowledge(change) && player.containerMenu instanceof TransmutationContainer container) {
+					container.transmutationInventory.itemUnlearned();
 				}
 			});
 		}

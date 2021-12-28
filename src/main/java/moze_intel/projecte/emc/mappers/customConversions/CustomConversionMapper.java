@@ -107,25 +107,25 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueBefore.entrySet()) {
 			NormalizedSimpleStack something = entry.getKey();
 			mapper.setValueBefore(something, entry.getValue());
-			if (something instanceof NSSTag) {
+			if (something instanceof NSSTag nssTag) {
 				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				((NSSTag) something).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.getValue()));
+				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.getValue()));
 			}
 		}
 
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueAfter.entrySet()) {
 			NormalizedSimpleStack something = entry.getKey();
 			mapper.setValueAfter(something, entry.getValue());
-			if (something instanceof NSSTag) {
+			if (something instanceof NSSTag nssTag) {
 				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				((NSSTag) something).forEachElement(normalizedSimpleStack -> mapper.setValueAfter(normalizedSimpleStack, entry.getValue()));
+				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueAfter(normalizedSimpleStack, entry.getValue()));
 			}
 		}
 
 		for (CustomConversion conversion : file.values.conversion) {
 			NormalizedSimpleStack out = conversion.output;
-			if (conversion.propagateTags && out instanceof NSSTag) {
-				((NSSTag) out).forEachElement(normalizedSimpleStack -> mapper.setValueFromConversion(conversion.count, normalizedSimpleStack, conversion.ingredients));
+			if (conversion.propagateTags && out instanceof NSSTag nssTag) {
+				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueFromConversion(conversion.count, normalizedSimpleStack, conversion.ingredients));
 			}
 			mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);
 		}

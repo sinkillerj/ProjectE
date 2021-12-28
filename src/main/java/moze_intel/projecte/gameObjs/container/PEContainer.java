@@ -69,12 +69,12 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	@Override
 	protected Slot addSlot(@Nonnull Slot slot) {
 		super.addSlot(slot);
-		if (slot instanceof InventoryContainerSlot) {
-			inventoryContainerSlots.add((InventoryContainerSlot) slot);
-		} else if (slot instanceof MainInventorySlot) {
-			mainInventorySlots.add((MainInventorySlot) slot);
-		} else if (slot instanceof HotBarSlot) {
-			hotBarSlots.add((HotBarSlot) slot);
+		if (slot instanceof InventoryContainerSlot containerSlot) {
+			inventoryContainerSlots.add(containerSlot);
+		} else if (slot instanceof MainInventorySlot inventorySlot) {
+			mainInventorySlots.add(inventorySlot);
+		} else if (slot instanceof HotBarSlot hotBarSlot) {
+			hotBarSlots.add(hotBarSlot);
 		}
 		return slot;
 	}

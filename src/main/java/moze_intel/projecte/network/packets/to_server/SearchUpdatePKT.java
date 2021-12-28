@@ -20,8 +20,8 @@ public class SearchUpdatePKT implements IPEPacket {
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		Player player = context.getSender();
-		if (player != null && player.containerMenu instanceof TransmutationContainer) {
-			((TransmutationContainer) player.containerMenu).transmutationInventory.writeIntoOutputSlot(slot, itemStack);
+		if (player != null && player.containerMenu instanceof TransmutationContainer container) {
+			container.transmutationInventory.writeIntoOutputSlot(slot, itemStack);
 		}
 	}
 

@@ -54,8 +54,8 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 		this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
 		if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
-			if (level.getLevelData() instanceof ServerLevelData) {
-				((ServerLevelData) level.getLevelData()).setThundering(true);
+			if (level.getLevelData() instanceof ServerLevelData levelData) {
+				levelData.setThundering(true);
 			}
 			discard();
 		}
@@ -72,15 +72,14 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 			return;
 		}
 		Entity thrower = getOwner();
-		if (!(thrower instanceof Player)) {
+		if (!(thrower instanceof Player player)) {
 			discard();
 			return;
 		}
-		Player player = (Player) thrower;
 		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
-		if (mop instanceof BlockHitResult) {
+		if (mop instanceof BlockHitResult result) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
-				BlockPos pos = ((BlockHitResult) mop).getBlockPos();
+				BlockPos pos = result.getBlockPos();
 
 				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
@@ -100,10 +99,9 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 					}
 				}
 			}
-		} else if (mop instanceof EntityHitResult) {
-			if (((EntityHitResult) mop).getEntity() instanceof LivingEntity && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
-				LivingEntity e = (LivingEntity) ((EntityHitResult) mop).getEntity();
-				// Minor damage so we count as the attacker for launching the mob
+		} else if (mop instanceof EntityHitResult result) {
+			if (result.getEntity() instanceof LivingEntity e && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
+				// Minor damage, so we count as the attacker for launching the mob
 				e.hurt(DamageSource.playerAttack(player), 1F);
 
 				// Fake onGround before knockBack so you can re-launch mobs that have already been launched

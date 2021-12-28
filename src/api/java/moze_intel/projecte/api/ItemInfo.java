@@ -165,9 +165,7 @@ public final class ItemInfo {
 	public boolean equals(Object o) {
 		if (o == this) {
 			return true;
-		}
-		if (o instanceof ItemInfo) {
-			ItemInfo other = (ItemInfo) o;
+		} else if (o instanceof ItemInfo other) {
 			return item == other.item && Objects.equals(nbt, other.nbt);
 		}
 		return false;

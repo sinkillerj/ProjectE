@@ -33,9 +33,9 @@ public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 			NormalizedSimpleStack normStack = entry.getKey();
 			long value = entry.getValue();
 			mapper.setValueBefore(normStack, value);
-			if (normStack instanceof NSSTag) {
+			if (normStack instanceof NSSTag nssTag) {
 				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				((NSSTag) normStack).forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, value));
+				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, value));
 			}
 			PECore.debugLog("CraftTweaker setting value for {} to {}", normStack, value);
 		}

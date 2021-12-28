@@ -44,11 +44,10 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int inventorySlot, boolean held) {
-		if (world.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
+		if (world.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, inventorySlot, held);
-		ServerPlayer player = (ServerPlayer) entity;
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {

@@ -59,10 +59,10 @@ public class WorldTransmuteEntry {
 	}
 
 	private FluidStack fluidFromBlock(Block block) {
-		if (block instanceof LiquidBlock) {
-			return new FluidStack(((LiquidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
-		} else if (block instanceof IFluidBlock) {
-			return new FluidStack(((IFluidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
+		if (block instanceof LiquidBlock liquidBlock) {
+			return new FluidStack(liquidBlock.getFluid(), FluidAttributes.BUCKET_VOLUME);
+		} else if (block instanceof IFluidBlock fluidBlock) {
+			return new FluidStack(fluidBlock.getFluid(), FluidAttributes.BUCKET_VOLUME);
 		}
 		return null;
 	}

@@ -57,21 +57,14 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	@Deprecated
 	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
 		Direction facing = state.getValue(FACING);
-		switch (facing) {
-			case DOWN:
-				return DOWN_SHAPE;
-			case NORTH:
-				return NORTH_SHAPE;
-			case SOUTH:
-				return SOUTH_SHAPE;
-			case WEST:
-				return WEST_SHAPE;
-			case EAST:
-				return EAST_SHAPE;
-			case UP:
-			default:
-				return UP_SHAPE;
-		}
+		return switch (facing) {
+			case DOWN -> DOWN_SHAPE;
+			case NORTH -> NORTH_SHAPE;
+			case SOUTH -> SOUTH_SHAPE;
+			case WEST -> WEST_SHAPE;
+			case EAST -> EAST_SHAPE;
+			case UP -> UP_SHAPE;
+		};
 	}
 
 	@Nonnull

@@ -20,7 +20,7 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 public class FullKleinStarIngredient extends Ingredient {
 
-	public static final IIngredientSerializer<FullKleinStarIngredient> SERIALIZER = new IIngredientSerializer<FullKleinStarIngredient>() {
+	public static final IIngredientSerializer<FullKleinStarIngredient> SERIALIZER = new IIngredientSerializer<>() {
 		@Nonnull
 		@Override
 		public FullKleinStarIngredient parse(@Nonnull FriendlyByteBuf buffer) {

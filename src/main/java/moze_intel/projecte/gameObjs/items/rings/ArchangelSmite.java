@@ -86,7 +86,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	private void fireArrow(ItemStack ring, Level world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
-		if (!(shooter instanceof Player) || consumeFuel((Player) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
+		if (!(shooter instanceof Player player) || consumeFuel(player, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 3.0F, inaccuracy);
 			world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F));
 			world.addFreshEntity(arrow);

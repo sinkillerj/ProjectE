@@ -42,7 +42,7 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 	public BUILDER propagateTags() {
 		if (propagateTags) {
 			throw new RuntimeException("Propagate tags has already been set, remove unnecessary call.");
-		} else if (output instanceof NSSTag && !((NSSTag) output).representsTag()) {
+		} else if (output instanceof NSSTag nssTag && !nssTag.representsTag()) {
 			throw new RuntimeException("Propagate tags can only be enabled for conversion outputs that are tags.");
 		}
 		propagateTags = true;

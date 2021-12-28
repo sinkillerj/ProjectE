@@ -16,7 +16,7 @@ import net.minecraftforge.items.IItemHandler;
 public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapabilityResolver<CAPABILITY> {
 
 	public static ICapabilityResolver<IItemHandler> getBasicItemHandlerResolver(NonNullSupplier<IItemHandler> supplier) {
-		return new BasicCapabilityResolver<IItemHandler>(supplier) {
+		return new BasicCapabilityResolver<>(supplier) {
 			@Nonnull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {
@@ -26,7 +26,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 	}
 
 	public static ICapabilityResolver<IItemHandler> getBasicItemHandlerResolver(IItemHandler handler) {
-		return new BasicCapabilityResolver<IItemHandler>(handler) {
+		return new BasicCapabilityResolver<>(handler) {
 			@Nonnull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {

@@ -61,14 +61,14 @@ public class ThreadCheckUpdate extends Thread {
 
 	@SubscribeEvent
 	public static void worldLoad(EntityJoinWorldEvent evt) {
-		if (evt.getEntity() instanceof LocalPlayer && target != null && !hasSentMessage) {
+		if (evt.getEntity() instanceof LocalPlayer player && target != null && !hasSentMessage) {
 			hasSentMessage = true;
-			evt.getEntity().sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
-			evt.getEntity().sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
-
+			player.sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
+			player.sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
+			//TODO - 1.18: I think we can make this use textcomponentutil
 			Component link = new TextComponent(curseURL);
 			link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-			evt.getEntity().sendMessage(link, Util.NIL_UUID);
+			player.sendMessage(link, Util.NIL_UUID);
 		}
 	}
 }

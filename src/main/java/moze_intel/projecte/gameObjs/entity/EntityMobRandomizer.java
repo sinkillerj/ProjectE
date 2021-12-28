@@ -58,25 +58,24 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 			}
 			return;
 		}
-		if (isInWater() || !(mop instanceof EntityHitResult) || !(((EntityHitResult) mop).getEntity() instanceof Mob)) {
+		if (isInWater() || !(mop instanceof EntityHitResult result) || !(result.getEntity() instanceof Mob ent)) {
 			discard();
 			return;
 		}
 		Entity thrower = getOwner();
-		if (!(thrower instanceof Player)) {
+		if (!(thrower instanceof Player player)) {
 			discard();
 			return;
 		}
 
-		Mob ent = (Mob) ((EntityHitResult) mop).getEntity();
 		Mob randomized = EntityRandomizerHelper.getRandomEntity(this.getCommandSenderWorld(), ent);
-		if (randomized != null && EMCHelper.consumePlayerFuel((Player) thrower, 384) != -1) {
+		if (randomized != null && EMCHelper.consumePlayerFuel(player, 384) != -1) {
 			ent.discard();
 			randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
 			SpawnGroupData data;
-			if (randomized instanceof Rabbit && ((Rabbit) randomized).getRabbitType() == 99) {
-				//If we are creating a rabbit and it is supposed to be the killer bunny, we need to pass that data
-				// to onInitialSpawn or it will reset it to a random type of rabbit
+			if (randomized instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
+				//If we are creating a rabbit, and it is supposed to be the killer bunny, we need to pass that data
+				// to onInitialSpawn, or it will reset it to a random type of rabbit
 				data = new RabbitGroupData(99);
 			} else {
 				data = null;

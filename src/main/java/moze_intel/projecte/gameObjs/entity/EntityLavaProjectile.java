@@ -50,8 +50,7 @@ public class EntityLavaProjectile extends ThrowableProjectile {
 				return;
 			}
 			Entity thrower = getOwner();
-			if (thrower instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer) thrower;
+			if (thrower instanceof ServerPlayer player) {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
 					if (level.isLoaded(pos)) {
 						BlockState state = level.getBlockState(pos);
@@ -85,18 +84,16 @@ public class EntityLavaProjectile extends ThrowableProjectile {
 			return;
 		}
 		Entity thrower = getOwner();
-		if (!(thrower instanceof Player)) {
+		if (!(thrower instanceof Player player)) {
 			discard();
 			return;
 		}
-		Player player = (Player) thrower;
 		ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
 		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
-			if (mop instanceof BlockHitResult) {
-				BlockHitResult result = (BlockHitResult) mop;
+			if (mop instanceof BlockHitResult result) {
 				WorldHelper.placeFluid((ServerPlayer) player, level, result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
-			} else if (mop instanceof EntityHitResult) {
-				Entity ent = ((EntityHitResult) mop).getEntity();
+			} else if (mop instanceof EntityHitResult result) {
+				Entity ent = result.getEntity();
 				ent.setSecondsOnFire(5);
 				ent.hurt(DamageSource.IN_FIRE, 5);
 			}

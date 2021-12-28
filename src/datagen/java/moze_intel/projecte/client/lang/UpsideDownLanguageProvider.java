@@ -136,9 +136,9 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 		int curIndex = numArguments;
 		for (int i = splitText.size() - 1; i >= 0; i--) {
 			Component component = splitText.get(i);
-			if (component instanceof FormatComponent) {
+			if (component instanceof FormatComponent formatComponent) {
 				//Insert the full code directly
-				converted.append(convertFormattingComponent((FormatComponent) component, curIndex--, numArguments));
+				converted.append(convertFormattingComponent(formatComponent, curIndex--, numArguments));
 			} else {
 				//Convert each character to being upside down and then insert at end
 				char[] toConvertArr = component.getContents().toCharArray();

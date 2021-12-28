@@ -42,11 +42,10 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		Player player = (Player) entity;
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			long storedEmc = getEmc(stack);
@@ -89,23 +88,22 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	private boolean useBoneMeal(Level world, BlockPos pos) {
-		boolean result = false;
-		if (world instanceof ServerLevel) {
+		if (world instanceof ServerLevel level) {
+			boolean result = false;
 			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
-				BlockState state = world.getBlockState(currentPos);
+				BlockState state = level.getBlockState(currentPos);
 				Block crop = state.getBlock();
-				if (crop instanceof BonemealableBlock) {
-					BonemealableBlock growable = (BonemealableBlock) crop;
-					if (growable.isValidBonemealTarget(world, currentPos, state, false) && growable.isBonemealSuccess(world, world.random, currentPos, state)) {
-						growable.performBonemeal((ServerLevel) world, world.random, currentPos.immutable(), state);
-						if (!result) {
-							result = true;
-						}
+				if (crop instanceof BonemealableBlock growable && growable.isValidBonemealTarget(level, currentPos, state, false) &&
+					growable.isBonemealSuccess(level, level.random, currentPos, state)) {
+					growable.performBonemeal(level, level.random, currentPos.immutable(), state);
+					if (!result) {
+						result = true;
 					}
 				}
 			}
+			return result;
 		}
-		return result;
+		return false;
 	}
 
 	private boolean plantSeeds(Level world, Player player, BlockPos pos) {

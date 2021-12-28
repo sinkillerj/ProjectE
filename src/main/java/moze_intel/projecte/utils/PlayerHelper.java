@@ -145,8 +145,8 @@ public final class PlayerHelper {
 	}
 
 	public static void swingItem(Player player, InteractionHand hand) {
-		if (player.getCommandSenderWorld() instanceof ServerLevel) {
-			((ServerLevel) player.getCommandSenderWorld()).getChunkSource().broadcastAndSend(player, new ClientboundAnimatePacket(player, hand == InteractionHand.MAIN_HAND ? 0 : 3));
+		if (player.getCommandSenderWorld() instanceof ServerLevel level) {
+			level.getChunkSource().broadcastAndSend(player, new ClientboundAnimatePacket(player, hand == InteractionHand.MAIN_HAND ? 0 : 3));
 		}
 	}
 

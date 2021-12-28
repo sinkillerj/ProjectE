@@ -119,11 +119,11 @@ public final class InternalAbilities {
 		if (isFlyingGamemode || swrgOverride) {
 			return true;
 		}
-		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IFlightProvider && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player));
+		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IFlightProvider provider && provider.canProvideFlight(stack, player));
 	}
 
 	private boolean shouldPlayerStep() {
-		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IStepAssister && ((IStepAssister) stack.getItem()).canAssistStep(stack, player));
+		return PlayerHelper.checkArmorHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() instanceof IStepAssister assister && assister.canAssistStep(stack, player));
 	}
 
 	private boolean hasSwrg() {

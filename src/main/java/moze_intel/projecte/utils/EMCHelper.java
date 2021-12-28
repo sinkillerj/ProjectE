@@ -202,8 +202,8 @@ public final class EMCHelper {
 	}
 
 	public static long getKleinStarMaxEmc(ItemStack stack) {
-		if (stack.getItem() instanceof KleinStar) {
-			return Constants.MAX_KLEIN_EMC[((KleinStar) stack.getItem()).tier.ordinal()];
+		if (stack.getItem() instanceof KleinStar star) {
+			return Constants.MAX_KLEIN_EMC[star.tier.ordinal()];
 		}
 		return 0;
 	}

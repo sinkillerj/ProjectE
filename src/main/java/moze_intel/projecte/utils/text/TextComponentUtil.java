@@ -33,29 +33,29 @@ public class TextComponentUtil {
 				continue;
 			}
 			MutableComponent current = null;
-			if (component instanceof IHasTextComponent) {
-				current = ((IHasTextComponent) component).getTextComponent().copy();
-			} else if (component instanceof IHasTranslationKey) {
-				current = translate(((IHasTranslationKey) component).getTranslationKey());
-			} else if (component instanceof Component) {
+			if (component instanceof IHasTextComponent hasTextComponent) {
+				current = hasTextComponent.getTextComponent().copy();
+			} else if (component instanceof IHasTranslationKey hasTranslationKey) {
+				current = translate(hasTranslationKey.getTranslationKey());
+			} else if (component instanceof Component c) {
 				//Just append if a text component is being passed
-				current = ((Component) component).copy();
+				current = c.copy();
 			} else if (component instanceof ChatFormatting) {
 				cachedStyle = cachedStyle.applyFormat((ChatFormatting) component);
 			} else if (component instanceof ClickEvent) {
 				cachedStyle = cachedStyle.withClickEvent((ClickEvent) component);
 			} else if (component instanceof HoverEvent) {
 				cachedStyle = cachedStyle.withHoverEvent((HoverEvent) component);
-			} else if (component instanceof Block) {
-				current = translate(((Block) component).getDescriptionId());
-			} else if (component instanceof Item) {
-				current = translate(((Item) component).getDescriptionId());
-			} else if (component instanceof ItemStack) {
-				current = ((ItemStack) component).getHoverName().copy();
-			} else if (component instanceof FluidStack) {
-				current = translate(((FluidStack) component).getTranslationKey());
-			} else if (component instanceof Fluid) {
-				current = translate(((Fluid) component).getAttributes().getTranslationKey());
+			} else if (component instanceof Block block) {
+				current = translate(block.getDescriptionId());
+			} else if (component instanceof Item item) {
+				current = translate(item.getDescriptionId());
+			} else if (component instanceof ItemStack stack) {
+				current = stack.getHoverName().copy();
+			} else if (component instanceof FluidStack stack) {
+				current = translate(stack.getTranslationKey());
+			} else if (component instanceof Fluid fluid) {
+				current = translate(fluid.getAttributes().getTranslationKey());
 			} else {
 				//Fallback to a generic replacement
 				current = getString(component.toString());
@@ -107,25 +107,25 @@ public class TextComponentUtil {
 				continue;
 			}
 			MutableComponent current = null;
-			if (component instanceof IHasTextComponent) {
-				current = ((IHasTextComponent) component).getTextComponent().copy();
-			} else if (component instanceof IHasTranslationKey) {
-				current = translate(((IHasTranslationKey) component).getTranslationKey());
-			} else if (component instanceof Block) {
-				current = translate(((Block) component).getDescriptionId());
-			} else if (component instanceof Item) {
-				current = translate(((Item) component).getDescriptionId());
-			} else if (component instanceof ItemStack) {
-				current = ((ItemStack) component).getHoverName().copy();
-			} else if (component instanceof FluidStack) {
-				current = translate(((FluidStack) component).getTranslationKey());
-			} else if (component instanceof Fluid) {
-				current = translate(((Fluid) component).getAttributes().getTranslationKey());
+			if (component instanceof IHasTextComponent hasTextComponent) {
+				current = hasTextComponent.getTextComponent().copy();
+			} else if (component instanceof IHasTranslationKey hasTranslationKey) {
+				current = translate(hasTranslationKey.getTranslationKey());
+			} else if (component instanceof Block block) {
+				current = translate(block.getDescriptionId());
+			} else if (component instanceof Item item) {
+				current = translate(item.getDescriptionId());
+			} else if (component instanceof ItemStack stack) {
+				current = stack.getHoverName().copy();
+			} else if (component instanceof FluidStack stack) {
+				current = translate(stack.getTranslationKey());
+			} else if (component instanceof Fluid fluid) {
+				current = translate(fluid.getAttributes().getTranslationKey());
 			}
 			//Formatting
-			else if (component instanceof ChatFormatting && !hasStyleType(cachedStyle, (ChatFormatting) component)) {
+			else if (component instanceof ChatFormatting formatting && !hasStyleType(cachedStyle, formatting)) {
 				//Specific formatting not in the cached style yet, apply it
-				cachedStyle = cachedStyle.applyFormat((ChatFormatting) component);
+				cachedStyle = cachedStyle.applyFormat(formatting);
 				continue;
 			} else if (component instanceof ClickEvent && cachedStyle.getClickEvent() == null) {
 				//No click event set yet in the cached style, add the event
@@ -138,9 +138,9 @@ public class TextComponentUtil {
 			} else if (!cachedStyle.isEmpty()) {
 				//Only bother attempting these checks if we have a cached format, because
 				// otherwise we are just going to want to use the raw text
-				if (component instanceof Component) {
+				if (component instanceof Component c) {
 					//Just append if a text component is being passed
-					current = ((Component) component).copy();
+					current = c.copy();
 				} else {
 					//Fallback to a direct replacement just so that we can properly color it
 					current = getString(component.toString());
@@ -176,21 +176,14 @@ public class TextComponentUtil {
 	}
 
 	private static boolean hasStyleType(Style current, ChatFormatting formatting) {
-		switch (formatting) {
-			case OBFUSCATED:
-				return current.isObfuscated();
-			case BOLD:
-				return current.isBold();
-			case STRIKETHROUGH:
-				return current.isStrikethrough();
-			case UNDERLINE:
-				return current.isUnderlined();
-			case ITALIC:
-				return current.isItalic();
-			case RESET:
-				return current.isEmpty();
-			default:
-				return current.getColor() != null;
-		}
+		return switch (formatting) {
+			case OBFUSCATED -> current.isObfuscated();
+			case BOLD -> current.isBold();
+			case STRIKETHROUGH -> current.isStrikethrough();
+			case UNDERLINE -> current.isUnderlined();
+			case ITALIC -> current.isItalic();
+			case RESET -> current.isEmpty();
+			default -> current.getColor() != null;
+		};
 	}
 }

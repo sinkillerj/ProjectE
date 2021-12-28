@@ -82,14 +82,13 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void attachCaps(AttachCapabilitiesEvent<Entity> evt) {
-		if (evt.getObject() instanceof Player) {
-			Player player = (Player) evt.getObject();
+		if (evt.getObject() instanceof Player player) {
 			attachCapability(evt, AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
 			attachCapability(evt, KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider(player));
 			attachCapability(evt, CommonInternalAbilities.NAME, new CommonInternalAbilities.Provider(player));
-			if (player instanceof ServerPlayer) {
+			if (player instanceof ServerPlayer serverPlayer) {
 				attachCapability(evt, InternalTimers.NAME, new InternalTimers.Provider());
-				attachCapability(evt, InternalAbilities.NAME, new InternalAbilities.Provider((ServerPlayer) player));
+				attachCapability(evt, InternalAbilities.NAME, new InternalAbilities.Provider(serverPlayer));
 			}
 		}
 	}
@@ -161,7 +160,7 @@ public class PlayerEvents {
 	//This event is called when the entity first is about to take damage, if it gets cancelled it is as if they never got hit/damaged
 	@SubscribeEvent
 	public static void onAttacked(LivingAttackEvent evt) {
-		if (evt.getEntity() instanceof ServerPlayer && evt.getSource().isFire() && TickEvents.shouldPlayerResistFire((ServerPlayer) evt.getEntity())) {
+		if (evt.getEntity() instanceof ServerPlayer player && evt.getSource().isFire() && TickEvents.shouldPlayerResistFire(player)) {
 			evt.setCanceled(true);
 		}
 	}
@@ -188,8 +187,7 @@ public class PlayerEvents {
 
 	private static float getReductionForSlot(LivingEntity entityLiving, DamageSource source, EquipmentSlot slot, float damage) {
 		ItemStack armorStack = entityLiving.getItemBySlot(slot);
-		if (armorStack.getItem() instanceof PEArmor) {
-			PEArmor armorItem = (PEArmor) armorStack.getItem();
+		if (armorStack.getItem() instanceof PEArmor armorItem) {
 			EquipmentSlot type = armorItem.getSlot();
 			if (type != slot) {
 				//If the armor slot does not match the slot this piece of armor is for then it shouldn't be providing any reduction
