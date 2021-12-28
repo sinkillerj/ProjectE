@@ -12,12 +12,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK3Container extends RelayMK1Container {
 
-	public RelayMK3Container(int windowId, Inventory invPlayer, RelayMK3Tile relay) {
-		super(PEContainerTypes.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
+	public RelayMK3Container(int windowId, Inventory playerInv, RelayMK3Tile relay) {
+		super(PEContainerTypes.RELAY_MK3_CONTAINER, windowId, playerInv, relay);
 	}
 
 	@Override
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
 		//Klein star charge
@@ -31,7 +31,7 @@ public class RelayMK3Container extends RelayMK1Container {
 				this.addSlot(new ValidatedSlot(input, counter++, 28 + i * 18, 18 + j * 18, SlotPredicates.RELAY_INV));
 			}
 		}
-		addPlayerInventory(invPlayer, 26, 113);
+		addPlayerInventory(26, 113);
 	}
 
 	@Override

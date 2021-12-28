@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 
 	private final ModelPart lid;
-	private final ModelPart base;
-	private final ModelPart latch;
+	private final ModelPart bottom;
+	private final ModelPart lock;
 
 	private final Predicate<Block> blockChecker;
 	private final ResourceLocation texture;
@@ -32,11 +32,10 @@ public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 	public ChestRenderer(BlockEntityRendererProvider.Context context, ResourceLocation texture, Supplier<BlockRegistryObject<?, ?>> type) {
 		this.texture = texture;
 		this.blockChecker = block -> block == type.get().getBlock();
-		//TODO - 1.18: Test this
 		ModelPart modelpart = context.bakeLayer(ModelLayers.CHEST);
-		this.base = modelpart.getChild("bottom");
+		this.bottom = modelpart.getChild("bottom");
 		this.lid = modelpart.getChild("lid");
-		this.latch = modelpart.getChild("lock");
+		this.lock = modelpart.getChild("lock");
 	}
 
 	@Override
@@ -54,10 +53,10 @@ public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 		VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
 		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
-		latch.xRot = lid.xRot;
+		lock.xRot = lid.xRot;
 		lid.render(matrix, builder, light, overlayLight);
-		latch.render(matrix, builder, light, overlayLight);
-		base.render(matrix, builder, light, overlayLight);
+		lock.render(matrix, builder, light, overlayLight);
+		bottom.render(matrix, builder, light, overlayLight);
 		matrix.popPose();
 	}
 }

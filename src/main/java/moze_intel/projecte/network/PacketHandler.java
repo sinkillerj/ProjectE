@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Optional;
 import java.util.function.Function;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.network.packets.IPEPacket;
@@ -29,8 +28,6 @@ import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -82,24 +79,6 @@ public final class PacketHandler {
 
 	private static <MSG extends IPEPacket> void registerMessage(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder, NetworkDirection networkDirection) {
 		HANDLER.registerMessage(index++, type, IPEPacket::encode, decoder, IPEPacket::handle, Optional.of(networkDirection));
-	}
-
-	public static void sendProgressBarUpdateInt(ContainerListener listener, AbstractContainerMenu container, int propId, int propVal) {
-		if (listener instanceof ServerPlayer) {
-			sendTo(new UpdateWindowIntPKT((short) container.containerId, (short) propId, propVal), (ServerPlayer) listener);
-		}
-	}
-
-	public static void sendProgressBarUpdateLong(ContainerListener listener, AbstractContainerMenu container, int propId, long propVal) {
-		if (listener instanceof ServerPlayer) {
-			sendTo(new UpdateWindowLongPKT((short) container.containerId, (short) propId, propVal), (ServerPlayer) listener);
-		}
-	}
-
-	public static void sendLockSlotUpdate(ContainerListener listener, AbstractContainerMenu container, ItemInfo lockInfo) {
-		if (listener instanceof ServerPlayer) {
-			sendTo(new UpdateCondenserLockPKT((short) container.containerId, lockInfo), (ServerPlayer) listener);
-		}
 	}
 
 	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayer player) {

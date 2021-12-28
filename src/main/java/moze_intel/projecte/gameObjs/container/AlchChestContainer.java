@@ -12,8 +12,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class AlchChestContainer extends ChestTileEmcContainer<AlchChestTile> {
 
-	public AlchChestContainer(int windowId, Inventory invPlayer, AlchChestTile tile) {
-		super(PEContainerTypes.ALCH_CHEST_CONTAINER, windowId, tile);
+	public AlchChestContainer(int windowId, Inventory playerInv, AlchChestTile tile) {
+		super(PEContainerTypes.ALCH_CHEST_CONTAINER, windowId, playerInv, tile);
 		IItemHandler inv = this.tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 		//Chest Inventory
 		for (int i = 0; i < 8; i++) {
@@ -21,7 +21,7 @@ public class AlchChestContainer extends ChestTileEmcContainer<AlchChestTile> {
 				this.addSlot(new InventoryContainerSlot(inv, j + i * 13, 12 + j * 18, 5 + i * 18));
 			}
 		}
-		addPlayerInventory(invPlayer, 48, 152);
+		addPlayerInventory(48, 152);
 	}
 
 	@Override

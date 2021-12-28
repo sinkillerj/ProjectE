@@ -26,12 +26,7 @@ import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.LayerYue;
 import moze_intel.projecte.rendering.NovaRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
-import moze_intel.projecte.rendering.entity.ExplosiveLensRenderer;
-import moze_intel.projecte.rendering.entity.FireballRenderer;
-import moze_intel.projecte.rendering.entity.LavaOrbRenderer;
-import moze_intel.projecte.rendering.entity.LightningRenderer;
-import moze_intel.projecte.rendering.entity.RandomizerRenderer;
-import moze_intel.projecte.rendering.entity.WaterOrbRenderer;
+import moze_intel.projecte.rendering.EntitySpriteRenderer;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -132,12 +127,12 @@ public class ClientRegistration {
 		event.registerBlockEntityRenderer(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.get(), PedestalRenderer::new);
 
 		//Entities
-		event.registerEntityRenderer(PEEntityTypes.WATER_PROJECTILE.get(), WaterOrbRenderer::new);
-		event.registerEntityRenderer(PEEntityTypes.LAVA_PROJECTILE.get(), LavaOrbRenderer::new);
-		event.registerEntityRenderer(PEEntityTypes.MOB_RANDOMIZER.get(), RandomizerRenderer::new);
-		event.registerEntityRenderer(PEEntityTypes.LENS_PROJECTILE.get(), ExplosiveLensRenderer::new);
-		event.registerEntityRenderer(PEEntityTypes.FIRE_PROJECTILE.get(), FireballRenderer::new);
-		event.registerEntityRenderer(PEEntityTypes.SWRG_PROJECTILE.get(), LightningRenderer::new);
+		event.registerEntityRenderer(PEEntityTypes.WATER_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/water_orb.png")));
+		event.registerEntityRenderer(PEEntityTypes.LAVA_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/lava_orb.png")));
+		event.registerEntityRenderer(PEEntityTypes.MOB_RANDOMIZER.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/randomizer.png")));
+		event.registerEntityRenderer(PEEntityTypes.LENS_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/lens_explosive.png")));
+		event.registerEntityRenderer(PEEntityTypes.FIRE_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/fireball.png")));
+		event.registerEntityRenderer(PEEntityTypes.SWRG_PROJECTILE.get(), context -> new EntitySpriteRenderer<>(context, PECore.rl("textures/entity/lightning.png")));
 		event.registerEntityRenderer(PEEntityTypes.NOVA_CATALYST_PRIMED.get(), context -> new NovaRenderer<>(context, PEBlocks.NOVA_CATALYST.getBlock()::defaultBlockState));
 		event.registerEntityRenderer(PEEntityTypes.NOVA_CATACLYSM_PRIMED.get(), context -> new NovaRenderer<>(context, PEBlocks.NOVA_CATACLYSM.getBlock()::defaultBlockState));
 		event.registerEntityRenderer(PEEntityTypes.HOMING_ARROW.get(), TippableArrowRenderer::new);

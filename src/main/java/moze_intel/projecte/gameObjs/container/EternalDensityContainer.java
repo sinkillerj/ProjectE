@@ -19,19 +19,19 @@ public class EternalDensityContainer extends PEHandContainer {
 
 	public final EternalDensityInventory inventory;
 
-	public static EternalDensityContainer fromNetwork(int windowId, Inventory invPlayer, FriendlyByteBuf data) {
-		return new EternalDensityContainer(windowId, invPlayer, data.readEnum(InteractionHand.class), data.readByte(), null);
+	public static EternalDensityContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf data) {
+		return new EternalDensityContainer(windowId, playerInv, data.readEnum(InteractionHand.class), data.readByte(), null);
 	}
 
-	public EternalDensityContainer(int windowId, Inventory invPlayer, InteractionHand hand, int selected, EternalDensityInventory gemInv) {
-		super(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, windowId, hand, selected);
-		inventory = gemInv == null ?  new EternalDensityInventory(getStack(invPlayer)) : gemInv;
+	public EternalDensityContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected, EternalDensityInventory gemInv) {
+		super(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, windowId, playerInv, hand, selected);
+		inventory = gemInv == null ?  new EternalDensityInventory(getStack()) : gemInv;
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				this.addSlot(new SlotGhost(inventory, j + i * 3, 62 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));
 			}
 		}
-		addPlayerInventory(invPlayer, 8, 93);
+		addPlayerInventory(8, 93);
 	}
 
 	@Nonnull

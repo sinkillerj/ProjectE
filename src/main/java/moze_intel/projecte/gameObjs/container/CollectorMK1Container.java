@@ -27,22 +27,22 @@ public class CollectorMK1Container extends PEContainer {
 	private final DataSlot fuelProgress = DataSlot.standalone();
 	public final BoxedLong kleinEmc = new BoxedLong();
 
-	public CollectorMK1Container(int windowId, Inventory invPlayer, CollectorMK1Tile collector) {
-		this(PEContainerTypes.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
+	public CollectorMK1Container(int windowId, Inventory playerInv, CollectorMK1Tile collector) {
+		this(PEContainerTypes.COLLECTOR_MK1_CONTAINER, windowId, playerInv, collector);
 	}
 
-	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, Inventory invPlayer, CollectorMK1Tile collector) {
-		super(type, windowId);
+	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, Inventory playerInv, CollectorMK1Tile collector) {
+		super(type, windowId, playerInv);
 		this.longFields.add(emc);
 		addDataSlot(sunLevel);
 		addDataSlot(kleinChargeProgress);
 		addDataSlot(fuelProgress);
 		this.longFields.add(kleinEmc);
 		this.tile = collector;
-		initSlots(invPlayer);
+		initSlots();
 	}
 
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
 
@@ -59,7 +59,7 @@ public class CollectorMK1Container extends PEContainer {
 		this.addSlot(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.ALWAYS_FALSE));
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
-		addPlayerInventory(invPlayer, 8, 84);
+		addPlayerInventory(8, 84);
 	}
 
 	@Override

@@ -23,10 +23,14 @@ public class DMFurnaceContainer extends PEContainer {
 
 	public final DMFurnaceTile tile;
 
-	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, Inventory invPlayer, DMFurnaceTile tile) {
-		super(type, windowId);
+	public DMFurnaceContainer(int windowId, Inventory playerInv, DMFurnaceTile tile) {
+		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, playerInv, tile);
+	}
+
+	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, Inventory playerInv, DMFurnaceTile tile) {
+		super(type, windowId, playerInv);
 		this.tile = tile;
-		initSlots(invPlayer);
+		initSlots();
 		addDataSlot(() -> this.tile.furnaceCookTime, value -> this.tile.furnaceCookTime = value);
 		addDataSlot(() -> this.tile.furnaceBurnTime, value -> this.tile.furnaceBurnTime = value);
 		addDataSlot(() -> this.tile.currentItemBurnTime, value -> this.tile.currentItemBurnTime = value);
@@ -46,11 +50,7 @@ public class DMFurnaceContainer extends PEContainer {
 		});
 	}
 
-	public DMFurnaceContainer(int windowId, Inventory invPlayer, DMFurnaceTile tile) {
-		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
-	}
-
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -73,16 +73,16 @@ public class DMFurnaceContainer extends PEContainer {
 		counter = output.getSlots() - 1;
 
 		//Output
-		this.addSlot(new MatterFurnaceOutputSlot(invPlayer.player, output, counter--, 109, 35));
+		this.addSlot(new MatterFurnaceOutputSlot(playerInv.player, output, counter--, 109, 35));
 
 		//OutputStorage
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 4; j++) {
-				this.addSlot(new MatterFurnaceOutputSlot(invPlayer.player, output, counter--, 131 + i * 18, 8 + j * 18));
+				this.addSlot(new MatterFurnaceOutputSlot(playerInv.player, output, counter--, 131 + i * 18, 8 + j * 18));
 			}
 		}
 
-		addPlayerInventory(invPlayer, 8, 84);
+		addPlayerInventory(8, 84);
 	}
 
 	protected BlockRegistryObject<MatterFurnace, ?> getValidBlock() {

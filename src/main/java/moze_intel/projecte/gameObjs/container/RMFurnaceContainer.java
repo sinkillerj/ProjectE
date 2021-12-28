@@ -15,12 +15,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RMFurnaceContainer extends DMFurnaceContainer {
 
-	public RMFurnaceContainer(int windowId, Inventory invPlayer, RMFurnaceTile tile) {
-		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, invPlayer, tile);
+	public RMFurnaceContainer(int windowId, Inventory playerInv, RMFurnaceTile tile) {
+		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, playerInv, tile);
 	}
 
 	@Override
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -43,16 +43,16 @@ public class RMFurnaceContainer extends DMFurnaceContainer {
 		counter = output.getSlots() - 1;
 
 		//Output(0)
-		this.addSlot(new MatterFurnaceOutputSlot(invPlayer.player, output, counter--, 125, 35));
+		this.addSlot(new MatterFurnaceOutputSlot(playerInv.player, output, counter--, 125, 35));
 
 		//Output Storage
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 4; j++) {
-				this.addSlot(new MatterFurnaceOutputSlot(invPlayer.player, output, counter--, 147 + i * 18, 8 + j * 18));
+				this.addSlot(new MatterFurnaceOutputSlot(playerInv.player, output, counter--, 147 + i * 18, 8 + j * 18));
 			}
 		}
 
-		addPlayerInventory(invPlayer, 24, 84);
+		addPlayerInventory(24, 84);
 	}
 
 	@Override

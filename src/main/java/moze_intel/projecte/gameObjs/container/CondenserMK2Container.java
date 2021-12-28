@@ -15,12 +15,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CondenserMK2Container extends CondenserContainer {
 
-	public CondenserMK2Container(int windowId, Inventory invPlayer, CondenserMK2Tile condenser) {
-		super(PEContainerTypes.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
+	public CondenserMK2Container(int windowId, Inventory playerInv, CondenserMK2Tile condenser) {
+		super(PEContainerTypes.CONDENSER_MK2_CONTAINER, windowId, playerInv, condenser);
 	}
 
 	@Override
-	protected void initSlots(Inventory invPlayer) {
+	protected void initSlots() {
 		this.addSlot(new SlotCondenserLock(tile::getLockInfo, 0, 12, 6));
 		//Inputs
 		IItemHandler input = tile.getInput();
@@ -37,7 +37,7 @@ public class CondenserMK2Container extends CondenserContainer {
 				this.addSlot(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, SlotPredicates.ALWAYS_FALSE));
 			}
 		}
-		addPlayerInventory(invPlayer, 48, 154);
+		addPlayerInventory(48, 154);
 	}
 
 	@Override

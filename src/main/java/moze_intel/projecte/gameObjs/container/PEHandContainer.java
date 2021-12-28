@@ -14,14 +14,14 @@ public class PEHandContainer extends PEContainer {
 	public final InteractionHand hand;
 	private final int selected;
 
-	public PEHandContainer(ContainerTypeRegistryObject<? extends PEHandContainer> typeRO, int windowId, InteractionHand hand, int selected) {
-		super(typeRO, windowId);
+	protected PEHandContainer(ContainerTypeRegistryObject<? extends PEHandContainer> typeRO, int windowId, Inventory playerInv, InteractionHand hand, int selected) {
+		super(typeRO, windowId, playerInv);
 		this.hand = hand;
 		this.selected = selected;
 	}
 
-	protected ItemStack getStack(Inventory invPlayer) {
-		return hand == InteractionHand.OFF_HAND ? invPlayer.player.getOffhandItem() : invPlayer.getItem(selected);
+	protected ItemStack getStack() {
+		return hand == InteractionHand.OFF_HAND ? playerInv.player.getOffhandItem() : playerInv.getItem(selected);
 	}
 
 	@Override

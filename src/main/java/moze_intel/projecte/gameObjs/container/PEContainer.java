@@ -11,16 +11,19 @@ import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.IPEPacket;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
+import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.core.BlockPos;
 
 public abstract class PEContainer extends AbstractContainerMenu {
 
@@ -31,24 +34,26 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	// here we hold fields we really want to use 32 bits for
 	private final List<DataSlot> intFields = new ArrayList<>();
 	protected final List<BoxedLong> longFields = new ArrayList<>();
+	protected final Inventory playerInv;
 
-	protected PEContainer(ContainerTypeRegistryObject<? extends PEContainer> typeRO, int id) {
+	protected PEContainer(ContainerTypeRegistryObject<? extends PEContainer> typeRO, int id, Inventory playerInv) {
 		super(typeRO.get(), id);
+		this.playerInv = playerInv;
 	}
 
-	protected void addPlayerInventory(Inventory invPlayer, int xStart, int yStart) {
+	protected void addPlayerInventory(int xStart, int yStart) {
 		int slotSize = 18;
 		int rows = 3;
 		//Main Inventory
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < 9; j++) {
-				addSlot(createMainInventorySlot(invPlayer, j + i * 9 + 9, xStart + j * slotSize, yStart + i * slotSize));
+				addSlot(createMainInventorySlot(playerInv, j + i * 9 + 9, xStart + j * slotSize, yStart + i * slotSize));
 			}
 		}
 		yStart = yStart + slotSize * rows + 4;
 		//Hot Bar
 		for (int i = 0; i < Inventory.getSelectionSize(); i++) {
-			addSlot(createHotBarSlot(invPlayer, i, xStart + i * slotSize, yStart));
+			addSlot(createHotBarSlot(playerInv, i, xStart + i * slotSize, yStart));
 		}
 	}
 
@@ -188,23 +193,30 @@ public abstract class PEContainer extends AbstractContainerMenu {
 
 	@Override
 	public void broadcastChanges() {
+		//Note: We use the old way of comparing if it is dirty rather than storing a separate list
+		// and comparing entries as there is no real reason to do that if we already have a concept
+		// of if it is dirty or not
 		for (int i = 0; i < longFields.size(); i++) {
 			BoxedLong boxedLong = longFields.get(i);
 			if (boxedLong.isDirty()) {
-				for (ContainerListener listener : containerListeners) {
-					PacketHandler.sendProgressBarUpdateLong(listener, this, i, boxedLong.get());
-				}
+				syncDataChange(new UpdateWindowLongPKT((short) containerId, (short) i, boxedLong.get()));
 			}
 		}
 		for (int i = 0; i < intFields.size(); i++) {
 			DataSlot referenceHolder = intFields.get(i);
 			if (referenceHolder.checkAndClearUpdateFlag()) {
-				for (ContainerListener listener : containerListeners) {
-					PacketHandler.sendProgressBarUpdateInt(listener, this, i, referenceHolder.get());
-				}
+				syncDataChange(new UpdateWindowIntPKT((short) containerId, (short) i, referenceHolder.get()));
 			}
 		}
 		super.broadcastChanges();
+	}
+
+	protected void syncDataChange(IPEPacket packet) {
+		//Note: We ignore suppressRemoteUpdates as that is mostly used as a hack for slot syncing
+		// (which we don't sync with this) and also we would have to AT in to access it
+		if (this.playerInv.player instanceof ServerPlayer player) {
+			PacketHandler.sendTo(packet, player);
+		}
 	}
 
 	public static class BoxedLong {

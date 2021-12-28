@@ -13,12 +13,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK3Container extends CollectorMK1Container {
 
-	public CollectorMK3Container(int windowId, Inventory invPlayer, CollectorMK3Tile collector) {
-		super(PEContainerTypes.COLLECTOR_MK3_CONTAINER, windowId, invPlayer, collector);
+	public CollectorMK3Container(int windowId, Inventory playerInv, CollectorMK3Tile collector) {
+		super(PEContainerTypes.COLLECTOR_MK3_CONTAINER, windowId, playerInv, collector);
 	}
 
 	@Override
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
 
@@ -35,7 +35,7 @@ public class CollectorMK3Container extends CollectorMK1Container {
 		this.addSlot(new ValidatedSlot(aux, CollectorMK3Tile.UPGRADE_SLOT, 158, 13, SlotPredicates.ALWAYS_FALSE));
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK3Tile.LOCK_SLOT, 187, 36, SlotPredicates.COLLECTOR_LOCK));
-		addPlayerInventory(invPlayer, 30, 84);
+		addPlayerInventory(30, 84);
 	}
 
 	@Override

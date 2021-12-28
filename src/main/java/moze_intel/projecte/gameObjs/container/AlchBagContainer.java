@@ -22,8 +22,8 @@ public class AlchBagContainer extends PEHandContainer {
 		return new AlchBagContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), new ItemStackHandler(104), buf.readByte(), buf.readBoolean());
 	}
 
-	public AlchBagContainer(int windowId, Inventory invPlayer, InteractionHand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
-		super(PEContainerTypes.ALCH_BAG_CONTAINER, windowId, hand, selected);
+	public AlchBagContainer(int windowId, Inventory playerInv, InteractionHand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
+		super(PEContainerTypes.ALCH_BAG_CONTAINER, windowId, playerInv, hand, selected);
 		this.immutable = immutable;
 		//Bag Inventory
 		for (int i = 0; i < 8; i++) {
@@ -31,7 +31,7 @@ public class AlchBagContainer extends PEHandContainer {
 				addSlot(createContainerSlot(invBag, j + i * 13, 12 + j * 18, 5 + i * 18));
 			}
 		}
-		addPlayerInventory(invPlayer, 48, 152);
+		addPlayerInventory(48, 152);
 	}
 
 	private InventoryContainerSlot createContainerSlot(IItemHandlerModifiable inv, int index, int x, int y) {

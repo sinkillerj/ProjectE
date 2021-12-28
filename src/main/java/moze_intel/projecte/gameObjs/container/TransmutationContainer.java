@@ -31,27 +31,27 @@ public class TransmutationContainer extends PEHandContainer {
 	public final TransmutationInventory transmutationInventory;
 	private SlotUnlearn unlearn;
 
-	public static TransmutationContainer fromNetwork(int windowId, Inventory invPlayer, FriendlyByteBuf buf) {
+	public static TransmutationContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
 		if (buf.readBoolean()) {
-			return new TransmutationContainer(windowId, invPlayer, buf.readEnum(InteractionHand.class), buf.readByte());
+			return new TransmutationContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), buf.readByte());
 		}
-		return new TransmutationContainer(windowId, invPlayer);
+		return new TransmutationContainer(windowId, playerInv);
 	}
 
-	public TransmutationContainer(int windowId, Inventory invPlayer) {
-		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, null, 0);
+	public TransmutationContainer(int windowId, Inventory playerInv) {
+		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, playerInv, null, 0);
 		//Hand is technically null safe
-		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
-		initSlots(invPlayer);
+		this.transmutationInventory = new TransmutationInventory(this.playerInv.player);
+		initSlots();
 	}
 
-	public TransmutationContainer(int windowId, Inventory invPlayer, InteractionHand hand, int selected) {
-		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, hand, selected);
-		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
-		initSlots(invPlayer);
+	public TransmutationContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected) {
+		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, playerInv, hand, selected);
+		this.transmutationInventory = new TransmutationInventory(this.playerInv.player);
+		initSlots();
 	}
 
-	private void initSlots(Inventory invPlayer) {
+	private void initSlots() {
 		// Transmutation Inventory
 		this.addSlot(new SlotInput(transmutationInventory, 0, 43, 23));
 		this.addSlot(new SlotInput(transmutationInventory, 1, 34, 41));
@@ -80,7 +80,7 @@ public class TransmutationContainer extends PEHandContainer {
 		this.addSlot(new SlotOutput(transmutationInventory, 24, 177, 50));
 		this.addSlot(new SlotOutput(transmutationInventory, 25, 158, 69));
 		this.addSlot(new SlotOutput(transmutationInventory, 26, 139, 50));
-		addPlayerInventory(invPlayer, 35, 117);
+		addPlayerInventory(35, 117);
 	}
 
 	@Override

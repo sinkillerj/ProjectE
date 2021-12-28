@@ -17,18 +17,18 @@ import net.minecraftforge.items.IItemHandler;
 
 public class MercurialEyeContainer extends PEHandContainer {
 
-	public static MercurialEyeContainer fromNetwork(int windowId, Inventory invPlayer, FriendlyByteBuf buf) {
-		return new MercurialEyeContainer(windowId, invPlayer, buf.readEnum(InteractionHand.class), buf.readByte());
+	public static MercurialEyeContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
+		return new MercurialEyeContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), buf.readByte());
 	}
 
-	public MercurialEyeContainer(int windowId, Inventory invPlayer, InteractionHand hand, int selected) {
-		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, hand, selected);
-		IItemHandler handler = getStack(invPlayer).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+	public MercurialEyeContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected) {
+		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, playerInv, hand, selected);
+		IItemHandler handler = getStack().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 		//Klein Star
 		this.addSlot(new ValidatedSlot(handler, 0, 50, 26, SlotPredicates.EMC_HOLDER));
 		//Target
 		this.addSlot(new SlotGhost(handler, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
-		addPlayerInventory(invPlayer, 6, 56);
+		addPlayerInventory(6, 56);
 	}
 
 	@Override

@@ -11,8 +11,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
  */
 public interface IInsertableSlot {
 
-	//TODO - 1.18: Make this private
-	default Slot self() {
+	private Slot self() {
 		return (Slot) this;
 	}
 

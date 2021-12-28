@@ -21,20 +21,20 @@ public class RelayMK1Container extends PEContainer {
 	private final DataSlot inputBurnProgress = DataSlot.standalone();
 	public final BoxedLong emc = new BoxedLong();
 
-	public RelayMK1Container(int windowId, Inventory invPlayer, RelayMK1Tile relay) {
-		this(PEContainerTypes.RELAY_MK1_CONTAINER, windowId, invPlayer, relay);
+	public RelayMK1Container(int windowId, Inventory playerInv, RelayMK1Tile relay) {
+		this(PEContainerTypes.RELAY_MK1_CONTAINER, windowId, playerInv, relay);
 	}
 
-	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, Inventory invPlayer, RelayMK1Tile relay) {
-		super(type, windowId);
+	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, Inventory playerInv, RelayMK1Tile relay) {
+		super(type, windowId, playerInv);
 		this.longFields.add(emc);
 		addDataSlot(kleinChargeProgress);
 		addDataSlot(inputBurnProgress);
 		this.tile = relay;
-		initSlots(invPlayer);
+		initSlots();
 	}
 
-	void initSlots(Inventory invPlayer) {
+	void initSlots() {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
 		//Klein Star charge slot
@@ -48,7 +48,7 @@ public class RelayMK1Container extends PEContainer {
 				this.addSlot(new ValidatedSlot(input, counter++, 27 + i * 18, 17 + j * 18, SlotPredicates.RELAY_INV));
 			}
 		}
-		addPlayerInventory(invPlayer, 8, 95);
+		addPlayerInventory(8, 95);
 	}
 
 	@Override
