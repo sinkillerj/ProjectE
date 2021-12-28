@@ -9,11 +9,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class UpdateCondenserLockPKT implements IPEPacket {
-
-	@Nullable
-	private final ItemInfo lockInfo;
-	private final short windowId;
+public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) implements IPEPacket {
 
 	public UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) {
 		this.windowId = windowId;

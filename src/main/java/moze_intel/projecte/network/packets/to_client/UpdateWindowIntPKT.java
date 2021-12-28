@@ -8,17 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 // Version of SWindowPropertyPacket that does not truncate the `value` arg to a short
-public class UpdateWindowIntPKT implements IPEPacket {
-
-	private final short windowId;
-	private final short propId;
-	private final int propVal;
-
-	public UpdateWindowIntPKT(short windowId, short propId, int propVal) {
-		this.windowId = windowId;
-		this.propId = propId;
-		this.propVal = propVal;
-	}
+public record UpdateWindowIntPKT(short windowId, short propId, int propVal) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

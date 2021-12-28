@@ -14,15 +14,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
-
-	private final Map<Integer, ItemStack> stacksToSync;
-	private final TargetUpdateType updateTargets;
-
-	public KnowledgeSyncInputsAndLocksPKT(Map<Integer, ItemStack> stacksToSync, TargetUpdateType updateTargets) {
-		this.stacksToSync = stacksToSync;
-		this.updateTargets = updateTargets;
-	}
+public record KnowledgeSyncInputsAndLocksPKT(Map<Integer, ItemStack> stacksToSync, TargetUpdateType updateTargets) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

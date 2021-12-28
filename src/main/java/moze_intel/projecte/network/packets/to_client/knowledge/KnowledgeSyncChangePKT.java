@@ -10,15 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class KnowledgeSyncChangePKT implements IPEPacket {
-
-	private final ItemInfo change;
-	private final boolean learned;
-
-	public KnowledgeSyncChangePKT(ItemInfo change, boolean learned) {
-		this.change = change;
-		this.learned = learned;
-	}
+public record KnowledgeSyncChangePKT(ItemInfo change, boolean learned) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

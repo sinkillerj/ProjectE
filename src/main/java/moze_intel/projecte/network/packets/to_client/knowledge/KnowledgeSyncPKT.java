@@ -8,13 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class KnowledgeSyncPKT implements IPEPacket {
-
-	private final CompoundTag nbt;
-
-	public KnowledgeSyncPKT(CompoundTag nbt) {
-		this.nbt = nbt;
-	}
+public record KnowledgeSyncPKT(CompoundTag nbt) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

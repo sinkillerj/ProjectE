@@ -8,13 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.network.NetworkEvent;
 
-public class SyncFuelMapperPKT implements IPEPacket {
-
-	private final List<Item> items;
-
-	public SyncFuelMapperPKT(List<Item> items) {
-		this.items = items;
-	}
+public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

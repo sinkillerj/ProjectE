@@ -5,13 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class StepHeightPKT implements IPEPacket {
-
-	private final float value;
-
-	public StepHeightPKT(float value) {
-		this.value = value;
-	}
+public record StepHeightPKT(float value) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

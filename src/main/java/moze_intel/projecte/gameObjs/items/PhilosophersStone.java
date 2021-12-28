@@ -183,18 +183,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return changes;
 	}
 
-	private static class ContainerProvider implements MenuProvider {
-
-		private final ItemStack stack;
-
-		private ContainerProvider(ItemStack stack) {
-			this.stack = stack;
-		}
+	private record ContainerProvider(ItemStack stack) implements MenuProvider {
 
 		@Nonnull
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
-			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(playerIn.getCommandSenderWorld(), playerIn.blockPosition()));
+		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(player.getCommandSenderWorld(), player.blockPosition()));
 		}
 
 		@Nonnull

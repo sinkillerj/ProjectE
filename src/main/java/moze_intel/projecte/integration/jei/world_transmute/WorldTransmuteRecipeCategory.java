@@ -19,7 +19,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -133,12 +132,11 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 			if (e.isRenderable()) {
 				boolean alreadyHas;
 				FluidStack inputFluid = e.getInputFluid();
-				if (inputFluid != null) {
-					Fluid fluid = inputFluid.getFluid();
-					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> otherInputFluid != null && fluid == otherInputFluid.getFluid());
-				} else {
+				if (inputFluid.isEmpty()) {
 					ItemStack inputItem = e.getInputItem();
-					alreadyHas = visible.stream().anyMatch(otherEntry -> inputItem.sameItem(otherEntry.getInputItem()));
+					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputItem).anyMatch(otherInputItem -> !otherInputItem.isEmpty() && inputItem.sameItem(otherInputItem));
+				} else {
+					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> !otherInputFluid.isEmpty() && inputFluid.isFluidEqual(otherInputFluid));
 				}
 				if (!alreadyHas) {
 					//Only add items that we haven't already had.

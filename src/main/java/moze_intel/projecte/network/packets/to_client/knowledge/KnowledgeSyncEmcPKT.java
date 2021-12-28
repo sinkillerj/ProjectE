@@ -10,13 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class KnowledgeSyncEmcPKT implements IPEPacket {
-
-	private final BigInteger emc;
-
-	public KnowledgeSyncEmcPKT(BigInteger emc) {
-		this.emc = emc;
-	}
+public record KnowledgeSyncEmcPKT(BigInteger emc) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

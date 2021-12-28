@@ -16,7 +16,26 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class PETags {
 
+	private PETags() {
+	}
+
+	/**
+	 * Call to force make sure this is all initialized
+	 */
+	public static void init() {
+		Items.init();
+		Blocks.init();
+		Entities.init();
+		BlockEntities.init();
+	}
+
 	public static class Items {
+
+		private static void init() {
+		}
+
+		private Items() {
+		}
 
 		public static final Named<Item> ALCHEMICAL_BAGS = tag("alchemical_bags");
 		/**
@@ -47,6 +66,12 @@ public class PETags {
 	}
 
 	public static class Blocks {
+
+		private static void init() {
+		}
+
+		private Blocks() {
+		}
 
 		/**
 		 * Blocks added here (that are IGrowable) will not be broken by the harvest goddess band when unable to continue growing.
@@ -83,6 +108,12 @@ public class PETags {
 
 	public static class Entities {
 
+		private static void init() {
+		}
+
+		private Entities() {
+		}
+
 		/**
 		 * Entity types added here will not be repelled by the Swiftwolf Rending Gale's repel effect.
 		 */
@@ -106,6 +137,12 @@ public class PETags {
 	}
 
 	public static class BlockEntities {
+
+		private static void init() {
+		}
+
+		private BlockEntities() {
+		}
 
 		/**
 		 * Block Entity Types added will not receive extra ticks from the Watch of Flowing Time

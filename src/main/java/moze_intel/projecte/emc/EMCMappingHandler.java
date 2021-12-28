@@ -183,7 +183,7 @@ public final class EMCMappingHandler {
 	public static void fromPacket(EmcPKTInfo[] data) {
 		emc.clear();
 		for (EmcPKTInfo info : data) {
-			emc.put(ItemInfo.fromItem(info.getItem(), info.getNbt()), info.getEmc());
+			emc.put(ItemInfo.fromItem(info.item(), info.nbt()), info.emc());
 		}
 	}
 

@@ -23,13 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.NonNullPredicate;
 import net.minecraftforge.network.NetworkEvent;
 
-public class KeyPressPKT implements IPEPacket {
-
-	private final PEKeybind key;
-
-	public KeyPressPKT(PEKeybind key) {
-		this.key = key;
-	}
+public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

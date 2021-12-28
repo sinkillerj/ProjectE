@@ -34,13 +34,7 @@ public class TransmutationTablet extends ItemPE {
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
-	private static class ContainerProvider implements MenuProvider {
-
-		private final InteractionHand hand;
-
-		private ContainerProvider(InteractionHand hand) {
-			this.hand = hand;
-		}
+	private record ContainerProvider(InteractionHand hand) implements MenuProvider {
 
 		@Override
 		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {

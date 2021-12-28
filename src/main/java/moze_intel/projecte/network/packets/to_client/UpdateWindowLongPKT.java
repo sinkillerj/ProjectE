@@ -8,17 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 // Version of SWindowPropertyPacket that supports long values
-public class UpdateWindowLongPKT implements IPEPacket {
-
-	private final short windowId;
-	private final short propId;
-	private final long propVal;
-
-	public UpdateWindowLongPKT(short windowId, short propId, long propVal) {
-		this.windowId = windowId;
-		this.propId = propId;
-		this.propVal = propVal;
-	}
+public record UpdateWindowLongPKT(short windowId, short propId, long propVal) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

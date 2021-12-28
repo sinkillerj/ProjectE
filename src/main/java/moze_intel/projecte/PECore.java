@@ -27,6 +27,7 @@ import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
@@ -195,6 +196,8 @@ public class PECore {
 		NBTManager.loadProcessors();
 
 		event.enqueueWork(() -> {
+			//Ensure our tags are all initialized
+			PETags.init();
 			PacketHandler.register();
 			//Dispenser Behavior
 			registerDispenseBehavior(new ShearsDispenseItemBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);

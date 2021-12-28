@@ -5,15 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class SetFlyPKT implements IPEPacket {
-
-	private final boolean allowFlying;
-	private final boolean isFlying;
-
-	public SetFlyPKT(boolean allowFlying, boolean isFlying) {
-		this.allowFlying = allowFlying;
-		this.isFlying = isFlying;
-	}
+public record SetFlyPKT(boolean allowFlying, boolean isFlying) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

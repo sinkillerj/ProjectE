@@ -3,59 +3,54 @@ package moze_intel.projecte.integration.jei.world_transmute;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class WorldTransmuteEntry {
 
-	private final ItemStack inputItem;
-	private final ItemStack leftOutputItem;
-	private final ItemStack rightOutputItem;
-	private final FluidStack inputFluid;
-	private final FluidStack leftOutputFluid;
-	private final FluidStack rightOutputFluid;
+	private record StateInfo(ItemStack item, FluidStack fluid) {
+
+		public boolean isEmpty() {
+			return item.isEmpty() && fluid.isEmpty();
+		}
+	}
+
+	private static final StateInfo EMPTY = new StateInfo(ItemStack.EMPTY, FluidStack.EMPTY);
+
+	private final StateInfo input;
+	private final StateInfo leftOutput;
+	private final StateInfo rightOutput;
 
 	public WorldTransmuteEntry(WorldTransmutationEntry transmutationEntry) {
-		Block inputBlock = transmutationEntry.getOrigin().getBlock();
-		BlockState leftOutput = transmutationEntry.getResult();
-		BlockState rightOutput = transmutationEntry.getAltResult();
+		BlockState leftOutputState = transmutationEntry.result();
+		BlockState rightOutputState = transmutationEntry.altResult();
+		if (leftOutputState == rightOutputState) {
+			//Don't show two outputs if it is just a fallback from the primary
+			rightOutputState = null;
+		}
+		input = createInfo(transmutationEntry.origin());
+		leftOutput = createInfo(leftOutputState);
+		rightOutput = createInfo(rightOutputState);
+	}
 
-		inputFluid = fluidFromBlock(inputBlock);
-		if (inputFluid == null) {
-			inputItem = itemFromBlock(inputBlock, transmutationEntry.getOrigin());
-		} else {
-			inputItem = ItemStack.EMPTY;
+	private StateInfo createInfo(@Nullable BlockState output) {
+		if (output == null) {
+			return EMPTY;
 		}
-		if (leftOutput != null) {
-			leftOutputFluid = fluidFromBlock(leftOutput.getBlock());
-			if (leftOutputFluid == null) {
-				leftOutputItem = itemFromBlock(leftOutput.getBlock(), leftOutput);
-			} else {
-				leftOutputItem = ItemStack.EMPTY;
-			}
-		} else {
-			leftOutputItem = ItemStack.EMPTY;
-			leftOutputFluid = FluidStack.EMPTY;
+		FluidStack outputFluid = fluidFromBlock(output.getBlock());
+		if (outputFluid.isEmpty()) {
+			return new StateInfo(itemFromBlock(output.getBlock(), output), outputFluid);
 		}
-		if (rightOutput != null) {
-			rightOutputFluid = fluidFromBlock(rightOutput.getBlock());
-			if (rightOutputFluid == null) {
-				rightOutputItem = itemFromBlock(rightOutput.getBlock(), rightOutput);
-			} else {
-				rightOutputItem = ItemStack.EMPTY;
-			}
-		} else {
-			rightOutputItem = ItemStack.EMPTY;
-			rightOutputFluid = FluidStack.EMPTY;
-		}
+		return new StateInfo(ItemStack.EMPTY, outputFluid);
 	}
 
 	private FluidStack fluidFromBlock(Block block) {
@@ -64,7 +59,7 @@ public class WorldTransmuteEntry {
 		} else if (block instanceof IFluidBlock fluidBlock) {
 			return new FluidStack(fluidBlock.getFluid(), FluidAttributes.BUCKET_VOLUME);
 		}
-		return null;
+		return FluidStack.EMPTY;
 	}
 
 	private ItemStack itemFromBlock(Block block, BlockState state) {
@@ -78,36 +73,33 @@ public class WorldTransmuteEntry {
 	}
 
 	public boolean isRenderable() {
-		boolean hasInput = inputFluid != null || !inputItem.isEmpty();
-		boolean hasLeftOutput = leftOutputFluid != null || !leftOutputItem.isEmpty();
-		boolean hasRightOutput = rightOutputFluid != null || !rightOutputItem.isEmpty();
-		return hasInput && (hasLeftOutput || hasRightOutput);
+		return !input.isEmpty() && (!leftOutput.isEmpty() || !rightOutput.isEmpty());
 	}
 
 	public void setIngredients(@Nonnull IIngredients ingredients) {
-		if (inputFluid != null) {
-			ingredients.setInput(VanillaTypes.FLUID, inputFluid);
-		} else if (!inputItem.isEmpty()) {
-			ingredients.setInput(VanillaTypes.ITEM, inputItem);
+		if (!input.fluid().isEmpty()) {
+			ingredients.setInput(VanillaTypes.FLUID, input.fluid());
+		} else if (!input.item().isEmpty()) {
+			ingredients.setInput(VanillaTypes.ITEM, input.item());
 		}
 
 		List<FluidStack> fluidOutputs = new ArrayList<>();
-		if (leftOutputFluid != null) {
-			fluidOutputs.add(leftOutputFluid);
+		if (!leftOutput.fluid().isEmpty()) {
+			fluidOutputs.add(leftOutput.fluid());
 		}
-		if (rightOutputFluid != null) {
-			fluidOutputs.add(rightOutputFluid);
+		if (!rightOutput.fluid().isEmpty()) {
+			fluidOutputs.add(rightOutput.fluid());
 		}
 		if (!fluidOutputs.isEmpty()) {
 			ingredients.setOutputs(VanillaTypes.FLUID, fluidOutputs);
 		}
 
 		List<ItemStack> outputList = new ArrayList<>();
-		if (!leftOutputItem.isEmpty()) {
-			outputList.add(leftOutputItem);
+		if (!leftOutput.item().isEmpty()) {
+			outputList.add(leftOutput.item());
 		}
-		if (!rightOutputItem.isEmpty()) {
-			outputList.add(rightOutputItem);
+		if (!rightOutput.item().isEmpty()) {
+			outputList.add(rightOutput.item());
 		}
 		if (!outputList.isEmpty()) {
 			ingredients.setOutputs(VanillaTypes.ITEM, outputList);
@@ -115,10 +107,10 @@ public class WorldTransmuteEntry {
 	}
 
 	public ItemStack getInputItem() {
-		return inputItem;
+		return input.item();
 	}
 
 	public FluidStack getInputFluid() {
-		return inputFluid;
+		return input.fluid();
 	}
 }

@@ -34,11 +34,11 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private final Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = new HashMap<>();
 
 	public void registerCustomEMC(String modid, CustomEMCRegistration customEMCRegistration) {
-		NormalizedSimpleStack stack = customEMCRegistration.getStack();
+		NormalizedSimpleStack stack = customEMCRegistration.stack();
 		if (stack == null) {
 			return;
 		}
-		long emcValue = customEMCRegistration.getValue();
+		long emcValue = customEMCRegistration.value();
 		if (emcValue < 0) {
 			emcValue = 0;
 		}

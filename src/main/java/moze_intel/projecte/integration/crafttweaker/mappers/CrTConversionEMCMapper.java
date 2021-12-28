@@ -45,16 +45,5 @@ public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack,
 		return "Allows adding custom conversions through CraftTweaker. This behaves similarly to if someone used a custom conversion file instead.";
 	}
 
-	public static class CrTConversion {
-
-		public final int amount;
-		public final NormalizedSimpleStack output;
-		public final Map<NormalizedSimpleStack, Integer> ingredients;
-
-		public CrTConversion(NormalizedSimpleStack output, int amount, Map<NormalizedSimpleStack, Integer> ingredients) {
-			this.output = output;
-			this.amount = amount;
-			this.ingredients = ingredients;
-		}
-	}
+	public record CrTConversion(NormalizedSimpleStack output, int amount, Map<NormalizedSimpleStack, Integer> ingredients) {}
 }

@@ -27,9 +27,9 @@ public class SyncEmcPKT implements IPEPacket {
 	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeVarInt(data.length);
 		for (EmcPKTInfo info : data) {
-			buffer.writeRegistryId(info.getItem());
-			buffer.writeNbt(info.getNbt());
-			buffer.writeVarLong(info.getEmc());
+			buffer.writeRegistryId(info.item);
+			buffer.writeNbt(info.nbt());
+			buffer.writeVarLong(info.emc());
 		}
 	}
 
@@ -42,30 +42,5 @@ public class SyncEmcPKT implements IPEPacket {
 		return new SyncEmcPKT(data);
 	}
 
-	public static class EmcPKTInfo {
-
-		private final Item item;
-		private final long emc;
-		@Nullable
-		private final CompoundTag nbt;
-
-		public EmcPKTInfo(Item item, @Nullable CompoundTag nbt, long emc) {
-			this.item = item;
-			this.emc = emc;
-			this.nbt = nbt;
-		}
-
-		public Item getItem() {
-			return item;
-		}
-
-		public long getEmc() {
-			return emc;
-		}
-
-		@Nullable
-		public CompoundTag getNbt() {
-			return nbt;
-		}
-	}
+	public record EmcPKTInfo(Item item, @Nullable CompoundTag nbt, long emc) {}
 }

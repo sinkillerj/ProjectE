@@ -293,15 +293,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return !player.getCommandSenderWorld().isClientSide && condense(stack, inv);
 	}
 
-	private static class ContainerProvider implements MenuProvider {
-
-		private final ItemStack stack;
-		private final InteractionHand hand;
-
-		private ContainerProvider(InteractionHand hand, ItemStack stack) {
-			this.stack = stack;
-			this.hand = hand;
-		}
+	private record ContainerProvider(InteractionHand hand, ItemStack stack) implements MenuProvider {
 
 		@Nonnull
 		@Override

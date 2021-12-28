@@ -3,12 +3,7 @@ package moze_intel.projecte.api.imc;
 import javax.annotation.Nullable;
 import net.minecraft.world.level.block.state.BlockState;
 
-public final class WorldTransmutationEntry {
-
-	private final BlockState origin;
-	private final BlockState result;
-	@Nullable
-	private final BlockState altResult;
+public record WorldTransmutationEntry(BlockState origin, BlockState result, @Nullable BlockState altResult) {
 
 	/**
 	 * @param origin    defines what will match this transmutation.
@@ -19,18 +14,5 @@ public final class WorldTransmutationEntry {
 		this.origin = origin;
 		this.result = result;
 		this.altResult = altResult == null ? this.result : altResult;
-	}
-
-	public BlockState getOrigin() {
-		return origin;
-	}
-
-	public BlockState getResult() {
-		return result;
-	}
-
-	@Nullable
-	public BlockState getAltResult() {
-		return altResult;
 	}
 }

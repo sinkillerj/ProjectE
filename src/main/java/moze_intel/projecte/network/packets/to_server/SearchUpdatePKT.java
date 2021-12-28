@@ -7,10 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-public class SearchUpdatePKT implements IPEPacket {
-
-	public final int slot;
-	public final ItemStack itemStack;
+public record SearchUpdatePKT(int slot, ItemStack itemStack) implements IPEPacket {
 
 	public SearchUpdatePKT(int slot, ItemStack itemStack) {
 		this.slot = slot;

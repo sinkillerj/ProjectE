@@ -24,12 +24,12 @@ public class IMCHandler {
 				.forEach(msg -> {
 					WorldTransmutationEntry transmutationEntry = (WorldTransmutationEntry) msg.messageSupplier().get();
 					entries.add(transmutationEntry);
-					if (transmutationEntry.getAltResult() == null) {
+					if (transmutationEntry.altResult() == null) {
 						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}'", msg.senderModId(),
-								transmutationEntry.getOrigin(), transmutationEntry.getResult());
+								transmutationEntry.origin(), transmutationEntry.result());
 					} else {
 						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}', with sneak output of: '{}'", msg.senderModId(),
-								transmutationEntry.getOrigin(), transmutationEntry.getResult(), transmutationEntry.getAltResult());
+								transmutationEntry.origin(), transmutationEntry.result(), transmutationEntry.altResult());
 					}
 				});
 		WorldTransmutations.setWorldTransmutation(entries);
@@ -44,11 +44,11 @@ public class IMCHandler {
 				.filter(msg -> msg.messageSupplier().get() instanceof NSSCreatorInfo)
 				.forEach(msg -> {
 					NSSCreatorInfo creatorInfo = (NSSCreatorInfo) msg.messageSupplier().get();
-					String key = creatorInfo.getKey();
+					String key = creatorInfo.key();
 					if (creators.containsKey(key)) {
 						PECore.LOGGER.warn("Mod: '{}' tried to register NSS creator with key: '{}', but another mod already registered that key.", msg.senderModId(), key);
 					} else {
-						creators.put(key, creatorInfo.getCreator());
+						creators.put(key, creatorInfo.creator());
 						PECore.debugLog("Mod: '{}' registered NSS creator with key: '{}'", msg.senderModId(), key);
 					}
 				});

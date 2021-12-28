@@ -96,8 +96,8 @@ public final class WorldTransmutations {
 	@Nullable
 	public static BlockState getWorldTransmutation(BlockState current, boolean isSneaking) {
 		for (WorldTransmutationEntry e : ENTRIES) {
-			if (e.getOrigin() == current) {
-				return isSneaking ? e.getAltResult() : e.getResult();
+			if (e.origin() == current) {
+				return isSneaking ? e.altResult() : e.result();
 			}
 		}
 		return null;

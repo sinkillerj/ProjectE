@@ -42,7 +42,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 			//Convert a MessageFormat styled formatting code
 			return convertMessageFormatCode((MessageFormatComponent) component);
 		}
-		String formattingCode = component.getContents();
+		String formattingCode = component.contents();
 		//Convert a % styled formatting code
 		String ending;
 		int storedIndex = curIndex;
@@ -77,13 +77,13 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 			} catch (IllegalArgumentException e) {
 				PECore.LOGGER.warn("Failed to convert '{}' to an upside down choice format. Got: '{}' which was invalid.", formatStyle, newFormatStyle);
 				//Safety check for if we failed to convert it into a valid choice format just fallback to leaving the format as is
-				return component.getContents();
+				return component.contents();
 			}
 			return "{" + component.getArgumentIndex() + "," + component.getFormatType() + "," + newFormatStyle + "}";
 		}
 		//If we don't have a style we don't need to invert it so just return what we have
 		// or our style is not a choice as only choice's need to have further processing done
-		return component.getContents();
+		return component.contents();
 	}
 
 	private static String invertChoice(String choice) {
@@ -141,7 +141,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 				converted.append(convertFormattingComponent(formatComponent, curIndex--, numArguments));
 			} else {
 				//Convert each character to being upside down and then insert at end
-				char[] toConvertArr = component.getContents().toCharArray();
+				char[] toConvertArr = component.contents().toCharArray();
 				for (int j = toConvertArr.length - 1; j >= 0; j--) {
 					converted.append(flip(toConvertArr[j]));
 				}

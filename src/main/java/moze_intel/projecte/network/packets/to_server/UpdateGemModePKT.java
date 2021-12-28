@@ -8,13 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-public class UpdateGemModePKT implements IPEPacket {
-
-	private final boolean mode;
-
-	public UpdateGemModePKT(boolean mode) {
-		this.mode = mode;
-	}
+public record UpdateGemModePKT(boolean mode) implements IPEPacket {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

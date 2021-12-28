@@ -24,6 +24,7 @@ public final class CustomEMCParser {
 	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE).setPrettyPrinting().create();
 	private static final File CONFIG = ProjectEConfig.CONFIG_DIR.resolve("custom_emc.json").toFile();
 
+	//Note: Neither this nor CustomEMCEntry can be records due to gson not supporting creating records yet
 	public static class CustomEMCFile {
 
 		public final List<CustomEMCEntry> entries;
