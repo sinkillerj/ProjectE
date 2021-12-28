@@ -21,13 +21,19 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:glowstone_dust"
+            "items": [
+              "minecraft:glowstone_dust"
+            ]
           },
           {
-            "item": "minecraft:diamond"
+            "items": [
+              "minecraft:diamond"
+            ]
           },
           {
-            "item": "minecraft:redstone"
+            "items": [
+              "minecraft:redstone"
+            ]
           }
         ]
       }

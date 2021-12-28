@@ -11,13 +11,19 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:low_covalence_dust"
+            "items": [
+              "projecte:low_covalence_dust"
+            ]
           },
           {
-            "item": "projecte:medium_covalence_dust"
+            "items": [
+              "projecte:medium_covalence_dust"
+            ]
           },
           {
-            "item": "projecte:high_covalence_dust"
+            "items": [
+              "projecte:high_covalence_dust"
+            ]
           }
         ]
       }

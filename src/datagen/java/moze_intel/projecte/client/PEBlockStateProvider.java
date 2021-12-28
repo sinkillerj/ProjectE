@@ -4,15 +4,15 @@ import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import net.minecraft.block.AbstractFurnaceBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.Property;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -201,7 +201,7 @@ public class PEBlockStateProvider extends BlockStateProvider {
 		}, toSkip);
 	}
 
-	private static String getName(IItemProvider itemProvider) {
+	private static String getName(ItemLike itemProvider) {
 		return itemProvider.asItem().getRegistryName().getPath();
 	}
 }

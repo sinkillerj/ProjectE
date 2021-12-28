@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.math.BigInteger;
 import java.util.Locale;
 import javax.annotation.Nonnull;
@@ -11,22 +11,22 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
 
 	private static final ResourceLocation texture = PECore.rl("textures/gui/transmute.png");
 	private final TransmutationInventory inv;
-	private TextFieldWidget textBoxFilter;
+	private EditBox textBoxFilter;
 
-	public GUITransmutation(TransmutationContainer container, PlayerInventory invPlayer, ITextComponent title) {
+	public GUITransmutation(TransmutationContainer container, Inventory invPlayer, Component title) {
 		super(container, invPlayer, title);
 		this.inv = container.transmutationInventory;
 		this.imageWidth = 228;
@@ -39,17 +39,17 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	public void init() {
 		super.init();
 
-		this.textBoxFilter = new TextFieldWidget(this.font, leftPos + 88, topPos + 8, 45, 10, StringTextComponent.EMPTY);
+		this.textBoxFilter = new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, TextComponent.EMPTY);
 		this.textBoxFilter.setValue(inv.filter);
 
-		addButton(new Button(leftPos + 125, topPos + 100, 14, 14, new StringTextComponent("<"), b -> {
+		addRenderableWidget(new Button(leftPos + 125, topPos + 100, 14, 14, new TextComponent("<"), b -> {
 			if (inv.searchpage != 0) {
 				inv.searchpage--;
 			}
 			inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
 			inv.updateClientTargets();
 		}));
-		addButton(new Button(leftPos + 193, topPos + 100, 14, 14, new StringTextComponent(">"), b -> {
+		addRenderableWidget(new Button(leftPos + 193, topPos + 100, 14, 14, new TextComponent(">"), b -> {
 			if (inv.getKnowledgeSize() > 12) {
 				inv.searchpage++;
 			}
@@ -59,20 +59,21 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.color4f(1F, 1F, 1F, 1F);
-		Minecraft.getInstance().textureManager.bind(texture);
+	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, texture);
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		this.textBoxFilter.render(matrix, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
 		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
 		//Don't render inventory as we don't have space
 		BigInteger emcAmount = inv.getAvailableEmc();
 		this.font.draw(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.imageHeight - 104, 0x404040);
-		ITextComponent emc = TransmutationEMCFormatter.formatEMC(emcAmount);
+		Component emc = TransmutationEMCFormatter.formatEMC(emcAmount);
 		this.font.draw(matrix, emc, 6, this.imageHeight - 94, 0x404040);
 
 		if (inv.learnFlag > 0) {
@@ -104,8 +105,8 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	protected void containerTick() {
+		super.containerTick();
 		this.textBoxFilter.tick();
 	}
 
@@ -180,7 +181,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderTooltip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEmc();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {

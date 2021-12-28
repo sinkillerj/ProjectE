@@ -2,8 +2,8 @@ package moze_intel.projecte.api.mapper.recipe;
 
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * Interface for Classes that want to make Contributions to the EMC Mapping via the CraftingMapper.
@@ -42,7 +42,7 @@ public interface IRecipeTypeMapper {
 	 *
 	 * @return {@code true} if this {@link IRecipeTypeMapper} can handle the given {@link IRecipeType}, {@code false} otherwise.
 	 */
-	boolean canHandle(IRecipeType<?> recipeType);
+	boolean canHandle(RecipeType<?> recipeType);
 
 	/**
 	 * Attempts to handle an {@link IRecipe} that is of a type restricted by {@link #canHandle(IRecipeType)}.
@@ -57,5 +57,5 @@ public interface IRecipeTypeMapper {
 	 * @implNote Due to how the fakeGroupManager works, {@link moze_intel.projecte.api.nss.NSSFake} implementations should only be created in this method with
 	 * descriptions that are more complex than a single integer, as otherwise they may intersect with {@link NormalizedSimpleStack}s created by the fakeGroupManager.
 	 */
-	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager);
+	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, INSSFakeGroupManager fakeGroupManager);
 }

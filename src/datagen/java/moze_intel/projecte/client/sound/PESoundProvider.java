@@ -4,7 +4,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.SoundDefinition;
 import net.minecraftforge.common.data.SoundDefinitionsProvider;

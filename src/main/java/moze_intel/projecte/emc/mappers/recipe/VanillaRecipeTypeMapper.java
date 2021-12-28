@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.RecipeType;
 
 @RecipeTypeMapper
 public class VanillaRecipeTypeMapper extends BaseRecipeTypeMapper {
@@ -17,8 +17,8 @@ public class VanillaRecipeTypeMapper extends BaseRecipeTypeMapper {
 	}
 
 	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == IRecipeType.CRAFTING || recipeType == IRecipeType.SMELTING || recipeType == IRecipeType.BLASTING || recipeType == IRecipeType.SMOKING
-			   || recipeType == IRecipeType.CAMPFIRE_COOKING || recipeType == IRecipeType.STONECUTTING;
+	public boolean canHandle(RecipeType<?> recipeType) {
+		return recipeType == RecipeType.CRAFTING || recipeType == RecipeType.SMELTING || recipeType == RecipeType.BLASTING || recipeType == RecipeType.SMOKING
+			   || recipeType == RecipeType.CAMPFIRE_COOKING || recipeType == RecipeType.STONECUTTING;
 	}
 }

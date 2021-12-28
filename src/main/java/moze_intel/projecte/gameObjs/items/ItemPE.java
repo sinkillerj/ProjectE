@@ -7,10 +7,10 @@ import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.ModList;
 
@@ -38,8 +38,8 @@ public class ItemPE extends Item {
 			return true;
 		}
 		if (oldStack.hasTag() && newStack.hasTag()) {
-			CompoundNBT newTag = newStack.getOrCreateTag();
-			CompoundNBT oldTag = oldStack.getOrCreateTag();
+			CompoundTag newTag = newStack.getOrCreateTag();
+			CompoundTag oldTag = oldStack.getOrCreateTag();
 			boolean diffActive = oldTag.contains(Constants.NBT_KEY_ACTIVE) && newTag.contains(Constants.NBT_KEY_ACTIVE)
 								 && !oldTag.get(Constants.NBT_KEY_ACTIVE).equals(newTag.get(Constants.NBT_KEY_ACTIVE));
 			boolean diffMode = oldTag.contains(Constants.NBT_KEY_MODE) && newTag.contains(Constants.NBT_KEY_MODE)
@@ -50,7 +50,7 @@ public class ItemPE extends Item {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		if (supportedCapabilities.isEmpty()) {
 			return super.initCapabilities(stack, nbt);
 		}
@@ -77,7 +77,7 @@ public class ItemPE extends Item {
 		setEmc(stack, result);
 	}
 
-	public static boolean consumeFuel(PlayerEntity player, ItemStack stack, long amount, boolean shouldRemove) {
+	public static boolean consumeFuel(Player player, ItemStack stack, long amount, boolean shouldRemove) {
 		if (amount <= 0) {
 			return true;
 		}

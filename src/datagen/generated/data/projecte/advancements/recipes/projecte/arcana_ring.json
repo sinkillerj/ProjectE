@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:swiftwolf_rending_gale"
+            "items": [
+              "projecte:swiftwolf_rending_gale"
+            ]
           }
         ]
       }
@@ -21,7 +23,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:harvest_goddess_band"
+            "items": [
+              "projecte:harvest_goddess_band"
+            ]
           }
         ]
       }
@@ -31,7 +35,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:ignition_ring"
+            "items": [
+              "projecte:ignition_ring"
+            ]
           }
         ]
       }
@@ -41,7 +47,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:zero_ring"
+            "items": [
+              "projecte:zero_ring"
+            ]
           }
         ]
       }
@@ -51,7 +59,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:red_matter"
+            "items": [
+              "projecte:red_matter"
+            ]
           }
         ]
       }

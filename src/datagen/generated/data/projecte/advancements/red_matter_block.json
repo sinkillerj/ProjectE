@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:red_matter_block"
+            "items": [
+              "projecte:red_matter_block"
+            ]
           }
         ]
       }

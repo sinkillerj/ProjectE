@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -21,30 +22,30 @@ import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.storage.FolderName;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class ShowBagCMD {
 
 	private static final SimpleCommandExceptionType NOT_FOUND = new SimpleCommandExceptionType(PELang.SHOWBAG_NOT_FOUND.translate());
 
-	public static LiteralArgumentBuilder<CommandSource> register() {
+	public static LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("showbag")
 				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("color", new ColorArgument())
@@ -54,17 +55,17 @@ public class ShowBagCMD {
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), UUIDArgument.getUUID(ctx, "uuid")))));
 	}
 
-	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, ServerPlayerEntity player) throws CommandSyntaxException {
-		ServerPlayerEntity senderPlayer = ctx.getSource().getPlayerOrException();
+	private static int showBag(CommandContext<CommandSourceStack> ctx, DyeColor color, ServerPlayer player) throws CommandSyntaxException {
+		ServerPlayer senderPlayer = ctx.getSource().getPlayerOrException();
 		return showBag(senderPlayer, createContainer(senderPlayer, player, color));
 	}
 
-	private static int showBag(CommandContext<CommandSource> ctx, DyeColor color, UUID uuid) throws CommandSyntaxException {
-		ServerPlayerEntity senderPlayer = ctx.getSource().getPlayerOrException();
+	private static int showBag(CommandContext<CommandSourceStack> ctx, DyeColor color, UUID uuid) throws CommandSyntaxException {
+		ServerPlayer senderPlayer = ctx.getSource().getPlayerOrException();
 		return showBag(senderPlayer, createContainer(senderPlayer, uuid, color));
 	}
 
-	private static int showBag(ServerPlayerEntity senderPlayer, INamedContainerProvider container) {
+	private static int showBag(ServerPlayer senderPlayer, MenuProvider container) {
 		NetworkHooks.openGui(senderPlayer, container, b -> {
 			b.writeBoolean(false);
 			b.writeBoolean(false);
@@ -72,44 +73,44 @@ public class ShowBagCMD {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, ServerPlayerEntity target, DyeColor color) {
+	private static MenuProvider createContainer(ServerPlayer sender, ServerPlayer target, DyeColor color) {
 		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
-		ITextComponent name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());
+		Component name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
 
-	private static INamedContainerProvider createContainer(ServerPlayerEntity sender, UUID target, DyeColor color) throws CommandSyntaxException {
+	private static MenuProvider createContainer(ServerPlayer sender, UUID target, DyeColor color) throws CommandSyntaxException {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		//Try to get the bag
 		IItemHandlerModifiable inv = loadOfflineBag(server, target, color);
-		GameProfile profileByUUID = server.getProfileCache().get(target);
-		ITextComponent name;
-		if (profileByUUID == null) {
-			name = TextComponentUtil.build(PEItems.getBag(color));
-		} else {
+		Component name;
+		Optional<GameProfile> profileByUUID = server.getProfileCache().get(target);
+		if (profileByUUID.isPresent()) {
 			//If we have a cache of the player, include their last known name in the name of the bag
-			name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), profileByUUID.getName());
+			name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), profileByUUID.get().getName());
+		} else {
+			name = TextComponentUtil.build(PEItems.getBag(color));
 		}
 		return getContainer(sender, name, inv, true, () -> true);
 	}
 
-	private static INamedContainerProvider getContainer(ServerPlayerEntity sender, ITextComponent name, IItemHandlerModifiable inv, boolean immutable,
+	private static MenuProvider getContainer(ServerPlayer sender, Component name, IItemHandlerModifiable inv, boolean immutable,
 			BooleanSupplier canInteractWith) {
-		return new INamedContainerProvider() {
+		return new MenuProvider() {
 			@Nonnull
 			@Override
-			public ITextComponent getDisplayName() {
+			public Component getDisplayName() {
 				return name;
 			}
 
 			@Override
-			public Container createMenu(int windowId, @Nonnull PlayerInventory playerInv, @Nonnull PlayerEntity player) {
+			public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInv, @Nonnull Player player) {
 				//Note: Selected is unused for offhand
-				return new AlchBagContainer(windowId, sender.inventory, Hand.OFF_HAND, inv, 0, immutable) {
+				return new AlchBagContainer(windowId, sender.getInventory(), InteractionHand.OFF_HAND, inv, 0, immutable) {
 					@Override
-					public boolean stillValid(@Nonnull PlayerEntity player) {
+					public boolean stillValid(@Nonnull Player player) {
 						return canInteractWith.getAsBoolean();
 					}
 				};
@@ -118,16 +119,16 @@ public class ShowBagCMD {
 	}
 
 	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
-		File playerData = server.getWorldPath(FolderName.PLAYER_DATA_DIR).toFile();
+		File playerData = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).toFile();
 		if (playerData.exists()) {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {
 				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundNBT playerDat = CompressedStreamTools.readCompressed(in);
-					CompoundNBT bagProvider = playerDat.getCompound("ForgeCaps").getCompound(AlchBagImpl.Provider.NAME.toString());
+					CompoundTag playerDat = NbtIo.readCompressed(in);
+					CompoundTag bagProvider = playerDat.getCompound("ForgeCaps").getCompound(AlchBagImpl.Provider.NAME.toString());
 
-					IAlchBagProvider provider = ProjectEAPI.ALCH_BAG_CAPABILITY.getDefaultInstance();
-					ProjectEAPI.ALCH_BAG_CAPABILITY.readNBT(provider, null, bagProvider);
+					IAlchBagProvider provider = AlchBagImpl.getDefault();
+					provider.deserializeNBT(bagProvider);
 
 					return (IItemHandlerModifiable) provider.getBag(color);
 				} catch (IOException e) {

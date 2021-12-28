@@ -13,7 +13,7 @@ import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class SlotInput extends InventoryContainerSlot {
 

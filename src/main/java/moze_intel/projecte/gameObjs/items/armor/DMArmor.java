@@ -2,16 +2,16 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class DMArmor extends PEArmor {
 
-	public DMArmor(EquipmentSlotType armorPiece, Properties props) {
+	public DMArmor(EquipmentSlot armorPiece, Properties props) {
 		super(DMArmorMaterial.INSTANCE, armorPiece, props);
 	}
 
@@ -21,43 +21,43 @@ public class DMArmor extends PEArmor {
 	}
 
 	@Override
-	public float getMaxDamageAbsorb(EquipmentSlotType slot, DamageSource source) {
+	public float getMaxDamageAbsorb(EquipmentSlot slot, DamageSource source) {
 		if (source.isExplosion()) {
 			return 350;
 		}
-		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
+		if (slot == EquipmentSlot.FEET && source == DamageSource.FALL) {
 			return 5 / getPieceEffectiveness(slot);
-		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
+		} else if (slot == EquipmentSlot.HEAD && source == DamageSource.DROWN) {
 			return 5 / getPieceEffectiveness(slot);
 		}
 		if (source.isBypassArmor()) {
 			return 0;
 		}
 		//If the source is not unblockable, allow our piece to block a certain amount of damage
-		if (slot == EquipmentSlotType.HEAD || slot == EquipmentSlotType.FEET) {
+		if (slot == EquipmentSlot.HEAD || slot == EquipmentSlot.FEET) {
 			return 100;
 		}
 		return 150;
 	}
 
-	private static class DMArmorMaterial implements IArmorMaterial {
+	private static class DMArmorMaterial implements ArmorMaterial {
 
 		private static final DMArmorMaterial INSTANCE = new DMArmorMaterial();
 
 		@Override
-		public int getDurabilityForSlot(@Nonnull EquipmentSlotType slot) {
+		public int getDurabilityForSlot(@Nonnull EquipmentSlot slot) {
 			return 0;
 		}
 
 		@Override
-		public int getDefenseForSlot(@Nonnull EquipmentSlotType slot) {
-			if (slot == EquipmentSlotType.FEET) {
+		public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
+			if (slot == EquipmentSlot.FEET) {
 				return 3;
-			} else if (slot == EquipmentSlotType.LEGS) {
+			} else if (slot == EquipmentSlot.LEGS) {
 				return 6;
-			} else if (slot == EquipmentSlotType.CHEST) {
+			} else if (slot == EquipmentSlot.CHEST) {
 				return 8;
-			} else if (slot == EquipmentSlotType.HEAD) {
+			} else if (slot == EquipmentSlot.HEAD) {
 				return 3;
 			}
 			return 0;

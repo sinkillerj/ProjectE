@@ -7,11 +7,11 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 
@@ -21,7 +21,7 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return false;
 	}
 
@@ -31,10 +31,10 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		CompoundNBT nbt = stack.getOrCreateTag();
+	public boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+		CompoundTag nbt = stack.getOrCreateTag();
 		boolean isActive = nbt.getBoolean(Constants.NBT_KEY_ACTIVE);
-		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), isActive ? PESoundEvents.UNCHARGE.get() : PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), isActive ? PESoundEvents.UNCHARGE.get() : PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		nbt.putBoolean(Constants.NBT_KEY_ACTIVE, !isActive);
 		return true;
 	}

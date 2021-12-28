@@ -9,18 +9,18 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,13 +34,13 @@ public class ToolTipEvent {
 		if (current.isEmpty()) {
 			return;
 		}
-		PlayerEntity clientPlayer = Minecraft.getInstance().player;
+		Player clientPlayer = Minecraft.getInstance().player;
 		if (ProjectEConfig.client.pedestalToolTips.get()) {
 			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(TextFormatting.DARK_PURPLE));
-				List<ITextComponent> description = pedestalItem.getPedestalDescription();
+				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(ChatFormatting.DARK_PURPLE));
+				List<Component> description = pedestalItem.getPedestalDescription();
 				if (description.isEmpty()) {
-					event.getToolTip().add(PELang.PEDESTAL_DISABLED.translateColored(TextFormatting.RED));
+					event.getToolTip().add(PELang.PEDESTAL_DISABLED.translateColored(ChatFormatting.RED));
 				} else {
 					event.getToolTip().addAll(description);
 				}
@@ -49,7 +49,7 @@ public class ToolTipEvent {
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
 			for (ResourceLocation tag : ItemTags.getAllTags().getMatchingTags(current.getItem())) {
-				event.getToolTip().add(new StringTextComponent("#" + tag));
+				event.getToolTip().add(new TextComponent("#" + tag));
 			}
 		}
 
@@ -61,15 +61,15 @@ public class ToolTipEvent {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
 				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
-					event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(TextFormatting.YELLOW));
+					event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));
 				}
 			}
 		}
 
 		if (current.hasTag()) {
 			long value;
-			CompoundNBT tag = current.getOrCreateTag();
-			if (tag.contains(Constants.NBT_KEY_STORED_EMC, NBT.TAG_LONG)) {
+			CompoundTag tag = current.getOrCreateTag();
+			if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_LONG)) {
 				value = tag.getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
 				Optional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
@@ -79,7 +79,7 @@ public class ToolTipEvent {
 					return;
 				}
 			}
-			event.getToolTip().add(PELang.EMC_STORED.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, Constants.EMC_FORMATTER.format(value)));
+			event.getToolTip().add(PELang.EMC_STORED.translateColored(ChatFormatting.YELLOW, ChatFormatting.WHITE, Constants.EMC_FORMATTER.format(value)));
 		}
 	}
 }

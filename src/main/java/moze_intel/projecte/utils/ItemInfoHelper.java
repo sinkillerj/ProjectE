@@ -5,35 +5,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemInfoHelper {
 
 	/**
-	 * Based on {@link net.minecraft.enchantment.EnchantmentHelper#getEnchantments(ItemStack)} except calculates it from an ItemInfo with a bit of extra error catching
+	 * Based on {@link net.minecraft.world.item.enchantment.EnchantmentHelper#getEnchantments(ItemStack)} except calculates it from an ItemInfo with a bit of extra error
+	 * catching
 	 */
 	public static Map<Enchantment, Integer> getEnchantments(ItemInfo info) {
-		CompoundNBT tag = info.getNBT();
+		CompoundTag tag = info.getNBT();
 		if (tag == null) {
 			return Collections.emptyMap();
 		}
 		String location = getEnchantTagLocation(info);
-		if (!tag.contains(location, NBT.TAG_LIST)) {
+		if (!tag.contains(location, Tag.TAG_LIST)) {
 			return Collections.emptyMap();
 		}
 		Map<Enchantment, Integer> map = new LinkedHashMap<>();
-		ListNBT enchantments = tag.getList(location, NBT.TAG_COMPOUND);
+		ListTag enchantments = tag.getList(location, Tag.TAG_COMPOUND);
 		for (int i = 0; i < enchantments.size(); i++) {
-			CompoundNBT enchantNBT = enchantments.getCompound(i);
+			CompoundTag enchantNBT = enchantments.getCompound(i);
 			ResourceLocation enchantmentID = ResourceLocation.tryParse(enchantNBT.getString("id"));
 			if (enchantmentID != null) {
 				Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(enchantmentID);
@@ -50,10 +51,11 @@ public class ItemInfoHelper {
 	}
 
 	/**
-	 * Based on {@link net.minecraft.potion.PotionUtils#addPotionToItemStack(ItemStack, Potion)} except without requiring boxing ItemInfo into an out of an ItemStack
+	 * Based on {@link net.minecraft.world.item.alchemy.PotionUtils#addPotionToItemStack(ItemStack, Potion)} except without requiring boxing ItemInfo into an out of an
+	 * ItemStack
 	 */
 	public static ItemInfo makeWithPotion(ItemInfo info, Potion potion) {
-		CompoundNBT nbt = info.getNBT();
+		CompoundTag nbt = info.getNBT();
 		if (potion == Potions.EMPTY) {
 			if (nbt != null && nbt.contains("Potion")) {
 				nbt.remove("Potion");
@@ -63,7 +65,7 @@ public class ItemInfoHelper {
 			}
 		} else {
 			if (nbt == null) {
-				nbt = new CompoundNBT();
+				nbt = new CompoundTag();
 			}
 			nbt.putString("Potion", potion.getRegistryName().toString());
 		}

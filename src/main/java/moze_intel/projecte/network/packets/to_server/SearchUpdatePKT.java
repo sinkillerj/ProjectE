@@ -2,10 +2,10 @@ package moze_intel.projecte.network.packets.to_server;
 
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.network.packets.IPEPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 public class SearchUpdatePKT implements IPEPacket {
 
@@ -18,20 +18,20 @@ public class SearchUpdatePKT implements IPEPacket {
 	}
 
 	@Override
-	public void handle(Context context) {
-		PlayerEntity player = context.getSender();
+	public void handle(NetworkEvent.Context context) {
+		Player player = context.getSender();
 		if (player != null && player.containerMenu instanceof TransmutationContainer) {
 			((TransmutationContainer) player.containerMenu).transmutationInventory.writeIntoOutputSlot(slot, itemStack);
 		}
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeVarInt(slot);
 		buffer.writeItem(itemStack);
 	}
 
-	public static SearchUpdatePKT decode(PacketBuffer buffer) {
+	public static SearchUpdatePKT decode(FriendlyByteBuf buffer) {
 		return new SearchUpdatePKT(buffer.readVarInt(), buffer.readItem());
 	}
 }

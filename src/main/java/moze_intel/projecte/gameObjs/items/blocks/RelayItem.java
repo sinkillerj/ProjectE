@@ -8,12 +8,12 @@ import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class RelayItem extends BlockItem {
 
@@ -25,11 +25,11 @@ public class RelayItem extends BlockItem {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		if (ProjectEConfig.client.statToolTips.get()) {
-			tooltips.add(PELang.EMC_MAX_OUTPUT_RATE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getChargeRate())));
-			tooltips.add(PELang.EMC_MAX_STORAGE.translateColored(TextFormatting.DARK_PURPLE, TextFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getStorage())));
+			tooltips.add(PELang.EMC_MAX_OUTPUT_RATE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getChargeRate())));
+			tooltips.add(PELang.EMC_MAX_STORAGE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getStorage())));
 		}
 	}
 }

@@ -1,17 +1,17 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.container.RelayMK3Container;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerScreen<CONTAINER> {
 
@@ -22,7 +22,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	private final int emcBarShift;
 	private final int shift;
 
-	protected GUIRelay(CONTAINER container, PlayerInventory invPlayer, ITextComponent title, ResourceLocation texture, int emcX, int emcY, int vOffset,
+	protected GUIRelay(CONTAINER container, Inventory invPlayer, Component title, ResourceLocation texture, int emcX, int emcY, int vOffset,
 			int emcBarShift, int shift) {
 		super(container, invPlayer, title);
 		this.texture = texture;
@@ -34,16 +34,17 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
 		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
 		//Don't render inventory as we don't have space
 		this.font.draw(matrix, Constants.EMC_FORMATTER.format(menu.emc.get()), emcX, emcY, 0x404040);
 	}
 
 	@Override
-	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bind(texture);
+	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int x, int y) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, this.texture);
 
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
@@ -64,7 +65,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		private static final ResourceLocation MK1_TEXTURE = PECore.rl("textures/gui/relay1.png");
 
-		public GUIRelayMK1(RelayMK1Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public GUIRelayMK1(RelayMK1Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title, MK1_TEXTURE, 88, 24, 177, 64, 0);
 			this.imageWidth = 175;
 			this.imageHeight = 176;
@@ -76,7 +77,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		private static final ResourceLocation MK2_TEXTURE = PECore.rl("textures/gui/relay2.png");
 
-		public GUIRelayMK2(RelayMK2Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public GUIRelayMK2(RelayMK2Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title, MK2_TEXTURE, 107, 25, 183, 86, 17);
 			this.imageWidth = 193;
 			this.imageHeight = 182;
@@ -88,7 +89,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		private static final ResourceLocation MK3_TEXTURE = PECore.rl("textures/gui/relay3.png");
 
-		public GUIRelayMK3(RelayMK3Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public GUIRelayMK3(RelayMK3Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title, MK3_TEXTURE, 125, 39, 195, 105, 37);
 			this.imageWidth = 212;
 			this.imageHeight = 194;

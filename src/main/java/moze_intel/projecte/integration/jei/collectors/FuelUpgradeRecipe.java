@@ -1,7 +1,7 @@
 package moze_intel.projecte.integration.jei.collectors;
 
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class FuelUpgradeRecipe {
 

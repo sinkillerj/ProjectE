@@ -10,15 +10,15 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.ItemParser;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.tags.ITag;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -34,7 +34,7 @@ public class NSSItemParser {
 	@Nullable
 	private Item item;
 	@Nullable
-	private CompoundNBT nbt;
+	private CompoundTag nbt;
 	private ResourceLocation tagId = new ResourceLocation("");
 	private int readerCursor;
 	/** Builder to be used when creating a list of suggestions */
@@ -49,7 +49,7 @@ public class NSSItemParser {
 			return new NSSItemResult(this);
 		}
 		//Else it is a tag
-		ITag<Item> tag = ItemTags.getAllTags().getTag(tagId);
+		Tag<Item> tag = ItemTags.getAllTags().getTag(tagId);
 		if (tag == null) {
 			throw UNKNOWN_TAG.create(tagId.toString());
 		}
@@ -76,7 +76,7 @@ public class NSSItemParser {
 			this.suggestionsBuilder = this::suggestItem;
 			if (this.reader.canRead() && this.reader.peek() == '{') {
 				this.suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
-				this.nbt = new JsonToNBT(this.reader).readStruct();
+				this.nbt = new TagParser(this.reader).readStruct();
 			}
 		}
 		return this;
@@ -100,7 +100,7 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder) {
-		return ISuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder.createOffset(this.readerCursor));
+		return SharedSuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder.createOffset(this.readerCursor));
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder) {
-		ISuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder, String.valueOf('#'));
-		return ISuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getKeys(), builder);
+		SharedSuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder, String.valueOf('#'));
+		return SharedSuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getKeys(), builder);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class NSSItemParser {
 		@Nullable
 		private final Item item;
 		@Nullable
-		private final CompoundNBT nbt;
+		private final CompoundTag nbt;
 		private ResourceLocation tagId = new ResourceLocation("");
 
 		public NSSItemResult(NSSItemParser parser) {

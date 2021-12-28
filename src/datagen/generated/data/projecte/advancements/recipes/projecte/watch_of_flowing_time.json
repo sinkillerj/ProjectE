@@ -11,10 +11,14 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:dark_matter"
+            "items": [
+              "projecte:dark_matter"
+            ]
           },
           {
-            "item": "minecraft:clock"
+            "items": [
+              "minecraft:clock"
+            ]
           }
         ]
       }

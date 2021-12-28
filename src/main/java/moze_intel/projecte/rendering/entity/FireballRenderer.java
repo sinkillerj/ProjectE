@@ -3,13 +3,13 @@ package moze_intel.projecte.rendering.entity;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class FireballRenderer extends EntitySpriteRenderer<EntityFireProjectile> {
 
-	public FireballRenderer(EntityRendererManager manager) {
-		super(manager);
+	public FireballRenderer(EntityRendererProvider.Context context) {
+		super(context);
 	}
 
 	@Nonnull

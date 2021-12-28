@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "projecte:alchemical_chest",
+    "projecte:alchemical_coal_block",
+    "projecte:mobius_fuel_block",
+    "projecte:aeternalis_fuel_block",
+    "projecte:collector_mk1",
+    "projecte:collector_mk2",
+    "projecte:collector_mk3",
+    "projecte:condenser_mk1",
+    "projecte:condenser_mk2",
+    "projecte:dm_pedestal",
+    "projecte:dm_furnace",
+    "projecte:rm_furnace",
+    "projecte:dark_matter_block",
+    "projecte:red_matter_block",
+    "projecte:transmutation_table",
+    "projecte:relay_mk1",
+    "projecte:relay_mk2",
+    "projecte:relay_mk3"
+  ]
+}

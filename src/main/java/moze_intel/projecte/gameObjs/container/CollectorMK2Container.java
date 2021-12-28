@@ -7,18 +7,18 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
-import net.minecraft.entity.player.PlayerInventory;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK2Tile;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK2Container extends CollectorMK1Container {
 
-	public CollectorMK2Container(int windowId, PlayerInventory invPlayer, CollectorMK2Tile collector) {
+	public CollectorMK2Container(int windowId, Inventory invPlayer, CollectorMK2Tile collector) {
 		super(PEContainerTypes.COLLECTOR_MK2_CONTAINER, windowId, invPlayer, collector);
 	}
 
 	@Override
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
 

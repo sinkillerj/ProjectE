@@ -13,14 +13,14 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.gameObjs.block_entities.CondenserTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
@@ -30,18 +30,18 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 	@Nullable
 	private ItemInfo lastLockInfo;
 
-	public CondenserContainer(int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
+	public CondenserContainer(int windowId, Inventory invPlayer, CondenserTile condenser) {
 		this(PEContainerTypes.CONDENSER_CONTAINER, windowId, invPlayer, condenser);
 	}
 
-	protected CondenserContainer(ContainerTypeRegistryObject<? extends CondenserContainer> type, int windowId, PlayerInventory invPlayer, CondenserTile condenser) {
+	protected CondenserContainer(ContainerTypeRegistryObject<? extends CondenserContainer> type, int windowId, Inventory invPlayer, CondenserTile condenser) {
 		super(type, windowId, condenser);
 		this.longFields.add(displayEmc);
 		this.longFields.add(requiredEmc);
 		initSlots(invPlayer);
 	}
 
-	protected void initSlots(PlayerInventory invPlayer) {
+	protected void initSlots(Inventory invPlayer) {
 		this.addSlot(new SlotCondenserLock(tile::getLockInfo, 0, 12, 6));
 		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s);
 		IItemHandler handler = tile.getInput();
@@ -60,7 +60,7 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 		ItemInfo lockInfo = tile.getLockInfo();
 		if (!Objects.equals(lockInfo, lastLockInfo)) {
 			lastLockInfo = lockInfo;
-			for (IContainerListener listener : containerListeners) {
+			for (ContainerListener listener : containerListeners) {
 				PacketHandler.sendLockSlotUpdate(listener, this, lockInfo);
 			}
 		}
@@ -72,20 +72,19 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull Player player) {
 		return stillValid(player, tile, getValidBlock());
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public void clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull Player player) {
 		if (slot == 0) {
 			if (tile.attemptCondenserSet(player)) {
 				this.broadcastChanges();
 			}
-			return ItemStack.EMPTY;
+		} else {
+			super.clicked(slot, button, flag, player);
 		}
-		return super.clicked(slot, button, flag, player);
 	}
 
 	public int getProgressScaled() {

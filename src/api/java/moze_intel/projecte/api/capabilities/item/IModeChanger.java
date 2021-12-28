@@ -2,10 +2,9 @@ package moze_intel.projecte.api.capabilities.item;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -13,7 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IModeChanger {
 
@@ -35,5 +34,5 @@ public interface IModeChanger {
 	 *
 	 * @return Whether the operation succeeded
 	 */
-	boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand);
+	boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand);
 }

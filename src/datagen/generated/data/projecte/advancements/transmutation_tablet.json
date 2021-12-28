@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:transmutation_tablet"
+            "items": [
+              "projecte:transmutation_tablet"
+            ]
           }
         ]
       }

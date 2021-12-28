@@ -11,10 +11,14 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:red_matter"
+            "items": [
+              "projecte:red_matter"
+            ]
           },
           {
-            "item": "projecte:dm_leggings"
+            "items": [
+              "projecte:dm_leggings"
+            ]
           }
         ]
       }

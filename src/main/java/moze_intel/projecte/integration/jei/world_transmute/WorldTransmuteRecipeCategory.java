@@ -1,6 +1,6 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,10 +16,10 @@ import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -29,13 +29,11 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
-	private final String localizedName;
 
 	public WorldTransmuteRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(new ItemStack(PEItems.PHILOSOPHERS_STONE));
-		localizedName = PELang.WORLD_TRANSMUTE.translate().getString();
+		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEItems.PHILOSOPHERS_STONE));
 	}
 
 	@Nonnull
@@ -52,8 +50,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
 	@Nonnull
 	@Override
-	public String getTitle() {
-		return localizedName;
+	public Component getTitle() {
+		return PELang.WORLD_TRANSMUTE.translate();
 	}
 
 	@Nonnull
@@ -69,7 +67,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	}
 
 	@Override
-	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
+	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
 		arrow.draw(matrix, 55, 18);
 	}
 
@@ -118,7 +116,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+	public List<Component> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
 			return Collections.singletonList(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate());
 		}

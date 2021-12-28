@@ -3,22 +3,23 @@ package moze_intel.projecte.api.nss;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
  */
 public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
-	private NSSItem(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundNBT nbt) {
+	private NSSItem(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag, nbt);
 	}
 
@@ -43,18 +44,18 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing an item from an {@link IItemProvider}
+	 * Helper method to create an {@link NSSItem} representing an item from an {@link ItemLike}
 	 */
 	@Nonnull
-	public static NSSItem createItem(@Nonnull IItemProvider itemProvider) {
+	public static NSSItem createItem(@Nonnull ItemLike itemProvider) {
 		return createItem(itemProvider, null);
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing an item from an {@link IItemProvider} and an optional {@link CompoundNBT}
+	 * Helper method to create an {@link NSSItem} representing an item from an {@link ItemLike} and an optional {@link CompoundTag}
 	 */
 	@Nonnull
-	public static NSSItem createItem(@Nonnull IItemProvider itemProvider, @Nullable CompoundNBT nbt) {
+	public static NSSItem createItem(@Nonnull ItemLike itemProvider, @Nullable CompoundTag nbt) {
 		Item item = itemProvider.asItem();
 		if (item == Items.AIR) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
@@ -72,10 +73,10 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing an item from a {@link ResourceLocation} and an optional {@link CompoundNBT}
+	 * Helper method to create an {@link NSSItem} representing an item from a {@link ResourceLocation} and an optional {@link CompoundTag}
 	 */
 	@Nonnull
-	public static NSSItem createItem(@Nonnull ResourceLocation itemID, @Nullable CompoundNBT nbt) {
+	public static NSSItem createItem(@Nonnull ResourceLocation itemID, @Nullable CompoundTag nbt) {
 		return new NSSItem(itemID, false, nbt);
 	}
 
@@ -88,11 +89,11 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing a tag from a {@link ITag<Item>}
+	 * Helper method to create an {@link NSSItem} representing a tag from a {@link Tag<Item>}
 	 */
 	@Nonnull
-	public static NSSItem createTag(@Nonnull ITag<Item> tag) {
-		ResourceLocation tagLocation = TagCollectionManager.getInstance().getItems().getId(tag);
+	public static NSSItem createTag(@Nonnull Tag<Item> tag) {
+		ResourceLocation tagLocation = SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY).getId(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
 		}
@@ -119,8 +120,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	@Nonnull
 	@Override
-	protected ITagCollection<Item> getTagCollection() {
-		return TagCollectionManager.getInstance().getItems();
+	protected TagCollection<Item> getTagCollection() {
+		return SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY);
 	}
 
 	@Override

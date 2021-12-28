@@ -24,10 +24,10 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDe
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 @EMCMapper
@@ -51,15 +51,15 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
-			IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ServerResources dataPackRegistries,
+			ResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> files = load(resourceManager);
 		for (CustomConversionFile file : files.values()) {
 			addMappingsFromFile(file, mapper);
 		}
 	}
 
-	private static Map<ResourceLocation, CustomConversionFile> load(IResourceManager resourceManager) {
+	private static Map<ResourceLocation, CustomConversionFile> load(ResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> loading = new HashMap<>();
 
 		String folder = "pe_custom_conversions";
@@ -77,7 +77,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
 			try {
-				for (IResource resource : resourceManager.getResources(file)) {
+				for (Resource resource : resourceManager.getResources(file)) {
 					CustomConversionFile result;
 					try {
 						result = parseJson(new InputStreamReader(resource.getInputStream()));

@@ -14,24 +14,23 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.storage.FolderName;
-import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TransmutationOffline {
 
-	private static final IKnowledgeProvider NOT_FOUND_PROVIDER = immutableCopy(ProjectEAPI.KNOWLEDGE_CAPABILITY.getDefaultInstance());
+	private static final IKnowledgeProvider NOT_FOUND_PROVIDER = immutableCopy(KnowledgeImpl.getDefault());
 
 	private static final Map<UUID, IKnowledgeProvider> cachedKnowledgeProviders = new HashMap<>();
 
@@ -56,16 +55,16 @@ public class TransmutationOffline {
 	private static boolean cacheOfflineData(UUID playerUUID) {
 		Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		File playerData = server.getWorldPath(FolderName.PLAYER_DATA_DIR).toFile();
+		File playerData = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).toFile();
 		if (playerData.exists()) {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {
 				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundNBT playerDat = CompressedStreamTools.readCompressed(in); // No need to create buffered stream, that call does it for us
-					CompoundNBT knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
+					CompoundTag playerDat = NbtIo.readCompressed(in); // No need to create buffered stream, that call does it for us
+					CompoundTag knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
 
-					IKnowledgeProvider provider = ProjectEAPI.KNOWLEDGE_CAPABILITY.getDefaultInstance();
-					ProjectEAPI.KNOWLEDGE_CAPABILITY.readNBT(provider, null, knowledgeProvider);
+					IKnowledgeProvider provider = KnowledgeImpl.getDefault();
+					provider.deserializeNBT(knowledgeProvider);
 					cachedKnowledgeProviders.put(playerUUID, immutableCopy(provider));
 
 					PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
@@ -134,22 +133,22 @@ public class TransmutationOffline {
 			}
 
 			@Override
-			public void sync(@Nonnull ServerPlayerEntity player) {
+			public void sync(@Nonnull ServerPlayer player) {
 				toCopy.sync(player);
 			}
 
 			@Override
-			public void syncEmc(@Nonnull ServerPlayerEntity player) {
+			public void syncEmc(@Nonnull ServerPlayer player) {
 				toCopy.syncEmc(player);
 			}
 
 			@Override
-			public void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned) {
+			public void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned) {
 				toCopy.syncKnowledgeChange(player, change, learned);
 			}
 
 			@Override
-			public void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+			public void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
 				toCopy.syncInputAndLocks(player, slotsChanged, updateTargets);
 			}
 
@@ -158,12 +157,12 @@ public class TransmutationOffline {
 			}
 
 			@Override
-			public CompoundNBT serializeNBT() {
+			public CompoundTag serializeNBT() {
 				return toCopy.serializeNBT();
 			}
 
 			@Override
-			public void deserializeNBT(CompoundNBT nbt) {
+			public void deserializeNBT(CompoundTag nbt) {
 			}
 		};
 	}

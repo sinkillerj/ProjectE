@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -27,17 +27,17 @@ public final class ItemHelper {
 	/**
 	 * Gets an ActionResult based on a type
 	 */
-	public static ActionResult<ItemStack> actionResultFromType(ActionResultType type, ItemStack stack) {
+	public static InteractionResultHolder<ItemStack> actionResultFromType(InteractionResult type, ItemStack stack) {
 		switch (type) {
 			case SUCCESS:
-				return ActionResult.success(stack);
+				return InteractionResultHolder.success(stack);
 			case CONSUME:
-				return ActionResult.consume(stack);
+				return InteractionResultHolder.consume(stack);
 			case FAIL:
-				return ActionResult.fail(stack);
+				return InteractionResultHolder.fail(stack);
 			case PASS:
 			default:
-				return ActionResult.pass(stack);
+				return InteractionResultHolder.pass(stack);
 		}
 	}
 
@@ -101,19 +101,19 @@ public final class ItemHelper {
 	}
 
 	/**
-	 * Copies the nbt compound similar to how {@link CompoundNBT#copy()} does, except it just skips the desired key instead of having to copy a potentially large value
+	 * Copies the nbt compound similar to how {@link CompoundTag#copy()} does, except it just skips the desired key instead of having to copy a potentially large value
 	 * which may be expensive, and then remove it from the copy.
 	 *
-	 * @implNote If the input {@link CompoundNBT} only contains the key we want to skip, we return null instead of an empty {@link CompoundNBT}.
+	 * @implNote If the input {@link CompoundTag} only contains the key we want to skip, we return null instead of an empty {@link CompoundTag}.
 	 */
 	@Nullable
-	public static CompoundNBT copyNBTSkipKey(@Nonnull CompoundNBT nbt, @Nonnull String keyToSkip) {
-		CompoundNBT copiedNBT = new CompoundNBT();
+	public static CompoundTag copyNBTSkipKey(@Nonnull CompoundTag nbt, @Nonnull String keyToSkip) {
+		CompoundTag copiedNBT = new CompoundTag();
 		for (String key : nbt.getAllKeys()) {
 			if (keyToSkip.equals(key)) {
 				continue;
 			}
-			INBT innerNBT = nbt.get(key);
+			Tag innerNBT = nbt.get(key);
 			if (innerNBT != null) {
 				//Shouldn't be null but double check
 				copiedNBT.put(key, innerNBT.copy());
@@ -220,11 +220,11 @@ public final class ItemHelper {
 	}
 
 	@Nullable
-	public static CompoundNBT recombineNBT(List<CompoundNBT> pieces) {
+	public static CompoundTag recombineNBT(List<CompoundTag> pieces) {
 		if (pieces.isEmpty()) {
 			return null;
 		}
-		CompoundNBT combinedNBT = pieces.get(0);
+		CompoundTag combinedNBT = pieces.get(0);
 		for (int i = 1; i < pieces.size(); i++) {
 			combinedNBT = combinedNBT.merge(pieces.get(i));
 		}

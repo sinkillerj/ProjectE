@@ -5,12 +5,12 @@ import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 public interface IItemMode extends IModeChanger {
 
@@ -35,7 +35,7 @@ public interface IItemMode extends IModeChanger {
 	}
 
 	@Override
-	default boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
+	default boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
 		byte numModes = getModeCount();
 		if (numModes < 2) {
 			//If we have no modes or we are set to the only mode fail
@@ -51,7 +51,7 @@ public interface IItemMode extends IModeChanger {
 		return PELang.MODE_SWITCH;
 	}
 
-	default ITextComponent getToolTip(ItemStack stack) {
-		return PELang.CURRENT_MODE.translate(TextFormatting.AQUA, getModeLangEntry(stack));
+	default Component getToolTip(ItemStack stack) {
+		return PELang.CURRENT_MODE.translate(ChatFormatting.AQUA, getModeLangEntry(stack));
 	}
 }

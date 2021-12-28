@@ -4,18 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
-import net.minecraft.block.Block;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.conditions.BlockStateProperty;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
-public class PEBlockLootTable extends BlockLootTables {
+public class PEBlockLootTable extends BlockLoot {
 
 	private final Set<Block> knownBlocks = new HashSet<>();
 
@@ -46,23 +46,23 @@ public class PEBlockLootTable extends BlockLootTables {
 	}
 
 	@Override
-	public void dropOther(@Nonnull Block block, @Nonnull IItemProvider drop) {
+	public void dropOther(@Nonnull Block block, @Nonnull ItemLike drop) {
 		//Override to use our own dropping method that names the loot table
 		add(block, dropping(drop));
 	}
 
-	protected static LootTable.Builder dropping(IItemProvider item) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(ConstantRange.exactly(1))
+	protected static LootTable.Builder dropping(ItemLike item) {
+		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.name("main")
-				.add(ItemLootEntry.lootTableItem(item))
+				.add(LootItem.lootTableItem(item))
 		));
 	}
 
 	private void registerCustomTNT(Block tnt) {
-		add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool().setRolls(ConstantRange.exactly(1))
+		add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.name("main")
-				.add(ItemLootEntry.lootTableItem(tnt).when(BlockStateProperty.hasBlockStateProperties(tnt)
-						.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TNTBlock.UNSTABLE, false)))))));
+				.add(LootItem.lootTableItem(tnt).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)
+						.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TntBlock.UNSTABLE, false)))))));
 	}
 
 	@Override

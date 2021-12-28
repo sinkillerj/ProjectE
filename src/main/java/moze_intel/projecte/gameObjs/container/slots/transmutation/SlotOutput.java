@@ -6,8 +6,8 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class SlotOutput extends InventoryContainerSlot {
 
@@ -52,7 +52,7 @@ public class SlotOutput extends InventoryContainerSlot {
 	}
 
 	@Override
-	public boolean mayPickup(PlayerEntity player) {
+	public boolean mayPickup(Player player) {
 		return !hasItem() || BigInteger.valueOf(EMCHelper.getEmcValue(getItem())).compareTo(inv.getAvailableEmc()) <= 0;
 	}
 }

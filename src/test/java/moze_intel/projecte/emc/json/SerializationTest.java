@@ -7,8 +7,8 @@ import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class SerializationTest {
 	@Test
 	@DisplayName("Test Serialization of an Item with NBT")
 	void testItemNBTSerialization() {
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putString("my", "tag");
 		NSSItem expected = NSSItem.createItem(new ResourceLocation("minecraft", "dirt"), nbt);
 		Assertions.assertEquals(expected, NSSSerializer.INSTANCE.deserialize("minecraft:dirt{my: \"tag\"}"));
@@ -89,7 +89,7 @@ class SerializationTest {
 	@Test
 	@DisplayName("Test Serialization of an Fluid with NBT")
 	void testFluidNBTSerialization() {
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putString("my", "tag");
 		NSSFluid expected = NSSFluid.createFluid(new ResourceLocation("minecraft", "water"), nbt);
 		Assertions.assertEquals(expected, NSSSerializer.INSTANCE.deserialize("FLUID|minecraft:water{my: \"tag\"}"));

@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class ExtraFunctionItemCapabilityWrapper extends BasicItemCapability<IExtraFunction> implements IExtraFunction {
@@ -17,7 +17,7 @@ public class ExtraFunctionItemCapabilityWrapper extends BasicItemCapability<IExt
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nullable Hand hand) {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, @Nullable InteractionHand hand) {
 		return getItem().doExtraFunction(stack, player, hand);
 	}
 }

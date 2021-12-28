@@ -10,7 +10,7 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class NBTManager {
 
@@ -26,15 +26,15 @@ public class NBTManager {
 
 	@Nonnull
 	public static ItemInfo getPersistentInfo(@Nonnull ItemInfo info) {
-		if (!info.hasNBT() || info.getItem().is(PETags.Items.NBT_WHITELIST) || EMCMappingHandler.hasEmcValue(info)) {
+		if (!info.hasNBT() || PETags.Items.NBT_WHITELIST.contains(info.getItem()) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
 		}
 		//Cleans up the tag in info to reduce it as much as possible
-		List<CompoundNBT> persistentNBT = new ArrayList<>();
+		List<CompoundTag> persistentNBT = new ArrayList<>();
 		for (INBTProcessor processor : processors) {
 			if (NBTProcessorConfig.isEnabled(processor) && processor.hasPersistentNBT() && NBTProcessorConfig.hasPersistent(processor)) {
-				CompoundNBT nbt = processor.getPersistentNBT(info);
+				CompoundTag nbt = processor.getPersistentNBT(info);
 				if (nbt != null) {
 					persistentNBT.add(nbt);
 				}

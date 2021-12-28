@@ -14,14 +14,14 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -31,27 +31,27 @@ public class TransmutationContainer extends PEHandContainer {
 	public final TransmutationInventory transmutationInventory;
 	private SlotUnlearn unlearn;
 
-	public static TransmutationContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer buf) {
+	public static TransmutationContainer fromNetwork(int windowId, Inventory invPlayer, FriendlyByteBuf buf) {
 		if (buf.readBoolean()) {
-			return new TransmutationContainer(windowId, invPlayer, buf.readEnum(Hand.class), buf.readByte());
+			return new TransmutationContainer(windowId, invPlayer, buf.readEnum(InteractionHand.class), buf.readByte());
 		}
 		return new TransmutationContainer(windowId, invPlayer);
 	}
 
-	public TransmutationContainer(int windowId, PlayerInventory invPlayer) {
+	public TransmutationContainer(int windowId, Inventory invPlayer) {
 		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, null, 0);
 		//Hand is technically null safe
 		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
 		initSlots(invPlayer);
 	}
 
-	public TransmutationContainer(int windowId, PlayerInventory invPlayer, Hand hand, int selected) {
+	public TransmutationContainer(int windowId, Inventory invPlayer, InteractionHand hand, int selected) {
 		super(PEContainerTypes.TRANSMUTATION_CONTAINER, windowId, hand, selected);
 		this.transmutationInventory = new TransmutationInventory(invPlayer.player);
 		initSlots(invPlayer);
 	}
 
-	private void initSlots(PlayerInventory invPlayer) {
+	private void initSlots(Inventory invPlayer) {
 		// Transmutation Inventory
 		this.addSlot(new SlotInput(transmutationInventory, 0, 43, 23));
 		this.addSlot(new SlotInput(transmutationInventory, 1, 34, 41));
@@ -84,18 +84,18 @@ public class TransmutationContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void removed(@Nonnull PlayerEntity player) {
+	public void removed(@Nonnull Player player) {
 		super.removed(player);
-		if (!player.isAlive() || player instanceof ServerPlayerEntity && ((ServerPlayerEntity) player).hasDisconnected()) {
+		if (!player.isAlive() || player instanceof ServerPlayer && ((ServerPlayer) player).hasDisconnected()) {
 			player.drop(unlearn.getItem(), false);
 		} else {
-			player.inventory.placeItemBackInInventory(player.level, unlearn.getItem());
+			player.getInventory().placeItemBackInInventory(unlearn.getItem());
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
 		if (slotIndex < 9 || slotIndex == 10) {
 			//Input Slots, lock slot, and unlearn slot, defer to super (allow basic sneak clicking out of container)
 			return super.quickMoveStack(player, slotIndex);
@@ -113,7 +113,7 @@ public class TransmutationContainer extends PEHandContainer {
 				//Note: We can just set the size here as newStack is a copy stack used for modifications
 				stack.setCount(stack.getMaxStackSize());
 				//Check how much we can fit of the stack
-				int stackSize = stack.getCount() - ItemHelper.simulateFit(player.inventory.items, stack);
+				int stackSize = stack.getCount() - ItemHelper.simulateFit(player.getInventory().items, stack);
 				if (stackSize > 0) {
 					BigInteger availableEMC = transmutationInventory.getAvailableEmc();
 					BigInteger emc = BigInteger.valueOf(itemEmc);
@@ -155,16 +155,15 @@ public class TransmutationContainer extends PEHandContainer {
 		return ItemStack.EMPTY;
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clickPostValidate(int slotIndex, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+	public void clickPostValidate(int slotIndex, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
 		if (player.getCommandSenderWorld().isClientSide && transmutationInventory.getHandlerForSlot(slotIndex) == transmutationInventory.outputs) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
 				PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slotIndex), slot.getItem()));
 			}
 		}
-		return super.clickPostValidate(slotIndex, dragType, clickType, player);
+		super.clickPostValidate(slotIndex, dragType, clickType, player);
 	}
 
 	@Override

@@ -1,48 +1,46 @@
 package moze_intel.projecte.rendering;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.tiles.ChestTileEmc;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import moze_intel.projecte.gameObjs.block_entities.ChestTileEmc;
+import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 //Only used on the client
-public class ChestRenderer extends TileEntityRenderer<ChestTileEmc> {
+public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 
-	private final ModelRenderer lid;
-	private final ModelRenderer base;
-	private final ModelRenderer latch;
+	private final ModelPart lid;
+	private final ModelPart base;
+	private final ModelPart latch;
 
 	private final Predicate<Block> blockChecker;
 	private final ResourceLocation texture;
 
-	public ChestRenderer(TileEntityRendererDispatcher dispatcher, ResourceLocation texture, Predicate<Block> blockChecker) {
-		super(dispatcher);
+	public ChestRenderer(BlockEntityRendererProvider.Context context, ResourceLocation texture, Supplier<BlockRegistryObject<?, ?>> type) {
 		this.texture = texture;
-		this.blockChecker = blockChecker;
-		this.base = new ModelRenderer(64, 64, 0, 19);
-		this.base.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
-		this.lid = new ModelRenderer(64, 64, 0, 0);
-		this.lid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-		this.lid.y = 9.0F;
-		this.lid.z = 1.0F;
-		this.latch = new ModelRenderer(64, 64, 0, 0);
-		this.latch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-		this.latch.y = 8.0F;
+		this.blockChecker = block -> block == type.get().getBlock();
+		//TODO - 1.18: Test this
+		ModelPart modelpart = context.bakeLayer(ModelLayers.CHEST);
+		this.base = modelpart.getChild("bottom");
+		this.lid = modelpart.getChild("lid");
+		this.latch = modelpart.getChild("lock");
 	}
 
 	@Override
-	public void render(@Nonnull ChestTileEmc chestTile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+	public void render(@Nonnull ChestTileEmc chestTile, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
 		matrix.pushPose();
 		if (chestTile.getLevel() != null && !chestTile.isRemoved()) {
 			BlockState state = chestTile.getLevel().getBlockState(chestTile.getBlockPos());
@@ -54,7 +52,7 @@ public class ChestRenderer extends TileEntityRenderer<ChestTileEmc> {
 		}
 		float lidAngle = 1.0F - chestTile.getLidAngle(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
-		IVertexBuilder builder = renderer.getBuffer(RenderType.entityCutout(texture));
+		VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
 		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
 		latch.xRot = lid.xRot;
 		lid.render(matrix, builder, light, overlayLight);

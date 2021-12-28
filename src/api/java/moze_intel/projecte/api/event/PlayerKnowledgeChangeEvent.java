@@ -2,7 +2,7 @@ package moze_intel.projecte.api.event;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
@@ -16,7 +16,7 @@ public class PlayerKnowledgeChangeEvent extends Event {
 
 	private final UUID playerUUID;
 
-	public PlayerKnowledgeChangeEvent(@Nonnull PlayerEntity player) {
+	public PlayerKnowledgeChangeEvent(@Nonnull Player player) {
 		this(player.getUUID());
 	}
 

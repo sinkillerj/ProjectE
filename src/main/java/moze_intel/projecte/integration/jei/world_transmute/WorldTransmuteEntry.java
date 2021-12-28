@@ -6,10 +6,10 @@ import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -59,8 +59,8 @@ public class WorldTransmuteEntry {
 	}
 
 	private FluidStack fluidFromBlock(Block block) {
-		if (block instanceof FlowingFluidBlock) {
-			return new FluidStack(((FlowingFluidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
+		if (block instanceof LiquidBlock) {
+			return new FluidStack(((LiquidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
 		} else if (block instanceof IFluidBlock) {
 			return new FluidStack(((IFluidBlock) block).getFluid(), FluidAttributes.BUCKET_VOLUME);
 		}
@@ -70,7 +70,7 @@ public class WorldTransmuteEntry {
 	private ItemStack itemFromBlock(Block block, BlockState state) {
 		try {
 			//We don't have a world or position, but try pick block anyways
-			return block.getPickBlock(state, null, null, null, null);
+			return block.getCloneItemStack(state, null, null, null, null);
 		} catch (Exception e) {
 			//It failed, probably because of the null world and pos
 			return new ItemStack(block);

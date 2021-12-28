@@ -27,15 +27,15 @@ import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
 import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public final class PacketHandler {
 
@@ -72,43 +72,43 @@ public final class PacketHandler {
 		registerServerToClient(UpdateWindowLongPKT.class, UpdateWindowLongPKT::decode);
 	}
 
-	private static <MSG extends IPEPacket> void registerClientToServer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+	private static <MSG extends IPEPacket> void registerClientToServer(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
 		registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
 	}
 
-	private static <MSG extends IPEPacket> void registerServerToClient(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+	private static <MSG extends IPEPacket> void registerServerToClient(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
 		registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
-	private static <MSG extends IPEPacket> void registerMessage(Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
+	private static <MSG extends IPEPacket> void registerMessage(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder, NetworkDirection networkDirection) {
 		HANDLER.registerMessage(index++, type, IPEPacket::encode, decoder, IPEPacket::handle, Optional.of(networkDirection));
 	}
 
-	public static void sendProgressBarUpdateInt(IContainerListener listener, Container container, int propId, int propVal) {
-		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateWindowIntPKT((short) container.containerId, (short) propId, propVal), (ServerPlayerEntity) listener);
+	public static void sendProgressBarUpdateInt(ContainerListener listener, AbstractContainerMenu container, int propId, int propVal) {
+		if (listener instanceof ServerPlayer) {
+			sendTo(new UpdateWindowIntPKT((short) container.containerId, (short) propId, propVal), (ServerPlayer) listener);
 		}
 	}
 
-	public static void sendProgressBarUpdateLong(IContainerListener listener, Container container, int propId, long propVal) {
-		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateWindowLongPKT((short) container.containerId, (short) propId, propVal), (ServerPlayerEntity) listener);
+	public static void sendProgressBarUpdateLong(ContainerListener listener, AbstractContainerMenu container, int propId, long propVal) {
+		if (listener instanceof ServerPlayer) {
+			sendTo(new UpdateWindowLongPKT((short) container.containerId, (short) propId, propVal), (ServerPlayer) listener);
 		}
 	}
 
-	public static void sendLockSlotUpdate(IContainerListener listener, Container container, ItemInfo lockInfo) {
-		if (listener instanceof ServerPlayerEntity) {
-			sendTo(new UpdateCondenserLockPKT((short) container.containerId, lockInfo), (ServerPlayerEntity) listener);
+	public static void sendLockSlotUpdate(ContainerListener listener, AbstractContainerMenu container, ItemInfo lockInfo) {
+		if (listener instanceof ServerPlayer) {
+			sendTo(new UpdateCondenserLockPKT((short) container.containerId, lockInfo), (ServerPlayer) listener);
 		}
 	}
 
-	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayerEntity player) {
+	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayer player) {
 		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getSingleplayerName())) {
 			sendTo(msg, player);
 		}
 	}
 
-	public static void sendFragmentedEmcPacket(ServerPlayerEntity player) {
+	public static void sendFragmentedEmcPacket(ServerPlayer player) {
 		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
 		sendNonLocal(FuelMapper.getSyncPacket(), player);
 	}
@@ -117,7 +117,7 @@ public final class PacketHandler {
 		if (ServerLifecycleHooks.getCurrentServer() != null) {
 			SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
 			SyncFuelMapperPKT fuelPkt = FuelMapper.getSyncPacket();
-			for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+			for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 				sendNonLocal(pkt, player);
 				sendNonLocal(fuelPkt, player);
 			}
@@ -127,7 +127,7 @@ public final class PacketHandler {
 	private static EmcPKTInfo[] serializeEmcData() {
 		EmcPKTInfo[] data = EMCMappingHandler.createPacketData();
 		//Simulate encoding the EMC packet to get an accurate size
-		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 		int index = buf.writerIndex();
 		new SyncEmcPKT(data).encode(buf);
 		PECore.debugLog("EMC data size: {} bytes", buf.writerIndex() - index);
@@ -145,7 +145,7 @@ public final class PacketHandler {
 	/**
 	 * Send a packet to a specific player.<br> Must be called Server side.
 	 */
-	public static <MSG extends IPEPacket> void sendTo(MSG msg, ServerPlayerEntity player) {
+	public static <MSG extends IPEPacket> void sendTo(MSG msg, ServerPlayer player) {
 		if (!(player instanceof FakePlayer)) {
 			HANDLER.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 		}

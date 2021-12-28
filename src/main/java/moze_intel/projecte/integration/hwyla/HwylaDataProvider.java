@@ -1,21 +1,20 @@
 package moze_intel.projecte.integration.hwyla;
 
-import java.util.List;
+import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.util.text.ITextComponent;
 
 public class HwylaDataProvider implements IComponentProvider {
 
 	static final HwylaDataProvider INSTANCE = new HwylaDataProvider();
 
 	@Override
-	public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
 		if (ProjectEConfig.server.misc.hwylaTOPDisplay.get()) {
-			long value = EMCHelper.getEmcValue(accessor.getStack());
+			long value = EMCHelper.getEmcValue(accessor.getBlock());
 			if (value > 0) {
 				tooltip.add(EMCHelper.getEmcTextComponent(value, 1));
 			}

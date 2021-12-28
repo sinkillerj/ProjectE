@@ -37,9 +37,9 @@ public class AnnotationHelper {
 		Map<INBTProcessor, Integer> priorities = new HashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
-				if (NBT_PROCESSOR_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
+				if (NBT_PROCESSOR_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
 					//If all the mods were loaded then attempt to get the processor
-					INBTProcessor processor = getNBTProcessor(data.getMemberName());
+					INBTProcessor processor = getNBTProcessor(data.memberName());
 					if (processor != null) {
 						int priority = getPriority(data);
 						nbtProcessors.add(processor);
@@ -59,9 +59,9 @@ public class AnnotationHelper {
 		Map<IRecipeTypeMapper, Integer> priorities = new HashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
-				if (RECIPE_TYPE_MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
+				if (RECIPE_TYPE_MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
 					//If all the mods were loaded then attempt to get the processor
-					IRecipeTypeMapper mapper = getRecipeTypeMapper(data.getMemberName());
+					IRecipeTypeMapper mapper = getRecipeTypeMapper(data.memberName());
 					if (mapper != null) {
 						int priority = getPriority(data);
 						recipeTypeMappers.add(mapper);
@@ -82,9 +82,9 @@ public class AnnotationHelper {
 		Map<IEMCMapper<NormalizedSimpleStack, Long>, Integer> priorities = new HashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
-				if (MAPPER_TYPE.equals(data.getAnnotationType()) && checkRequiredMods(data)) {
+				if (MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
 					//If all the mods were loaded then attempt to get the mapper
-					IEMCMapper<?, ?> mapper = getEMCMapper(data.getMemberName());
+					IEMCMapper<?, ?> mapper = getEMCMapper(data.memberName());
 					if (mapper != null) {
 						try {
 							IEMCMapper<NormalizedSimpleStack, Long> emcMapper = (IEMCMapper<NormalizedSimpleStack, Long>) mapper;
@@ -158,12 +158,12 @@ public class AnnotationHelper {
 	}
 
 	private static boolean checkRequiredMods(AnnotationData data) {
-		Map<String, Object> annotationData = data.getAnnotationData();
+		Map<String, Object> annotationData = data.annotationData();
 		if (annotationData.containsKey("requiredMods")) {
 			//Check if all the mods the EMCMapper wants to be loaded are loaded
 			List<String> requiredMods = (List<String>) annotationData.get("requiredMods");
 			if (requiredMods.stream().anyMatch(modid -> !ModList.get().isLoaded(modid))) {
-				PECore.debugLog("Skipped checking class {}, as its required mods ({}) are not loaded.", data.getMemberName(), Arrays.toString(requiredMods.toArray()));
+				PECore.debugLog("Skipped checking class {}, as its required mods ({}) are not loaded.", data.memberName(), Arrays.toString(requiredMods.toArray()));
 				return false;
 			}
 		}
@@ -171,7 +171,7 @@ public class AnnotationHelper {
 	}
 
 	private static int getPriority(AnnotationData data) {
-		Map<String, Object> annotationData = data.getAnnotationData();
+		Map<String, Object> annotationData = data.annotationData();
 		if (annotationData.containsKey("priority")) {
 			return (int) annotationData.get("priority");
 		}

@@ -8,28 +8,28 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public GemChest(Properties props) {
-		super(EquipmentSlotType.CHEST, props);
+		super(EquipmentSlot.CHEST, props);
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_CHEST.translate());
 	}
 
 	@Override
-	public void onArmorTick(ItemStack chest, World world, PlayerEntity player) {
+	public void onArmorTick(ItemStack chest, Level world, Player player) {
 		if (!world.isClientSide) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateFeed();
@@ -40,14 +40,14 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 		}
 	}
 
-	public void doExplode(PlayerEntity player) {
+	public void doExplode(Player player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
 			WorldHelper.createNovaExplosion(player.getCommandSenderWorld(), player, player.getX(), player.getY(), player.getZ(), 9.0F);
 		}
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemBySlot(EquipmentSlotType.CHEST) == stack;
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayer player) {
+		return player.getItemBySlot(EquipmentSlot.CHEST) == stack;
 	}
 }

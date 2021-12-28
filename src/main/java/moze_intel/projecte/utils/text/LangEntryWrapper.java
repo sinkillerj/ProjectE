@@ -1,12 +1,12 @@
 package moze_intel.projecte.utils.text;
 
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.ItemLike;
 
 public class LangEntryWrapper implements ILangEntry {
 
-	private final IItemProvider itemProvider;
+	private final ItemLike itemProvider;
 
-	public LangEntryWrapper(IItemProvider itemProvider) {
+	public LangEntryWrapper(ItemLike itemProvider) {
 		this.itemProvider = itemProvider;
 	}
 

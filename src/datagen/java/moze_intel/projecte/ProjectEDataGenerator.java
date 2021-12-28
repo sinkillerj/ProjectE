@@ -8,16 +8,16 @@ import moze_intel.projecte.common.PEAdvancementsProvider;
 import moze_intel.projecte.common.PECustomConversionProvider;
 import moze_intel.projecte.common.loot.PELootProvider;
 import moze_intel.projecte.common.recipe.PERecipeProvider;
+import moze_intel.projecte.common.tag.PEBlockEntityTypeTagsProvider;
 import moze_intel.projecte.common.tag.PEBlockTagsProvider;
 import moze_intel.projecte.common.tag.PEEntityTypeTagsProvider;
 import moze_intel.projecte.common.tag.PEItemTagsProvider;
-import moze_intel.projecte.common.tag.PETileEntityTypeTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @EventBusSubscriber(modid = PECore.MODID, bus = Bus.MOD)
 public class ProjectEDataGenerator {
@@ -40,7 +40,7 @@ public class ProjectEDataGenerator {
 			gen.addProvider(blockTagsProvider);
 			gen.addProvider(new PEItemTagsProvider(gen, blockTagsProvider, existingFileHelper));
 			gen.addProvider(new PEEntityTypeTagsProvider(gen, existingFileHelper));
-			gen.addProvider(new PETileEntityTypeTagsProvider(gen, existingFileHelper));
+			gen.addProvider(new PEBlockEntityTypeTagsProvider(gen, existingFileHelper));
 			//Other generators (after tags in case we need them to exist)
 			gen.addProvider(new PEAdvancementsProvider(gen, existingFileHelper));
 			gen.addProvider(new PELootProvider(gen));

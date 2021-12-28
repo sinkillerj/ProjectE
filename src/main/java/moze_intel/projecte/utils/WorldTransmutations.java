@@ -10,11 +10,11 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.fml.InterModComms;
 
 public final class WorldTransmutations {
@@ -130,7 +130,7 @@ public final class WorldTransmutations {
 	}
 
 	private static void registerAllStates(Block from, Block result, @Nullable Block altResult) {
-		StateContainer<Block, BlockState> stateContainer = from.getStateDefinition();
+		StateDefinition<Block, BlockState> stateContainer = from.getStateDefinition();
 		ImmutableList<BlockState> validStates = stateContainer.getPossibleStates();
 		for (BlockState validState : validStates) {
 			try {

@@ -1,6 +1,6 @@
 package moze_intel.projecte.api;
 
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(ProjectEAPI.PROJECTE_MODID)

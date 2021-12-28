@@ -3,37 +3,39 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public abstract class BlockDirection extends Block {
 
-	public static final DirectionProperty FACING = HorizontalBlock.FACING;
+	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	public BlockDirection(Properties props) {
 		super(props);
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
 		props.add(FACING);
 	}
 
 	@Nonnull
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext ctx) {
+	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
 		if (ctx.getPlayer() != null) {
 			return defaultBlockState().setValue(FACING, ctx.getPlayer().getDirection().getOpposite());
 		}
@@ -42,9 +44,9 @@ public abstract class BlockDirection extends Block {
 
 	@Override
 	@Deprecated
-	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity tile = WorldHelper.getTileEntity(world, pos);
+			BlockEntity tile = WorldHelper.getTileEntity(world, pos);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
 			}
@@ -54,7 +56,7 @@ public abstract class BlockDirection extends Block {
 
 	@Override
 	@Deprecated
-	public void attack(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+	public void attack(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
 		if (!world.isClientSide) {
 			ItemStack stack = player.getMainHandItem();
 			if (!stack.isEmpty() && stack.getItem() instanceof PhilosophersStone) {

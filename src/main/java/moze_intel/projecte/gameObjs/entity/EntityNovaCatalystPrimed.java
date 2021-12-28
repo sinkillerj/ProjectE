@@ -4,25 +4,25 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityNovaCatalystPrimed extends TNTEntity {
+public class EntityNovaCatalystPrimed extends PrimedTnt {
 
-	public EntityNovaCatalystPrimed(EntityType<EntityNovaCatalystPrimed> type, World world) {
+	public EntityNovaCatalystPrimed(EntityType<EntityNovaCatalystPrimed> type, Level world) {
 		super(type, world);
-		setFuse(getLife() / 4);
+		setFuse(getFuse() / 4);
 	}
 
-	public EntityNovaCatalystPrimed(World world, double x, double y, double z, LivingEntity placer) {
+	public EntityNovaCatalystPrimed(Level world, double x, double y, double z, LivingEntity placer) {
 		super(world, x, y, z, placer);
-		setFuse(getLife() / 4);
+		setFuse(getFuse() / 4);
 		blocksBuilding = true;
 	}
 
@@ -39,12 +39,12 @@ public class EntityNovaCatalystPrimed extends TNTEntity {
 
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(PEBlocks.NOVA_CATALYST);
 	}
 }

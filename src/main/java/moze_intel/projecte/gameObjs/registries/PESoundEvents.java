@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.registries;
 
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventRegistryObject;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 public class PESoundEvents {
 

@@ -6,29 +6,27 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
+import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
-public class Collector extends BlockDirection {
+public class Collector extends BlockDirection implements PEEntityBlock<CollectorMK1Tile> {
 
 	private final EnumCollectorTier tier;
 
@@ -44,38 +42,33 @@ public class Collector extends BlockDirection {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
+	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
 		if (!world.isClientSide) {
 			CollectorMK1Tile te = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 			if (te != null) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
+				NetworkHooks.openGui((ServerPlayer) player, te, pos);
 			}
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Nullable
 	@Override
 	@Deprecated
-	public INamedContainerProvider getMenuProvider(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public MenuProvider getMenuProvider(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
 		return WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
-	}
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+	public BlockEntityTypeRegistryObject<? extends CollectorMK1Tile> getType() {
 		switch (tier) {
 			case MK1:
-				return new CollectorMK1Tile();
+				return PEBlockEntityTypes.COLLECTOR;
 			case MK2:
-				return new CollectorMK2Tile();
+				return PEBlockEntityTypes.COLLECTOR_MK2;
 			case MK3:
-				return new CollectorMK3Tile();
+				return PEBlockEntityTypes.COLLECTOR_MK3;
 			default:
 				return null;
 		}
@@ -89,7 +82,7 @@ public class Collector extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
 		CollectorMK1Tile tile = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos, true);
 		if (tile == null) {
 			//If something went wrong fallback to default implementation
@@ -114,7 +107,7 @@ public class Collector extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			CollectorMK1Tile ent = WorldHelper.getTileEntity(CollectorMK1Tile.class, world, pos);
 			if (ent != null) {

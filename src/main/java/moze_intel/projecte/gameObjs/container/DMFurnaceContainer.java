@@ -12,18 +12,18 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IntReferenceHolder;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class DMFurnaceContainer extends PEContainer {
 
 	public final DMFurnaceTile tile;
 
-	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, PlayerInventory invPlayer, DMFurnaceTile tile) {
+	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, Inventory invPlayer, DMFurnaceTile tile) {
 		super(type, windowId);
 		this.tile = tile;
 		initSlots(invPlayer);
@@ -33,7 +33,7 @@ public class DMFurnaceContainer extends PEContainer {
 	}
 
 	private void addDataSlot(IntSupplier getter, IntConsumer setter) {
-		addDataSlot(new IntReferenceHolder() {
+		addDataSlot(new DataSlot() {
 			@Override
 			public int get() {
 				return getter.getAsInt();
@@ -46,11 +46,11 @@ public class DMFurnaceContainer extends PEContainer {
 		});
 	}
 
-	public DMFurnaceContainer(int windowId, PlayerInventory invPlayer, DMFurnaceTile tile) {
+	public DMFurnaceContainer(int windowId, Inventory invPlayer, DMFurnaceTile tile) {
 		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
@@ -90,7 +90,7 @@ public class DMFurnaceContainer extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull Player player) {
 		return stillValid(player, tile, getValidBlock());
 	}
 }

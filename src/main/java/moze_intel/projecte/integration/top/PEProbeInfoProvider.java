@@ -9,17 +9,18 @@ import mcjty.theoneprobe.api.ProbeMode;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 //Registered via IMC
 @SuppressWarnings("unused")
 public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOneProbe, Void> {
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
 		if (ProjectEConfig.server.misc.hwylaTOPDisplay.get()) {
 			long value = EMCHelper.getEmcValue(new ItemStack(blockState.getBlock()));
 			if (value > 0) {
@@ -29,8 +30,8 @@ public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOne
 	}
 
 	@Override
-	public String getID() {
-		return PECore.MODID + ":emc";
+	public ResourceLocation getID() {
+		return PECore.rl("emc");
 	}
 
 	@Override

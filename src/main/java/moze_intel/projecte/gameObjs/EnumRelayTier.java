@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs;
 
 import javax.annotation.Nonnull;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum EnumRelayTier implements IStringSerializable {
+public enum EnumRelayTier implements StringRepresentable {
 	MK1("relay_mk1", 64, 100_000),
 	MK2("relay_mk2", 192, 1_000_000),
 	MK3("relay_mk3", 640, 10_000_000);

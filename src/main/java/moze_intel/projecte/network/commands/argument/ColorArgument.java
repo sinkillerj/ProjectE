@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.item.DyeColor;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.item.DyeColor;
 
 public class ColorArgument implements ArgumentType<DyeColor> {
 
@@ -25,7 +25,7 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 				return c;
 			}
 		}
-		throw net.minecraft.command.arguments.ColorArgument.ERROR_INVALID_VALUE.create(s);
+		throw net.minecraft.commands.arguments.ColorArgument.ERROR_INVALID_VALUE.create(s);
 	}
 
 	public static <S> DyeColor getColor(CommandContext<S> context, String name) {
@@ -34,7 +34,7 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return ISuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getSerializedName), builder);
+		return SharedSuggestionProvider.suggest(Arrays.stream(DyeColor.values()).map(DyeColor::getSerializedName), builder);
 	}
 
 	@Override

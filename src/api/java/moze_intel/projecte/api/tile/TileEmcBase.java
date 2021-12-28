@@ -4,11 +4,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -19,14 +20,14 @@ import net.minecraftforge.common.util.LazyOptional;
  *
  * @author williewillus
  */
-public class TileEmcBase extends TileEntity implements IEmcStorage {
+public class TileEmcBase extends BlockEntity implements IEmcStorage {
 
 	private LazyOptional<IEmcStorage> emcStorageCapability;
 	private long maximumEMC;
 	private long currentEMC;
 
-	protected TileEmcBase(TileEntityType<?> type) {
-		super(type);
+	protected TileEmcBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		setMaximumEMC(Long.MAX_VALUE);
 	}
 
@@ -151,20 +152,18 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 		setChanged();
 	}
 
-	@Nonnull
 	@Override
-	public CompoundNBT save(@Nonnull CompoundNBT tag) {
-		tag = super.save(tag);
+	protected void saveAdditional(@Nonnull CompoundTag tag) {
+		super.saveAdditional(tag);
 		if (getStoredEmc() > getMaximumEmc()) {
 			currentEMC = getMaximumEmc();
 		}
 		tag.putLong("EMC", getStoredEmc());
-		return tag;
 	}
 
 	@Override
-	public void load(@Nonnull BlockState state, @Nonnull CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(@Nonnull CompoundTag tag) {
+		super.load(tag);
 		long set = tag.getLong("EMC");
 		if (set > getMaximumEmc()) {
 			set = getMaximumEmc();
@@ -186,7 +185,7 @@ public class TileEmcBase extends TileEntity implements IEmcStorage {
 	}
 
 	@Override
-	protected void invalidateCaps() {
+	public void invalidateCaps() {
 		super.invalidateCaps();
 		if (emcStorageCapability != null && emcStorageCapability.isPresent()) {
 			emcStorageCapability.invalidate();

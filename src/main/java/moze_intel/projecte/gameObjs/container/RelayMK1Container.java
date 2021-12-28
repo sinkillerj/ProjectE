@@ -8,24 +8,24 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.IntReferenceHolder;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK1Container extends PEContainer {
 
 	public final RelayMK1Tile tile;
-	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.standalone();
-	private final IntReferenceHolder inputBurnProgress = IntReferenceHolder.standalone();
+	private final DataSlot kleinChargeProgress = DataSlot.standalone();
+	private final DataSlot inputBurnProgress = DataSlot.standalone();
 	public final BoxedLong emc = new BoxedLong();
 
-	public RelayMK1Container(int windowId, PlayerInventory invPlayer, RelayMK1Tile relay) {
+	public RelayMK1Container(int windowId, Inventory invPlayer, RelayMK1Tile relay) {
 		this(PEContainerTypes.RELAY_MK1_CONTAINER, windowId, invPlayer, relay);
 	}
 
-	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, PlayerInventory invPlayer, RelayMK1Tile relay) {
+	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, Inventory invPlayer, RelayMK1Tile relay) {
 		super(type, windowId);
 		this.longFields.add(emc);
 		addDataSlot(kleinChargeProgress);
@@ -34,7 +34,7 @@ public class RelayMK1Container extends PEContainer {
 		initSlots(invPlayer);
 	}
 
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
 		//Klein Star charge slot
@@ -64,7 +64,7 @@ public class RelayMK1Container extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull Player player) {
 		return stillValid(player, tile, getValidBlock());
 	}
 

@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.container.slots;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**

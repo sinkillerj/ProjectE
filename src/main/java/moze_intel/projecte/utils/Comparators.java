@@ -1,8 +1,8 @@
 package moze_intel.projecte.utils;
 
 import java.util.Comparator;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public final class Comparators {
 

@@ -6,7 +6,7 @@ import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.integration.curios.CurioItemCapability;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.integration.top.TOPIntegration;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 

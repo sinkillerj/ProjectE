@@ -1,10 +1,9 @@
 package moze_intel.projecte.api.capabilities;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
@@ -14,9 +13,9 @@ import net.minecraftforge.items.IItemHandler;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.entity.Entity#getCapability(Capability, net.minecraft.core.Direction)}.
  */
-public interface IAlchBagProvider extends INBTSerializable<CompoundNBT> {
+public interface IAlchBagProvider extends INBTSerializable<CompoundTag> {
 
 	/**
 	 * Note: modifying this clientside is not advised
@@ -34,5 +33,5 @@ public interface IAlchBagProvider extends INBTSerializable<CompoundNBT> {
 	 * @param color  The bag color to sync. If null, syncs every color.
 	 * @param player The player to sync the bags to.
 	 */
-	void sync(DyeColor color, @Nonnull ServerPlayerEntity player);
+	void sync(DyeColor color, @Nonnull ServerPlayer player);
 }

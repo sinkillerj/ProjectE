@@ -7,15 +7,14 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PEHoe extends HoeItem implements IItemCharge {
@@ -50,13 +49,13 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 
 	@Override
@@ -70,22 +69,13 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
-	}
-
-	@Override
-	public boolean isCorrectToolForDrops(BlockState state) {
-		if (state.getHarvestTool() == ToolType.HOE) {
-			//Patch HoeItem to return true for canHarvestBlock if a mod adds a block with the harvest tool of a hoe
-			return getTier().getLevel() >= state.getHarvestLevel();
-		}
-		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(@Nonnull ItemUseContext context) {
+	public InteractionResult useOn(@Nonnull UseOnContext context) {
 		return ToolHelper.tillHoeAOE(context, 0);
 	}
 }

@@ -9,10 +9,10 @@ import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
 
@@ -25,8 +25,8 @@ public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
 	}
 
 	@Override
-	public void handle(Context context) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void handle(NetworkEvent.Context context) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
 			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.receiveInputsAndLocks(stacksToSync);
@@ -45,7 +45,7 @@ public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeVarInt(stacksToSync.size());
 		for (Map.Entry<Integer, ItemStack> entry : stacksToSync.entrySet()) {
 			buffer.writeVarInt(entry.getKey());
@@ -54,7 +54,7 @@ public class KnowledgeSyncInputsAndLocksPKT implements IPEPacket {
 		buffer.writeEnum(updateTargets);
 	}
 
-	public static KnowledgeSyncInputsAndLocksPKT decode(PacketBuffer buffer) {
+	public static KnowledgeSyncInputsAndLocksPKT decode(FriendlyByteBuf buffer) {
 		int size = buffer.readVarInt();
 		Map<Integer, ItemStack> syncedStacks = new HashMap<>(size);
 		for (int i = 0; i < size; i++) {

@@ -7,11 +7,12 @@ import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollectionSupplier;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagContainer;
+import net.minecraft.resources.ResourceLocation;
 
 public final class FuelMapper {
 
@@ -21,10 +22,10 @@ public final class FuelMapper {
 	/**
 	 * Used on server to load the map based on the tag
 	 */
-	public static void loadMap(ITagCollectionSupplier tagCollectionSupplier) {
+	public static void loadMap(TagContainer tagCollectionSupplier) {
 		FUEL_MAP.clear();
 		//Note: We need to get the tag by resource location, as named tags are not populated yet here
-		ITag<Item> collectorFuelTag = tagCollectionSupplier.getItems().getTagOrEmpty(FUEL_TAG);
+		Tag<Item> collectorFuelTag = tagCollectionSupplier.getOrEmpty(Registry.ITEM_REGISTRY).getTagOrEmpty(FUEL_TAG);
 		collectorFuelTag.getValues().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}

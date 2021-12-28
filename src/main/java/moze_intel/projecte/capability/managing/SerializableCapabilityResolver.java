@@ -1,11 +1,11 @@
 package moze_intel.projecte.capability.managing;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public abstract class SerializableCapabilityResolver<CAPABILITY extends INBTSerializable<CompoundNBT>>
-		extends BasicCapabilityResolver<CAPABILITY> implements ICapabilitySerializable<CompoundNBT> {
+public abstract class SerializableCapabilityResolver<CAPABILITY extends INBTSerializable<CompoundTag>>
+		extends BasicCapabilityResolver<CAPABILITY> implements ICapabilitySerializable<CompoundTag> {
 
 	protected final CAPABILITY internal;
 
@@ -15,12 +15,12 @@ public abstract class SerializableCapabilityResolver<CAPABILITY extends INBTSeri
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
+	public CompoundTag serializeNBT() {
 		return internal.serializeNBT();
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		internal.deserializeNBT(nbt);
 	}
 }

@@ -10,36 +10,36 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.PETags.BlockEntities;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.IGrowable;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge {
@@ -52,29 +52,29 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.NIL_UUID);
-				return ActionResult.fail(stack);
+				return InteractionResultHolder.fail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 			player.sendMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)), Util.NIL_UUID);
 		}
-		return ActionResult.success(stack);
+		return InteractionResultHolder.success(stack);
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, invSlot, isHeld);
-		if (!(entity instanceof PlayerEntity) || invSlot >= PlayerInventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!(entity instanceof Player) || invSlot >= Inventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
 		if (!world.isClientSide && world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
-			ServerWorld serverWorld = (ServerWorld) world;
+			ServerLevel serverWorld = (ServerLevel) world;
 			if (timeControl == 1) {
 				serverWorld.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
 			} else if (timeControl == 2) {
@@ -89,7 +89,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (world.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
+		Player player = (Player) entity;
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
 		if (!consumeFuel(player, stack, reqEmc, true)) {
 			return;
@@ -107,40 +107,45 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-		AxisAlignedBB bBox = player.getBoundingBox().inflate(8);
+		AABB bBox = player.getBoundingBox().inflate(8);
 		speedUpTileEntities(world, bonusTicks, bBox);
 		speedUpRandomTicks(world, bonusTicks, bBox);
 		slowMobs(world, bBox, mobSlowdown);
 	}
 
-	private void slowMobs(World world, AxisAlignedBB bBox, double mobSlowdown) {
+	private void slowMobs(Level world, AABB bBox, double mobSlowdown) {
 		if (bBox == null) {
 			// Sanity check for chunk unload weirdness
 			return;
 		}
-		for (MobEntity ent : world.getEntitiesOfClass(MobEntity.class, bBox)) {
+		for (Mob ent : world.getEntitiesOfClass(Mob.class, bBox)) {
 			ent.setDeltaMovement(ent.getDeltaMovement().multiply(mobSlowdown, 1, mobSlowdown));
 		}
 	}
 
-	private void speedUpTileEntities(World world, int bonusTicks, AxisAlignedBB bBox) {
+	private void speedUpTileEntities(Level world, int bonusTicks, AABB bBox) {
 		if (bBox == null || bonusTicks == 0) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
 
-		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
-		for (int i = 0; i < bonusTicks; i++) {
-			for (TileEntity tile : list) {
-				if (!tile.isRemoved() && tile instanceof ITickableTileEntity && !tile.getType().isIn(PETags.TileEntities.BLACKLIST_TIME_WATCH)) {
-					((ITickableTileEntity) tile).tick();
-				}
+		List<BlockEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
+		//TODO - 1.18: Level#shouldTickBlocksAt
+		for (BlockEntity tile : list) {
+			if (!tile.isRemoved() && !tile.getType().isIn(BlockEntities.BLACKLIST_TIME_WATCH)) {
+				//TODO - 1.18: Look into this more, maybe need to AT into LevelChunk#updateblockEntityTicker???
+				// Level see how TickingBlockEntity is used
+				/*if (tile instanceof TickableBlockEntity tickableTile) {
+					for (int i = 0; i < bonusTicks; i++) {
+						tickableTile.tick();
+					}
+				}*/
 			}
 		}
 	}
 
-	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
-		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerWorld)) {
+	private void speedUpRandomTicks(Level world, int bonusTicks, AABB bBox) {
+		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerLevel)) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
@@ -148,11 +153,11 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			for (int i = 0; i < bonusTicks; i++) {
 				BlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.isRandomlyTicking() && !block.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
-					&& !(block instanceof FlowingFluidBlock) // Don't speed non-source fluid blocks - dupe issues
-					&& !(block instanceof IGrowable) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
+				if (state.isRandomlyTicking() && !PETags.Blocks.BLACKLIST_TIME_WATCH.contains(block)
+					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
+					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
 				{
-					state.randomTick((ServerWorld) world, pos.immutable(), random);
+					state.randomTick((ServerLevel) world, pos.immutable(), world.random);
 				}
 			}
 		}
@@ -177,7 +182,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private void setTimeBoost(ItemStack stack, byte time) {
-		stack.getOrCreateTag().putByte(Constants.NBT_KEY_TIME_MODE, (byte) MathHelper.clamp(time, 0, 2));
+		stack.getOrCreateTag().putByte(Constants.NBT_KEY_TIME_MODE, (byte) Mth.clamp(time, 0, 2));
 	}
 
 	public double getEmcPerTick(int charge) {
@@ -185,7 +190,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
@@ -195,12 +200,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		if (!world.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
-				AxisAlignedBB bBox = tile.getEffectBounds();
+				AABB bBox = tile.getEffectBounds();
 				if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
 					speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
 					speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
@@ -214,13 +219,13 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-			list.add(PELang.PEDESTAL_TIME_WATCH_1.translateColored(TextFormatting.BLUE, ProjectEConfig.server.effects.timePedBonus.get()));
+			list.add(PELang.PEDESTAL_TIME_WATCH_1.translateColored(ChatFormatting.BLUE, ProjectEConfig.server.effects.timePedBonus.get()));
 		}
 		if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(TextFormatting.BLUE, String.format("%.3f", ProjectEConfig.server.effects.timePedMobSlowness.get())));
+			list.add(PELang.PEDESTAL_TIME_WATCH_2.translateColored(ChatFormatting.BLUE, String.format("%.3f", ProjectEConfig.server.effects.timePedMobSlowness.get())));
 		}
 		return list;
 	}
@@ -231,12 +236,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 }

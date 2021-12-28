@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {

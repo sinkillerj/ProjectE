@@ -12,8 +12,8 @@ import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -22,15 +22,15 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,9 +49,9 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (!world.isClientSide && entity instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) entity;
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+		if (!world.isClientSide && entity instanceof Player) {
+			Player player = (Player) entity;
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateRepair();
 				if (timers.canRepair()) {
@@ -62,12 +62,12 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					world.getEntitiesOfClass(ServerPlayerEntity.class, tile.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
+					world.getEntitiesOfClass(ServerPlayer.class, tile.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
 					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
 				} else {
 					tile.decrementActivityCooldown();
@@ -78,21 +78,21 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
-			list.add(PELang.PEDESTAL_REPAIR_TALISMAN_1.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_REPAIR_TALISMAN_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.repair.get())));
+			list.add(PELang.PEDESTAL_REPAIR_TALISMAN_1.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_REPAIR_TALISMAN_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.repair.get())));
 		}
 		return list;
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		if (!world.isClientSide) {
 			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (tile != null) {
-				CompoundNBT nbt = stack.getOrCreateTag();
+				CompoundTag nbt = stack.getOrCreateTag();
 				byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 				if (coolDown > 0) {
 					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
@@ -102,7 +102,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 							nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 							//Note: We don't need to recheck comparators as repairing doesn't change the number
 							// of items in slots
-							tile.markDirty(false, false);
+							tile.markDirty(false);
 						}
 					});
 				}
@@ -111,11 +111,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
 		if (player.getCommandSenderWorld().isClientSide) {
 			return false;
 		}
-		CompoundNBT nbt = stack.getOrCreateTag();
+		CompoundTag nbt = stack.getOrCreateTag();
 		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
@@ -126,7 +126,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		return false;
 	}
 
-	private static void repairAllItems(PlayerEntity player) {
+	private static void repairAllItems(Player player) {
 		Predicate<ItemStack> canRepairPlayerItem = CAN_REPAIR_ITEM.and(stack -> stack != player.getMainHandItem() || !player.swinging);
 		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairAllItems(inv, canRepairPlayerItem));
 		IItemHandler curios = PlayerHelper.getCurios(player);

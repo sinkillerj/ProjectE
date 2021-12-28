@@ -1,8 +1,10 @@
 package moze_intel.projecte.utils;
 
-import net.minecraft.scoreboard.ScoreCriteria;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 
-public class ReadOnlyScoreCriteria extends ScoreCriteria {
+import net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType;
+
+public class ReadOnlyScoreCriteria extends ObjectiveCriteria {
 
 	// Expose protected superclass ctor
 	public ReadOnlyScoreCriteria(String name) {

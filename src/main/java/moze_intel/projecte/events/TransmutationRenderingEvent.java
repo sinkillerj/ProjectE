@@ -1,64 +1,68 @@
 package moze_intel.projecte.events;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 import javax.annotation.Nullable;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.rendering.PERenderType;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL11;
 
-@Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
-public class TransmutationRenderingEvent {
+//TODO - 1.18: Rename this class?
+public class TransmutationRenderingEvent implements IIngameOverlay {
 
-	private static final Minecraft mc = Minecraft.getInstance();
+	private final Minecraft mc = Minecraft.getInstance();
 	@Nullable
-	private static BlockState transmutationResult;
-	private static long lastGameTime;
+	private BlockState transmutationResult;
+	private long lastGameTime;
 
-	@SubscribeEvent
-	public static void preDrawHud(RenderGameOverlayEvent.Pre event) {
-		if (event.getType() == ElementType.CROSSHAIRS && transmutationResult != null) {
-			if (transmutationResult.getBlock() instanceof FlowingFluidBlock) {
-				FluidAttributes resultAttributes = ((FlowingFluidBlock) transmutationResult.getBlock()).getFluid().getAttributes();
+	public TransmutationRenderingEvent() {
+		MinecraftForge.EVENT_BUS.addListener(this::onOverlay);
+	}
+
+	@Override
+	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+		if (!mc.options.hideGui && transmutationResult != null) {
+			//TODO - 1.18: Evaluate this
+			//gui.setupOverlayRenderState(true, false);
+			//gui.setBlitOffset(-90);
+
+			if (transmutationResult.getBlock() instanceof LiquidBlock) {
+				FluidAttributes resultAttributes = ((LiquidBlock) transmutationResult.getBlock()).getFluid().getAttributes();
 				int color = resultAttributes.getColor();
 				float red = (color >> 16 & 0xFF) / 255.0F;
 				float green = (color >> 8 & 0xFF) / 255.0F;
 				float blue = (color & 0xFF) / 255.0F;
 				float alpha = (color >> 24 & 0xFF) / 255.0F;
-				TextureAtlasSprite sprite = mc.getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(resultAttributes.getStillTexture());
-				Tessellator tessellator = Tessellator.getInstance();
+				TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(resultAttributes.getStillTexture());
+				Tesselator tessellator = Tesselator.getInstance();
 				BufferBuilder wr = tessellator.getBuilder();
-				wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				wr.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 				wr.vertex(0, 0, 0).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
 				wr.vertex(0, 16, 0).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
 				wr.vertex(16, 16, 0).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
@@ -67,9 +71,10 @@ public class TransmutationRenderingEvent {
 			} else {
 				//Just render it normally instead of with the given model as some block's don't render properly then as an item
 				// for example glass panes
-				RenderHelper.turnBackOn();
+				//TODO - 1.18: Figure out lighting
+				//Lighting.turnBackOn();
 				mc.getItemRenderer().renderGuiItem(new ItemStack(transmutationResult.getBlock()), 0, 0);
-				RenderHelper.turnOff();
+				//Lighting.turnOff();
 			}
 			long gameTime = mc.level == null ? 0 : mc.level.getGameTime();
 			if (lastGameTime != gameTime) {
@@ -82,15 +87,14 @@ public class TransmutationRenderingEvent {
 		}
 	}
 
-	@SubscribeEvent
-	public static void onOverlay(DrawHighlightEvent.HighlightBlock event) {
-		ActiveRenderInfo activeRenderInfo = event.getInfo();
-		if (!(activeRenderInfo.getEntity() instanceof PlayerEntity)) {
+	private void onOverlay(DrawSelectionEvent.HighlightBlock event) {
+		Camera activeRenderInfo = event.getCamera();
+		if (!(activeRenderInfo.getEntity() instanceof Player)) {
 			return;
 		}
 		lastGameTime = mc.level == null ? 0 : mc.level.getGameTime();
-		PlayerEntity player = (PlayerEntity) activeRenderInfo.getEntity();
-		World world = player.getCommandSenderWorld();
+		Player player = (Player) activeRenderInfo.getEntity();
+		Level world = player.getCommandSenderWorld();
 		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
 			stack = player.getOffhandItem();
@@ -102,23 +106,23 @@ public class TransmutationRenderingEvent {
 		PhilosophersStone philoStone = (PhilosophersStone) stack.getItem();
 		//Note: We use the philo stone's ray trace instead of the event's ray trace as we want to make sure that we
 		// can properly take fluid into account/ignore it when needed
-		BlockRayTraceResult rtr = philoStone.getHitBlock(player);
-		if (rtr.getType() == RayTraceResult.Type.BLOCK) {
+		BlockHitResult rtr = philoStone.getHitBlock(player);
+		if (rtr.getType() == HitResult.Type.BLOCK) {
 			BlockState current = world.getBlockState(rtr.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
 			if (transmutationResult != null) {
-				Vector3d viewPosition = activeRenderInfo.getPosition();
+				Vec3 viewPosition = activeRenderInfo.getPosition();
 				int charge = philoStone.getCharge(stack);
 				byte mode = philoStone.getMode(stack);
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
-				IVertexBuilder builder = event.getBuffers().getBuffer(PERenderType.transmutationOverlay());
-				MatrixStack matrix = event.getMatrix();
+				VertexConsumer builder = event.getMultiBufferSource().getBuffer(PERenderType.TRANSMUTATION_OVERLAY);
+				PoseStack matrix = event.getPoseStack();
 				matrix.pushPose();
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
-				ISelectionContext selectionContext = ISelectionContext.of(player);
+				CollisionContext selectionContext = CollisionContext.of(player);
 				for (BlockPos pos : PhilosophersStone.getChanges(world, rtr.getBlockPos(), player, rtr.getDirection(), mode, charge).keySet()) {
 					BlockState state = world.getBlockState(pos);
-					if (!state.isAir(world, pos)) {
+					if (!state.isAir()) {
 						VoxelShape shape = state.getShape(world, pos, selectionContext);
 						if (!shape.isEmpty()) {
 							matrix.pushPose();
@@ -137,7 +141,7 @@ public class TransmutationRenderingEvent {
 		}
 	}
 
-	private static void addBox(IVertexBuilder builder, Matrix4f matrix4f, float alpha, float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+	private void addBox(VertexConsumer builder, Matrix4f matrix4f, float alpha, float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
 		//Top
 		builder.vertex(matrix4f, minX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
 		builder.vertex(matrix4f, maxX, maxY, minZ).color(1, 1, 1, alpha).endVertex();
@@ -175,7 +179,7 @@ public class TransmutationRenderingEvent {
 		builder.vertex(matrix4f, maxX, minY, maxZ).color(1, 1, 1, alpha).endVertex();
 	}
 
-	private static float getPulseProportion() {
+	private float getPulseProportion() {
 		return (float) (0.5F * Math.sin(System.currentTimeMillis() / 350.0) + 0.5F);
 	}
 }

@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class ModeChangerItemCapabilityWrapper extends BasicItemCapability<IModeChanger> implements IModeChanger {
@@ -22,7 +22,7 @@ public class ModeChangerItemCapabilityWrapper extends BasicItemCapability<IModeC
 	}
 
 	@Override
-	public boolean changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
+	public boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
 		return getItem().changeMode(player, stack, hand);
 	}
 }

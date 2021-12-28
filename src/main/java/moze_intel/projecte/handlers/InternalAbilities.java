@@ -8,18 +8,18 @@ import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public final class InternalAbilities {
 
-	@CapabilityInject(InternalAbilities.class)
-	public static Capability<InternalAbilities> CAPABILITY = null;
+	public static final Capability<InternalAbilities> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 	public static final ResourceLocation NAME = PECore.rl("internal_abilities");
 
-	private final ServerPlayerEntity player;
+	private final ServerPlayer player;
 	private boolean swrgOverride = false;
 	private boolean gemArmorReady = false;
 	private boolean stepAssisted = false;
@@ -30,7 +30,7 @@ public final class InternalAbilities {
 	private int projectileCooldown = 0;
 	private int gemChestCooldown = 0;
 
-	public InternalAbilities(ServerPlayerEntity player) {
+	public InternalAbilities(ServerPlayer player) {
 		this.player = player;
 	}
 
@@ -70,7 +70,7 @@ public final class InternalAbilities {
 
 		if (!shouldPlayerFly()) {
 			if (hadFlightItem) {
-				if (player.abilities.mayfly) {
+				if (player.getAbilities().mayfly) {
 					PlayerHelper.updateClientServerFlight(player, false);
 				}
 				hadFlightItem = false;
@@ -79,7 +79,7 @@ public final class InternalAbilities {
 			wasFlying = false;
 		} else {
 			if (!hadFlightItem) {
-				if (!player.abilities.mayfly) {
+				if (!player.getAbilities().mayfly) {
 					PlayerHelper.updateClientServerFlight(player, true);
 				}
 				hadFlightItem = true;
@@ -90,7 +90,7 @@ public final class InternalAbilities {
 				PlayerHelper.updateClientServerFlight(player, true, wasFlying);
 			}
 			wasFlyingGamemode = isFlyingGamemode;
-			wasFlying = player.abilities.flying;
+			wasFlying = player.getAbilities().flying;
 		}
 		if (!shouldPlayerStep()) {
 			if (stepAssisted) {
@@ -107,7 +107,7 @@ public final class InternalAbilities {
 
 	public void onDimensionChange() {
 		// Resend everything needed on clientside (all except fire resist)
-		PlayerHelper.updateClientServerFlight(player, player.abilities.mayfly);
+		PlayerHelper.updateClientServerFlight(player, player.getAbilities().mayfly);
 		PlayerHelper.updateClientServerStepHeight(player, stepAssisted ? 1.0F : 0.6F);
 	}
 
@@ -140,7 +140,7 @@ public final class InternalAbilities {
 
 	public static class Provider extends BasicCapabilityResolver<InternalAbilities> {
 
-		public Provider(ServerPlayerEntity player) {
+		public Provider(ServerPlayer player) {
 			super(() -> new InternalAbilities(player));
 		}
 

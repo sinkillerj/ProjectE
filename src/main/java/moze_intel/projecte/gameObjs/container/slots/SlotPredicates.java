@@ -5,9 +5,9 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.AbstractFurnaceTileEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 public final class SlotPredicates {
 
@@ -26,14 +26,14 @@ public final class SlotPredicates {
 	// slotrelayinput
 	public static final Predicate<ItemStack> RELAY_INV = input -> EMC_HOLDER.test(input) || HAS_EMC.test(input);
 
-	public static final Predicate<ItemStack> FURNACE_FUEL = input -> EMC_HOLDER.test(input) || !input.isEmpty() && AbstractFurnaceTileEntity.isFuel(input);
+	public static final Predicate<ItemStack> FURNACE_FUEL = input -> EMC_HOLDER.test(input) || !input.isEmpty() && AbstractFurnaceBlockEntity.isFuel(input);
 
 	public static final Predicate<ItemStack> MERCURIAL_TARGET = input -> {
 		if (input.isEmpty()) {
 			return false;
 		}
 		BlockState state = ItemHelper.stackToState(input);
-		return state != null && !state.getBlock().hasTileEntity(state) && EMCHelper.doesItemHaveEmc(input);
+		return state != null && !state.hasBlockEntity() && EMCHelper.doesItemHaveEmc(input);
 	};
 
 	private SlotPredicates() {

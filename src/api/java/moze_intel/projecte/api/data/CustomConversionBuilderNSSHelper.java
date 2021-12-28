@@ -1,17 +1,17 @@
 package moze_intel.projecte.api.data;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import moze_intel.projecte.api.data.CustomConversionBuilder.FixedValueConversionBuilder;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -59,7 +59,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 * @param stack Stack to set EMC value of.
 	 * @param emc   Value
 	 *
-	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack, long)} using {@link NSSItem#createItem(IItemProvider, net.minecraft.nbt.CompoundNBT)} should
+	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack, long)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)} should
 	 * be used if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder before(ItemStack stack, long emc) {
@@ -67,22 +67,22 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param itemProvider Item to set EMC value of.
 	 * @param emc          Value
 	 */
-	default CustomConversionBuilder before(IItemProvider itemProvider, long emc) {
+	default CustomConversionBuilder before(ItemLike itemProvider, long emc) {
 		return before(NSSItem.createItem(itemProvider), emc);
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Item tag to set EMC value of.
 	 * @param emc Value
 	 */
-	default CustomConversionBuilder before(ITag<Item> tag, long emc) {
+	default CustomConversionBuilder before(Tag<Item> tag, long emc) {
 		return before(NSSItem.createTag(tag), emc);
 	}
 
@@ -91,7 +91,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 *
 	 * @param stack Stack to set as "free" in conversions.
 	 *
-	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSItem#createItem(IItemProvider, net.minecraft.nbt.CompoundNBT)} should be used
+	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)} should be used
 	 * if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder before(ItemStack stack) {
@@ -99,20 +99,20 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
 	 *
 	 * @param itemProvider Item to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder before(IItemProvider itemProvider) {
+	default CustomConversionBuilder before(ItemLike itemProvider) {
 		return before(NSSItem.createItem(itemProvider));
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
 	 *
 	 * @param tag Item tag to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder before(ITag<Item> tag) {
+	default CustomConversionBuilder before(Tag<Item> tag) {
 		return before(NSSItem.createTag(tag));
 	}
 
@@ -122,7 +122,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 * @param stack Stack to set EMC value of.
 	 * @param emc   Value
 	 *
-	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack, long)} using {@link NSSItem#createItem(IItemProvider, net.minecraft.nbt.CompoundNBT)} should be
+	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack, long)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)} should be
 	 * used if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder after(ItemStack stack, long emc) {
@@ -130,22 +130,22 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param itemProvider Item to set EMC value of.
 	 * @param emc          Value
 	 */
-	default CustomConversionBuilder after(IItemProvider itemProvider, long emc) {
+	default CustomConversionBuilder after(ItemLike itemProvider, long emc) {
 		return after(NSSItem.createItem(itemProvider), emc);
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Item tag to set EMC value of.
 	 * @param emc Value
 	 */
-	default CustomConversionBuilder after(ITag<Item> tag, long emc) {
+	default CustomConversionBuilder after(Tag<Item> tag, long emc) {
 		return after(NSSItem.createTag(tag), emc);
 	}
 
@@ -154,7 +154,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 *
 	 * @param stack Stack to set as "free" in conversions.
 	 *
-	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack)} using {@link NSSItem#createItem(IItemProvider, net.minecraft.nbt.CompoundNBT)} should be used
+	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)} should be used
 	 * if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder after(ItemStack stack) {
@@ -162,20 +162,20 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
 	 *
 	 * @param itemProvider Item to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder after(IItemProvider itemProvider) {
+	default CustomConversionBuilder after(ItemLike itemProvider) {
 		return after(NSSItem.createItem(itemProvider));
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
 	 *
 	 * @param tag Item tag to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder after(ITag<Item> tag) {
+	default CustomConversionBuilder after(Tag<Item> tag) {
 		return after(NSSItem.createTag(tag));
 	}
 
@@ -185,7 +185,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 * @param stack Stack to set EMC value of.
 	 * @param emc   Value
 	 *
-	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack, long)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundNBT)} should be used
+	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack, long)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be used
 	 * if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder before(FluidStack stack, long emc) {
@@ -203,14 +203,14 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set EMC value of.
 	 * @param emc Value
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder beforeFluid(ITag<Fluid> tag, long emc) {
+	default CustomConversionBuilder beforeFluid(Tag<Fluid> tag, long emc) {
 		return before(NSSFluid.createTag(tag), emc);
 	}
 
@@ -219,7 +219,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 *
 	 * @param stack Stack to set as "free" in conversions.
 	 *
-	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundNBT)} should be used if
+	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be used if
 	 * NBT specifics are needed.
 	 */
 	default CustomConversionBuilder before(FluidStack stack) {
@@ -236,13 +236,13 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set as "free" in conversions.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder beforeFluid(ITag<Fluid> tag) {
+	default CustomConversionBuilder beforeFluid(Tag<Fluid> tag) {
 		return before(NSSFluid.createTag(tag));
 	}
 
@@ -252,7 +252,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 * @param stack Stack to set EMC value of.
 	 * @param emc   Value
 	 *
-	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack, long)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundNBT)} should be used
+	 * @apiNote Either this method or {@link #after(NormalizedSimpleStack, long)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be used
 	 * if NBT specifics are needed.
 	 */
 	default CustomConversionBuilder after(FluidStack stack, long emc) {
@@ -270,14 +270,14 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set EMC value of.
 	 * @param emc Value
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder afterFluid(ITag<Fluid> tag, long emc) {
+	default CustomConversionBuilder afterFluid(Tag<Fluid> tag, long emc) {
 		return after(NSSFluid.createTag(tag), emc);
 	}
 
@@ -286,7 +286,7 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	 *
 	 * @param stack Stack to set as "free" in conversions.
 	 *
-	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundNBT)} should be used if
+	 * @apiNote Either this method or {@link #before(NormalizedSimpleStack)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be used if
 	 * NBT specifics are needed.
 	 */
 	default CustomConversionBuilder after(FluidStack stack) {
@@ -303,13 +303,13 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set as "free" in conversions.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder afterFluid(ITag<Fluid> tag) {
+	default CustomConversionBuilder afterFluid(Tag<Fluid> tag) {
 		return after(NSSFluid.createTag(tag));
 	}
 

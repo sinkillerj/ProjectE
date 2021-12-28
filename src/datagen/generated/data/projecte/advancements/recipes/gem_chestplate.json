@@ -19,7 +19,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_chestplate"
+                  "items": [
+                    "projecte:rm_chestplate"
+                  ]
                 }
               ]
             }
@@ -58,7 +60,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_chestplate"
+                  "items": [
+                    "projecte:rm_chestplate"
+                  ]
                 }
               ]
             }

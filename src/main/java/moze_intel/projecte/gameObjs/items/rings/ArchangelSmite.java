@@ -8,28 +8,28 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -44,7 +44,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
-	public void fireVolley(ItemStack stack, PlayerEntity player) {
+	public void fireVolley(ItemStack stack, Player player) {
 		for (int i = 0; i < 10; i++) {
 			fireArrow(stack, player.level, player, 4F);
 		}
@@ -61,7 +61,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
 		if (!player.level.isClientSide) {
 			fireVolley(stack, player);
 		}
@@ -69,7 +69,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
 		if (!world.isClientSide && getMode(stack) == 1 && entity instanceof LivingEntity) {
 			fireArrow(stack, world, (LivingEntity) entity, 1F);
 		}
@@ -77,34 +77,34 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		if (!world.isClientSide) {
 			fireArrow(player.getItemInHand(hand), world, player, 1F);
 		}
-		return ActionResult.success(player.getItemInHand(hand));
+		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
-	private void fireArrow(ItemStack ring, World world, LivingEntity shooter, float inaccuracy) {
+	private void fireArrow(ItemStack ring, Level world, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
-		if (!(shooter instanceof PlayerEntity) || consumeFuel((PlayerEntity) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
-			arrow.shootFromRotation(shooter, shooter.xRot, shooter.yRot, 0.0F, 3.0F, inaccuracy);
-			world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+		if (!(shooter instanceof Player) || consumeFuel((Player) shooter, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
+			arrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 3.0F, inaccuracy);
+			world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F));
 			world.addFreshEntity(arrow);
 		}
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					if (!world.getEntitiesOfClass(MobEntity.class, tile.getEffectBounds()).isEmpty()) {
+					if (!world.getEntitiesOfClass(Mob.class, tile.getEffectBounds()).isEmpty()) {
 						for (int i = 0; i < 3; i++) {
-							EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerWorld) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+							EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerLevel) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 							arrow.setPosRaw(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
 							arrow.setDeltaMovement(0, 1, 0);
-							arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+							arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 							world.addFreshEntity(arrow);
 						}
 					}
@@ -118,11 +118,11 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
-			list.add(PELang.PEDESTAL_ARCHANGEL_1.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_ARCHANGEL_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())));
+			list.add(PELang.PEDESTAL_ARCHANGEL_1.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_ARCHANGEL_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.archangel.get())));
 		}
 		return list;
 	}

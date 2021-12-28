@@ -19,7 +19,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_helmet"
+                  "items": [
+                    "projecte:rm_helmet"
+                  ]
                 }
               ]
             }
@@ -58,7 +60,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_helmet"
+                  "items": [
+                    "projecte:rm_helmet"
+                  ]
                 }
               ]
             }

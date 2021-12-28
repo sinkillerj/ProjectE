@@ -19,7 +19,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_leggings"
+                  "items": [
+                    "projecte:rm_leggings"
+                  ]
                 }
               ]
             }
@@ -58,7 +60,9 @@
             "conditions": {
               "items": [
                 {
-                  "item": "projecte:rm_leggings"
+                  "items": [
+                    "projecte:rm_leggings"
+                  ]
                 }
               ]
             }

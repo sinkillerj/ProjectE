@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker;
+/*package moze_intel.projecte.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
@@ -20,7 +20,7 @@ public class CrTCustomEMC {
 	 *
 	 * @param stack {@link NormalizedSimpleStack} to set the EMC of.
 	 * @param emc   EMC value, must not be negative.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static void setEMCValue(NormalizedSimpleStack stack, long emc) {
 		if (emc < 0) {
@@ -35,9 +35,9 @@ public class CrTCustomEMC {
 	 * @param stack {@link NormalizedSimpleStack} to remove EMC from.
 	 *
 	 * @implNote This is a wrapper that basically acts as if {@link #setEMCValue(NormalizedSimpleStack, long)} was passed zero for the EMC value.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static void removeEMCValue(NormalizedSimpleStack stack) {
 		CraftTweakerAPI.apply(new CustomEMCAction(stack, 0));
 	}
-}
+}*/

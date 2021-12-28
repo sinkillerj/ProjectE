@@ -3,9 +3,9 @@ package moze_intel.projecte.api.nss;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} and {@link NSSNBT} simpler, and automatically be able to register conversions for:
@@ -14,23 +14,23 @@ import net.minecraft.util.ResourceLocation;
  *
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
  *
  * @implNote This does not handle NBT on Tags.
  */
 public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> implements NSSNBT {
 
 	@Nullable
-	private final CompoundNBT nbt;
+	private final CompoundTag nbt;
 
-	protected AbstractNBTNSSTag(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundNBT nbt) {
+	protected AbstractNBTNSSTag(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag);
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
 
 	@Nullable
 	@Override
-	public CompoundNBT getNBT() {
+	public CompoundTag getNBT() {
 		return nbt;
 	}
 

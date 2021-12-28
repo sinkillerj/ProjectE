@@ -5,31 +5,31 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class CommonInternalAbilities {
 
-	@CapabilityInject(CommonInternalAbilities.class)
-	public static Capability<CommonInternalAbilities> CAPABILITY = null;
+	public static final Capability<CommonInternalAbilities> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 	public static final ResourceLocation NAME = PECore.rl("common_internal_abilities");
 	private static final AttributeModifier WATER_SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION);
 	private static final AttributeModifier LAVA_SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION);
 
-	private final PlayerEntity player;
+	private final Player player;
 
-	public CommonInternalAbilities(PlayerEntity player) {
+	public CommonInternalAbilities(Player player) {
 		this.player = player;
 	}
 
@@ -66,7 +66,7 @@ public class CommonInternalAbilities {
 			}
 		}
 		if (!player.level.isClientSide) {
-			ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			AttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (attribute != null) {
 				updateSpeed(attribute, applyWaterSpeed, WATER_SPEED_BOOST);
 				updateSpeed(attribute, applyLavaSpeed, LAVA_SPEED_BOOST);
@@ -74,7 +74,7 @@ public class CommonInternalAbilities {
 		}
 	}
 
-	private void updateSpeed(ModifiableAttributeInstance attribute, boolean apply, AttributeModifier speedModifier) {
+	private void updateSpeed(AttributeInstance attribute, boolean apply, AttributeModifier speedModifier) {
 		if (apply) {
 			if (!attribute.hasModifier(speedModifier)) {
 				attribute.addTransientModifier(speedModifier);
@@ -88,7 +88,7 @@ public class CommonInternalAbilities {
 		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.EVERTIDE_AMULET.get())) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
-		ItemStack helmet = player.getItemBySlot(EquipmentSlotType.HEAD);
+		ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
 		return !helmet.isEmpty() && helmet.getItem() == PEItems.GEM_HELMET.get() ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
@@ -96,7 +96,7 @@ public class CommonInternalAbilities {
 		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.VOLCANITE_AMULET.get())) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
-		ItemStack chestplate = player.getItemBySlot(EquipmentSlotType.CHEST);
+		ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
 		return !chestplate.isEmpty() && chestplate.getItem() == PEItems.GEM_CHESTPLATE.get() ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
@@ -112,7 +112,7 @@ public class CommonInternalAbilities {
 
 	public static class Provider extends BasicCapabilityResolver<CommonInternalAbilities> {
 
-		public Provider(PlayerEntity player) {
+		public Provider(Player player) {
 			super(() -> new CommonInternalAbilities(player));
 		}
 

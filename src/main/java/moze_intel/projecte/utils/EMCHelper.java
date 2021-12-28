@@ -15,12 +15,12 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -34,7 +34,7 @@ public final class EMCHelper {
 	 *
 	 * @implNote Order it tries to extract from is, Curios, Offhand, main inventory
 	 */
-	public static long consumePlayerFuel(PlayerEntity player, long minFuel) {
+	public static long consumePlayerFuel(Player player, long minFuel) {
 		if (player.isCreative()) {
 			return minFuel;
 		}
@@ -128,11 +128,11 @@ public final class EMCHelper {
 		return getEmcValue(stack) > 0;
 	}
 
-	public static boolean doesItemHaveEmc(IItemProvider item) {
+	public static boolean doesItemHaveEmc(ItemLike item) {
 		return getEmcValue(item) > 0;
 	}
 
-	public static long getEmcValue(IItemProvider item) {
+	public static long getEmcValue(ItemLike item) {
 		return item == null ? 0 : getEmcValue(ItemInfo.fromItem(item.asItem()));
 	}
 
@@ -170,7 +170,7 @@ public final class EMCHelper {
 		return emc;
 	}
 
-	public static ITextComponent getEmcTextComponent(long emc, int stackSize) {
+	public static Component getEmcTextComponent(long emc, int stackSize) {
 		if (ProjectEConfig.server.difficulty.covalenceLoss.get() == 1.0) {
 			ILangEntry prefix;
 			String value;
@@ -181,7 +181,7 @@ public final class EMCHelper {
 				prefix = PELang.EMC_TOOLTIP;
 				value = Constants.EMC_FORMATTER.format(emc);
 			}
-			return prefix.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, value);
+			return prefix.translateColored(ChatFormatting.YELLOW, ChatFormatting.WHITE, value);
 		}
 		//Sell enabled
 		long emcSellValue = getEmcSellValue(emc);
@@ -198,7 +198,7 @@ public final class EMCHelper {
 			value = Constants.EMC_FORMATTER.format(emc);
 			sell = Constants.EMC_FORMATTER.format(emcSellValue);
 		}
-		return prefix.translateColored(TextFormatting.YELLOW, TextFormatting.WHITE, value, TextFormatting.BLUE, sell);
+		return prefix.translateColored(ChatFormatting.YELLOW, ChatFormatting.WHITE, value, ChatFormatting.BLUE, sell);
 	}
 
 	public static long getKleinStarMaxEmc(ItemStack stack) {
@@ -230,7 +230,7 @@ public final class EMCHelper {
 	 * @return The amount of non fractional EMC no longer being stored in UnprocessedEMC.
 	 */
 	public static long removeFractionalEMC(ItemStack stack, double amount) {
-		CompoundNBT nbt = stack.getOrCreateTag();
+		CompoundTag nbt = stack.getOrCreateTag();
 		double unprocessedEMC = nbt.getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
 		unprocessedEMC += amount;
 		long toRemove = (long) unprocessedEMC;

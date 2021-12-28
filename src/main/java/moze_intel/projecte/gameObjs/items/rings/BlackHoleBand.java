@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
@@ -11,37 +12,34 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -56,41 +54,42 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
-	private ActionResultType tryPickupFluid(World world, PlayerEntity player, ItemStack stack) {
-		BlockRayTraceResult result = getPlayerPOVHitResult(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+	private InteractionResult tryPickupFluid(Level world, Player player, ItemStack stack) {
+		BlockHitResult result = getPlayerPOVHitResult(world, player, ClipContext.Fluid.SOURCE_ONLY);
 		if (result.getType() != Type.BLOCK) {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 		BlockPos fluidPos = result.getBlockPos();
 		BlockState state = world.getBlockState(fluidPos);
-		if (world.mayInteract(player, fluidPos) && player.mayUseItemAt(fluidPos, result.getDirection(), stack) && state.getBlock() instanceof IBucketPickupHandler) {
-			Fluid fluid = ((IBucketPickupHandler) state.getBlock()).takeLiquid(world, fluidPos, state);
-			if (fluid != Fluids.EMPTY) {
-				player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-						fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-				return ActionResultType.SUCCESS;
+		if (world.mayInteract(player, fluidPos) && player.mayUseItemAt(fluidPos, result.getDirection(), stack) && state.getBlock() instanceof BucketPickup pickup) {
+			Optional<SoundEvent> sound = pickup.getPickupSound();
+			ItemStack itemStack = pickup.pickupBlock(world, fluidPos, state);
+			if (!itemStack.isEmpty()) {
+				sound.ifPresent(soundEvent -> player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,
+						SoundSource.PLAYERS, 1.0F, 1.0F));
+				return InteractionResult.SUCCESS;
 			}
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-		if (tryPickupFluid(world, player, player.getItemInHand(hand)) != ActionResultType.SUCCESS) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+		if (tryPickupFluid(world, player, player.getItemInHand(hand)) != InteractionResult.SUCCESS) {
 			changeMode(player, player.getItemInHand(hand), hand);
 		}
-		return ActionResult.success(player.getItemInHand(hand));
+		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (entity instanceof PlayerEntity && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			PlayerEntity player = (PlayerEntity) entity;
-			AxisAlignedBB bBox = player.getBoundingBox().inflate(7);
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int slot, boolean held) {
+		if (entity instanceof Player && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			Player player = (Player) entity;
+			AABB bBox = player.getBoundingBox().inflate(7);
 			List<ItemEntity> itemList = world.getEntitiesOfClass(ItemEntity.class, bBox);
 			for (ItemEntity item : itemList) {
-				if (ItemHelper.simulateFit(player.inventory.items, item.getItem()) < item.getItem().getCount()) {
+				if (ItemHelper.simulateFit(player.getInventory().items, item.getItem()) < item.getItem().getCount()) {
 					WorldHelper.gravitateEntityTowards(item, player.getX(), player.getY(), player.getZ());
 				}
 			}
@@ -98,7 +97,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
@@ -110,7 +109,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 							for (Direction dir : Direction.values()) {
 								//Cache the item handlers in various spots so that we only query each neighboring position once
 								IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
-									TileEntity candidate = WorldHelper.getTileEntity(world, pos.relative(dir));
+									BlockEntity candidate = WorldHelper.getTileEntity(world, pos.relative(dir));
 									if (candidate == null) {
 										return null;
 									}
@@ -118,7 +117,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 								});
 								ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 								if (result.isEmpty()) {
-									item.remove();
+									item.discard();
 									break;
 								}
 								item.setItem(result);
@@ -132,19 +131,19 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BAND_1.translateColored(TextFormatting.BLUE),
-				PELang.PEDESTAL_BLACK_HOLE_BAND_2.translateColored(TextFormatting.BLUE));
+	public List<Component> getPedestalDescription() {
+		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BAND_1.translateColored(ChatFormatting.BLUE),
+				PELang.PEDESTAL_BLACK_HOLE_BAND_2.translateColored(ChatFormatting.BLUE));
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 		if (tile != null && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			int tileX = pos.getX();
 			int tileY = pos.getY();
 			int tileZ = pos.getZ();
-			AxisAlignedBB aabb = new AxisAlignedBB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
+			AABB aabb = new AABB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
 			double centeredX = tileX + 0.5;
 			double centeredY = tileY + 0.5;
 			double centeredZ = tileZ + 0.5;
@@ -156,7 +155,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 						if (!result.isEmpty()) {
 							e.setItem(result);
 						} else {
-							e.remove();
+							e.discard();
 						}
 					});
 				}
@@ -165,7 +164,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			for (ItemEntity e : player.getCommandSenderWorld().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(5))) {
 				WorldHelper.gravitateEntityTowards(e, player.getX(), player.getY(), player.getZ());

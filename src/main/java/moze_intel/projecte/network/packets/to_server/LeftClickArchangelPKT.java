@@ -2,16 +2,16 @@ package moze_intel.projecte.network.packets.to_server;
 
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.network.packets.IPEPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 public class LeftClickArchangelPKT implements IPEPacket {
 
 	@Override
-	public void handle(Context context) {
-		PlayerEntity player = context.getSender();
+	public void handle(NetworkEvent.Context context) {
+		Player player = context.getSender();
 		if (player != null) {
 			ItemStack main = player.getMainHandItem();
 			if (!main.isEmpty() && main.getItem() instanceof ArchangelSmite) {
@@ -21,10 +21,10 @@ public class LeftClickArchangelPKT implements IPEPacket {
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 	}
 
-	public static LeftClickArchangelPKT decode(PacketBuffer buffer) {
+	public static LeftClickArchangelPKT decode(FriendlyByteBuf buffer) {
 		return new LeftClickArchangelPKT();
 	}
 }

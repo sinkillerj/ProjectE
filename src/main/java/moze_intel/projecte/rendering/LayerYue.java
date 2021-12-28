@@ -1,21 +1,21 @@
 package moze_intel.projecte.rendering;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
+public class LayerYue extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
 	private static final UUID SIN_UUID = UUID.fromString("5f86012c-ca4b-451a-989c-8fab167af647");
 	private static final UUID CLAR_UUID = UUID.fromString("e5c59746-9cf7-4940-a849-d09e1f1efc13");
@@ -30,7 +30,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 	}
 
 	@Override
-	public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, @Nonnull AbstractClientPlayerEntity player,
+	public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, @Nonnull AbstractClientPlayer player,
 			float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (player.isInvisible()) {
 			return;
@@ -47,7 +47,7 @@ public class LayerYue extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 			matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
 			matrix.scale(3, 3, 3);
 			matrix.translate(-0.5, yShift, -0.5);
-			IVertexBuilder builder = renderer.getBuffer(PERenderType.yeuRenderer(CLAR_UUID.equals(player.getUUID()) ? HEART_LOC : YUE_LOC));
+			VertexConsumer builder = renderer.getBuffer(PERenderType.YEU_RENDERER.apply(CLAR_UUID.equals(player.getUUID()) ? HEART_LOC : YUE_LOC));
 			Matrix4f matrix4f = matrix.last().pose();
 			builder.vertex(matrix4f, 0, 0, 0).color(0, 255, 0, 255).uv(0, 0).endVertex();
 			builder.vertex(matrix4f, 0, 0, 1).color(0, 255, 0, 255).uv(0, 1).endVertex();

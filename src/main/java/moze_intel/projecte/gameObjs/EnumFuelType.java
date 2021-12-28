@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs;
 
 import javax.annotation.Nonnull;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum EnumFuelType implements IStringSerializable {
+public enum EnumFuelType implements StringRepresentable {
 	ALCHEMICAL_COAL("alchemical_coal", 1_600 * 4),//Four times the burn time of coal
 	MOBIUS_FUEL("mobius_fuel", ALCHEMICAL_COAL.getBurnTime() * 4),
 	AETERNALIS_FUEL("aeternalis_fuel", MOBIUS_FUEL.getBurnTime() * 4);

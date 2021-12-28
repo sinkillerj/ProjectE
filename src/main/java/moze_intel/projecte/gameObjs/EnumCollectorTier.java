@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs;
 
 import javax.annotation.Nonnull;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum EnumCollectorTier implements IStringSerializable {
+public enum EnumCollectorTier implements StringRepresentable {
 	MK1("collector_mk1", 4, 10_000),
 	MK2("collector_mk2", 12, 30_000),
 	MK3("collector_mk3", 40, 60_000);

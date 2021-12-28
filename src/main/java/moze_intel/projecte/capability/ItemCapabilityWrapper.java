@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundNBT> {
+public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundTag> {
 
 	private final ItemCapability<?>[] capabilities;
 	private final ItemStack itemStack;
@@ -50,8 +50,8 @@ public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundNB
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT serializedNBT = new CompoundNBT();
+	public CompoundTag serializeNBT() {
+		CompoundTag serializedNBT = new CompoundTag();
 		for (ItemCapability<?> cap : capabilities) {
 			if (cap instanceof IItemCapabilitySerializable) {
 				IItemCapabilitySerializable serializableCap = (IItemCapabilitySerializable) cap;
@@ -62,7 +62,7 @@ public class ItemCapabilityWrapper implements ICapabilitySerializable<CompoundNB
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		for (ItemCapability<?> cap : capabilities) {
 			if (cap instanceof IItemCapabilitySerializable) {
 				IItemCapabilitySerializable serializableCap = (IItemCapabilitySerializable) cap;

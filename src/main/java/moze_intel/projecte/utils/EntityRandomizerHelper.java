@@ -5,24 +5,24 @@ import java.util.Random;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.passive.RabbitEntity;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.level.Level;
 
 public class EntityRandomizerHelper {
 
-	public static MobEntity getRandomEntity(World world, MobEntity toRandomize) {
+	public static Mob getRandomEntity(Level world, Mob toRandomize) {
 		EntityType<?> entType = toRandomize.getType();
 		boolean isPeaceful = PETags.Entities.RANDOMIZER_PEACEFUL.contains(entType);
 		boolean isHostile = PETags.Entities.RANDOMIZER_HOSTILE.contains(entType);
 		if (isPeaceful && isHostile) {
 			//If it is in both lists do some extra checks to see if it really is peaceful
 			// currently this only includes our special casing for killer rabbits
-			if (toRandomize instanceof RabbitEntity && ((RabbitEntity) toRandomize).getRabbitType() == 99) {
+			if (toRandomize instanceof Rabbit && ((Rabbit) toRandomize).getRabbitType() == 99) {
 				//Killer rabbits are not peaceful
 				isPeaceful = false;
 			}
@@ -30,9 +30,9 @@ public class EntityRandomizerHelper {
 		if (isPeaceful) {
 			return createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_PEACEFUL);
 		} else if (isHostile) {
-			MobEntity ent = createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
-			if (ent instanceof RabbitEntity) {
-				((RabbitEntity) ent).setRabbitType(99);
+			Mob ent = createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
+			if (ent instanceof Rabbit) {
+				((Rabbit) ent).setRabbitType(99);
 			}
 			return ent;
 		}
@@ -43,7 +43,7 @@ public class EntityRandomizerHelper {
 	}
 
 	@Nullable
-	private static MobEntity createRandomEntity(World world, Entity current, INamedTag<EntityType<?>> type) {
+	private static Mob createRandomEntity(Level world, Entity current, Named<EntityType<?>> type) {
 		EntityType<?> currentType = current.getType();
 		EntityType<?> newType = getRandomTagEntry(world.getRandom(), type, currentType);
 		if (currentType == newType) {
@@ -51,11 +51,11 @@ public class EntityRandomizerHelper {
 			return null;
 		}
 		Entity newEntity = newType.create(world);
-		if (newEntity instanceof MobEntity) {
-			return (MobEntity) newEntity;
+		if (newEntity instanceof Mob) {
+			return (Mob) newEntity;
 		} else if (newEntity != null) {
 			//There are "invalid" entries in the list that do not correspond to, kill the new entity
-			newEntity.remove();
+			newEntity.discard();//TODO - 1.18: Review all our calls of discard because maybe some were wrong
 			// and log a warning
 			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.",
 					newType.getRegistryName(), type.getName());
@@ -63,7 +63,7 @@ public class EntityRandomizerHelper {
 		return null;
 	}
 
-	private static <T> T getRandomTagEntry(Random random, ITag<T> tag, T toExclude) {
+	private static <T> T getRandomTagEntry(Random random, Tag<T> tag, T toExclude) {
 		List<T> list = tag.getValues();
 		if (list.isEmpty() || list.size() == 1 && list.contains(toExclude)) {
 			return toExclude;

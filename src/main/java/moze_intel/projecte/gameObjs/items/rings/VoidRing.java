@@ -11,19 +11,19 @@ import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.items.IItemHandler;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction {
@@ -35,41 +35,41 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean isHeld) {
 		super.inventoryTick(stack, world, entity, slot, isHeld);
 		PEItems.BLACK_HOLE_BAND.get().inventoryTick(stack, world, entity, slot, isHeld);
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).updateInPedestal(world, pos);
 	}
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
+	public List<Component> getPedestalDescription() {
 		return ((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).getPedestalDescription();
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
 		if (player.getCooldowns().isOnCooldown(this)) {
 			return false;
 		}
-		BlockRayTraceResult lookingAt = PlayerHelper.getBlockLookingAt(player, 64);
+		BlockHitResult lookingAt = PlayerHelper.getBlockLookingAt(player, 64);
 		BlockPos c;
 		if (lookingAt.getType() == Type.MISS) {
 			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
 		} else {
 			c = lookingAt.getBlockPos();
 		}
-		EnderTeleportEvent event = new EnderTeleportEvent(player, c.getX(), c.getY(), c.getZ(), 0);
+		EntityTeleportEvent event = new EntityTeleportEvent(player, c.getX(), c.getY(), c.getZ());
 		if (!MinecraftForge.EVENT_BUS.post(event)) {
 			if (player.isPassenger()) {
 				player.stopRiding();
 			}
 			player.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			player.getCooldowns().addCooldown(this, 10);
 			return true;
@@ -78,13 +78,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
 		((IAlchBagItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchBag(inv, player, stack);
 		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
 		((IAlchChestItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchChest(world, pos, stack);
 	}

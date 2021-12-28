@@ -7,28 +7,28 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class GemLegs extends GemArmorBase {
 
 	public GemLegs(Properties props) {
-		super(EquipmentSlotType.LEGS, props);
+		super(EquipmentSlot.LEGS, props);
 		MinecraftForge.EVENT_BUS.addListener(this::onJump);
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_LEGS.translate());
 	}
@@ -36,24 +36,24 @@ public class GemLegs extends GemArmorBase {
 	private final Map<Integer, Long> lastJumpTracker = new HashMap<>();
 
 	private void onJump(LivingEvent.LivingJumpEvent evt) {
-		if (evt.getEntityLiving() instanceof PlayerEntity && evt.getEntityLiving().getCommandSenderWorld().isClientSide) {
+		if (evt.getEntityLiving() instanceof Player && evt.getEntityLiving().getCommandSenderWorld().isClientSide) {
 			lastJumpTracker.put(evt.getEntityLiving().getId(), evt.getEntityLiving().getCommandSenderWorld().getGameTime());
 		}
 	}
 
-	private boolean jumpedRecently(PlayerEntity player) {
+	private boolean jumpedRecently(Player player) {
 		return lastJumpTracker.containsKey(player.getId()) && player.getCommandSenderWorld().getGameTime() - lastJumpTracker.get(player.getId()) < 5;
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
+	public void onArmorTick(ItemStack stack, Level world, Player player) {
 		if (world.isClientSide) {
 			if (player.isShiftKeyDown() && !player.isOnGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
 				player.setDeltaMovement(player.getDeltaMovement().add(0, -0.32F, 0));
 			}
 		}
 		if (player.isShiftKeyDown()) {
-			AxisAlignedBB box = new AxisAlignedBB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
+			AABB box = new AABB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
 					player.getX() + 3.5, player.getY() + 3.5, player.getZ() + 3.5);
 			WorldHelper.repelEntitiesSWRG(world, box, player);
 			if (!world.isClientSide && player.getDeltaMovement().y() < -0.08) {

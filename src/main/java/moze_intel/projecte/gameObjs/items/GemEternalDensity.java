@@ -13,7 +13,7 @@ import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
@@ -24,29 +24,29 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.network.NetworkHooks;
 
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
@@ -67,8 +67,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean isHeld) {
-		if (!world.isClientSide && entity instanceof PlayerEntity) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean isHeld) {
+		if (!world.isClientSide && entity instanceof Player) {
 			entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> condense(stack, inv));
 		}
 	}
@@ -124,11 +124,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide) {
 			if (player.isShiftKeyDown()) {
-				CompoundNBT nbt = stack.getOrCreateTag();
+				CompoundTag nbt = stack.getOrCreateTag();
 				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
@@ -141,13 +141,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
-				NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(hand, stack), buf -> {
+				NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(hand, stack), buf -> {
 					buf.writeEnum(hand);
-					buf.writeByte(player.inventory.selected);
+					buf.writeByte(player.getInventory().selected);
 				});
 			}
 		}
-		return ActionResult.success(stack);
+		return InteractionResultHolder.success(stack);
 	}
 
 	private static ItemStack getTarget(ItemStack stack) {
@@ -175,9 +175,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	private static void setItems(ItemStack stack, List<ItemStack> list) {
-		ListNBT tList = new ListNBT();
+		ListTag tList = new ListTag();
 		for (ItemStack s : list) {
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			s.save(nbt);
 			tList.add(nbt);
 		}
@@ -187,7 +187,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static List<ItemStack> getItems(ItemStack stack) {
 		List<ItemStack> list = new ArrayList<>();
 		if (stack.hasTag()) {
-			ListNBT tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_COMPOUND);
+			ListTag tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, Tag.TAG_COMPOUND);
 			for (int i = 0; i < tList.size(); i++) {
 				list.add(ItemStack.of(tList.getCompound(i)));
 			}
@@ -223,11 +223,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Nullable
 	@Override
-	public CompoundNBT getShareTag(ItemStack stack) {
+	public CompoundTag getShareTag(ItemStack stack) {
 		if (stack.getItem() instanceof GemEternalDensity) {
 			//Double check it is actually a stack of the correct type
-			CompoundNBT nbt = stack.getTag();
-			if (nbt == null || !nbt.contains(Constants.NBT_KEY_GEM_CONSUMED, NBT.TAG_LIST)) {
+			CompoundTag nbt = stack.getTag();
+			if (nbt == null || !nbt.contains(Constants.NBT_KEY_GEM_CONSUMED, Tag.TAG_LIST)) {
 				//If we don't have any NBT or already don't have the key just return the NBT as is
 				return nbt;
 			}
@@ -240,7 +240,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
 		List<ItemStack> result = new ArrayList<>();
 		if (stack.hasTag()) {
-			ListNBT list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND);
+			ListTag list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, Tag.TAG_COMPOUND);
 			for (int i = 0; i < list.size(); i++) {
 				result.add(ItemStack.of(list.getCompound(i)));
 			}
@@ -263,7 +263,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
@@ -275,13 +275,13 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		if (!world.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (tile != null) {
 				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 					if (condense(stack, inv)) {
-						tile.markDirty(false, true);
+						tile.setChanged();
 					}
 				});
 			}
@@ -289,29 +289,29 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
 		return !player.getCommandSenderWorld().isClientSide && condense(stack, inv);
 	}
 
-	private static class ContainerProvider implements INamedContainerProvider {
+	private static class ContainerProvider implements MenuProvider {
 
 		private final ItemStack stack;
-		private final Hand hand;
+		private final InteractionHand hand;
 
-		private ContainerProvider(Hand hand, ItemStack stack) {
+		private ContainerProvider(InteractionHand hand, ItemStack stack) {
 			this.stack = stack;
 			this.hand = hand;
 		}
 
 		@Nonnull
 		@Override
-		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
+		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
 			return new EternalDensityContainer(windowId, playerInventory, hand, playerInventory.selected, new EternalDensityInventory(stack));
 		}
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName() {
+		public Component getDisplayName() {
 			return TextComponentUtil.build(PEItems.GEM_OF_ETERNAL_DENSITY.get());
 		}
 	}

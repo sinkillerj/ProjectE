@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:rm_pick"
+            "items": [
+              "projecte:rm_pick"
+            ]
           }
         ]
       }

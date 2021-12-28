@@ -2,7 +2,7 @@ package moze_intel.projecte.api.event;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -16,11 +16,11 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class PlayerAttemptCondenserSetEvent extends Event {
 
-	private final PlayerEntity player;
+	private final Player player;
 	private final ItemInfo sourceInfo;
 	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptCondenserSetEvent(@Nonnull PlayerEntity entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
+	public PlayerAttemptCondenserSetEvent(@Nonnull Player entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
 		player = entityPlayer;
 		this.sourceInfo = sourceInfo;
 		this.reducedInfo = reducedInfo;
@@ -30,7 +30,7 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	 * @return The player who is attempting to put in the condenser slot.
 	 */
 	@Nonnull
-	public PlayerEntity getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 

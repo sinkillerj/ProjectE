@@ -14,22 +14,22 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
 
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister {
@@ -39,17 +39,17 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	private final Multimap<Attribute, AttributeModifier> attributes;
 
 	public GemFeet(Properties props) {
-		super(EquipmentSlotType.FEET, props);
+		super(EquipmentSlot.FEET, props);
 		Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
-		attributesBuilder.putAll(getDefaultAttributeModifiers(EquipmentSlotType.FEET));
+		attributesBuilder.putAll(getDefaultAttributeModifiers(EquipmentSlot.FEET));
 		attributesBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MODIFIER, "Armor modifier", 1.0, Operation.MULTIPLY_TOTAL));
 		this.attributes = attributesBuilder.build();
 	}
 
-	public void toggleStepAssist(ItemStack boots, PlayerEntity player) {
+	public void toggleStepAssist(ItemStack boots, Player player) {
 		boolean value;
-		CompoundNBT bootsTag = boots.getOrCreateTag();
-		if (bootsTag.contains(Constants.NBT_KEY_STEP_ASSIST, NBT.TAG_BYTE)) {
+		CompoundTag bootsTag = boots.getOrCreateTag();
+		if (bootsTag.contains(Constants.NBT_KEY_STEP_ASSIST, Tag.TAG_BYTE)) {
 			value = !bootsTag.getBoolean(Constants.NBT_KEY_STEP_ASSIST);
 			bootsTag.putBoolean(Constants.NBT_KEY_STEP_ASSIST, value);
 		} else {
@@ -58,9 +58,9 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			value = true;
 		}
 		if (value) {
-			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED), Util.NIL_UUID);
+			player.sendMessage(PELang.STEP_ASSIST.translate(ChatFormatting.GREEN, PELang.GEM_ENABLED), Util.NIL_UUID);
 		} else {
-			player.sendMessage(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED), Util.NIL_UUID);
+			player.sendMessage(PELang.STEP_ASSIST.translate(ChatFormatting.RED, PELang.GEM_DISABLED), Util.NIL_UUID);
 		}
 	}
 
@@ -69,19 +69,19 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
+	public void onArmorTick(ItemStack stack, Level world, Player player) {
 		if (!world.isClientSide) {
-			ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
+			ServerPlayer playerMP = (ServerPlayer) player;
 			playerMP.fallDistance = 0;
 		} else {
-			if (!player.abilities.flying && isJumpPressed()) {
+			if (!player.getAbilities().flying && isJumpPressed()) {
 				player.setDeltaMovement(player.getDeltaMovement().add(0, 0.1, 0));
 			}
 			if (!player.isOnGround()) {
 				if (player.getDeltaMovement().y() <= 0) {
 					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
 				}
-				if (!player.abilities.flying) {
+				if (!player.getAbilities().flying) {
 					if (player.zza < 0) {
 						player.setDeltaMovement(player.getDeltaMovement().multiply(0.9, 1, 0.9));
 					} else if (player.zza > 0 && player.getDeltaMovement().lengthSqr() < 3) {
@@ -93,30 +93,30 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_FEET.translate());
 		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.BOOTS_TOGGLE)));
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST)) {
-			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.GREEN, PELang.GEM_ENABLED));
+			tooltips.add(PELang.STEP_ASSIST.translate(ChatFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {
-			tooltips.add(PELang.STEP_ASSIST.translate(TextFormatting.RED, PELang.GEM_DISABLED));
+			tooltips.add(PELang.STEP_ASSIST.translate(ChatFormatting.RED, PELang.GEM_DISABLED));
 		}
 	}
 
 	@Nonnull
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-		return slot == EquipmentSlotType.FEET ? attributes : super.getAttributeModifiers(slot, stack);
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
+		return slot == EquipmentSlot.FEET ? attributes : super.getAttributeModifiers(slot, stack);
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemBySlot(EquipmentSlotType.FEET) == stack;
+	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
+		return player.getItemBySlot(EquipmentSlot.FEET) == stack;
 	}
 
 	@Override
-	public boolean canAssistStep(ItemStack stack, ServerPlayerEntity player) {
-		return player.getItemBySlot(EquipmentSlotType.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
+	public boolean canAssistStep(ItemStack stack, ServerPlayer player) {
+		return player.getItemBySlot(EquipmentSlot.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
 	}
 }

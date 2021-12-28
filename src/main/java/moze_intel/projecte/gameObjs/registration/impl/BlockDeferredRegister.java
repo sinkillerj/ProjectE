@@ -5,13 +5,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import moze_intel.projecte.gameObjs.registration.DoubleDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject.WallOrFloorBlockRegistryObject;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.WallOrFloorItem;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.StandingAndWallBlockItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
@@ -19,7 +19,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 		super(ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
 	}
 
-	public BlockRegistryObject<Block, BlockItem> register(String name, AbstractBlock.Properties properties) {
+	public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
 		return registerDefaultProperties(name, () -> new Block(properties), BlockItem::new);
 	}
 
@@ -27,12 +27,12 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 		return registerDefaultProperties(name, blockSupplier, BlockItem::new);
 	}
 
-	public <BLOCK extends Block, WALL_BLOCK extends Block> WallOrFloorBlockRegistryObject<BLOCK, WALL_BLOCK, WallOrFloorItem> registerWallOrFloorItem(String name,
-			Function<AbstractBlock.Properties, BLOCK> blockSupplier, Function<AbstractBlock.Properties, WALL_BLOCK> wallBlockSupplier,
-			AbstractBlock.Properties baseProperties) {
+	public <BLOCK extends Block, WALL_BLOCK extends Block> WallOrFloorBlockRegistryObject<BLOCK, WALL_BLOCK, StandingAndWallBlockItem> registerWallOrFloorItem(String name,
+			Function<BlockBehaviour.Properties, BLOCK> blockSupplier, Function<BlockBehaviour.Properties, WALL_BLOCK> wallBlockSupplier,
+			BlockBehaviour.Properties baseProperties) {
 		RegistryObject<BLOCK> primaryObject = primaryRegister.register(name, () -> blockSupplier.apply(baseProperties));
 		RegistryObject<WALL_BLOCK> wallObject = primaryRegister.register("wall_" + name, () -> wallBlockSupplier.apply(baseProperties.lootFrom(primaryObject)));
-		return new WallOrFloorBlockRegistryObject<>(primaryObject, wallObject, secondaryRegister.register(name, () -> new WallOrFloorItem(primaryObject.get(), wallObject.get(),
+		return new WallOrFloorBlockRegistryObject<>(primaryObject, wallObject, secondaryRegister.register(name, () -> new StandingAndWallBlockItem(primaryObject.get(), wallObject.get(),
 				ItemDeferredRegister.getBaseProperties())));
 	}
 

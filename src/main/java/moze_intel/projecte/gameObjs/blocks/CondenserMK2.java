@@ -1,10 +1,9 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import javax.annotation.Nullable;
+import moze_intel.projecte.gameObjs.block_entities.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 
 public class CondenserMK2 extends Condenser {
 
@@ -12,9 +11,9 @@ public class CondenserMK2 extends Condenser {
 		super(props);
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-		return new CondenserMK2Tile();
+	public BlockEntityTypeRegistryObject<CondenserMK2Tile> getType() {
+		return PEBlockEntityTypes.CONDENSER_MK2;
 	}
 }

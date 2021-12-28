@@ -1,22 +1,23 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
-import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 
 	private static final ResourceLocation texture = PECore.rl("textures/gui/dmfurnace.png");
 	private final DMFurnaceTile tile;
 
-	public GUIDMFurnace(DMFurnaceContainer container, PlayerInventory invPlayer, ITextComponent title) {
+	public GUIDMFurnace(DMFurnaceContainer container, Inventory invPlayer, Component title) {
 		super(container, invPlayer, title);
 		this.imageWidth = 178;
 		this.imageHeight = 165;
@@ -27,9 +28,10 @@ public class GUIDMFurnace extends PEContainerScreen<DMFurnaceContainer> {
 	}
 
 	@Override
-	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bind(texture);
+	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int x, int y) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, texture);
 
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 

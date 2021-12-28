@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.registration.impl;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SoundEventDeferredRegister extends WrappedDeferredRegister<SoundEvent> {

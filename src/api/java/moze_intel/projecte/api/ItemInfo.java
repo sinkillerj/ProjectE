@@ -4,18 +4,18 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.nss.NSSItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Class used for keeping track of a combined {@link Item} and {@link CompoundNBT}. Unlike {@link ItemStack} this class does not keep track of count, and overrides {@link
+ * Class used for keeping track of a combined {@link Item} and {@link CompoundTag}. Unlike {@link ItemStack} this class does not keep track of count, and overrides {@link
  * #equals(Object)} and {@link #hashCode()} so that it can be used properly in a {@link java.util.Set}.
  *
- * @implNote If the {@link CompoundNBT} this {@link ItemInfo} is given is empty, then it converts it to being null.
+ * @implNote If the {@link CompoundTag} this {@link ItemInfo} is given is empty, then it converts it to being null.
  * @apiNote {@link ItemInfo} and the data it stores is Immutable
  */
 public final class ItemInfo {
@@ -23,24 +23,24 @@ public final class ItemInfo {
 	@Nonnull
 	private final Item item;
 	@Nullable
-	private final CompoundNBT nbt;
+	private final CompoundTag nbt;
 
-	private ItemInfo(@Nonnull Item item, @Nullable CompoundNBT nbt) {
+	private ItemInfo(@Nonnull Item item, @Nullable CompoundTag nbt) {
 		this.item = item;
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
 
 	/**
-	 * Creates an {@link ItemInfo} object from a given {@link Item} with an optional {@link CompoundNBT} attached.
+	 * Creates an {@link ItemInfo} object from a given {@link Item} with an optional {@link CompoundTag} attached.
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
-	public static ItemInfo fromItem(@Nonnull Item item, @Nullable CompoundNBT nbt) {
+	public static ItemInfo fromItem(@Nonnull Item item, @Nullable CompoundTag nbt) {
 		return new ItemInfo(item, nbt);
 	}
 
 	/**
-	 * Creates an {@link ItemInfo} object from a given {@link Item} with no {@link CompoundNBT} attached.
+	 * Creates an {@link ItemInfo} object from a given {@link Item} with no {@link CompoundTag} attached.
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
@@ -75,15 +75,15 @@ public final class ItemInfo {
 	}
 
 	/**
-	 * Reads an {@link ItemInfo} from the given {@link CompoundNBT}.
+	 * Reads an {@link ItemInfo} from the given {@link CompoundTag}.
 	 *
-	 * @param nbt {@link CompoundNBT} representing a {@link ItemInfo}
+	 * @param nbt {@link CompoundTag} representing a {@link ItemInfo}
 	 *
-	 * @return An {@link ItemInfo} that is represented by the given {@link CompoundNBT}, or null if no {@link ItemInfo} is stored or the item is not registered.
+	 * @return An {@link ItemInfo} that is represented by the given {@link CompoundTag}, or null if no {@link ItemInfo} is stored or the item is not registered.
 	 */
 	@Nullable
-	public static ItemInfo read(@Nonnull CompoundNBT nbt) {
-		if (nbt.contains("item", NBT.TAG_STRING)) {
+	public static ItemInfo read(@Nonnull CompoundTag nbt) {
+		if (nbt.contains("item", Tag.TAG_STRING)) {
 			ResourceLocation registryName = ResourceLocation.tryParse(nbt.getString("item"));
 			if (registryName == null) {
 				return null;
@@ -92,7 +92,7 @@ public final class ItemInfo {
 			if (item == null) {
 				return null;
 			}
-			if (nbt.contains("nbt", NBT.TAG_COMPOUND)) {
+			if (nbt.contains("nbt", Tag.TAG_COMPOUND)) {
 				return fromItem(item, nbt.getCompound("nbt"));
 			}
 			return fromItem(item, null);
@@ -109,31 +109,31 @@ public final class ItemInfo {
 	}
 
 	/**
-	 * @return The {@link CompoundNBT} stored in this {@link ItemInfo}, or null if there is no nbt data stored.
+	 * @return The {@link CompoundTag} stored in this {@link ItemInfo}, or null if there is no nbt data stored.
 	 *
-	 * @apiNote The returned {@link CompoundNBT} is a copy so as to ensure that this {@link ItemInfo} is not accidentally modified via modifying the returned {@link
-	 * CompoundNBT}. This means it is safe to modify the returned {@link CompoundNBT}
+	 * @apiNote The returned {@link CompoundTag} is a copy so as to ensure that this {@link ItemInfo} is not accidentally modified via modifying the returned {@link
+	 * CompoundTag}. This means it is safe to modify the returned {@link CompoundTag}
 	 */
 	@Nullable
-	public CompoundNBT getNBT() {
+	public CompoundTag getNBT() {
 		return nbt == null ? null : nbt.copy();
 	}
 
 	/**
-	 * Checks if this {@link ItemInfo} has an associated {@link CompoundNBT}.
+	 * Checks if this {@link ItemInfo} has an associated {@link CompoundTag}.
 	 *
-	 * @return True if this {@link ItemInfo} has an associated {@link CompoundNBT}, false otherwise.
+	 * @return True if this {@link ItemInfo} has an associated {@link CompoundTag}, false otherwise.
 	 */
 	public boolean hasNBT() {
 		return nbt != null;
 	}
 
 	/**
-	 * @return A new {@link ItemStack} created from the stored {@link Item} and {@link CompoundNBT}
+	 * @return A new {@link ItemStack} created from the stored {@link Item} and {@link CompoundTag}
 	 */
 	public ItemStack createStack() {
 		ItemStack stack = new ItemStack(item);
-		CompoundNBT nbt = getNBT();
+		CompoundTag nbt = getNBT();
 		if (nbt != null) {
 			//Only set the NBT if we have some, other then allow the item to use its default NBT
 			stack.setTag(nbt);
@@ -144,7 +144,7 @@ public final class ItemInfo {
 	/**
 	 * Writes the item and nbt fields to a NBT object.
 	 */
-	public CompoundNBT write(@Nonnull CompoundNBT nbt) {
+	public CompoundTag write(@Nonnull CompoundTag nbt) {
 		nbt.putString("item", item.getRegistryName().toString());
 		if (this.nbt != null) {
 			nbt.put("nbt", this.nbt);

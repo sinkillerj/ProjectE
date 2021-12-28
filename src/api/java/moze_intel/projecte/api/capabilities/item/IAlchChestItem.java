@@ -1,10 +1,9 @@
 package moze_intel.projecte.api.capabilities.item;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -12,7 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus
  */
@@ -25,5 +24,5 @@ public interface IAlchChestItem {
 	 * @param world The World
 	 * @param stack The ItemStack being ticked
 	 */
-	void updateInAlchChest(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
+	void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
 }

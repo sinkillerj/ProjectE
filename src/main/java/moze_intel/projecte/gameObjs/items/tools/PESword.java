@@ -16,17 +16,17 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
@@ -69,13 +69,13 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		if (supportedCapabilities.isEmpty()) {
 			return super.initCapabilities(stack, nbt);
 		}
@@ -103,7 +103,7 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
 		if (player.getAttackStrengthScale(0F) == 1) {
 			ToolHelper.attackAOE(stack, player, slayAll(stack), getDamage(), 0, hand);
 			PlayerHelper.resetCooldown(player);
@@ -118,7 +118,7 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge {
 
 	@Nonnull
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
 		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }

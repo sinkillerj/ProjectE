@@ -6,14 +6,14 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
-import net.minecraft.data.TagsProvider;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -25,7 +25,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags() {
-		TagsProvider.Builder<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
+		TagsProvider.TagAppender<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));
 		}
@@ -56,7 +56,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
-		Builder<Item> kleinStarBuilder = tag(PETags.Items.CURIOS_KLEIN_STAR);
+		TagAppender<Item> kleinStarBuilder = tag(PETags.Items.CURIOS_KLEIN_STAR);
 		for (EnumKleinTier tier : EnumKleinTier.values()) {
 			kleinStarBuilder.add(PEItems.getStar(tier));
 		}

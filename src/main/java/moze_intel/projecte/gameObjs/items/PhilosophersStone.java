@@ -20,30 +20,30 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
 
@@ -63,28 +63,28 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return stack.copy();
 	}
 
-	public BlockRayTraceResult getHitBlock(PlayerEntity player) {
-		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isShiftKeyDown() ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+	public BlockHitResult getHitBlock(Player player) {
+		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isShiftKeyDown() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx) {
-		PlayerEntity player = ctx.getPlayer();
+	public InteractionResult useOn(UseOnContext ctx) {
+		Player player = ctx.getPlayer();
 		if (player == null) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
 		BlockPos pos = ctx.getClickedPos();
 		Direction sideHit = ctx.getClickedFace();
-		World world = ctx.getLevel();
+		Level world = ctx.getLevel();
 		ItemStack stack = ctx.getItemInHand();
 
 		if (world.isClientSide) {
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
-		BlockRayTraceResult rtr = getHitBlock(player);
-		if (rtr.getType() == RayTraceResult.Type.BLOCK && !rtr.getBlockPos().equals(pos)) {
+		BlockHitResult rtr = getHitBlock(player);
+		if (rtr.getType() == HitResult.Type.BLOCK && !rtr.getBlockPos().equals(pos)) {
 			pos = rtr.getBlockPos();
 			sideHit = rtr.getDirection();
 		}
@@ -92,41 +92,41 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		if (!toChange.isEmpty()) {
 			for (Map.Entry<BlockPos, BlockState> entry : toChange.entrySet()) {
 				BlockPos currentPos = entry.getKey();
-				PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, currentPos, entry.getValue());
+				PlayerHelper.checkedReplaceBlock((ServerPlayer) player, currentPos, entry.getValue());
 				if (world.random.nextInt(8) == 0) {
-					((ServerWorld) world).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
+					((ServerLevel) world).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		World world = player.getCommandSenderWorld();
-		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundCategory.PLAYERS, 1, 1);
+	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+		Level world = player.getCommandSenderWorld();
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
-		ent.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 		world.addFreshEntity(ent);
 		return true;
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
 		if (!player.getCommandSenderWorld().isClientSide) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack));
+			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(stack));
 		}
 		return true;
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Map<BlockPos, BlockState> getChanges(World world, BlockPos pos, PlayerEntity player, Direction sideHit, int mode, int charge) {
+	public static Map<BlockPos, BlockState> getChanges(Level world, BlockPos pos, Player player, Direction sideHit, int mode, int charge) {
 		BlockState targeted = world.getBlockState(pos);
 		boolean isSneaking = player.isShiftKeyDown();
 		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
@@ -183,7 +183,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return changes;
 	}
 
-	private static class ContainerProvider implements INamedContainerProvider {
+	private static class ContainerProvider implements MenuProvider {
 
 		private final ItemStack stack;
 
@@ -193,13 +193,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 		@Nonnull
 		@Override
-		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerIn) {
-			return new PhilosStoneContainer(windowId, playerInventory, IWorldPosCallable.create(playerIn.getCommandSenderWorld(), playerIn.blockPosition()));
+		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
+			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(playerIn.getCommandSenderWorld(), playerIn.blockPosition()));
 		}
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName() {
+		public Component getDisplayName() {
 			return stack.getHoverName();
 		}
 	}

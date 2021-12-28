@@ -3,11 +3,10 @@ package moze_intel.projecte.api.capabilities.item;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.PESounds;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -15,7 +14,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IItemCharge {
 
@@ -54,19 +53,19 @@ public interface IItemCharge {
 	 *
 	 * @return Whether the operation succeeded
 	 */
-	default boolean changeCharge(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
+	default boolean changeCharge(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 
 		if (player.isShiftKeyDown()) {
 			if (currentCharge > 0) {
-				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), PESounds.UNCHARGE, SoundCategory.PLAYERS, 1.0F,
+				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), PESounds.UNCHARGE, SoundSource.PLAYERS, 1.0F,
 						0.5F + ((0.5F / (float) numCharges) * currentCharge));
 				stack.getOrCreateTag().putInt(KEY, currentCharge - 1);
 				return true;
 			}
 		} else if (currentCharge < numCharges) {
-			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), PESounds.CHARGE, SoundCategory.PLAYERS, 1.0F,
+			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), PESounds.CHARGE, SoundSource.PLAYERS, 1.0F,
 					0.5F + ((0.5F / (float) numCharges) * currentCharge));
 			stack.getOrCreateTag().putInt(KEY, currentCharge + 1);
 			return true;

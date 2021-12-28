@@ -9,31 +9,31 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class DumpMissingEmc {
 
-	public static ArgumentBuilder<CommandSource, ?> register() {
+	public static ArgumentBuilder<CommandSourceStack, ?> register() {
 		return Commands.literal("dumpmissingemc")
 				.requires(cs -> cs.hasPermission(2))
 				.executes(DumpMissingEmc::execute);
 	}
 
-	private static int execute(CommandContext<CommandSource> ctx) {
-		CommandSource source = ctx.getSource();
+	private static int execute(CommandContext<CommandSourceStack> ctx) {
+		CommandSourceStack source = ctx.getSource();
 		Set<ItemInfo> missing = new HashSet<>();
-		for (Map.Entry<RegistryKey<Item>, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
+		for (Map.Entry<ResourceKey<Item>, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
 			Item item = entry.getValue();
-			ItemGroup group = item.getItemCategory();
+			CreativeModeTab group = item.getItemCategory();
 			if (group != null || !(item instanceof EnchantedBookItem)) {
 				//Vanilla has special handing for filling the enchanted book item's group, so don't try to fill it
 				try {

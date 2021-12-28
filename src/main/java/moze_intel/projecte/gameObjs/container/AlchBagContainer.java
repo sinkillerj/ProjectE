@@ -5,12 +5,12 @@ import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -18,11 +18,11 @@ public class AlchBagContainer extends PEHandContainer {
 
 	private final boolean immutable;
 
-	public static AlchBagContainer fromNetwork(int windowId, PlayerInventory playerInv, PacketBuffer buf) {
-		return new AlchBagContainer(windowId, playerInv, buf.readEnum(Hand.class), new ItemStackHandler(104), buf.readByte(), buf.readBoolean());
+	public static AlchBagContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
+		return new AlchBagContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), new ItemStackHandler(104), buf.readByte(), buf.readBoolean());
 	}
 
-	public AlchBagContainer(int windowId, PlayerInventory invPlayer, Hand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
+	public AlchBagContainer(int windowId, Inventory invPlayer, InteractionHand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
 		super(PEContainerTypes.ALCH_BAG_CONTAINER, windowId, hand, selected);
 		this.immutable = immutable;
 		//Bag Inventory
@@ -38,7 +38,7 @@ public class AlchBagContainer extends PEHandContainer {
 		if (immutable) {
 			return new InventoryContainerSlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull PlayerEntity player) {
+				public boolean mayPickup(@Nonnull Player player) {
 					return false;
 				}
 
@@ -52,11 +52,11 @@ public class AlchBagContainer extends PEHandContainer {
 	}
 
 	@Override
-	protected MainInventorySlot createMainInventorySlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+	protected MainInventorySlot createMainInventorySlot(@Nonnull Inventory inv, int index, int x, int y) {
 		if (immutable) {
 			return new MainInventorySlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull PlayerEntity player) {
+				public boolean mayPickup(@Nonnull Player player) {
 					return false;
 				}
 
@@ -70,11 +70,11 @@ public class AlchBagContainer extends PEHandContainer {
 	}
 
 	@Override
-	protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+	protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
 		if (immutable) {
 			return new HotBarSlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull PlayerEntity player) {
+				public boolean mayPickup(@Nonnull Player player) {
 					return false;
 				}
 
@@ -89,13 +89,14 @@ public class AlchBagContainer extends PEHandContainer {
 
 	@Nonnull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
 		return immutable ? ItemStack.EMPTY : super.quickMoveStack(player, slotIndex);
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
-		return immutable ? ItemStack.EMPTY : super.clicked(slotId, dragType, clickType, player);
+	public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+		if (!immutable) {
+			super.clicked(slotId, dragType, clickType, player);
+		}
 	}
 }

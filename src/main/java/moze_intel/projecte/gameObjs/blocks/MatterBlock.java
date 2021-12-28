@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class MatterBlock extends Block implements IMatterBlock {
 

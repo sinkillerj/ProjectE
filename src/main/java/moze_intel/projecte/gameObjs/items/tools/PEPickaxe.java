@@ -15,22 +15,22 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
@@ -67,13 +67,13 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 
 	@Override
@@ -95,45 +95,45 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper(), new ModeChangerItemCapabilityWrapper());
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
 		if (player == null || ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we don't have a player or the config says we should mine in an AOE (this happens when right clicking air as well)
 			// Then we just pass so that it can be processed in onItemRightClick
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 		BlockPos pos = context.getClickedPos();
 		if (ItemHelper.isOre(context.getLevel().getBlockState(pos))) {
 			return ToolHelper.tryVeinMine(player, context.getItemInHand(), pos, context.getClickedFace());
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
 		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}

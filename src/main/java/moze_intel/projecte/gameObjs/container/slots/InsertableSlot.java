@@ -1,15 +1,15 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @implNote From Mekanism
  */
 public class InsertableSlot extends Slot implements IInsertableSlot {
 
-    public InsertableSlot(IInventory inventory, int index, int x, int y) {
+    public InsertableSlot(Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
 

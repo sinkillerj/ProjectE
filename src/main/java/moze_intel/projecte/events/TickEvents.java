@@ -11,11 +11,11 @@ import moze_intel.projecte.handlers.CommonInternalAbilities;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +53,7 @@ public class TickEvents {
 							continue;
 						}
 					}
-					provider.sync(e, (ServerPlayerEntity) event.player);
+					provider.sync(e, (ServerPlayer) event.player);
 				}
 			});
 
@@ -61,21 +61,21 @@ public class TickEvents {
 			if (!event.player.getCommandSenderWorld().isClientSide) {
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
-				if (event.player.isOnFire() && shouldPlayerResistFire((ServerPlayerEntity) event.player)) {
+				if (event.player.isOnFire() && shouldPlayerResistFire((ServerPlayer) event.player)) {
 					event.player.clearFire();
 				}
 			}
 		}
 	}
 
-	public static boolean shouldPlayerResistFire(ServerPlayerEntity player) {
-		for (ItemStack stack : player.inventory.armor) {
+	public static boolean shouldPlayerResistFire(ServerPlayer player) {
+		for (ItemStack stack : player.getArmorSlots()) {
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
 		}
-		for (int i = 0; i < PlayerInventory.getSelectionSize(); i++) {
-			ItemStack stack = player.inventory.getItem(i);
+		for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+			ItemStack stack = player.getInventory().getItem(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
 				return true;
 			}
@@ -92,7 +92,7 @@ public class TickEvents {
 		return false;
 	}
 
-	private static Set<DyeColor> getBagColorsPresent(PlayerEntity player) {
+	private static Set<DyeColor> getBagColorsPresent(Player player) {
 		Set<DyeColor> bagsPresent = EnumSet.noneOf(DyeColor.class);
 		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 			for (int i = 0; i < inv.getSlots(); i++) {

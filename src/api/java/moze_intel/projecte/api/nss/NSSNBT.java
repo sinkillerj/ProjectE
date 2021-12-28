@@ -1,20 +1,20 @@
 package moze_intel.projecte.api.nss;
 
 import javax.annotation.Nullable;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 /**
- * An extension of {@link NormalizedSimpleStack} that allows for representing stacks that are both "simple" and can have a {@link CompoundNBT} attached.
+ * An extension of {@link NormalizedSimpleStack} that allows for representing stacks that are both "simple" and can have a {@link CompoundTag} attached.
  */
 public interface NSSNBT extends NormalizedSimpleStack {
 
 	/**
-	 * Gets the {@link CompoundNBT} that this {@link NSSNBT} has.
+	 * Gets the {@link CompoundTag} that this {@link NSSNBT} has.
 	 *
-	 * @return The {@link CompoundNBT} that this {@link NSSNBT} has.
+	 * @return The {@link CompoundTag} that this {@link NSSNBT} has.
 	 */
 	@Nullable
-	CompoundNBT getNBT();
+	CompoundTag getNBT();
 
 	/**
 	 * Checks if this {@link NSSNBT} has any NBT.

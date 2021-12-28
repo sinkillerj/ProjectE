@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import moze_intel.projecte.api.data.ConversionGroupBuilder.GroupConversionBuilder;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 

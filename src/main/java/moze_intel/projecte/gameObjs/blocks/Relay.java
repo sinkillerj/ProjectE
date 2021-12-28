@@ -3,24 +3,22 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
-import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
-import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
-public class Relay extends BlockDirection {
+public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile> {
 
 	private final EnumRelayTier tier;
 
@@ -36,31 +34,26 @@ public class Relay extends BlockDirection {
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
 		if (!world.isClientSide) {
 			RelayMK1Tile te = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
 			if (te != null) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
+				NetworkHooks.openGui((ServerPlayer) player, te, pos);
 			}
 		}
-		return ActionResultType.SUCCESS;
-	}
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+	public BlockEntityTypeRegistryObject<? extends RelayMK1Tile> getType() {
 		switch (tier) {
 			case MK1:
-				return new RelayMK1Tile();
+				return PEBlockEntityTypes.RELAY;
 			case MK2:
-				return new RelayMK2Tile();
+				return PEBlockEntityTypes.RELAY_MK2;
 			case MK3:
-				return new RelayMK3Tile();
+				return PEBlockEntityTypes.RELAY_MK3;
 			default:
 				return null;
 		}
@@ -74,7 +67,7 @@ public class Relay extends BlockDirection {
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
 		RelayMK1Tile relay = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
 		if (relay == null) {
 			return 0;

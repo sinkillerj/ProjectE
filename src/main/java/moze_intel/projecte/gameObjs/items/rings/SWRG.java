@@ -13,7 +13,7 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -21,23 +21,23 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter {
 
@@ -48,8 +48,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
-	private void tick(ItemStack stack, PlayerEntity player) {
-		CompoundNBT nbt = stack.getOrCreateTag();
+	private void tick(ItemStack stack, Player player) {
+		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesSWRG(player.getCommandSenderWorld(), player.getBoundingBox().inflate(5), player);
@@ -57,22 +57,22 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		if (player.getCommandSenderWorld().isClientSide) {
 			return;
 		}
-		ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
+		ServerPlayer playerMP = (ServerPlayer) player;
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
 			if (nbt.getInt(Constants.NBT_KEY_MODE) > 0) {
 				changeMode(player, stack, 0);
 			}
-			if (playerMP.abilities.mayfly) {
+			if (playerMP.getAbilities().mayfly) {
 				playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::disableSwrgFlightOverride);
 			}
 			return;
 		}
 
-		if (!playerMP.abilities.mayfly) {
+		if (!playerMP.getAbilities().mayfly) {
 			playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::enableSwrgFlightOverride);
 		}
 
-		if (playerMP.abilities.flying) {
+		if (playerMP.getAbilities().flying) {
 			if (!isFlyingEnabled(nbt)) {
 				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
@@ -82,7 +82,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		float toRemove = 0;
 
-		if (playerMP.abilities.flying) {
+		if (playerMP.getAbilities().flying) {
 			toRemove = 0.32F;
 		}
 
@@ -97,21 +97,21 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		playerMP.fallDistance = 0;
 	}
 
-	private boolean isFlyingEnabled(CompoundNBT nbt) {
+	private boolean isFlyingEnabled(CompoundTag nbt) {
 		return nbt.getInt(Constants.NBT_KEY_MODE) == 1 || nbt.getInt(Constants.NBT_KEY_MODE) == 3;
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
-		if (invSlot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
+		if (invSlot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
 			return;
 		}
-		tick(stack, (PlayerEntity) entity);
+		tick(stack, (Player) entity);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide) {
 			int newMode = 0;
@@ -131,14 +131,14 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			}
 			changeMode(player, stack, newMode);
 		}
-		return ActionResult.success(stack);
+		return InteractionResultHolder.success(stack);
 	}
 
 	/**
 	 * Change the mode of SWRG. Modes:<p> 0 = Ring Off<p> 1 = Flight<p> 2 = Shield<p> 3 = Flight + Shield<p>
 	 */
-	public void changeMode(PlayerEntity player, ItemStack stack, int mode) {
-		CompoundNBT nbt = stack.getOrCreateTag();
+	public void changeMode(Player player, ItemStack stack, int mode) {
+		CompoundTag nbt = stack.getOrCreateTag();
 		int oldMode = nbt.getInt(Constants.NBT_KEY_MODE);
 		if (mode == oldMode) {
 			return;
@@ -150,37 +150,37 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 		if (mode == 0 || oldMode == 3) {
 			//At least one mode deactivated
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 		} else if (oldMode == 0 || mode == 3) {
 			//At least one mode activated
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundCategory.PLAYERS, 0.8F, 1.0F);
+			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player) {
+	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
 		// Dummy result - swrg needs special-casing
 		return false;
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() <= 0) {
-					List<MobEntity> list = world.getEntitiesOfClass(MobEntity.class, tile.getEffectBounds());
-					for (MobEntity living : list) {
-						if (living instanceof TameableEntity && ((TameableEntity) living).isTame()) {
+					List<Mob> list = world.getEntitiesOfClass(Mob.class, tile.getEffectBounds());
+					for (Mob living : list) {
+						if (living instanceof TamableAnimal && ((TamableAnimal) living).isTame()) {
 							continue;
 						}
-						LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+						LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(world);
 						if (lightning != null) {
 							lightning.moveTo(living.position());
 							world.addFreshEntity(lightning);
@@ -196,19 +196,19 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
-			list.add(PELang.PEDESTAL_SWRG_1.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_SWRG_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())));
+			list.add(PELang.PEDESTAL_SWRG_1.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_SWRG_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.swrg.get())));
 		}
 		return list;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, @Nullable Hand hand) {
+	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.level);
-		projectile.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+		projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 		player.level.addFreshEntity(projectile);
 		return true;
 	}

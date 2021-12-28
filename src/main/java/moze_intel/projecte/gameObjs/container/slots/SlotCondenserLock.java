@@ -4,16 +4,16 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 //Note: We cannot just extend SlotGhost as we use this as a fake slot that doesn't even have an item handler backing it
 public class SlotCondenserLock extends Slot {
 
-	private static final IInventory emptyInventory = new Inventory(0);
+	private static final Container emptyInventory = new SimpleContainer(0);
 
 	private final Supplier<ItemInfo> lockInfo;
 
@@ -31,7 +31,7 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public boolean mayPickup(@Nonnull PlayerEntity player) {
+	public boolean mayPickup(@Nonnull Player player) {
 		return false;
 	}
 

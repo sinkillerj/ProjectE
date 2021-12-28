@@ -16,25 +16,23 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.utils.ItemInfoHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @EMCMapper
 public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -45,71 +43,27 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static int totalConversions;
 	private static int totalPotionItems;
 
-	private static List<Object> itemConversions;
-	private static List<Object> typeConversions;
-	private static Class<?> mixPredicateClass;
-
 	private static boolean mapAllReagents() {
-		if (itemConversions == null || typeConversions == null) {
-			//Get references to the lists of Mixing Predicates if either of our references is null
-			try {
-				typeConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185213_a");//POTION_MIXES
-				if (typeConversions == null) {
-					PECore.LOGGER.error("Error getting type conversion field.");
-					return false;
-				}
-				itemConversions = ObfuscationReflectionHelper.getPrivateValue(PotionBrewing.class, null, "field_185214_b");//CONTAINER_MIXES
-			} catch (UnableToFindFieldException | UnableToAccessFieldException e) {
-				PECore.LOGGER.error("Error getting conversion field: ", e);
-				return false;
-			}
-			if (itemConversions == null) {
-				PECore.LOGGER.error("Error getting item conversion field.");
-				return false;
-			}
-		}
-		int conversionCount = itemConversions.size() + typeConversions.size();
 		//Use our best guess of if our cache is invalid because someone added to the list at runtime
 		// Shouldn't happen but there is nothing by default making it so that the list because immutable
 		// But if it does happen clear our cached values and then try to get everything again
+		int conversionCount = PotionBrewing.CONTAINER_MIXES.size() + PotionBrewing.POTION_MIXES.size();
 		if (totalConversions == conversionCount) {
 			return true;
 		}
 		allReagents.clear();
-
-		if (mixPredicateClass == null) {
-			//If we don't have a reference to the MixPredicate class try to get it
-			try {
-				mixPredicateClass = Class.forName("net.minecraft.potion.PotionBrewing$MixPredicate");
-			} catch (ClassNotFoundException e) {
-				PECore.LOGGER.error("Brewing mapper: could not find MixPredicate");
-				return false;
-			}
-		}
-		if (addReagents(itemConversions) || addReagents(typeConversions)) {
-			return false;
-		}
+		addReagents(PotionBrewing.CONTAINER_MIXES);
+		addReagents(PotionBrewing.POTION_MIXES);
 		totalConversions = conversionCount;
 		return true;
 	}
 
-	private static boolean addReagents(List<Object> conversions) {
-		for (Object conversion : conversions) {
-			try {
-				Ingredient reagent = ObfuscationReflectionHelper.getPrivateValue((Class<Object>) mixPredicateClass, conversion, "field_185199_b");
-				if (reagent == null) {
-					PECore.LOGGER.error("Brewing mapper: could not find reagents field.");
-					return true;
-				}
-				for (ItemStack r : reagent.getItems()) {
-					allReagents.add(ItemInfo.fromStack(r));
-				}
-			} catch (Exception ex) {
-				PECore.LOGGER.error("Brewing mapper: could not find field: {}", ex.getMessage());
-				return true;
+	private static <T extends ForgeRegistryEntry<T>> void addReagents(List<PotionBrewing.Mix<T>> conversions) {
+		for (PotionBrewing.Mix<T> conversion : conversions) {
+			for (ItemStack r : conversion.ingredient.getItems()) {
+				allReagents.add(ItemInfo.fromStack(r));
 			}
 		}
-		return false;
 	}
 
 	private static void mapAllInputs() {
@@ -132,7 +86,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				}
 			}
 		}
-		for (Potion potion : ForgeRegistries.POTION_TYPES.getValues()) {
+		for (Potion potion : ForgeRegistries.POTIONS.getValues()) {
 			for (ItemInfo input : inputs) {
 				allInputs.add(ItemInfoHelper.makeWithPotion(input, potion));
 			}
@@ -141,8 +95,8 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
-			IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ServerResources dataPackRegistries,
+			ResourceManager resourceManager) {
 		boolean vanillaRetrieved = mapAllReagents();
 		if (vanillaRetrieved) {
 			mapAllInputs();

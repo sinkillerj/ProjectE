@@ -4,14 +4,14 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class InternalTimers {
 
-	@CapabilityInject(InternalTimers.class)
-	public static Capability<InternalTimers> CAPABILITY = null;
+	public static final Capability<InternalTimers> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 	public static final ResourceLocation NAME = PECore.rl("internal_timers");
 
 	private final Timer repair = new Timer();

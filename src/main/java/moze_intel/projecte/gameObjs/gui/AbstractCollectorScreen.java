@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
@@ -9,13 +9,14 @@ import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> extends PEContainerScreen<T> {
 
-	public AbstractCollectorScreen(T container, PlayerInventory invPlayer, ITextComponent title) {
+	public AbstractCollectorScreen(T container, Inventory invPlayer, Component title) {
 		super(container, invPlayer, title);
 	}
 
@@ -30,7 +31,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull MatrixStack matrix, int x, int y) {
+	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
 		this.font.draw(matrix, Long.toString(menu.emc.get()), 60 + getBonusXShift(), 32, 0x404040);
 		long kleinCharge = menu.kleinEmc.get();
@@ -40,9 +41,10 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 	}
 
 	@Override
-	protected void renderBg(@Nonnull MatrixStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.color4f(1, 1, 1, 1);
-		Minecraft.getInstance().textureManager.bind(getTexture());
+	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int x, int y) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, getTexture());
 
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
@@ -64,7 +66,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 	public static class MK1 extends AbstractCollectorScreen<CollectorMK1Container> {
 
-		public MK1(CollectorMK1Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public MK1(CollectorMK1Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title);
 		}
 
@@ -76,7 +78,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 	public static class MK2 extends AbstractCollectorScreen<CollectorMK2Container> {
 
-		public MK2(CollectorMK2Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public MK2(CollectorMK2Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title);
 			this.imageWidth = 200;
 			this.imageHeight = 165;
@@ -100,7 +102,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 
 	public static class MK3 extends AbstractCollectorScreen<CollectorMK3Container> {
 
-		public MK3(CollectorMK3Container container, PlayerInventory invPlayer, ITextComponent title) {
+		public MK3(CollectorMK3Container container, Inventory invPlayer, Component title) {
 			super(container, invPlayer, title);
 			this.imageWidth = 218;
 			this.imageHeight = 165;

@@ -4,15 +4,15 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public class AlchChestContainer extends ChestTileEmcContainer<AlchChestTile> {
 
-	public AlchChestContainer(int windowId, PlayerInventory invPlayer, AlchChestTile tile) {
+	public AlchChestContainer(int windowId, Inventory invPlayer, AlchChestTile tile) {
 		super(PEContainerTypes.ALCH_CHEST_CONTAINER, windowId, tile);
 		IItemHandler inv = this.tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 		//Chest Inventory
@@ -25,7 +25,7 @@ public class AlchChestContainer extends ChestTileEmcContainer<AlchChestTile> {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull Player player) {
 		return stillValid(player, tile, PEBlocks.ALCHEMICAL_CHEST);
 	}
 }

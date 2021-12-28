@@ -4,9 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PedestalItemCapabilityWrapper extends BasicItemCapability<IPedestalItem> implements IPedestalItem {
@@ -17,13 +17,13 @@ public class PedestalItemCapabilityWrapper extends BasicItemCapability<IPedestal
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		getItem().updateInPedestal(world, pos);
 	}
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
+	public List<Component> getPedestalDescription() {
 		return getItem().getPedestalDescription();
 	}
 }

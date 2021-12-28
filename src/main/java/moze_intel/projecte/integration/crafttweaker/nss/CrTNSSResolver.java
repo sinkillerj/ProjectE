@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker.nss;
+/*package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
@@ -12,11 +12,11 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.json.NSSSerializer;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -33,7 +33,7 @@ public class CrTNSSResolver {
 	 * @param representation String representation as would be found in custom_emc.json
 	 *
 	 * @return A {@link NormalizedSimpleStack} based on its string representation.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack deserialize(String representation) {
 		try {
@@ -49,7 +49,7 @@ public class CrTNSSResolver {
 	 * @param item Item to represent
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link Item}.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromItem(Item item) {
 		if (item == Items.AIR) {
@@ -64,7 +64,7 @@ public class CrTNSSResolver {
 	 * @param stack Stack to match the item and NBT of
 	 *
 	 * @return A {@link NormalizedSimpleStack} that matches the given stack's item and NBT.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromItem(IItemStack stack) {
 		if (stack.isEmpty()) {
@@ -79,10 +79,10 @@ public class CrTNSSResolver {
 	 * @param tag Item Tag to represent
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Item>}.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromItemTag(MCTag<Item> tag) {
-		ITag<Item> itemTag = TagManagerItem.INSTANCE.getInternal(tag);
+		Tag<Item> itemTag = TagManagerItem.INSTANCE.getInternal(tag);
 		if (itemTag == null) {
 			throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
 		}
@@ -95,7 +95,7 @@ public class CrTNSSResolver {
 	 * @param stack Stack to match the fluid and NBT of
 	 *
 	 * @return A {@link NormalizedSimpleStack} that matches the given stack's fluid and NBT.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromFluid(IFluidStack stack) {
 		if (stack.isEmpty()) {
@@ -110,7 +110,7 @@ public class CrTNSSResolver {
 	 * @param fluid Fluid to represent
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link Fluid}.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromFluid(Fluid fluid) {
 		if (fluid == Fluids.EMPTY) {
@@ -125,13 +125,13 @@ public class CrTNSSResolver {
 	 * @param tag Fluid Tag to represent
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Fluid>}.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromFluidTag(MCTag<Fluid> tag) {
-		ITag<Fluid> fluidTag = TagManagerFluid.INSTANCE.getInternal(tag);
+		Tag<Fluid> fluidTag = TagManagerFluid.INSTANCE.getInternal(tag);
 		if (fluidTag == null) {
 			throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
 		}
 		return NSSFluid.createTag(fluidTag);
 	}
-}
+}*/

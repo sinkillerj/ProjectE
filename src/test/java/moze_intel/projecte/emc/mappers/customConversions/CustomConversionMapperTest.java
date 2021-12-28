@@ -12,7 +12,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

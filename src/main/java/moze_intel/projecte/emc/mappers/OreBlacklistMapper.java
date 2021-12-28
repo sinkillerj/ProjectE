@@ -6,11 +6,12 @@ import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.Item;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -18,10 +19,10 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	private static final ResourceLocation ORES = new ResourceLocation("forge", "ores");
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
-			IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ServerResources dataPackRegistries,
+			ResourceManager resourceManager) {
 		//Note: We need to get the tag by resource location, as named tags are not populated yet here
-		ITag<Item> ores = dataPackRegistries.getTags().getItems().getTag(ORES);
+		Tag<Item> ores = dataPackRegistries.getTags().getOrEmpty(Registry.ITEM_REGISTRY).getTag(ORES);
 		if (ores != null) {
 			for (Item ore : ores.getValues()) {
 				NSSItem nssOre = NSSItem.createItem(ore);

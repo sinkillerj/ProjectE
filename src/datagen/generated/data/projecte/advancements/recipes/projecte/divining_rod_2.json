@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:divining_rod_1"
+            "items": [
+              "projecte:divining_rod_1"
+            ]
           }
         ]
       }

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:mineable/hammer",
+    "#minecraft:mineable/pickaxe"
+  ]
+}

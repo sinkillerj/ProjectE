@@ -5,37 +5,37 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.network.IPacket;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.IWorldInfo;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityWaterProjectile extends ThrowableEntity {
+public class EntityWaterProjectile extends ThrowableProjectile {
 
-	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, World world) {
+	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, Level world) {
 		super(type, world);
 	}
 
-	public EntityWaterProjectile(PlayerEntity entity, World world) {
+	public EntityWaterProjectile(Player entity, Level world) {
 		super(PEEntityTypes.WATER_PROJECTILE.get(), entity, world);
 	}
 
@@ -48,18 +48,18 @@ public class EntityWaterProjectile extends ThrowableEntity {
 		super.tick();
 		if (!this.getCommandSenderWorld().isClientSide) {
 			if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
-				remove();
+				discard();
 				return;
 			}
 			Entity thrower = getOwner();
-			if (thrower instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
+			if (thrower instanceof ServerPlayer) {
+				ServerPlayer player = (ServerPlayer) thrower;
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
 					BlockState state = level.getBlockState(pos);
 					FluidState fluidState = state.getFluidState();
 					if (fluidState.is(FluidTags.LAVA)) {
 						pos = pos.immutable();
-						if (state.getBlock() instanceof FlowingFluidBlock) {
+						if (state.getBlock() instanceof LiquidBlock) {
 							//If it is a source block convert it
 							Block block = fluidState.isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
 							//Like: ForgeEventFactory#fireFluidPlaceBlockEvent except checks if it was cancelled
@@ -76,12 +76,12 @@ public class EntityWaterProjectile extends ThrowableEntity {
 				});
 			}
 			if (isInWater()) {
-				remove();
+				discard();
 			}
 			if (getY() > 128) {
-				IWorldInfo worldInfo = this.getCommandSenderWorld().getLevelData();
+				LevelData worldInfo = this.getCommandSenderWorld().getLevelData();
 				worldInfo.setRaining(true);
-				remove();
+				discard();
 			}
 		}
 	}
@@ -92,31 +92,31 @@ public class EntityWaterProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void onHit(@Nonnull RayTraceResult mop) {
+	protected void onHit(@Nonnull HitResult mop) {
 		if (level.isClientSide) {
 			return;
 		}
 		Entity thrower = getOwner();
-		if (!(thrower instanceof PlayerEntity)) {
-			remove();
+		if (!(thrower instanceof Player)) {
+			discard();
 			return;
 		}
-		if (mop instanceof BlockRayTraceResult) {
-			BlockRayTraceResult result = (BlockRayTraceResult) mop;
-			WorldHelper.placeFluid((ServerPlayerEntity) thrower, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-		} else if (mop instanceof EntityRayTraceResult) {
-			Entity ent = ((EntityRayTraceResult) mop).getEntity();
+		if (mop instanceof BlockHitResult) {
+			BlockHitResult result = (BlockHitResult) mop;
+			WorldHelper.placeFluid((ServerPlayer) thrower, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+		} else if (mop instanceof EntityHitResult) {
+			Entity ent = ((EntityHitResult) mop).getEntity();
 			if (ent.isOnFire()) {
 				ent.clearFire();
 			}
 			ent.push(this.getDeltaMovement().x() * 2, this.getDeltaMovement().y() * 2, this.getDeltaMovement().z() * 2);
 		}
-		remove();
+		discard();
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

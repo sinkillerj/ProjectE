@@ -4,27 +4,27 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityLensProjectile extends ThrowableEntity {
+public class EntityLensProjectile extends ThrowableProjectile {
 
 	private int charge;
 
-	public EntityLensProjectile(EntityType<EntityLensProjectile> type, World world) {
+	public EntityLensProjectile(EntityType<EntityLensProjectile> type, Level world) {
 		super(type, world);
 	}
 
-	public EntityLensProjectile(PlayerEntity entity, int charge, World world) {
+	public EntityLensProjectile(Player entity, int charge, Level world) {
 		super(PEEntityTypes.LENS_PROJECTILE.get(), entity, world);
 		this.charge = charge;
 	}
@@ -40,21 +40,21 @@ public class EntityLensProjectile extends ThrowableEntity {
 			return;
 		}
 		if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
-			remove();
+			discard();
 			return;
 		}
 		if (isInWater()) {
 			playSound(SoundEvents.GENERIC_BURN, 0.7F, 1.6F + (random.nextFloat() - random.nextFloat()) * 0.4F);
-			((ServerWorld) level).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
-			remove();
+			((ServerLevel) level).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
+			discard();
 		}
 	}
 
 	@Override
-	protected void onHit(@Nonnull RayTraceResult mop) {
+	protected void onHit(@Nonnull HitResult mop) {
 		if (!this.getCommandSenderWorld().isClientSide) {
 			WorldHelper.createNovaExplosion(level, getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
-			remove();
+			discard();
 		}
 	}
 
@@ -64,20 +64,20 @@ public class EntityLensProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(@Nonnull CompoundNBT nbt) {
+	public void addAdditionalSaveData(@Nonnull CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 		nbt.putInt("Charge", charge);
 	}
 
 	@Override
-	public void readAdditionalSaveData(@Nonnull CompoundNBT nbt) {
+	public void readAdditionalSaveData(@Nonnull CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
 		charge = nbt.getInt("Charge");
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

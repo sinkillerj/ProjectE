@@ -1,9 +1,8 @@
 package moze_intel.projecte.api.capabilities.item;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
@@ -12,7 +11,7 @@ import net.minecraftforge.items.IItemHandler;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus
  */
@@ -27,5 +26,5 @@ public interface IAlchBagItem {
 	 *
 	 * @return Whether the inventory was changed by this item ticking
 	 */
-	boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull PlayerEntity player, @Nonnull ItemStack stack);
+	boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack);
 }

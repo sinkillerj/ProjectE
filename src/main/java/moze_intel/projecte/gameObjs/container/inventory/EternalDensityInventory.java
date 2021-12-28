@@ -4,17 +4,14 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class EternalDensityInventory implements IItemHandlerModifiable {
 
-	private final IItemHandlerModifiable inventory = new ItemStackHandler(9);
+	private final ItemStackHandler inventory = new ItemStackHandler(9);
 	private boolean isInWhitelist;
 	public final ItemStack invItem;
 
@@ -77,19 +74,15 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 		writeToNBT(invItem.getOrCreateTag());
 	}
 
-	public void readFromNBT(CompoundNBT nbt) {
+	public void readFromNBT(CompoundTag nbt) {
 		isInWhitelist = nbt.getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
-		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, nbt.getList(Constants.NBT_KEY_GEM_ITEMS, NBT.TAG_COMPOUND));
+		//TODO - 1.18: Re-evaluate this handling of cap reading/writing
+		inventory.deserializeNBT(nbt.getCompound(Constants.NBT_KEY_GEM_ITEMS));
 	}
 
-	public void writeToNBT(CompoundNBT nbt) {
+	public void writeToNBT(CompoundTag nbt) {
 		nbt.putBoolean(Constants.NBT_KEY_GEM_WHITELIST, isInWhitelist);
-		INBT storedItems = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null);
-		if (storedItems != null) {
-			nbt.put(Constants.NBT_KEY_GEM_ITEMS, storedItems);
-		} else {
-			nbt.remove(Constants.NBT_KEY_GEM_ITEMS);
-		}
+		nbt.put(Constants.NBT_KEY_GEM_ITEMS, inventory.serializeNBT());
 	}
 
 	public void changeMode() {

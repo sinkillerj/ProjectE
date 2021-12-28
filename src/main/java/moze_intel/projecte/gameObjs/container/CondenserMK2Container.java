@@ -8,19 +8,19 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import moze_intel.projecte.gameObjs.block_entities.CondenserMK2Tile;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class CondenserMK2Container extends CondenserContainer {
 
-	public CondenserMK2Container(int windowId, PlayerInventory invPlayer, CondenserMK2Tile condenser) {
+	public CondenserMK2Container(int windowId, Inventory invPlayer, CondenserMK2Tile condenser) {
 		super(PEContainerTypes.CONDENSER_MK2_CONTAINER, windowId, invPlayer, condenser);
 	}
 
 	@Override
-	protected void initSlots(PlayerInventory invPlayer) {
+	protected void initSlots(Inventory invPlayer) {
 		this.addSlot(new SlotCondenserLock(tile::getLockInfo, 0, 12, 6));
 		//Inputs
 		IItemHandler input = tile.getInput();

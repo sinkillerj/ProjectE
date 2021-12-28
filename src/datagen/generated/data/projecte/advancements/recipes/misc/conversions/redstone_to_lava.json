@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:volcanite_amulet"
+            "items": [
+              "projecte:volcanite_amulet"
+            ]
           }
         ]
       }

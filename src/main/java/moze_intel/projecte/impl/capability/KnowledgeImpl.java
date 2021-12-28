@@ -25,50 +25,35 @@ import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncEmcP
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncInputsAndLocksPKT;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 public final class KnowledgeImpl {
 
-	public static void init() {
-		CapabilityManager.INSTANCE.register(IKnowledgeProvider.class, new Capability.IStorage<IKnowledgeProvider>() {
-			@Override
-			public CompoundNBT writeNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side) {
-				return instance.serializeNBT();
-			}
-
-			@Override
-			public void readNBT(Capability<IKnowledgeProvider> capability, IKnowledgeProvider instance, Direction side, INBT nbt) {
-				if (nbt instanceof CompoundNBT) {
-					instance.deserializeNBT((CompoundNBT) nbt);
-				}
-			}
-		}, () -> new DefaultImpl(null));
+	//TODO - 1.18: Re-evaluate this
+	public static IKnowledgeProvider getDefault() {
+		return new DefaultImpl(null);
 	}
 
 	private static class DefaultImpl implements IKnowledgeProvider {
 
 		@Nullable
-		private final PlayerEntity player;
+		private final Player player;
 		private final Set<ItemInfo> knowledge = new HashSet<>();
-		private final IItemHandlerModifiable inputLocks = new ItemStackHandler(9);
+		private final ItemStackHandler inputLocks = new ItemStackHandler(9);
 		private BigInteger emc = BigInteger.ZERO;
 		private boolean fullKnowledge = false;
 
-		private DefaultImpl(@Nullable PlayerEntity player) {
+		private DefaultImpl(@Nullable Player player) {
 			this.player = player;
 		}
 
@@ -225,22 +210,22 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public void sync(@Nonnull ServerPlayerEntity player) {
+		public void sync(@Nonnull ServerPlayer player) {
 			PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
 		}
 
 		@Override
-		public void syncEmc(@Nonnull ServerPlayerEntity player) {
+		public void syncEmc(@Nonnull ServerPlayer player) {
 			PacketHandler.sendTo(new KnowledgeSyncEmcPKT(getEmc()), player);
 		}
 
 		@Override
-		public void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned) {
+		public void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned) {
 			PacketHandler.sendTo(new KnowledgeSyncChangePKT(change, learned), player);
 		}
 
 		@Override
-		public void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+		public void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
 			if (!slotsChanged.isEmpty()) {
 				int slots = inputLocks.getSlots();
 				Map<Integer, ItemStack> stacksToSync = new HashMap<>();
@@ -270,30 +255,27 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public CompoundNBT serializeNBT() {
-			CompoundNBT properties = new CompoundNBT();
+		public CompoundTag serializeNBT() {
+			CompoundTag properties = new CompoundTag();
 			properties.putString("transmutationEmc", emc.toString());
 
-			ListNBT knowledgeWrite = new ListNBT();
+			ListTag knowledgeWrite = new ListTag();
 			for (ItemInfo i : knowledge) {
-				knowledgeWrite.add(i.write(new CompoundNBT()));
+				knowledgeWrite.add(i.write(new CompoundTag()));
 			}
 
 			properties.put("knowledge", knowledgeWrite);
-			INBT lock = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inputLocks, null);
-			if (lock != null) {
-				properties.put("inputlock", lock);
-			}
+			properties.put("inputlock", inputLocks.serializeNBT());
 			properties.putBoolean("fullknowledge", fullKnowledge);
 			return properties;
 		}
 
 		@Override
-		public void deserializeNBT(CompoundNBT properties) {
+		public void deserializeNBT(CompoundTag properties) {
 			String transmutationEmc = properties.getString("transmutationEmc");
 			emc = transmutationEmc.isEmpty() ? BigInteger.ZERO : new BigInteger(transmutationEmc);
 
-			ListNBT list = properties.getList("knowledge", Constants.NBT.TAG_COMPOUND);
+			ListTag list = properties.getList("knowledge", Tag.TAG_COMPOUND);
 			for (int i = 0; i < list.size(); i++) {
 				ItemInfo info = ItemInfo.read(list.getCompound(i));
 				if (info != null) {
@@ -306,8 +288,8 @@ public final class KnowledgeImpl {
 			for (int i = 0; i < inputLocks.getSlots(); i++) {
 				inputLocks.setStackInSlot(i, ItemStack.EMPTY);
 			}
-
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getList("inputlock", Constants.NBT.TAG_COMPOUND));
+			//TODO - 1.18: Re-evaluate this handling
+			inputLocks.deserializeNBT(properties.getCompound("inputlock"));
 			fullKnowledge = properties.getBoolean("fullknowledge");
 		}
 
@@ -339,7 +321,7 @@ public final class KnowledgeImpl {
 
 		public static final ResourceLocation NAME = PECore.rl("knowledge");
 
-		public Provider(PlayerEntity player) {
+		public Provider(Player player) {
 			super(new DefaultImpl(player));
 		}
 

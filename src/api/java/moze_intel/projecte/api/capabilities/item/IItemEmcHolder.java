@@ -2,8 +2,7 @@ package moze_intel.projecte.api.capabilities.item;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -11,7 +10,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus
  */

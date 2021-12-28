@@ -20,9 +20,9 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -30,7 +30,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public class TransmutationInventory extends CombinedInvWrapper {
 
-	public final PlayerEntity player;
+	public final Player player;
 	public final IKnowledgeProvider provider;
 	private final IItemHandlerModifiable inputLocks;
 	private final IItemHandlerModifiable learning;
@@ -44,7 +44,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	public int searchpage = 0;
 	private final List<ItemInfo> knowledge = new ArrayList<>();
 
-	public TransmutationInventory(PlayerEntity player) {
+	public TransmutationInventory(Player player) {
 		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
 		this.player = player;
@@ -80,7 +80,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		if (!provider.hasKnowledge(cleanedInfo) && !MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
 			if (provider.addKnowledge(cleanedInfo)) {
 				//Only sync the knowledge changed if the provider successfully added it
-				provider.syncKnowledgeChange((ServerPlayerEntity) player, cleanedInfo, true);
+				provider.syncKnowledgeChange((ServerPlayer) player, cleanedInfo, true);
 			}
 		}
 	}
@@ -111,7 +111,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
 		if (provider.hasKnowledge(cleanedInfo) && provider.removeKnowledge(cleanedInfo)) {
 			//Only sync the knowledge changed if the provider successfully removed it
-			provider.syncKnowledgeChange((ServerPlayerEntity) player, cleanedInfo, false);
+			provider.syncKnowledgeChange((ServerPlayer) player, cleanedInfo, false);
 		}
 	}
 
@@ -343,7 +343,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	 * @apiNote Call on server only
 	 */
 	public void syncChangedSlots(List<Integer> slotsChanged, TargetUpdateType updateTargets) {
-		provider.syncInputAndLocks((ServerPlayerEntity) player, slotsChanged, updateTargets);
+		provider.syncInputAndLocks((ServerPlayer) player, slotsChanged, updateTargets);
 	}
 
 	/**
@@ -355,8 +355,8 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			emc = BigInteger.ZERO;
 		}
 		provider.setEmc(emc);
-		provider.syncEmc((ServerPlayerEntity) player);
-		PlayerHelper.updateScore((ServerPlayerEntity) player, PlayerHelper.SCOREBOARD_EMC, emc);
+		provider.syncEmc((ServerPlayer) player);
+		PlayerHelper.updateScore((ServerPlayer) player, PlayerHelper.SCOREBOARD_EMC, emc);
 	}
 
 	public IItemHandlerModifiable getHandlerForSlot(int slot) {

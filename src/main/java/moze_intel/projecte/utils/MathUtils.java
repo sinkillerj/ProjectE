@@ -3,7 +3,7 @@ package moze_intel.projecte.utils;
 import java.math.BigInteger;
 import java.util.Random;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * Helper class for any method that turns numbers into other numbers. Named Utils to not clash with vanilla classes Notice: Please try to keep methods tidy and
@@ -45,7 +45,7 @@ public final class MathUtils {
 	/**
 	 * Converts ticks to seconds, and adds the string unit on. If result is 0, then "every tick" is appended
 	 */
-	public static ITextComponent tickToSecFormatted(int ticks) {
+	public static Component tickToSecFormatted(int ticks) {
 		//Only used on the client
 		double result = tickToSec(ticks);
 		if (result == 0.0D) {

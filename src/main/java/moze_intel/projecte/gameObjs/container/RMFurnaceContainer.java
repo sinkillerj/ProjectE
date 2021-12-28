@@ -8,19 +8,19 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class RMFurnaceContainer extends DMFurnaceContainer {
 
-	public RMFurnaceContainer(int windowId, PlayerInventory invPlayer, RMFurnaceTile tile) {
+	public RMFurnaceContainer(int windowId, Inventory invPlayer, RMFurnaceTile tile) {
 		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, invPlayer, tile);
 	}
 
 	@Override
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler fuel = tile.getFuel();
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();

@@ -5,35 +5,35 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.IServerWorldInfo;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntitySWRGProjectile extends ThrowableEntity {
+public class EntitySWRGProjectile extends ThrowableProjectile {
 
 	private boolean fromArcana = false;
 
-	public EntitySWRGProjectile(EntityType<EntitySWRGProjectile> type, World world) {
+	public EntitySWRGProjectile(EntityType<EntitySWRGProjectile> type, Level world) {
 		super(type, world);
 	}
 
-	public EntitySWRGProjectile(PlayerEntity player, boolean fromArcana, World world) {
+	public EntitySWRGProjectile(Player player, boolean fromArcana, Level world) {
 		super(PEEntityTypes.SWRG_PROJECTILE.get(), player, world);
 		this.fromArcana = fromArcana;
 	}
@@ -46,7 +46,7 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	public void tick() {
 		super.tick();
 		if (!level.isClientSide && tickCount > 400) {
-			remove();
+			discard();
 			return;
 		}
 
@@ -54,10 +54,10 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 		this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
 		if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
-			if (level.getLevelData() instanceof IServerWorldInfo) {
-				((IServerWorldInfo) level.getLevelData()).setThundering(true);
+			if (level.getLevelData() instanceof ServerLevelData) {
+				((ServerLevelData) level.getLevelData()).setThundering(true);
 			}
-			remove();
+			discard();
 		}
 	}
 
@@ -67,42 +67,42 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 	}
 
 	@Override
-	protected void onHit(@Nonnull RayTraceResult mop) {
+	protected void onHit(@Nonnull HitResult mop) {
 		if (level.isClientSide) {
 			return;
 		}
 		Entity thrower = getOwner();
-		if (!(thrower instanceof PlayerEntity)) {
-			remove();
+		if (!(thrower instanceof Player)) {
+			discard();
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) thrower;
+		Player player = (Player) thrower;
 		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
-		if (mop instanceof BlockRayTraceResult) {
+		if (mop instanceof BlockHitResult) {
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
-				BlockPos pos = ((BlockRayTraceResult) mop).getBlockPos();
+				BlockPos pos = ((BlockHitResult) mop).getBlockPos();
 
-				LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(level);
+				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
-					lightning.moveTo(Vector3d.atCenterOf(pos));
-					lightning.setCause((ServerPlayerEntity) player);
+					lightning.moveTo(Vec3.atCenterOf(pos));
+					lightning.setCause((ServerPlayer) player);
 					level.addFreshEntity(lightning);
 				}
 
 				if (level.isThundering()) {
 					for (int i = 0; i < 3; i++) {
-						LightningBoltEntity bonus = EntityType.LIGHTNING_BOLT.create(level);
+						LightningBolt bonus = EntityType.LIGHTNING_BOLT.create(level);
 						if (bonus != null) {
 							bonus.moveTo(pos.getX() + 0.5 + level.random.nextGaussian(), pos.getY() + 0.5 + level.random.nextGaussian(), pos.getZ() + 0.5 + level.random.nextGaussian());
-							bonus.setCause((ServerPlayerEntity) player);
+							bonus.setCause((ServerPlayer) player);
 							level.addFreshEntity(bonus);
 						}
 					}
 				}
 			}
-		} else if (mop instanceof EntityRayTraceResult) {
-			if (((EntityRayTraceResult) mop).getEntity() instanceof LivingEntity && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
-				LivingEntity e = (LivingEntity) ((EntityRayTraceResult) mop).getEntity();
+		} else if (mop instanceof EntityHitResult) {
+			if (((EntityHitResult) mop).getEntity() instanceof LivingEntity && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
+				LivingEntity e = (LivingEntity) ((EntityHitResult) mop).getEntity();
 				// Minor damage so we count as the attacker for launching the mob
 				e.hurt(DamageSource.playerAttack(player), 1F);
 
@@ -114,24 +114,24 @@ public class EntitySWRGProjectile extends ThrowableEntity {
 				e.setDeltaMovement(e.getDeltaMovement().multiply(1, 3, 1));
 			}
 		}
-		remove();
+		discard();
 	}
 
 	@Override
-	public void readAdditionalSaveData(@Nonnull CompoundNBT compound) {
+	public void readAdditionalSaveData(@Nonnull CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		fromArcana = compound.getBoolean("fromArcana");
 	}
 
 	@Override
-	public void addAdditionalSaveData(@Nonnull CompoundNBT compound) {
+	public void addAdditionalSaveData(@Nonnull CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("fromArcana", fromArcana);
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

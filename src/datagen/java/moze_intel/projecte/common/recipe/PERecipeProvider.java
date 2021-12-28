@@ -13,23 +13,23 @@ import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.data.CustomRecipeBuilder;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.TrueCondition;
@@ -41,7 +41,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	protected void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+	protected void buildCraftingRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.COVALENCE_REPAIR.get());
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.PHILO_STONE_SMELTING.get());
 		fuelUpgradeRecipe(consumer, Items.COAL, PEItems.ALCHEMICAL_COAL);
@@ -94,11 +94,11 @@ public class PERecipeProvider extends RecipeProvider {
 		tomeRecipe(consumer, true);
 	}
 
-	private static void addCustomRecipeSerializer(Consumer<IFinishedRecipe> consumer, SpecialRecipeSerializer<?> serializer) {
-		CustomRecipeBuilder.special(serializer).save(consumer, serializer.getRegistryName().toString());
+	private static void addCustomRecipeSerializer(Consumer<FinishedRecipe> consumer, SimpleRecipeSerializer<?> serializer) {
+		SpecialRecipeBuilder.special(serializer).save(consumer, serializer.getRegistryName().toString());
 	}
 
-	private static void tomeRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+	private static void tomeRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		new ConditionalRecipe.Builder()
 				//Tome is enabled and should use full stars
 				.addCondition(TomeEnabledCondition.INSTANCE)
@@ -132,7 +132,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.group(PEItems.TOME_OF_KNOWLEDGE.get().getRegistryName().toString());
 	}
 
-	private static void addMatterRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addMatterRecipes(Consumer<FinishedRecipe> consumer) {
 		matterBlockRecipes(consumer, PEItems.DARK_MATTER, PEBlocks.DARK_MATTER);
 		matterBlockRecipes(consumer, PEItems.RED_MATTER, PEBlocks.RED_MATTER);
 		darkMatterGearRecipes(consumer);
@@ -162,7 +162,7 @@ public class PERecipeProvider extends RecipeProvider {
 		redMatterRecipe(consumer, true);
 	}
 
-	private static void redMatterRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+	private static void redMatterRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.RED_MATTER.get().getRegistryName().toString();
 		ShapedRecipeBuilder redMatter = ShapedRecipeBuilder.shaped(PEItems.RED_MATTER)
 				.define('A', PEItems.AETERNALIS_FUEL)
@@ -182,8 +182,8 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void darkMatterGearRecipes(Consumer<IFinishedRecipe> consumer) {
-		ICriterionInstance hasMatter = has(PEItems.DARK_MATTER);
+	private static void darkMatterGearRecipes(Consumer<FinishedRecipe> consumer) {
+		CriterionTriggerInstance hasMatter = has(PEItems.DARK_MATTER);
 		//Helmet
 		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_HELMET)
 				.pattern("MMM")
@@ -278,7 +278,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void redMatterGearRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void redMatterGearRecipes(Consumer<FinishedRecipe> consumer) {
 		//Helmet
 		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_HELMET)
 				.pattern("MMM")
@@ -410,7 +410,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void gemArmorRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void gemArmorRecipes(Consumer<FinishedRecipe> consumer) {
 		//Helmet
 		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(PEItems.GEM_HELMET)
 				.requires(PEItems.RED_MATTER_HELMET)
@@ -436,7 +436,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_boots", has(PEItems.RED_MATTER_BOOTS)), PEItems.GEM_BOOTS);
 	}
 
-	private static void gemArmorRecipe(Consumer<IFinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, IItemProvider result) {
+	private static void gemArmorRecipe(Consumer<FinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, ItemLike result) {
 		new ConditionalRecipe.Builder()
 				//Full stars should be used
 				.addCondition(FullKleinStarsCondition.INSTANCE)
@@ -454,7 +454,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.build(consumer, result.asItem().getRegistryName());
 	}
 
-	private static void fuelUpgradeRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output) {
+	private static void fuelUpgradeRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output) {
 		String inputName = getName(input);
 		String outputName = getName(output);
 		ShapelessRecipeBuilder.shapeless(output)
@@ -469,7 +469,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/" + outputName + "_to_" + inputName));
 	}
 
-	private static void fuelBlockRecipes(Consumer<IFinishedRecipe> consumer, IItemProvider fuel, IItemProvider block) {
+	private static void fuelBlockRecipes(Consumer<FinishedRecipe> consumer, ItemLike fuel, ItemLike block) {
 		ShapedRecipeBuilder.shaped(block)
 				.pattern("FFF")
 				.pattern("FFF")
@@ -484,7 +484,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/" + blockName + "_deconstruct"));
 	}
 
-	private static void matterBlockRecipes(Consumer<IFinishedRecipe> consumer, IItemProvider matter, IItemProvider block) {
+	private static void matterBlockRecipes(Consumer<FinishedRecipe> consumer, ItemLike matter, ItemLike block) {
 		ShapedRecipeBuilder.shaped(block)
 				.pattern("MM")
 				.pattern("MM")
@@ -498,7 +498,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/" + blockName + "_deconstruct"));
 	}
 
-	private static void addCollectorRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addCollectorRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEBlocks.COLLECTOR)
 				.pattern("GTG")
 				.pattern("GDG")
@@ -513,7 +513,7 @@ public class PERecipeProvider extends RecipeProvider {
 		addCollectorUpgradeRecipes(consumer, PEBlocks.COLLECTOR_MK3, PEBlocks.COLLECTOR_MK2, PEItems.RED_MATTER);
 	}
 
-	private static void addCollectorUpgradeRecipes(Consumer<IFinishedRecipe> consumer, IItemProvider collector, IItemProvider previous, IItemProvider upgradeItem) {
+	private static void addCollectorUpgradeRecipes(Consumer<FinishedRecipe> consumer, ItemLike collector, ItemLike previous, ItemLike upgradeItem) {
 		ShapedRecipeBuilder.shaped(collector)
 				.pattern("GUG")
 				.pattern("GPG")
@@ -525,7 +525,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addRelayRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addRelayRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEBlocks.RELAY)
 				.pattern("OSO")
 				.pattern("ODO")
@@ -539,7 +539,7 @@ public class PERecipeProvider extends RecipeProvider {
 		addRelayUpgradeRecipes(consumer, PEBlocks.RELAY_MK3, PEBlocks.RELAY_MK2, PEItems.RED_MATTER);
 	}
 
-	private static void addRelayUpgradeRecipes(Consumer<IFinishedRecipe> consumer, IItemProvider relay, IItemProvider previous, IItemProvider upgradeItem) {
+	private static void addRelayUpgradeRecipes(Consumer<FinishedRecipe> consumer, ItemLike relay, ItemLike previous, ItemLike upgradeItem) {
 		ShapedRecipeBuilder.shaped(relay)
 				.pattern("OUO")
 				.pattern("OPO")
@@ -551,7 +551,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addCondenserRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addCondenserRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEBlocks.CONDENSER)
 				.pattern("ODO")
 				.pattern("DCD")
@@ -572,7 +572,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addFurnaceRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addFurnaceRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEBlocks.DARK_MATTER_FURNACE)
 				.pattern("DDD")
 				.pattern("DFD")
@@ -590,7 +590,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addKleinRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addKleinRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEItems.KLEIN_STAR_EIN)
 				.pattern("MMM")
 				.pattern("MDM")
@@ -605,7 +605,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void kleinStarUpgrade(Consumer<IFinishedRecipe> consumer, IItemProvider star, IItemProvider previous) {
+	private static void kleinStarUpgrade(Consumer<FinishedRecipe> consumer, ItemLike star, ItemLike previous) {
 		//Wrap the consumer so that we can replace it with the proper serializer
 		ShapelessRecipeBuilder.shapeless(star)
 				.requires(previous, 4)
@@ -613,7 +613,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(recipe -> consumer.accept(new ShapelessKleinStarRecipeResult(recipe)));
 	}
 
-	private static void addRingRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addRingRecipes(Consumer<FinishedRecipe> consumer) {
 		//Arcana (Any ring or red matter)
 		ShapedRecipeBuilder.shaped(PEItems.ARCANA_RING)
 				.pattern("ZIH")
@@ -763,7 +763,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addCovalenceDustRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addCovalenceDustRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapelessRecipeBuilder lowCovalenceDust = ShapelessRecipeBuilder.shapeless(PEItems.LOW_COVALENCE_DUST, 40)
 				.requires(Items.CHARCOAL)
 				.unlockedBy("has_cobble", has(Tags.Items.COBBLESTONE));
@@ -783,7 +783,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addDiviningRodRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addDiviningRodRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEItems.LOW_DIVINING_ROD)
 				.pattern("DDD")
 				.pattern("DSD")
@@ -796,7 +796,7 @@ public class PERecipeProvider extends RecipeProvider {
 		diviningRodRecipe(consumer, PEItems.HIGH_DIVINING_ROD, PEItems.MEDIUM_DIVINING_ROD, PEItems.HIGH_COVALENCE_DUST);
 	}
 
-	private static void diviningRodRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider rod, IItemProvider previous, IItemProvider covalence) {
+	private static void diviningRodRecipe(Consumer<FinishedRecipe> consumer, ItemLike rod, ItemLike previous, ItemLike covalence) {
 		ShapedRecipeBuilder.shaped(rod)
 				.pattern("DDD")
 				.pattern("DSD")
@@ -807,7 +807,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addMiscToolRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addMiscToolRecipes(Consumer<FinishedRecipe> consumer) {
 		//Catalytic lens
 		catalyticLensRecipe(consumer, false);
 		catalyticLensRecipe(consumer, true);
@@ -878,7 +878,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void catalyticLensRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+	private static void catalyticLensRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.CATALYTIC_LENS.get().getRegistryName().toString();
 		ShapedRecipeBuilder lens = ShapedRecipeBuilder.shaped(PEItems.CATALYTIC_LENS)
 				.pattern("MMM")
@@ -896,7 +896,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void philosopherStoneRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+	private static void philosopherStoneRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.PHILOSOPHERS_STONE.get().getRegistryName().toString();
 		ShapedRecipeBuilder philoStone = ShapedRecipeBuilder.shaped(PEItems.PHILOSOPHERS_STONE)
 				.define('R', Tags.Items.DUSTS_REDSTONE)
@@ -917,7 +917,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void repairTalismanRecipe(Consumer<IFinishedRecipe> consumer, boolean alternate) {
+	private static void repairTalismanRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String lowToHigh = "LMH";
 		String highToLow = "HML";
 		String name = PEItems.REPAIR_TALISMAN.get().getRegistryName().toString();
@@ -939,7 +939,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void addTransmutationTableRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addTransmutationTableRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(PEBlocks.TRANSMUTATION_TABLE)
 				.pattern("OSO")
 				.pattern("SPS")
@@ -960,7 +960,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addNovaRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addNovaRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapelessRecipeBuilder.shapeless(PEBlocks.NOVA_CATALYST, 2)
 				.requires(Items.TNT)
 				.requires(PEItems.MOBIUS_FUEL)
@@ -973,9 +973,9 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer);
 	}
 
-	private static void addBagRecipes(Consumer<IFinishedRecipe> consumer) {
-		ICriterionInstance hasChest = has(PEBlocks.ALCHEMICAL_CHEST);
-		ICriterionInstance hasBag = has(PETags.Items.ALCHEMICAL_BAGS);
+	private static void addBagRecipes(Consumer<FinishedRecipe> consumer) {
+		CriterionTriggerInstance hasChest = has(PEBlocks.ALCHEMICAL_CHEST);
+		CriterionTriggerInstance hasBag = has(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			AlchemicalBag bag = PEItems.getBag(color);
 			//Crafting recipe
@@ -997,7 +997,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static IItemProvider getWool(DyeColor color) {
+	private static ItemLike getWool(DyeColor color) {
 		switch (color) {
 			default:
 			case WHITE:
@@ -1035,7 +1035,7 @@ public class PERecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private static void addConversionRecipes(Consumer<IFinishedRecipe> consumer) {
+	private static void addConversionRecipes(Consumer<FinishedRecipe> consumer) {
 		philoConversionRecipe(consumer, Items.CHARCOAL, 4, Items.COAL, 1);
 		philoConversionRecipe(consumer, Tags.Items.GEMS_DIAMOND, Items.DIAMOND, 2, Tags.Items.GEMS_EMERALD, Items.EMERALD, 1);
 		philoConversionRecipe(consumer, Tags.Items.INGOTS_GOLD, Items.GOLD_INGOT, 4, Tags.Items.GEMS_DIAMOND, Items.DIAMOND, 1);
@@ -1064,7 +1064,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/water_to_ice"));
 	}
 
-	private static void philoConversionRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider a, int aAmount, IItemProvider b, int bAmount) {
+	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, ItemLike a, int aAmount, ItemLike b, int bAmount) {
 		String aName = getName(a);
 		String bName = getName(b);
 		ShapelessRecipeBuilder.shapeless(b, bAmount)
@@ -1079,7 +1079,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/" + bName + "_to_" + aName));
 	}
 
-	private static void philoConversionRecipe(Consumer<IFinishedRecipe> consumer, ITag<Item> aTag, IItemProvider a, int aAmount, ITag<Item> bTag, IItemProvider b,
+	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, Tag<Item> aTag, ItemLike a, int aAmount, Tag<Item> bTag, ItemLike b,
 			int bAmount) {
 		String aName = getName(a);
 		String bName = getName(b);
@@ -1089,8 +1089,8 @@ public class PERecipeProvider extends RecipeProvider {
 		philoConversionRecipe(consumer, bName, bTag, bAmount, aName, a, aAmount);
 	}
 
-	private static void philoConversionRecipe(Consumer<IFinishedRecipe> consumer, String inputName, ITag<Item> inputTag, int inputAmount, String outputName,
-			IItemProvider output, int outputAmount) {
+	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, String inputName, Tag<Item> inputTag, int inputAmount, String outputName,
+			ItemLike output, int outputAmount) {
 		ShapelessRecipeBuilder bToA = ShapelessRecipeBuilder.shapeless(output, outputAmount)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.unlockedBy("has_" + inputName, hasItems(PEItems.PHILOSOPHERS_STONE, inputTag));
@@ -1100,21 +1100,21 @@ public class PERecipeProvider extends RecipeProvider {
 		bToA.save(consumer, PECore.rl("conversions/" + inputName + "_to_" + outputName));
 	}
 
-	private static String getName(IItemProvider item) {
+	private static String getName(ItemLike item) {
 		return item.asItem().getRegistryName().getPath();
 	}
 
-	protected static InventoryChangeTrigger.Instance hasItems(IItemProvider... items) {
-		return InventoryChangeTrigger.Instance.hasItems(items);
+	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike... items) {
+		return InventoryChangeTrigger.TriggerInstance.hasItems(items);
 	}
 
 	@SafeVarargs
-	protected static InventoryChangeTrigger.Instance hasItems(IItemProvider item, ITag<Item>... tags) {
-		return hasItems(new IItemProvider[]{item}, tags);
+	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike item, Tag<Item>... tags) {
+		return hasItems(new ItemLike[]{item}, tags);
 	}
 
 	@SafeVarargs
-	protected static InventoryChangeTrigger.Instance hasItems(IItemProvider[] items, ITag<Item>... tags) {
+	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike[] items, Tag<Item>... tags) {
 		ItemPredicate[] predicates = new ItemPredicate[items.length + tags.length];
 		for (int i = 0; i < items.length; ++i) {
 			predicates[i] = ItemPredicate.Builder.item().of(items[i]).build();

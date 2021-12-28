@@ -17,14 +17,14 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -41,19 +41,19 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, DataPackRegistries dataPackRegistries,
-			IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, ServerResources dataPackRegistries,
+			ResourceManager resourceManager) {
 		NSSFake.setCurrentNamespace("craftingMapper");
 		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
 		RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
 		//Make a new fake group manager here instead of across the entire mapper so that we can reclaim the memory when we are done with this method
 		NSSFakeGroupManager fakeGroupManager = new NSSFakeGroupManager();
-		for (IRecipeType<?> recipeType : Registry.RECIPE_TYPE) {
+		for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
 			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);
 			boolean wasHandled = false;
-			List<? extends IRecipe<?>> recipes = null;
-			List<IRecipe<?>> unhandled = new ArrayList<>();
+			List<? extends Recipe<?>> recipes = null;
+			List<Recipe<?>> unhandled = new ArrayList<>();
 			for (IRecipeTypeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
 				if (EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), recipeMapper.isAvailable())) {
@@ -64,10 +64,10 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it
 							// it will not actually compile due to IRecipeType's generic only having to be of IRecipe<?>
 							// so no information is stored about the type of inventory for the recipe
-							recipes = recipeManager.getAllRecipesFor((IRecipeType) recipeType);
+							recipes = recipeManager.getAllRecipesFor((RecipeType) recipeType);
 						}
 						int numHandled = 0;
-						for (IRecipe<?> recipe : recipes) {
+						for (Recipe<?> recipe : recipes) {
 							try {
 								if (recipeMapper.handleRecipe(mapper, recipe, fakeGroupManager)) {
 									numHandled++;
@@ -110,11 +110,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			ResourceLocation typeRegistryName = entry.getKey();
 			RecipeCountInfo countInfo = entry.getValue();
 			int total = countInfo.getTotalRecipes();
-			List<IRecipe<?>> unhandled = countInfo.getUnhandled();
+			List<Recipe<?>> unhandled = countInfo.getUnhandled();
 			PECore.debugLog("Found and handled {} of {} Recipes of Type {}", total - unhandled.size(), total, typeRegistryName);
 			if (!unhandled.isEmpty()) {
 				PECore.debugLog("Unhandled Recipes of Type {}:", typeRegistryName);
-				for (IRecipe<?> recipe : unhandled) {
+				for (Recipe<?> recipe : unhandled) {
 					PECore.debugLog("Name: {}, Recipe class: {}", recipe.getId(), recipe.getClass().getName());
 				}
 			}
@@ -138,9 +138,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static class RecipeCountInfo {
 
 		private final int totalRecipes;
-		private List<IRecipe<?>> unhandled;
+		private List<Recipe<?>> unhandled;
 
-		private RecipeCountInfo(int totalRecipes, List<IRecipe<?>> unhandled) {
+		private RecipeCountInfo(int totalRecipes, List<Recipe<?>> unhandled) {
 			this.totalRecipes = totalRecipes;
 			this.unhandled = unhandled;
 		}
@@ -149,11 +149,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			return totalRecipes;
 		}
 
-		public void setUnhandled(List<IRecipe<?>> unhandled) {
+		public void setUnhandled(List<Recipe<?>> unhandled) {
 			this.unhandled = unhandled;
 		}
 
-		public List<IRecipe<?>> getUnhandled() {
+		public List<Recipe<?>> getUnhandled() {
 			return unhandled;
 		}
 	}

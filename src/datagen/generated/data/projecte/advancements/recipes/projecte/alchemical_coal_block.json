@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:alchemical_coal"
+            "items": [
+              "projecte:alchemical_coal"
+            ]
           }
         ]
       }

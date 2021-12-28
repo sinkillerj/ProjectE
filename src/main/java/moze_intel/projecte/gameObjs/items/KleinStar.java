@@ -6,11 +6,11 @@ import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class KleinStar extends ItemPE implements IItemEmcHolder {
@@ -25,28 +25,28 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return stack.hasTag();
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
+	public int getBarWidth(@Nonnull ItemStack stack) {
 		long starEmc = getEmc(stack);
 		if (starEmc == 0) {
-			return 1.0D;
+			return 0;
 		}
-		return 1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack);
+		return Math.round(13.0F - 13.0F * (float) (1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack)));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide && !FMLEnvironment.production) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
-			return ActionResult.success(stack);
+			return InteractionResultHolder.success(stack);
 		}
-		return ActionResult.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	public enum EnumKleinTier {

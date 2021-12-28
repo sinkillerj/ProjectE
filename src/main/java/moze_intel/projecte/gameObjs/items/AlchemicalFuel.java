@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumFuelType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class AlchemicalFuel extends ItemPE {
 
@@ -15,7 +17,7 @@ public class AlchemicalFuel extends ItemPE {
 	}
 
 	@Override
-	public int getBurnTime(ItemStack stack) {
+	public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
 		return fuelType.getBurnTime();
 	}
 }

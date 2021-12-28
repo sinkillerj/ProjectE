@@ -2,18 +2,18 @@ package moze_intel.projecte.utils.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -24,24 +24,24 @@ public class TextComponentUtil {
 	private TextComponentUtil() {
 	}
 
-	public static IFormattableTextComponent build(Object... components) {
-		IFormattableTextComponent result = null;
+	public static MutableComponent build(Object... components) {
+		MutableComponent result = null;
 		Style cachedStyle = Style.EMPTY;
 		for (Object component : components) {
 			if (component == null) {
 				//If the component doesn't exist just skip it
 				continue;
 			}
-			IFormattableTextComponent current = null;
+			MutableComponent current = null;
 			if (component instanceof IHasTextComponent) {
 				current = ((IHasTextComponent) component).getTextComponent().copy();
 			} else if (component instanceof IHasTranslationKey) {
 				current = translate(((IHasTranslationKey) component).getTranslationKey());
-			} else if (component instanceof ITextComponent) {
+			} else if (component instanceof Component) {
 				//Just append if a text component is being passed
-				current = ((ITextComponent) component).copy();
-			} else if (component instanceof TextFormatting) {
-				cachedStyle = cachedStyle.applyFormat((TextFormatting) component);
+				current = ((Component) component).copy();
+			} else if (component instanceof ChatFormatting) {
+				cachedStyle = cachedStyle.applyFormat((ChatFormatting) component);
 			} else if (component instanceof ClickEvent) {
 				cachedStyle = cachedStyle.withClickEvent((ClickEvent) component);
 			} else if (component instanceof HoverEvent) {
@@ -79,19 +79,19 @@ public class TextComponentUtil {
 		return result;
 	}
 
-	public static StringTextComponent getString(String component) {
-		return new StringTextComponent(cleanString(component));
+	public static TextComponent getString(String component) {
+		return new TextComponent(cleanString(component));
 	}
 
 	private static String cleanString(String component) {
 		return component.replace("\u00A0", " ");
 	}
 
-	public static TranslationTextComponent translate(String key, Object... args) {
-		return new TranslationTextComponent(key, args);
+	public static TranslatableComponent translate(String key, Object... args) {
+		return new TranslatableComponent(key, args);
 	}
 
-	public static TranslationTextComponent smartTranslate(String key, Object... components) {
+	public static TranslatableComponent smartTranslate(String key, Object... components) {
 		if (components.length == 0) {
 			//If we don't have any args just short circuit to creating the translation key
 			return translate(key);
@@ -106,7 +106,7 @@ public class TextComponentUtil {
 				cachedStyle = Style.EMPTY;
 				continue;
 			}
-			IFormattableTextComponent current = null;
+			MutableComponent current = null;
 			if (component instanceof IHasTextComponent) {
 				current = ((IHasTextComponent) component).getTextComponent().copy();
 			} else if (component instanceof IHasTranslationKey) {
@@ -123,9 +123,9 @@ public class TextComponentUtil {
 				current = translate(((Fluid) component).getAttributes().getTranslationKey());
 			}
 			//Formatting
-			else if (component instanceof TextFormatting && !hasStyleType(cachedStyle, (TextFormatting) component)) {
+			else if (component instanceof ChatFormatting && !hasStyleType(cachedStyle, (ChatFormatting) component)) {
 				//Specific formatting not in the cached style yet, apply it
-				cachedStyle = cachedStyle.applyFormat((TextFormatting) component);
+				cachedStyle = cachedStyle.applyFormat((ChatFormatting) component);
 				continue;
 			} else if (component instanceof ClickEvent && cachedStyle.getClickEvent() == null) {
 				//No click event set yet in the cached style, add the event
@@ -138,9 +138,9 @@ public class TextComponentUtil {
 			} else if (!cachedStyle.isEmpty()) {
 				//Only bother attempting these checks if we have a cached format, because
 				// otherwise we are just going to want to use the raw text
-				if (component instanceof ITextComponent) {
+				if (component instanceof Component) {
 					//Just append if a text component is being passed
-					current = ((ITextComponent) component).copy();
+					current = ((Component) component).copy();
 				} else {
 					//Fallback to a direct replacement just so that we can properly color it
 					current = getString(component.toString());
@@ -175,7 +175,7 @@ public class TextComponentUtil {
 		return translate(key, args.toArray());
 	}
 
-	private static boolean hasStyleType(Style current, TextFormatting formatting) {
+	private static boolean hasStyleType(Style current, ChatFormatting formatting) {
 		switch (formatting) {
 			case OBFUSCATED:
 				return current.isObfuscated();

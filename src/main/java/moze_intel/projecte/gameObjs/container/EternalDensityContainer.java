@@ -6,24 +6,24 @@ import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class EternalDensityContainer extends PEHandContainer {
 
 	public final EternalDensityInventory inventory;
 
-	public static EternalDensityContainer fromNetwork(int windowId, PlayerInventory invPlayer, PacketBuffer data) {
-		return new EternalDensityContainer(windowId, invPlayer, data.readEnum(Hand.class), data.readByte(), null);
+	public static EternalDensityContainer fromNetwork(int windowId, Inventory invPlayer, FriendlyByteBuf data) {
+		return new EternalDensityContainer(windowId, invPlayer, data.readEnum(InteractionHand.class), data.readByte(), null);
 	}
 
-	public EternalDensityContainer(int windowId, PlayerInventory invPlayer, Hand hand, int selected, EternalDensityInventory gemInv) {
+	public EternalDensityContainer(int windowId, Inventory invPlayer, InteractionHand hand, int selected, EternalDensityInventory gemInv) {
 		super(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, windowId, hand, selected);
 		inventory = gemInv == null ?  new EternalDensityInventory(getStack(invPlayer)) : gemInv;
 		for (int i = 0; i < 3; ++i) {
@@ -36,7 +36,7 @@ public class EternalDensityContainer extends PEHandContainer {
 
 	@Nonnull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotIndex) {
+	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
 		if (slotIndex > 8) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
@@ -46,15 +46,14 @@ public class EternalDensityContainer extends PEHandContainer {
 		return ItemStack.EMPTY;
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clickPostValidate(int slotIndex, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public void clickPostValidate(int slotIndex, int button, @Nonnull ClickType flag, @Nonnull Player player) {
 		Slot slot = tryGetSlot(slotIndex);
 		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
 			slot.set(ItemStack.EMPTY);
-			return ItemStack.EMPTY;
+		} else {
+			super.clickPostValidate(slotIndex, button, flag, player);
 		}
-		return super.clickPostValidate(slotIndex, button, flag, player);
 	}
 
 	@Override

@@ -7,35 +7,36 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.GrassBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 public class PEMorningStar extends PETool implements IItemMode {
 
@@ -43,11 +44,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 	private final ILangEntry[] modeDesc;
 
 	public PEMorningStar(EnumMatterType matterType, int numCharges, Properties props) {
-		super(matterType, 16, -3, numCharges, props
-				.addToolType(ToolType.PICKAXE, matterType.getLevel())
-				.addToolType(ToolType.SHOVEL, matterType.getLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_HAMMER, matterType.getLevel())
-				.addToolType(ToolHelper.TOOL_TYPE_MORNING_STAR, matterType.getLevel()));
+		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_MORNING_STAR, 16, -3, numCharges, props);
 		modeDesc = new ILangEntry[]{PELang.MODE_MORNING_STAR_1, PELang.MODE_MORNING_STAR_2, PELang.MODE_MORNING_STAR_3, PELang.MODE_MORNING_STAR_4};
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
@@ -58,31 +55,16 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
-	/**
-	 * Simple copy of {@link net.minecraft.item.PickaxeItem#canHarvestBlock(BlockState)}'s and {@link net.minecraft.item.ShovelItem#canHarvestBlock(BlockState)}
-	 * fallback/shortcut to allow the morning star to also mine all blocks of that type.
-	 *
-	 * This does not need any special overrides for {@link PEHammer}'s check as that check is the same as the one for {@link net.minecraft.item.PickaxeItem}.
-	 *
-	 * @implNote This method is overridden instead of {@link net.minecraftforge.common.extensions.IForgeItem#canHarvestBlock(ItemStack, BlockState)} so that it is used as
-	 * a fallback if {@link PETool#canHarvestBlock(ItemStack, BlockState)} does not find a matching tool/required level for the tool. As the default implementation that
-	 * gets used is one where the stack does not matter (which would be this)
-	 */
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state) {
-		//Note: These checks cover the need of overriding/shortcutting the destroy speed
-		//Shovel
-		if (state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK)) {
-			return true;
-		}
-		//Pickaxe
-		Material material = state.getMaterial();
-		return material == Material.STONE || material == Material.METAL || material == Material.HEAVY_METAL;
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+		//TODO - 1.18: Validate this is the proper way and if we need to provide access to any other things
+		// Also do we need one for our tool itself and hammer when digging?
+		return ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(toolAction);
 	}
 
 	@Override
@@ -92,20 +74,20 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
 		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
 		if (player == null) {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
-		Hand hand = context.getHand();
-		World world = context.getLevel();
+		InteractionHand hand = context.getHand();
+		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		Direction sideHit = context.getClickedFace();
 		ItemStack stack = context.getItemInHand();
@@ -120,24 +102,24 @@ public class PEMorningStar extends PETool implements IItemMode {
 						}
 						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
-					return ActionResultType.PASS;
+					return InteractionResult.PASS;
 				}, () -> {
 					if (ItemHelper.isOre(state) && !ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
-					return ActionResultType.PASS;
+					return InteractionResult.PASS;
 				}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit,
 						!(state.getBlock() instanceof GrassBlock) && !state.is(BlockTags.SAND) && !state.is(Tags.Blocks.DIRT), 0));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return ActionResult.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	@Override
@@ -150,7 +132,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Nonnull
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
 		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }

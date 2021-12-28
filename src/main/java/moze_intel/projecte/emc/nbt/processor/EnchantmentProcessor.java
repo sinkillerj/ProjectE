@@ -7,10 +7,10 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.utils.ItemInfoHelper;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 @NBTProcessor
 public class EnchantmentProcessor implements INBTProcessor {
@@ -58,17 +58,17 @@ public class EnchantmentProcessor implements INBTProcessor {
 
 	@Nullable
 	@Override
-	public CompoundNBT getPersistentNBT(@Nonnull ItemInfo info) {
-		CompoundNBT tag = info.getNBT();
+	public CompoundTag getPersistentNBT(@Nonnull ItemInfo info) {
+		CompoundTag tag = info.getNBT();
 		if (tag == null) {
 			return null;
 		}
 		String location = ItemInfoHelper.getEnchantTagLocation(info);
-		if (!tag.contains(location, NBT.TAG_LIST)) {
+		if (!tag.contains(location, Tag.TAG_LIST)) {
 			return null;
 		}
-		CompoundNBT toReturn = new CompoundNBT();
-		ListNBT enchantments = tag.getList(location, NBT.TAG_COMPOUND);
+		CompoundTag toReturn = new CompoundTag();
+		ListTag enchantments = tag.getList(location, Tag.TAG_COMPOUND);
 		//Note: We don't bother verifying all the entries in the tag are valid as that seems like it is probably unnecessary processing
 		toReturn.put(location, enchantments);
 		return toReturn;

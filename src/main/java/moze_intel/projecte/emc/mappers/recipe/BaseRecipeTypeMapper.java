@@ -13,11 +13,11 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 
 //TODO: Fix recipe mapping for things containing EMC not working properly? (aka full klein stars)
@@ -33,7 +33,7 @@ import net.minecraft.util.Tuple;
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
 		ItemStack recipeOutput = recipe.getResultItem();
 		if (recipeOutput.isEmpty()) {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
@@ -197,7 +197,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	}
 
 	@Nullable
-	private Collection<Ingredient> getIngredientsChecked(IRecipe<?> recipe) {
+	private Collection<Ingredient> getIngredientsChecked(Recipe<?> recipe) {
 		try {
 			return getIngredients(recipe);
 		} catch (Exception e) {
@@ -213,7 +213,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	}
 
 	//Allow overwriting the ingredients list because Smithing recipes don't override it themselves
-	protected Collection<Ingredient> getIngredients(IRecipe<?> recipe) {
+	protected Collection<Ingredient> getIngredients(Recipe<?> recipe) {
 		return recipe.getIngredients();
 	}
 }

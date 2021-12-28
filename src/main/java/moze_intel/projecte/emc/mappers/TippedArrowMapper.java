@@ -9,23 +9,23 @@ import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @EMCMapper
 public class TippedArrowMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, DataPackRegistries dataPackRegistries,
-			IResourceManager resourceManager) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ServerResources dataPackRegistries,
+			ResourceManager resourceManager) {
 		int recipeCount = 0;
 		NSSItem nssArrow = NSSItem.createItem(Items.ARROW);
-		for (Potion potionType : ForgeRegistries.POTION_TYPES.getValues()) {
+		for (Potion potionType : ForgeRegistries.POTIONS.getValues()) {
 			Map<NormalizedSimpleStack, Integer> ingredientsWithAmount = new HashMap<>();
 			ingredientsWithAmount.put(nssArrow, 8);
 			ingredientsWithAmount.put(NSSItem.createItem(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), potionType)), 1);

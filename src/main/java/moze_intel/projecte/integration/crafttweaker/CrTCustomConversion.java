@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.crafttweaker;
+/*package moze_intel.projecte.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
@@ -22,9 +22,9 @@ public class CrTCustomConversion {
 	 * @param stack       {@link NormalizedSimpleStack} representing the conversion's output.
 	 * @param amount      Amount the conversion outputs.
 	 * @param ingredients Map representing all inputs to the conversion.
-	 */
+	 *
 	@ZenCodeType.Method
 	public static void addConversion(NormalizedSimpleStack stack, int amount, Map<NormalizedSimpleStack, Integer> ingredients) {
 		CraftTweakerAPI.apply(new CustomConversionAction(stack, amount, ingredients));
 	}
-}
+}*/

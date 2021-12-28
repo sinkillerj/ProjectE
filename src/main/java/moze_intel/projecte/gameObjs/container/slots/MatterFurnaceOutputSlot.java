@@ -1,18 +1,18 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
 
 //[VanillaCopy] Adapted from FurnaceResultSlot
 public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 
-	private final PlayerEntity player;
+	private final Player player;
 	private int removeCount;
 
-	public MatterFurnaceOutputSlot(PlayerEntity player, IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+	public MatterFurnaceOutputSlot(Player player, IItemHandler itemHandler, int index, int xPosition, int yPosition) {
 		super(itemHandler, index, xPosition, yPosition);
 		this.player = player;
 	}
@@ -31,12 +31,10 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 		return super.remove(amount);
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack onTake(@Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+	public void onTake(@Nonnull Player player, @Nonnull ItemStack stack) {
 		this.checkTakeAchievements(stack);
 		super.onTake(player, stack);
-		return stack;
 	}
 
 	@Override
@@ -49,6 +47,6 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 	protected void checkTakeAchievements(ItemStack stack) {
 		stack.onCraftedBy(player.level, player, removeCount);
 		removeCount = 0;
-		BasicEventHooks.firePlayerSmeltedEvent(player, stack);
+		ForgeEventFactory.firePlayerSmeltedEvent(player, stack);
 	}
 }

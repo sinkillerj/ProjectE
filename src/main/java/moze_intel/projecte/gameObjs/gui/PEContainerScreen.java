@@ -1,23 +1,22 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public abstract class PEContainerScreen<T extends Container> extends ContainerScreen<T> {
+public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
 	public boolean switchingToJEI;
 
-	public PEContainerScreen(T container, PlayerInventory invPlayer, ITextComponent title) {
+	public PEContainerScreen(T container, Inventory invPlayer, Component title) {
 		super(container, invPlayer, title);
 	}
 
 	@Override
-	public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+	public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(matrix);
 		super.render(matrix, mouseX, mouseY, partialTicks);
 		this.renderTooltip(matrix, mouseX, mouseY);
@@ -33,10 +32,13 @@ public abstract class PEContainerScreen<T extends Container> extends ContainerSc
 		}
 	}
 
+	//Note: Technically this really should be init(@Nonnull Minecraft minecraft, int width, int height)
+	// but given we don't actually have any data that would use the resize params we can get away with
+	// just resetting the switchingToJEI here
 	@Override
-	public void init(@Nonnull Minecraft minecraft, int width, int height) {
+	public void init() {
 		//Mark that we are not switching to JEI if we start being initialized again
 		switchingToJEI = false;
-		super.init(minecraft, width, height);
+		super.init();
 	}
 }

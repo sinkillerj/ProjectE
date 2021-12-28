@@ -1,6 +1,5 @@
 package moze_intel.projecte.api.capabilities.tile;
 
-import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -11,7 +10,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link net.minecraft.tileentity.TileEntity#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.level.block.entity.BlockEntity#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus
  */

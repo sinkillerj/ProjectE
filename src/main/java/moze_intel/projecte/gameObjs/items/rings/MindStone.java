@@ -6,23 +6,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 public class MindStone extends PEToggleItem implements IPedestalItem {
 
@@ -34,12 +34,12 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		PlayerEntity player = (PlayerEntity) entity;
+		Player player = (Player) entity;
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
 			int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 			addStoredXP(stack, toAdd);
@@ -49,7 +49,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
@@ -57,19 +57,19 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 				addXP(player, toAdd);
 			}
 		}
-		return ActionResult.success(stack);
+		return InteractionResultHolder.success(stack);
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		if (stack.hasTag()) {
-			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(TextFormatting.DARK_GREEN, TextFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
+			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(ChatFormatting.DARK_GREEN, ChatFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
 	}
 
 
-	private void removeXP(PlayerEntity player, int amount) {
+	private void removeXP(Player player, int amount) {
 		int totalExperience = getXP(player) - amount;
 		if (totalExperience < 0) {
 			player.totalExperience = 0;
@@ -82,14 +82,14 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 	}
 
-	private void addXP(PlayerEntity player, int amount) {
+	private void addXP(Player player, int amount) {
 		int experiencetotal = getXP(player) + amount;
 		player.totalExperience = experiencetotal;
 		player.experienceLevel = getLvlForXP(experiencetotal);
 		player.experienceProgress = (float) (experiencetotal - getXPForLvl(player.experienceLevel)) / (float) player.getXpNeededForNextLevel();
 	}
 
-	private int getXP(PlayerEntity player) {
+	private int getXP(Player player) {
 		return (int) (getXPForLvl(player.experienceLevel) + player.experienceProgress * player.getXpNeededForNextLevel());
 	}
 
@@ -154,11 +154,11 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 		if (tile != null) {
-			List<ExperienceOrbEntity> orbs = world.getEntitiesOfClass(ExperienceOrbEntity.class, tile.getEffectBounds());
-			for (ExperienceOrbEntity orb : orbs) {
+			List<ExperienceOrb> orbs = world.getEntitiesOfClass(ExperienceOrb.class, tile.getEffectBounds());
+			for (ExperienceOrb orb : orbs) {
 				WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 				if (!world.isClientSide && orb.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
 					suckXP(orb, tile.getInventory().getStackInSlot(0));
@@ -167,20 +167,20 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 	}
 
-	private void suckXP(ExperienceOrbEntity orb, ItemStack mindStone) {
+	private void suckXP(ExperienceOrb orb, ItemStack mindStone) {
 		long l = getStoredXP(mindStone);
 		if (l + orb.value > Integer.MAX_VALUE) {
 			orb.value = (int) (l + orb.value - Integer.MAX_VALUE);
 			setStoredXP(mindStone, Integer.MAX_VALUE);
 		} else {
 			addStoredXP(mindStone, orb.value);
-			orb.remove();
+			orb.discard();
 		}
 	}
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		return Lists.newArrayList(PELang.PEDESTAL_MIND_STONE.translateColored(TextFormatting.BLUE));
+	public List<Component> getPedestalDescription() {
+		return Lists.newArrayList(PELang.PEDESTAL_MIND_STONE.translateColored(ChatFormatting.BLUE));
 	}
 }

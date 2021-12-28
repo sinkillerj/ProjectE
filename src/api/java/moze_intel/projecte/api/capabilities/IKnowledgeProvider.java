@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
@@ -17,9 +16,9 @@ import net.minecraftforge.items.IItemHandler;
 /**
  * This interface defines the contract for some object that exposes transmutation knowledge through the Capability system.
  *
- * Acquire an instance of this using {@link net.minecraft.entity.Entity#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.entity.Entity#getCapability(Capability, net.minecraft.core.Direction)}.
  */
-public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
+public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 
 	/**
 	 * @return Whether the player has the "tome" flag set, meaning all knowledge checks automatically return true
@@ -120,14 +119,14 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
 	 *
 	 * @param player The player to sync to.
 	 */
-	void sync(@Nonnull ServerPlayerEntity player);
+	void sync(@Nonnull ServerPlayer player);
 
 	/**
 	 * Syncs the emc stored in this provider to the given player.
 	 *
 	 * @param player The player to sync to.
 	 */
-	void syncEmc(@Nonnull ServerPlayerEntity player);
+	void syncEmc(@Nonnull ServerPlayer player);
 
 	/**
 	 * Syncs that a specific item's knowledge changed (either learned or unlearned) to the given player.
@@ -136,7 +135,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
 	 * @param change  The item that changed. (Should be the persistent variant)
 	 * @param learned True if learned, false if unlearned.
 	 */
-	void syncKnowledgeChange(@Nonnull ServerPlayerEntity player, ItemInfo change, boolean learned);
+	void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned);
 
 	/**
 	 * Syncs the inputs and locks stored in this provider to the given player.
@@ -145,12 +144,12 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundNBT> {
 	 * @param slotsChanged  The indices of the slots that need to be synced (may be empty, in which case nothing should happen).
 	 * @param updateTargets How the targets should be updated on the client.
 	 */
-	void syncInputAndLocks(@Nonnull ServerPlayerEntity player, List<Integer> slotsChanged, TargetUpdateType updateTargets);
+	void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets);
 
 	/**
 	 * @param changes Slot index to stack for the changes that occurred.
 	 *
-	 * @apiNote Should only really be used on the client for purposes of receiving/handling {@link #syncInputAndLocks(ServerPlayerEntity, List, TargetUpdateType)}
+	 * @apiNote Should only really be used on the client for purposes of receiving/handling {@link #syncInputAndLocks(ServerPlayer, List, TargetUpdateType)}
 	 */
 	void receiveInputsAndLocks(Map<Integer, ItemStack> changes);
 

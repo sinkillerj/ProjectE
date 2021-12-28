@@ -22,27 +22,27 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.SnowballEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
 
@@ -72,7 +72,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> list) {
+	public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> list) {
 		//Only used on the client
 		if (allowdedIn(group)) {
 			for (byte i = 0; i < getModeCount(); ++i) {
@@ -88,7 +88,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		return modes;
 	}
 
-	private void tick(ItemStack stack, World world, ServerPlayerEntity player) {
+	private void tick(ItemStack stack, Level world, ServerPlayer player) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			switch (getMode(stack)) {
 				case 0:
@@ -108,38 +108,38 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (!world.isClientSide && slot < PlayerInventory.getSelectionSize() && entity instanceof ServerPlayerEntity) {
-			tick(stack, world, (ServerPlayerEntity) entity);
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
+		if (!world.isClientSide && slot < Inventory.getSelectionSize() && entity instanceof ServerPlayer) {
+			tick(stack, world, (ServerPlayer) entity);
 		}
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			tooltips.add(getToolTip(stack));
 		} else {
-			tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(TextFormatting.RED));
+			tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(ChatFormatting.RED));
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		if (!world.isClientSide) {
-			CompoundNBT compound = player.getItemInHand(hand).getOrCreateTag();
+			CompoundTag compound = player.getItemInHand(hand).getOrCreateTag();
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
 		}
-		return ActionResult.success(player.getItemInHand(hand));
+		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx) {
+	public InteractionResult useOn(UseOnContext ctx) {
 		if (getMode(ctx.getItemInHand()) == 1) {
-			ActionResultType result = WorldHelper.igniteBlock(ctx);
-			if (result != ActionResultType.PASS) {
+			InteractionResult result = WorldHelper.igniteBlock(ctx);
+			if (result != InteractionResult.PASS) {
 				return result;
 			}
 		}
@@ -147,9 +147,9 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
 		//GIANT FIRE ROW OF DEATH
-		World world = player.getCommandSenderWorld();
+		Level world = player.getCommandSenderWorld();
 		if (world.isClientSide) {
 			return true;
 		}
@@ -160,7 +160,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 					case NORTH:
 						for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-30, -5, -3), player.blockPosition().offset(30, 5, 3))) {
 							if (world.isEmptyBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
+								PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 							}
 						}
 						break;
@@ -168,39 +168,39 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 					case EAST:
 						for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-3, -5, -30), player.blockPosition().offset(3, 5, 30))) {
 							if (world.isEmptyBlock(pos)) {
-								PlayerHelper.checkedPlaceBlock((ServerPlayerEntity) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
+								PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 							}
 						}
 						break;
 				}
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 				break;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
-		World world = player.getCommandSenderWorld();
+	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+		Level world = player.getCommandSenderWorld();
 		if (world.isClientSide) {
 			return false;
 		}
 		switch (getMode(stack)) {
 			case 0: // zero
-				SnowballEntity snowball = new SnowballEntity(world, player);
-				snowball.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+				Snowball snowball = new Snowball(world, player);
+				snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(snowball);
 				snowball.playSound(SoundEvents.SNOWBALL_THROW, 1.0F, 1.0F);
 				break;
 			case 1: // ignition
 				EntityFireProjectile fire = new EntityFireProjectile(player, world);
-				fire.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+				fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(fire);
 				fire.playSound(PESoundEvents.POWER.get(), 1.0F, 1.0F);
 				break;
 			case 3: // swrg
 				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, world);
-				lightning.shootFromRotation(player, player.xRot, player.yRot, 0, 1.5F, 1);
+				lightning.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				world.addFreshEntity(lightning);
 				break;
 		}
@@ -208,12 +208,12 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayerEntity player) {
+	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayer player) {
 		return true;
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayerEntity player) {
+	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
 		return true;
 	}
 }

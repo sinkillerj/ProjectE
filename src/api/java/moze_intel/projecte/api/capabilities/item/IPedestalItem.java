@@ -2,11 +2,9 @@ package moze_intel.projecte.api.capabilities.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -14,7 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * This is exposed through the Capability system.
  *
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.item.ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus
  */
@@ -23,12 +21,12 @@ public interface IPedestalItem {
 	/***
 	 * Called on both client and server each time an active DMPedestalTile ticks with this item inside
 	 */
-	void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos);
+	void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos);
 
 	/***
 	 * Called clientside when inside the pedestal gui to add special function descriptions
 	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
 	@Nonnull
-	List<ITextComponent> getPedestalDescription();
+	List<Component> getPedestalDescription();
 }

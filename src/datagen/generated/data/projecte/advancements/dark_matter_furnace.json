@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:dm_furnace"
+            "items": [
+              "projecte:dm_furnace"
+            ]
           }
         ]
       }

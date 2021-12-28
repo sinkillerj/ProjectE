@@ -8,35 +8,35 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
-public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
+public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 
 	public PhiloStoneSmeltingRecipe(ResourceLocation id) {
 		super(id);
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level world) {
 		//If we have at least one matching recipe, return that we found a match
 		return !getMatchingRecipes(inv, world).isEmpty();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingInventory inv) {
-		Set<FurnaceRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
+	public ItemStack assemble(@Nonnull CraftingContainer inv) {
+		Set<SmeltingRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
 		if (matchingRecipes.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
@@ -47,7 +47,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 		return output;
 	}
 
-	private Set<FurnaceRecipe> getMatchingRecipes(CraftingInventory inv, @Nonnull World world) {
+	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @Nonnull Level world) {
 		List<ItemStack> philoStones = new ArrayList<>();
 		List<ItemStack> coals = new ArrayList<>();
 		List<ItemStack> allItems = new ArrayList<>();
@@ -63,7 +63,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 				if (item instanceof PhilosophersStone) {
 					philoStones.add(stack);
 				}
-				if (item.is(ItemTags.COALS)) {
+				if (ItemTags.COALS.contains(item)) {
 					coals.add(stack);
 				}
 			}
@@ -75,16 +75,16 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 					//Skip if the philosopher's stone is the same stack as the coal stack
 					// This may be the case if a pack dev added the philosopher's stone to the coals tag
 					if (philoStone != coal) {
-						Set<FurnaceRecipe> matchingRecipes = new HashSet<>();
+						Set<SmeltingRecipe> matchingRecipes = new HashSet<>();
 						for (ItemStack stack : allItems) {
 							//Ignore checking the piece of coal and the philosopher's stone
 							if (stack != philoStone && stack != coal) {
 								//And check all the other elements to find any matching recipes
-								Inventory furnaceInput = new Inventory(stack);
+								SimpleContainer furnaceInput = new SimpleContainer(stack);
 								if (matchingRecipes.isEmpty()) {
 									//If there are no matching recipes yet see if there are any recipes that match the current stack and add them if they are,
 									// if we didn't end up adding any elements that means there are no matching recipes so fail
-									if (!matchingRecipes.addAll(world.getRecipeManager().getRecipesFor(IRecipeType.SMELTING, furnaceInput, world))) {
+									if (!matchingRecipes.addAll(world.getRecipeManager().getRecipesFor(RecipeType.SMELTING, furnaceInput, world))) {
 										return Collections.emptySet();
 									}
 								} else if (matchingRecipes.removeIf(recipe -> !recipe.matches(furnaceInput, world))) {
@@ -114,7 +114,7 @@ public class PhiloStoneSmeltingRecipe extends SpecialRecipe {
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return PERecipeSerializers.PHILO_STONE_SMELTING.get();
 	}
 }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:rm_shears"
+            "items": [
+              "projecte:rm_shears"
+            ]
           }
         ]
       }
@@ -21,7 +23,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:rm_axe"
+            "items": [
+              "projecte:rm_axe"
+            ]
           }
         ]
       }
@@ -31,7 +35,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:rm_sword"
+            "items": [
+              "projecte:rm_sword"
+            ]
           }
         ]
       }
@@ -41,7 +47,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:rm_hoe"
+            "items": [
+              "projecte:rm_hoe"
+            ]
           }
         ]
       }

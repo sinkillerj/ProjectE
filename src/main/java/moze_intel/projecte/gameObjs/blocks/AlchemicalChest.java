@@ -2,35 +2,38 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.ChestTileEmc;
+import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.network.NetworkHooks;
 
-public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
+public class AlchemicalChest extends BlockDirection implements SimpleWaterloggedBlock, PEEntityBlock<ChestTileEmc> {
 
 	private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
@@ -40,7 +43,7 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
 		super.createBlockStateDefinition(props);
 		props.add(BlockStateProperties.WATERLOGGED);
 	}
@@ -48,39 +51,34 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
 		return SHAPE;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockRenderType getRenderShape(@Nonnull BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(@Nonnull BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
 		if (!world.isClientSide) {
 			AlchChestTile te = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (te != null) {
-				NetworkHooks.openGui((ServerPlayerEntity) player, te, pos);
+				NetworkHooks.openGui((ServerPlayer) player, te, pos);
 			}
 		}
-		return ActionResultType.SUCCESS;
-	}
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-		return new AlchChestTile();
+	public BlockEntityTypeRegistryObject<? extends ChestTileEmc> getType() {
+		return PEBlockEntityTypes.ALCHEMICAL_CHEST;
 	}
 
 	@Override
@@ -91,8 +89,8 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
-		TileEntity te = WorldHelper.getTileEntity(world, pos);
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
+		BlockEntity te = WorldHelper.getTileEntity(world, pos);
 		if (te != null) {
 			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}
@@ -101,7 +99,7 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 
 	@Nonnull
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return super.getStateForPlacement(context).setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
@@ -115,10 +113,10 @@ public class AlchemicalChest extends BlockDirection implements IWaterLoggable {
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}

@@ -3,10 +3,10 @@ package moze_intel.projecte.network.packets.to_server;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 public class UpdateGemModePKT implements IPEPacket {
 
@@ -17,8 +17,8 @@ public class UpdateGemModePKT implements IPEPacket {
 	}
 
 	@Override
-	public void handle(Context context) {
-		PlayerEntity player = context.getSender();
+	public void handle(NetworkEvent.Context context) {
+		Player player = context.getSender();
 		if (player != null) {
 			ItemStack stack = player.getMainHandItem();
 			if (stack.isEmpty()) {
@@ -32,11 +32,11 @@ public class UpdateGemModePKT implements IPEPacket {
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(mode);
 	}
 
-	public static UpdateGemModePKT decode(PacketBuffer buffer) {
+	public static UpdateGemModePKT decode(FriendlyByteBuf buffer) {
 		return new UpdateGemModePKT(buffer.readBoolean());
 	}
 }

@@ -12,20 +12,20 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.NonNullLazy;
 
 public class DiviningRod extends ItemPE implements IItemMode {
@@ -42,34 +42,34 @@ public class DiviningRod extends ItemPE implements IItemMode {
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx) {
-		PlayerEntity player = ctx.getPlayer();
+	public InteractionResult useOn(UseOnContext ctx) {
+		Player player = ctx.getPlayer();
 		if (player == null) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
-		World world = ctx.getLevel();
+		Level world = ctx.getLevel();
 		if (world.isClientSide) {
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 		LongList emcValues = new LongArrayList();
 		long totalEmc = 0;
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<List<FurnaceRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getAllRecipesFor(IRecipeType.SMELTING));
+		NonNullLazy<List<SmeltingRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
 			if (world.isEmptyBlock(digPos)) {
 				continue;
 			}
 			BlockState state = world.getBlockState(digPos);
-			List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItemInHand());
+			List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItemInHand());
 			if (drops.isEmpty()) {
 				continue;
 			}
 			ItemStack blockStack = drops.get(0);
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
 			if (blockEmc == 0) {
-				for (FurnaceRecipe furnaceRecipe : furnaceRecipes.get()) {
+				for (SmeltingRecipe furnaceRecipe : furnaceRecipes.get()) {
 					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
 						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getResultItem());
 						if (currentValue != 0) {
@@ -91,7 +91,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		}
 
 		if (numBlocks == 0) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
 		player.sendMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks), Util.NIL_UUID);
 		if (this == PEItems.MEDIUM_DIVINING_ROD.get() || this == PEItems.HIGH_DIVINING_ROD.get()) {
@@ -110,7 +110,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.NIL_UUID);
 			}
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	private int getDepthFromMode(ItemStack stack) {
@@ -132,7 +132,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltips, @Nonnull ITooltipFlag flags) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}

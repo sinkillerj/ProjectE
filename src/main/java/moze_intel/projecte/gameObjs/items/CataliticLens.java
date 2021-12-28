@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class CataliticLens extends DestructionCatalyst implements IProjectileShooter {
 
@@ -16,7 +16,7 @@ public class CataliticLens extends DestructionCatalyst implements IProjectileSho
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, Hand hand) {
+	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
 		return PEItems.HYPERKINETIC_LENS.get().shootProjectile(player, stack, hand);
 	}
 

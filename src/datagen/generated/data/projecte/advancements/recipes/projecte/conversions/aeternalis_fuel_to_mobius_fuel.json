@@ -11,10 +11,14 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:philosophers_stone"
+            "items": [
+              "projecte:philosophers_stone"
+            ]
           },
           {
-            "item": "projecte:aeternalis_fuel"
+            "items": [
+              "projecte:aeternalis_fuel"
+            ]
           }
         ]
       }

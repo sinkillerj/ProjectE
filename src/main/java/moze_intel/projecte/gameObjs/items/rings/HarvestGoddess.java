@@ -6,31 +6,31 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IGrowable;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
 
 public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
@@ -41,13 +41,13 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		PlayerEntity player = (PlayerEntity) entity;
-		CompoundNBT nbt = stack.getOrCreateTag();
+		Player player = (Player) entity;
+		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			long storedEmc = getEmc(stack);
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
@@ -63,41 +63,41 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx) {
-		World world = ctx.getLevel();
-		PlayerEntity player = ctx.getPlayer();
+	public InteractionResult useOn(UseOnContext ctx) {
+		Level world = ctx.getLevel();
+		Player player = ctx.getPlayer();
 		BlockPos pos = ctx.getClickedPos();
 		if (world.isClientSide || player == null || !player.mayUseItemAt(pos, ctx.getClickedFace(), ctx.getItemInHand())) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
 		if (player.isShiftKeyDown()) {
-			for (int i = 0; i < player.inventory.items.size(); i++) {
-				ItemStack stack = player.inventory.items.get(i);
+			for (int i = 0; i < player.getInventory().items.size(); i++) {
+				ItemStack stack = player.getInventory().items.get(i);
 				if (!stack.isEmpty() && stack.getCount() >= 4 && stack.getItem() == Items.BONE_MEAL) {
 					if (useBoneMeal(world, pos)) {
-						player.inventory.removeItem(i, 4);
+						player.getInventory().removeItem(i, 4);
 						player.inventoryMenu.broadcastChanges();
-						return ActionResultType.SUCCESS;
+						return InteractionResult.SUCCESS;
 					}
 					break;
 				}
 			}
 		} else if (plantSeeds(world, player, pos)) {
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 
-	private boolean useBoneMeal(World world, BlockPos pos) {
+	private boolean useBoneMeal(Level world, BlockPos pos) {
 		boolean result = false;
-		if (world instanceof ServerWorld) {
+		if (world instanceof ServerLevel) {
 			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
 				BlockState state = world.getBlockState(currentPos);
 				Block crop = state.getBlock();
-				if (crop instanceof IGrowable) {
-					IGrowable growable = (IGrowable) crop;
+				if (crop instanceof BonemealableBlock) {
+					BonemealableBlock growable = (BonemealableBlock) crop;
 					if (growable.isValidBonemealTarget(world, currentPos, state, false) && growable.isBonemealSuccess(world, world.random, currentPos, state)) {
-						growable.performBonemeal((ServerWorld) world, world.random, currentPos.immutable(), state);
+						growable.performBonemeal((ServerLevel) world, world.random, currentPos.immutable(), state);
 						if (!result) {
 							result = true;
 						}
@@ -108,8 +108,8 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		return result;
 	}
 
-	private boolean plantSeeds(World world, PlayerEntity player, BlockPos pos) {
-		List<StackWithSlot> seeds = getAllSeeds(player.inventory.items);
+	private boolean plantSeeds(Level world, Player player, BlockPos pos) {
+		List<StackWithSlot> seeds = getAllSeeds(player.getInventory().items);
 		if (seeds.isEmpty()) {
 			return false;
 		}
@@ -125,7 +125,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 				StackWithSlot s = seeds.get(i);
 				if (state.canSustainPlant(world, currentPos, Direction.UP, s.plantable) && world.isEmptyBlock(currentPos.above())) {
 					world.setBlockAndUpdate(currentPos.above(), s.plantable.getPlant(world, currentPos.above()));
-					player.inventory.removeItem(s.slot, 1);
+					player.getInventory().removeItem(s.slot, 1);
 					player.inventoryMenu.broadcastChanges();
 					s.count--;
 					if (s.count == 0) {
@@ -166,7 +166,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
@@ -182,12 +182,12 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
-			list.add(PELang.PEDESTAL_HARVEST_GODDESS_1.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_HARVEST_GODDESS_2.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_HARVEST_GODDESS_3.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_1.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_2.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_HARVEST_GODDESS_3.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.harvest.get())));
 		}
 		return list;
 	}

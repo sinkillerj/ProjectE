@@ -6,18 +6,18 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-import net.minecraft.entity.player.PlayerInventory;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK3Tile;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK3Container extends RelayMK1Container {
 
-	public RelayMK3Container(int windowId, PlayerInventory invPlayer, RelayMK3Tile relay) {
+	public RelayMK3Container(int windowId, Inventory invPlayer, RelayMK3Tile relay) {
 		super(PEContainerTypes.RELAY_MK3_CONTAINER, windowId, invPlayer, relay);
 	}
 
 	@Override
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler input = tile.getInput();
 		IItemHandler output = tile.getOutput();
 		//Klein star charge

@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Builder class to help create conversions.

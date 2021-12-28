@@ -8,14 +8,14 @@ import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.Tags.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -57,7 +57,8 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.MYCELIUM).ingredient(Items.DIRT, 2).end()
 				.conversion(Items.CRIMSON_NYLIUM).ingredient(Items.NETHERRACK, 2).end()
 				.conversion(Items.WARPED_NYLIUM).ingredient(Items.NETHERRACK, 2).end()
-				.conversion(Items.GRASS_PATH).ingredient(Items.GRASS_BLOCK).end()
+				//TODO - 1.18: Re-evaluate the conversion to dirt paths
+				.conversion(Items.DIRT_PATH).ingredient(Items.GRASS_BLOCK).end()
 				.conversion(Items.IRON_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_IRON, 8).end()
 				.conversion(Items.GOLDEN_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_GOLD, 8).end()
 				.conversion(Items.DIAMOND_HORSE_ARMOR).ingredient(Tags.Items.GEMS_DIAMOND, 8).end()

@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils.text;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public enum PELang implements ILangEntry {
 	//Vanilla

@@ -8,18 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Base Data Generator Provider class for use in creating custom conversion json data files that ProjectE will read from the data pack.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CustomConversionProvider implements IDataProvider {
+public abstract class CustomConversionProvider implements DataProvider {
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -31,14 +31,14 @@ public abstract class CustomConversionProvider implements IDataProvider {
 	}
 
 	@Override
-	public final void run(DirectoryCache cache) {
+	public final void run(HashCache cache) {
 		customConversions.clear();
 		addCustomConversions();
 		for (Map.Entry<ResourceLocation, CustomConversionBuilder> entry : customConversions.entrySet()) {
 			ResourceLocation customConversion = entry.getKey();
 			Path path = generator.getOutputFolder().resolve("data/" + customConversion.getNamespace() + "/pe_custom_conversions/" + customConversion.getPath() + ".json");
 			try {
-				IDataProvider.save(GSON, cache, entry.getValue().serialize(), path);
+				DataProvider.save(GSON, cache, entry.getValue().serialize(), path);
 			} catch (IOException e) {
 				throw new RuntimeException("Couldn't save custom conversion file for conversion: " + customConversion, e);
 			}

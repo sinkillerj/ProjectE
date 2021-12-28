@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "projecte:low_covalence_dust"
+            "items": [
+              "projecte:low_covalence_dust"
+            ]
           }
         ]
       }

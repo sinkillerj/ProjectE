@@ -4,20 +4,20 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class KnowledgeSyncPKT implements IPEPacket {
 
-	private final CompoundNBT nbt;
+	private final CompoundTag nbt;
 
-	public KnowledgeSyncPKT(CompoundNBT nbt) {
+	public KnowledgeSyncPKT(CompoundTag nbt) {
 		this.nbt = nbt;
 	}
 
 	@Override
-	public void handle(Context context) {
+	public void handle(NetworkEvent.Context context) {
 		if (Minecraft.getInstance().player != null) {
 			Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> cap.deserializeNBT(nbt));
 		}
@@ -25,11 +25,11 @@ public class KnowledgeSyncPKT implements IPEPacket {
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeNbt(nbt);
 	}
 
-	public static KnowledgeSyncPKT decode(PacketBuffer buffer) {
+	public static KnowledgeSyncPKT decode(FriendlyByteBuf buffer) {
 		return new KnowledgeSyncPKT(buffer.readNbt());
 	}
 }

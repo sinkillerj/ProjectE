@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class SlotConsume extends InventoryContainerSlot {
 

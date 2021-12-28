@@ -20,32 +20,33 @@ import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -66,10 +67,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, Hand hand) {
-		int selected = player.inventory.selected;
-		INamedContainerProvider provider = new SimpleNamedContainerProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
-		NetworkHooks.openGui((ServerPlayerEntity) player, provider, b -> {
+	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+		int selected = player.getInventory().selected;
+		MenuProvider provider = new SimpleMenuProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
+		NetworkHooks.openGui((ServerPlayer) player, provider, b -> {
 			b.writeEnum(hand);
 			b.writeByte(selected);
 		});
@@ -78,40 +79,40 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext ctx) {
+	public InteractionResult useOn(UseOnContext ctx) {
 		ItemStack stack = ctx.getItemInHand();
-		return ctx.getLevel().isClientSide ? ActionResultType.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getClickedPos(), ctx.getClickedFace());
+		return ctx.getLevel().isClientSide ? InteractionResult.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getClickedPos(), ctx.getClickedFace());
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (getMode(stack) == CREATION_MODE) {
 			if (world.isClientSide) {
-				return ActionResult.success(stack);
+				return InteractionResultHolder.success(stack);
 			}
-			Vector3d eyeVec = new Vector3d(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
-			Vector3d lookVec = player.getLookAngle();
+			Vec3 eyeVec = new Vec3(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
+			Vec3 lookVec = player.getLookAngle();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
-			Vector3d targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
+			Vec3 targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
 			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
 		}
-		return ActionResult.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
-	private ActionResultType formBlocks(ItemStack eye, PlayerEntity player, BlockPos startingPos, @Nullable Direction facing) {
+	private InteractionResult formBlocks(ItemStack eye, Player player, BlockPos startingPos, @Nullable Direction facing) {
 		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (!inventoryCapability.isPresent()) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
 		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
 		if (klein.isEmpty() || !klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
 
-		World world = player.getCommandSenderWorld();
+		Level world = player.getCommandSenderWorld();
 		BlockState startingState = world.getBlockState(startingPos);
 		long startingBlockEmc = EMCHelper.getEmcValue(new ItemStack(startingState.getBlock()));
 		ItemStack target = inventory.getStackInSlot(1);
@@ -127,22 +128,21 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			newState = startingState;
 			newBlockEmc = startingBlockEmc;
 		} else {
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
-		if (newState == null || newState.getBlock().isAir(newState, null, null)) {
-			return ActionResultType.FAIL;
+		if (newState == null || newState.isAir()) {
+			return InteractionResult.FAIL;
 		}
 
 		NonNullList<ItemStack> drops = NonNullList.create();
 		int charge = getCharge(eye);
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
-			Block block = startingState.getBlock();
-			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isShiftKeyDown() && !block.isAir(startingState, world, startingPos))) {
+			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isShiftKeyDown() && !startingState.isAir())) {
 				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = world.getBlockState(offsetPos);
 				if (!offsetState.getMaterial().isReplaceable()) {
-					return ActionResultType.FAIL;
+					return InteractionResult.FAIL;
 				}
 				long offsetBlockEmc = EMCHelper.getEmcValue(new ItemStack(offsetState.getBlock()));
 				//Just in case it is not air but is a replaceable block like tall grass, get the proper EMC instead of just using 0
@@ -162,7 +162,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		} else if (mode == TRANSMUTATION_MODE_CLASSIC) {
 			//if state is same as the start state replace it in an up to 9x9x1 area
 			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight()))) {
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
 				BlockState placedState = world.getBlockState(pos);
 				//Ensure we are immutable so that removal/placing doesn't act weird
 				if (placedState == startingState && doBlockPlace(player, placedState, pos.immutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
@@ -170,8 +170,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				}
 			}
 		} else {
-			if (startingState.getBlock().isAir(startingState, world, startingPos) || facing == null) {
-				return ActionResultType.FAIL;
+			if (startingState.isAir() || facing == null) {
+				return InteractionResult.FAIL;
 			}
 
 			LinkedList<BlockPos> possibleBlocks = new LinkedList<>();
@@ -225,16 +225,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 
 		if (hitTargets > 0) {
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundCategory.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together
 				WorldHelper.createLootDrop(drops, player.getCommandSenderWorld(), startingPos);
 			}
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
-	private boolean doBlockPlace(PlayerEntity player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
+	private boolean doBlockPlace(Player player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
 		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (!inventoryCapability.isPresent()) {
 			return false;
@@ -255,11 +255,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			return false;
 		}
 
-		if (PlayerHelper.checkedReplaceBlock((ServerPlayerEntity) player, placePos, newState)) {
+		if (PlayerHelper.checkedReplaceBlock((ServerPlayer) player, placePos, newState)) {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
-				drops.addAll(Block.getDrops(oldState, ((ServerPlayerEntity) player).getLevel(), placePos, null));
+				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).getLevel(), placePos, null));
 				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC > newEMC) {
 				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);
@@ -271,9 +271,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		return false;
 	}
 
-	private int fillGaps(ItemStack eye, PlayerEntity player, World world, BlockState startingState, BlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
+	private int fillGaps(ItemStack eye, Player player, Level world, BlockState startingState, BlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
 		int hitTargets = 0;
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AxisAlignedBB(corners.getLeft(), corners.getRight()))) {
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
 			VoxelShape bb = startingState.getCollisionShape(world, pos);
 			if (world.isUnobstructed(null, bb)) {
 				BlockState placeState = world.getBlockState(pos);
@@ -327,17 +327,20 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 	private static class EyeInventoryHandler extends ItemCapability<IItemHandler> implements IItemCapabilitySerializable {
 
-		private final IItemHandler inv = new ItemStackHandler(2);
+		private final ItemStackHandler inv = new ItemStackHandler(2);
 		private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
 
 		@Override
-		public INBT serializeNBT() {
-			return getCapability().writeNBT(inv, null);
+		public Tag serializeNBT() {
+			return inv.serializeNBT();
 		}
 
 		@Override
-		public void deserializeNBT(INBT nbt) {
-			getCapability().readNBT(inv, null, nbt);
+		public void deserializeNBT(Tag nbt) {
+			//TODO - 1.18: Re-evaluate this handling of cap reading/writing
+			if (nbt instanceof CompoundTag tag) {
+				inv.deserializeNBT(tag);
+			}
 		}
 
 		@Override

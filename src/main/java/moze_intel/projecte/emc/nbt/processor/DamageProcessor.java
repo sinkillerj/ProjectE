@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 @NBTProcessor(priority = Integer.MAX_VALUE)
 public class DamageProcessor implements INBTProcessor {

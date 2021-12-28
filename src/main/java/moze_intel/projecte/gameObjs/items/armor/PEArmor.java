@@ -2,17 +2,17 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public abstract class PEArmor extends ArmorItem {
 
-	protected PEArmor(IArmorMaterial material, EquipmentSlotType armorPiece, Properties props) {
+	protected PEArmor(ArmorMaterial material, EquipmentSlot armorPiece, Properties props) {
 		super(material, armorPiece, props);
 	}
 
@@ -47,15 +47,15 @@ public abstract class PEArmor extends ArmorItem {
 	 * @apiNote A value of zero means that there is no special bonus blocking powers for that damage type, and the piece's base reduction will be get used instead by the
 	 * damage calculation event.
 	 */
-	public abstract float getMaxDamageAbsorb(EquipmentSlotType slot, DamageSource source);
+	public abstract float getMaxDamageAbsorb(EquipmentSlot slot, DamageSource source);
 
 	/**
 	 * Gets the overall effectiveness of a given slots piece.
 	 */
-	public float getPieceEffectiveness(EquipmentSlotType slot) {
-		if (slot == EquipmentSlotType.FEET || slot == EquipmentSlotType.HEAD) {
+	public float getPieceEffectiveness(EquipmentSlot slot) {
+		if (slot == EquipmentSlot.FEET || slot == EquipmentSlot.HEAD) {
 			return 0.2F;
-		} else if (slot == EquipmentSlotType.CHEST || slot == EquipmentSlotType.LEGS) {
+		} else if (slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS) {
 			return 0.3F;
 		}
 		return 0;

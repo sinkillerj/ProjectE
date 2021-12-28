@@ -8,12 +8,12 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class SetEmcCMD {
 
-	public static LiteralArgumentBuilder<CommandSource> register() {
+	public static LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("setemc")
 				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
@@ -23,7 +23,7 @@ public class SetEmcCMD {
 
 	}
 
-	private static int setEmc(CommandContext<CommandSource> ctx, NSSItemResult stack, long emc) {
+	private static int setEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack, long emc) {
 		String toSet = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toSet, emc);
 		ctx.getSource().sendSuccess(PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);

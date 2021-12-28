@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.customRecipes;
 import com.google.gson.JsonObject;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 

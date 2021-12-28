@@ -5,9 +5,9 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class UpdateCondenserLockPKT implements IPEPacket {
 
@@ -21,15 +21,15 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 	}
 
 	@Override
-	public void handle(Context context) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void handle(NetworkEvent.Context context) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null && player.containerMenu instanceof CondenserContainer && player.containerMenu.containerId == windowId) {
 			((CondenserContainer) player.containerMenu).updateLockInfo(lockInfo);
 		}
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeShort(windowId);
 		if (lockInfo == null) {
 			buffer.writeBoolean(false);
@@ -40,7 +40,7 @@ public class UpdateCondenserLockPKT implements IPEPacket {
 		}
 	}
 
-	public static UpdateCondenserLockPKT decode(PacketBuffer buffer) {
+	public static UpdateCondenserLockPKT decode(FriendlyByteBuf buffer) {
 		short windowId = buffer.readShort();
 		ItemInfo lockInfo = null;
 		if (buffer.readBoolean()) {

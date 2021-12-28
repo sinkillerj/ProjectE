@@ -8,15 +8,15 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
-	private static final ItemGroup creativeTab = new ItemGroup(PECore.MODID) {
+	private static final CreativeModeTab creativeTab = new CreativeModeTab(PECore.MODID) {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(PEItems.PHILOSOPHERS_STONE);
@@ -24,7 +24,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName() {
+		public Component getDisplayName() {
 			//Overwrite the lang key to match the one representing ProjectE
 			return PELang.PROJECTE.translate();
 		}

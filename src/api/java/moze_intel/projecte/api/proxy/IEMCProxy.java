@@ -3,10 +3,10 @@ package moze_intel.projecte.api.proxy;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public interface IEMCProxy {
 
@@ -163,11 +163,11 @@ public interface IEMCProxy {
 	long getSellValue(@Nonnull ItemInfo info);
 
 	/**
-	 * Gets an {@link ItemInfo} with the {@link net.minecraft.nbt.CompoundNBT} reduced to what will be saved to knowledge/used for condensing.
+	 * Gets an {@link ItemInfo} with the {@link net.minecraft.nbt.CompoundTag} reduced to what will be saved to knowledge/used for condensing.
 	 *
 	 * @param info The ItemInfo we want to trim to the data that will be used for persistence.
 	 *
-	 * @return An {@link ItemInfo} for the same item as the input info, but with a potentially reduced {@link net.minecraft.nbt.CompoundNBT}, containing whatever data is
+	 * @return An {@link ItemInfo} for the same item as the input info, but with a potentially reduced {@link net.minecraft.nbt.CompoundTag}, containing whatever data is
 	 * persistent/matters.
 	 */
 	@Nonnull

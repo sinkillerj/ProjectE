@@ -2,17 +2,17 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public abstract class GemArmorBase extends PEArmor {
 
-	public GemArmorBase(EquipmentSlotType armorType, Properties props) {
+	public GemArmorBase(EquipmentSlot armorType, Properties props) {
 		super(GemArmorMaterial.INSTANCE, armorType, props);
 	}
 
@@ -22,51 +22,51 @@ public abstract class GemArmorBase extends PEArmor {
 	}
 
 	@Override
-	public float getMaxDamageAbsorb(EquipmentSlotType slot, DamageSource source) {
+	public float getMaxDamageAbsorb(EquipmentSlot slot, DamageSource source) {
 		if (source.isExplosion()) {
 			return 750;
 		}
-		if (slot == EquipmentSlotType.FEET && source == DamageSource.FALL) {
+		if (slot == EquipmentSlot.FEET && source == DamageSource.FALL) {
 			return 15 / getPieceEffectiveness(slot);
-		} else if (slot == EquipmentSlotType.HEAD && source == DamageSource.DROWN) {
+		} else if (slot == EquipmentSlot.HEAD && source == DamageSource.DROWN) {
 			return 15 / getPieceEffectiveness(slot);
 		}
 		if (source.isBypassArmor()) {
 			return 0;
 		}
 		//If the source is not unblockable, allow our piece to block a certain amount of damage
-		if (slot == EquipmentSlotType.HEAD || slot == EquipmentSlotType.FEET) {
+		if (slot == EquipmentSlot.HEAD || slot == EquipmentSlot.FEET) {
 			return 400;
 		}
 		return 500;
 	}
 
-	public static boolean hasAnyPiece(PlayerEntity player) {
-		return player.inventory.armor.stream().anyMatch(i -> !i.isEmpty() && i.getItem() instanceof GemArmorBase);
+	public static boolean hasAnyPiece(Player player) {
+		return player.getInventory().armor.stream().anyMatch(i -> !i.isEmpty() && i.getItem() instanceof GemArmorBase);
 	}
 
-	public static boolean hasFullSet(PlayerEntity player) {
-		return player.inventory.armor.stream().noneMatch(i -> i.isEmpty() || !(i.getItem() instanceof GemArmorBase));
+	public static boolean hasFullSet(Player player) {
+		return player.getInventory().armor.stream().noneMatch(i -> i.isEmpty() || !(i.getItem() instanceof GemArmorBase));
 	}
 
-	private static class GemArmorMaterial implements IArmorMaterial {
+	private static class GemArmorMaterial implements ArmorMaterial {
 
 		private static final GemArmorMaterial INSTANCE = new GemArmorMaterial();
 
 		@Override
-		public int getDurabilityForSlot(@Nonnull EquipmentSlotType slot) {
+		public int getDurabilityForSlot(@Nonnull EquipmentSlot slot) {
 			return 0;
 		}
 
 		@Override
-		public int getDefenseForSlot(@Nonnull EquipmentSlotType slot) {
-			if (slot == EquipmentSlotType.FEET) {
+		public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
+			if (slot == EquipmentSlot.FEET) {
 				return 3;
-			} else if (slot == EquipmentSlotType.LEGS) {
+			} else if (slot == EquipmentSlot.LEGS) {
 				return 6;
-			} else if (slot == EquipmentSlotType.CHEST) {
+			} else if (slot == EquipmentSlot.CHEST) {
 				return 8;
-			} else if (slot == EquipmentSlotType.HEAD) {
+			} else if (slot == EquipmentSlot.HEAD) {
 				return 3;
 			}
 			return 0;

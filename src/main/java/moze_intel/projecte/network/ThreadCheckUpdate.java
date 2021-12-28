@@ -2,11 +2,11 @@ package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,7 +39,7 @@ public class ThreadCheckUpdate extends Thread {
 		int tries = 0;
 		do {
 			VersionChecker.CheckResult res = VersionChecker.getResult(info);
-			if (res.status != VersionChecker.Status.PENDING) {
+			if (res.status() != VersionChecker.Status.PENDING) {
 				result = res;
 			}
 			try {
@@ -54,19 +54,19 @@ public class ThreadCheckUpdate extends Thread {
 			return;
 		}
 
-		if (result.status == VersionChecker.Status.OUTDATED) {
-			target = result.target;
+		if (result.status() == VersionChecker.Status.OUTDATED) {
+			target = result.target();
 		}
 	}
 
 	@SubscribeEvent
 	public static void worldLoad(EntityJoinWorldEvent evt) {
-		if (evt.getEntity() instanceof ClientPlayerEntity && target != null && !hasSentMessage) {
+		if (evt.getEntity() instanceof LocalPlayer && target != null && !hasSentMessage) {
 			hasSentMessage = true;
 			evt.getEntity().sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
 			evt.getEntity().sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
 
-			ITextComponent link = new StringTextComponent(curseURL);
+			Component link = new TextComponent(curseURL);
 			link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
 			evt.getEntity().sendMessage(link, Util.NIL_UUID);
 		}

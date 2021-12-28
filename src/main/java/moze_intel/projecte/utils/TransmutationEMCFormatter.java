@@ -3,14 +3,14 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 
 public class TransmutationEMCFormatter {
 
 	private static final int MAX_POSTFIX_INDEX = 17;
 
-	public static ITextComponent formatEMC(Number emc) {
+	public static Component formatEMC(Number emc) {
 		String emcAsString = emc.toString();
 		int length = emcAsString.length();
 		int splits = (length - 1) / 3;

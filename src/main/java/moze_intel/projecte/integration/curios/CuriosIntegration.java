@@ -3,7 +3,7 @@ package moze_intel.projecte.integration.curios;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;

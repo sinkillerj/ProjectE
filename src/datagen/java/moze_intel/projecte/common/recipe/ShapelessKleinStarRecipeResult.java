@@ -4,15 +4,15 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.resources.ResourceLocation;
 
-public class ShapelessKleinStarRecipeResult implements IFinishedRecipe {
+public class ShapelessKleinStarRecipeResult implements FinishedRecipe {
 
-	private final IFinishedRecipe internal;
+	private final FinishedRecipe internal;
 
-	public ShapelessKleinStarRecipeResult(IFinishedRecipe internal) {
+	public ShapelessKleinStarRecipeResult(FinishedRecipe internal) {
 		this.internal = internal;
 	}
 
@@ -29,7 +29,7 @@ public class ShapelessKleinStarRecipeResult implements IFinishedRecipe {
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getType() {
+	public RecipeSerializer<?> getType() {
 		//Overwrite it with our recipe serializer
 		return PERecipeSerializers.KLEIN.get();
 	}

@@ -10,39 +10,24 @@ import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 public final class AlchBagImpl {
 
-	public static void init() {
-		CapabilityManager.INSTANCE.register(IAlchBagProvider.class, new Capability.IStorage<IAlchBagProvider>() {
-			@Override
-			public CompoundNBT writeNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, Direction side) {
-				return instance.serializeNBT();
-			}
-
-			@Override
-			public void readNBT(Capability<IAlchBagProvider> capability, IAlchBagProvider instance, Direction side, INBT nbt) {
-				if (nbt instanceof CompoundNBT) {
-					instance.deserializeNBT((CompoundNBT) nbt);
-				}
-			}
-		}, DefaultImpl::new);
+	//TODO - 1.18: Re-evaluate this
+	public static IAlchBagProvider getDefault() {
+		return new DefaultImpl();
 	}
 
 	private static class DefaultImpl implements IAlchBagProvider {
 
-		private final Map<DyeColor, IItemHandler> inventories = new EnumMap<>(DyeColor.class);
+		private final Map<DyeColor, ItemStackHandler> inventories = new EnumMap<>(DyeColor.class);
 
 		@Nonnull
 		@Override
@@ -50,42 +35,37 @@ public final class AlchBagImpl {
 			if (!inventories.containsKey(color)) {
 				inventories.put(color, new ItemStackHandler(104));
 			}
-
 			return inventories.get(color);
 		}
 
 		@Override
-		public void sync(@Nullable DyeColor color, @Nonnull ServerPlayerEntity player) {
+		public void sync(@Nullable DyeColor color, @Nonnull ServerPlayer player) {
 			PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
 		}
 
-		private CompoundNBT writeNBT(DyeColor color) {
-			CompoundNBT ret = new CompoundNBT();
+		private CompoundTag writeNBT(DyeColor color) {
+			CompoundTag ret = new CompoundTag();
 			DyeColor[] colors = color == null ? DyeColor.values() : new DyeColor[]{color};
 			for (DyeColor c : colors) {
 				if (inventories.containsKey(c)) {
-					INBT inv = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
-							.writeNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inventories.get(c), null);
-					if (inv != null) {
-						ret.put(c.getSerializedName(), inv);
-					}
+					ret.put(c.getSerializedName(), inventories.get(c).serializeNBT());
 				}
 			}
 			return ret;
 		}
 
 		@Override
-		public CompoundNBT serializeNBT() {
+		public CompoundTag serializeNBT() {
 			return writeNBT(null);
 		}
 
 		@Override
-		public void deserializeNBT(CompoundNBT nbt) {
+		public void deserializeNBT(CompoundTag nbt) {
 			for (DyeColor e : DyeColor.values()) {
 				if (nbt.contains(e.getSerializedName())) {
-					IItemHandler inv = new ItemStackHandler(104);
-					CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.getStorage()
-							.readNBT(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv, null, nbt.get(e.getSerializedName()));
+					ItemStackHandler inv = new ItemStackHandler(104);
+					//TODO - 1.18: Re-evaluate this handling
+					inv.deserializeNBT(nbt.getCompound(e.getSerializedName()));
 					inventories.put(e, inv);
 				}
 			}
@@ -97,7 +77,7 @@ public final class AlchBagImpl {
 		public static final ResourceLocation NAME = PECore.rl("alch_bags");
 
 		public Provider() {
-			super(new DefaultImpl());
+			super(getDefault());
 		}
 
 		@Nonnull

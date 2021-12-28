@@ -11,10 +11,10 @@ import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -23,14 +23,14 @@ public class FullKleinStarIngredient extends Ingredient {
 	public static final IIngredientSerializer<FullKleinStarIngredient> SERIALIZER = new IIngredientSerializer<FullKleinStarIngredient>() {
 		@Nonnull
 		@Override
-		public FullKleinStarIngredient parse(@Nonnull PacketBuffer buffer) {
+		public FullKleinStarIngredient parse(@Nonnull FriendlyByteBuf buffer) {
 			return new FullKleinStarIngredient(buffer.readEnum(EnumKleinTier.class));
 		}
 
 		@Nonnull
 		@Override
 		public FullKleinStarIngredient parse(@Nonnull JsonObject json) {
-			int tier = JSONUtils.getAsInt(json, "tier");
+			int tier = GsonHelper.getAsInt(json, "tier");
 			EnumKleinTier[] tiers = EnumKleinTier.values();
 			if (tier < 0 || tier >= tiers.length) {
 				throw new JsonParseException("Invalid klein star tier");
@@ -39,7 +39,7 @@ public class FullKleinStarIngredient extends Ingredient {
 		}
 
 		@Override
-		public void write(@Nonnull PacketBuffer buffer, @Nonnull FullKleinStarIngredient ingredient) {
+		public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull FullKleinStarIngredient ingredient) {
 			buffer.writeEnum(((KleinStar) ingredient.star.getItem()).tier);
 		}
 	};
@@ -57,7 +57,7 @@ public class FullKleinStarIngredient extends Ingredient {
 	}
 
 	private FullKleinStarIngredient(ItemStack star) {
-		super(Stream.of(new Ingredient.SingleItemList(star)));
+		super(Stream.of(new Ingredient.ItemValue(star)));
 		this.star = star;
 	}
 

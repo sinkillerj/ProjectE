@@ -2,8 +2,8 @@ package moze_intel.projecte.network.packets.to_client;
 
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class SetFlyPKT implements IPEPacket {
 
@@ -16,20 +16,20 @@ public class SetFlyPKT implements IPEPacket {
 	}
 
 	@Override
-	public void handle(Context context) {
+	public void handle(NetworkEvent.Context context) {
 		if (Minecraft.getInstance().player != null) {
-			Minecraft.getInstance().player.abilities.mayfly = allowFlying;
-			Minecraft.getInstance().player.abilities.flying = isFlying;
+			Minecraft.getInstance().player.getAbilities().mayfly = allowFlying;
+			Minecraft.getInstance().player.getAbilities().flying = isFlying;
 		}
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(allowFlying);
 		buffer.writeBoolean(isFlying);
 	}
 
-	public static SetFlyPKT decode(PacketBuffer buffer) {
+	public static SetFlyPKT decode(FriendlyByteBuf buffer) {
 		return new SetFlyPKT(buffer.readBoolean(), buffer.readBoolean());
 	}
 }

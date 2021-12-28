@@ -7,18 +7,17 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PEAxe extends AxeItem implements IItemCharge {
@@ -53,13 +52,13 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 
 	@Override
@@ -73,37 +72,28 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
-	}
-
-	@Override
-	public boolean isCorrectToolForDrops(BlockState state) {
-		if (state.getHarvestTool() == ToolType.AXE) {
-			//Patch AxeItem to return true for canHarvestBlock when the block's harvest tool is an axe
-			return getTier().getLevel() >= state.getHarvestLevel();
-		}
-		return super.isCorrectToolForDrops(state);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
 		if (player == null) {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 		//Order that it attempts to use the item:
 		// Strip logs, AOE remove logs
 		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
 				() -> {
-					World world = context.getLevel();
+					Level world = context.getLevel();
 					if (world.getBlockState(context.getClickedPos()).is(BlockTags.LOGS)) {
 						//Mass clear
 						//Note: We already tried to strip the log in an earlier action
 						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
 					}
-					return ActionResultType.PASS;
+					return InteractionResult.PASS;
 				});
 	}
 }

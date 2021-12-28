@@ -7,10 +7,10 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TransmutationProxyImpl implements ITransmutationProxy {
 
@@ -32,7 +32,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 		} else {
 			Preconditions.checkNotNull(playerUUID);
 			Preconditions.checkNotNull(ServerLifecycleHooks.getCurrentServer(), "Server must be running to query knowledge!");
-			PlayerEntity player = findOnlinePlayer(playerUUID);
+			Player player = findOnlinePlayer(playerUUID);
 			if (player != null) {
 				return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 			}
@@ -40,8 +40,8 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 		}
 	}
 
-	private PlayerEntity findOnlinePlayer(UUID playerUUID) {
-		for (PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+	private Player findOnlinePlayer(UUID playerUUID) {
+		for (Player player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 			if (player.getUUID().equals(playerUUID)) {
 				return player;
 			}

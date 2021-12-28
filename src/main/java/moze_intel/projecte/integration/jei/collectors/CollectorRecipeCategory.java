@@ -1,6 +1,6 @@
 package moze_intel.projecte.integration.jei.collectors;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
@@ -13,10 +13,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe> {
 
@@ -24,13 +24,11 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
-	private final String localizedName;
 
 	public CollectorRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(new ItemStack(PEBlocks.COLLECTOR));
-		localizedName = PELang.JEI_COLLECTOR.translate().getString();
+		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEBlocks.COLLECTOR));
 	}
 
 	@Nonnull
@@ -47,8 +45,8 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 
 	@Nonnull
 	@Override
-	public String getTitle() {
-		return localizedName;
+	public Component getTitle() {
+		return PELang.JEI_COLLECTOR.translate();
 	}
 
 	@Nonnull
@@ -89,9 +87,9 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public void draw(FuelUpgradeRecipe recipe, @Nonnull MatrixStack matrix, double mouseX, double mouseY) {
-		ITextComponent emc = PELang.EMC.translate(recipe.getUpgradeEMC());
-		FontRenderer fontRenderer = Minecraft.getInstance().font;
+	public void draw(FuelUpgradeRecipe recipe, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
+		Component emc = PELang.EMC.translate(recipe.getUpgradeEMC());
+		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(emc);
 		fontRenderer.draw(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
 		arrow.draw(matrix, 55, 18);

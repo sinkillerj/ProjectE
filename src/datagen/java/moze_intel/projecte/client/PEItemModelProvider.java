@@ -7,9 +7,9 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -239,21 +239,21 @@ public class PEItemModelProvider extends ItemModelProvider {
 		}
 	}
 
-	protected ResourceLocation itemTexture(IItemProvider itemProvider) {
+	protected ResourceLocation itemTexture(ItemLike itemProvider) {
 		return modLoc("item/" + getName(itemProvider));
 	}
 
-	protected void registerGenerated(IItemProvider... itemProviders) {
-		for (IItemProvider itemProvider : itemProviders) {
+	protected void registerGenerated(ItemLike... itemProviders) {
+		for (ItemLike itemProvider : itemProviders) {
 			generated(itemProvider);
 		}
 	}
 
-	protected ItemModelBuilder generated(IItemProvider itemProvider) {
+	protected ItemModelBuilder generated(ItemLike itemProvider) {
 		return generated(itemProvider, itemTexture(itemProvider));
 	}
 
-	protected ItemModelBuilder generated(IItemProvider itemProvider, ResourceLocation texture) {
+	protected ItemModelBuilder generated(ItemLike itemProvider, ResourceLocation texture) {
 		return generated(getName(itemProvider), texture);
 	}
 
@@ -261,7 +261,7 @@ public class PEItemModelProvider extends ItemModelProvider {
 		return withExistingParent(name, "item/generated").texture("layer0", texture);
 	}
 
-	protected ItemModelBuilder handheld(IItemProvider itemProvider, ResourceLocation texture) {
+	protected ItemModelBuilder handheld(ItemLike itemProvider, ResourceLocation texture) {
 		return handheld(getName(itemProvider), texture);
 	}
 
@@ -269,7 +269,7 @@ public class PEItemModelProvider extends ItemModelProvider {
 		return withExistingParent(name, "item/handheld").texture("layer0", texture);
 	}
 
-	private static String getName(IItemProvider itemProvider) {
+	private static String getName(ItemLike itemProvider) {
 		return itemProvider.asItem().getRegistryName().getPath();
 	}
 }

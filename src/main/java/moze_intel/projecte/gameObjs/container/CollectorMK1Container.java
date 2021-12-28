@@ -9,29 +9,29 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IntReferenceHolder;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK1Container extends PEContainer {
 
 	public final CollectorMK1Tile tile;
-	public final IntReferenceHolder sunLevel = IntReferenceHolder.standalone();
+	public final DataSlot sunLevel = DataSlot.standalone();
 	public final BoxedLong emc = new BoxedLong();
-	private final IntReferenceHolder kleinChargeProgress = IntReferenceHolder.standalone();
-	private final IntReferenceHolder fuelProgress = IntReferenceHolder.standalone();
+	private final DataSlot kleinChargeProgress = DataSlot.standalone();
+	private final DataSlot fuelProgress = DataSlot.standalone();
 	public final BoxedLong kleinEmc = new BoxedLong();
 
-	public CollectorMK1Container(int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector) {
+	public CollectorMK1Container(int windowId, Inventory invPlayer, CollectorMK1Tile collector) {
 		this(PEContainerTypes.COLLECTOR_MK1_CONTAINER, windowId, invPlayer, collector);
 	}
 
-	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, PlayerInventory invPlayer, CollectorMK1Tile collector) {
+	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, Inventory invPlayer, CollectorMK1Tile collector) {
 		super(type, windowId);
 		this.longFields.add(emc);
 		addDataSlot(sunLevel);
@@ -42,7 +42,7 @@ public class CollectorMK1Container extends PEContainer {
 		initSlots(invPlayer);
 	}
 
-	void initSlots(PlayerInventory invPlayer) {
+	void initSlots(Inventory invPlayer) {
 		IItemHandler aux = tile.getAux();
 		IItemHandler main = tile.getInput();
 
@@ -62,15 +62,14 @@ public class CollectorMK1Container extends PEContainer {
 		addPlayerInventory(invPlayer, 8, 84);
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clicked(int slotID, int button, @Nonnull ClickType flag, @Nonnull PlayerEntity player) {
+	public void clicked(int slotID, int button, @Nonnull ClickType flag, @Nonnull Player player) {
 		Slot slot = tryGetSlot(slotID);
 		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
 			slot.set(ItemStack.EMPTY);
-			return ItemStack.EMPTY;
+		} else {
+			super.clicked(slotID, button, flag, player);
 		}
-		return super.clicked(slotID, button, flag, player);
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class CollectorMK1Container extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull PlayerEntity player) {
+	public boolean stillValid(@Nonnull Player player) {
 		return stillValid(player, tile, getValidBlock());
 	}
 

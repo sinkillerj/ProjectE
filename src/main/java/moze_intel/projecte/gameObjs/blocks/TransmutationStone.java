@@ -4,36 +4,36 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 
-public class TransmutationStone extends DirectionalBlock implements IWaterLoggable {
+public class TransmutationStone extends DirectionalBlock implements SimpleWaterloggedBlock {
 
 	private static final VoxelShape UP_SHAPE = Block.box(0, 0, 0, 16, 4, 16);
 	private static final VoxelShape DOWN_SHAPE = Block.box(0, 12, 0, 16, 16, 16);
@@ -48,14 +48,14 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
 		props.add(FACING).add(BlockStateProperties.WATERLOGGED);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
 		Direction facing = state.getValue(FACING);
 		switch (facing) {
 			case DOWN:
@@ -77,17 +77,17 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Nonnull
 	@Override
 	@Deprecated
-	public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
-			@Nonnull BlockRayTraceResult rtr) {
+	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+			@Nonnull BlockHitResult rtr) {
 		if (!world.isClientSide) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(), b -> b.writeBoolean(false));
+			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+	public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
 		BlockState state = super.getStateForPlacement(context);
 		return state == null ? null : state.setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
@@ -102,10 +102,10 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
@@ -124,16 +124,16 @@ public class TransmutationStone extends DirectionalBlock implements IWaterLoggab
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 
-	private static class ContainerProvider implements INamedContainerProvider {
+	private static class ContainerProvider implements MenuProvider {
 
 		@Override
-		public Container createMenu(int windowId, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
+		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
 			return new TransmutationContainer(windowId, playerInventory);
 		}
 
 		@Nonnull
 		@Override
-		public ITextComponent getDisplayName() {
+		public Component getDisplayName() {
 			return PELang.TRANSMUTATION_TRANSMUTE.translate();
 		}
 	}

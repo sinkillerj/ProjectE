@@ -3,13 +3,14 @@ package moze_intel.projecte.api.nss;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -17,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
-	private NSSFluid(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundNBT nbt) {
+	private NSSFluid(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag, nbt);
 	}
 
@@ -39,10 +40,10 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link Fluid} and an optional {@link CompoundNBT}
+	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link Fluid} and an optional {@link CompoundTag}
 	 */
 	@Nonnull
-	public static NSSFluid createFluid(@Nonnull Fluid fluid, @Nullable CompoundNBT nbt) {
+	public static NSSFluid createFluid(@Nonnull Fluid fluid, @Nullable CompoundTag nbt) {
 		if (fluid == Fluids.EMPTY) {
 			throw new IllegalArgumentException("Can't make NSSFluid with an empty fluid");
 		}
@@ -59,10 +60,10 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link ResourceLocation} and an optional {@link CompoundNBT}
+	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link ResourceLocation} and an optional {@link CompoundTag}
 	 */
 	@Nonnull
-	public static NSSFluid createFluid(@Nonnull ResourceLocation fluidID, @Nullable CompoundNBT nbt) {
+	public static NSSFluid createFluid(@Nonnull ResourceLocation fluidID, @Nullable CompoundTag nbt) {
 		return new NSSFluid(fluidID, false, nbt);
 	}
 
@@ -75,11 +76,11 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link ITag<Fluid>}
+	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link Tag<Fluid>}
 	 */
 	@Nonnull
-	public static NSSFluid createTag(@Nonnull ITag<Fluid> tag) {
-		ResourceLocation tagLocation = TagCollectionManager.getInstance().getFluids().getId(tag);
+	public static NSSFluid createTag(@Nonnull Tag<Fluid> tag) {
+		ResourceLocation tagLocation = SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getId(tag);
 		if (tagLocation == null) {
 			throw new IllegalArgumentException("Can't make NSSFluid with a tag that does not exist");
 		}
@@ -105,8 +106,8 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
 	@Nonnull
 	@Override
-	protected ITagCollection<Fluid> getTagCollection() {
-		return TagCollectionManager.getInstance().getFluids();
+	protected TagCollection<Fluid> getTagCollection() {
+		return SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY);
 	}
 
 	@Override

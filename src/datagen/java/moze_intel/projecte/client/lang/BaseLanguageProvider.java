@@ -5,7 +5,7 @@ import java.util.List;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.HashCache;
 import net.minecraftforge.common.data.LanguageProvider;
 
 /**
@@ -38,7 +38,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 	}
 
 	@Override
-	public void run(DirectoryCache cache) throws IOException {
+	public void run(HashCache cache) throws IOException {
 		super.run(cache);
 		if (altProviders.length > 0) {
 			for (ConvertibleLanguageProvider provider : altProviders) {

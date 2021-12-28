@@ -74,7 +74,16 @@ sourceSets {
     }
 }
 
-configurations {
+def libraryConfigs = new HashSet<org.gradle.api.artifacts.Configuration>();
+configurations { configContainer ->
+    sourceSets.each { sourceSet ->
+        def configName = sourceSet.name == "main" ? "forgeLibrary" : sourceSet.name + "ForgeLibrary";
+        def implementationConfigName = sourceSet.name == "main" ? "implementation" : sourceSet.name + "Implementation"
+        def libraryConfig = configContainer.maybeCreate(configName)
+        def implementationConfig = configContainer.maybeCreate(implementationConfigName)
+        implementationConfig.extendsFrom libraryConfig
+        libraryConfigs.add(libraryConfig)
+    }
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
     extendConfigurations(implementation, apiImplementation, testImplementation, datagenImplementation)
@@ -90,7 +99,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 
 ext {
     versionProperties = ["version"       : projecte_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range]
+                         "loader_version": loader_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -125,14 +134,14 @@ version = "${projecte_version}"
 group = "java.moze_intel"
 archivesBaseName = "projecte"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
 
     accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
 
-    runs {
+    runs { runSpecContainer ->
         client {
             workingDirectory file('run')
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
@@ -203,6 +212,21 @@ minecraft {
 
             mods {
                 projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagen])
+            }
+        }
+        project.afterEvaluate {
+            def paths = new HashSet<String>()
+            libraryConfigs.each { config ->
+                config.copyRecursive().resolve().collect {
+                    it.absolutePath.toString()
+                }.each { path ->
+                    paths.add(path)
+                }
+            }
+            runSpecContainer.each { runSpec ->
+                runSpec.lazyToken('minecraft_classpath') {
+                    paths.join(File.pathSeparator)
+                }
             }
         }
     }
@@ -283,15 +307,17 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    //TODO
+    implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
+    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.18:${top_version}:api")
+    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.18:${top_version}")
 
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    //implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
-    implementation group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
+    forgeLibrary group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
 
 if (project.hasProperty('UPDATE_MAPPINGS')) {
@@ -381,7 +407,7 @@ shadowJar {
 }
 
 reobf {
-    shadowJar { }
+    shadowJar {}
     apiJar { classpath.from(sourceSets.api.compileClasspath) }
     jar { classpath.from(sourceSets.main.compileClasspath) }
 }
@@ -403,6 +429,7 @@ task updateJSON {
 
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
+    it.options.compilerArgs << "-Xmaxerrs" << "100000"
 })
 
 artifacts {

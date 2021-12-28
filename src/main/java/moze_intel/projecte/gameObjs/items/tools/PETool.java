@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -12,23 +11,24 @@ import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public abstract class PETool extends ToolItem implements IItemCharge {
+public abstract class PETool extends DiggerItem implements IItemCharge {
 
 	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 	protected final EnumMatterType matterType;
 	private final int numCharges;
 
-	public PETool(EnumMatterType matterType, float damage, float attackSpeed, int numCharges, Properties props) {
-		super(damage, attackSpeed, matterType, new HashSet<>(), props);
+	public PETool(EnumMatterType matterType, Tag<Block> blocks, float damage, float attackSpeed, int numCharges, Properties props) {
+		super(damage, attackSpeed, matterType, blocks, props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
 		addItemCapability(ChargeItemCapabilityWrapper::new);
@@ -59,13 +59,13 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack) {
+	public boolean isBarVisible(@Nonnull ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return 1.0D - getChargePercent(stack);
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
 	}
 
 	@Override
@@ -79,14 +79,14 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
 		if (supportedCapabilities.isEmpty()) {
 			return super.initCapabilities(stack, nbt);
 		}
 		return new ItemCapabilityWrapper(stack, supportedCapabilities);
 	}
 
-	@Override
+	/*@Override//TODO - 1.18: Re-evaluate I think this isn't needed anymore
 	public boolean canHarvestBlock(@Nonnull ItemStack stack, BlockState state) {
 		//Note: We override the more specific implementation as we need the stack to get our tool's supported ToolTypes
 		ToolType requiredTool = state.getHarvestTool();
@@ -97,7 +97,7 @@ public abstract class PETool extends ToolItem implements IItemCharge {
 			}
 		}
 		return super.canHarvestBlock(stack, state);
-	}
+	}*/
 
 	/**
 	 * Override this if we need to also include any "shortcuts" that specific vanilla tool types include for specific blocks/material types.

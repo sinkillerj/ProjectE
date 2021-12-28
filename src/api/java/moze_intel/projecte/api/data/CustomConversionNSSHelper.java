@@ -1,16 +1,16 @@
 package moze_intel.projecte.api.data;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -46,7 +46,7 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	 *
 	 * @param output Stack produced by the conversion.
 	 *
-	 * @apiNote Either this method or {@link #conversion(NormalizedSimpleStack, int)} using {@link NSSItem#createItem(IItemProvider, net.minecraft.nbt.CompoundNBT)}
+	 * @apiNote Either this method or {@link #conversion(NormalizedSimpleStack, int)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)}
 	 * should be used if NBT specifics are needed.
 	 */
 	default BUILDER conversion(ItemStack output) {
@@ -54,40 +54,40 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
 	 *
 	 * @param output Item produced by the conversion.
 	 */
-	default BUILDER conversion(IItemProvider output) {
+	default BUILDER conversion(ItemLike output) {
 		return conversion(output, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link IItemProvider} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
+	 * Helper method to wrap an {@link ItemLike} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
 	 *
 	 * @param output Item produced by the conversion.
 	 * @param amount Amount the conversion outputs.
 	 */
-	default BUILDER conversion(IItemProvider output, int amount) {
+	default BUILDER conversion(ItemLike output, int amount) {
 		return conversion(NSSItem.createItem(output), amount);
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
 	 *
 	 * @param output Item tag produced by the conversion.
 	 */
-	default BUILDER conversion(ITag<Item> output) {
+	default BUILDER conversion(Tag<Item> output) {
 		return conversion(output, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
+	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
 	 *
 	 * @param output Item tag produced by the conversion.
 	 * @param amount Amount the conversion outputs.
 	 */
-	default BUILDER conversion(ITag<Item> output, int amount) {
+	default BUILDER conversion(Tag<Item> output, int amount) {
 		return conversion(NSSItem.createTag(output), amount);
 	}
 
@@ -96,7 +96,7 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	 *
 	 * @param output Stack produced by the conversion.
 	 *
-	 * @apiNote Either this method or {@link #conversion(NormalizedSimpleStack, int)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundNBT)} should be
+	 * @apiNote Either this method or {@link #conversion(NormalizedSimpleStack, int)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be
 	 * used if NBT specifics are needed.
 	 */
 	default BUILDER conversion(FluidStack output) {
@@ -123,25 +123,25 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
 	 *
 	 * @param output Fluid tag produced by the conversion.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER conversionFluid(ITag<Fluid> output) {
+	default BUILDER conversionFluid(Tag<Fluid> output) {
 		return conversionFluid(output, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link ITag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
+	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
 	 *
 	 * @param output Fluid tag produced by the conversion.
 	 * @param amount Amount the conversion outputs.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER conversionFluid(ITag<Fluid> output, int amount) {
+	default BUILDER conversionFluid(Tag<Fluid> output, int amount) {
 		return conversion(NSSFluid.createTag(output), amount);
 	}
 

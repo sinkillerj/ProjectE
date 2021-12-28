@@ -5,7 +5,7 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 @NBTProcessor
 public class StoredEMCProcessor implements INBTProcessor {

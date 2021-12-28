@@ -8,27 +8,27 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
-public class RecipesCovalenceRepair extends SpecialRecipe {
+public class RecipesCovalenceRepair extends CustomRecipe {
 
 	public RecipesCovalenceRepair(ResourceLocation id) {
 		super(id);
 	}
 
 	@Nullable
-	private RepairTargetInfo findIngredients(CraftingInventory inv) {
+	private RepairTargetInfo findIngredients(CraftingContainer inv) {
 		List<ItemStack> dust = new ArrayList<>();
 		ItemStack tool = ItemStack.EMPTY;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack input = inv.getItem(i);
 			if (!input.isEmpty()) {
-				if (input.getItem().is(PETags.Items.COVALENCE_DUST)) {
+				if (PETags.Items.COVALENCE_DUST.contains(input.getItem())) {
 					dust.add(input);
 				} else if (tool.isEmpty() && ItemHelper.isRepairableDamagedItem(input)) {
 					tool = input;
@@ -45,14 +45,14 @@ public class RecipesCovalenceRepair extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level world) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		return targetInfo != null && targetInfo.emcPerDurability <= targetInfo.dustEmc;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingInventory inv) {
+	public ItemStack assemble(@Nonnull CraftingContainer inv) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		if (targetInfo == null) {
 			//If there isn't actually a match return no result
@@ -70,7 +70,7 @@ public class RecipesCovalenceRepair extends SpecialRecipe {
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return PERecipeSerializers.COVALENCE_REPAIR.get();
 	}
 

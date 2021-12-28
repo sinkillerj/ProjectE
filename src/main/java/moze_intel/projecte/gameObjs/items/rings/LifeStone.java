@@ -7,24 +7,24 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 public class LifeStone extends PEToggleItem implements IPedestalItem {
 
@@ -35,13 +35,13 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, World world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= PlayerInventory.getSelectionSize() || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
+		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player)) {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, held);
-		PlayerEntity player = (PlayerEntity) entity;
-		CompoundNBT nbt = stack.getOrCreateTag();
+		Player player = (Player) entity;
+		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (!consumeFuel(player, stack, 2 * 64, false)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
@@ -49,13 +49,13 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
 					if (player.getFoodData().needsFood() && timers.canFeed()) {
-						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1, 1);
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
 						player.getFoodData().eat(2, 10);
 						removeEmc(stack, 64);
 					}
 					timers.activateHeal();
 					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.PLAYERS, 1, 1);
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
 						player.heal(2.0F);
 						removeEmc(stack, 64);
 					}
@@ -65,19 +65,19 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull World world, @Nonnull BlockPos pos) {
+	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
 			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
 			if (tile != null) {
 				if (tile.getActivityCooldown() == 0) {
-					List<ServerPlayerEntity> players = world.getEntitiesOfClass(ServerPlayerEntity.class, tile.getEffectBounds());
-					for (ServerPlayerEntity player : players) {
+					List<ServerPlayer> players = world.getEntitiesOfClass(ServerPlayer.class, tile.getEffectBounds());
+					for (ServerPlayer player : players) {
 						if (player.getHealth() < player.getMaxHealth()) {
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.BLOCKS, 1, 1);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
 							player.heal(1.0F); // 1/2 heart
 						}
 						if (player.getFoodData().needsFood()) {
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundCategory.BLOCKS, 1, 1);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
 							player.getFoodData().eat(1, 1); // 1/2 shank
 						}
 					}
@@ -91,11 +91,11 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 
 	@Nonnull
 	@Override
-	public List<ITextComponent> getPedestalDescription() {
-		List<ITextComponent> list = new ArrayList<>();
+	public List<Component> getPedestalDescription() {
+		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
-			list.add(PELang.PEDESTAL_LIFE_STONE_1.translateColored(TextFormatting.BLUE));
-			list.add(PELang.PEDESTAL_LIFE_STONE_2.translateColored(TextFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.life.get())));
+			list.add(PELang.PEDESTAL_LIFE_STONE_1.translateColored(ChatFormatting.BLUE));
+			list.add(PELang.PEDESTAL_LIFE_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.life.get())));
 		}
 		return list;
 	}

@@ -4,37 +4,36 @@ import moze_intel.projecte.gameObjs.registration.INamedEntry;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<ContainerType<?>> {
+public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
 	public ContainerTypeDeferredRegister() {
 		super(ForgeRegistries.CONTAINERS);
 	}
 
-	public <CONTAINER extends Container, TILE extends TileEntity> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<TILE> tileClass,
+	public <CONTAINER extends AbstractContainerMenu, TILE extends BlockEntity> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<TILE> tileClass,
 			ITileContainerFactory<CONTAINER, TILE> factory) {
 		return register(nameProvider, (id, inv, buf) -> factory.create(id, inv, getTeFromBuf(buf, tileClass)));
 	}
 
-	public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
+	public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
 		return register(nameProvider.getInternalRegistryName(), factory);
 	}
 
-	public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
-		return register(name, () -> IForgeContainerType.create(factory), ContainerTypeRegistryObject::new);
+	public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
+		return register(name, () -> new MenuType<>(factory), ContainerTypeRegistryObject::new);
 	}
 
-	private static <TILE extends TileEntity> TILE getTeFromBuf(PacketBuffer buf, Class<TILE> type) {
+	private static <TILE extends BlockEntity> TILE getTeFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
 		if (buf == null) {
 			throw new IllegalArgumentException("Null packet buffer");
 		}
@@ -51,8 +50,8 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
 		});
 	}
 
-	public interface ITileContainerFactory<CONTAINER extends Container, TILE extends TileEntity> {
+	public interface ITileContainerFactory<CONTAINER extends AbstractContainerMenu, TILE extends BlockEntity> {
 
-		CONTAINER create(int id, PlayerInventory inv, TILE tile);
+		CONTAINER create(int id, Inventory inv, TILE tile);
 	}
 }

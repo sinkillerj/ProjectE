@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
@@ -29,29 +31,18 @@ import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
+import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.gameObjs.registries.PETileEntityTypes;
 import moze_intel.projecte.handlers.CommonInternalAbilities;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.TransmutationOffline;
-import moze_intel.projecte.impl.capability.AlchBagImpl;
-import moze_intel.projecte.impl.capability.AlchBagItemDefaultImpl;
-import moze_intel.projecte.impl.capability.AlchChestItemDefaultImpl;
-import moze_intel.projecte.impl.capability.ChargeItemDefaultImpl;
-import moze_intel.projecte.impl.capability.EmcHolderItemDefaultImpl;
-import moze_intel.projecte.impl.capability.EmcStorageDefaultImpl;
-import moze_intel.projecte.impl.capability.ExtraFunctionItemDefaultImpl;
-import moze_intel.projecte.impl.capability.KnowledgeImpl;
-import moze_intel.projecte.impl.capability.ModeChangerItemDefaultImpl;
-import moze_intel.projecte.impl.capability.PedestalItemDefaultImpl;
-import moze_intel.projecte.impl.capability.ProjectileShooterItemDefaultImpl;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
@@ -65,42 +56,42 @@ import moze_intel.projecte.network.commands.ShowBagCMD;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
-import moze_intel.projecte.utils.DummyIStorage;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.dispenser.BeehiveDispenseBehavior;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.IDispenseItemBehavior;
-import net.minecraft.dispenser.OptionalDispenseBehavior;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -111,11 +102,10 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
@@ -154,14 +144,15 @@ public class PECore {
 		modEventBus.addListener(this::imcQueue);
 		modEventBus.addListener(this::imcHandle);
 		modEventBus.addListener(this::onConfigLoad);
-		modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
+		modEventBus.addListener(this::registerCapabilities);
+		modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
 		PEBlocks.BLOCKS.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
 		PEItems.ITEMS.register(modEventBus);
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
-		PETileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
@@ -171,7 +162,7 @@ public class PECore {
 		ProjectEConfig.register();
 	}
 
-	private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+	private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
 		//Add our condition serializers
 		CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 		CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
@@ -179,22 +170,24 @@ public class PECore {
 		CraftingHelper.register(rl("full_klein_star"), FullKleinStarIngredient.SERIALIZER);
 	}
 
-	private void commonSetup(FMLCommonSetupEvent event) {
-		AlchBagImpl.init();
-		KnowledgeImpl.init();
-		CapabilityManager.INSTANCE.register(InternalTimers.class, new DummyIStorage<>(), InternalTimers::new);
-		CapabilityManager.INSTANCE.register(InternalAbilities.class, new DummyIStorage<>(), () -> new InternalAbilities(null));
-		CapabilityManager.INSTANCE.register(CommonInternalAbilities.class, new DummyIStorage<>(), () -> new CommonInternalAbilities(null));
-		CapabilityManager.INSTANCE.register(IAlchBagItem.class, new DummyIStorage<>(), AlchBagItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IAlchChestItem.class, new DummyIStorage<>(), AlchChestItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IExtraFunction.class, new DummyIStorage<>(), ExtraFunctionItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IItemCharge.class, new DummyIStorage<>(), ChargeItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IItemEmcHolder.class, new DummyIStorage<>(), EmcHolderItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IModeChanger.class, new DummyIStorage<>(), ModeChangerItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IPedestalItem.class, new DummyIStorage<>(), PedestalItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IProjectileShooter.class, new DummyIStorage<>(), ProjectileShooterItemDefaultImpl::new);
-		CapabilityManager.INSTANCE.register(IEmcStorage.class, new DummyIStorage<>(), EmcStorageDefaultImpl::new);
+	private void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.register(IAlchBagProvider.class);
+		event.register(IKnowledgeProvider.class);
+		event.register(InternalTimers.class);
+		event.register(InternalAbilities.class);
+		event.register(CommonInternalAbilities.class);
+		event.register(IAlchBagItem.class);
+		event.register(IAlchChestItem.class);
+		event.register(IExtraFunction.class);
+		event.register(IItemCharge.class);
+		event.register(IItemEmcHolder.class);
+		event.register(IModeChanger.class);
+		event.register(IPedestalItem.class);
+		event.register(IProjectileShooter.class);
+		event.register(IEmcStorage.class);
+	}
 
+	private void commonSetup(FMLCommonSetupEvent event) {
 		new ThreadCheckUpdate().start();
 
 		EMCMappingHandler.loadMappers();
@@ -204,13 +197,13 @@ public class PECore {
 		event.enqueueWork(() -> {
 			PacketHandler.register();
 			//Dispenser Behavior
-			registerDispenseBehavior(new BeehiveDispenseBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);
+			registerDispenseBehavior(new ShearsDispenseItemBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);
 			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
 			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATACLYSM, PEBlocks.NOVA_CATACLYSM.getBlock().createDispenseItemBehavior());
-			registerDispenseBehavior(new OptionalDispenseBehavior() {
+			registerDispenseBehavior(new OptionalDispenseItemBehavior() {
 				@Nonnull
 				@Override
-				protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
 					//Based off the flint and steel dispense behavior
 					if (stack.getItem() instanceof Arcana) {
 						Arcana item = (Arcana) stack.getItem();
@@ -220,18 +213,18 @@ public class PECore {
 							return super.execute(source, stack);
 						}
 					}
-					World world = source.getLevel();
+					Level world = source.getLevel();
 					setSuccess(true);
 					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
 					BlockPos pos = source.getPos().relative(direction);
 					BlockState state = world.getBlockState(pos);
-					if (AbstractFireBlock.canBePlacedAt(world, pos, direction)) {
-						world.setBlockAndUpdate(pos, AbstractFireBlock.getState(world, pos));
+					if (BaseFireBlock.canBePlacedAt(world, pos, direction)) {
+						world.setBlockAndUpdate(pos, BaseFireBlock.getState(world, pos));
 					} else if (CampfireBlock.canLight(state)) {
 						world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
 					} else if (state.isFlammable(world, pos, direction.getOpposite())) {
-						state.catchFire(world, pos, direction.getOpposite(), null);
-						if (state.getBlock() instanceof TNTBlock) {
+						state.onCaughtFire(world, pos, direction.getOpposite(), null);
+						if (state.getBlock() instanceof TntBlock) {
 							world.removeBlock(pos, false);
 						}
 					} else {
@@ -243,13 +236,13 @@ public class PECore {
 			DispenserBlock.registerBehavior(PEItems.EVERTIDE_AMULET, new DefaultDispenseItemBehavior() {
 				@Nonnull
 				@Override
-				public ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+				public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
-					World world = source.getLevel();
+					Level world = source.getLevel();
 					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
 					BlockPos pos = source.getPos().relative(direction);
-					TileEntity tile = WorldHelper.getTileEntity(world, pos);
+					BlockEntity tile = WorldHelper.getTileEntity(world, pos);
 					Direction sideHit = direction.getOpposite();
 					if (tile != null) {
 						Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
@@ -260,14 +253,15 @@ public class PECore {
 					}
 					BlockState state = world.getBlockState(pos);
 					if (state.getBlock() == Blocks.CAULDRON) {
-						int waterLevel = state.getValue(CauldronBlock.LEVEL);
+						//TODO - 1.18: Re-evaluate I think this should end up becoming a CauldronInteraction
+						/*int waterLevel = state.getValue(CauldronBlock.LEVEL);
 						if (waterLevel < 3) {
 							((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
 							return stack;
-						}
+						}*/
 					} else {
 						WorldHelper.placeFluid(null, world, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						return stack;
 					}
 					return super.execute(source, stack);
@@ -275,14 +269,14 @@ public class PECore {
 			});
 
 			// internals unsafe
-			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new ArgumentSerializer<>(UUIDArgument::new));
-			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new ArgumentSerializer<>(ColorArgument::new));
-			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new ArgumentSerializer<>(NSSItemArgument::new));
+			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new EmptyArgumentSerializer<>(UUIDArgument::new));
+			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new EmptyArgumentSerializer<>(ColorArgument::new));
+			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new EmptyArgumentSerializer<>(NSSItemArgument::new));
 		});
 	}
 
-	private static void registerDispenseBehavior(IDispenseItemBehavior behavior, IItemProvider... items) {
-		for (IItemProvider item : items) {
+	private static void registerDispenseBehavior(DispenseItemBehavior behavior, ItemLike... items) {
+		for (ItemLike item : items) {
 			DispenserBlock.registerBehavior(item, behavior);
 		}
 	}
@@ -297,7 +291,7 @@ public class PECore {
 		IMCHandler.handleMessages();
 	}
 
-	private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+	private void onConfigLoad(ModConfigEvent configEvent) {
 		//Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
 		// cached values from calls before the initial loading
 		ModConfig config = configEvent.getConfig();
@@ -314,7 +308,7 @@ public class PECore {
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
-		LiteralArgumentBuilder<CommandSource> root = Commands.literal("projecte")
+		LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register())
 				.then(DumpMissingEmc.register())
 				.then(RemoveEmcCMD.register())
@@ -324,13 +318,13 @@ public class PECore {
 		event.getDispatcher().register(root);
 	}
 
-	private void serverStarting(FMLServerStartingEvent event) {
+	private void serverStarting(ServerStartingEvent event) {
 		if (!ThreadCheckUUID.hasRunServer()) {
 			new ThreadCheckUUID(true).start();
 		}
 	}
 
-	private void serverQuit(FMLServerStoppedEvent event) {
+	private void serverQuit(ServerStoppedEvent event) {
 		//Ensure we save any changes to the custom emc file
 		CustomEMCParser.flush();
 		TransmutationOffline.cleanAll();
