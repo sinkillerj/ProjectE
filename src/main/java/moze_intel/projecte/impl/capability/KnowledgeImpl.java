@@ -39,7 +39,6 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public final class KnowledgeImpl {
 
-	//TODO - 1.18: Re-evaluate this
 	public static IKnowledgeProvider getDefault() {
 		return new DefaultImpl(null);
 	}
@@ -288,7 +287,6 @@ public final class KnowledgeImpl {
 			for (int i = 0; i < inputLocks.getSlots(); i++) {
 				inputLocks.setStackInSlot(i, ItemStack.EMPTY);
 			}
-			//TODO - 1.18: Re-evaluate this handling
 			inputLocks.deserializeNBT(properties.getCompound("inputlock"));
 			fullKnowledge = properties.getBoolean("fullknowledge");
 		}

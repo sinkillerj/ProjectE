@@ -20,7 +20,6 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public final class AlchBagImpl {
 
-	//TODO - 1.18: Re-evaluate this
 	public static IAlchBagProvider getDefault() {
 		return new DefaultImpl();
 	}

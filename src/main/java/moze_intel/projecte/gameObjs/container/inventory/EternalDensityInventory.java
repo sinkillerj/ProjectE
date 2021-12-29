@@ -76,7 +76,6 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 
 	public void readFromNBT(CompoundTag nbt) {
 		isInWhitelist = nbt.getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
-		//TODO - 1.18: Re-evaluate this handling of cap reading/writing
 		inventory.deserializeNBT(nbt.getCompound(Constants.NBT_KEY_GEM_ITEMS));
 	}
 

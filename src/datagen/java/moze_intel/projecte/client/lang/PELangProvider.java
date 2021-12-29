@@ -404,7 +404,7 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.TOOLTIP_TOME, "Unlocks all transmutation knowledge when learned");
 		add(PELang.TOOLTIP_VOLCANITE_1, "Press %s to fire a lava projectile");
 		add(PELang.TOOLTIP_VOLCANITE_2, "Acts as infinitely full lava bucket");
-		add(PELang.TOOLTIP_VOLCANITE_3, "Right click to fill tanks");
+		add(PELang.TOOLTIP_VOLCANITE_3, "Right click to fill tanks and cauldrons");
 		add(PELang.TOOLTIP_VOLCANITE_4, "All operations cost 32 EMC!");
 	}
 

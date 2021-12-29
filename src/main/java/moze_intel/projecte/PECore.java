@@ -31,6 +31,7 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -66,12 +67,14 @@ import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -80,6 +83,7 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -255,12 +259,13 @@ public class PECore {
 					}
 					BlockState state = world.getBlockState(pos);
 					if (state.getBlock() == Blocks.CAULDRON) {
-						//TODO - 1.18: Re-evaluate I think this should end up becoming a CauldronInteraction
-						/*int waterLevel = state.getValue(CauldronBlock.LEVEL);
-						if (waterLevel < 3) {
-							((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
+						world.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
+						return stack;
+					} else if (state.getBlock() == Blocks.WATER_CAULDRON) {
+						if (!((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
+							world.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
 							return stack;
-						}*/
+						}
 					} else {
 						WorldHelper.placeFluid(null, world, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -268,6 +273,28 @@ public class PECore {
 					}
 					return super.execute(source, stack);
 				}
+			});
+			CauldronInteraction.EMPTY.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+				//Raise the fill level
+				if (!level.isClientSide) {
+					level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
+				}
+				return InteractionResult.SUCCESS;
+			});
+			CauldronInteraction.WATER.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)){
+					return InteractionResult.PASS;
+				} else if (!level.isClientSide) {
+					//Raise the fill level
+					level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
+				}
+				return InteractionResult.SUCCESS;
+			});
+			CauldronInteraction.EMPTY.put(PEItems.VOLCANITE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+				if (!level.isClientSide && ItemPE.consumeFuel(player, stack, 32, true)) {
+					level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
+				}
+				return InteractionResult.SUCCESS;
 			});
 
 			// internals unsafe

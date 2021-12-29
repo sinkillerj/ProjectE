@@ -64,8 +64,8 @@ public class ProjectETNT extends TntBlock {
 	public void wasExploded(Level world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
 		if (!world.isClientSide) {
 			PrimedTnt tnt = tntEntityCreator.create(world, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
-			//TODO - 1.18: Re-evaluate this math
-			tnt.setFuse((short) (world.random.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
+			int fuse = tnt.getFuse();
+			tnt.setFuse((short) (world.random.nextInt(fuse / 4) + fuse / 8));
 			world.addFreshEntity(tnt);
 		}
 	}

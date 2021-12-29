@@ -95,7 +95,6 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
 		if (representsTag()) {
-			//TODO - 1.18: Make getTagCollection return a registry key instead and look it up using that
 			Tag<TYPE> tag = getTagCollection().getTag(getResourceLocation());
 			if (tag != null) {
 				tag.getValues().stream().map(createNew()).forEach(consumer);

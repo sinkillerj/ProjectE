@@ -35,9 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.capabilities.Capability;
@@ -86,17 +84,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 					return InteractionResult.SUCCESS;
 				}
 			}
-			BlockState state = world.getBlockState(pos);
-			if (state.getBlock() == Blocks.CAULDRON) {
-				//TODO - 1.18: Re-evaluate I think this should end up becoming a CauldronInteraction
-				/*int waterLevel = state.getValue(CauldronBlock.LEVEL);
-				if (waterLevel < 3) {
-					((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, waterLevel + 1);
-				}*/
-			} else {
-				WorldHelper.placeFluid((ServerPlayer) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-			}
+			WorldHelper.placeFluid((ServerPlayer) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return InteractionResult.SUCCESS;
 	}
