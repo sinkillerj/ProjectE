@@ -1,7 +1,7 @@
 package moze_intel.projecte;
 
 import mezz.jei.api.runtime.IRecipesGui;
-import moze_intel.projecte.events.TransmutationRenderingEvent;
+import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.AbstractCondenserScreen;
 import moze_intel.projecte.gameObjs.gui.AlchBagScreen;
@@ -100,7 +100,7 @@ public class ClientRegistration {
 				}
 			});
 		}
-		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.CROSSHAIR_ELEMENT, "PETransmutationResult", new TransmutationRenderingEvent());
+		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.CROSSHAIR_ELEMENT, "PETransmutationResult", new TransmutationRenderingOverlay());
 
 		//Render layers
 		ItemBlockRenderTypes.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getBlock(), RenderType.cutout());

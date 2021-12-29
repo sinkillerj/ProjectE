@@ -12,6 +12,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.PETags.BlockEntities;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
+import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -42,7 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
 
-public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge {
+public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -236,7 +237,17 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 }

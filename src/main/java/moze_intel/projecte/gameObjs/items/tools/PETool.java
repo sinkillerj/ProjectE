@@ -10,6 +10,7 @@ import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.Tag;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public abstract class PETool extends DiggerItem implements IItemCharge {
+public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelper {
 
 	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 	protected final EnumMatterType matterType;
@@ -64,8 +65,18 @@ public abstract class PETool extends DiggerItem implements IItemCharge {
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 
 	@Override

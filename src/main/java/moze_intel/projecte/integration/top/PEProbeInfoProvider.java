@@ -24,7 +24,7 @@ public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOne
 		if (ProjectEConfig.server.misc.hwylaTOPDisplay.get()) {
 			long value = EMCHelper.getEmcValue(new ItemStack(blockState.getBlock()));
 			if (value > 0) {
-				probeInfo.text(EMCHelper.getEmcTextComponent(value, 1));
+				probeInfo.mcText(EMCHelper.getEmcTextComponent(value, 1));
 			}
 		}
 	}

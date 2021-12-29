@@ -32,7 +32,7 @@ public class PEBlockEntityTypes {
 	public static final BlockEntityTypeRegistryObject<RelayMK3Tile> RELAY_MK3 = BLOCK_ENTITY_TYPES.builder(PEBlocks.RELAY_MK3, RelayMK3Tile::new).commonTicker(TileEmc::tick).build();
 	public static final BlockEntityTypeRegistryObject<DMFurnaceTile> DARK_MATTER_FURNACE = BLOCK_ENTITY_TYPES.builder(PEBlocks.DARK_MATTER_FURNACE, DMFurnaceTile::new).commonTicker(TileEmc::tick).build();
 	public static final BlockEntityTypeRegistryObject<RMFurnaceTile> RED_MATTER_FURNACE = BLOCK_ENTITY_TYPES.builder(PEBlocks.RED_MATTER_FURNACE, RMFurnaceTile::new).commonTicker(TileEmc::tick).build();
-	//TODO - 10.1: Can this be a server ticker or does it need to be common
+	//TODO - 1.18: Can this be a server ticker or does it need to be common
 	public static final BlockEntityTypeRegistryObject<InterdictionTile> INTERDICTION_TORCH = BLOCK_ENTITY_TYPES.builder(PEBlocks.INTERDICTION_TORCH, InterdictionTile::new).commonTicker(InterdictionTile::tick).build();
 	public static final BlockEntityTypeRegistryObject<DMPedestalTile> DARK_MATTER_PEDESTAL = BLOCK_ENTITY_TYPES.builder(PEBlocks.DARK_MATTER_PEDESTAL, DMPedestalTile::new).commonTicker(TileEmc::tick).build();
 }

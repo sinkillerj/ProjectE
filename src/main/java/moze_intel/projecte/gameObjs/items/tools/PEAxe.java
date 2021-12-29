@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -20,7 +21,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class PEAxe extends AxeItem implements IItemCharge {
+public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 
 	private final EnumMatterType matterType;
 	private final int numCharges;
@@ -57,8 +58,18 @@ public class PEAxe extends AxeItem implements IItemCharge {
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 
 	@Override

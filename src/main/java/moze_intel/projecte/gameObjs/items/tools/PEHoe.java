@@ -6,18 +6,19 @@ import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class PEHoe extends HoeItem implements IItemCharge {
+public class PEHoe extends HoeItem implements IItemCharge, IBarHelper {
 
 	private final EnumMatterType matterType;
 	private final int numCharges;
@@ -54,8 +55,18 @@ public class PEHoe extends HoeItem implements IItemCharge {
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 
 	@Override

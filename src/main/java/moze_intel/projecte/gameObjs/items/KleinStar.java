@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-public class KleinStar extends ItemPE implements IItemEmcHolder {
+public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 
 	public final EnumKleinTier tier;
 
@@ -30,12 +30,22 @@ public class KleinStar extends ItemPE implements IItemEmcHolder {
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public float getWidthForBar(ItemStack stack) {
 		long starEmc = getEmc(stack);
 		if (starEmc == 0) {
 			return 0;
 		}
-		return Math.round(13.0F - 13.0F * (float) (1.0D - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack)));
+		return (float) (1 - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack));
+	}
+
+	@Override
+	public int getBarWidth(@Nonnull ItemStack stack) {
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 
 	@Nonnull

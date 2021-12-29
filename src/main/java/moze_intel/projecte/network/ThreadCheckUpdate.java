@@ -2,10 +2,9 @@ package moze_intel.projecte.network;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.client.player.LocalPlayer;
+import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.Util;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -65,10 +64,7 @@ public class ThreadCheckUpdate extends Thread {
 			hasSentMessage = true;
 			player.sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
 			player.sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
-			//TODO - 1.18: I think we can make this use textcomponentutil
-			Component link = new TextComponent(curseURL);
-			link.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
-			player.sendMessage(link, Util.NIL_UUID);
+			player.sendMessage(TextComponentUtil.build(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL), curseURL), Util.NIL_UUID);
 		}
 	}
 }

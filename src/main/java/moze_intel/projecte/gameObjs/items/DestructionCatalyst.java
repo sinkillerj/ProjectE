@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class DestructionCatalyst extends ItemPE implements IItemCharge {
+public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelper {
 
 	public DestructionCatalyst(Properties props) {
 		super(props);
@@ -96,7 +96,17 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge {
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 }

@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge {
+public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge, IBarHelper {
 
 	public HyperkineticLens(Properties props) {
 		super(props);
@@ -58,7 +58,17 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 }

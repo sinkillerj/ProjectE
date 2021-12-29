@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge {
+public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge, IBarHelper {
 
 	private final int numCharge;
 	private final ILangEntry[] modes;
@@ -42,8 +42,18 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge 
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 
 	@Override

@@ -29,8 +29,8 @@ public interface IItemCharge {
 	 *
 	 * @return The percent charge on the stack
 	 */
-	default double getChargePercent(@Nonnull ItemStack stack) {
-		return (double) getCharge(stack) / getNumCharges(stack);
+	default float getChargePercent(@Nonnull ItemStack stack) {
+		return (float) getCharge(stack) / getNumCharges(stack);
 	}
 
 	/**

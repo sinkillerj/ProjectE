@@ -21,7 +21,8 @@ public class CurioItemCapability extends BasicItemCapability<ICurio> implements 
 
 	@Override
 	public void curioTick(SlotContext context) {
-		//TODO - 1.18: Do we need to check if it is cosmetic and only do this if it isn't
-		getStack().inventoryTick(context.entity().getCommandSenderWorld(), context.entity(), context.index(), false);
+		if (!context.cosmetic()) {
+			getStack().inventoryTick(context.entity().getCommandSenderWorld(), context.entity(), context.index(), false);
+		}
 	}
 }

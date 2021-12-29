@@ -8,6 +8,7 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -29,7 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 
-public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
+public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
 	public Zero(Properties props) {
 		super(props);
@@ -118,7 +119,17 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge {
 	}
 
 	@Override
+	public float getWidthForBar(ItemStack stack) {
+		return 1 - getChargePercent(stack);
+	}
+
+	@Override
 	public int getBarWidth(@Nonnull ItemStack stack) {
-		return Math.round(13.0F - 13.0F * (float) (1.0D - getChargePercent(stack)));
+		return getScaledBarWidth(stack);
+	}
+
+	@Override
+	public int getBarColor(@Nonnull ItemStack stack) {
+		return getColorForBar(stack);
 	}
 }

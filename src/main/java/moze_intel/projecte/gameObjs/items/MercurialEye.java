@@ -337,7 +337,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 		@Override
 		public void deserializeNBT(Tag nbt) {
-			//TODO - 1.18: Re-evaluate this handling of cap reading/writing
 			if (nbt instanceof CompoundTag tag) {
 				inv.deserializeNBT(tag);
 			}

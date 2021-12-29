@@ -1,4 +1,4 @@
-package moze_intel.projecte.events;
+package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -10,7 +10,6 @@ import com.mojang.math.Matrix4f;
 import javax.annotation.Nullable;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
-import moze_intel.projecte.rendering.PERenderType;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -33,25 +32,20 @@ import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidAttributes;
 
-//TODO - 1.18: Rename this class?
-public class TransmutationRenderingEvent implements IIngameOverlay {
+public class TransmutationRenderingOverlay implements IIngameOverlay {
 
 	private final Minecraft mc = Minecraft.getInstance();
 	@Nullable
 	private BlockState transmutationResult;
 	private long lastGameTime;
 
-	public TransmutationRenderingEvent() {
+	public TransmutationRenderingOverlay() {
 		MinecraftForge.EVENT_BUS.addListener(this::onOverlay);
 	}
 
 	@Override
 	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		if (!mc.options.hideGui && transmutationResult != null) {
-			//TODO - 1.18: Evaluate this
-			//gui.setupOverlayRenderState(true, false);
-			//gui.setBlitOffset(-90);
-
 			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
 				FluidAttributes resultAttributes = liquidBlock.getFluid().getAttributes();
 				int color = resultAttributes.getColor();
@@ -71,14 +65,11 @@ public class TransmutationRenderingEvent implements IIngameOverlay {
 			} else {
 				//Just render it normally instead of with the given model as some block's don't render properly then as an item
 				// for example glass panes
-				//TODO - 1.18: Figure out lighting
-				//Lighting.turnBackOn();
 				mc.getItemRenderer().renderGuiItem(new ItemStack(transmutationResult.getBlock()), 0, 0);
-				//Lighting.turnOff();
 			}
 			long gameTime = mc.level == null ? 0 : mc.level.getGameTime();
 			if (lastGameTime != gameTime) {
-				//If the game time changed so we aren't actually still hovering a block set our
+				//If the game time changed, so we aren't actually still hovering a block set our
 				// result to null. We do this after rendering it just in case there is a single
 				// frame where this may actually be valid based on the order the events are fired
 				transmutationResult = null;
