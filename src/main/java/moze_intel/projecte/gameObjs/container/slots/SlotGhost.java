@@ -17,12 +17,21 @@ public class SlotGhost extends SlotItemHandler {
 		this.validator = validator;
 	}
 
+	public boolean isValid(@Nonnull ItemStack stack) {
+		return validator.test(stack);
+	}
+
 	@Override
 	public boolean mayPlace(@Nonnull ItemStack stack) {
-		if (!stack.isEmpty() && validator.test(stack)) {
-			this.set(ItemHelper.getNormalizedStack(stack));
+		if (!stack.isEmpty() && isValid(stack)) {
+			this.set(stack);
 		}
 		return false;
+	}
+
+	@Override
+	public void set(@Nonnull ItemStack stack) {
+		super.set(ItemHelper.getNormalizedStack(stack));
 	}
 
 	@Override

@@ -21,13 +21,15 @@ public class MercurialEyeContainer extends PEHandContainer {
 		return new MercurialEyeContainer(windowId, invPlayer, buf.readEnum(Hand.class), buf.readByte());
 	}
 
+	private final SlotGhost mercurialTarget;
+
 	public MercurialEyeContainer(int windowId, PlayerInventory invPlayer, Hand hand, int selected) {
 		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, hand, selected);
 		IItemHandler handler = getStack(invPlayer).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
 		//Klein Star
 		this.addSlot(new ValidatedSlot(handler, 0, 50, 26, SlotPredicates.EMC_HOLDER));
 		//Target
-		this.addSlot(new SlotGhost(handler, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
+		this.addSlot(mercurialTarget = new SlotGhost(handler, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
 		addPlayerInventory(invPlayer, 6, 56);
 	}
 
@@ -45,16 +47,15 @@ public class MercurialEyeContainer extends PEHandContainer {
 	@Nonnull
 	@Override
 	public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
-		if (slotID > 1) {
-			//If we are in the inventory start by trying to insert into the ghost slot if it isn't empty
-			Slot targetSlot = slots.get(1);
-			if (!targetSlot.hasItem()) {
-				Slot currentSlot = slots.get(slotID);
-				if (currentSlot == null || !currentSlot.hasItem()) {
-					return ItemStack.EMPTY;
-				}
-				ItemStack slotStack = currentSlot.getItem();
-				targetSlot.mayPlace(slotStack);
+		//If we are in the inventory start by trying to insert into the ghost slot if it isn't empty
+		if (slotID > 1 && !mercurialTarget.hasItem()) {
+			Slot currentSlot = slots.get(slotID);
+			if (currentSlot == null || !currentSlot.hasItem()) {
+				return ItemStack.EMPTY;
+			}
+			ItemStack slotStack = currentSlot.getItem();
+			if (!slotStack.isEmpty() && mercurialTarget.isValid(slotStack)) {
+				mercurialTarget.set(slotStack);
 				//Fake that it is now empty, so we don't move the stack to a different spot of the inventory
 				return ItemStack.EMPTY;
 			}
