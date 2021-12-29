@@ -12,11 +12,11 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEAdvancementsProvider extends AdvancementProvider {

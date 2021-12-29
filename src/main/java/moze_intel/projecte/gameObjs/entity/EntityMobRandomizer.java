@@ -4,21 +4,21 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Rabbit.RabbitGroupData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.network.NetworkHooks;
 
 public class EntityMobRandomizer extends ThrowableProjectile {

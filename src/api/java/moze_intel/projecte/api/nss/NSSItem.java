@@ -4,15 +4,15 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.SerializationTags;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.

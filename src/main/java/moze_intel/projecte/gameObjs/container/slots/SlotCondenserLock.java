@@ -4,9 +4,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 

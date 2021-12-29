@@ -5,9 +5,9 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class SlotPredicates {
 

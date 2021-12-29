@@ -11,8 +11,8 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.registration.impl.EntityTypeDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.EntityTypeRegistryObject;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 public class PEEntityTypes {
 

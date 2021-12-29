@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import java.util.function.Predicate;
+import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -8,7 +9,6 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;

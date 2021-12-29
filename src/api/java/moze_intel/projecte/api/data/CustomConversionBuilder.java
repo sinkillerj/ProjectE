@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault

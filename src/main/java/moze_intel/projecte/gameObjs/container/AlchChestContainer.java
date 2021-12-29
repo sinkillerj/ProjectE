@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 

@@ -3,9 +3,9 @@ package moze_intel.projecte.emc.mappers.recipe;
 import java.util.Arrays;
 import java.util.Collection;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.UpgradeRecipe;
 
 @RecipeTypeMapper

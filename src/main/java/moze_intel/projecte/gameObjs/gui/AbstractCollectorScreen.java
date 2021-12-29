@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -9,9 +9,9 @@ import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> extends PEContainerScreen<T> {
 

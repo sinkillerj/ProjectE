@@ -3,11 +3,11 @@ package moze_intel.projecte.gameObjs.container;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
 
 public class PEHandContainer extends PEContainer {
 

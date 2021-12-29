@@ -2,15 +2,15 @@ package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.tags.Tag.Named;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 

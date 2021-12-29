@@ -13,12 +13,12 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 //TODO: Fix recipe mapping for things containing EMC not working properly? (aka full klein stars)
 // We probably could do it with a set value before, make it a grouping of a fake stack that has

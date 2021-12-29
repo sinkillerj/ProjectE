@@ -5,12 +5,12 @@ import java.util.Random;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Rabbit;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.level.Level;
 
 public class EntityRandomizerHelper {

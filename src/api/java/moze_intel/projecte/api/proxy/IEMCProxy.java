@@ -3,10 +3,10 @@ package moze_intel.projecte.api.proxy;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 
 public interface IEMCProxy {
 

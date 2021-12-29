@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.container;
 
+import moze_intel.projecte.gameObjs.block_entities.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK2Tile;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 

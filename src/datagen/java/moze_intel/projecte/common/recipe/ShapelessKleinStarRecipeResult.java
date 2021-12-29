@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class ShapelessKleinStarRecipeResult implements FinishedRecipe {
 

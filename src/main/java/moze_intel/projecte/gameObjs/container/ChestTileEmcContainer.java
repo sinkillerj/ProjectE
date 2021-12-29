@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.block_entities.ChestTileEmc;
+import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 

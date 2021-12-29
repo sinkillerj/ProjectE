@@ -6,8 +6,8 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {

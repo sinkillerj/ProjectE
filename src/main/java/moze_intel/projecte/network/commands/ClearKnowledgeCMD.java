@@ -8,12 +8,12 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeClearPKT;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.Util;
-import net.minecraft.ChatFormatting;
 
 public class ClearKnowledgeCMD {
 

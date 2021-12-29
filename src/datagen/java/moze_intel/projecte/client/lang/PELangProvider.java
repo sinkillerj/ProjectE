@@ -7,8 +7,8 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.Util;
+import net.minecraft.data.DataGenerator;
 
 public class PELangProvider extends BaseLanguageProvider {
 

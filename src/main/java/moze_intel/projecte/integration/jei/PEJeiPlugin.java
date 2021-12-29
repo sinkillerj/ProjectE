@@ -19,9 +19,9 @@ import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 @JeiPlugin
 public class PEJeiPlugin implements IModPlugin {

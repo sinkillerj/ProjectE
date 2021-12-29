@@ -4,6 +4,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -12,11 +13,10 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class DMFurnaceContainer extends PEContainer {

@@ -10,8 +10,8 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 
 /**

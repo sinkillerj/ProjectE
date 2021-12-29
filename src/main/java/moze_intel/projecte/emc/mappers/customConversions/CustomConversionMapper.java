@@ -24,10 +24,10 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDe
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
 import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerResources;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 @EMCMapper

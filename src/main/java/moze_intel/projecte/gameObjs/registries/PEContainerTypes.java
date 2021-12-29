@@ -1,5 +1,16 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK2Tile;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK3Tile;
+import moze_intel.projecte.gameObjs.block_entities.CondenserMK2Tile;
+import moze_intel.projecte.gameObjs.block_entities.CondenserTile;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK2Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK3Tile;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -17,17 +28,6 @@ import moze_intel.projecte.gameObjs.container.RelayMK3Container;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
-import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
-import moze_intel.projecte.gameObjs.block_entities.CollectorMK2Tile;
-import moze_intel.projecte.gameObjs.block_entities.CollectorMK3Tile;
-import moze_intel.projecte.gameObjs.block_entities.CondenserMK2Tile;
-import moze_intel.projecte.gameObjs.block_entities.CondenserTile;
-import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
-import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK2Tile;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK3Tile;
 
 public class PEContainerTypes {
 

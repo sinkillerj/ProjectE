@@ -1,7 +1,6 @@
 package moze_intel.projecte;
 
 import mezz.jei.api.runtime.IRecipesGui;
-import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.AbstractCondenserScreen;
 import moze_intel.projecte.gameObjs.gui.AlchBagScreen;
@@ -23,10 +22,11 @@ import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.rendering.ChestRenderer;
+import moze_intel.projecte.rendering.EntitySpriteRenderer;
 import moze_intel.projecte.rendering.LayerYue;
 import moze_intel.projecte.rendering.NovaRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
-import moze_intel.projecte.rendering.EntitySpriteRenderer;
+import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;

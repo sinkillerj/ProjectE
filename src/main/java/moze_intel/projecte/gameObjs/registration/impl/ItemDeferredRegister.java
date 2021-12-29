@@ -8,10 +8,10 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {

@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:

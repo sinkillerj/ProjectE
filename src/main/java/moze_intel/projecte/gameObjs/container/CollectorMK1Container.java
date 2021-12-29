@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -9,13 +10,12 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK1Container extends PEContainer {

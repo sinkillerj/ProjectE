@@ -7,11 +7,11 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {

@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -8,9 +9,8 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
