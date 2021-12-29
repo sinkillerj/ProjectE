@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,6 +42,9 @@ import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunk.BoundTickingBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk.RebindableTickingBlockEntityWrapper;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
 
@@ -128,18 +133,35 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
-
-		List<BlockEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
-		//TODO - 1.18: Level#shouldTickBlocksAt
-		for (BlockEntity tile : list) {
-			if (!tile.isRemoved() && !tile.getType().isIn(BlockEntities.BLACKLIST_TIME_WATCH)) {
-				//TODO - 1.18: Look into this more, maybe need to AT into LevelChunk#updateblockEntityTicker???
-				// Level see how TickingBlockEntity is used
-				/*if (tile instanceof TickableBlockEntity tickableTile) {
-					for (int i = 0; i < bonusTicks; i++) {
-						tickableTile.tick();
+		for (BlockEntity tile : WorldHelper.getTileEntitiesWithinAABB(world, bBox)) {
+			if (!tile.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH.contains(tile.getType())) {
+				BlockPos pos = tile.getBlockPos();
+				if (world.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+					LevelChunk chunk = world.getChunkAt(pos);
+					RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
+					if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
+						if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
+							//In general this should always be the case, so we inline some of the logic
+							// to optimize the calls to try and make extra ticks as cheap as possible
+							if (chunk.isTicking(pos)) {
+								ProfilerFiller profiler = world.getProfiler();
+								profiler.push(tickingWrapper::getType);
+								BlockState state = chunk.getBlockState(pos);
+								if (tile.getType().isValid(state)) {
+									for (int i = 0; i < bonusTicks; i++) {
+										tickingBE.ticker.tick(world, pos, state, tile);
+									}
+								}
+								profiler.pop();
+							}
+						} else {
+							//Fallback to just trying to make it tick extra
+							for (int i = 0; i < bonusTicks; i++) {
+								tickingWrapper.tick();
+							}
+						}
 					}
-				}*/
+				}
 			}
 		}
 	}
@@ -150,14 +172,16 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
-			for (int i = 0; i < bonusTicks; i++) {
+			if (WorldHelper.isBlockLoaded(world, pos)) {
 				BlockState state = level.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.isRandomlyTicking() && !PETags.Blocks.BLACKLIST_TIME_WATCH.contains(block)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
-					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) // All plants should be sped using Harvest Goddess
-				{
-					state.randomTick(level, pos.immutable(), level.random);
+					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
+					pos = pos.immutable();
+					for (int i = 0; i < bonusTicks; i++) {
+						state.randomTick(level, pos, level.random);
+					}
 				}
 			}
 		}

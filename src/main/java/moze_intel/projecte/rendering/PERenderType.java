@@ -16,45 +16,31 @@ public class PERenderType extends RenderType {
 		super(name, format, drawMode, bufferSize, useDelegate, needsSorting, setupTask, clearTask);
 	}
 
-	public static final Function<ResourceLocation, RenderType> SPRITE_RENDERER = Util.memoize(PERenderType::spriteRenderer);
-
-	private static RenderType spriteRenderer(ResourceLocation resourceLocation) {
+	public static final Function<ResourceLocation, RenderType> SPRITE_RENDERER = Util.memoize(resourceLocation -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-				.setShaderState(RenderStateShard.POSITION_TEX_SHADER)//TODO - 1.18: Figure this out
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))//Texture state
-				.setLightmapState(NO_LIGHTMAP)//disableLighting
-				//TODO - 1.18: Re-evaluate
-				//.setAlphaState(MIDWAY_ALPHA)//alpha
+				.setShaderState(RenderStateShard.POSITION_TEX_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.createCompositeState(true);
 		return create("projecte_sprite_renderer", DefaultVertexFormat.POSITION_TEX, Mode.QUADS, 256, true, false, state);
-	}
+	});
 
-	public static final Function<ResourceLocation, RenderType> YEU_RENDERER = Util.memoize(PERenderType::yeuRenderer);
-
-	private static RenderType yeuRenderer(ResourceLocation resourceLocation) {
+	public static final Function<ResourceLocation, RenderType> YEU_RENDERER = Util.memoize(resourceLocation -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
-				.setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)//TODO - 1.18: Figure this out
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))//Texture state
-				.setLightmapState(NO_LIGHTMAP)//disableLighting
-				//TODO - 1.18: Re-evaluate
-				//.setAlphaState(MIDWAY_ALPHA)//alpha
+				.setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(NO_CULL)
 				.createCompositeState(true);
 		return create("projecte_yeu_renderer", DefaultVertexFormat.POSITION_COLOR_TEX, Mode.QUADS, 256, true, false, state);
-	}
+	});
 
-	public static final RenderType TRANSMUTATION_OVERLAY = transmutationOverlay();
-
-	private static RenderType transmutationOverlay() {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
-				.setTextureState(NO_TEXTURE)//disableTexture
-				.setCullState(NO_CULL)//disableCull
-				.setLightmapState(NO_LIGHTMAP)//disableLighting
-				.setWriteMaskState(COLOR_WRITE)//depthMask(false)
-				.setLayeringState(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
-				.createCompositeState(true);
-		return create("projecte_transmutation_overlay", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256, true, false, state);
-	}
+	public static final RenderType TRANSMUTATION_OVERLAY = create("projecte_transmutation_overlay", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
+			true, false, RenderType.CompositeState.builder()
+					.setShaderState(POSITION_COLOR_SHADER)
+					.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+					.setCullState(NO_CULL)
+					.setWriteMaskState(COLOR_WRITE)
+					.setLayeringState(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
+					.createCompositeState(true)
+	);
 }
