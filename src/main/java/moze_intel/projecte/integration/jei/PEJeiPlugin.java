@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -13,6 +14,9 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
+import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
+import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
+import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
@@ -51,6 +55,17 @@ public class PEJeiPlugin implements IModPlugin {
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.UID);
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.UID);
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.UID);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.DARK_MATTER_FURNACE), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.RED_MATTER_FURNACE), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+	}
+
+	@Override
+	public void registerGuiHandlers(IGuiHandlerRegistration registry) {
+		registry.addRecipeClickArea(GUIDMFurnace.class, 73, 34, 25, 16, VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+		registry.addRecipeClickArea(GUIRMFurnace.class, 88, 35, 25, 17, VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK1.class, 138, 31, 10, 24, CollectorRecipeCategory.UID);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK2.class, 138 + 16, 31, 10, 24, CollectorRecipeCategory.UID);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK3.class, 138 + 34, 31, 10, 24, CollectorRecipeCategory.UID);
 	}
 
 	@Override
