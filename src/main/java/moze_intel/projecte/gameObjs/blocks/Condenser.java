@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.block_entities.CondenserTile;
+import moze_intel.projecte.gameObjs.block_entities.CondenserBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
@@ -24,18 +24,18 @@ public class Condenser extends AlchemicalChest {
 
 	@Nullable
 	@Override
-	public BlockEntityTypeRegistryObject<? extends CondenserTile> getType() {
+	public BlockEntityTypeRegistryObject<? extends CondenserBlockEntity> getType() {
 		return PEBlockEntityTypes.CONDENSER;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
-		if (!world.isClientSide) {
-			CondenserTile te = WorldHelper.getTileEntity(CondenserTile.class, world, pos, true);
-			if (te != null) {
-				NetworkHooks.openGui((ServerPlayer) player, te, pos);
+	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
+		if (!level.isClientSide) {
+			CondenserBlockEntity condenser = WorldHelper.getBlockEntity(CondenserBlockEntity.class, level, pos, true);
+			if (condenser != null) {
+				NetworkHooks.openGui((ServerPlayer) player, condenser, pos);
 			}
 		}
 		return InteractionResult.SUCCESS;

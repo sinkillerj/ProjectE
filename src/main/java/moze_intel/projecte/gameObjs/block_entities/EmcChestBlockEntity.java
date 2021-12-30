@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.container.ChestTileEmcContainer;
+import moze_intel.projecte.gameObjs.container.EmcChestBlockEntityContainer;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 // [VanillaCopy] Adapted from ChestBlockEntity
-public abstract class ChestTileEmc extends CapabilityTileEMC implements LidBlockEntity {
+public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity {
 
 	private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
 		@Override
@@ -36,16 +36,16 @@ public abstract class ChestTileEmc extends CapabilityTileEMC implements LidBlock
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
-			return player.containerMenu instanceof ChestTileEmcContainer container && container.blockEntityMatches(ChestTileEmc.this);
+			return player.containerMenu instanceof EmcChestBlockEntityContainer container && container.blockEntityMatches(EmcChestBlockEntity.this);
 		}
 	};
 	private final ChestLidController chestLidController = new ChestLidController();
 
-	protected ChestTileEmc(BlockEntityTypeRegistryObject<? extends ChestTileEmc> type, BlockPos pos, BlockState state) {
+	protected EmcChestBlockEntity(BlockEntityTypeRegistryObject<? extends EmcChestBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
-	public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, ChestTileEmc chest) {
+	public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, EmcChestBlockEntity chest) {
 		chest.chestLidController.tickLid();
 	}
 

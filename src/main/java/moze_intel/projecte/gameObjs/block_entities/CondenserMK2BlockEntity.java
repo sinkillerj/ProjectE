@@ -20,9 +20,9 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-public class CondenserMK2Tile extends CondenserTile {
+public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 
-	public CondenserMK2Tile(BlockPos pos, BlockState state) {
+	public CondenserMK2BlockEntity(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.CONDENSER_MK2, pos, state);
 	}
 

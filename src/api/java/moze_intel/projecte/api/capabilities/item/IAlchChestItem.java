@@ -19,12 +19,12 @@ public interface IAlchChestItem {
 
 	/**
 	 * Called on both client and server every time the alchemical chest ticks this item Implementers that modify the chest inventory (serverside) MUST call markDirty() on
-	 * the tile entity. If you do not, your changes may not be saved when the world/chunk unloads!
+	 * the block entity. If you do not, your changes may not be saved when the world/chunk unloads!
 	 *
-	 * @param world The World
+	 * @param level The Level
 	 * @param stack The ItemStack being ticked
 	 *
 	 * @return {@code true} if the passed in stack had its NBT modified to ensure it can be saved.
 	 */
-	boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
+	boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
 }

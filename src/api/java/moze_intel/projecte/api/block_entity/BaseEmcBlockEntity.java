@@ -1,9 +1,9 @@
-package moze_intel.projecte.api.tile;
+package moze_intel.projecte.api.block_entity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -16,17 +16,17 @@ import net.minecraftforge.common.util.LazyOptional;
 /**
  * Base class for the reference implementations IEmcStorage
  *
- * Extend this if you want fine-grained control over all aspects of how your tile provides or accepts EMC
+ * Extend this if you want fine-grained control over all aspects of how your block entity provides or accepts EMC
  *
  * @author williewillus
  */
-public class TileEmcBase extends BlockEntity implements IEmcStorage {
+public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 
 	private LazyOptional<IEmcStorage> emcStorageCapability;
 	private long maximumEMC;
 	private long currentEMC;
 
-	protected TileEmcBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+	protected BaseEmcBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		setMaximumEMC(Long.MAX_VALUE);
 	}
@@ -64,14 +64,14 @@ public class TileEmcBase extends BlockEntity implements IEmcStorage {
 	}
 
 	/**
-	 * Set this to false to stop this Emc tile from accepting Emc.
+	 * Set this to false to stop this Emc block entity from accepting Emc.
 	 */
 	protected boolean canAcceptEmc() {
 		return true;
 	}
 
 	/**
-	 * Set this to false to stop this Emc tile from being able to provide Emc.
+	 * Set this to false to stop this Emc block entity from being able to provide Emc.
 	 */
 	protected boolean canProvideEmc() {
 		return true;

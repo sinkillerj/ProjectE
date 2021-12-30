@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -44,21 +44,21 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int inventorySlot, boolean held) {
-		if (world.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int inventorySlot, boolean held) {
+		if (level.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
-		super.inventoryTick(stack, world, entity, inventorySlot, held);
+		super.inventoryTick(stack, level, entity, inventorySlot, held);
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				WorldHelper.igniteNearby(world, player);
+				WorldHelper.igniteNearby(level, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		} else {
-			WorldHelper.extinguishNearby(world, player);
+			WorldHelper.extinguishNearby(level, player);
 		}
 	}
 
@@ -69,11 +69,11 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				for (Mob living : world.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds())) {
+				for (Mob living : level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds())) {
 					living.hurt(DamageSource.IN_FIRE, 3.0F);
 					living.setSecondsOnFire(8);
 				}
@@ -98,13 +98,13 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
-		Level world = player.getCommandSenderWorld();
-		if (world.isClientSide) {
+		Level level = player.getCommandSenderWorld();
+		if (level.isClientSide) {
 			return false;
 		}
-		EntityFireProjectile fire = new EntityFireProjectile(player, world);
+		EntityFireProjectile fire = new EntityFireProjectile(player, level);
 		fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-		world.addFreshEntity(fire);
+		level.addFreshEntity(fire);
 		return true;
 	}
 

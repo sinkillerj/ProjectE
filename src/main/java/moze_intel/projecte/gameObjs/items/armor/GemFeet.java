@@ -69,8 +69,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level world, Player player) {
-		if (!world.isClientSide) {
+	public void onArmorTick(ItemStack stack, Level level, Player player) {
+		if (!level.isClientSide) {
 			ServerPlayer playerMP = (ServerPlayer) player;
 			playerMP.fallDistance = 0;
 		} else {
@@ -93,8 +93,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_FEET.translate());
 		tooltips.add(PELang.STEP_ASSIST_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.BOOTS_TOGGLE)));
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST)) {

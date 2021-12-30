@@ -82,15 +82,15 @@ public final class WorldHelper {
 	private static final Predicate<Entity> INTERDICTION_REPEL_HOSTILE_PREDICATE = entity -> validRepelEntity(entity, PETags.Entities.BLACKLIST_INTERDICTION) &&
 																							(entity instanceof Enemy || entity instanceof Projectile);
 
-	public static void createLootDrop(List<ItemStack> drops, Level world, BlockPos pos) {
-		createLootDrop(drops, world, pos.getX(), pos.getY(), pos.getZ());
+	public static void createLootDrop(List<ItemStack> drops, Level level, BlockPos pos) {
+		createLootDrop(drops, level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	public static void createLootDrop(List<ItemStack> drops, Level world, double x, double y, double z) {
+	public static void createLootDrop(List<ItemStack> drops, Level level, double x, double y, double z) {
 		if (!drops.isEmpty()) {
 			ItemHelper.compactItemListNoStacksize(drops);
 			for (ItemStack drop : drops) {
-				world.addFreshEntity(new ItemEntity(world, x, y, z, drop));
+				level.addFreshEntity(new ItemEntity(level, x, y, z, drop));
 			}
 		}
 	}
@@ -98,76 +98,76 @@ public final class WorldHelper {
 	/**
 	 * Equivalent of World.newExplosion
 	 */
-	public static void createNovaExplosion(Level world, Entity exploder, double x, double y, double z, float power) {
-		NovaExplosion explosion = new NovaExplosion(world, exploder, x, y, z, power, true, Explosion.BlockInteraction.BREAK);
-		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion))) {
+	public static void createNovaExplosion(Level level, Entity exploder, double x, double y, double z, float power) {
+		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, true, Explosion.BlockInteraction.BREAK);
+		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion))) {
 			explosion.explode();
 			explosion.finalizeExplosion(true);
 		}
 	}
 
-	public static void drainFluid(Level world, BlockPos pos, BlockState state, Fluid toMatch) {
+	public static void drainFluid(Level level, BlockPos pos, BlockState state, Fluid toMatch) {
 		Block block = state.getBlock();
 		if (block instanceof IFluidBlock fluidBlock && fluidBlock.getFluid().isSame(toMatch)) {
 			//If it is a fluid block drain it (may be the case for some custom block?)
 			// We double check though the fluid block represents a given one though, in case there is some weird thing
 			// going on and we are a bucket pickup handler for the actual water and fluid state
-			fluidBlock.drain(world, pos, FluidAction.EXECUTE);
+			fluidBlock.drain(level, pos, FluidAction.EXECUTE);
 		} else if (block instanceof BucketPickup bucketPickup) {
 			//If it is a bucket pickup handler (so may be a fluid logged block) "pick it up"
 			// This includes normal fluid blocks
-			bucketPickup.pickupBlock(world, pos, state);
+			bucketPickup.pickupBlock(level, pos, state);
 		}
 	}
 
-	public static void dropInventory(IItemHandler inv, Level world, BlockPos pos) {
+	public static void dropInventory(IItemHandler inv, Level level, BlockPos pos) {
 		if (inv == null) {
 			return;
 		}
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack));
+				level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack));
 			}
 		}
 	}
 
-	public static void extinguishNearby(Level world, Player player) {
+	public static void extinguishNearby(Level level, Player player) {
 		BlockPos.betweenClosedStream(player.blockPosition().offset(-1, -1, -1), player.blockPosition().offset(1, 1, 1)).forEach(pos -> {
 			pos = pos.immutable();
-			if (world.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
-				world.removeBlock(pos, false);
+			if (level.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
+				level.removeBlock(pos, false);
 			}
 		});
 	}
 
-	public static void freezeInBoundingBox(Level world, AABB box, Player player, boolean random) {
+	public static void freezeInBoundingBox(Level level, AABB box, Player player, boolean random) {
 		for (BlockPos pos : getPositionsFromBox(box)) {
-			BlockState state = world.getBlockState(pos);
+			BlockState state = level.getBlockState(pos);
 			Block b = state.getBlock();
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			pos = pos.immutable();
-			if (b == Blocks.WATER && (!random || world.random.nextInt(128) == 0)) {
+			if (b == Blocks.WATER && (!random || level.random.nextInt(128) == 0)) {
 				if (player != null) {
 					PlayerHelper.checkedReplaceBlock((ServerPlayer) player, pos, Blocks.ICE.defaultBlockState());
 				} else {
-					world.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
+					level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
 				}
-			} else if (Block.isFaceFull(state.getCollisionShape(world, pos.below()), Direction.UP)) {
+			} else if (Block.isFaceFull(state.getCollisionShape(level, pos.below()), Direction.UP)) {
 				BlockPos up = pos.above();
-				BlockState stateUp = world.getBlockState(up);
+				BlockState stateUp = level.getBlockState(up);
 				BlockState newState = null;
 
-				if (stateUp.isAir() && (!random || world.random.nextInt(128) == 0)) {
+				if (stateUp.isAir() && (!random || level.random.nextInt(128) == 0)) {
 					newState = Blocks.SNOW.defaultBlockState();
-				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.getValue(SnowLayerBlock.LAYERS) < 8 && world.random.nextInt(512) == 0) {
+				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.getValue(SnowLayerBlock.LAYERS) < 8 && level.random.nextInt(512) == 0) {
 					newState = stateUp.setValue(SnowLayerBlock.LAYERS, stateUp.getValue(SnowLayerBlock.LAYERS) + 1);
 				}
 				if (newState != null) {
 					if (player != null) {
 						PlayerHelper.checkedReplaceBlock((ServerPlayer) player, up, newState);
 					} else {
-						world.setBlockAndUpdate(up, newState);
+						level.setBlockAndUpdate(up, newState);
 					}
 				}
 			}
@@ -177,21 +177,21 @@ public final class WorldHelper {
 	/**
 	 * Checks if a block is a {@link LiquidBlockContainer} that supports a specific fluid type.
 	 */
-	public static boolean isLiquidContainerForFluid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid) {
-		return state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(world, pos, state, fluid);
+	public static boolean isLiquidContainerForFluid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+		return state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(level, pos, state, fluid);
 	}
 
 	/**
-	 * Attempts to place a fluid in a specific spot if the spot is a {@link LiquidBlockContainer} that supports the fluid otherwise try to place it in the block that is on
-	 * the given side of the clicked block.
+	 * Attempts to place a fluid in a specific spot if the spot is a {@link LiquidBlockContainer} that supports the fluid otherwise try to place it in the block that is
+	 * on the given side of the clicked block.
 	 */
-	public static void placeFluid(@Nullable ServerPlayer player, Level world, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
-		if (isLiquidContainerForFluid(world, pos, world.getBlockState(pos), fluid)) {
+	public static void placeFluid(@Nullable ServerPlayer player, Level level, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
+		if (isLiquidContainerForFluid(level, pos, level.getBlockState(pos), fluid)) {
 			//If the spot can be logged with our fluid then try using the position directly
-			placeFluid(player, world, pos, fluid, checkWaterVaporize);
+			placeFluid(player, level, pos, fluid, checkWaterVaporize);
 		} else {
 			//Otherwise offset it because we clicked against the block
-			placeFluid(player, world, pos.relative(sideHit), fluid, checkWaterVaporize);
+			placeFluid(player, level, pos.relative(sideHit), fluid, checkWaterVaporize);
 		}
 	}
 
@@ -200,22 +200,22 @@ public final class WorldHelper {
 	 *
 	 * @apiNote Call this from the server side
 	 */
-	public static void placeFluid(@Nullable ServerPlayer player, Level world, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
-		BlockState blockState = world.getBlockState(pos);
-		if (checkWaterVaporize && world.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
-			world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
+	public static void placeFluid(@Nullable ServerPlayer player, Level level, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
+		BlockState blockState = level.getBlockState(pos);
+		if (checkWaterVaporize && level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
+			level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
 			for (int l = 0; l < 8; ++l) {
-				world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
+				level.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
-		} else if (isLiquidContainerForFluid(world, pos, blockState, fluid)) {
-			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(world, pos, blockState, fluid.getSource(false));
+		} else if (isLiquidContainerForFluid(level, pos, blockState, fluid)) {
+			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(level, pos, blockState, fluid.getSource(false));
 		} else {
 			Material material = blockState.getMaterial();
 			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
-				world.destroyBlock(pos, true);
+				level.destroyBlock(pos, true);
 			}
 			if (player == null) {
-				world.setBlockAndUpdate(pos, fluid.defaultFluidState().createLegacyBlock());
+				level.setBlockAndUpdate(pos, fluid.defaultFluidState().createLegacyBlock());
 			} else {
 				PlayerHelper.checkedPlaceBlock(player, pos, fluid.defaultFluidState().createLegacyBlock());
 			}
@@ -223,17 +223,18 @@ public final class WorldHelper {
 	}
 
 	/**
-	 * Gets an ItemHandler of a specific tile from the given side. Falls back to using wrappers if the tile is an instance of an ISidedInventory/IInventory.
+	 * Gets an ItemHandler of a specific block entity from the given side. Falls back to using wrappers if the block entity is an instance of an
+	 * ISidedInventory/IInventory.
 	 */
 	@Nullable
-	public static IItemHandler getItemHandler(@Nonnull BlockEntity tile, @Nullable Direction direction) {
-		Optional<IItemHandler> capability = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
+	public static IItemHandler getItemHandler(@Nonnull BlockEntity blockEntity, @Nullable Direction direction) {
+		Optional<IItemHandler> capability = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
 		if (capability.isPresent()) {
 			return capability.get();
-		} else if (tile instanceof WorldlyContainer) {
-			return new SidedInvWrapper((WorldlyContainer) tile, direction);
-		} else if (tile instanceof Container) {
-			return new InvWrapper((Container) tile);
+		} else if (blockEntity instanceof WorldlyContainer container) {
+			return new SidedInvWrapper(container, direction);
+		} else if (blockEntity instanceof Container container) {
+			return new InvWrapper(container);
 		}
 		return null;
 	}
@@ -299,12 +300,12 @@ public final class WorldHelper {
 	}
 
 
-	public static List<BlockEntity> getTileEntitiesWithinAABB(Level world, AABB bBox) {
+	public static List<BlockEntity> getBlockEntitiesWithinAABB(Level level, AABB bBox) {
 		List<BlockEntity> list = new ArrayList<>();
 		for (BlockPos pos : getPositionsFromBox(bBox)) {
-			BlockEntity tile = getTileEntity(world, pos);
-			if (tile != null) {
-				list.add(tile);
+			BlockEntity blockEntity = getBlockEntity(level, pos);
+			if (blockEntity != null) {
+				list.add(blockEntity);
 			}
 		}
 		return list;
@@ -326,57 +327,57 @@ public final class WorldHelper {
 		}
 	}
 
-	public static void growNearbyRandomly(boolean harvest, Level world, BlockPos pos, Player player) {
-		if (!(world instanceof ServerLevel level)) {
+	public static void growNearbyRandomly(boolean harvest, Level level, BlockPos pos, Player player) {
+		if (!(level instanceof ServerLevel serverLevel)) {
 			return;
 		}
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.offset(-5, -3, -5), pos.offset(5, 3, 5))) {
 			currentPos = currentPos.immutable();
-			BlockState state = level.getBlockState(currentPos);
+			BlockState state = serverLevel.getBlockState(currentPos);
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
 			if (crop instanceof IForgeShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
 				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock) {
 				if (harvest) {
-					harvestBlock(level, currentPos, (ServerPlayer) player);
+					harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
 				}
 			}
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof BonemealableBlock growable) {
-				if (!growable.isValidBonemealTarget(level, currentPos, state, false)) {
+				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state, false)) {
 					if (harvest && !PETags.Blocks.BLACKLIST_HARVEST.contains(crop)) {
-						if (crop != Blocks.KELP_PLANT || level.getBlockState(currentPos.below()).is(crop)) {
+						if (crop != Blocks.KELP_PLANT || serverLevel.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of help but otherwise allow harvesting them
-							harvestBlock(level, currentPos, (ServerPlayer) player);
+							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
 						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
-					if (level.random.nextInt(chance) == 0) {
-						growable.performBonemeal(level, level.random, currentPos, state);
+					if (serverLevel.random.nextInt(chance) == 0) {
+						growable.performBonemeal(serverLevel, serverLevel.random, currentPos, state);
 					}
 				}
 			}
 			// All modded
 			// Cactus, Reeds, Netherwart, Flower
 			else if (crop instanceof IPlantable) {
-				if (level.random.nextInt(chance / 4) == 0) {
+				if (serverLevel.random.nextInt(chance / 4) == 0) {
 					for (int i = 0; i < (harvest ? 8 : 4); i++) {
-						state.randomTick(level, currentPos, level.random);
+						state.randomTick(serverLevel, currentPos, serverLevel.random);
 					}
 				}
 				if (harvest) {
 					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
-						if (level.getBlockState(currentPos.above()).is(crop) && level.getBlockState(currentPos.above(2)).is(crop)) {
+						if (serverLevel.getBlockState(currentPos.above()).is(crop) && serverLevel.getBlockState(currentPos.above(2)).is(crop)) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								harvestBlock(level, currentPos.above(i), (ServerPlayer) player);
+								harvestBlock(serverLevel, currentPos.above(i), (ServerPlayer) player);
 							}
 						}
 					} else if (crop == Blocks.NETHER_WART) {
 						if (state.getValue(NetherWartBlock.AGE) == 3) {
-							harvestBlock(level, currentPos, (ServerPlayer) player);
+							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
 						}
 					}
 				}
@@ -393,30 +394,30 @@ public final class WorldHelper {
 	/**
 	 * Breaks and "harvests" a block if the player has permission to break it or there is no player
 	 */
-	private static void harvestBlock(Level world, BlockPos pos, @Nullable ServerPlayer player) {
+	private static void harvestBlock(Level level, BlockPos pos, @Nullable ServerPlayer player) {
 		if (player == null || PlayerHelper.hasBreakPermission(player, pos)) {
-			world.destroyBlock(pos, true, player);
+			level.destroyBlock(pos, true, player);
 		}
 	}
 
 	/**
 	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
 	 */
-	public static int harvestVein(Level world, Player player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined) {
+	public static int harvestVein(Level level, Player player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined) {
 		if (numMined >= Constants.MAX_VEIN_SIZE) {
 			return numMined;
 		}
 		AABB b = new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 		for (BlockPos currentPos : getPositionsFromBox(b)) {
-			BlockState currentState = world.getBlockState(currentPos);
+			BlockState currentState = level.getBlockState(currentPos);
 			if (currentState.getBlock() == target) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				currentPos = currentPos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayer) player, currentPos)) {
 					numMined++;
-					currentDrops.addAll(Block.getDrops(currentState, (ServerLevel) world, currentPos, getTileEntity(world, currentPos), player, stack));
-					world.removeBlock(currentPos, false);
-					numMined = harvestVein(world, player, stack, currentPos, target, currentDrops, numMined);
+					currentDrops.addAll(Block.getDrops(currentState, (ServerLevel) level, currentPos, getBlockEntity(level, currentPos), player, stack));
+					level.removeBlock(currentPos, false);
+					numMined = harvestVein(level, player, stack, currentPos, target, currentDrops, numMined);
 					if (numMined >= Constants.MAX_VEIN_SIZE) {
 						break;
 					}
@@ -426,9 +427,9 @@ public final class WorldHelper {
 		return numMined;
 	}
 
-	public static void igniteNearby(Level world, Player player) {
+	public static void igniteNearby(Level level, Player player) {
 		for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-8, -5, -8), player.blockPosition().offset(8, 5, 8))) {
-			if (world.random.nextInt(128) == 0 && world.isEmptyBlock(pos)) {
+			if (level.random.nextInt(128) == 0 && level.isEmptyBlock(pos)) {
 				PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 			}
 		}
@@ -448,10 +449,10 @@ public final class WorldHelper {
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
-	public static void repelEntitiesInterdiction(Level world, AABB effectBounds, double x, double y, double z) {
+	public static void repelEntitiesInterdiction(Level level, AABB effectBounds, double x, double y, double z) {
 		Vec3 vec = new Vec3(x, y, z);
 		Predicate<Entity> repelPredicate = ProjectEConfig.server.effects.interdictionMode.get() ? INTERDICTION_REPEL_HOSTILE_PREDICATE : INTERDICTION_REPEL_PREDICATE;
-		for (Entity ent : world.getEntitiesOfClass(Entity.class, effectBounds, repelPredicate)) {
+		for (Entity ent : level.getEntitiesOfClass(Entity.class, effectBounds, repelPredicate)) {
 			repelEntity(vec, ent);
 		}
 	}
@@ -459,15 +460,15 @@ public final class WorldHelper {
 	/**
 	 * Repels projectiles and mobs in the given AABB away from a given player, if the player is not the thrower of the projectile
 	 */
-	public static void repelEntitiesSWRG(Level world, AABB effectBounds, Player player) {
+	public static void repelEntitiesSWRG(Level level, AABB effectBounds, Player player) {
 		Vec3 playerVec = player.position();
-		for (Entity ent : world.getEntitiesOfClass(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
+		for (Entity ent : level.getEntitiesOfClass(Entity.class, effectBounds, SWRG_REPEL_PREDICATE)) {
 			if (ent instanceof Projectile projectile) {
 				Entity owner = projectile.getOwner();
 				//Note: Eventually we would like to remove the check for if the world is remote and the thrower is null, but
 				// it is needed to make sure it renders properly for when a player throws an ender pearl, or other throwable
 				// as the client doesn't know the owner of things like ender pearls and thus renders it improperly
-				if (world.isClientSide() && owner == null || owner != null && player.getUUID().equals(owner.getUUID())) {
+				if (level.isClientSide() && owner == null || owner != null && player.getUUID().equals(owner.getUUID())) {
 					continue;
 				}
 			}
@@ -488,28 +489,28 @@ public final class WorldHelper {
 		if (player == null) {
 			return InteractionResult.FAIL;
 		}
-		Level world = ctx.getLevel();
+		Level level = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
 		Direction side = ctx.getClickedFace();
-		BlockState state = world.getBlockState(pos);
-		if (BaseFireBlock.canBePlacedAt(world, pos, side)) {
-			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
-				world.setBlockAndUpdate(pos, BaseFireBlock.getState(world, pos));
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		BlockState state = level.getBlockState(pos);
+		if (BaseFireBlock.canBePlacedAt(level, pos, side)) {
+			if (!level.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
+				level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			}
 		} else if (CampfireBlock.canLight(state)) {
-			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
-				world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			if (!level.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
+				level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			}
-		} else if (state.isFlammable(world, pos, side)) {
-			if (!world.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
+		} else if (state.isFlammable(level, pos, side)) {
+			if (!level.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
 				// Ignite the block
-				state.onCaughtFire(world, pos, side, player);
+				state.onCaughtFire(level, pos, side, player);
 				if (state.getBlock() instanceof TntBlock) {
-					world.removeBlock(pos, false);
+					level.removeBlock(pos, false);
 				}
-				world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			}
 		} else {
 			return InteractionResult.PASS;
@@ -540,62 +541,62 @@ public final class WorldHelper {
 	}
 
 	/**
-	 * Gets a tile entity if the location is loaded
+	 * Gets a block entity if the location is loaded
 	 *
-	 * @param world world
+	 * @param level world
 	 * @param pos   position
 	 *
-	 * @return tile entity if found, null if either not found or not loaded
+	 * @return block entity if found, null if either not found or not loaded
 	 *
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static BlockEntity getTileEntity(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
-		if (!isBlockLoaded(world, pos)) {
+	public static BlockEntity getBlockEntity(@Nullable BlockGetter level, @Nonnull BlockPos pos) {
+		if (!isBlockLoaded(level, pos)) {
 			//If the world is null or its a world reader and the block is not loaded, return null
 			return null;
 		}
-		return world.getBlockEntity(pos);
+		return level.getBlockEntity(pos);
 	}
 
 	/**
-	 * Gets a tile entity if the location is loaded
+	 * Gets a block entity if the location is loaded
 	 *
-	 * @param clazz Class type of the TileEntity we expect to be in the position
-	 * @param world world
+	 * @param clazz Class type of the block entity we expect to be in the position
+	 * @param level world
 	 * @param pos   position
 	 *
-	 * @return tile entity if found, null if either not found, not loaded, or of the wrong type
+	 * @return block entity if found, null if either not found, not loaded, or of the wrong type
 	 *
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos) {
-		return getTileEntity(clazz, world, pos, false);
+	public static <BE extends BlockEntity> BE getBlockEntity(@Nonnull Class<BE> clazz, @Nullable BlockGetter level, @Nonnull BlockPos pos) {
+		return getBlockEntity(clazz, level, pos, false);
 	}
 
 	/**
-	 * Gets a tile entity if the location is loaded
+	 * Gets a block entity if the location is loaded
 	 *
-	 * @param clazz        Class type of the TileEntity we expect to be in the position
-	 * @param world        world
+	 * @param clazz        Class type of the block entity we expect to be in the position
+	 * @param level        world
 	 * @param pos          position
-	 * @param logWrongType Whether or not an error should be logged if a tile of a different type is found at the position
+	 * @param logWrongType Whether or not an error should be logged if a block entity of a different type is found at the position
 	 *
-	 * @return tile entity if found, null if either not found or not loaded, or of the wrong type
+	 * @return block entity if found, null if either not found or not loaded, or of the wrong type
 	 *
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos, boolean logWrongType) {
-		BlockEntity tile = getTileEntity(world, pos);
-		if (tile == null) {
+	public static <BE extends BlockEntity> BE getBlockEntity(@Nonnull Class<BE> clazz, @Nullable BlockGetter level, @Nonnull BlockPos pos, boolean logWrongType) {
+		BlockEntity blockEntity = getBlockEntity(level, pos);
+		if (blockEntity == null) {
 			return null;
 		}
-		if (clazz.isInstance(tile)) {
-			return clazz.cast(tile);
+		if (clazz.isInstance(blockEntity)) {
+			return clazz.cast(blockEntity);
 		} else if (logWrongType) {
-			PECore.LOGGER.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
+			PECore.LOGGER.warn("Unexpected block entity class at {}, expected {}, but found: {}", pos, clazz, blockEntity.getClass());
 		}
 		return null;
 	}

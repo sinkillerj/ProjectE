@@ -29,12 +29,12 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 
 	private boolean fromArcana = false;
 
-	public EntitySWRGProjectile(EntityType<EntitySWRGProjectile> type, Level world) {
-		super(type, world);
+	public EntitySWRGProjectile(EntityType<EntitySWRGProjectile> type, Level level) {
+		super(type, level);
 	}
 
-	public EntitySWRGProjectile(Player player, boolean fromArcana, Level world) {
-		super(PEEntityTypes.SWRG_PROJECTILE.get(), player, world);
+	public EntitySWRGProjectile(Player player, boolean fromArcana, Level level) {
+		super(PEEntityTypes.SWRG_PROJECTILE.get(), player, level);
 		this.fromArcana = fromArcana;
 	}
 

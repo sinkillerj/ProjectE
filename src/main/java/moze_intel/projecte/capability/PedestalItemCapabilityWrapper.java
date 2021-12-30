@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -20,9 +20,9 @@ public class PedestalItemCapabilityWrapper extends BasicItemCapability<IPedestal
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		return getItem().updateInPedestal(stack, world, pos, pedestal);
+		return getItem().updateInPedestal(stack, level, pos, pedestal);
 	}
 
 	@Nonnull

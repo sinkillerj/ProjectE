@@ -18,11 +18,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AlchChestTile extends ChestTileEmc implements MenuProvider {
+public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuProvider {
 
 	private final StackHandler inventory = new StackHandler(104);
 
-	public AlchChestTile(BlockPos pos, BlockState state) {
+	public AlchBlockEntityChest(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state);
 		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
@@ -39,7 +39,7 @@ public class AlchChestTile extends ChestTileEmc implements MenuProvider {
 		tag.merge(inventory.serializeNBT());
 	}
 
-	public static void tickClient(Level level, BlockPos pos, BlockState state, AlchChestTile alchChest) {
+	public static void tickClient(Level level, BlockPos pos, BlockState state, AlchBlockEntityChest alchChest) {
 		//TODO - 1.18: Fix this as the inventory isn't syncd to the client except when they open it so then
 		// it has things tick that don't exist and has things that do exist not tick
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
@@ -48,10 +48,10 @@ public class AlchChestTile extends ChestTileEmc implements MenuProvider {
 				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, pos, stack));
 			}
 		}
-		ChestTileEmc.lidAnimateTick(level, pos, state, alchChest);
+		EmcChestBlockEntity.lidAnimateTick(level, pos, state, alchChest);
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, AlchChestTile alchChest) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, AlchBlockEntityChest alchChest) {
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {

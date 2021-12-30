@@ -56,8 +56,8 @@ public class GemHelmet extends GemArmorBase {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_HELM.translate());
 		tooltips.add(PELang.NIGHT_VISION_PROMPT.translate(ClientKeyHelper.getKeyName(PEKeybind.HELMET_TOGGLE)));
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
@@ -68,8 +68,8 @@ public class GemHelmet extends GemArmorBase {
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level world, Player player) {
-		if (!world.isClientSide) {
+	public void onArmorTick(ItemStack stack, Level level, Player player) {
+		if (!level.isClientSide) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(handler -> {
 				handler.activateHeal();
 				if (player.getHealth() < player.getMaxHealth() && handler.canHeal()) {
@@ -90,12 +90,12 @@ public class GemHelmet extends GemArmorBase {
 			BlockHitResult strikeResult = PlayerHelper.getBlockLookingAt(player, 120.0F);
 			if (strikeResult.getType() != Type.MISS) {
 				BlockPos strikePos = strikeResult.getBlockPos();
-				Level world = player.getCommandSenderWorld();
-				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(world);
+				Level level = player.getCommandSenderWorld();
+				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
 					lightning.moveTo(Vec3.atCenterOf(strikePos));
 					lightning.setCause((ServerPlayer) player);
-					world.addFreshEntity(lightning);
+					level.addFreshEntity(lightning);
 				}
 			}
 		}

@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.block_entities.InterdictionTile;
+import moze_intel.projecte.gameObjs.block_entities.InterdictionTorchBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -12,11 +12,11 @@ import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface InterdictionTorchEntityBlock extends PEEntityBlock<InterdictionTile> {
+public interface InterdictionTorchEntityBlock extends PEEntityBlock<InterdictionTorchBlockEntity> {
 
 	@Nullable
 	@Override
-	default BlockEntityTypeRegistryObject<InterdictionTile> getType() {
+	default BlockEntityTypeRegistryObject<InterdictionTorchBlockEntity> getType() {
 		return PEBlockEntityTypes.INTERDICTION_TORCH;
 	}
 

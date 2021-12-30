@@ -133,8 +133,8 @@ public class PlayerEvents {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event) {
 		Player player = event.getPlayer();
-		Level world = player.getCommandSenderWorld();
-		if (world.isClientSide) {
+		Level level = player.getCommandSenderWorld();
+		if (level.isClientSide) {
 			return;
 		}
 		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.getInventory().items);
@@ -149,7 +149,7 @@ public class PlayerEvents {
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 		if (remainder.isEmpty()) {
 			event.getItem().discard();
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 			((ServerPlayer) player).connection.send(new ClientboundTakeItemEntityPacket(event.getItem().getId(), player.getId(), 1));
 		} else {
 			event.getItem().setItem(remainder);

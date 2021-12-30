@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -51,37 +51,37 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int slot, boolean held) {
-		super.inventoryTick(stack, world, entity, slot, held);
-		if (!world.isClientSide && entity instanceof Player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int slot, boolean held) {
+		super.inventoryTick(stack, level, entity, slot, held);
+		if (!level.isClientSide && entity instanceof Player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AABB box = new AABB(entity.getX() - 3, entity.getY() - 3, entity.getZ() - 3,
 					entity.getX() + 3, entity.getY() + 3, entity.getZ() + 3);
-			WorldHelper.freezeInBoundingBox(world, box, (Player) entity, true);
+			WorldHelper.freezeInBoundingBox(level, box, (Player) entity, true);
 		}
 	}
 
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide) {
+		if (!level.isClientSide) {
 			int offset = 3 + this.getCharge(stack);
 			AABB box = player.getBoundingBox().inflate(offset);
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-			WorldHelper.freezeInBoundingBox(world, box, player, false);
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			WorldHelper.freezeInBoundingBox(level, box, player, false);
 		}
 		return InteractionResultHolder.success(stack);
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				AABB aabb = pedestal.getEffectBounds();
-				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
-				for (Entity ent : world.getEntitiesOfClass(Entity.class, aabb, e -> !e.isSpectator() && e.isOnFire())) {
+				WorldHelper.freezeInBoundingBox(level, aabb, null, false);
+				for (Entity ent : level.getEntitiesOfClass(Entity.class, aabb, e -> !e.isSpectator() && e.isOnFire())) {
 					ent.clearFire();
 				}
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());

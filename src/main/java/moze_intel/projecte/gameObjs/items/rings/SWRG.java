@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -103,7 +103,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
 		if (invSlot < Inventory.getSelectionSize() && entity instanceof Player player) {
 			tick(stack, player);
 		}
@@ -111,9 +111,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide) {
+		if (!level.isClientSide) {
 			int newMode = switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
 				case 0 -> 2;
 				case 1 -> 3;
@@ -162,16 +162,16 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
 			if (pedestal.getActivityCooldown() <= 0) {
-				for (Mob living : world.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds(),
+				for (Mob living : level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds(),
 						ent -> !ent.isSpectator() && (!(ent instanceof TamableAnimal tamableAnimal) || !tamableAnimal.isTame()))) {
-					LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(world);
+					LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 					if (lightning != null) {
 						lightning.moveTo(living.position());
-						world.addFreshEntity(lightning);
+						level.addFreshEntity(lightning);
 					}
 				}
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.swrg.get());

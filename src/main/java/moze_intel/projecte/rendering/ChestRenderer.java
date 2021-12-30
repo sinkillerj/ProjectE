@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.block_entities.ChestTileEmc;
+import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 //Only used on the client
 // [VanillaCopy] Adapted from ChestRenderer
-public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
+public class ChestRenderer implements BlockEntityRenderer<EmcChestBlockEntity> {
 
 	private final ModelPart lid;
 	private final ModelPart bottom;
@@ -40,17 +40,17 @@ public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 	}
 
 	@Override
-	public void render(@Nonnull ChestTileEmc chestTile, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+	public void render(@Nonnull EmcChestBlockEntity chest, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
 		matrix.pushPose();
-		if (chestTile.getLevel() != null && !chestTile.isRemoved()) {
-			BlockState state = chestTile.getLevel().getBlockState(chestTile.getBlockPos());
+		if (chest.getLevel() != null && !chest.isRemoved()) {
+			BlockState state = chest.getLevel().getBlockState(chest.getBlockPos());
 			if (blockChecker.test(state.getBlock())) {
 				matrix.translate(0.5D, 0.5D, 0.5D);
 				matrix.mulPose(Vector3f.YP.rotationDegrees(-state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()));
 				matrix.translate(-0.5D, -0.5D, -0.5D);
 			}
 		}
-		float lidAngle = 1.0F - chestTile.getOpenNess(partialTick);
+		float lidAngle = 1.0F - chest.getOpenNess(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 		VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
 		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));

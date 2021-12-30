@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -35,11 +35,11 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int slot, boolean held) {
-		if (world.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean held) {
+		if (level.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
-		super.inventoryTick(stack, world, entity, slot, held);
+		super.inventoryTick(stack, level, entity, slot, held);
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			long itemEmc = getEmc(stack);
@@ -49,7 +49,7 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
 					timers.activateFeed();
 					if (player.getFoodData().needsFood() && timers.canFeed()) {
-						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						player.getFoodData().eat(2, 10);
 						removeEmc(stack, 64);
 					}
@@ -59,13 +59,13 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				for (ServerPlayer player : world.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds())) {
+				for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds())) {
 					if (player.getFoodData().needsFood()) {
-						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						player.getFoodData().eat(1, 1); // 1/2 shank
 					}
 				}

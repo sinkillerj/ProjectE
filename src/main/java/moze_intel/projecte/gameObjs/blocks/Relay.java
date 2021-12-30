@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1BlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.MathUtils;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
-public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile> {
+public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1BlockEntity> {
 
 	private final EnumRelayTier tier;
 
@@ -34,11 +34,12 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile>
 	@Nonnull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
-		if (!world.isClientSide) {
-			RelayMK1Tile te = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
-			if (te != null) {
-				NetworkHooks.openGui((ServerPlayer) player, te, pos);
+	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+			@Nonnull BlockHitResult rtr) {
+		if (!level.isClientSide) {
+			RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
+			if (relay != null) {
+				NetworkHooks.openGui((ServerPlayer) player, relay, pos);
 			}
 		}
 		return InteractionResult.SUCCESS;
@@ -46,7 +47,7 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile>
 
 	@Nullable
 	@Override
-	public BlockEntityTypeRegistryObject<? extends RelayMK1Tile> getType() {
+	public BlockEntityTypeRegistryObject<? extends RelayMK1BlockEntity> getType() {
 		return switch (tier) {
 			case MK1 -> PEBlockEntityTypes.RELAY;
 			case MK2 -> PEBlockEntityTypes.RELAY_MK2;
@@ -69,8 +70,8 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile>
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
-		RelayMK1Tile relay = WorldHelper.getTileEntity(RelayMK1Tile.class, world, pos, true);
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+		RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
 		if (relay == null) {
 			return 0;
 		}

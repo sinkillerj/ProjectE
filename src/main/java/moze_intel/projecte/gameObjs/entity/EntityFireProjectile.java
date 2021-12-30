@@ -19,12 +19,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EntityFireProjectile extends ThrowableProjectile {
 
-	public EntityFireProjectile(EntityType<EntityFireProjectile> type, Level world) {
-		super(type, world);
+	public EntityFireProjectile(EntityType<EntityFireProjectile> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityFireProjectile(Player entity, Level world) {
-		super(PEEntityTypes.FIRE_PROJECTILE.get(), entity, world);
+	public EntityFireProjectile(Player entity, Level level) {
+		super(PEEntityTypes.FIRE_PROJECTILE.get(), entity, level);
 	}
 
 	@Override

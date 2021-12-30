@@ -35,8 +35,8 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 		if (player == null) {
 			return InteractionResult.FAIL;
 		}
-		Level world = ctx.getLevel();
-		if (world.isClientSide) {
+		Level level = ctx.getLevel();
+		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
 		ItemStack stack = ctx.getItemInHand();
@@ -44,11 +44,11 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), --numRows))) {
-			if (world.isEmptyBlock(pos)) {
+			if (level.isEmptyBlock(pos)) {
 				continue;
 			}
-			BlockState state = world.getBlockState(pos);
-			float hardness = state.getDestroySpeed(world, pos);
+			BlockState state = level.getBlockState(pos);
+			float hardness = state.getDestroySpeed(level, pos);
 			if (hardness == -1.0F || hardness >= 50.0F) {
 				continue;
 			}
@@ -59,17 +59,17 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			pos = pos.immutable();
 			if (PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
-				List<ItemStack> list = Block.getDrops(state, (ServerLevel) world, pos, WorldHelper.getTileEntity(world, pos), player, stack);
+				List<ItemStack> list = Block.getDrops(state, (ServerLevel) level, pos, WorldHelper.getBlockEntity(level, pos), player, stack);
 				drops.addAll(list);
-				world.removeBlock(pos, false);
-				if (world.random.nextInt(8) == 0) {
-					((ServerLevel) world).sendParticles(world.random.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+				level.removeBlock(pos, false);
+				if (level.random.nextInt(8) == 0) {
+					((ServerLevel) level).sendParticles(level.random.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, world, ctx.getClickedPos());
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			WorldHelper.createLootDrop(drops, level, ctx.getClickedPos());
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return InteractionResult.SUCCESS;
 	}

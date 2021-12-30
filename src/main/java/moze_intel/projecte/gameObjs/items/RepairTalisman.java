@@ -8,12 +8,12 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
+import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -50,8 +50,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (!world.isClientSide && entity instanceof Player player) {
+	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+		if (!level.isClientSide && entity instanceof Player player) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateRepair();
 				if (timers.canRepair()) {
@@ -62,11 +62,11 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				world.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
+				level.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.repair.get());
 			} else {
 				pedestal.decrementActivityCooldown();
@@ -87,21 +87,21 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		if (!world.isClientSide) {
-			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
-			if (tile != null) {
+	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+		if (!level.isClientSide) {
+			AlchBlockEntityChest chest = WorldHelper.getBlockEntity(AlchBlockEntityChest.class, level, pos, true);
+			if (chest != null) {
 				CompoundTag nbt = stack.getOrCreateTag();
 				byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 				if (coolDown > 0) {
 					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 				} else {
-					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+					chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
 						if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
 							nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 							//Note: We don't need to recheck comparators as repairing doesn't change the number
 							// of items in slots
-							tile.markDirty(false);
+							chest.markDirty(false);
 						}
 					});
 				}

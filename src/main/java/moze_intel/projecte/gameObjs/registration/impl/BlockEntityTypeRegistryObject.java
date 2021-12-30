@@ -7,37 +7,37 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 
-public class BlockEntityTypeRegistryObject<TILE extends BlockEntity> extends WrappedRegistryObject<BlockEntityType<TILE>> {
+public class BlockEntityTypeRegistryObject<BE extends BlockEntity> extends WrappedRegistryObject<BlockEntityType<BE>> {
 
 	@Nullable
-	private BlockEntityTicker<TILE> clientTicker;
+	private BlockEntityTicker<BE> clientTicker;
 	@Nullable
-	private BlockEntityTicker<TILE> serverTicker;
+	private BlockEntityTicker<BE> serverTicker;
 
-	public BlockEntityTypeRegistryObject(RegistryObject<BlockEntityType<TILE>> registryObject) {
+	public BlockEntityTypeRegistryObject(RegistryObject<BlockEntityType<BE>> registryObject) {
 		super(registryObject);
 	}
 
 	//Internal use only, overwrite the registry object
-	BlockEntityTypeRegistryObject<TILE> setRegistryObject(RegistryObject<BlockEntityType<TILE>> registryObject) {
+	BlockEntityTypeRegistryObject<BE> setRegistryObject(RegistryObject<BlockEntityType<BE>> registryObject) {
 		this.registryObject = registryObject;
 		return this;
 	}
 
 	//Internal use only
-	BlockEntityTypeRegistryObject<TILE> clientTicker(BlockEntityTicker<TILE> ticker) {
+	BlockEntityTypeRegistryObject<BE> clientTicker(BlockEntityTicker<BE> ticker) {
 		clientTicker = ticker;
 		return this;
 	}
 
 	//Internal use only
-	BlockEntityTypeRegistryObject<TILE> serverTicker(BlockEntityTicker<TILE> ticker) {
+	BlockEntityTypeRegistryObject<BE> serverTicker(BlockEntityTicker<BE> ticker) {
 		serverTicker = ticker;
 		return this;
 	}
 
 	@Nullable
-	public BlockEntityTicker<TILE> getTicker(boolean isClient) {
+	public BlockEntityTicker<BE> getTicker(boolean isClient) {
 		return isClient ? clientTicker : serverTicker;
 	}
 }

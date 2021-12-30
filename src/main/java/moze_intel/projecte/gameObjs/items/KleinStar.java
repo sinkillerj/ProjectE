@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.EMCHelper;
@@ -50,9 +50,9 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide && !FMLEnvironment.production) {
+		if (!level.isClientSide && !FMLEnvironment.production) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
 			return InteractionResultHolder.success(stack);
 		}

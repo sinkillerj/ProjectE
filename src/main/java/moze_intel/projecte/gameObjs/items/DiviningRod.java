@@ -47,8 +47,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		if (player == null) {
 			return InteractionResult.FAIL;
 		}
-		Level world = ctx.getLevel();
-		if (world.isClientSide) {
+		Level level = ctx.getLevel();
+		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
 		LongList emcValues = new LongArrayList();
@@ -56,13 +56,13 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<List<SmeltingRecipe>> furnaceRecipes = NonNullLazy.of(() -> world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
+		NonNullLazy<List<SmeltingRecipe>> furnaceRecipes = NonNullLazy.of(() -> level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
-			if (world.isEmptyBlock(digPos)) {
+			if (level.isEmptyBlock(digPos)) {
 				continue;
 			}
-			BlockState state = world.getBlockState(digPos);
-			List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, digPos, WorldHelper.getTileEntity(world, digPos), player, ctx.getItemInHand());
+			BlockState state = level.getBlockState(digPos);
+			List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, digPos, WorldHelper.getBlockEntity(level, digPos), player, ctx.getItemInHand());
 			if (drops.isEmpty()) {
 				continue;
 			}
@@ -132,8 +132,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 }

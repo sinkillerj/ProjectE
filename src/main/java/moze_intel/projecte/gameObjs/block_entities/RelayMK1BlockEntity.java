@@ -32,18 +32,18 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-public class RelayMK1Tile extends CapabilityTileEMC implements MenuProvider {
+public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
 	private final CompactableStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
 	private final long chargeRate;
 	private double bonusEMC;
 
-	public RelayMK1Tile(BlockPos pos, BlockState state) {
+	public RelayMK1BlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.RELAY, pos, state, 7, EnumRelayTier.MK1);
 	}
 
-	RelayMK1Tile(BlockEntityTypeRegistryObject<? extends RelayMK1Tile> type, BlockPos pos, BlockState state, int sizeInv, EnumRelayTier tier) {
+	RelayMK1BlockEntity(BlockEntityTypeRegistryObject<? extends RelayMK1BlockEntity> type, BlockPos pos, BlockState state, int sizeInv, EnumRelayTier tier) {
 		super(type, pos, state, tier.getStorage());
 		this.chargeRate = tier.getChargeRate();
 		input = new CompactableStackHandler(sizeInv) {
@@ -82,7 +82,7 @@ public class RelayMK1Tile extends CapabilityTileEMC implements MenuProvider {
 		return true;
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, RelayMK1Tile relay) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, RelayMK1BlockEntity relay) {
 		relay.sendEmc();
 		relay.input.compact();
 		ItemStack stack = relay.getBurn();

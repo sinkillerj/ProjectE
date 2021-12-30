@@ -23,8 +23,8 @@ public class TransmutationTablet extends ItemPE {
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
-		if (!world.isClientSide) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+		if (!level.isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(hand), buf -> {
 				buf.writeBoolean(true);
 				buf.writeEnum(hand);

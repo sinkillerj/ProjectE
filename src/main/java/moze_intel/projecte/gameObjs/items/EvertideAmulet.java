@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.BasicItemCapability;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
@@ -72,40 +72,40 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		if (player == null) {
 			return InteractionResult.FAIL;
 		}
-		Level world = ctx.getLevel();
+		Level level = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (!world.isClientSide && PlayerHelper.hasEditPermission((ServerPlayer) player, pos)) {
-			BlockEntity tile = WorldHelper.getTileEntity(world, pos);
+		if (!level.isClientSide && PlayerHelper.hasEditPermission((ServerPlayer) player, pos)) {
+			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 			Direction sideHit = ctx.getClickedFace();
-			if (tile != null) {
-				Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+			if (blockEntity != null) {
+				Optional<IFluidHandler> capability = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
 				if (capability.isPresent()) {
 					capability.get().fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 					return InteractionResult.SUCCESS;
 				}
 			}
-			WorldHelper.placeFluid((ServerPlayer) player, world, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			WorldHelper.placeFluid((ServerPlayer) player, level, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
-		Level world = player.getCommandSenderWorld();
-		if (ProjectEConfig.server.items.opEvertide.get() || !world.dimensionType().ultraWarm()) {
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-			EntityWaterProjectile ent = new EntityWaterProjectile(player, world);
+		Level level = player.getCommandSenderWorld();
+		if (ProjectEConfig.server.items.opEvertide.get() || !level.dimensionType().ultraWarm()) {
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			EntityWaterProjectile ent = new EntityWaterProjectile(player, level);
 			ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-			world.addFreshEntity(ent);
+			level.addFreshEntity(ent);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_EVERTIDE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		tooltips.add(PELang.TOOLTIP_EVERTIDE_2.translate());
 		tooltips.add(PELang.TOOLTIP_EVERTIDE_3.translate());
@@ -113,12 +113,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				if (world.getLevelData() instanceof ServerLevelData worldInfo) {
-					int i = (300 + world.random.nextInt(600)) * 20;
+				if (level.getLevelData() instanceof ServerLevelData worldInfo) {
+					int i = (300 + level.random.nextInt(600)) * 20;
 					worldInfo.setRainTime(i);
 					worldInfo.setThunderTime(i);
 					worldInfo.setRaining(true);

@@ -84,7 +84,7 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 			return;
 		}
 		lastGameTime = mc.level == null ? 0 : mc.level.getGameTime();
-		Level world = player.getCommandSenderWorld();
+		Level level = player.getCommandSenderWorld();
 		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
 			stack = player.getOffhandItem();
@@ -97,7 +97,7 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 		// can properly take fluid into account/ignore it when needed
 		BlockHitResult rtr = philoStone.getHitBlock(player);
 		if (rtr.getType() == HitResult.Type.BLOCK) {
-			BlockState current = world.getBlockState(rtr.getBlockPos());
+			BlockState current = level.getBlockState(rtr.getBlockPos());
 			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
 			if (transmutationResult != null) {
 				Vec3 viewPosition = activeRenderInfo.getPosition();
@@ -109,10 +109,10 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 				matrix.pushPose();
 				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				CollisionContext selectionContext = CollisionContext.of(player);
-				for (BlockPos pos : PhilosophersStone.getChanges(world, rtr.getBlockPos(), player, rtr.getDirection(), mode, charge).keySet()) {
-					BlockState state = world.getBlockState(pos);
+				for (BlockPos pos : PhilosophersStone.getChanges(level, rtr.getBlockPos(), player, rtr.getDirection(), mode, charge).keySet()) {
+					BlockState state = level.getBlockState(pos);
 					if (!state.isAir()) {
-						VoxelShape shape = state.getShape(world, pos, selectionContext);
+						VoxelShape shape = state.getShape(level, pos, selectionContext);
 						if (!shape.isEmpty()) {
 							matrix.pushPose();
 							matrix.translate(pos.getX(), pos.getY(), pos.getZ());

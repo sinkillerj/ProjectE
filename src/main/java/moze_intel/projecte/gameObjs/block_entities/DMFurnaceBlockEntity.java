@@ -42,7 +42,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
+public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
 	private static final long EMC_CONSUMPTION = 2;
 	private final CompactableStackHandler inputInventory = new CompactableStackHandler(getInvSize());
@@ -55,11 +55,11 @@ public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
 	public int currentItemBurnTime;
 	public int furnaceCookTime;
 
-	public DMFurnaceTile(BlockPos pos, BlockState state) {
+	public DMFurnaceBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.DARK_MATTER_FURNACE, pos, state, 10, 3);
 	}
 
-	protected DMFurnaceTile(BlockEntityTypeRegistryObject<? extends DMFurnaceTile> type, BlockPos pos, BlockState state, int ticksBeforeSmelt, int efficiencyBonus) {
+	protected DMFurnaceBlockEntity(BlockEntityTypeRegistryObject<? extends DMFurnaceBlockEntity> type, BlockPos pos, BlockState state, int ticksBeforeSmelt, int efficiencyBonus) {
 		super(type, pos, state, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
@@ -116,7 +116,7 @@ public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
 		return outputInventory;
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, DMFurnaceTile furnace) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, DMFurnaceBlockEntity furnace) {
 		boolean wasBurning = furnace.isBurning();
 		int lastFurnaceBurnTime = furnace.furnaceBurnTime;
 		int lastFurnaceCookTime = furnace.furnaceCookTime;
@@ -179,11 +179,11 @@ public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
 	}
 
 	private void pullFromInventories() {
-		BlockEntity tile = WorldHelper.getTileEntity(level, worldPosition.above());
-		if (tile == null || tile instanceof HopperBlockEntity || tile instanceof DropperBlockEntity) {
+		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, worldPosition.above());
+		if (blockEntity == null || blockEntity instanceof HopperBlockEntity || blockEntity instanceof DropperBlockEntity) {
 			return;
 		}
-		IItemHandler handler = WorldHelper.getItemHandler(tile, Direction.DOWN);
+		IItemHandler handler = WorldHelper.getItemHandler(blockEntity, Direction.DOWN);
 		if (handler == null) {
 			return;
 		}
@@ -201,11 +201,11 @@ public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
 		if (outputInventory.isEmpty()) {
 			return;
 		}
-		BlockEntity tile = WorldHelper.getTileEntity(level, worldPosition.below());
-		if (tile == null || tile instanceof HopperBlockEntity) {
+		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, worldPosition.below());
+		if (blockEntity == null || blockEntity instanceof HopperBlockEntity) {
 			return;
 		}
-		IItemHandler targetInv = WorldHelper.getItemHandler(tile, Direction.UP);
+		IItemHandler targetInv = WorldHelper.getItemHandler(blockEntity, Direction.UP);
 		if (targetInv == null) {
 			return;
 		}

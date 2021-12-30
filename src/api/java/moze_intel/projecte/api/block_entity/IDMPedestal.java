@@ -1,4 +1,4 @@
-package moze_intel.projecte.api.tile;
+package moze_intel.projecte.api.block_entity;
 
 import net.minecraft.world.phys.AABB;
 

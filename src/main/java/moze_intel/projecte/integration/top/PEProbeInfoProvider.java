@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOneProbe, Void> {
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level level, BlockState blockState, IProbeHitData data) {
 		if (ProjectEConfig.server.misc.hwylaTOPDisplay.get()) {
 			long value = EMCHelper.getEmcValue(new ItemStack(blockState.getBlock()));
 			if (value > 0) {

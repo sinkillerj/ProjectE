@@ -1,9 +1,9 @@
-package moze_intel.projecte.api.capabilities.tile;
+package moze_intel.projecte.api.capabilities.block_entity;
 
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
- * This interface represents a capability for tiles that want to support storing, providing, or receiving EMC.
+ * This interface represents a capability for block entities that want to support storing, providing, or receiving EMC.
  *
  * The contract of this interface is only the above statement However, ProjectE implements an "active-push" system, where providers automatically send EMC to acceptors.
  * You are recommended to follow this convention.

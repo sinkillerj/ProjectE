@@ -114,10 +114,11 @@ public abstract class PEContainer extends AbstractContainerMenu {
 			stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
 		} else {
 			//We are in the main inventory or the hot bar
-			//Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
+			//Start by trying to insert it into the block entity's inventory slots, first attempting to stack with other items
 			stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true);
 			if (slotStack.getCount() == stackToInsert.getCount()) {
-				//Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
+				//Then as long as if we still have the same number of items (failed to insert), try to insert it into the block entity's inventory slots allowing
+				// for empty items
 				stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
 				if (slotStack.getCount() == stackToInsert.getCount()) {
 					//Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending on which one we currently are in
@@ -170,8 +171,8 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		return stack;
 	}
 
-	protected static boolean stillValid(Player player, BlockEntity tile, BlockRegistryObject<?, ?> blockRO) {
-		BlockPos pos = tile.getBlockPos();
+	protected static boolean stillValid(Player player, BlockEntity blockEntity, BlockRegistryObject<?, ?> blockRO) {
+		BlockPos pos = blockEntity.getBlockPos();
 		return player.level.getBlockState(pos).getBlock() == blockRO.getBlock() &&
 			   player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64.0;
 	}

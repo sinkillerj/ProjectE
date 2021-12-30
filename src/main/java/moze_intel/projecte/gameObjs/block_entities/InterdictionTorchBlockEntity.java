@@ -8,13 +8,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class InterdictionTile extends BlockEntity {
+public class InterdictionTorchBlockEntity extends BlockEntity {
 
-	public InterdictionTile(BlockPos pos, BlockState state) {
+	public InterdictionTorchBlockEntity(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.INTERDICTION_TORCH.get(), pos, state);
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, InterdictionTile torch) {
+	public static void tick(Level level, BlockPos pos, BlockState state, InterdictionTorchBlockEntity torch) {
 		//Note: The interdiction torch's ticker needs to be run on both sides to ensure it renders properly
 		// when it deflects things like projectiles
 		WorldHelper.repelEntitiesInterdiction(level, new AABB(pos.offset(-8, -8, -8), pos.offset(8, 8, 8)),

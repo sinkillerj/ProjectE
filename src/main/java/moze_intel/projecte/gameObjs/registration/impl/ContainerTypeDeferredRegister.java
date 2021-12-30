@@ -20,9 +20,9 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
 		super(ForgeRegistries.CONTAINERS);
 	}
 
-	public <CONTAINER extends AbstractContainerMenu, TILE extends BlockEntity> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<TILE> tileClass,
-			ITileContainerFactory<CONTAINER, TILE> factory) {
-		return register(nameProvider, (id, inv, buf) -> factory.create(id, inv, getTeFromBuf(buf, tileClass)));
+	public <CONTAINER extends AbstractContainerMenu, BE extends BlockEntity> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider,
+			Class<BE> blockEntityClass, IBlockEntityContainerFactory<CONTAINER, BE> factory) {
+		return register(nameProvider, (id, inv, buf) -> factory.create(id, inv, getBlockEntityFromBuf(buf, blockEntityClass)));
 	}
 
 	public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
@@ -33,25 +33,26 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
 		return register(name, () -> new MenuType<>(factory), ContainerTypeRegistryObject::new);
 	}
 
-	private static <TILE extends BlockEntity> TILE getTeFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
+	private static <BE extends BlockEntity> BE getBlockEntityFromBuf(FriendlyByteBuf buf, Class<BE> type) {
 		if (buf == null) {
 			throw new IllegalArgumentException("Null packet buffer");
 		}
 		return DistExecutor.unsafeRunForDist(() -> () -> {
 			BlockPos pos = buf.readBlockPos();
-			TILE tile = WorldHelper.getTileEntity(type, Minecraft.getInstance().level, pos);
-			if (tile == null) {
-				throw new IllegalStateException("Client could not locate tile at " + pos + " for tile container. "
-												+ "This is likely caused by a mod breaking client side tile lookup");
+			BE blockEntity = WorldHelper.getBlockEntity(type, Minecraft.getInstance().level, pos);
+			if (blockEntity == null) {
+				throw new IllegalStateException("Client could not locate block entity at " + pos + " for block entity container. "
+												+ "This is likely caused by a mod breaking client side block entity lookup");
 			}
-			return tile;
+			return blockEntity;
 		}, () -> () -> {
 			throw new RuntimeException("Shouldn't be called on server!");
 		});
 	}
 
-	public interface ITileContainerFactory<CONTAINER extends AbstractContainerMenu, TILE extends BlockEntity> {
+	@FunctionalInterface
+	public interface IBlockEntityContainerFactory<CONTAINER extends AbstractContainerMenu, BE extends BlockEntity> {
 
-		CONTAINER create(int id, Inventory inv, TILE tile);
+		CONTAINER create(int id, Inventory inv, BE blockEntity);
 	}
 }

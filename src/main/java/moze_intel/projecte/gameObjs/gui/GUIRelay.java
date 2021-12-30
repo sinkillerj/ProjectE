@@ -49,7 +49,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		//Emc bar progress
-		int progress = (int) ((double) menu.emc.get() / menu.tile.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
+		int progress = (int) ((double) menu.emc.get() / menu.relay.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
 		blit(matrix, leftPos + emcBarShift, topPos + 6, 30, vOffset, progress, 10);
 
 		//Klein start bar progress. Max is 30.

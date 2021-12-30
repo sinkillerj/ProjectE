@@ -54,15 +54,15 @@ public final class PlayerHelper {
 		if (!hasEditPermission(player, pos)) {
 			return false;
 		}
-		Level world = player.getCommandSenderWorld();
-		BlockSnapshot before = BlockSnapshot.create(world.dimension(), world, pos);
-		world.setBlockAndUpdate(pos, state);
+		Level level = player.getCommandSenderWorld();
+		BlockSnapshot before = BlockSnapshot.create(level.dimension(), level, pos);
+		level.setBlockAndUpdate(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.defaultBlockState(), player);
 		MinecraftForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled()) {
-			world.restoringBlockSnapshots = true;
+			level.restoringBlockSnapshots = true;
 			before.restore(true, false);
-			world.restoringBlockSnapshots = false;
+			level.restoringBlockSnapshots = false;
 			//PELogger.logInfo("Checked place block got canceled, restoring snapshot.");
 			return false;
 		}

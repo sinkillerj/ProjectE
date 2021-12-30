@@ -35,7 +35,7 @@ public interface PEEntityBlock<BLOCK_ENTITY extends BlockEntity> extends EntityB
 	}
 
 	default boolean triggerBlockEntityEvent(@Nonnull BlockState state, Level level, BlockPos pos, int id, int param) {
-		BlockEntity blockEntity = WorldHelper.getTileEntity(level, pos);
+		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 		return blockEntity != null && blockEntity.triggerEvent(id, param);
 	}
 }

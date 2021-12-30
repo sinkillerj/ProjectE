@@ -28,7 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CondenserTile extends ChestTileEmc implements MenuProvider {
+public class CondenserBlockEntity extends EmcChestBlockEntity implements MenuProvider {
 
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
@@ -38,11 +38,11 @@ public class CondenserTile extends ChestTileEmc implements MenuProvider {
 	public long displayEmc;
 	public long requiredEmc;
 
-	public CondenserTile(BlockPos pos, BlockState state) {
+	public CondenserBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.CONDENSER, pos, state);
 	}
 
-	protected CondenserTile(BlockEntityTypeRegistryObject<? extends CondenserTile> type, BlockPos pos, BlockState state) {
+	protected CondenserBlockEntity(BlockEntityTypeRegistryObject<? extends CondenserBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(this::createAutomationInventory);
 	}
@@ -98,7 +98,7 @@ public class CondenserTile extends ChestTileEmc implements MenuProvider {
 		};
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, CondenserTile condenser) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, CondenserBlockEntity condenser) {
 		condenser.checkLockAndUpdate();
 		condenser.displayEmc = condenser.getStoredEmc();
 		if (condenser.lockInfo != null && condenser.requiredEmc != 0) {

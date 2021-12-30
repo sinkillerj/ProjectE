@@ -15,25 +15,25 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 		super(ForgeRegistries.BLOCK_ENTITIES);
 	}
 
-	public <TILE extends BlockEntity> BlockEntityTypeBuilder<TILE> builder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends TILE> factory) {
+	public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {
 		return new BlockEntityTypeBuilder<>(block, factory);
 	}
 
-	public class BlockEntityTypeBuilder<TILE extends BlockEntity> {
+	public class BlockEntityTypeBuilder<BE extends BlockEntity> {
 
 		private final BlockRegistryObject<?, ?> block;
-		private final BlockEntityType.BlockEntitySupplier<? extends TILE> factory;
+		private final BlockEntityType.BlockEntitySupplier<? extends BE> factory;
 		@Nullable
-		private BlockEntityTicker<TILE> clientTicker;
+		private BlockEntityTicker<BE> clientTicker;
 		@Nullable
-		private BlockEntityTicker<TILE> serverTicker;
+		private BlockEntityTicker<BE> serverTicker;
 
-		private BlockEntityTypeBuilder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends TILE> factory) {
+		private BlockEntityTypeBuilder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {
 			this.block = block;
 			this.factory = factory;
 		}
 
-		public BlockEntityTypeBuilder<TILE> clientTicker(BlockEntityTicker<TILE> ticker) {
+		public BlockEntityTypeBuilder<BE> clientTicker(BlockEntityTicker<BE> ticker) {
 			if (clientTicker != null) {
 				throw new IllegalStateException("Client ticker may only be set once.");
 			}
@@ -41,7 +41,7 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 			return this;
 		}
 
-		public BlockEntityTypeBuilder<TILE> serverTicker(BlockEntityTicker<TILE> ticker) {
+		public BlockEntityTypeBuilder<BE> serverTicker(BlockEntityTicker<BE> ticker) {
 			if (serverTicker != null) {
 				throw new IllegalStateException("Server ticker may only be set once.");
 			}
@@ -49,13 +49,13 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 			return this;
 		}
 
-		public BlockEntityTypeBuilder<TILE> commonTicker(BlockEntityTicker<TILE> ticker) {
+		public BlockEntityTypeBuilder<BE> commonTicker(BlockEntityTicker<BE> ticker) {
 			return clientTicker(ticker).serverTicker(ticker);
 		}
 
 		@SuppressWarnings("ConstantConditions")
-		public BlockEntityTypeRegistryObject<TILE> build() {
-			BlockEntityTypeRegistryObject<TILE> registryObject = new BlockEntityTypeRegistryObject<>(null);
+		public BlockEntityTypeRegistryObject<BE> build() {
+			BlockEntityTypeRegistryObject<BE> registryObject = new BlockEntityTypeRegistryObject<>(null);
 			registryObject.clientTicker(clientTicker).serverTicker(serverTicker);
 			return register(block.getInternalRegistryName(), () -> {
 						Block[] validBlocks;
@@ -64,7 +64,7 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 						} else {
 							validBlocks = new Block[]{block.getBlock()};
 						}
-						return BlockEntityType.Builder.<TILE>of(factory, validBlocks).build(null);
+						return BlockEntityType.Builder.<BE>of(factory, validBlocks).build(null);
 					}, registryObject::setRegistryObject);
 		}
 	}

@@ -3,8 +3,8 @@ package moze_intel.projecte.gameObjs.blocks;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
-import moze_intel.projecte.gameObjs.block_entities.ChestTileEmc;
+import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
+import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
@@ -36,7 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
-public class AlchemicalChest extends BlockDirection implements SimpleWaterloggedBlock, PEEntityBlock<ChestTileEmc> {
+public class AlchemicalChest extends BlockDirection implements SimpleWaterloggedBlock, PEEntityBlock<EmcChestBlockEntity> {
 
 	private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
@@ -53,14 +53,14 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 
 	@Override
 	@Deprecated
-	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
 		return false;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
 		return SHAPE;
 	}
 
@@ -74,11 +74,12 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	@Nonnull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult rtr) {
-		if (!world.isClientSide) {
-			AlchChestTile te = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
-			if (te != null) {
-				NetworkHooks.openGui((ServerPlayer) player, te, pos);
+	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+			@Nonnull BlockHitResult rtr) {
+		if (!level.isClientSide) {
+			AlchBlockEntityChest chest = WorldHelper.getBlockEntity(AlchBlockEntityChest.class, level, pos, true);
+			if (chest != null) {
+				NetworkHooks.openGui((ServerPlayer) player, chest, pos);
 			}
 		}
 		return InteractionResult.SUCCESS;
@@ -86,7 +87,7 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 
 	@Nullable
 	@Override
-	public BlockEntityTypeRegistryObject<? extends ChestTileEmc> getType() {
+	public BlockEntityTypeRegistryObject<? extends EmcChestBlockEntity> getType() {
 		return PEBlockEntityTypes.ALCHEMICAL_CHEST;
 	}
 
@@ -100,7 +101,7 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	@Override
 	@Deprecated
 	public void tick(@Nonnull BlockState state, @Nonnull ServerLevel level, @Nonnull BlockPos pos, @Nonnull Random random) {
-		ChestTileEmc chest = WorldHelper.getTileEntity(ChestTileEmc.class, level, pos);
+		EmcChestBlockEntity chest = WorldHelper.getBlockEntity(EmcChestBlockEntity.class, level, pos);
 		if (chest != null) {
 			chest.recheckOpen();
 		}
@@ -114,10 +115,10 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
-		BlockEntity te = WorldHelper.getTileEntity(world, pos);
-		if (te != null) {
-			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
+		if (blockEntity != null) {
+			return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}
 		return 0;
 	}
@@ -138,11 +139,11 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor level,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 }

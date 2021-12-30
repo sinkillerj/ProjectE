@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -69,45 +69,45 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level world, @Nonnull Entity entity, int invSlot, boolean isSelected) {
-		if (!world.isClientSide && getMode(stack) == 1 && entity instanceof LivingEntity) {
-			fireArrow(stack, world, (LivingEntity) entity, 1F);
+	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+		if (!level.isClientSide && getMode(stack) == 1 && entity instanceof LivingEntity) {
+			fireArrow(stack, level, (LivingEntity) entity, 1F);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
-		if (!world.isClientSide) {
-			fireArrow(player.getItemInHand(hand), world, player, 1F);
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+		if (!level.isClientSide) {
+			fireArrow(player.getItemInHand(hand), level, player, 1F);
 		}
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
-	private void fireArrow(ItemStack ring, Level world, LivingEntity shooter, float inaccuracy) {
-		EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
+	private void fireArrow(ItemStack ring, Level level, LivingEntity shooter, float inaccuracy) {
+		EntityHomingArrow arrow = new EntityHomingArrow(level, shooter, 2.0F);
 		if (!(shooter instanceof Player player) || consumeFuel(player, ring, EMCHelper.getEmcValue(Items.ARROW), true)) {
 			arrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 3.0F, inaccuracy);
-			world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F));
-			world.addFreshEntity(arrow);
+			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F));
+			level.addFreshEntity(arrow);
 		}
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
-		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
+		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				if (!world.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds()).isEmpty()) {
+				if (!level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds()).isEmpty()) {
 					double centeredX = pos.getX() + 0.5;
 					double centeredY = pos.getY() + 0.5;
 					double centeredZ = pos.getZ() + 0.5;
 					for (int i = 0; i < 3; i++) {
-						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerLevel) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+						EntityHomingArrow arrow = new EntityHomingArrow(level, FakePlayerFactory.get((ServerLevel) level, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.setPosRaw(centeredX, centeredY + 2, centeredZ);
 						arrow.setDeltaMovement(0, 1, 0);
-						arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
-						world.addFreshEntity(arrow);
+						arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+						level.addFreshEntity(arrow);
 					}
 				}
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());

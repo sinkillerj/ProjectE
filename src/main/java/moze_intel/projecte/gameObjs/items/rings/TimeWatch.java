@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -58,9 +58,9 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide) {
+		if (!level.isClientSide) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.NIL_UUID);
 				return InteractionResultHolder.fail(stack);
@@ -73,26 +73,26 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int invSlot, boolean isHeld) {
-		super.inventoryTick(stack, world, entity, invSlot, isHeld);
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int invSlot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, invSlot, isHeld);
 		if (!(entity instanceof Player player) || invSlot >= Inventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		byte timeControl = getTimeBoost(stack);
-		if (!world.isClientSide && world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
-			ServerLevel serverWorld = (ServerLevel) world;
+		if (!level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
+			ServerLevel serverWorld = (ServerLevel) level;
 			if (timeControl == 1) {
-				serverWorld.setDayTime(Math.min(world.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
+				serverWorld.setDayTime(Math.min(level.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
 			} else if (timeControl == 2) {
 				long charge = getCharge(stack) + 1;
-				if (world.getDayTime() - charge * 4 < 0) {
+				if (level.getDayTime() - charge * 4 < 0) {
 					serverWorld.setDayTime(0);
 				} else {
-					serverWorld.setDayTime(world.getDayTime() - charge * 4);
+					serverWorld.setDayTime(level.getDayTime() - charge * 4);
 				}
 			}
 		}
-		if (world.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (level.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			return;
 		}
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
@@ -113,43 +113,43 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			mobSlowdown = 0.12F;
 		}
 		AABB bBox = player.getBoundingBox().inflate(8);
-		speedUpTileEntities(world, bonusTicks, bBox);
-		speedUpRandomTicks(world, bonusTicks, bBox);
-		slowMobs(world, bBox, mobSlowdown);
+		speedUpBlockEntities(level, bonusTicks, bBox);
+		speedUpRandomTicks(level, bonusTicks, bBox);
+		slowMobs(level, bBox, mobSlowdown);
 	}
 
-	private void slowMobs(Level world, AABB bBox, double mobSlowdown) {
+	private void slowMobs(Level level, AABB bBox, double mobSlowdown) {
 		if (bBox == null) {
 			// Sanity check for chunk unload weirdness
 			return;
 		}
-		for (Mob ent : world.getEntitiesOfClass(Mob.class, bBox)) {
+		for (Mob ent : level.getEntitiesOfClass(Mob.class, bBox)) {
 			ent.setDeltaMovement(ent.getDeltaMovement().multiply(mobSlowdown, 1, mobSlowdown));
 		}
 	}
 
-	private void speedUpTileEntities(Level world, int bonusTicks, AABB bBox) {
+	private void speedUpBlockEntities(Level level, int bonusTicks, AABB bBox) {
 		if (bBox == null || bonusTicks == 0) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
-		for (BlockEntity tile : WorldHelper.getTileEntitiesWithinAABB(world, bBox)) {
-			if (!tile.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH.contains(tile.getType())) {
-				BlockPos pos = tile.getBlockPos();
-				if (world.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
-					LevelChunk chunk = world.getChunkAt(pos);
+		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
+			if (!blockEntity.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH.contains(blockEntity.getType())) {
+				BlockPos pos = blockEntity.getBlockPos();
+				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+					LevelChunk chunk = level.getChunkAt(pos);
 					RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
 					if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
 						if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
 							//In general this should always be the case, so we inline some of the logic
 							// to optimize the calls to try and make extra ticks as cheap as possible
 							if (chunk.isTicking(pos)) {
-								ProfilerFiller profiler = world.getProfiler();
+								ProfilerFiller profiler = level.getProfiler();
 								profiler.push(tickingWrapper::getType);
 								BlockState state = chunk.getBlockState(pos);
-								if (tile.getType().isValid(state)) {
+								if (blockEntity.getType().isValid(state)) {
 									for (int i = 0; i < bonusTicks; i++) {
-										tickingBE.ticker.tick(world, pos, state, tile);
+										tickingBE.ticker.tick(level, pos, state, blockEntity);
 									}
 								}
 								profiler.pop();
@@ -166,21 +166,21 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		}
 	}
 
-	private void speedUpRandomTicks(Level world, int bonusTicks, AABB bBox) {
-		if (bBox == null || bonusTicks == 0 || !(world instanceof ServerLevel level)) {
+	private void speedUpRandomTicks(Level level, int bonusTicks, AABB bBox) {
+		if (bBox == null || bonusTicks == 0 || !(level instanceof ServerLevel serverLevel)) {
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
-			if (WorldHelper.isBlockLoaded(world, pos)) {
-				BlockState state = level.getBlockState(pos);
+			if (WorldHelper.isBlockLoaded(serverLevel, pos)) {
+				BlockState state = serverLevel.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.isRandomlyTicking() && !PETags.Blocks.BLACKLIST_TIME_WATCH.contains(block)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
 					pos = pos.immutable();
 					for (int i = 0; i < bonusTicks; i++) {
-						state.randomTick(level, pos, level.random);
+						state.randomTick(serverLevel, pos, serverLevel.random);
 					}
 				}
 			}
@@ -210,8 +210,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
 		if (stack.hasTag()) {
@@ -220,17 +220,17 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
 			@Nonnull PEDESTAL pedestal) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-		if (!world.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!level.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			AABB bBox = pedestal.getEffectBounds();
 			if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-				speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
-				speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
+				speedUpBlockEntities(level, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
+				speedUpRandomTicks(level, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
 			}
 			if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-				slowMobs(world, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
+				slowMobs(level, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
 			}
 		}
 		return false;

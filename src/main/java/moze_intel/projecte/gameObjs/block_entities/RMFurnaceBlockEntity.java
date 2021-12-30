@@ -11,9 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RMFurnaceTile extends DMFurnaceTile {
+public class RMFurnaceBlockEntity extends DMFurnaceBlockEntity {
 
-	public RMFurnaceTile(BlockPos pos, BlockState state) {
+	public RMFurnaceBlockEntity(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.RED_MATTER_FURNACE, pos, state, 3, 4);
 	}
 

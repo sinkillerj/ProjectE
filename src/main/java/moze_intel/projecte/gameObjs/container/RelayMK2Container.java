@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.block_entities.RelayMK2Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK2BlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -12,14 +12,14 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK2Container extends RelayMK1Container {
 
-	public RelayMK2Container(int windowId, Inventory playerInv, RelayMK2Tile relay) {
+	public RelayMK2Container(int windowId, Inventory playerInv, RelayMK2BlockEntity relay) {
 		super(PEContainerTypes.RELAY_MK2_CONTAINER, windowId, playerInv, relay);
 	}
 
 	@Override
 	void initSlots() {
-		IItemHandler input = tile.getInput();
-		IItemHandler output = tile.getOutput();
+		IItemHandler input = relay.getInput();
+		IItemHandler output = relay.getOutput();
 		//Klein star slot
 		this.addSlot(new ValidatedSlot(output, 0, 144, 44, SlotPredicates.EMC_HOLDER));
 		//Burn slot

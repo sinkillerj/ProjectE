@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.block_entities.CollectorMK1Tile;
+import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -20,34 +20,34 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CollectorMK1Container extends PEContainer {
 
-	public final CollectorMK1Tile tile;
+	public final CollectorMK1BlockEntity collector;
 	public final DataSlot sunLevel = DataSlot.standalone();
 	public final BoxedLong emc = new BoxedLong();
 	private final DataSlot kleinChargeProgress = DataSlot.standalone();
 	private final DataSlot fuelProgress = DataSlot.standalone();
 	public final BoxedLong kleinEmc = new BoxedLong();
 
-	public CollectorMK1Container(int windowId, Inventory playerInv, CollectorMK1Tile collector) {
+	public CollectorMK1Container(int windowId, Inventory playerInv, CollectorMK1BlockEntity collector) {
 		this(PEContainerTypes.COLLECTOR_MK1_CONTAINER, windowId, playerInv, collector);
 	}
 
-	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, Inventory playerInv, CollectorMK1Tile collector) {
+	protected CollectorMK1Container(ContainerTypeRegistryObject<? extends CollectorMK1Container> type, int windowId, Inventory playerInv, CollectorMK1BlockEntity collector) {
 		super(type, windowId, playerInv);
 		this.longFields.add(emc);
 		addDataSlot(sunLevel);
 		addDataSlot(kleinChargeProgress);
 		addDataSlot(fuelProgress);
 		this.longFields.add(kleinEmc);
-		this.tile = collector;
+		this.collector = collector;
 		initSlots();
 	}
 
 	void initSlots() {
-		IItemHandler aux = tile.getAux();
-		IItemHandler main = tile.getInput();
+		IItemHandler aux = collector.getAux();
+		IItemHandler main = collector.getInput();
 
 		//Klein Star Slot
-		this.addSlot(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADING_SLOT, 124, 58, SlotPredicates.COLLECTOR_INV));
+		this.addSlot(new ValidatedSlot(aux, CollectorMK1BlockEntity.UPGRADING_SLOT, 124, 58, SlotPredicates.COLLECTOR_INV));
 		int counter = 0;
 		//Fuel Upgrade storage
 		for (int i = 1; i >= 0; i--) {
@@ -56,9 +56,9 @@ public class CollectorMK1Container extends PEContainer {
 			}
 		}
 		//Upgrade Result
-		this.addSlot(new ValidatedSlot(aux, CollectorMK1Tile.UPGRADE_SLOT, 124, 13, SlotPredicates.ALWAYS_FALSE));
+		this.addSlot(new ValidatedSlot(aux, CollectorMK1BlockEntity.UPGRADE_SLOT, 124, 13, SlotPredicates.ALWAYS_FALSE));
 		//Upgrade Target
-		this.addSlot(new SlotGhost(aux, CollectorMK1Tile.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
+		this.addSlot(new SlotGhost(aux, CollectorMK1BlockEntity.LOCK_SLOT, 153, 36, SlotPredicates.COLLECTOR_LOCK));
 		addPlayerInventory(8, 84);
 	}
 
@@ -74,11 +74,11 @@ public class CollectorMK1Container extends PEContainer {
 
 	@Override
 	public void broadcastChanges() {
-		emc.set(tile.getStoredEmc());
-		sunLevel.set(tile.getSunLevel());
-		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
-		fuelProgress.set((int) (tile.getFuelProgress() * 8000));
-		kleinEmc.set(tile.getItemCharge());
+		emc.set(collector.getStoredEmc());
+		sunLevel.set(collector.getSunLevel());
+		kleinChargeProgress.set((int) (collector.getItemChargeProportion() * 8000));
+		fuelProgress.set((int) (collector.getFuelProgress() * 8000));
+		kleinEmc.set(collector.getItemCharge());
 		super.broadcastChanges();
 	}
 
@@ -88,7 +88,7 @@ public class CollectorMK1Container extends PEContainer {
 
 	@Override
 	public boolean stillValid(@Nonnull Player player) {
-		return stillValid(player, tile, getValidBlock());
+		return stillValid(player, collector, getValidBlock());
 	}
 
 	public double getKleinChargeProgress() {

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
+import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
@@ -36,7 +36,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityBlock<DMPedestalTile>, IMatterBlock {
+public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityBlock<DMPedestalBlockEntity>, IMatterBlock {
 
 	private static final VoxelShape SHAPE = Shapes.or(
 			Block.box(3, 0, 3, 13, 2, 13),
@@ -59,27 +59,27 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
 		return false;
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
 		return SHAPE;
 	}
 
 	/**
 	 * @return True if there was an item and it got dropped, false otherwise.
 	 */
-	private boolean dropItem(Level world, BlockPos pos) {
-		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
-		if (tile != null) {
-			ItemStack stack = tile.getInventory().getStackInSlot(0);
+	private boolean dropItem(Level level, BlockPos pos) {
+		DMPedestalBlockEntity pedestal = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos);
+		if (pedestal != null) {
+			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				tile.getInventory().setStackInSlot(0, ItemStack.EMPTY);
-				world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ(), stack));
+				pedestal.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+				level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 0.8, pos.getZ(), stack));
 				return true;
 			}
 		}
@@ -88,52 +88,52 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public void onRemove(BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			dropItem(world, pos);
-			super.onRemove(state, world, pos, newState, isMoving);
+			dropItem(level, pos);
+			super.onRemove(state, level, pos, newState, isMoving);
 		}
 	}
 
 	@Override
 	@Deprecated
-	public void attack(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
-		if (!world.isClientSide) {
-			dropItem(world, pos);
+	public void attack(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player) {
+		if (!level.isClientSide) {
+			dropItem(level, pos);
 		}
 	}
 
 	@Override
-	public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-		if (player.isCreative() && dropItem(world, pos)) {
+	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+		if (player.isCreative() && dropItem(level, pos)) {
 			//If the player is creative, try to drop the item, and if we succeeded return false to cancel removing the pedestal
 			// Note: we notify the block of an update to make sure that it re-appears visually on the client instead of having there
 			// be a desync
-			world.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+			level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
 			return false;
 		}
-		return super.onDestroyedByPlayer(state, world, pos, player, willHarvest, fluid);
+		return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 	}
 
 	@Nonnull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
 			@Nonnull BlockHitResult rtr) {
-		if (!world.isClientSide) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile == null) {
+		if (!level.isClientSide) {
+			DMPedestalBlockEntity pedestal = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos, true);
+			if (pedestal == null) {
 				return InteractionResult.FAIL;
 			}
-			ItemStack item = tile.getInventory().getStackInSlot(0);
+			ItemStack item = pedestal.getInventory().getStackInSlot(0);
 			ItemStack stack = player.getItemInHand(hand);
 			if (stack.isEmpty() && !item.isEmpty()) {
 				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-					tile.setActive(!tile.getActive());
-					world.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+					pedestal.setActive(!pedestal.getActive());
+					level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
 				});
 			} else if (!stack.isEmpty() && item.isEmpty()) {
-				tile.getInventory().setStackInSlot(0, stack.split(1));
+				pedestal.getInventory().setStackInSlot(0, stack.split(1));
 				if (stack.getCount() <= 0) {
 					player.setItemInHand(hand, ItemStack.EMPTY);
 				}
@@ -145,15 +145,15 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	// [VanillaCopy] Adapted from NoteBlock
 	@Override
 	@Deprecated
-	public void neighborChanged(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
-		boolean hasSignal = world.hasNeighborSignal(pos);
-		DMPedestalTile ped = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
+	public void neighborChanged(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
+		boolean hasSignal = level.hasNeighborSignal(pos);
+		DMPedestalBlockEntity ped = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos);
 		if (ped != null && ped.previousRedstoneState != hasSignal) {
 			if (hasSignal) {
 				ItemStack stack = ped.getInventory().getStackInSlot(0);
 				if (!stack.isEmpty() && stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
 					ped.setActive(!ped.getActive());
-					world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
+					level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 				}
 			}
 			ped.previousRedstoneState = hasSignal;
@@ -169,8 +169,8 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
-		DMPedestalTile pedestal = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+		DMPedestalBlockEntity pedestal = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos);
 		if (pedestal != null) {
 			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
@@ -185,7 +185,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Nullable
 	@Override
-	public BlockEntityTypeRegistryObject<DMPedestalTile> getType() {
+	public BlockEntityTypeRegistryObject<DMPedestalBlockEntity> getType() {
 		return PEBlockEntityTypes.DARK_MATTER_PEDESTAL;
 	}
 
@@ -197,8 +197,8 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable BlockGetter world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltip, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable BlockGetter level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltip, flags);
 		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate());
 		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate());
 	}
@@ -220,12 +220,12 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	@Nonnull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
+	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor level,
 			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -219,19 +219,19 @@ public class PECore {
 							return super.execute(source, stack);
 						}
 					}
-					Level world = source.getLevel();
+					Level level = source.getLevel();
 					setSuccess(true);
 					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
 					BlockPos pos = source.getPos().relative(direction);
-					BlockState state = world.getBlockState(pos);
-					if (BaseFireBlock.canBePlacedAt(world, pos, direction)) {
-						world.setBlockAndUpdate(pos, BaseFireBlock.getState(world, pos));
+					BlockState state = level.getBlockState(pos);
+					if (BaseFireBlock.canBePlacedAt(level, pos, direction)) {
+						level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
 					} else if (CampfireBlock.canLight(state)) {
-						world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
-					} else if (state.isFlammable(world, pos, direction.getOpposite())) {
-						state.onCaughtFire(world, pos, direction.getOpposite(), null);
+						level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
+					} else if (state.isFlammable(level, pos, direction.getOpposite())) {
+						state.onCaughtFire(level, pos, direction.getOpposite(), null);
 						if (state.getBlock() instanceof TntBlock) {
-							world.removeBlock(pos, false);
+							level.removeBlock(pos, false);
 						}
 					} else {
 						setSuccess(false);
@@ -245,30 +245,30 @@ public class PECore {
 				public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
-					Level world = source.getLevel();
+					Level level = source.getLevel();
 					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
 					BlockPos pos = source.getPos().relative(direction);
-					BlockEntity tile = WorldHelper.getTileEntity(world, pos);
+					BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 					Direction sideHit = direction.getOpposite();
-					if (tile != null) {
-						Optional<IFluidHandler> capability = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+					if (blockEntity != null) {
+						Optional<IFluidHandler> capability = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
 						if (capability.isPresent()) {
 							capability.get().fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 							return stack;
 						}
 					}
-					BlockState state = world.getBlockState(pos);
+					BlockState state = level.getBlockState(pos);
 					if (state.getBlock() == Blocks.CAULDRON) {
-						world.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
+						level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
 						return stack;
 					} else if (state.getBlock() == Blocks.WATER_CAULDRON) {
 						if (!((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
-							world.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
+							level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
 							return stack;
 						}
 					} else {
-						WorldHelper.placeFluid(null, world, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-						world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+						WorldHelper.placeFluid(null, level, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+						level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						return stack;
 					}
 					return super.execute(source, stack);

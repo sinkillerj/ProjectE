@@ -27,12 +27,12 @@ public class EntityHomingArrow extends Arrow {
 
 	private int newTargetCooldown = 0;
 
-	public EntityHomingArrow(EntityType<EntityHomingArrow> type, Level world) {
-		super(type, world);
+	public EntityHomingArrow(EntityType<EntityHomingArrow> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityHomingArrow(Level world, LivingEntity shooter, float damage) {
-		super(world, shooter);
+	public EntityHomingArrow(Level level, LivingEntity shooter, float damage) {
+		super(level, shooter);
 		this.setBaseDamage(damage);
 		this.pickup = Pickup.CREATIVE_ONLY;
 	}

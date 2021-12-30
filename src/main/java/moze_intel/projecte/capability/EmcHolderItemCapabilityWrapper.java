@@ -3,7 +3,7 @@ package moze_intel.projecte.capability;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 

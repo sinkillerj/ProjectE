@@ -106,8 +106,8 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
@@ -118,7 +118,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
@@ -144,8 +144,8 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
-		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, level, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}
 }

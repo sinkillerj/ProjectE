@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
-import moze_intel.projecte.api.tile.TileEmcBase;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
+import moze_intel.projecte.api.block_entity.BaseEmcBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -19,15 +19,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 
-public abstract class TileEmc extends TileEmcBase {
+public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 
 	private boolean updateComparators;
 
-	public TileEmc(BlockEntityTypeRegistryObject<? extends TileEmc> type, BlockPos pos, BlockState state) {
-		this(type, pos, state, Constants.TILE_MAX_EMC);
+	public EmcBlockEntity(BlockEntityTypeRegistryObject<? extends EmcBlockEntity> type, BlockPos pos, BlockState state) {
+		this(type, pos, state, Constants.BLOCK_ENTITY_MAX_EMC);
 	}
 
-	public TileEmc(BlockEntityTypeRegistryObject<? extends TileEmc> type, BlockPos pos, BlockState state, long maxAmount) {
+	public EmcBlockEntity(BlockEntityTypeRegistryObject<? extends EmcBlockEntity> type, BlockPos pos, BlockState state, long maxAmount) {
 		super(type.get(), pos, state);
 		setMaximumEMC(maxAmount);
 	}
@@ -60,7 +60,7 @@ public abstract class TileEmc extends TileEmcBase {
 	}
 
 	public void markDirty(boolean recheckComparators) {
-		//Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
+		//Copy of the base impl of markDirty in BlockEntity, except only updates comparator state when something changed
 		// and if our block supports having a comparator signal, instead of always doing it
 		if (level != null) {
 			if (level.hasChunkAt(worldPosition)) {
@@ -103,9 +103,9 @@ public abstract class TileEmc extends TileEmcBase {
 			BlockPos neighboringPos = worldPosition.relative(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
 			if (level.isLoaded(neighboringPos)) {
-				BlockEntity neighboringTile = WorldHelper.getTileEntity(level, neighboringPos);
-				if (neighboringTile != null) {
-					neighboringTile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
+				BlockEntity neighboringBE = WorldHelper.getBlockEntity(level, neighboringPos);
+				if (neighboringBE != null) {
+					neighboringBE.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
 						if (!isRelay() || !theirEmcStorage.isRelay()) {
 							//If they are both relays don't add the pairing so as to prevent thrashing
 							if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {

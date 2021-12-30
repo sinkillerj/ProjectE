@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public class EntityRandomizerHelper {
 
-	public static Mob getRandomEntity(Level world, Mob toRandomize) {
+	public static Mob getRandomEntity(Level level, Mob toRandomize) {
 		EntityType<?> entType = toRandomize.getType();
 		boolean isPeaceful = PETags.Entities.RANDOMIZER_PEACEFUL.contains(entType);
 		boolean isHostile = PETags.Entities.RANDOMIZER_HOSTILE.contains(entType);
@@ -28,29 +28,29 @@ public class EntityRandomizerHelper {
 			}
 		}
 		if (isPeaceful) {
-			return createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_PEACEFUL);
+			return createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_PEACEFUL);
 		} else if (isHostile) {
-			Mob ent = createRandomEntity(world, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
+			Mob ent = createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
 			if (ent instanceof Rabbit rabbit) {
 				rabbit.setRabbitType(99);
 			}
 			return ent;
 		}
-		if (world.random.nextBoolean()) {
-			return EntityType.SLIME.create(world);
+		if (level.random.nextBoolean()) {
+			return EntityType.SLIME.create(level);
 		}
-		return EntityType.SHEEP.create(world);
+		return EntityType.SHEEP.create(level);
 	}
 
 	@Nullable
-	private static Mob createRandomEntity(Level world, Entity current, Named<EntityType<?>> type) {
+	private static Mob createRandomEntity(Level level, Entity current, Named<EntityType<?>> type) {
 		EntityType<?> currentType = current.getType();
-		EntityType<?> newType = getRandomTagEntry(world.getRandom(), type, currentType);
+		EntityType<?> newType = getRandomTagEntry(level.getRandom(), type, currentType);
 		if (currentType == newType) {
 			//If the type is identical return null so that nothing happens
 			return null;
 		}
-		Entity newEntity = newType.create(world);
+		Entity newEntity = newType.create(level);
 		if (newEntity instanceof Mob) {
 			return (Mob) newEntity;
 		} else if (newEntity != null) {

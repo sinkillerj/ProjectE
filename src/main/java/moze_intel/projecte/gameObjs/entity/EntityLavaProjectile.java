@@ -29,12 +29,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EntityLavaProjectile extends ThrowableProjectile {
 
-	public EntityLavaProjectile(EntityType<EntityLavaProjectile> type, Level world) {
-		super(type, world);
+	public EntityLavaProjectile(EntityType<EntityLavaProjectile> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityLavaProjectile(Player entity, Level world) {
-		super(PEEntityTypes.LAVA_PROJECTILE.get(), entity, world);
+	public EntityLavaProjectile(Player entity, Level level) {
+		super(PEEntityTypes.LAVA_PROJECTILE.get(), entity, level);
 	}
 
 	@Override

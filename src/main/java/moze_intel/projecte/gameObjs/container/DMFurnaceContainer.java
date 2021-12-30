@@ -4,7 +4,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -21,19 +21,19 @@ import net.minecraftforge.items.IItemHandler;
 
 public class DMFurnaceContainer extends PEContainer {
 
-	public final DMFurnaceTile tile;
+	public final DMFurnaceBlockEntity furnace;
 
-	public DMFurnaceContainer(int windowId, Inventory playerInv, DMFurnaceTile tile) {
-		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, playerInv, tile);
+	public DMFurnaceContainer(int windowId, Inventory playerInv, DMFurnaceBlockEntity furnace) {
+		this(PEContainerTypes.DM_FURNACE_CONTAINER, windowId, playerInv, furnace);
 	}
 
-	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, Inventory playerInv, DMFurnaceTile tile) {
+	protected DMFurnaceContainer(ContainerTypeRegistryObject<? extends DMFurnaceContainer> type, int windowId, Inventory playerInv, DMFurnaceBlockEntity furnace) {
 		super(type, windowId, playerInv);
-		this.tile = tile;
+		this.furnace = furnace;
 		initSlots();
-		addDataSlot(() -> this.tile.furnaceCookTime, value -> this.tile.furnaceCookTime = value);
-		addDataSlot(() -> this.tile.furnaceBurnTime, value -> this.tile.furnaceBurnTime = value);
-		addDataSlot(() -> this.tile.currentItemBurnTime, value -> this.tile.currentItemBurnTime = value);
+		addDataSlot(() -> this.furnace.furnaceCookTime, value -> this.furnace.furnaceCookTime = value);
+		addDataSlot(() -> this.furnace.furnaceBurnTime, value -> this.furnace.furnaceBurnTime = value);
+		addDataSlot(() -> this.furnace.currentItemBurnTime, value -> this.furnace.currentItemBurnTime = value);
 	}
 
 	private void addDataSlot(IntSupplier getter, IntConsumer setter) {
@@ -51,15 +51,15 @@ public class DMFurnaceContainer extends PEContainer {
 	}
 
 	void initSlots() {
-		IItemHandler fuel = tile.getFuel();
-		IItemHandler input = tile.getInput();
-		IItemHandler output = tile.getOutput();
+		IItemHandler fuel = furnace.getFuel();
+		IItemHandler input = furnace.getInput();
+		IItemHandler output = furnace.getOutput();
 
 		//Fuel Slot
 		this.addSlot(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
 
 		//Input(0)
-		Predicate<ItemStack> inputPredicate = stack -> !tile.getSmeltingResult(stack).isEmpty();
+		Predicate<ItemStack> inputPredicate = stack -> !furnace.getSmeltingResult(stack).isEmpty();
 		this.addSlot(new ValidatedSlot(input, 0, 49, 17, inputPredicate));
 
 		int counter = 1;
@@ -91,6 +91,6 @@ public class DMFurnaceContainer extends PEContainer {
 
 	@Override
 	public boolean stillValid(@Nonnull Player player) {
-		return stillValid(player, tile, getValidBlock());
+		return stillValid(player, furnace, getValidBlock());
 	}
 }

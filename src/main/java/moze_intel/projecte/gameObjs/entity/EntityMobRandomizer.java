@@ -23,12 +23,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EntityMobRandomizer extends ThrowableProjectile {
 
-	public EntityMobRandomizer(EntityType<EntityMobRandomizer> type, Level world) {
-		super(type, world);
+	public EntityMobRandomizer(EntityType<EntityMobRandomizer> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityMobRandomizer(Player entity, Level world) {
-		super(PEEntityTypes.MOB_RANDOMIZER.get(), entity, world);
+	public EntityMobRandomizer(Player entity, Level level) {
+		super(PEEntityTypes.MOB_RANDOMIZER.get(), entity, level);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.gameObjs.block_entities.RelayMK1Tile;
+import moze_intel.projecte.gameObjs.block_entities.RelayMK1BlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -16,27 +16,27 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RelayMK1Container extends PEContainer {
 
-	public final RelayMK1Tile tile;
+	public final RelayMK1BlockEntity relay;
 	private final DataSlot kleinChargeProgress = DataSlot.standalone();
 	private final DataSlot inputBurnProgress = DataSlot.standalone();
 	public final BoxedLong emc = new BoxedLong();
 
-	public RelayMK1Container(int windowId, Inventory playerInv, RelayMK1Tile relay) {
+	public RelayMK1Container(int windowId, Inventory playerInv, RelayMK1BlockEntity relay) {
 		this(PEContainerTypes.RELAY_MK1_CONTAINER, windowId, playerInv, relay);
 	}
 
-	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, Inventory playerInv, RelayMK1Tile relay) {
+	protected RelayMK1Container(ContainerTypeRegistryObject<? extends RelayMK1Container> type, int windowId, Inventory playerInv, RelayMK1BlockEntity relay) {
 		super(type, windowId, playerInv);
 		this.longFields.add(emc);
 		addDataSlot(kleinChargeProgress);
 		addDataSlot(inputBurnProgress);
-		this.tile = relay;
+		this.relay = relay;
 		initSlots();
 	}
 
 	void initSlots() {
-		IItemHandler input = tile.getInput();
-		IItemHandler output = tile.getOutput();
+		IItemHandler input = relay.getInput();
+		IItemHandler output = relay.getOutput();
 		//Klein Star charge slot
 		this.addSlot(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.EMC_HOLDER));
 		//Burning slot
@@ -53,9 +53,9 @@ public class RelayMK1Container extends PEContainer {
 
 	@Override
 	public void broadcastChanges() {
-		emc.set(tile.getStoredEmc());
-		kleinChargeProgress.set((int) (tile.getItemChargeProportion() * 8000));
-		inputBurnProgress.set((int) (tile.getInputBurnProportion() * 8000));
+		emc.set(relay.getStoredEmc());
+		kleinChargeProgress.set((int) (relay.getItemChargeProportion() * 8000));
+		inputBurnProgress.set((int) (relay.getInputBurnProportion() * 8000));
 		super.broadcastChanges();
 	}
 
@@ -65,7 +65,7 @@ public class RelayMK1Container extends PEContainer {
 
 	@Override
 	public boolean stillValid(@Nonnull Player player) {
-		return stillValid(player, tile, getValidBlock());
+		return stillValid(player, relay, getValidBlock());
 	}
 
 	public double getKleinChargeProgress() {

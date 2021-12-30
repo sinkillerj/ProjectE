@@ -28,9 +28,9 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level world) {
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
 		//If we have at least one matching recipe, return that we found a match
-		return !getMatchingRecipes(inv, world).isEmpty();
+		return !getMatchingRecipes(inv, level).isEmpty();
 	}
 
 	@Nonnull
@@ -47,7 +47,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 		return output;
 	}
 
-	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @Nonnull Level world) {
+	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @Nonnull Level level) {
 		List<ItemStack> philoStones = new ArrayList<>();
 		List<ItemStack> coals = new ArrayList<>();
 		List<ItemStack> allItems = new ArrayList<>();
@@ -84,10 +84,10 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 								if (matchingRecipes.isEmpty()) {
 									//If there are no matching recipes yet see if there are any recipes that match the current stack and add them if they are,
 									// if we didn't end up adding any elements that means there are no matching recipes so fail
-									if (!matchingRecipes.addAll(world.getRecipeManager().getRecipesFor(RecipeType.SMELTING, furnaceInput, world))) {
+									if (!matchingRecipes.addAll(level.getRecipeManager().getRecipesFor(RecipeType.SMELTING, furnaceInput, level))) {
 										return Collections.emptySet();
 									}
-								} else if (matchingRecipes.removeIf(recipe -> !recipe.matches(furnaceInput, world))) {
+								} else if (matchingRecipes.removeIf(recipe -> !recipe.matches(furnaceInput, level))) {
 									//If any matching recipes are no longer valid (so got removed), check if our set of matching recipes is now empty now
 									if (matchingRecipes.isEmpty()) {
 										//If it is exit due to there being no match

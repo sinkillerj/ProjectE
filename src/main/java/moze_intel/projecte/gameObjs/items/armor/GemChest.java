@@ -23,14 +23,14 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_CHEST.translate());
 	}
 
 	@Override
-	public void onArmorTick(ItemStack chest, Level world, Player player) {
-		if (!world.isClientSide) {
+	public void onArmorTick(ItemStack chest, Level level, Player player) {
+		if (!level.isClientSide) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateFeed();
 				if (player.getFoodData().needsFood() && timers.canFeed()) {

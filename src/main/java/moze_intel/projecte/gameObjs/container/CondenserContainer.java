@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.gameObjs.block_entities.CondenserTile;
+import moze_intel.projecte.gameObjs.block_entities.CondenserBlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -22,18 +22,18 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
+public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBlockEntity> {
 
 	public final BoxedLong displayEmc = new BoxedLong();
 	public final BoxedLong requiredEmc = new BoxedLong();
 	@Nullable
 	private ItemInfo lastLockInfo;
 
-	public CondenserContainer(int windowId, Inventory playerInv, CondenserTile condenser) {
+	public CondenserContainer(int windowId, Inventory playerInv, CondenserBlockEntity condenser) {
 		this(PEContainerTypes.CONDENSER_CONTAINER, windowId, playerInv, condenser);
 	}
 
-	protected CondenserContainer(ContainerTypeRegistryObject<? extends CondenserContainer> type, int windowId, Inventory playerInv, CondenserTile condenser) {
+	protected CondenserContainer(ContainerTypeRegistryObject<? extends CondenserContainer> type, int windowId, Inventory playerInv, CondenserBlockEntity condenser) {
 		super(type, windowId, playerInv, condenser);
 		this.longFields.add(displayEmc);
 		this.longFields.add(requiredEmc);
@@ -41,9 +41,9 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 	}
 
 	protected void initSlots() {
-		this.addSlot(new SlotCondenserLock(tile::getLockInfo, 0, 12, 6));
-		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !tile.isStackEqualToLock(s);
-		IItemHandler handler = tile.getInput();
+		this.addSlot(new SlotCondenserLock(blockEntity::getLockInfo, 0, 12, 6));
+		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !blockEntity.isStackEqualToLock(s);
+		IItemHandler handler = blockEntity.getInput();
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 13; j++) {
 				this.addSlot(new ValidatedSlot(handler,  j + i * 13, 12 + j * 18, 26 + i * 18, validator));
@@ -54,9 +54,9 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 
 	@Override
 	public void broadcastChanges() {
-		this.displayEmc.set(tile.displayEmc);
-		this.requiredEmc.set(tile.requiredEmc);
-		ItemInfo lockInfo = tile.getLockInfo();
+		this.displayEmc.set(blockEntity.displayEmc);
+		this.requiredEmc.set(blockEntity.requiredEmc);
+		ItemInfo lockInfo = blockEntity.getLockInfo();
 		if (!Objects.equals(lockInfo, lastLockInfo)) {
 			lastLockInfo = lockInfo;
 			syncDataChange(new UpdateCondenserLockPKT((short) containerId, lockInfo));
@@ -70,13 +70,13 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 
 	@Override
 	public boolean stillValid(@Nonnull Player player) {
-		return stillValid(player, tile, getValidBlock());
+		return stillValid(player, blockEntity, getValidBlock());
 	}
 
 	@Override
 	public void clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull Player player) {
 		if (slot == 0) {
-			if (tile.attemptCondenserSet(player)) {
+			if (blockEntity.attemptCondenserSet(player)) {
 				this.broadcastChanges();
 			}
 		} else {
@@ -95,6 +95,6 @@ public class CondenserContainer extends ChestTileEmcContainer<CondenserTile> {
 	}
 
 	public void updateLockInfo(@Nullable ItemInfo lockInfo) {
-		tile.setLockInfoFromPacket(lockInfo);
+		blockEntity.setLockInfoFromPacket(lockInfo);
 	}
 }

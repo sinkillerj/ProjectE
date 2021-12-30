@@ -16,7 +16,7 @@ public class AlchChestItemCapabilityWrapper extends BasicItemCapability<IAlchChe
 	}
 
 	@Override
-	public boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		return getItem().updateInAlchChest(world, pos, stack);
+	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+		return getItem().updateInAlchChest(level, pos, stack);
 	}
 }

@@ -31,12 +31,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EntityWaterProjectile extends ThrowableProjectile {
 
-	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, Level world) {
-		super(type, world);
+	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityWaterProjectile(Player entity, Level world) {
-		super(PEEntityTypes.WATER_PROJECTILE.get(), entity, world);
+	public EntityWaterProjectile(Player entity, Level level) {
+		super(PEEntityTypes.WATER_PROJECTILE.get(), entity, level);
 	}
 
 	@Override

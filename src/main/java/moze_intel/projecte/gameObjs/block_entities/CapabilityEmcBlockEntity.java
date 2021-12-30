@@ -12,16 +12,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class CapabilityTileEMC extends TileEmc {
+public abstract class CapabilityEmcBlockEntity extends EmcBlockEntity {
 
 	@Nullable
 	protected ICapabilityResolver<IItemHandler> itemHandlerResolver;
 
-	public CapabilityTileEMC(BlockEntityTypeRegistryObject<? extends CapabilityTileEMC> type, BlockPos pos, BlockState state) {
+	public CapabilityEmcBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
-	public CapabilityTileEMC(BlockEntityTypeRegistryObject<? extends CapabilityTileEMC> type, BlockPos pos, BlockState state, long maxAmount) {
+	public CapabilityEmcBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state, long maxAmount) {
 		super(type, pos, state, maxAmount);
 	}
 

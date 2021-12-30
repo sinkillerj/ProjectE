@@ -29,21 +29,21 @@ public class ProjectETNT extends TntBlock {
 	}
 
 	@Override
-	public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+	public int getFlammability(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
 		return 100;
 	}
 
 	@Override
-	public void onCaughtFire(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-		if (!world.isClientSide) {
-			createAndAddEntity(world, pos, igniter);
+	public void onCaughtFire(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
+		if (!level.isClientSide) {
+			createAndAddEntity(level, pos, igniter);
 		}
 	}
 
-	public void createAndAddEntity(@Nonnull Level world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
-		PrimedTnt tnt = tntEntityCreator.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-		world.addFreshEntity(tnt);
-		world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+	public void createAndAddEntity(@Nonnull Level level, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+		PrimedTnt tnt = tntEntityCreator.create(level, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+		level.addFreshEntity(tnt);
+		level.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
 	}
 
 	public DispenseItemBehavior createDispenseItemBehavior() {
@@ -61,18 +61,18 @@ public class ProjectETNT extends TntBlock {
 	}
 
 	@Override
-	public void wasExploded(Level world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
-		if (!world.isClientSide) {
-			PrimedTnt tnt = tntEntityCreator.create(world, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
+	public void wasExploded(Level level, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+		if (!level.isClientSide) {
+			PrimedTnt tnt = tntEntityCreator.create(level, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
 			int fuse = tnt.getFuse();
-			tnt.setFuse((short) (world.random.nextInt(fuse / 4) + fuse / 8));
-			world.addFreshEntity(tnt);
+			tnt.setFuse((short) (level.random.nextInt(fuse / 4) + fuse / 8));
+			level.addFreshEntity(tnt);
 		}
 	}
 
 	@FunctionalInterface
 	public interface TNTEntityCreator {
 
-		PrimedTnt create(Level world, double posX, double posY, double posZ, @Nullable LivingEntity igniter);
+		PrimedTnt create(Level level, double posX, double posY, double posZ, @Nullable LivingEntity igniter);
 	}
 }

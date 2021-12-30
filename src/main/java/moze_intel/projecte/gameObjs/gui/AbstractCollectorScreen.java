@@ -52,7 +52,7 @@ public abstract class AbstractCollectorScreen<T extends CollectorMK1Container> e
 		blit(matrix, leftPos + 126 + getBonusXShift(), topPos + 49 - progress, 177 + getTextureBonusXShift(), 13 - progress, 12, progress);
 
 		//EMC storage. Max is 48
-		blit(matrix, leftPos + 64 + getBonusXShift(), topPos + 18, 0, 166, (int) ((double) menu.emc.get() / menu.tile.getMaximumEmc() * 48), 10);
+		blit(matrix, leftPos + 64 + getBonusXShift(), topPos + 18, 0, 166, (int) ((double) menu.emc.get() / menu.collector.getMaximumEmc() * 48), 10);
 
 		//Klein Star Charge Progress. Max is 48
 		progress = (int) (menu.getKleinChargeProgress() * 48);

@@ -105,7 +105,7 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getItemInHand(hand));
 	}
 
@@ -120,11 +120,11 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
 		if (player != null) {
-			Level world = context.getLevel();
-			BlockState state = world.getBlockState(context.getClickedPos());
+			Level level = context.getLevel();
+			BlockState state = level.getBlockState(context.getClickedPos());
 			if (state.is(BlockTags.LEAVES)) {
 				//Mass clear leaves
-				ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
+				ToolHelper.clearTagAOE(level, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
 			}
 		}
 		return InteractionResult.PASS;

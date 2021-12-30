@@ -39,7 +39,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
-public class CollectorMK1Tile extends CapabilityTileEMC implements MenuProvider {
+public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
 	private final ItemStackHandler input = new StackHandler(getInvSize()) {
 		@Override
@@ -69,11 +69,11 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements MenuProvider 
 	//Start as needing to check for compacting when loaded
 	private boolean needsCompacting = true;
 
-	public CollectorMK1Tile(BlockPos pos, BlockState state) {
+	public CollectorMK1BlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.COLLECTOR, pos, state, EnumCollectorTier.MK1);
 	}
 
-	public CollectorMK1Tile(BlockEntityTypeRegistryObject<? extends CollectorMK1Tile> type, BlockPos pos, BlockState state, EnumCollectorTier tier) {
+	public CollectorMK1BlockEntity(BlockEntityTypeRegistryObject<? extends CollectorMK1BlockEntity> type, BlockPos pos, BlockState state, EnumCollectorTier tier) {
 		super(type, pos, state, tier.getStorage());
 		this.emcGen = tier.getGenRate();
 		itemHandlerResolver = new CollectorItemHandlerProvider();
@@ -118,7 +118,7 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements MenuProvider 
 		return true;
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, CollectorMK1Tile collector) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, CollectorMK1BlockEntity collector) {
 		if (collector.needsCompacting) {
 			ItemHelper.compactInventory(collector.toSort);
 			collector.needsCompacting = false;
@@ -288,10 +288,10 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements MenuProvider 
 
 	private void sendRelayBonus() {
 		for (Direction dir : Direction.values()) {
-			RelayMK1Tile tile = WorldHelper.getTileEntity(RelayMK1Tile.class, level, worldPosition.relative(dir));
-			if (tile != null) {
-				//The other tiers of relay extend RelayMK1Tile and add the correct bonus
-				tile.addBonus();
+			RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, worldPosition.relative(dir));
+			if (relay != null) {
+				//The other tiers of relay extend RelayMK1BlockEntity and add the correct bonus
+				relay.addBonus();
 			}
 		}
 	}

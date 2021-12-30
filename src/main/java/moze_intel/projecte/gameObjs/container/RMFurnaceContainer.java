@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import java.util.function.Predicate;
-import moze_intel.projecte.gameObjs.block_entities.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.RMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -15,20 +15,20 @@ import net.minecraftforge.items.IItemHandler;
 
 public class RMFurnaceContainer extends DMFurnaceContainer {
 
-	public RMFurnaceContainer(int windowId, Inventory playerInv, RMFurnaceTile tile) {
-		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, playerInv, tile);
+	public RMFurnaceContainer(int windowId, Inventory playerInv, RMFurnaceBlockEntity furnace) {
+		super(PEContainerTypes.RM_FURNACE_CONTAINER, windowId, playerInv, furnace);
 	}
 
 	@Override
 	void initSlots() {
-		IItemHandler fuel = tile.getFuel();
-		IItemHandler input = tile.getInput();
-		IItemHandler output = tile.getOutput();
+		IItemHandler fuel = furnace.getFuel();
+		IItemHandler input = furnace.getInput();
+		IItemHandler output = furnace.getOutput();
 
 		//Fuel
 		this.addSlot(new ValidatedSlot(fuel, 0, 65, 53, SlotPredicates.FURNACE_FUEL));
 
-		Predicate<ItemStack> inputPredicate = stack -> !tile.getSmeltingResult(stack).isEmpty();
+		Predicate<ItemStack> inputPredicate = stack -> !furnace.getSmeltingResult(stack).isEmpty();
 		//Input(0)
 		this.addSlot(new ValidatedSlot(input, 0, 65, 17, inputPredicate));
 

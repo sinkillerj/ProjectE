@@ -5,7 +5,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.tile.IDMPedestal;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
+public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements IDMPedestal {
 
 	private static final int RANGE = 4;
 	private final StackHandler inventory = new StackHandler(1) {
@@ -40,12 +40,12 @@ public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
 	private int activityCooldown = 0;
 	public boolean previousRedstoneState = false;
 
-	public DMPedestalTile(BlockPos pos, BlockState state) {
+	public DMPedestalBlockEntity(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.DARK_MATTER_PEDESTAL, pos, state);
 		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
-	public static void tickClient(Level level, BlockPos pos, BlockState state, DMPedestalTile pedestal) {
+	public static void tickClient(Level level, BlockPos pos, BlockState state, DMPedestalBlockEntity pedestal) {
 		if (pedestal.getActive()) {
 			ItemStack stack = pedestal.inventory.getStackInSlot(0);
 			if (stack.isEmpty()) {
@@ -67,7 +67,7 @@ public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
 		}
 	}
 
-	public static void tickServer(Level level, BlockPos pos, BlockState state, DMPedestalTile pedestal) {
+	public static void tickServer(Level level, BlockPos pos, BlockState state, DMPedestalBlockEntity pedestal) {
 		if (pedestal.getActive()) {
 			ItemStack stack = pedestal.inventory.getStackInSlot(0);
 			if (stack.isEmpty()) {

@@ -55,8 +55,8 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
@@ -73,8 +73,8 @@ public class PEMorningStar extends PETool implements IItemMode {
 	}
 
 	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
-		ToolHelper.digBasedOnMode(stack, world, pos, living, Item::getPlayerPOVHitResult);
+	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+		ToolHelper.digBasedOnMode(stack, level, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}
 
@@ -86,11 +86,11 @@ public class PEMorningStar extends PETool implements IItemMode {
 			return InteractionResult.PASS;
 		}
 		InteractionHand hand = context.getHand();
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		Direction sideHit = context.getClickedFace();
 		ItemStack stack = context.getItemInHand();
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
@@ -98,7 +98,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 				() -> {
 					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
-							return ToolHelper.digAOE(world, player, hand, stack, pos, sideHit, false, 0);
+							return ToolHelper.digAOE(level, player, hand, stack, pos, sideHit, false, 0);
 						}
 						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
@@ -108,13 +108,13 @@ public class PEMorningStar extends PETool implements IItemMode {
 						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
 					return InteractionResult.PASS;
-				}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit,
+				}, () -> ToolHelper.digAOE(level, player, hand, stack, pos, sideHit,
 						!(state.getBlock() instanceof GrassBlock) && !state.is(BlockTags.SAND) && !state.is(Tags.Blocks.DIRT), 0));
 	}
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);

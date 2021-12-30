@@ -76,10 +76,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		}
 		BlockPos pos = ctx.getClickedPos();
 		Direction sideHit = ctx.getClickedFace();
-		Level world = ctx.getLevel();
+		Level level = ctx.getLevel();
 		ItemStack stack = ctx.getItemInHand();
 
-		if (world.isClientSide) {
+		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
 
@@ -88,27 +88,27 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			pos = rtr.getBlockPos();
 			sideHit = rtr.getDirection();
 		}
-		Map<BlockPos, BlockState> toChange = getChanges(world, pos, player, sideHit, getMode(stack), getCharge(stack));
+		Map<BlockPos, BlockState> toChange = getChanges(level, pos, player, sideHit, getMode(stack), getCharge(stack));
 		if (!toChange.isEmpty()) {
 			for (Map.Entry<BlockPos, BlockState> entry : toChange.entrySet()) {
 				BlockPos currentPos = entry.getKey();
 				PlayerHelper.checkedReplaceBlock((ServerPlayer) player, currentPos, entry.getValue());
-				if (world.random.nextInt(8) == 0) {
-					((ServerLevel) world).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
+				if (level.random.nextInt(8) == 0) {
+					((ServerLevel) level).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 				}
 			}
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		}
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
-		Level world = player.getCommandSenderWorld();
-		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
-		EntityMobRandomizer ent = new EntityMobRandomizer(player, world);
+		Level level = player.getCommandSenderWorld();
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
+		EntityMobRandomizer ent = new EntityMobRandomizer(player, level);
 		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-		world.addFreshEntity(ent);
+		level.addFreshEntity(ent);
 		return true;
 	}
 
@@ -121,13 +121,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Map<BlockPos, BlockState> getChanges(Level world, BlockPos pos, Player player, Direction sideHit, int mode, int charge) {
-		BlockState targeted = world.getBlockState(pos);
+	public static Map<BlockPos, BlockState> getChanges(Level level, BlockPos pos, Player player, Direction sideHit, int mode, int charge) {
+		BlockState targeted = level.getBlockState(pos);
 		boolean isSneaking = player.isShiftKeyDown();
 		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
 		if (result == null) {
@@ -165,7 +165,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		Map<BlockPos, BlockState> changes = new HashMap<>();
 		Block targetBlock = targeted.getBlock();
 		stream.forEach(currentPos -> {
-			BlockState state = world.getBlockState(currentPos);
+			BlockState state = level.getBlockState(currentPos);
 			if (state.is(targetBlock)) {
 				BlockState actualResult;
 				if (conversions.containsKey(state)) {

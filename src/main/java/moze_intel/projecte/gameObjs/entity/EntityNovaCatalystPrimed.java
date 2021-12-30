@@ -15,13 +15,13 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EntityNovaCatalystPrimed extends PrimedTnt {
 
-	public EntityNovaCatalystPrimed(EntityType<EntityNovaCatalystPrimed> type, Level world) {
-		super(type, world);
+	public EntityNovaCatalystPrimed(EntityType<EntityNovaCatalystPrimed> type, Level level) {
+		super(type, level);
 		setFuse(getFuse() / 4);
 	}
 
-	public EntityNovaCatalystPrimed(Level world, double x, double y, double z, LivingEntity placer) {
-		super(world, x, y, z, placer);
+	public EntityNovaCatalystPrimed(Level level, double x, double y, double z, LivingEntity placer) {
+		super(level, x, y, z, placer);
 		setFuse(getFuse() / 4);
 		blocksBuilding = true;
 	}

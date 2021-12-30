@@ -45,7 +45,7 @@ public class RecipesCovalenceRepair extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level world) {
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		return targetInfo != null && targetInfo.emcPerDurability <= targetInfo.dustEmc;
 	}

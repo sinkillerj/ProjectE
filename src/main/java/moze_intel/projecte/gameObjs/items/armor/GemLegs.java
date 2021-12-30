@@ -28,8 +28,8 @@ public class GemLegs extends GemArmorBase {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.GEM_LORE_LEGS.translate());
 	}
 
@@ -46,8 +46,8 @@ public class GemLegs extends GemArmorBase {
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level world, Player player) {
-		if (world.isClientSide) {
+	public void onArmorTick(ItemStack stack, Level level, Player player) {
+		if (level.isClientSide) {
 			if (player.isShiftKeyDown() && !player.isOnGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
 				player.setDeltaMovement(player.getDeltaMovement().add(0, -0.32F, 0));
 			}
@@ -55,8 +55,8 @@ public class GemLegs extends GemArmorBase {
 		if (player.isShiftKeyDown()) {
 			AABB box = new AABB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
 					player.getX() + 3.5, player.getY() + 3.5, player.getZ() + 3.5);
-			WorldHelper.repelEntitiesSWRG(world, box, player);
-			if (!world.isClientSide && player.getDeltaMovement().y() < -0.08) {
+			WorldHelper.repelEntitiesSWRG(level, box, player);
+			if (!level.isClientSide && player.getDeltaMovement().y() < -0.08) {
 				List<Entity> entities = player.getCommandSenderWorld().getEntities(player, player.getBoundingBox().move(player.getDeltaMovement()).inflate(2.0D),
 						entity -> entity instanceof LivingEntity);
 				for (Entity e : entities) {

@@ -25,9 +25,9 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!world.isClientSide) {
+		if (!level.isClientSide) {
 			shootProjectile(player, stack, hand);
 		}
 		return InteractionResultHolder.success(stack);
@@ -35,15 +35,15 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	@Override
 	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
-		Level world = player.getCommandSenderWorld();
+		Level level = player.getCommandSenderWorld();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;
 		}
-		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), world);
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		EntityLensProjectile ent = new EntityLensProjectile(player, this.getCharge(stack), level);
 		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-		world.addFreshEntity(ent);
+		level.addFreshEntity(ent);
 		return true;
 	}
 

@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumMatterType;
-import moze_intel.projecte.gameObjs.block_entities.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
@@ -18,7 +18,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 
-public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock, PEEntityBlock<DMFurnaceTile> {
+public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock, PEEntityBlock<DMFurnaceBlockEntity> {
 
 	private final EnumMatterType matterType;
 
@@ -29,37 +29,37 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock,
 
 	@Nullable
 	@Override
-	public BlockEntityTypeRegistryObject<? extends DMFurnaceTile> getType() {
+	public BlockEntityTypeRegistryObject<? extends DMFurnaceBlockEntity> getType() {
 		return matterType == EnumMatterType.RED_MATTER ? PEBlockEntityTypes.RED_MATTER_FURNACE : PEBlockEntityTypes.DARK_MATTER_FURNACE;
 	}
 
 	@Override
-	protected void openContainer(Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
-		if (!world.isClientSide) {
-			DMFurnaceTile te = WorldHelper.getTileEntity(DMFurnaceTile.class, world, pos, true);
-			if (te != null) {
-				NetworkHooks.openGui((ServerPlayer) player, te, pos);
+	protected void openContainer(Level level, @Nonnull BlockPos pos, @Nonnull Player player) {
+		if (!level.isClientSide) {
+			DMFurnaceBlockEntity furnace = WorldHelper.getBlockEntity(DMFurnaceBlockEntity.class, level, pos, true);
+			if (furnace != null) {
+				NetworkHooks.openGui((ServerPlayer) player, furnace, pos);
 			}
 		}
 	}
 
 	@Override
 	@Deprecated
-	public void onRemove(BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity tile = WorldHelper.getTileEntity(world, pos);
-			if (tile != null) {
-				tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, world, pos));
+			BlockEntity furnace = WorldHelper.getBlockEntity(level, pos);
+			if (furnace != null) {
+				furnace.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, level, pos));
 			}
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onRemove(state, level, pos, newState, isMoving);
 		}
 	}
 
 	@Override
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
-		BlockEntity te = WorldHelper.getTileEntity(world, pos);
-		if (te != null) {
-			return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
+		if (blockEntity != null) {
+			return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);
 		}
 		return 0;
 	}

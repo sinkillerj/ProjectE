@@ -20,12 +20,12 @@ public class EntityLensProjectile extends ThrowableProjectile {
 
 	private int charge;
 
-	public EntityLensProjectile(EntityType<EntityLensProjectile> type, Level world) {
-		super(type, world);
+	public EntityLensProjectile(EntityType<EntityLensProjectile> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityLensProjectile(Player entity, int charge, Level world) {
-		super(PEEntityTypes.LENS_PROJECTILE.get(), entity, world);
+	public EntityLensProjectile(Player entity, int charge, Level level) {
+		super(PEEntityTypes.LENS_PROJECTILE.get(), entity, level);
 		this.charge = charge;
 	}
 

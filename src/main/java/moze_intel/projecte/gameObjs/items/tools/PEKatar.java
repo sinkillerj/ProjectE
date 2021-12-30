@@ -63,8 +63,8 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltips, flags);
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
 
@@ -104,9 +104,9 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Strip logs, hoe ground, carve pumpkin, shear beehive, AOE remove logs, AOE remove leaves
 		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
@@ -117,13 +117,13 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 					if (state.is(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
 						//Note: We already tried to strip the log in an earlier action
-						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(level, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
 					}
 					return InteractionResult.PASS;
 				}, () -> {
 					if (state.is(BlockTags.LEAVES)) {
 						//Mass clear (acting as shears)
-						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
+						return ToolHelper.clearTagAOE(level, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
 					}
 					return InteractionResult.PASS;
 				});
@@ -143,7 +143,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Nonnull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
 		//Shear entities
 		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getItemInHand(hand));
 	}
