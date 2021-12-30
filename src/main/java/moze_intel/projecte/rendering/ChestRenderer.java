@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 //Only used on the client
+// [VanillaCopy] Adapted from ChestRenderer
 public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 
 	private final ModelPart lid;
@@ -49,7 +50,7 @@ public class ChestRenderer implements BlockEntityRenderer<ChestTileEmc> {
 				matrix.translate(-0.5D, -0.5D, -0.5D);
 			}
 		}
-		float lidAngle = 1.0F - chestTile.getLidAngle(partialTick);
+		float lidAngle = 1.0F - chestTile.getOpenNess(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 		VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
 		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));

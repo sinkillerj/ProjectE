@@ -34,11 +34,17 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 		}
 
 		public BlockEntityTypeBuilder<TILE> clientTicker(BlockEntityTicker<TILE> ticker) {
+			if (clientTicker != null) {
+				throw new IllegalStateException("Client ticker may only be set once.");
+			}
 			this.clientTicker = ticker;
 			return this;
 		}
 
 		public BlockEntityTypeBuilder<TILE> serverTicker(BlockEntityTicker<TILE> ticker) {
+			if (serverTicker != null) {
+				throw new IllegalStateException("Server ticker may only be set once.");
+			}
 			this.serverTicker = ticker;
 			return this;
 		}

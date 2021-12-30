@@ -53,6 +53,8 @@ public class TickEvents {
 							continue;
 						}
 					}
+					//TODO - 1.18: Re-evaluate this? Because if updateInAlchBag actually happens on both sides
+					// then we should have to be instance checking this
 					provider.sync(e, (ServerPlayer) event.player);
 				}
 			});

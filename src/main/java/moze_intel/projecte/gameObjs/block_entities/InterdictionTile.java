@@ -14,7 +14,9 @@ public class InterdictionTile extends BlockEntity {
 		super(PEBlockEntityTypes.INTERDICTION_TORCH.get(), pos, state);
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, InterdictionTile blockEntity) {
+	public static void tick(Level level, BlockPos pos, BlockState state, InterdictionTile torch) {
+		//Note: The interdiction torch's ticker needs to be run on both sides to ensure it renders properly
+		// when it deflects things like projectiles
 		WorldHelper.repelEntitiesInterdiction(level, new AABB(pos.offset(-8, -8, -8), pos.offset(8, 8, 8)),
 				pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
@@ -30,6 +30,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
 
@@ -164,18 +165,17 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					WorldHelper.growNearbyRandomly(true, world, pos, null);
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
-				} else {
-					tile.decrementActivityCooldown();
-				}
+			if (pedestal.getActivityCooldown() == 0) {
+				WorldHelper.growNearbyRandomly(true, world, pos, null);
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

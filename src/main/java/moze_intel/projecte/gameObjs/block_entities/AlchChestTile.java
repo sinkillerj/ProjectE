@@ -15,12 +15,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class AlchChestTile extends ChestTileEmc implements MenuProvider {
 
-	private final ItemStackHandler inventory = new StackHandler(104);
+	private final StackHandler inventory = new StackHandler(104);
 
 	public AlchChestTile(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state);
@@ -39,18 +39,31 @@ public class AlchChestTile extends ChestTileEmc implements MenuProvider {
 		tag.merge(inventory.serializeNBT());
 	}
 
-	@Override
-	protected void tick() {
-		if (level != null) {
-			updateChest();
-			for (int i = 0; i < inventory.getSlots(); i++) {
-				ItemStack stack = inventory.getStackInSlot(i);
-				if (!stack.isEmpty()) {
-					stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, worldPosition, stack));
-				}
+	public static void tickClient(Level level, BlockPos pos, BlockState state, AlchChestTile alchChest) {
+		//TODO - 1.18: Fix this as the inventory isn't syncd to the client except when they open it so then
+		// it has things tick that don't exist and has things that do exist not tick
+		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
+			ItemStack stack = alchChest.inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, pos, stack));
 			}
 		}
-		super.tick();
+		ChestTileEmc.lidAnimateTick(level, pos, state, alchChest);
+	}
+
+	public static void tickServer(Level level, BlockPos pos, BlockState state, AlchChestTile alchChest) {
+		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
+			ItemStack stack = alchChest.inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				int slotId = i;
+				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> {
+					if (alchChestItem.updateInAlchChest(level, pos, stack)) {
+						alchChest.inventory.onContentsChanged(slotId);
+					}
+				});
+			}
+		}
+		alchChest.updateComparators();
 	}
 
 	@Nonnull

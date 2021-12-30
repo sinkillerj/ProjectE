@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
@@ -117,18 +118,15 @@ public class CollectorMK1Tile extends CapabilityTileEMC implements MenuProvider 
 		return true;
 	}
 
-	@Override
-	protected void tick() {
-		if (level != null && !level.isClientSide) {
-			if (needsCompacting) {
-				ItemHelper.compactInventory(toSort);
-				needsCompacting = false;
-			}
-			checkFuelOrKlein();
-			updateEmc();
-			rotateUpgraded();
+	public static void tickServer(Level level, BlockPos pos, BlockState state, CollectorMK1Tile collector) {
+		if (collector.needsCompacting) {
+			ItemHelper.compactInventory(collector.toSort);
+			collector.needsCompacting = false;
 		}
-		super.tick();
+		collector.checkFuelOrKlein();
+		collector.updateEmc();
+		collector.rotateUpgraded();
+		collector.updateComparators();
 	}
 
 	private void rotateUpgraded() {

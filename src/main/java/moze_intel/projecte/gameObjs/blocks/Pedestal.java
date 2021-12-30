@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -51,8 +52,15 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+		super.createBlockStateDefinition(props);
 		props.add(BlockStateProperties.WATERLOGGED);
+	}
+
+	@Override
+	@Deprecated
+	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+		return false;
 	}
 
 	@Nonnull
@@ -159,6 +167,13 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	@Override
 	public BlockEntityTypeRegistryObject<DMPedestalTile> getType() {
 		return PEBlockEntityTypes.DARK_MATTER_PEDESTAL;
+	}
+
+	@Override
+	@Deprecated
+	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		super.triggerEvent(state, level, pos, id, param);
+		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override

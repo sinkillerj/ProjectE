@@ -27,7 +27,8 @@ public abstract class BlockDirection extends Block {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+		super.createBlockStateDefinition(props);
 		props.add(FACING);
 	}
 

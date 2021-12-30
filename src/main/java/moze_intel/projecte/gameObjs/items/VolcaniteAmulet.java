@@ -7,10 +7,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -102,23 +102,22 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					if (world.getLevelData() instanceof ServerLevelData worldInfo) {
-						worldInfo.setRainTime(0);
-						worldInfo.setThunderTime(0);
-						worldInfo.setRaining(false);
-						worldInfo.setThundering(false);
-					}
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
-				} else {
-					tile.decrementActivityCooldown();
+			if (pedestal.getActivityCooldown() == 0) {
+				if (world.getLevelData() instanceof ServerLevelData worldInfo) {
+					worldInfo.setRainTime(0);
+					worldInfo.setThunderTime(0);
+					worldInfo.setRaining(false);
+					worldInfo.setThundering(false);
 				}
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.volcanite.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

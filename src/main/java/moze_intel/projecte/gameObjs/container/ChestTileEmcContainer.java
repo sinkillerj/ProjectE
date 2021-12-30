@@ -13,12 +13,16 @@ public abstract class ChestTileEmcContainer<TILE extends ChestTileEmc> extends P
 	protected ChestTileEmcContainer(ContainerTypeRegistryObject<? extends ChestTileEmcContainer<TILE>> typeRO, int windowId, Inventory playerInv, TILE tile) {
 		super(typeRO, windowId, playerInv);
 		this.tile = tile;
-		this.tile.numPlayersUsing++;
+		this.tile.startOpen(playerInv.player);
 	}
 
 	@Override
 	public void removed(@Nonnull Player player) {
 		super.removed(player);
-		tile.numPlayersUsing--;
+		tile.stopOpen(player);
+	}
+
+	public boolean blockEntityMatches(ChestTileEmc chest) {
+		return chest == tile;
 	}
 }

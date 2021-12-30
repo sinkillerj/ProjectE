@@ -14,7 +14,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
@@ -32,24 +32,16 @@ public abstract class TileEmc extends TileEmcBase {
 		setMaximumEMC(maxAmount);
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, TileEmc blockEntity) {
-		//TODO - 1.18: Replace by defining slightly more structured tickers? and also ones that are server only
-		// where possible
-		blockEntity.tick();
-	}
-
-	protected void tick() {
+	protected void updateComparators() {
+		//Only update the comparator state if we need to update comparators
 		//Note: We call this at the end of child implementations to try and update any changes immediately instead
 		// of them having to be delayed a tick
-		if (level != null && !level.isClientSide) {
-			//Only update the comparator state if we support comparators and need to update comparators
-			if (updateComparators) {
-				BlockState state = getBlockState();
-				if (!state.isAir()) {
-					level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());
-				}
-				updateComparators = false;
+		if (updateComparators) {
+			BlockState state = getBlockState();
+			if (!state.isAir()) {
+				level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());
 			}
+			updateComparators = false;
 		}
 	}
 
@@ -83,10 +75,13 @@ public abstract class TileEmc extends TileEmcBase {
 	@Nonnull
 	@Override
 	public final CompoundTag getUpdateTag() {
-		//TODO - 1.18: Validate this is correct, also figure out if we should be overriding getUpdatePacket here
-		// instead of only in DMPedestalTile
-		//return save(new CompoundTag());
+		//TODO - 1.18: Do we want to be syncing less data for the update packets
 		return saveWithoutMetadata();
+	}
+
+	@Override
+	public final ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	/**

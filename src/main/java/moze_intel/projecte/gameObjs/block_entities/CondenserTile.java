@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
@@ -97,17 +98,13 @@ public class CondenserTile extends ChestTileEmc implements MenuProvider {
 		};
 	}
 
-	@Override
-	protected void tick() {
-		updateChest();
-		if (level != null && !level.isClientSide) {
-			checkLockAndUpdate();
-			displayEmc = this.getStoredEmc();
-			if (lockInfo != null && requiredEmc != 0) {
-				condense();
-			}
+	public static void tickServer(Level level, BlockPos pos, BlockState state, CondenserTile condenser) {
+		condenser.checkLockAndUpdate();
+		condenser.displayEmc = condenser.getStoredEmc();
+		if (condenser.lockInfo != null && condenser.requiredEmc != 0) {
+			condenser.condense();
 		}
-		super.tick();
+		condenser.updateComparators();
 	}
 
 	private void checkLockAndUpdate() {

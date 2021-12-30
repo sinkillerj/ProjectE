@@ -6,12 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.PETags.BlockEntities;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -220,21 +220,20 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		if (!world.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				AABB bBox = tile.getEffectBounds();
-				if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-					speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
-					speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
-				}
-				if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-					slowMobs(world, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
-				}
+			AABB bBox = pedestal.getEffectBounds();
+			if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
+				speedUpTileEntities(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
+				speedUpRandomTicks(world, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
+			}
+			if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
+				slowMobs(world, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

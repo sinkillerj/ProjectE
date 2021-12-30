@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,8 +43,9 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
-		((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).updateInPedestal(world, pos);
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
+		return ((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).updateInPedestal(stack, world, pos, pedestal);
 	}
 
 	@Nonnull
@@ -79,13 +82,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 	@Override
 	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
-		((IAlchBagItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchBag(inv, player, stack);
-		return super.updateInAlchBag(inv, player, stack); // Gem of Eternal Density
+		// super is Gem of Eternal Density
+		return super.updateInAlchBag(inv, player, stack) | ((IAlchBagItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchBag(inv, player, stack);
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		super.updateInAlchChest(world, pos, stack); // Gem of Eternal Density
-		((IAlchChestItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchChest(world, pos, stack);
+	public boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+		// super is Gem of Eternal Density
+		return super.updateInAlchChest(world, pos, stack) | ((IAlchChestItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchChest(world, pos, stack);
 	}
 }

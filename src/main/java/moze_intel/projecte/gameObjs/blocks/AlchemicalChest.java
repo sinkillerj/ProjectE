@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
@@ -9,6 +10,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -43,9 +46,15 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
 		super.createBlockStateDefinition(props);
 		props.add(BlockStateProperties.WATERLOGGED);
+	}
+
+	@Override
+	@Deprecated
+	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+		return false;
 	}
 
 	@Nonnull
@@ -79,6 +88,22 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	@Override
 	public BlockEntityTypeRegistryObject<? extends ChestTileEmc> getType() {
 		return PEBlockEntityTypes.ALCHEMICAL_CHEST;
+	}
+
+	@Override
+	@Deprecated
+	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		super.triggerEvent(state, level, pos, id, param);
+		return triggerBlockEntityEvent(state, level, pos, id, param);
+	}
+
+	@Override
+	@Deprecated
+	public void tick(@Nonnull BlockState state, @Nonnull ServerLevel level, @Nonnull BlockPos pos, @Nonnull Random random) {
+		ChestTileEmc chest = WorldHelper.getTileEntity(ChestTileEmc.class, level, pos);
+		if (chest != null) {
+			chest.recheckOpen();
+		}
 	}
 
 	@Override

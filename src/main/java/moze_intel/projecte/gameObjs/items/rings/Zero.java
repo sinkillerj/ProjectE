@@ -5,10 +5,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
 public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
@@ -74,25 +75,21 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					AABB aabb = tile.getEffectBounds();
-					WorldHelper.freezeInBoundingBox(world, aabb, null, false);
-					List<Entity> list = world.getEntitiesOfClass(Entity.class, aabb);
-					for (Entity ent : list) {
-						if (ent.isOnFire()) {
-							ent.clearFire();
-						}
-					}
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());
-				} else {
-					tile.decrementActivityCooldown();
+			if (pedestal.getActivityCooldown() == 0) {
+				AABB aabb = pedestal.getEffectBounds();
+				WorldHelper.freezeInBoundingBox(world, aabb, null, false);
+				for (Entity ent : world.getEntitiesOfClass(Entity.class, aabb, e -> !e.isSpectator() && e.isOnFire())) {
+					ent.clearFire();
 				}
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.zero.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

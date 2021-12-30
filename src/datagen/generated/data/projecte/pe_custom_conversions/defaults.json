@@ -35,12 +35,6 @@
           }
         },
         {
-          "output": "minecraft:dirt_path",
-          "ingredients": [
-            "minecraft:grass_block"
-          ]
-        },
-        {
           "output": "minecraft:iron_horse_armor",
           "ingredients": {
             "#forge:ingots/iron": 8
@@ -157,6 +151,47 @@
           "ingredients": [
             "minecraft:glowstone_dust",
             "#forge:mushrooms"
+          ]
+        }
+      ]
+    },
+    "dirt_path": {
+      "comment": "Adds the various valid conversions into dirt paths.",
+      "conversions": [
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:grass_block"
+          ]
+        },
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:dirt"
+          ]
+        },
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:podzol"
+          ]
+        },
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:coarse_dirt"
+          ]
+        },
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:mycelium"
+          ]
+        },
+        {
+          "output": "minecraft:dirt_path",
+          "ingredients": [
+            "minecraft:rooted_dirt"
           ]
         }
       ]

@@ -7,11 +7,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.BasicItemCapability;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -113,23 +113,22 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					if (world.getLevelData() instanceof ServerLevelData worldInfo) {
-						int i = (300 + world.random.nextInt(600)) * 20;
-						worldInfo.setRainTime(i);
-						worldInfo.setThunderTime(i);
-						worldInfo.setRaining(true);
-					}
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.evertide.get());
-				} else {
-					tile.decrementActivityCooldown();
+			if (pedestal.getActivityCooldown() == 0) {
+				if (world.getLevelData() instanceof ServerLevelData worldInfo) {
+					int i = (300 + world.random.nextInt(600)) * 20;
+					worldInfo.setRainTime(i);
+					worldInfo.setThunderTime(i);
+					worldInfo.setRaining(true);
 				}
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.evertide.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

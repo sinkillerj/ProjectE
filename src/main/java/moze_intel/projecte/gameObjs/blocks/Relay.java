@@ -51,8 +51,14 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Tile>
 			case MK1 -> PEBlockEntityTypes.RELAY;
 			case MK2 -> PEBlockEntityTypes.RELAY_MK2;
 			case MK3 -> PEBlockEntityTypes.RELAY_MK3;
-			default -> null;
 		};
+	}
+
+	@Override
+	@Deprecated
+	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		super.triggerEvent(state, level, pos, id, param);
+		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override

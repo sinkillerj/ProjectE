@@ -5,8 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class MindStone extends PEToggleItem implements IPedestalItem {
 
@@ -153,17 +154,17 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
-		DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-		if (tile != null) {
-			List<ExperienceOrb> orbs = world.getEntitiesOfClass(ExperienceOrb.class, tile.getEffectBounds());
-			for (ExperienceOrb orb : orbs) {
-				WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-				if (!world.isClientSide && orb.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
-					suckXP(orb, tile.getInventory().getStackInSlot(0));
-				}
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
+		boolean sucked = false;
+		for (ExperienceOrb orb : world.getEntitiesOfClass(ExperienceOrb.class, pedestal.getEffectBounds())) {
+			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			if (!world.isClientSide && orb.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+				suckXP(orb, stack);
+				sucked = true;
 			}
 		}
+		return sucked;
 	}
 
 	private void suckXP(ExperienceOrb orb, ItemStack mindStone) {

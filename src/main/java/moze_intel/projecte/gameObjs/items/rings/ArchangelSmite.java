@@ -5,15 +5,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -30,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -94,26 +94,28 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					if (!world.getEntitiesOfClass(Mob.class, tile.getEffectBounds()).isEmpty()) {
-						for (int i = 0; i < 3; i++) {
-							EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerLevel) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
-							arrow.setPosRaw(tile.centeredX, tile.centeredY + 2, tile.centeredZ);
-							arrow.setDeltaMovement(0, 1, 0);
-							arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
-							world.addFreshEntity(arrow);
-						}
+			if (pedestal.getActivityCooldown() == 0) {
+				if (!world.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds()).isEmpty()) {
+					double centeredX = pos.getX() + 0.5;
+					double centeredY = pos.getY() + 0.5;
+					double centeredZ = pos.getZ() + 0.5;
+					for (int i = 0; i < 3; i++) {
+						EntityHomingArrow arrow = new EntityHomingArrow(world, FakePlayerFactory.get((ServerLevel) world, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
+						arrow.setPosRaw(centeredX, centeredY + 2, centeredZ);
+						arrow.setDeltaMovement(0, 1, 0);
+						arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+						world.addFreshEntity(arrow);
 					}
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());
-				} else {
-					tile.decrementActivityCooldown();
 				}
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.archangel.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

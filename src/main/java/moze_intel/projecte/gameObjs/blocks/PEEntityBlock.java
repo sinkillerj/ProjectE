@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-//TODO - 1.18: Look at vanilla's BaseEntityBlock given there may be stuff we need to copy into our block classes
 public interface PEEntityBlock<BLOCK_ENTITY extends BlockEntity> extends EntityBlock {
 
 	@Nullable
@@ -32,5 +32,10 @@ public interface PEEntityBlock<BLOCK_ENTITY extends BlockEntity> extends EntityB
 			return (BlockEntityTicker<T>) type.getTicker(level.isClientSide);
 		}
 		return null;
+	}
+
+	default boolean triggerBlockEntityEvent(@Nonnull BlockState state, Level level, BlockPos pos, int id, int param) {
+		BlockEntity blockEntity = WorldHelper.getTileEntity(level, pos);
+		return blockEntity != null && blockEntity.triggerEvent(id, param);
 	}
 }

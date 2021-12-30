@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class LifeStone extends PEToggleItem implements IPedestalItem {
 
@@ -64,28 +64,26 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
 		if (!world.isClientSide && ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				if (tile.getActivityCooldown() == 0) {
-					List<ServerPlayer> players = world.getEntitiesOfClass(ServerPlayer.class, tile.getEffectBounds());
-					for (ServerPlayer player : players) {
-						if (player.getHealth() < player.getMaxHealth()) {
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
-							player.heal(1.0F); // 1/2 heart
-						}
-						if (player.getFoodData().needsFood()) {
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
-							player.getFoodData().eat(1, 1); // 1/2 shank
-						}
+			if (pedestal.getActivityCooldown() == 0) {
+				for (ServerPlayer player : world.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds())) {
+					if (player.getHealth() < player.getMaxHealth()) {
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
+						player.heal(1.0F); // 1/2 heart
 					}
-					tile.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.life.get());
-				} else {
-					tile.decrementActivityCooldown();
+					if (player.getFoodData().needsFood()) {
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
+						player.getFoodData().eat(1, 1); // 1/2 shank
+					}
 				}
+				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.life.get());
+			} else {
+				pedestal.decrementActivityCooldown();
 			}
 		}
+		return false;
 	}
 
 	@Nonnull

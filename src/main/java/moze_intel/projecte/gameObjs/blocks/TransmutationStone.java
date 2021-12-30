@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -48,8 +49,15 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> props) {
-		props.add(FACING).add(BlockStateProperties.WATERLOGGED);
+	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+		super.createBlockStateDefinition(props);
+		props.add(FACING, BlockStateProperties.WATERLOGGED);
+	}
+
+	@Override
+	@Deprecated
+	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+		return false;
 	}
 
 	@Nonnull

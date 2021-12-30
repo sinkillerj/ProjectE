@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
@@ -81,37 +82,34 @@ public class RelayMK1Tile extends CapabilityTileEMC implements MenuProvider {
 		return true;
 	}
 
-	@Override
-	protected void tick() {
-		if (level != null && !level.isClientSide) {
-			sendEmc();
-			input.compact();
-			ItemStack stack = getBurn();
-			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.get();
-					long simulatedVal = forceInsertEmc(emcHolder.extractEmc(stack, chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
-					if (simulatedVal > 0) {
-						forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
-					}
-				} else {
-					long emcVal = EMCHelper.getEmcSellValue(stack);
-					if (emcVal > 0 && emcVal <= getNeededEmc()) {
-						forceInsertEmc(emcVal, EmcAction.EXECUTE);
-						getBurn().shrink(1);
-					}
+	public static void tickServer(Level level, BlockPos pos, BlockState state, RelayMK1Tile relay) {
+		relay.sendEmc();
+		relay.input.compact();
+		ItemStack stack = relay.getBurn();
+		if (!stack.isEmpty()) {
+			Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+			if (holderCapability.isPresent()) {
+				IItemEmcHolder emcHolder = holderCapability.get();
+				long simulatedVal = relay.forceInsertEmc(emcHolder.extractEmc(stack, relay.chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
+				if (simulatedVal > 0) {
+					relay.forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
+				}
+			} else {
+				long emcVal = EMCHelper.getEmcSellValue(stack);
+				if (emcVal > 0 && emcVal <= relay.getNeededEmc()) {
+					relay.forceInsertEmc(emcVal, EmcAction.EXECUTE);
+					relay.getBurn().shrink(1);
 				}
 			}
-			ItemStack chargeable = getCharging();
-			if (!chargeable.isEmpty() && this.getStoredEmc() > 0) {
-				chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
-					long actualSent = emcHolder.insertEmc(chargeable, Math.min(getStoredEmc(), chargeRate), EmcAction.EXECUTE);
-					forceExtractEmc(actualSent, EmcAction.EXECUTE);
-				});
-			}
 		}
-		super.tick();
+		ItemStack chargeable = relay.getCharging();
+		if (!chargeable.isEmpty() && relay.getStoredEmc() > 0) {
+			chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+				long actualSent = emcHolder.insertEmc(chargeable, Math.min(relay.getStoredEmc(), relay.chargeRate), EmcAction.EXECUTE);
+				relay.forceExtractEmc(actualSent, EmcAction.EXECUTE);
+			});
+		}
+		relay.updateComparators();
 	}
 
 	private void sendEmc() {

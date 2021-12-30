@@ -66,8 +66,14 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 			case MK1 -> PEBlockEntityTypes.COLLECTOR;
 			case MK2 -> PEBlockEntityTypes.COLLECTOR_MK2;
 			case MK3 -> PEBlockEntityTypes.COLLECTOR_MK3;
-			default -> null;
 		};
+	}
+
+	@Override
+	@Deprecated
+	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		super.triggerEvent(state, level, pos, id, param);
+		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override

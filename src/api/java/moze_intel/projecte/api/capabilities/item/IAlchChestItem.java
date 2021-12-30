@@ -23,6 +23,8 @@ public interface IAlchChestItem {
 	 *
 	 * @param world The World
 	 * @param stack The ItemStack being ticked
+	 *
+	 * @return {@code true} if the passed in stack had its NBT modified to ensure it can be saved.
 	 */
-	void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
+	boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack);
 }

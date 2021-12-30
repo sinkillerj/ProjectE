@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.DropperBlockEntity;
@@ -115,68 +116,62 @@ public class DMFurnaceTile extends CapabilityTileEMC implements MenuProvider {
 		return outputInventory;
 	}
 
-	@Override
-	protected void tick() {
-		boolean wasBurning = isBurning();
-		int lastFurnaceBurnTime = furnaceBurnTime;
-		int lastFurnaceCookTime = furnaceCookTime;
-		if (isBurning()) {
-			--furnaceBurnTime;
+	public static void tickServer(Level level, BlockPos pos, BlockState state, DMFurnaceTile furnace) {
+		boolean wasBurning = furnace.isBurning();
+		int lastFurnaceBurnTime = furnace.furnaceBurnTime;
+		int lastFurnaceCookTime = furnace.furnaceCookTime;
+		if (furnace.isBurning()) {
+			--furnace.furnaceBurnTime;
+		}
+		furnace.inputInventory.compact();
+		furnace.outputInventory.compact();
+		furnace.pullFromInventories();
+		boolean canSmelt = furnace.canSmelt();
+		ItemStack fuelItem = furnace.getFuelItem();
+		if (canSmelt && !fuelItem.isEmpty()) {
+			fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+				long simulatedExtraction = emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.SIMULATE);
+				if (simulatedExtraction == EMC_CONSUMPTION) {
+					furnace.forceInsertEmc(emcHolder.extractEmc(fuelItem, simulatedExtraction, EmcAction.EXECUTE), EmcAction.EXECUTE);
+				}
+				furnace.markDirty(false);
+			});
 		}
 
-		if (level != null && !level.isClientSide) {
-			inputInventory.compact();
-			outputInventory.compact();
-			pullFromInventories();
-			ItemStack fuelItem = getFuelItem();
-			if (canSmelt() && !fuelItem.isEmpty()) {
-				fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
-					long simulatedExtraction = emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.SIMULATE);
-					if (simulatedExtraction == EMC_CONSUMPTION) {
-						forceInsertEmc(emcHolder.extractEmc(fuelItem, simulatedExtraction, EmcAction.EXECUTE), EmcAction.EXECUTE);
-					}
-					markDirty(false);
-				});
-			}
+		if (furnace.getStoredEmc() >= EMC_CONSUMPTION) {
+			furnace.furnaceBurnTime = 1;
+			furnace.forceExtractEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
+		}
 
-			if (this.getStoredEmc() >= EMC_CONSUMPTION) {
-				furnaceBurnTime = 1;
-				forceExtractEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
-			}
-
-			if (furnaceBurnTime == 0 && canSmelt()) {
-				currentItemBurnTime = furnaceBurnTime = getItemBurnTime(fuelItem);
-				if (isBurning() && !fuelItem.isEmpty()) {
+		if (canSmelt) {
+			if (furnace.furnaceBurnTime == 0) {
+				furnace.currentItemBurnTime = furnace.furnaceBurnTime = furnace.getItemBurnTime(fuelItem);
+				if (furnace.isBurning() && !fuelItem.isEmpty()) {
 					ItemStack copy = fuelItem.copy();
 					fuelItem.shrink(1);
 					if (fuelItem.isEmpty()) {
-						fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
+						furnace.fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
 					}
-					markDirty(false);
+					furnace.markDirty(false);
 				}
 			}
-
-			if (isBurning() && canSmelt()) {
-				++furnaceCookTime;
-				if (furnaceCookTime == ticksBeforeSmelt) {
-					furnaceCookTime = 0;
-					smeltItem();
-				}
+			if (furnace.isBurning() && ++furnace.furnaceCookTime == furnace.ticksBeforeSmelt) {
+				furnace.furnaceCookTime = 0;
+				furnace.smeltItem();
 			}
-			if (wasBurning != isBurning()) {
-				BlockState state = getBlockState();
-				if (state.getBlock() instanceof MatterFurnace) {
-					//Should always be true, but validate it just in case
-					level.setBlockAndUpdate(worldPosition, state.setValue(MatterFurnace.LIT, isBurning()));
-				}
-				setChanged();
-			}
-			pushToInventories();
 		}
-		if (lastFurnaceBurnTime != furnaceBurnTime || lastFurnaceCookTime != furnaceCookTime) {
-			markDirty(false);
+		if (wasBurning != furnace.isBurning()) {
+			if (state.getBlock() instanceof MatterFurnace) {
+				//Should always be true, but validate it just in case
+				level.setBlockAndUpdate(pos, state.setValue(MatterFurnace.LIT, furnace.isBurning()));
+			}
+			furnace.setChanged();
 		}
-		super.tick();
+		furnace.pushToInventories();
+		if (lastFurnaceBurnTime != furnace.furnaceBurnTime || lastFurnaceCookTime != furnace.furnaceCookTime) {
+			furnace.markDirty(false);
+		}
+		furnace.updateComparators();
 	}
 
 	public boolean isBurning() {

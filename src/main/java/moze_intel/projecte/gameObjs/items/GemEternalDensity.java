@@ -275,7 +275,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		if (!world.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
 			if (tile != null) {
@@ -286,6 +286,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				});
 			}
 		}
+		return false;
 	}
 
 	@Override

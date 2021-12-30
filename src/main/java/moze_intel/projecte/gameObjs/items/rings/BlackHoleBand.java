@@ -9,11 +9,11 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
+import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.block_entities.AlchChestTile;
-import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -94,36 +94,31 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public void updateInPedestal(@Nonnull Level world, @Nonnull BlockPos pos) {
-		if (!world.isClientSide) {
-			DMPedestalTile tile = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos, true);
-			if (tile != null) {
-				Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
-				for (ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, tile.getEffectBounds())) {
-					if (item.isAlive()) {
-						WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-						if (item.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
-							for (Direction dir : Direction.values()) {
-								//Cache the item handlers in various spots so that we only query each neighboring position once
-								IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
-									BlockEntity candidate = WorldHelper.getTileEntity(world, pos.relative(dir));
-									if (candidate == null) {
-										return null;
-									}
-									return WorldHelper.getItemHandler(candidate, dir);
-								});
-								ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
-								if (result.isEmpty()) {
-									item.discard();
-									break;
-								}
-								item.setItem(result);
-							}
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockPos pos,
+			@Nonnull PEDESTAL pedestal) {
+		Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
+		for (ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, pedestal.getEffectBounds(), ent -> !ent.isSpectator() && ent.isAlive())) {
+			WorldHelper.gravitateEntityTowards(item, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			if (!world.isClientSide && item.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
+				for (Direction dir : Direction.values()) {
+					//Cache the item handlers in various spots so that we only query each neighboring position once
+					IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
+						BlockEntity candidate = WorldHelper.getTileEntity(world, pos.relative(dir));
+						if (candidate == null) {
+							return null;
 						}
+						return WorldHelper.getItemHandler(candidate, dir);
+					});
+					ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
+					if (result.isEmpty()) {
+						item.discard();
+						break;
 					}
+					item.setItem(result);
 				}
 			}
 		}
+		return false;
 	}
 
 	@Nonnull
@@ -134,30 +129,33 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	}
 
 	@Override
-	public void updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
-		AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
-		if (tile != null && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			int tileX = pos.getX();
-			int tileY = pos.getY();
-			int tileZ = pos.getZ();
-			AABB aabb = new AABB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
-			double centeredX = tileX + 0.5;
-			double centeredY = tileY + 0.5;
-			double centeredZ = tileZ + 0.5;
-			for (ItemEntity e : world.getEntitiesOfClass(ItemEntity.class, aabb)) {
-				WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
-				if (!e.getCommandSenderWorld().isClientSide && e.isAlive() && e.distanceToSqr(centeredX, centeredY, centeredZ) < 1.21) {
-					tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
-						ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
-						if (!result.isEmpty()) {
-							e.setItem(result);
-						} else {
-							e.discard();
-						}
-					});
+	public boolean updateInAlchChest(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			AlchChestTile tile = WorldHelper.getTileEntity(AlchChestTile.class, world, pos, true);
+			if (tile != null) {
+				int tileX = pos.getX();
+				int tileY = pos.getY();
+				int tileZ = pos.getZ();
+				AABB aabb = new AABB(tileX - 5, tileY - 5, tileZ - 5, tileX + 5, tileY + 5, tileZ + 5);
+				double centeredX = tileX + 0.5;
+				double centeredY = tileY + 0.5;
+				double centeredZ = tileZ + 0.5;
+				for (ItemEntity e : world.getEntitiesOfClass(ItemEntity.class, aabb, ent -> !ent.isSpectator() && ent.isAlive())) {
+					WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
+					if (!world.isClientSide && e.distanceToSqr(centeredX, centeredY, centeredZ) < 1.21) {
+						tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+							ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
+							if (!result.isEmpty()) {
+								e.setItem(result);
+							} else {
+								e.discard();
+							}
+						});
+					}
 				}
 			}
 		}
+		return false;
 	}
 
 	@Override
