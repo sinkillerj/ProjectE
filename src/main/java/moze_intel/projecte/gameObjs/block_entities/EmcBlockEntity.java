@@ -75,7 +75,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 	@Nonnull
 	@Override
 	public final CompoundTag getUpdateTag() {
-		//TODO - 1.18: Do we want to be syncing less data for the update packets
+		//TODO: Eventually it would be nice to try and minimize how much data we send in the update tags
 		return saveWithoutMetadata();
 	}
 

@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -50,6 +52,7 @@ import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -189,22 +192,67 @@ public class ToolHelper {
 	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static InteractionResult tillHoeAOE(UseOnContext context, long emcCost) {
-		//TODO - 1.18: Figure this out and fix it
-		//return tillAOE(context, emcCost, ToolActions.HOE_TILL, SoundEvents.HOE_TILL);
-		return InteractionResult.PASS;
+		Player player = context.getPlayer();
+		if (player == null) {
+			return InteractionResult.PASS;
+		}
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Block type = level.getBlockState(pos).getBlock();
+		//TODO: Hopefully one day make this not go based off of the internal map
+		Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> conversion = HoeItem.TILLABLES.get(type);
+		if (conversion == null) {
+			//Skip tilling the blocks if the one we clicked cannot be tilled
+			return InteractionResult.PASS;
+		}
+		Predicate<UseOnContext> canConvert = conversion.getFirst();
+		if (!canConvert.test(context)) {
+			//Skip tilling the blocks if the one we clicked cannot be tilled
+			return InteractionResult.PASS;
+		} else if (level.isClientSide) {
+			return InteractionResult.SUCCESS;
+		}
+		Consumer<UseOnContext> converter = conversion.getSecond();
+		converter.accept(context);
+		level.playSound(null, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+		ItemStack stack = context.getItemInHand();
+		int charge = getCharge(stack);
+		if (charge > 0) {
+			for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge))) {
+				if (pos.equals(newPos)) {
+					//Skip the source position as it is free, and we manually handled it before the loop
+					continue;
+				}
+				//Note: Unfortunately we no longer can compare this based on output state as we do not have easy access to it,
+				// so instead we have to instead go based on the input block
+				if (level.getBlockState(newPos).is(type)) {
+					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
+					// matter we make sure to get an immutable instance of newPos
+					newPos = newPos.immutable();
+					//Create a new used context based on the original one to try and pass the proper information to the conversion
+					UseOnContext adjustedContext = new UseOnContext(level, player, context.getHand(), stack, new BlockHitResult(
+							context.getClickLocation().add(newPos.getX() - pos.getX(), newPos.getY() - pos.getY(), newPos.getZ() - pos.getZ()),
+							context.getClickedFace(), newPos, context.isInside()));
+					if (canConvert.test(adjustedContext)) {
+						if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
+							//Apply the conversion
+							converter.accept(adjustedContext);
+						} else {
+							//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
+							break;
+						}
+					}
+				}
+			}
+		}
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		return InteractionResult.SUCCESS;
 	}
 
 	/**
 	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static InteractionResult tillShovelAOE(UseOnContext context, long emcCost) {
-		return tillAOE(context, emcCost, ToolActions.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN);
-	}
-
-	/**
-	 * Tills in an AOE using the specified lookup map and tester. Charge affects the AOE. Optional per-block EMC cost.
-	 */
-	private static InteractionResult tillAOE(UseOnContext context, long emcCost, ToolAction action, SoundEvent sound) {
+	public static InteractionResult flattenAOE(UseOnContext context, long emcCost) {
 		Player player = context.getPlayer();
 		if (player == null) {
 			return InteractionResult.PASS;
@@ -217,7 +265,7 @@ public class ToolHelper {
 		ItemStack stack = context.getItemInHand();
 		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
-		BlockState tilledState = level.getBlockState(pos).getToolModifiedState(level, pos, player, stack, action);
+		BlockState tilledState = level.getBlockState(pos).getToolModifiedState(level, pos, player, stack, ToolActions.SHOVEL_FLATTEN);
 		if (tilledState == null) {
 			//Skip tilling the blocks if the one we clicked cannot be tilled
 			return InteractionResult.PASS;
@@ -228,20 +276,12 @@ public class ToolHelper {
 		if (aboveState.isSolidRender(level, abovePos)) {
 			//If the block above our source is opaque, just skip tiling in general
 			return InteractionResult.PASS;
-		}
-		if (level.isClientSide) {
+		} else if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
-		//Processing did not happen, so we need to process it
-		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
 		level.setBlock(pos, tilledState, Block.UPDATE_ALL_IMMEDIATE);
-		Material aboveMaterial = aboveState.getMaterial();
-		if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !aboveState.hasBlockEntity()) {
-			if (PlayerHelper.hasBreakPermission((ServerPlayer) player, abovePos)) {
-				level.destroyBlock(abovePos, true);
-			}
-		}
-		level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+		removeAboveIfPlant((ServerPlayer) player, level, pos.above(), aboveState);
+		level.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
 		int charge = getCharge(stack);
 		if (charge > 0) {
 			for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge))) {
@@ -249,10 +289,10 @@ public class ToolHelper {
 					//Skip the source position as it is free and we manually handled it before the loop
 					continue;
 				}
-				BlockState stateAbove = level.getBlockState(newPos.above());
+				aboveState = level.getBlockState(newPos.above());
 				//Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
 				// the same as the one we got on the initial block we interacted with
-				if (!stateAbove.isSolidRender(level, newPos.above()) && tilledState == level.getBlockState(newPos).getToolModifiedState(level, newPos, player, stack, action)) {
+				if (!aboveState.isSolidRender(level, newPos.above()) && tilledState == level.getBlockState(newPos).getToolModifiedState(level, newPos, player, stack, ToolActions.SHOVEL_FLATTEN)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
@@ -262,15 +302,7 @@ public class ToolHelper {
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
 						level.setBlock(newPos, tilledState, Block.UPDATE_ALL_IMMEDIATE);
-						aboveMaterial = stateAbove.getMaterial();
-						if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !stateAbove.hasBlockEntity()) {
-							//If the block above the one we tilled is a plant (and not a block entity because you never know), then we try to remove it
-							//Note: We do check for breaking the block above that we attempt to break it though, as we
-							// have not done any events that have told use we are allowed to break blocks in that spot.
-							if (PlayerHelper.hasBreakPermission((ServerPlayer) player, newPos.above())) {
-								level.destroyBlock(newPos.above(), true);
-							}
-						}
+						removeAboveIfPlant((ServerPlayer) player, level, newPos.above(), aboveState);
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
 						break;
@@ -280,6 +312,18 @@ public class ToolHelper {
 		}
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		return InteractionResult.SUCCESS;
+	}
+
+	private static void removeAboveIfPlant(ServerPlayer player, Level level, BlockPos above, BlockState aboveState) {
+		Material aboveMaterial = aboveState.getMaterial();
+		if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !aboveState.hasBlockEntity()) {
+			//If the block above the one we tilled is a plant (and not a block entity because you never know), then we try to remove it
+			//Note: We do check for breaking the block above that we attempt to break it though, as we
+			// have not done any events that have told use we are allowed to break blocks in that spot.
+			if (PlayerHelper.hasBreakPermission(player, above)) {
+				level.destroyBlock(above, true);
+			}
+		}
 	}
 
 	/**
