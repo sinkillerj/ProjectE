@@ -142,25 +142,45 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		return InteractionResult.SUCCESS;
 	}
 
-	// [VanillaCopy] Adapted from BlockNote
+	// [VanillaCopy] Adapted from NoteBlock
 	@Override
 	@Deprecated
 	public void neighborChanged(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
-		boolean flag = world.hasNeighborSignal(pos);
+		boolean hasSignal = world.hasNeighborSignal(pos);
 		DMPedestalTile ped = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
-		if (ped != null && ped.previousRedstoneState != flag) {
-			if (flag) {
+		if (ped != null && ped.previousRedstoneState != hasSignal) {
+			if (hasSignal) {
 				ItemStack stack = ped.getInventory().getStackInSlot(0);
-				if (!stack.isEmpty()) {
-					stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-						ped.setActive(!ped.getActive());
-						world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
-					});
+				if (!stack.isEmpty() && stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+					ped.setActive(!ped.getActive());
+					world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 				}
 			}
-			ped.previousRedstoneState = flag;
+			ped.previousRedstoneState = hasSignal;
 			ped.markDirty(false);
 		}
+	}
+
+	@Override
+	@Deprecated
+	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+		return true;
+	}
+
+	@Override
+	@Deprecated
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos) {
+		DMPedestalTile pedestal = WorldHelper.getTileEntity(DMPedestalTile.class, world, pos);
+		if (pedestal != null) {
+			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
+			if (!stack.isEmpty()) {
+				if (stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+					return pedestal.getActive() ? 15 : 10;
+				}
+				return 5;
+			}
+		}
+		return 0;
 	}
 
 	@Nullable

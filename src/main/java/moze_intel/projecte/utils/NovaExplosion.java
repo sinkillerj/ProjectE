@@ -81,10 +81,10 @@ public class NovaExplosion extends Explosion {
 					//Ensure we are immutable so that changing blocks doesn't act weird
 					pos = pos.immutable();
 					world.getProfiler().push("explosion_blocks");
-					if (world instanceof ServerLevel && state.canDropFromExplosion(world, pos, this)) {
-						BlockEntity blockEntity = state.hasBlockEntity() ? WorldHelper.getTileEntity(world, pos) : null;
-						LootContext.Builder builder = new LootContext.Builder((ServerLevel) world)
-								.withRandom(world.random)
+					if (world instanceof ServerLevel level && state.canDropFromExplosion(world, pos, this)) {
+						BlockEntity blockEntity = state.hasBlockEntity() ? WorldHelper.getTileEntity(level, pos) : null;
+						LootContext.Builder builder = new LootContext.Builder(level)
+								.withRandom(level.random)
 								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 								.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
 								.withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity)

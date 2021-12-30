@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
+import java.util.Optional;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.tile.IDMPedestal;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -49,12 +51,17 @@ public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> pedestalItem.updateInPedestal(stack, level, pos, pedestal));
-				if (pedestal.particleCooldown <= 0) {
-					pedestal.spawnParticleTypes();
-					pedestal.particleCooldown = 10;
+				Optional<IPedestalItem> capability = stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).resolve();
+				if (capability.isPresent()) {
+					capability.get().updateInPedestal(stack, level, pos, pedestal);
+					if (pedestal.particleCooldown <= 0) {
+						pedestal.spawnParticleTypes();
+						pedestal.particleCooldown = 10;
+					} else {
+						pedestal.particleCooldown--;
+					}
 				} else {
-					pedestal.particleCooldown--;
+					pedestal.setActive(false);
 				}
 			}
 		}
@@ -66,14 +73,16 @@ public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
-					if (pedestalItem.updateInPedestal(stack, level, pos, pedestal)) {
+				Optional<IPedestalItem> capability = stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).resolve();
+				if (capability.isPresent()) {
+					if (capability.get().updateInPedestal(stack, level, pos, pedestal)) {
 						pedestal.inventory.onContentsChanged(0);
 					}
-				});
+				} else {
+					pedestal.setActive(false);
+				}
 			}
 		}
-		//TODO - 1.18: Make the pedestal actually support comparators
 		pedestal.updateComparators();
 	}
 
@@ -172,7 +181,7 @@ public class DMPedestalTile extends CapabilityTileEMC implements IDMPedestal {
 			}
 		}
 		this.isActive = newState;
-		markDirty(false);
+		setChanged();
 	}
 
 	public IItemHandlerModifiable getInventory() {

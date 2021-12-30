@@ -307,7 +307,7 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    //TODO
+    //TODO: Switch back to the proper maven once TOP is on it again
     implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
     //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.18:${top_version}:api")
     //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.18:${top_version}")

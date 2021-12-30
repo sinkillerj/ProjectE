@@ -170,7 +170,6 @@ public final class PlayerHelper {
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, int value) {
-		// [VanillaCopy] ServerPlayerEntity.updateScorePoints
 		player.getScoreboard().forAllObjectives(objective, player.getScoreboardName(), score -> score.setScore(value));
 	}
 }
