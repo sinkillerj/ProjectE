@@ -53,30 +53,38 @@ public class PlayerEvents {
 
 	// On death or return from end, copy the capability data
 	@SubscribeEvent
-	public static void cloneEvent(PlayerEvent.Clone evt) {
-		evt.getOriginal().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
+	public static void cloneEvent(PlayerEvent.Clone event) {
+		Player original = event.getOriginal();
+		//Revive the player's caps
+		original.reviveCaps();
+		original.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
 			CompoundTag bags = old.serializeNBT();
-			evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
+			event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 		});
-		evt.getOriginal().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
+		original.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
 			CompoundTag knowledge = old.serializeNBT();
-			evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
+			event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
+		//Re-invalidate the player's caps now that we copied ours over
+		original.invalidateCaps();
 	}
 
 	// On death or return from end, sync to the client
 	@SubscribeEvent
-	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent evt) {
-		evt.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayer) evt.getPlayer()));
-		evt.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (ServerPlayer) evt.getPlayer()));
+	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
+		if (event.getPlayer() instanceof ServerPlayer player) {
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
+			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+		}
 	}
 
 	@SubscribeEvent
 	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-		// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-		event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync((ServerPlayer) event.getPlayer()));
-		event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, (ServerPlayer) event.getPlayer()));
-
+		if (event.getPlayer() instanceof ServerPlayer player) {
+			// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
+			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
+			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+		}
 		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
 
