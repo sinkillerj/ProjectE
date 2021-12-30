@@ -19,14 +19,12 @@ import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -34,21 +32,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BeehiveBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.CarvedPumpkinBlock;
-import net.minecraft.world.level.block.TripWireBlock;
-import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
@@ -78,28 +70,32 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
 	@Override
 	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		//TODO - 1.18: Validate this is the proper way and if we need to provide access to any other things
-		// Also do we need one for our tool itself when digging?
 		return ToolActions.DEFAULT_AXE_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_SHEARS_ACTIONS.contains(toolAction) ||
-			   ToolActions.DEFAULT_SWORD_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_HOE_ACTIONS.contains(toolAction);
+			   ToolActions.DEFAULT_SWORD_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_HOE_ACTIONS.contains(toolAction) ||
+			   ToolHelper.DEFAULT_PE_KATAR_ACTIONS.contains(toolAction);
 	}
 
-	/*@Override//TODO - 1.18: Evaluate using this as the sword handling (we add cobwebs to the tag so we already adjust it in super)
+	@Nonnull
+	@Override
+	public AABB getSweepHitBox(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+		int charge = getCharge(stack);
+		return target.getBoundingBox().inflate(charge, charge / 4D, charge);
+	}
+
+	@Override
 	protected float getShortCutDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
 		float destroySpeed = super.getShortCutDestroySpeed(stack, state);
 		if (destroySpeed == 1) {
-			if (state.is(Blocks.COBWEB)) {
-				return 15.0F;
-			} else {
-				Material material = state.getMaterial();
-				if (material != Material.PLANT && material != Material.REPLACEABLE_PLANT && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE) {
-					return 1;
-				}
+			//Special handling for swords which still have hardcoded material checks
+			// Note: we don't bother with the cobweb check because that will get caught by the tag for the blocks we can mine,
+			// but we do need to include the material based checks that vanilla's sword still has
+			Material material = state.getMaterial();
+			if (material == Material.PLANT || material == Material.REPLACEABLE_PLANT || state.is(BlockTags.LEAVES) || material == Material.VEGETABLE) {
 				return 1.5F;
 			}
 		}
 		return destroySpeed;
-	}*/
+	}
 
 	@Nonnull
 	@Override
@@ -108,61 +104,26 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
-		InteractionHand hand = context.getHand();
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
-		ItemStack stack = context.getItemInHand();
 		BlockState state = world.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Strip logs, hoe ground, carve pumpkin, shear beehive, AOE remove logs, AOE remove leaves
 		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
+				() -> ToolHelper.scrapeAOE(context, 0),
+				() -> ToolHelper.waxOffAOE(context, 0),
 				() -> ToolHelper.tillHoeAOE(context, 0),
-				() -> {
-					if (state.is(Blocks.PUMPKIN)) {
-						//Carve pumpkin - copy from Pumpkin Block's onBlockActivated
-						if (!world.isClientSide) {
-							Direction direction = context.getClickedFace();
-							Direction side = direction.getAxis() == Direction.Axis.Y ? context.getHorizontalDirection().getOpposite() : direction;
-							world.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1, 1);
-							world.setBlock(pos, Blocks.CARVED_PUMPKIN.defaultBlockState().setValue(CarvedPumpkinBlock.FACING, side), Block.UPDATE_ALL_IMMEDIATE);
-							ItemEntity itementity = new ItemEntity(world, pos.getX() + 0.5 + side.getStepX() * 0.65, pos.getY() + 0.1,
-									pos.getZ() + 0.5 + side.getStepZ() * 0.65, new ItemStack(Items.PUMPKIN_SEEDS, 4));
-							itementity.setDeltaMovement(0.05 * side.getStepX() + world.random.nextDouble() * 0.02, 0.05,
-									0.05 * side.getStepZ() + world.random.nextDouble() * 0.02D);
-							world.addFreshEntity(itementity);
-						}
-						return InteractionResult.sidedSuccess(world.isClientSide);
-					}
-					return InteractionResult.PASS;
-				},
-				() -> {
-					if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock beehive && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
-						//Act as shears on beehives
-						world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.NEUTRAL, 1, 1);
-						BeehiveBlock.dropHoneycomb(world, pos);
-						if (!CampfireBlock.isSmokeyPos(world, pos)) {
-							if (beehive.hiveContainsBees(world, pos)) {
-								beehive.angerNearbyBees(world, pos);
-							}
-							beehive.releaseBeesAndResetHoneyLevel(world, state, pos, player, BeehiveBlockEntity.BeeReleaseStatus.EMERGENCY);
-						} else {
-							beehive.resetHoneyLevel(world, state, pos);
-						}
-						return InteractionResult.sidedSuccess(world.isClientSide);
-					}
-					return InteractionResult.PASS;
-				},
 				() -> {
 					if (state.is(BlockTags.LOGS)) {
 						//Mass clear (acting as an axe)
 						//Note: We already tried to strip the log in an earlier action
-						return ToolHelper.clearTagAOE(world, player, hand, stack, 0, BlockTags.LOGS);
+						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
 					}
 					return InteractionResult.PASS;
 				}, () -> {
 					if (state.is(BlockTags.LEAVES)) {
 						//Mass clear (acting as shears)
-						return ToolHelper.clearTagAOE(world, player, hand, stack, 0, BlockTags.LEAVES);
+						return ToolHelper.clearTagAOE(world, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LEAVES);
 					}
 					return InteractionResult.PASS;
 				});
@@ -178,17 +139,6 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
 		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
 		return ToolHelper.shearBlock(stack, pos, player) == InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
-		if (state.is(Blocks.TRIPWIRE) && !state.getValue(TripWireBlock.DISARMED)) {
-			//Deactivate tripwire
-			BlockState deactivated = state.setValue(TripWireBlock.DISARMED, true);
-			world.setBlock(pos, deactivated, Block.UPDATE_INVISIBLE);
-			return super.mineBlock(stack, world, deactivated, pos, entity);
-		}
-		return super.mineBlock(stack, world, state, pos, entity);
 	}
 
 	@Nonnull

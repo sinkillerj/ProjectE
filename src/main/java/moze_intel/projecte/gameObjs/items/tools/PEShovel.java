@@ -104,11 +104,13 @@ public class PEShovel extends ShovelItem implements IItemCharge, IBarHelper {
 		Direction sideHit = context.getClickedFace();
 		ItemStack stack = context.getItemInHand();
 		BlockState state = world.getBlockState(pos);
-		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0), () -> {
-			if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
-				return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
-			}
-			return InteractionResult.PASS;
-		}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit, false, 0));
+		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
+				() -> ToolHelper.dowseCampfire(context, state),
+				() -> {
+					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
+					}
+					return InteractionResult.PASS;
+				}, () -> ToolHelper.digAOE(world, player, hand, stack, pos, sideHit, false, 0));
 	}
 }

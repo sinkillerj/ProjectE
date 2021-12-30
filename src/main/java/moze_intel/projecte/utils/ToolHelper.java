@@ -3,14 +3,19 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
@@ -53,6 +58,8 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -66,10 +73,22 @@ import net.minecraftforge.common.ToolActions;
 
 public class ToolHelper {
 
+	public static final ToolAction HAMMER_DIG = ToolAction.get("hammer_dig");
+	public static final ToolAction KATAR_DIG = ToolAction.get("katar_dig");
+	public static final ToolAction MORNING_STAR_DIG = ToolAction.get("morning_star_dig");
+
+	public static final Set<ToolAction> DEFAULT_PE_HAMMER_ACTIONS = of(HAMMER_DIG);
+	public static final Set<ToolAction> DEFAULT_PE_KATAR_ACTIONS = of(KATAR_DIG);
+	public static final Set<ToolAction> DEFAULT_PE_MORNING_STAR_ACTIONS = of(MORNING_STAR_DIG);
+
 	//Note: These all also do the check that super did before of making sure the entity is not spectating
 	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IForgeShearable;
 	private static final Predicate<Entity> SLAY_MOB = entity -> !entity.isSpectator() && entity instanceof Enemy;
 	private static final Predicate<Entity> SLAY_ALL = entity -> !entity.isSpectator() && (entity instanceof Enemy || entity instanceof LivingEntity);
+
+	private static Set<ToolAction> of(ToolAction... actions) {
+		return Stream.of(actions).collect(Collectors.toCollection(Sets::newIdentityHashSet));
+	}
 
 	/**
 	 * Performs a set of actions, until we find a success or run out of actions.
@@ -146,11 +165,31 @@ public class ToolHelper {
 		return InteractionResult.PASS;
 	}
 
+	public static InteractionResult dowseCampfire(UseOnContext context, BlockState state) {
+		Player player = context.getPlayer();
+		if (player == null) {
+			return InteractionResult.PASS;
+		}
+		if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) {
+			Level world = context.getLevel();
+			BlockPos pos = context.getClickedPos();
+			if (!world.isClientSide()) {
+				world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
+			}
+			CampfireBlock.dowse(player, world, pos, state);
+			if (!world.isClientSide()) {
+				world.setBlock(pos, state.setValue(CampfireBlock.LIT, Boolean.FALSE), Block.UPDATE_ALL_IMMEDIATE);
+			}
+			return InteractionResult.SUCCESS;
+		}
+		return InteractionResult.PASS;
+	}
+
 	/**
 	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static InteractionResult tillHoeAOE(UseOnContext context, long emcCost) {
-		//TODO - 1.18: Figure this out
+		//TODO - 1.18: Figure this out and fix it
 		//return tillAOE(context, emcCost, ToolActions.HOE_TILL, SoundEvents.HOE_TILL);
 		return InteractionResult.PASS;
 	}
@@ -244,11 +283,18 @@ public class ToolHelper {
 	}
 
 	/**
-	 * Strips logs in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
+	 * Strips logs in an AOE using an axe (ex: log to stripped log). Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static InteractionResult stripLogsAOE(UseOnContext context, long emcCost) {
-		//TODO - 1.18: Other axe actions such as scraping
 		return useAxeAOE(context, emcCost, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP);
+	}
+
+	public static InteractionResult scrapeAOE(UseOnContext context, long emcCost) {
+		return useAxeAOE(context, emcCost, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE);
+	}
+
+	public static InteractionResult waxOffAOE(UseOnContext context, long emcCost) {
+		return useAxeAOE(context, emcCost, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF);
 	}
 
 	public static InteractionResult useAxeAOE(UseOnContext context, long emcCost, ToolAction action, SoundEvent sound) {
@@ -267,7 +313,7 @@ public class ToolHelper {
 		} else if (world.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
-		Axis axis = clickedState.getValue(RotatedPillarBlock.AXIS);
+		Axis axis = getAxis(clickedState);
 		//Process the block we interacted with initially and play the sound
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
 		world.setBlock(pos, strippedState, Block.UPDATE_ALL_IMMEDIATE);
@@ -283,7 +329,7 @@ public class ToolHelper {
 				//Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
 				// Also make sure that it is on the same axis as the block we initially clicked
 				BlockState state = world.getBlockState(newPos);
-				if (strippedState == state.getToolModifiedState(world, newPos, player, stack, action) && axis == state.getValue(RotatedPillarBlock.AXIS)) {
+				if (axis == getAxis(state) && strippedState == state.getToolModifiedState(world, newPos, player, stack, action)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
@@ -302,6 +348,11 @@ public class ToolHelper {
 		}
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		return InteractionResult.SUCCESS;
+	}
+
+	@Nullable
+	private static Axis getAxis(BlockState state) {
+		return state.hasProperty(RotatedPillarBlock.AXIS) ? state.getValue(RotatedPillarBlock.AXIS) : null;
 	}
 
 	/**
@@ -609,7 +660,6 @@ public class ToolHelper {
 	}
 
 	public static boolean canMatterMine(EnumMatterType matterType, Block block) {
-		//TODO - 1.18: Re-evaluate this method and moving over to needs_x_matter_tool
 		return block instanceof IMatterBlock matterBlock && matterBlock.getMatterType().getMatterTier() <= matterType.getMatterTier();
 	}
 

@@ -63,7 +63,6 @@ public final class AlchBagImpl {
 			for (DyeColor e : DyeColor.values()) {
 				if (nbt.contains(e.getSerializedName())) {
 					ItemStackHandler inv = new ItemStackHandler(104);
-					//TODO - 1.18: Re-evaluate this handling
 					inv.deserializeNBT(nbt.getCompound(e.getSerializedName()));
 					inventories.put(e, inv);
 				}

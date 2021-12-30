@@ -62,9 +62,8 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Override
 	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		//TODO - 1.18: Validate this is the proper way and if we need to provide access to any other things
-		// Also do we need one for our tool itself and hammer when digging?
-		return ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(toolAction);
+		return ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(toolAction) ||
+			   ToolHelper.DEFAULT_PE_HAMMER_ACTIONS.contains(toolAction) || ToolHelper.DEFAULT_PE_MORNING_STAR_ACTIONS.contains(toolAction);
 	}
 
 	@Override
@@ -95,6 +94,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		//Order that it attempts to use the item:
 		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
 		return ToolHelper.performActions(ToolHelper.tillShovelAOE(context, 0),
+				() -> ToolHelper.dowseCampfire(context, state),
 				() -> {
 					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
 						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
@@ -124,10 +124,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		if (ToolHelper.canMatterMine(matterType, state.getBlock())) {
-			return 1_200_000;
-		}
-		return super.getDestroySpeed(stack, state) + 48.0F;
+		return ToolHelper.canMatterMine(matterType, state.getBlock()) ? 1_200_000 : super.getDestroySpeed(stack, state) + 48.0F;
 	}
 
 	@Nonnull

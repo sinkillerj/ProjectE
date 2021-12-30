@@ -89,12 +89,11 @@ public class PETags {
 		public static final Named<Block> MINEABLE_WITH_PE_HAMMER = tag("mineable/hammer");
 		public static final Named<Block> MINEABLE_WITH_PE_MORNING_STAR = tag("mineable/morning_star");
 		public static final Named<Block> MINEABLE_WITH_PE_SHEARS = tag("mineable/shears");
+		public static final Named<Block> MINEABLE_WITH_PE_SWORD = tag("mineable/sword");
 
 		public static final Named<Block> MINEABLE_WITH_HAMMER = forgeTag("mineable/hammer");
 		public static final Named<Block> MINEABLE_WITH_KATAR = forgeTag("mineable/katar");
 		public static final Named<Block> MINEABLE_WITH_MORNING_STAR = forgeTag("mineable/morning_star");
-		public static final Named<Block> MINEABLE_WITH_SHEARS = forgeTag("mineable/shears");
-		public static final Named<Block> MINEABLE_WITH_SWORD = forgeTag("mineable/sword");
 
 
 		private static Named<Block> tag(String name) {

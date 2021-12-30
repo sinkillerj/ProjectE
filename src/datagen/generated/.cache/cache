@@ -186,8 +186,6 @@ b84f9495b2302fb988f693e8c98595c6e44935a5 data/curios/tags/items/necklace.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/hammer.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/katar.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/morning_star.json
-74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/shears.json
-74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/sword.json
 4dc04849003244e69c9420820dfcc81246120946 data/forge/tags/items/chests.json
 08fadb6f94ec6f2fa264538d33970274d80a03f3 data/forge/tags/items/shears.json
 be0276207445ccbabeee477cff0eaf24d86cd530 data/minecraft/tags/blocks/beacon_base_blocks.json
@@ -543,10 +541,11 @@ e62c1b3423250c205b5ef7bb147b34df8a85ccb3 data/projecte/recipes/transmutation_tab
 e4cb8b6b64b98d18d23940098be43ec3debde809 data/projecte/tags/blocks/blacklist/harvest.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/blocks/blacklist/time_watch.json
 731aea1ff4dd53e26ab970b744c49dcd6d74cf96 data/projecte/tags/blocks/mineable/hammer.json
-ccd1d036c5f87a168bea22d87c042507c3ac7a06 data/projecte/tags/blocks/mineable/katar.json
+1913e4378d4066bdd947c60f7fd70e8d843c212f data/projecte/tags/blocks/mineable/katar.json
 2eddcf5f141eed97f8816e010bde2baa345cd3ad data/projecte/tags/blocks/mineable/morning_star.json
-244ebaf46b47474e3d4fa72c17e6a7aef9037f77 data/projecte/tags/blocks/mineable/shears.json
-5bae9fc7f80d89224d2ec572f5581998201b1d68 data/projecte/tags/blocks/needs/dark_matter.json
+540d0be3bb74f0c8b2cab13528f5c80e50394b46 data/projecte/tags/blocks/mineable/shears.json
+d344aa431b1ffa0bf6de510ac50478e0b56aa9ec data/projecte/tags/blocks/mineable/sword.json
+cbcb4111b7dc05e4b25fe928079fcf48a2fd00eb data/projecte/tags/blocks/needs/dark_matter.json
 6c80d4c2c42e1f7fa5183fe0027ce1a958bb314f data/projecte/tags/blocks/needs/red_matter.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/interdiction.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/swrg.json

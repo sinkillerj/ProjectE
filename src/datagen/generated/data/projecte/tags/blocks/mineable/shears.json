@@ -3,7 +3,6 @@
   "values": [
     "minecraft:cobweb",
     "minecraft:redstone_wire",
-    "minecraft:tripwire",
-    "#forge:mineable/shears"
+    "minecraft:tripwire"
   ]
 }

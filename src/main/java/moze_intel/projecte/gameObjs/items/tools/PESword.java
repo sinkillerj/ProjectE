@@ -13,12 +13,14 @@ import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -28,6 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge, IBarHelper {
@@ -91,7 +95,17 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
+		float speed = super.getDestroySpeed(stack, state);
+		if (speed == 1 && state.is(PETags.Blocks.MINEABLE_WITH_PE_SWORD)) {
+			speed = matterType.getSpeed();
+		}
+		return ToolHelper.getDestroySpeed(speed, matterType, getCharge(stack));
+	}
+
+	@Override
+	public boolean isCorrectToolForDrops(@Nonnull ItemStack stack, BlockState state) {
+		//Note: our tag intercepts the vanilla sword matches
+		return state.is(PETags.Blocks.MINEABLE_WITH_PE_SWORD) && TierSortingRegistry.isCorrectTierForDrops(matterType, state);
 	}
 
 	@Override
@@ -111,6 +125,13 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
+	}
+
+	@Nonnull
+	@Override
+	public AABB getSweepHitBox(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+		int charge = getCharge(stack);
+		return target.getBoundingBox().inflate(charge, charge / 4D, charge);
 	}
 
 	@Override

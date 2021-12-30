@@ -97,6 +97,8 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 		//Order that it attempts to use the item:
 		// Strip logs, AOE remove logs
 		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
+				() -> ToolHelper.scrapeAOE(context, 0),
+				() -> ToolHelper.waxOffAOE(context, 0),
 				() -> {
 					Level world = context.getLevel();
 					if (world.getBlockState(context.getClickedPos()).is(BlockTags.LOGS)) {

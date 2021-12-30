@@ -97,19 +97,6 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 		return new ItemCapabilityWrapper(stack, supportedCapabilities);
 	}
 
-	/*@Override//TODO - 1.18: Re-evaluate I think this isn't needed anymore
-	public boolean canHarvestBlock(@Nonnull ItemStack stack, BlockState state) {
-		//Note: We override the more specific implementation as we need the stack to get our tool's supported ToolTypes
-		ToolType requiredTool = state.getHarvestTool();
-		for (ToolType toolType : getToolTypes(stack)) {
-			if (toolType == requiredTool) {
-				//Patch ToolItem to return true for canHarvestBlock when the block's harvest tool matches one of our supported tools
-				return getHarvestLevel(stack, toolType, null, state) >= state.getHarvestLevel();
-			}
-		}
-		return super.canHarvestBlock(stack, state);
-	}*/
-
 	/**
 	 * Override this if we need to also include any "shortcuts" that specific vanilla tool types include for specific blocks/material types.
 	 *

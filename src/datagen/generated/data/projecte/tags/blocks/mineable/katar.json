@@ -4,8 +4,8 @@
     "#forge:mineable/katar",
     "#minecraft:mineable/axe",
     "#minecraft:mineable/hoe",
-    "#forge:mineable/shears",
-    "#forge:mineable/sword",
+    "#projecte:mineable/shears",
+    "#projecte:mineable/sword",
     "minecraft:cobweb"
   ]
 }

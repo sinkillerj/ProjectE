@@ -55,7 +55,7 @@ public class EntityRandomizerHelper {
 			return (Mob) newEntity;
 		} else if (newEntity != null) {
 			//There are "invalid" entries in the list that do not correspond to, kill the new entity
-			newEntity.discard();//TODO - 1.18: Review all our calls of discard because maybe some were wrong
+			newEntity.discard();
 			// and log a warning
 			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.",
 					newType.getRegistryName(), type.getName());

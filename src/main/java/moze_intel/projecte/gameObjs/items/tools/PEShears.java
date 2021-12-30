@@ -36,7 +36,6 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 		super(props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
-		//TODO - 1.18: Use mineable with shears??
 	}
 
 	@Override
@@ -81,8 +80,11 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 
 	@Override
 	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
-		//TODO - 1.18: Make this query mineable with shears
-		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
+		float speed = super.getDestroySpeed(stack, state);
+		if (speed == 1 && state.is(PETags.Blocks.MINEABLE_WITH_PE_SHEARS)) {
+			speed = matterType.getSpeed();
+		}
+		return ToolHelper.getDestroySpeed(speed, matterType, getCharge(stack));
 	}
 
 	@Override

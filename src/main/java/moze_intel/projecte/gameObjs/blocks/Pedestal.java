@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalTile;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -34,7 +35,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityBlock<DMPedestalTile> {
+public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityBlock<DMPedestalTile>, IMatterBlock {
 
 	private static final VoxelShape SHAPE = Shapes.or(
 			Block.box(3, 0, 3, 13, 2, 13),
@@ -190,5 +191,10 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+	}
+
+	@Override
+	public EnumMatterType getMatterType() {
+		return EnumMatterType.DARK_MATTER;
 	}
 }

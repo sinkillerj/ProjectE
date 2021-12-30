@@ -54,14 +54,11 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		tag(PETags.Blocks.MINEABLE_WITH_HAMMER);
 		tag(PETags.Blocks.MINEABLE_WITH_KATAR);
 		tag(PETags.Blocks.MINEABLE_WITH_MORNING_STAR);
-		tag(PETags.Blocks.MINEABLE_WITH_SHEARS);
-		//TODO - 1.18: Re-evaluate. This probably will be unused except maybe by some mods
-		tag(PETags.Blocks.MINEABLE_WITH_SWORD);
 
 		tag(PETags.Blocks.NEEDS_DARK_MATTER_TOOL).add(
 				PEBlocks.DARK_MATTER.getBlock(),
-				PEBlocks.DARK_MATTER_FURNACE.getBlock()
-				//TODO - 1.18: Do we want to add pedestals here
+				PEBlocks.DARK_MATTER_FURNACE.getBlock(),
+				PEBlocks.DARK_MATTER_PEDESTAL.getBlock()
 		);
 		tag(PETags.Blocks.NEEDS_RED_MATTER_TOOL).add(
 				PEBlocks.RED_MATTER.getBlock(),
@@ -95,17 +92,21 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				BlockTags.MINEABLE_WITH_PICKAXE
 		);
 		tag(PETags.Blocks.MINEABLE_WITH_PE_SHEARS).add(
-				//Blocks supported by vanilla shears, added to our tag just in case mods do different things with the base shears one
+				//Blocks supported by vanilla shears
 				Blocks.COBWEB,
 				Blocks.REDSTONE_WIRE,
 				Blocks.TRIPWIRE
-		).addTag(PETags.Blocks.MINEABLE_WITH_SHEARS);
+		);
+		tag(PETags.Blocks.MINEABLE_WITH_PE_SWORD).add(
+				//Blocks supported by vanilla swords
+				Blocks.COBWEB
+		);
 		tag(PETags.Blocks.MINEABLE_WITH_PE_KATAR).addTags(
 				PETags.Blocks.MINEABLE_WITH_KATAR,
 				BlockTags.MINEABLE_WITH_AXE,
 				BlockTags.MINEABLE_WITH_HOE,
-				PETags.Blocks.MINEABLE_WITH_SHEARS,
-				PETags.Blocks.MINEABLE_WITH_SWORD
+				PETags.Blocks.MINEABLE_WITH_PE_SHEARS,
+				PETags.Blocks.MINEABLE_WITH_PE_SWORD
 		).add(Blocks.COBWEB);//Sword items
 		tag(PETags.Blocks.MINEABLE_WITH_PE_MORNING_STAR).addTags(
 				PETags.Blocks.MINEABLE_WITH_MORNING_STAR,
