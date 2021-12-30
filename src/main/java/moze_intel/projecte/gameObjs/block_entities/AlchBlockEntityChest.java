@@ -16,11 +16,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuProvider {
 
-	private final StackHandler inventory = new StackHandler(104);
+	private final StackHandler inventory = new StackHandler(104) {
+		@Override
+		public void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			if (level != null && !level.isClientSide) {
+				inventoryChanged = true;
+			}
+		}
+	};
+	private boolean inventoryChanged;
 
 	public AlchBlockEntityChest(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state);
@@ -40,8 +50,6 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuPro
 	}
 
 	public static void tickClient(Level level, BlockPos pos, BlockState state, AlchBlockEntityChest alchChest) {
-		//TODO - 1.18: Fix this as the inventory isn't syncd to the client except when they open it so then
-		// it has things tick that don't exist and has things that do exist not tick
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
@@ -62,6 +70,11 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuPro
 					}
 				});
 			}
+		}
+		if (alchChest.inventoryChanged) {
+			//If the inventory changed, resync so that the client can tick things properly
+			alchChest.inventoryChanged = false;
+			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 		}
 		alchChest.updateComparators();
 	}

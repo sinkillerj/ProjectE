@@ -31,7 +31,6 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 				//If an item got added via the item handler, then rerender the block
 				BlockState state = getBlockState();
 				level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_IMMEDIATE);
-
 			}
 		}
 	};

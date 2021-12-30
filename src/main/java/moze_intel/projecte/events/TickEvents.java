@@ -44,18 +44,19 @@ public class TickEvents {
 					}
 				}
 
-				for (DyeColor e : colorsChanged) {
-					if (event.player.containerMenu instanceof AlchBagContainer container) {
-						ItemStack heldItem = event.player.getItemInHand(container.hand);
-						if (heldItem.getItem() instanceof AlchemicalBag bag && bag.color == e) {
-							// Do not sync if this color is open, the container system does it for us
-							// and we'll stay out of its way.
-							continue;
+				if (event.player instanceof ServerPlayer serverPlayer) {
+					//Only sync for when it ticks on the server
+					for (DyeColor e : colorsChanged) {
+						if (serverPlayer.containerMenu instanceof AlchBagContainer container) {
+							ItemStack heldItem = serverPlayer.getItemInHand(container.hand);
+							if (heldItem.getItem() instanceof AlchemicalBag bag && bag.color == e) {
+								// Do not sync if this color is open, the container system does it for us
+								// and we'll stay out of its way.
+								continue;
+							}
 						}
+						provider.sync(e, serverPlayer);
 					}
-					//TODO - 1.18: Re-evaluate this? Because if updateInAlchBag actually happens on both sides
-					// then we should have to be instance checking this
-					provider.sync(e, (ServerPlayer) event.player);
 				}
 			});
 

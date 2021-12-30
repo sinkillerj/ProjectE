@@ -10,9 +10,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -174,14 +172,6 @@ public final class ItemHelper {
 
 	public static boolean isOre(BlockState state) {
 		return state.is(Tags.Blocks.ORES);
-	}
-
-	public static boolean isOre(Block b) {
-		return Tags.Blocks.ORES.contains(b);
-	}
-
-	public static boolean isOre(Item i) {
-		return isOre(Block.byItem(i));
 	}
 
 	public static boolean isRepairableDamagedItem(ItemStack stack) {

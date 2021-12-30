@@ -12,7 +12,6 @@ import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.entity.DropperBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -82,6 +82,11 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 
 	protected float getOreDoubleChance() {
 		return 0.5F;
+	}
+
+	protected float getRawOreDoubleChance() {
+		//Base rate for raw ore doubling chance is: 3 -> 4 which means we multiply our ore double chance by 3/4
+		return getOreDoubleChance() * 0.75F;
 	}
 
 	public int getCookProgressScaled(int value) {
@@ -237,9 +242,17 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 	private void smeltItem() {
 		ItemStack toSmelt = inputInventory.getStackInSlot(0);
 		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
-		if (level != null && level.random.nextFloat() < getOreDoubleChance() && ItemHelper.isOre(toSmelt.getItem())) {
-			smeltResult.grow(smeltResult.getCount());
+		if (toSmelt.is(Tags.Items.ORES)) {
+			if (level != null && level.random.nextFloat() < getOreDoubleChance()) {
+				smeltResult.grow(smeltResult.getCount());
+			}
 		}
+		//TODO: Once raw ores are actually tagged uncomment this
+		/*else if (toSmelt.is(Tags.Items.RAW_ORES)) {
+			if (level != null && level.random.nextFloat() < getRawOreDoubleChance()) {
+				smeltResult.grow(smeltResult.getCount());
+			}
+		}*/
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
 		toSmelt.shrink(1);
 	}
