@@ -17,6 +17,13 @@
           }
         },
         {
+          "output": "minecraft:rooted_dirt",
+          "ingredients": [
+            "minecraft:dirt",
+            "minecraft:hanging_roots"
+          ]
+        },
+        {
           "output": "minecraft:mycelium",
           "ingredients": {
             "minecraft:dirt": 2
@@ -88,6 +95,26 @@
           "count": 3,
           "ingredients": [
             "minecraft:honey_bottle"
+          ]
+        },
+        {
+          "output": "minecraft:powder_snow_bucket",
+          "ingredients": {
+            "minecraft:bucket": 1,
+            "minecraft:snow_block": 4
+          }
+        },
+        {
+          "output": "minecraft:glow_ink_sac",
+          "ingredients": [
+            "minecraft:ink_sac",
+            "#forge:dusts/glowstone"
+          ]
+        },
+        {
+          "output": "minecraft:hanging_roots",
+          "ingredients": [
+            "#forge:rods/wooden"
           ]
         },
         {
@@ -511,10 +538,14 @@
       "minecraft:granite": 16,
       "minecraft:diorite": 16,
       "minecraft:andesite": 16,
+      "minecraft:pointed_dripstone": 16,
       "minecraft:end_stone": 1,
       "minecraft:netherrack": 1,
       "minecraft:basalt": 4,
       "minecraft:blackstone": 4,
+      "minecraft:cobbled_deepslate": 2,
+      "minecraft:tuff": 4,
+      "minecraft:calcite": 32,
       "minecraft:dirt": 1,
       "minecraft:sand": 1,
       "minecraft:red_sand": 1,
@@ -524,8 +555,11 @@
       "minecraft:gravel": 4,
       "minecraft:cactus": 8,
       "minecraft:vine": 8,
+      "minecraft:moss_block": 12,
       "minecraft:cobweb": 12,
       "minecraft:lily_pad": 16,
+      "minecraft:small_dripleaf": 24,
+      "minecraft:big_dripleaf": 32,
       "#minecraft:small_flowers": 16,
       "#minecraft:tall_flowers": 32,
       "minecraft:red_mushroom": 32,
@@ -549,8 +583,10 @@
       "minecraft:warped_roots": 1,
       "minecraft:weeping_vines": 8,
       "minecraft:twisting_vines": 8,
+      "minecraft:glow_lichen": 8,
       "minecraft:crimson_fungus": 32,
       "minecraft:warped_fungus": 32,
+      "minecraft:spore_blossom": 64,
       "minecraft:tube_coral_block": 64,
       "minecraft:brain_coral_block": 64,
       "minecraft:bubble_coral_block": 64,
@@ -588,6 +624,7 @@
       "#forge:seeds/beetroot": 16,
       "minecraft:melon_slice": 16,
       "minecraft:sweet_berries": 16,
+      "minecraft:glow_berries": 16,
       "#forge:crops/wheat": 24,
       "#forge:crops/nether_wart": 24,
       "minecraft:apple": 128,

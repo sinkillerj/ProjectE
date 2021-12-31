@@ -29,6 +29,8 @@
     "minecraft:panda",
     "minecraft:trader_llama",
     "minecraft:wandering_trader",
-    "minecraft:strider"
+    "minecraft:strider",
+    "minecraft:glow_squid",
+    "minecraft:goat"
   ]
 }

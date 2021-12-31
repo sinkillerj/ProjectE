@@ -187,6 +187,8 @@ b84f9495b2302fb988f693e8c98595c6e44935a5 data/curios/tags/items/necklace.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/katar.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/morning_star.json
 4dc04849003244e69c9420820dfcc81246120946 data/forge/tags/items/chests.json
+a4245f119ece142fe7d949d39fea50ae779459f7 data/forge/tags/items/gems/amethyst.json
+3af5b71a6afb4b445df55b46423cf03010e57fde data/forge/tags/items/ingots/copper.json
 08fadb6f94ec6f2fa264538d33970274d80a03f3 data/forge/tags/items/shears.json
 be0276207445ccbabeee477cff0eaf24d86cd530 data/minecraft/tags/blocks/beacon_base_blocks.json
 32eb8a8165950330dd4356b31d0a65bacf51daa3 data/minecraft/tags/blocks/dragon_immune.json
@@ -385,8 +387,8 @@ fbcf54239c097623235428ca6dfadf9b33923c03 data/projecte/loot_tables/blocks/nova_c
 52f88d5bcc4e5c69b23b5e9e57fb300249d52551 data/projecte/loot_tables/blocks/relay_mk3.json
 13e2b2d31ec37e155ca5f5a36fa40d6880b471ef data/projecte/loot_tables/blocks/rm_furnace.json
 76e137bf200762aafc7adc669ef9935dfb2fc686 data/projecte/loot_tables/blocks/transmutation_table.json
-a6704b7fb153b063f58bb830f844bdf2754d67f7 data/projecte/pe_custom_conversions/defaults.json
-85a611e29dc480a51d3731d19b3c3ae062bb0f05 data/projecte/pe_custom_conversions/metals.json
+bb521914ee17d75e98c35157404192328208d4f5 data/projecte/pe_custom_conversions/defaults.json
+18b014f34fb2021f1f5f3321188f41895dcd8eb2 data/projecte/pe_custom_conversions/metals.json
 5d5c6e09bd4cebbf6c6d0b0e338b7cf253cbe643 data/projecte/recipes/aeternalis_fuel.json
 20a4b5de95f59f01c0134dd04d2836b35385992b data/projecte/recipes/aeternalis_fuel_block.json
 522416b6d3baac0e8d1738e970e5dadbbd507a8f data/projecte/recipes/alchemical_chest.json
@@ -550,7 +552,7 @@ cbcb4111b7dc05e4b25fe928079fcf48a2fd00eb data/projecte/tags/blocks/needs/dark_ma
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/interdiction.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/swrg.json
 1f5594ebabadcab45b037722b48f01acb2b3d743 data/projecte/tags/entity_types/randomizer/hostile.json
-79445c04fa629e42366cf7b35b5b7bfc778f2808 data/projecte/tags/entity_types/randomizer/peaceful.json
+a677aa53e79545e8f541f8cc97aac2e46ad972f6 data/projecte/tags/entity_types/randomizer/peaceful.json
 ac47e652db430d28309c1d1c73f70bd639f26aff data/projecte/tags/items/alchemical_bags.json
 e346c37e2811af615884acbad6f206269883481f data/projecte/tags/items/collector_fuel.json
 f2fe5bde6c4e01519849d99ffccc4184276ddcfb data/projecte/tags/items/covalence_dust.json
