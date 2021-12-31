@@ -91,25 +91,29 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult mop) {
-		if (level.isClientSide) {
-			return;
+	protected void onHit(@Nonnull HitResult result) {
+		super.onHit(result);
+		discard();
+	}
+
+	@Override
+	protected void onHitBlock(@Nonnull BlockHitResult result) {
+		super.onHitBlock(result);
+		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+			WorldHelper.placeFluid(player, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 		}
-		Entity thrower = getOwner();
-		if (!(thrower instanceof Player)) {
-			discard();
-			return;
-		}
-		if (mop instanceof BlockHitResult result) {
-			WorldHelper.placeFluid((ServerPlayer) thrower, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-		} else if (mop instanceof EntityHitResult result) {
+	}
+
+	@Override
+	protected void onHitEntity(@Nonnull EntityHitResult result) {
+		super.onHitEntity(result);
+		if (!level.isClientSide && getOwner() instanceof Player player) {
 			Entity ent = result.getEntity();
 			if (ent.isOnFire()) {
 				ent.clearFire();
 			}
 			ent.push(this.getDeltaMovement().x() * 2, this.getDeltaMovement().y() * 2, this.getDeltaMovement().z() * 2);
 		}
-		discard();
 	}
 
 	@Nonnull

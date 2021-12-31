@@ -7,7 +7,6 @@ import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -51,40 +50,39 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult mop) {
-		if (getCommandSenderWorld().isClientSide) {
+	protected void onHit(@Nonnull HitResult result) {
+		if (level.isClientSide) {
 			for (int i = 0; i < 4; ++i) {
-				getCommandSenderWorld().addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
+				level.addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 			}
-			return;
 		}
-		if (isInWater() || !(mop instanceof EntityHitResult result) || !(result.getEntity() instanceof Mob ent)) {
-			discard();
-			return;
-		}
-		Entity thrower = getOwner();
-		if (!(thrower instanceof Player player)) {
-			discard();
-			return;
-		}
-
-		Mob randomized = EntityRandomizerHelper.getRandomEntity(this.getCommandSenderWorld(), ent);
-		if (randomized != null && EMCHelper.consumePlayerFuel(player, 384) != -1) {
-			ent.discard();
-			randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
-			SpawnGroupData data;
-			if (randomized instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
-				//If we are creating a rabbit, and it is supposed to be the killer bunny, we need to pass that data
-				// to onInitialSpawn, or it will reset it to a random type of rabbit
-				data = new RabbitGroupData(99);
-			} else {
-				data = null;
-			}
-			randomized.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
-			getCommandSenderWorld().addFreshEntity(randomized);
-			randomized.spawnAnim();
+		if (!isInWater()) {
+			super.onHit(result);
 		}
 		discard();
+	}
+
+	@Override
+	protected void onHitEntity(@Nonnull EntityHitResult result) {
+		super.onHitEntity(result);
+		if (!level.isClientSide && result.getEntity() instanceof Mob ent && getOwner() instanceof Player player) {
+			Mob randomized = EntityRandomizerHelper.getRandomEntity(level, ent);
+			if (randomized != null && EMCHelper.consumePlayerFuel(player, 384) != -1) {
+				ent.discard();
+				randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
+				SpawnGroupData data;
+				if (randomized instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
+					//If we are creating a rabbit, and it is supposed to be the killer bunny, we need to pass that data
+					// to onInitialSpawn, or it will reset it to a random type of rabbit
+					data = new RabbitGroupData(99);
+				} else {
+					data = null;
+				}
+				randomized.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
+				getCommandSenderWorld().addFreshEntity(randomized);
+				randomized.spawnAnim();
+			}
+		}
 	}
 
 	@Nonnull

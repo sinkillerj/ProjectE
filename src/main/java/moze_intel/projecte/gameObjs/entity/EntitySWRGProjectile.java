@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -67,44 +66,49 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult mop) {
-		if (level.isClientSide) {
-			return;
-		}
-		Entity thrower = getOwner();
-		if (!(thrower instanceof Player player)) {
-			discard();
-			return;
-		}
-		ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
-		if (mop instanceof BlockHitResult result) {
+	protected void onHit(@Nonnull HitResult result) {
+		super.onHit(result);
+		discard();
+	}
+
+	@Override
+	protected void onHitBlock(@Nonnull BlockHitResult result) {
+		super.onHitBlock(result);
+		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
 				BlockPos pos = result.getBlockPos();
-
 				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
 					lightning.moveTo(Vec3.atCenterOf(pos));
-					lightning.setCause((ServerPlayer) player);
+					lightning.setCause(player);
 					level.addFreshEntity(lightning);
 				}
-
 				if (level.isThundering()) {
 					for (int i = 0; i < 3; i++) {
 						LightningBolt bonus = EntityType.LIGHTNING_BOLT.create(level);
 						if (bonus != null) {
-							bonus.moveTo(pos.getX() + 0.5 + level.random.nextGaussian(), pos.getY() + 0.5 + level.random.nextGaussian(), pos.getZ() + 0.5 + level.random.nextGaussian());
-							bonus.setCause((ServerPlayer) player);
+							bonus.moveTo(pos.getX() + 0.5 + level.random.nextGaussian(), pos.getY() + 0.5 + level.random.nextGaussian(),
+									pos.getZ() + 0.5 + level.random.nextGaussian());
+							bonus.setCause(player);
 							level.addFreshEntity(bonus);
 						}
 					}
 				}
 			}
-		} else if (mop instanceof EntityHitResult result) {
-			if (result.getEntity() instanceof LivingEntity e && !found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
+		}
+	}
+
+	@Override
+	protected void onHitEntity(@Nonnull EntityHitResult result) {
+		super.onHitEntity(result);
+		if (!level.isClientSide && result.getEntity() instanceof LivingEntity e && getOwner() instanceof Player player) {
+			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
+			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
 				// Minor damage, so we count as the attacker for launching the mob
 				e.hurt(DamageSource.playerAttack(player), 1F);
 
-				// Fake onGround before knockBack so you can re-launch mobs that have already been launched
+				// Fake onGround before knockBack, so you can re-launch mobs that have already been launched
 				boolean oldOnGround = e.isOnGround();
 				e.setOnGround(true);
 				e.knockback(5F, -getDeltaMovement().x() * 0.25, -getDeltaMovement().z() * 0.25);
@@ -112,7 +116,6 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 				e.setDeltaMovement(e.getDeltaMovement().multiply(1, 3, 1));
 			}
 		}
-		discard();
 	}
 
 	@Override

@@ -183,7 +183,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 				snowball.playSound(SoundEvents.SNOWBALL_THROW, 1.0F, 1.0F);
 			}
 			case 1 -> { // ignition
-				EntityFireProjectile fire = new EntityFireProjectile(player, level);
+				EntityFireProjectile fire = new EntityFireProjectile(player, true, level);
 				fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 				level.addFreshEntity(fire);
 				fire.playSound(PESoundEvents.POWER.get(), 1.0F, 1.0F);

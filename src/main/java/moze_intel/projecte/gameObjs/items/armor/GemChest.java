@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public class GemChest extends GemArmorBase implements IFireProtector {
 
@@ -35,6 +36,8 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 				timers.activateFeed();
 				if (player.getFoodData().needsFood() && timers.canFeed()) {
 					player.getFoodData().eat(2, 10);
+					level.gameEvent(player, GameEvent.EAT, player.eyeBlockPosition());
+					player.gameEvent(GameEvent.EAT);
 				}
 			});
 		}

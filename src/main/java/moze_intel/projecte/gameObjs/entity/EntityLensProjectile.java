@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -51,11 +52,12 @@ public class EntityLensProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult mop) {
-		if (!this.getCommandSenderWorld().isClientSide) {
+	protected void onHit(@Nonnull HitResult result) {
+		if (!level.isClientSide) {
 			WorldHelper.createNovaExplosion(level, getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
-			discard();
 		}
+		gameEvent(GameEvent.PROJECTILE_LAND, getOwner());
+		discard();
 	}
 
 	@Override

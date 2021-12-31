@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public class LifeStone extends PEToggleItem implements IPedestalItem {
 
@@ -50,6 +51,8 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 					if (player.getFoodData().needsFood() && timers.canFeed()) {
 						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
 						player.getFoodData().eat(2, 10);
+						level.gameEvent(player, GameEvent.EAT, player.eyeBlockPosition());
+						player.gameEvent(GameEvent.EAT);
 						removeEmc(stack, 64);
 					}
 					timers.activateHeal();
@@ -76,6 +79,8 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 					if (player.getFoodData().needsFood()) {
 						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.BLOCKS, 1, 1);
 						player.getFoodData().eat(1, 1); // 1/2 shank
+						level.gameEvent(player, GameEvent.EAT, player.eyeBlockPosition());
+						player.gameEvent(GameEvent.EAT);
 					}
 				}
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.life.get());

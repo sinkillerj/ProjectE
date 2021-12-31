@@ -102,7 +102,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		if (level.isClientSide) {
 			return false;
 		}
-		EntityFireProjectile fire = new EntityFireProjectile(player, level);
+		EntityFireProjectile fire = new EntityFireProjectile(player, false, level);
 		fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 		level.addFreshEntity(fire);
 		return true;

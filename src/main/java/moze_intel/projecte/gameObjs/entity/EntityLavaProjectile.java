@@ -79,26 +79,33 @@ public class EntityLavaProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult mop) {
-		if (level.isClientSide) {
-			return;
+	protected void onHit(@Nonnull HitResult result) {
+		super.onHit(result);
+		discard();
+	}
+
+	@Override
+	protected void onHitBlock(@Nonnull BlockHitResult result) {
+		super.onHitBlock(result);
+		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+			ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
+			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
+				WorldHelper.placeFluid(player, level, result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
+			}
 		}
-		Entity thrower = getOwner();
-		if (!(thrower instanceof Player player)) {
-			discard();
-			return;
-		}
-		ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
-		if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
-			if (mop instanceof BlockHitResult result) {
-				WorldHelper.placeFluid((ServerPlayer) player, level, result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
-			} else if (mop instanceof EntityHitResult result) {
+	}
+
+	@Override
+	protected void onHitEntity(@Nonnull EntityHitResult result) {
+		super.onHitEntity(result);
+		if (!level.isClientSide && getOwner() instanceof Player player) {
+			ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
+			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				Entity ent = result.getEntity();
 				ent.setSecondsOnFire(5);
 				ent.hurt(DamageSource.IN_FIRE, 5);
 			}
 		}
-		discard();
 	}
 
 	@Nonnull

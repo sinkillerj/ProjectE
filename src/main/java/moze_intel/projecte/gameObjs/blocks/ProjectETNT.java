@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public class ProjectETNT extends TntBlock {
 
@@ -37,6 +38,7 @@ public class ProjectETNT extends TntBlock {
 	public void onCaughtFire(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
 		if (!level.isClientSide) {
 			createAndAddEntity(level, pos, igniter);
+			level.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
 		}
 	}
 
@@ -54,6 +56,7 @@ public class ProjectETNT extends TntBlock {
 			protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
 				BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
 				createAndAddEntity(source.getLevel(), blockpos, null);
+				source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
 				stack.shrink(1);
 				return stack;
 			}

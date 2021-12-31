@@ -65,6 +65,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -556,6 +557,7 @@ public class ToolHelper {
 						//Protect against any mods that may use unmodifiable lists in their onSheared return
 						WorldHelper.createLootDrop(new ArrayList<>(drops), level, pos);
 						player.awardStat(Stats.BLOCK_MINED.get(block), 1);
+						level.gameEvent(player, GameEvent.SHEAR, pos);
 					}
 					//NOTE: We only mark it as a success if we actually got drops otherwise we let it continue breaking the block
 					return InteractionResult.SUCCESS;
@@ -586,6 +588,7 @@ public class ToolHelper {
 				}
 				if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 					List<ItemStack> entDrops = target.onSheared(player, stack, level, entityPosition, fortune);
+					ent.gameEvent(GameEvent.SHEAR, player);
 					if (!entDrops.isEmpty()) {
 						//Double all drops (just add them all twice because we compact the list later anyways)
 						//Note: The reason we don't grow the stacks like we used to is to ensure if a modded mob drops

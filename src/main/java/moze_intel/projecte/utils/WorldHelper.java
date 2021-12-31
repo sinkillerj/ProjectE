@@ -64,6 +64,7 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
@@ -218,6 +219,7 @@ public final class WorldHelper {
 			}
 		} else if (isLiquidContainerForFluid(level, pos, blockState, fluid)) {
 			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(level, pos, blockState, fluid.getSource(false));
+			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 		} else {
 			Material material = blockState.getMaterial();
 			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
@@ -225,8 +227,9 @@ public final class WorldHelper {
 			}
 			if (player == null) {
 				level.setBlockAndUpdate(pos, fluid.defaultFluidState().createLegacyBlock());
-			} else {
-				PlayerHelper.checkedPlaceBlock(player, pos, fluid.defaultFluidState().createLegacyBlock());
+				level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
+			} else if (PlayerHelper.checkedPlaceBlock(player, pos, fluid.defaultFluidState().createLegacyBlock())) {
+				level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 			}
 		}
 	}
