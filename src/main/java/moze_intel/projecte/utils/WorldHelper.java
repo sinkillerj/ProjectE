@@ -3,6 +3,7 @@ package moze_intel.projecte.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,10 +14,12 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.Container;
@@ -35,6 +38,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.BaseCoralWallFanBlock;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,7 +50,10 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.HangingRootsBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.MossBlock;
 import net.minecraft.world.level.block.NetherSproutsBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.NetherrackBlock;
@@ -331,6 +340,7 @@ public final class WorldHelper {
 		if (!(level instanceof ServerLevel serverLevel)) {
 			return;
 		}
+		boolean grewWater = false;
 		int chance = harvest ? 16 : 32;
 		for (BlockPos currentPos : getPositionsFromBox(pos.offset(-5, -3, -5), pos.offset(5, 3, 5))) {
 			currentPos = currentPos.immutable();
@@ -339,7 +349,7 @@ public final class WorldHelper {
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
 			if (crop instanceof IForgeShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
-				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock) {
+				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock || crop instanceof HangingRootsBlock) {
 				if (harvest) {
 					harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
 				}
@@ -349,14 +359,15 @@ public final class WorldHelper {
 			else if (crop instanceof BonemealableBlock growable) {
 				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state, false)) {
 					if (harvest && !PETags.Blocks.BLACKLIST_HARVEST.contains(crop)) {
-						if (crop != Blocks.KELP_PLANT || serverLevel.getBlockState(currentPos.below()).is(crop)) {
-							//Don't harvest the bottom of help but otherwise allow harvesting them
+						if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
+							//Don't harvest the bottom of kelp but otherwise allow harvesting them
 							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
 						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
 					if (serverLevel.random.nextInt(chance) == 0) {
 						growable.performBonemeal(serverLevel, serverLevel.random, currentPos, state);
+						level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
 					}
 				}
 			}
@@ -382,13 +393,22 @@ public final class WorldHelper {
 					}
 				}
 			}
+			// Generic water plants
+			else if (!grewWater && serverLevel.random.nextInt(512) == 0 && growWaterPlant(serverLevel, currentPos, state, null)) {
+				level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
+				grewWater = true;
+			}
 		}
+	}
+
+	private static boolean leaveBottomBlock(Block crop) {
+		return crop == Blocks.KELP_PLANT || crop == Blocks.BAMBOO;
 	}
 
 	private static boolean isGrassLikeBlock(Block crop) {
 		//Note: We count netherrack like a grass like block as it propagates growing to neighboring nylium blocks
 		// and its can grow methods behave like one
-		return crop instanceof GrassBlock || crop instanceof NyliumBlock || crop instanceof NetherrackBlock;
+		return crop instanceof GrassBlock || crop instanceof NyliumBlock || crop instanceof NetherrackBlock || crop instanceof MossBlock;
 	}
 
 	/**
@@ -398,6 +418,50 @@ public final class WorldHelper {
 		if (player == null || PlayerHelper.hasBreakPermission(player, pos)) {
 			level.destroyBlock(pos, true, player);
 		}
+	}
+
+	//[VanillaCopy] slightly modified version of BoneMealItem#growWaterPlant
+	public static boolean growWaterPlant(ServerLevel level, BlockPos pos, BlockState state, @Nullable Direction side) {
+		boolean success = false;
+		if (state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8) {
+			Random random = level.getRandom();
+			label76:
+			for (int i = 0; i < 128; ++i) {
+				BlockPos blockpos = pos;
+				for (int j = 0; j < i / 16; ++j) {
+					blockpos = blockpos.offset(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2,
+							random.nextInt(3) - 1);
+					if (level.getBlockState(blockpos).isCollisionShapeFullBlock(level, blockpos)) {
+						continue label76;
+					}
+				}
+				BlockState newState = Blocks.SEAGRASS.defaultBlockState();
+				Optional<ResourceKey<Biome>> optional = level.getBiomeName(blockpos);
+				if (Biomes.WARM_OCEAN.equals(optional.orElse(null))) {
+					if (i == 0 && side != null && side.getAxis().isHorizontal()) {
+						newState = BlockTags.WALL_CORALS.getRandomElement(random).defaultBlockState().setValue(BaseCoralWallFanBlock.FACING, side);
+					} else if (random.nextInt(4) == 0) {
+						newState = BlockTags.UNDERWATER_BONEMEALS.getRandomElement(random).defaultBlockState();
+					}
+				}
+				if (newState.is(BlockTags.WALL_CORALS)) {
+					for (int k = 0; !newState.canSurvive(level, blockpos) && k < 4; ++k) {
+						newState = newState.setValue(BaseCoralWallFanBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(random));
+					}
+				}
+				if (newState.canSurvive(level, blockpos)) {
+					BlockState stateToReplace = level.getBlockState(blockpos);
+					if (stateToReplace.is(Blocks.WATER) && stateToReplace.getFluidState().getAmount() == 8) {
+						level.setBlockAndUpdate(blockpos, newState);
+						success = true;
+					} else if (stateToReplace.is(Blocks.SEAGRASS) && random.nextInt(10) == 0) {
+						((BonemealableBlock) Blocks.SEAGRASS).performBonemeal(level, random, blockpos, stateToReplace);
+						success = true;
+					}
+				}
+			}
+		}
+		return success;
 	}
 
 	/**

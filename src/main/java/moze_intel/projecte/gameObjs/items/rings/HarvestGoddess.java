@@ -3,8 +3,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
@@ -30,6 +30,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
@@ -67,14 +68,15 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		Level level = ctx.getLevel();
 		Player player = ctx.getPlayer();
 		BlockPos pos = ctx.getClickedPos();
-		if (level.isClientSide || player == null || !player.mayUseItemAt(pos, ctx.getClickedFace(), ctx.getItemInHand())) {
+		Direction side = ctx.getClickedFace();
+		if (level.isClientSide || player == null || !player.mayUseItemAt(pos, side, ctx.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
 		if (player.isShiftKeyDown()) {
 			for (int i = 0; i < player.getInventory().items.size(); i++) {
 				ItemStack stack = player.getInventory().items.get(i);
 				if (!stack.isEmpty() && stack.getCount() >= 4 && stack.getItem() == Items.BONE_MEAL) {
-					if (useBoneMeal(level, pos)) {
+					if (useBoneMeal(level, pos, side)) {
 						player.getInventory().removeItem(i, 4);
 						player.inventoryMenu.broadcastChanges();
 						return InteractionResult.SUCCESS;
@@ -88,18 +90,20 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		return InteractionResult.FAIL;
 	}
 
-	private boolean useBoneMeal(Level level, BlockPos pos) {
+	private boolean useBoneMeal(Level level, BlockPos pos, Direction side) {
 		if (level instanceof ServerLevel serverLevel) {
 			boolean result = false;
 			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
+				currentPos = currentPos.immutable();
 				BlockState state = serverLevel.getBlockState(currentPos);
-				Block crop = state.getBlock();
-				if (crop instanceof BonemealableBlock growable && growable.isValidBonemealTarget(serverLevel, currentPos, state, false) &&
+				if (state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(serverLevel, currentPos, state, false) &&
 					growable.isBonemealSuccess(serverLevel, serverLevel.random, currentPos, state)) {
-					growable.performBonemeal(serverLevel, serverLevel.random, currentPos.immutable(), state);
-					if (!result) {
-						result = true;
-					}
+					growable.performBonemeal(serverLevel, serverLevel.random, currentPos, state);
+					level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
+					result = true;
+				} else if (WorldHelper.growWaterPlant(serverLevel, currentPos, state, side)) {
+					level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
+					result = true;
 				}
 			}
 			return result;

@@ -27,7 +27,10 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				Blocks.NETHERRACK,
 				Blocks.MELON_STEM,
 				Blocks.PUMPKIN_STEM,
-				Blocks.WARPED_NYLIUM
+				Blocks.WARPED_NYLIUM,
+				Blocks.SMALL_DRIPLEAF,
+				Blocks.MOSS_BLOCK,
+				Blocks.ROOTED_DIRT
 		);
 		tag(PETags.Blocks.BLACKLIST_TIME_WATCH);
 		//Vanilla/Forge Tags
