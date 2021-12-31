@@ -4,10 +4,10 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -50,7 +50,7 @@ public class SlotLock extends InventoryContainerSlot {
 				if (EMCHelper.doesItemHaveEmc(stack)) {
 					inv.handleKnowledge(stack);
 				}
-				Optional<IItemEmcHolder> capability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+				Optional<IItemEmcHolder> capability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (capability.isPresent()) {
 					IItemEmcHolder emcHolder = capability.get();
 					long actualExtracted = emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);

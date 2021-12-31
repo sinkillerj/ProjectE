@@ -2,7 +2,7 @@ package moze_intel.projecte.api.block_entity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -174,7 +174,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-		if (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) {
+		if (cap == PECapabilities.EMC_STORAGE_CAPABILITY) {
 			if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
 				//If the capability has not been retrieved yet, or it is not valid then recreate it
 				emcStorageCapability = LazyOptional.of(() -> this);

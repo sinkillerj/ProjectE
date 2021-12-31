@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
@@ -74,7 +74,7 @@ public class ShowBagCMD {
 	}
 
 	private static MenuProvider createContainer(ServerPlayer sender, ServerPlayer target, DyeColor color) {
-		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)
 				.orElseThrow(NullPointerException::new)
 				.getBag(color);
 		Component name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());

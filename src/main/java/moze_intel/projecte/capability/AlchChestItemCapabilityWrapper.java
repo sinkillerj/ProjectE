@@ -1,7 +1,7 @@
 package moze_intel.projecte.capability;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ public class AlchChestItemCapabilityWrapper extends BasicItemCapability<IAlchChe
 
 	@Override
 	public Capability<IAlchChestItem> getCapability() {
-		return ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY;
+		return PECapabilities.ALCH_CHEST_ITEM_CAPABILITY;
 	}
 
 	@Override

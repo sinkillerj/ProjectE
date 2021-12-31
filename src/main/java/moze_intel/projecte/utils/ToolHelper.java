@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
@@ -708,11 +708,11 @@ public class ToolHelper {
 	}
 
 	private static int getCharge(ItemStack stack) {
-		return stack.getCapability(ProjectEAPI.CHARGE_ITEM_CAPABILITY).map(itemCharge -> itemCharge.getCharge(stack)).orElse(0);
+		return stack.getCapability(PECapabilities.CHARGE_ITEM_CAPABILITY).map(itemCharge -> itemCharge.getCharge(stack)).orElse(0);
 	}
 
 	private static byte getMode(ItemStack stack) {
-		return stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
+		return stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
 	}
 
 	@FunctionalInterface

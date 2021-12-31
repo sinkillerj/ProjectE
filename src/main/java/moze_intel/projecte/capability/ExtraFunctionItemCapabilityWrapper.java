@@ -2,7 +2,7 @@ package moze_intel.projecte.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,7 @@ public class ExtraFunctionItemCapabilityWrapper extends BasicItemCapability<IExt
 
 	@Override
 	public Capability<IExtraFunction> getCapability() {
-		return ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY;
+		return PECapabilities.EXTRA_FUNCTION_ITEM_CAPABILITY;
 	}
 
 	@Override

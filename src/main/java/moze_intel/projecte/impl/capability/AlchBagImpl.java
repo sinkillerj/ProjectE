@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
@@ -81,7 +81,7 @@ public final class AlchBagImpl {
 		@Nonnull
 		@Override
 		public Capability<IAlchBagProvider> getMatchingCapability() {
-			return ProjectEAPI.ALCH_BAG_CAPABILITY;
+			return PECapabilities.ALCH_BAG_CAPABILITY;
 		}
 	}
 

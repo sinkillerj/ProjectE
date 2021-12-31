@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import java.util.function.Predicate;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -17,11 +17,11 @@ public final class SlotPredicates {
 
 	public static final Predicate<ItemStack> COLLECTOR_LOCK = input -> !input.isEmpty() && FuelMapper.isStackFuel(input);
 
-	public static final Predicate<ItemStack> COLLECTOR_INV = input -> !input.isEmpty() && input.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
+	public static final Predicate<ItemStack> COLLECTOR_INV = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
 																	  || (FuelMapper.isStackFuel(input) && !FuelMapper.isStackMaxFuel(input));
 
 	// slotrelayklein, slotmercurialklein
-	public static final Predicate<ItemStack> EMC_HOLDER = input -> !input.isEmpty() && input.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent();
+	public static final Predicate<ItemStack> EMC_HOLDER = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent();
 
 	// slotrelayinput
 	public static final Predicate<ItemStack> RELAY_INV = input -> EMC_HOLDER.test(input) || HAS_EMC.test(input);

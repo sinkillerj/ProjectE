@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.IItemCapabilitySerializable;
 import moze_intel.projecte.capability.ItemCapability;
@@ -108,7 +108,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
-		if (klein.isEmpty() || !klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+		if (klein.isEmpty() || !klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
 			return InteractionResult.FAIL;
 		}
 
@@ -244,7 +244,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		if (klein.isEmpty()) {
 			return false;
 		}
-		Optional<IItemEmcHolder> holderCapability = klein.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+		Optional<IItemEmcHolder> holderCapability = klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (holderCapability.isEmpty() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
 			WorldHelper.getBlockEntity(player.getCommandSenderWorld(), placePos) != null) {
 			return false;

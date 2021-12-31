@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
@@ -128,7 +128,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 			ItemStack item = pedestal.getInventory().getStackInSlot(0);
 			ItemStack stack = player.getItemInHand(hand);
 			if (stack.isEmpty() && !item.isEmpty()) {
-				item.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+				item.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 					pedestal.setActive(!pedestal.getActive());
 					level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
 				});
@@ -151,7 +151,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		if (ped != null && ped.previousRedstoneState != hasSignal) {
 			if (hasSignal) {
 				ItemStack stack = ped.getInventory().getStackInSlot(0);
-				if (!stack.isEmpty() && stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+				if (!stack.isEmpty() && stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
 					ped.setActive(!ped.getActive());
 					level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 				}
@@ -174,7 +174,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		if (pedestal != null) {
 			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				if (stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+				if (stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
 					return pedestal.getActive() ? 15 : 10;
 				}
 				return 5;

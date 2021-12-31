@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.block_entities;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.capability.managing.ICapabilityResolver;
@@ -141,7 +141,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	private void checkFuelOrKlein() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+			Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 			if (emcHolder.isPresent()) {
 				if (emcHolder.get().getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
@@ -173,7 +173,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
 			if (hasChargeableItem) {
-				upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+				upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 					long actualInserted = emcHolder.insertEmc(upgrading, Math.min(getStoredEmc(), emcGen), EmcAction.EXECUTE);
 					forceExtractEmc(actualInserted, EmcAction.EXECUTE);
 				});
@@ -218,7 +218,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	public long getItemCharge() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			return upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).map(emcHolder -> emcHolder.getStoredEmc(upgrading)).orElse(-1L);
+			return upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).map(emcHolder -> emcHolder.getStoredEmc(upgrading)).orElse(-1L);
 		}
 		return -1;
 	}
@@ -229,7 +229,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		if (upgrading.isEmpty() || charge <= 0) {
 			return -1;
 		}
-		Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+		Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (emcHolder.isPresent()) {
 			long max = emcHolder.get().getMaximumEmc(upgrading);
 			if (charge >= max) {

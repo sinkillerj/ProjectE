@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -53,7 +53,7 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuPro
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, pos, stack));
+				stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, pos, stack));
 			}
 		}
 		EmcChestBlockEntity.lidAnimateTick(level, pos, state, alchChest);
@@ -64,7 +64,7 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuPro
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				int slotId = i;
-				stack.getCapability(ProjectEAPI.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> {
+				stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> {
 					if (alchChestItem.updateInAlchChest(level, pos, stack)) {
 						alchChest.inventory.onContentsChanged(slotId);
 					}

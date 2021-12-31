@@ -3,9 +3,9 @@ package moze_intel.projecte.gameObjs.block_entities;
 import java.util.Optional;
 import java.util.Random;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -50,7 +50,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				Optional<IPedestalItem> capability = stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).resolve();
+				Optional<IPedestalItem> capability = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).resolve();
 				if (capability.isPresent()) {
 					capability.get().updateInPedestal(stack, level, pos, pedestal);
 					if (pedestal.particleCooldown <= 0) {
@@ -72,7 +72,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				Optional<IPedestalItem> capability = stack.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).resolve();
+				Optional<IPedestalItem> capability = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).resolve();
 				if (capability.isPresent()) {
 					if (capability.get().updateInPedestal(stack, level, pos, pedestal)) {
 						pedestal.inventory.onContentsChanged(0);

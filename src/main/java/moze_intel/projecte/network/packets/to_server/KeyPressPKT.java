@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets.to_server;
 
 import java.util.Optional;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
@@ -53,7 +53,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 			ItemStack stack = player.getItemInHand(hand);
 			switch (key) {
 				case CHARGE:
-					if (tryPerformCapability(stack, ProjectEAPI.CHARGE_ITEM_CAPABILITY, capability -> capability.changeCharge(player, stack, hand))) {
+					if (tryPerformCapability(stack, PECapabilities.CHARGE_ITEM_CAPABILITY, capability -> capability.changeCharge(player, stack, hand))) {
 						return;
 					} else if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && GemArmorBase.hasAnyPiece(player)) {
 						internalAbilities.setGemState(!internalAbilities.getGemState());
@@ -63,7 +63,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 					}
 					break;
 				case EXTRA_FUNCTION:
-					if (tryPerformCapability(stack, ProjectEAPI.EXTRA_FUNCTION_ITEM_CAPABILITY, capability -> capability.doExtraFunction(stack, player, hand))) {
+					if (tryPerformCapability(stack, PECapabilities.EXTRA_FUNCTION_ITEM_CAPABILITY, capability -> capability.doExtraFunction(stack, player, hand))) {
 						return;
 					} else if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
 						ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -76,7 +76,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 					break;
 				case FIRE_PROJECTILE:
 					if (!stack.isEmpty() && internalAbilities.getProjectileCooldown() == 0 &&
-						tryPerformCapability(stack, ProjectEAPI.PROJECTILE_SHOOTER_ITEM_CAPABILITY, capability -> capability.shootProjectile(player, stack, hand))) {
+						tryPerformCapability(stack, PECapabilities.PROJECTILE_SHOOTER_ITEM_CAPABILITY, capability -> capability.shootProjectile(player, stack, hand))) {
 						PlayerHelper.swingItem(player, hand);
 						internalAbilities.resetProjectileCooldown();
 					}
@@ -89,7 +89,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 					}
 					break;
 				case MODE:
-					if (tryPerformCapability(stack, ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY, capability -> capability.changeMode(player, stack, hand))) {
+					if (tryPerformCapability(stack, PECapabilities.MODE_CHANGER_ITEM_CAPABILITY, capability -> capability.changeMode(player, stack, hand))) {
 						return;
 					}
 					break;

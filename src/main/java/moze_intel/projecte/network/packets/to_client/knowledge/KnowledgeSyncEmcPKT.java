@@ -2,7 +2,7 @@ package moze_intel.projecte.network.packets.to_client.knowledge;
 
 import java.math.BigInteger;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ public record KnowledgeSyncEmcPKT(BigInteger emc) implements IPEPacket {
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
+			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.setEmc(emc);
 				if (player.containerMenu instanceof TransmutationContainer container) {
 					container.transmutationInventory.updateClientTargets();

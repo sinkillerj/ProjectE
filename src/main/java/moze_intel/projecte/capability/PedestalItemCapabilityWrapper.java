@@ -2,9 +2,9 @@ package moze_intel.projecte.capability;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ public class PedestalItemCapabilityWrapper extends BasicItemCapability<IPedestal
 
 	@Override
 	public Capability<IPedestalItem> getCapability() {
-		return ProjectEAPI.PEDESTAL_ITEM_CAPABILITY;
+		return PECapabilities.PEDESTAL_ITEM_CAPABILITY;
 	}
 
 	@Override

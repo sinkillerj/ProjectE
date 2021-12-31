@@ -12,8 +12,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
 import moze_intel.projecte.emc.EMCMappingHandler;
@@ -326,7 +326,7 @@ public final class KnowledgeImpl {
 		@Nonnull
 		@Override
 		public Capability<IKnowledgeProvider> getMatchingCapability() {
-			return ProjectEAPI.KNOWLEDGE_CAPABILITY;
+			return PECapabilities.KNOWLEDGE_CAPABILITY;
 		}
 	}
 

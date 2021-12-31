@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
@@ -38,7 +38,7 @@ import net.minecraftforge.items.IItemHandler;
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem {
 
 	private static final Predicate<ItemStack> CAN_REPAIR_ITEM = stack -> !stack.isEmpty() &&
-																		 !stack.getCapability(ProjectEAPI.MODE_CHANGER_ITEM_CAPABILITY).isPresent() &&
+																		 !stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY).isPresent() &&
 																		 ItemHelper.isRepairableDamagedItem(stack);
 
 	public RepairTalisman(Properties props) {

@@ -1,7 +1,7 @@
 package moze_intel.projecte.network.packets.to_client.knowledge;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ public record KnowledgeSyncPKT(CompoundTag nbt) implements IPEPacket {
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		if (Minecraft.getInstance().player != null) {
-			Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> cap.deserializeNBT(nbt));
+			Minecraft.getInstance().player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(cap -> cap.deserializeNBT(nbt));
 		}
 		PECore.debugLog("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
 	}

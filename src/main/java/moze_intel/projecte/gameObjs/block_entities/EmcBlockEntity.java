@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.block_entity.BaseEmcBlockEntity;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -105,7 +105,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 			if (level.isLoaded(neighboringPos)) {
 				BlockEntity neighboringBE = WorldHelper.getBlockEntity(level, neighboringPos);
 				if (neighboringBE != null) {
-					neighboringBE.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
+					neighboringBE.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
 						if (!isRelay() || !theirEmcStorage.isRelay()) {
 							//If they are both relays don't add the pairing so as to prevent thrashing
 							if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {

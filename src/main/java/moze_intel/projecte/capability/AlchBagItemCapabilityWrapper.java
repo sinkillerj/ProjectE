@@ -1,7 +1,7 @@
 package moze_intel.projecte.capability;
 
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ public class AlchBagItemCapabilityWrapper extends BasicItemCapability<IAlchBagIt
 
 	@Override
 	public Capability<IAlchBagItem> getCapability() {
-		return ProjectEAPI.ALCH_BAG_ITEM_CAPABILITY;
+		return PECapabilities.ALCH_BAG_ITEM_CAPABILITY;
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package moze_intel.projecte.impl;
 import com.google.common.base.Preconditions;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +25,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 		if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER) {
 			return DistExecutor.unsafeRunForDist(() -> () -> {
 				Preconditions.checkState(Minecraft.getInstance().player != null, "Client player doesn't exist!");
-				return Minecraft.getInstance().player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+				return Minecraft.getInstance().player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 			}, () -> () -> {
 				throw new RuntimeException("unreachable");
 			});
@@ -34,7 +34,7 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 			Preconditions.checkNotNull(ServerLifecycleHooks.getCurrentServer(), "Server must be running to query knowledge!");
 			Player player = findOnlinePlayer(playerUUID);
 			if (player != null) {
-				return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+				return player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 			}
 			return TransmutationOffline.forPlayer(playerUUID);
 		}

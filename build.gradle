@@ -30,7 +30,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3.2'
+    gradleVersion = '7.3.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -362,7 +362,8 @@ def getManifestAttributes() {
             "Implementation-Title"    : "ProjectE",
             "Implementation-Version"  : "${project.projecte_version}",
             "Implementation-Vendor"   : "ProjectE",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "Automatic-Module-Name": "projecte",
     ]
 }
 

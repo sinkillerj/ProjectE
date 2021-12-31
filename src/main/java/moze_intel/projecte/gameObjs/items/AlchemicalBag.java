@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.rings.BlackHoleBand;
 import moze_intel.projecte.gameObjs.items.rings.VoidRing;
@@ -53,7 +53,7 @@ public class AlchemicalBag extends ItemPE {
 		for (ItemStack stack : inventory) {
 			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag bag) {
 				if (cap.isEmpty()) {
-					cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
+					cap = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).resolve();
 					if (cap.isEmpty()) {
 						//If the player really doesn't have the capability and it isn't just not not loaded yet, exit
 						break;
@@ -86,7 +86,7 @@ public class AlchemicalBag extends ItemPE {
 		@Nonnull
 		@Override
 		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
-			IItemHandlerModifiable inv = (IItemHandlerModifiable) player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY)
+			IItemHandlerModifiable inv = (IItemHandlerModifiable) player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
 			return new AlchBagContainer(windowId, playerInventory, hand, inv, playerInventory.selected, false);

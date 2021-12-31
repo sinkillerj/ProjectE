@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -109,7 +109,7 @@ public final class EMCHelper {
 		if (stack.isEmpty()) {
 			return 0;
 		}
-		Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+		Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);

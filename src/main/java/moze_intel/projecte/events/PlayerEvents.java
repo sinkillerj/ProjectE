@@ -2,8 +2,8 @@ package moze_intel.projecte.events;
 
 import java.util.Optional;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
@@ -57,13 +57,13 @@ public class PlayerEvents {
 		Player original = event.getOriginal();
 		//Revive the player's caps
 		original.reviveCaps();
-		original.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(old -> {
+		original.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(old -> {
 			CompoundTag bags = old.serializeNBT();
-			event.getPlayer().getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
+			event.getPlayer().getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 		});
-		original.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
+		original.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
 			CompoundTag knowledge = old.serializeNBT();
-			event.getPlayer().getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
+			event.getPlayer().getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
 		//Re-invalidate the player's caps now that we copied ours over
 		original.invalidateCaps();
@@ -73,8 +73,8 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getPlayer() instanceof ServerPlayer player) {
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
-			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
+			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 		}
 	}
 
@@ -82,8 +82,8 @@ public class PlayerEvents {
 	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
 		if (event.getPlayer() instanceof ServerPlayer player) {
 			// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
-			player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
+			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 		}
 		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
@@ -111,12 +111,12 @@ public class PlayerEvents {
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		PacketHandler.sendFragmentedEmcPacket(player);
 
-		player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
+		player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
 			knowledge.sync(player);
 			PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, knowledge.getEmc());
 		});
 
-		player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+		player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 
 		PECore.debugLog("Sent knowledge and bag data to {}", player.getName());
 	}
@@ -149,7 +149,7 @@ public class PlayerEvents {
 		if (bag.isEmpty()) {
 			return;
 		}
-		Optional<IAlchBagProvider> cap = player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).resolve();
+		Optional<IAlchBagProvider> cap = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).resolve();
 		if (cap.isEmpty()) {
 			return;
 		}

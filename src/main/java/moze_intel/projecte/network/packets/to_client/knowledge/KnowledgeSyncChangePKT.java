@@ -2,7 +2,7 @@ package moze_intel.projecte.network.packets.to_client.knowledge;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ public record KnowledgeSyncChangePKT(ItemInfo change, boolean learned) implement
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
+			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				if (learned) {
 					if (!cap.hasKnowledge(change) && cap.addKnowledge(change) && player.containerMenu instanceof TransmutationContainer container) {
 						container.transmutationInventory.itemLearned();

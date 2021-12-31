@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.block_entities;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.capability.managing.ICapabilityResolver;
@@ -87,7 +87,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		relay.input.compact();
 		ItemStack stack = relay.getBurn();
 		if (!stack.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+			Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.get();
 				long simulatedVal = relay.forceInsertEmc(emcHolder.extractEmc(stack, relay.chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
@@ -104,7 +104,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		}
 		ItemStack chargeable = relay.getCharging();
 		if (!chargeable.isEmpty() && relay.getStoredEmc() > 0) {
-			chargeable.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+			chargeable.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 				long actualSent = emcHolder.insertEmc(chargeable, Math.min(relay.getStoredEmc(), relay.chargeRate), EmcAction.EXECUTE);
 				relay.forceExtractEmc(actualSent, EmcAction.EXECUTE);
 			});
@@ -126,7 +126,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 	public double getItemChargeProportion() {
 		ItemStack charging = getCharging();
 		if (!charging.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+			Optional<IItemEmcHolder> holderCapability = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.get();
 				return (double) emcHolder.getStoredEmc(charging) / emcHolder.getMaximumEmc(charging);
@@ -140,7 +140,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		if (burn.isEmpty()) {
 			return 0;
 		}
-		Optional<IItemEmcHolder> holderCapability = burn.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+		Optional<IItemEmcHolder> holderCapability = burn.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 		if (holderCapability.isPresent()) {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			return (double) emcHolder.getStoredEmc(burn) / emcHolder.getMaximumEmc(burn);
@@ -212,7 +212,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 				public ItemStack extractItem(int slot, int amount, boolean simulate) {
 					ItemStack stack = getStackInSlot(slot);
 					if (!stack.isEmpty()) {
-						Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+						Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 						if (holderCapability.isPresent()) {
 							IItemEmcHolder emcHolder = holderCapability.get();
 							if (emcHolder.getNeededEmc(stack) == 0) {

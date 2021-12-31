@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.block_entities;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.capability.managing.ICapabilityResolver;
 import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
@@ -134,7 +134,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 		boolean canSmelt = furnace.canSmelt();
 		ItemStack fuelItem = furnace.getFuelItem();
 		if (canSmelt && !fuelItem.isEmpty()) {
-			fuelItem.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+			fuelItem.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
 				long simulatedExtraction = emcHolder.extractEmc(fuelItem, EMC_CONSUMPTION, EmcAction.SIMULATE);
 				if (simulatedExtraction == EMC_CONSUMPTION) {
 					furnace.forceInsertEmc(emcHolder.extractEmc(fuelItem, simulatedExtraction, EmcAction.EXECUTE), EmcAction.EXECUTE);
@@ -195,7 +195,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
 			if (!extractTest.isEmpty()) {
-				IItemHandler targetInv = AbstractFurnaceBlockEntity.isFuel(extractTest) || extractTest.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
+				IItemHandler targetInv = AbstractFurnaceBlockEntity.isFuel(extractTest) || extractTest.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
 										 ? fuelInv : inputInventory;
 				transferItem(targetInv, i, extractTest, handler);
 			}

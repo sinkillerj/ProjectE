@@ -3,8 +3,8 @@ package moze_intel.projecte.network.packets.to_client.knowledge;
 import java.util.HashMap;
 import java.util.Map;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.network.packets.IPEPacket;
@@ -20,7 +20,7 @@ public record KnowledgeSyncInputsAndLocksPKT(Map<Integer, ItemStack> stacksToSyn
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
-			player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
+			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(cap -> {
 				cap.receiveInputsAndLocks(stacksToSync);
 				if (updateTargets != TargetUpdateType.NONE && player.containerMenu instanceof TransmutationContainer container) {
 					//Update targets in case total available EMC is now different

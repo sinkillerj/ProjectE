@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -45,10 +45,10 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	private final List<ItemInfo> knowledge = new ArrayList<>();
 
 	public TransmutationInventory(Player player) {
-		super((IItemHandlerModifiable) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
+		super((IItemHandlerModifiable) player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
 		this.player = player;
-		this.provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+		this.provider = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];
 		this.outputs = itemHandler[2];
@@ -260,7 +260,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+				Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {
 					IItemEmcHolder emcHolder = holderCapability.get();
 					long shrunkenValue = MathUtils.clampToLong(value);
@@ -312,7 +312,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				}
 				ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 				if (!stack.isEmpty()) {
-					Optional<IItemEmcHolder> holderCapability = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+					Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 					if (holderCapability.isPresent()) {
 						IItemEmcHolder emcHolder = holderCapability.get();
 						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
@@ -385,7 +385,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> emcHolder = stack.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+				Optional<IItemEmcHolder> emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (emcHolder.isPresent()) {
 					emc = emc.add(BigInteger.valueOf(emcHolder.get().getStoredEmc(stack)));
 				}

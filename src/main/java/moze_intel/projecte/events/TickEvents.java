@@ -3,7 +3,7 @@ package moze_intel.projecte.events;
 import java.util.EnumSet;
 import java.util.Set;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -28,14 +28,14 @@ public class TickEvents {
 	@SubscribeEvent
 	public static void playerTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
-			event.player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
+			event.player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(provider -> {
 				Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
 				for (DyeColor color : getBagColorsPresent(event.player)) {
 					IItemHandler inv = provider.getBag(color);
 					for (int i = 0; i < inv.getSlots(); i++) {
 						ItemStack current = inv.getStackInSlot(i);
 						if (!current.isEmpty()) {
-							current.getCapability(ProjectEAPI.ALCH_BAG_ITEM_CAPABILITY).ifPresent(alchBagItem -> {
+							current.getCapability(PECapabilities.ALCH_BAG_ITEM_CAPABILITY).ifPresent(alchBagItem -> {
 								if (alchBagItem.updateInAlchBag(inv, event.player, current)) {
 									colorsChanged.add(color);
 								}

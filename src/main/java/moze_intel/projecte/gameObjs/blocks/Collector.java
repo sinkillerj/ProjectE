@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.blocks;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
@@ -98,7 +98,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		}
 		ItemStack charging = cap.get().getStackInSlot(CollectorMK1BlockEntity.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = charging.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+			Optional<IItemEmcHolder> holderCapability = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 			if (holderCapability.isPresent()) {
 				IItemEmcHolder emcHolder = holderCapability.get();
 				return MathUtils.scaleToRedstone(emcHolder.getStoredEmc(charging), emcHolder.getMaximumEmc(charging));

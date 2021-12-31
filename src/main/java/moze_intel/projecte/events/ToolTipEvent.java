@@ -3,7 +3,7 @@ package moze_intel.projecte.events;
 import java.util.List;
 import java.util.Optional;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
@@ -36,7 +36,7 @@ public class ToolTipEvent {
 		}
 		Player clientPlayer = Minecraft.getInstance().player;
 		if (ProjectEConfig.client.pedestalToolTips.get()) {
-			current.getCapability(ProjectEAPI.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+			current.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
 				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(ChatFormatting.DARK_PURPLE));
 				List<Component> description = pedestalItem.getPedestalDescription();
 				if (description.isEmpty()) {
@@ -60,7 +60,7 @@ public class ToolTipEvent {
 				if (current.getCount() > 1) {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
-				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
+				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
 					event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));
 				}
 			}
@@ -72,7 +72,7 @@ public class ToolTipEvent {
 			if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_LONG)) {
 				value = tag.getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
-				Optional<IItemEmcHolder> holderCapability = current.getCapability(ProjectEAPI.EMC_HOLDER_ITEM_CAPABILITY).resolve();
+				Optional<IItemEmcHolder> holderCapability = current.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
 				if (holderCapability.isPresent()) {
 					value = holderCapability.get().getStoredEmc(current);
 				} else {
