@@ -331,18 +331,18 @@ public class ToolHelper {
 	 * Strips logs in an AOE using an axe (ex: log to stripped log). Charge affects the AOE. Optional per-block EMC cost.
 	 */
 	public static InteractionResult stripLogsAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP);
+		return useAxeAOE(context, emcCost, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1);
 	}
 
 	public static InteractionResult scrapeAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE);
+		return useAxeAOE(context, emcCost, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE);
 	}
 
 	public static InteractionResult waxOffAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF);
+		return useAxeAOE(context, emcCost, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
 	}
 
-	public static InteractionResult useAxeAOE(UseOnContext context, long emcCost, ToolAction action, SoundEvent sound) {
+	public static InteractionResult useAxeAOE(UseOnContext context, long emcCost, ToolAction action, SoundEvent sound, int particle) {
 		Player player = context.getPlayer();
 		if (player == null) {
 			return InteractionResult.PASS;
@@ -363,6 +363,9 @@ public class ToolHelper {
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
 		level.setBlock(pos, strippedState, Block.UPDATE_ALL_IMMEDIATE);
 		level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+		if (particle != -1) {
+			level.levelEvent(null, particle, pos, 0);
+		}
 		int charge = getCharge(stack);
 		if (charge > 0) {
 			Direction side = context.getClickedFace();
@@ -384,6 +387,9 @@ public class ToolHelper {
 						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
 						// location and were told that we are allowed to use our item.
 						level.setBlock(newPos, strippedState, Block.UPDATE_ALL_IMMEDIATE);
+						if (particle != -1) {
+							level.levelEvent(null, particle, newPos, 0);
+						}
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
 						break;
