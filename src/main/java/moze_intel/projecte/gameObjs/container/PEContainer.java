@@ -192,24 +192,36 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		return referenceHolder;
 	}
 
-	@Override
-	public void broadcastChanges() {
+	protected void broadcastPE(boolean all) {
 		//Note: We use the old way of comparing if it is dirty rather than storing a separate list
 		// and comparing entries as there is no real reason to do that if we already have a concept
 		// of if it is dirty or not
 		for (int i = 0; i < longFields.size(); i++) {
 			BoxedLong boxedLong = longFields.get(i);
-			if (boxedLong.isDirty()) {
+			//Note: Check all after isDirty as the isDirty resets the dirty state
+			if (boxedLong.isDirty() || all) {
 				syncDataChange(new UpdateWindowLongPKT((short) containerId, (short) i, boxedLong.get()));
 			}
 		}
 		for (int i = 0; i < intFields.size(); i++) {
 			DataSlot referenceHolder = intFields.get(i);
-			if (referenceHolder.checkAndClearUpdateFlag()) {
+			//Note: Check all after isDirty as the isDirty resets the dirty state
+			if (referenceHolder.checkAndClearUpdateFlag() || all) {
 				syncDataChange(new UpdateWindowIntPKT((short) containerId, (short) i, referenceHolder.get()));
 			}
 		}
+	}
+
+	@Override
+	public void broadcastChanges() {
 		super.broadcastChanges();
+		broadcastPE(false);
+	}
+
+	@Override
+	public void sendAllDataToRemote() {
+		super.sendAllDataToRemote();
+		broadcastPE(true);
 	}
 
 	protected void syncDataChange(IPEPacket packet) {

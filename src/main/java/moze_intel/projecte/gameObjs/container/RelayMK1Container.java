@@ -52,11 +52,11 @@ public class RelayMK1Container extends PEContainer {
 	}
 
 	@Override
-	public void broadcastChanges() {
+	protected void broadcastPE(boolean all) {
 		emc.set(relay.getStoredEmc());
 		kleinChargeProgress.set((int) (relay.getItemChargeProportion() * 8000));
 		inputBurnProgress.set((int) (relay.getInputBurnProportion() * 8000));
-		super.broadcastChanges();
+		super.broadcastPE(all);
 	}
 
 	protected BlockRegistryObject<Relay, ?> getValidBlock() {

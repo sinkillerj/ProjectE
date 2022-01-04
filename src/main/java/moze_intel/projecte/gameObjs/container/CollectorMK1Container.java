@@ -73,13 +73,13 @@ public class CollectorMK1Container extends PEContainer {
 	}
 
 	@Override
-	public void broadcastChanges() {
+	protected void broadcastPE(boolean all) {
 		emc.set(collector.getStoredEmc());
 		sunLevel.set(collector.getSunLevel());
 		kleinChargeProgress.set((int) (collector.getItemChargeProportion() * 8000));
 		fuelProgress.set((int) (collector.getFuelProgress() * 8000));
 		kleinEmc.set(collector.getItemCharge());
-		super.broadcastChanges();
+		super.broadcastPE(all);
 	}
 
 	protected BlockRegistryObject<Collector, ?> getValidBlock() {

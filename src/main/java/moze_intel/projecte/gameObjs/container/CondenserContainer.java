@@ -53,15 +53,15 @@ public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBl
 	}
 
 	@Override
-	public void broadcastChanges() {
+	protected void broadcastPE(boolean all) {
 		this.displayEmc.set(blockEntity.displayEmc);
 		this.requiredEmc.set(blockEntity.requiredEmc);
 		ItemInfo lockInfo = blockEntity.getLockInfo();
-		if (!Objects.equals(lockInfo, lastLockInfo)) {
+		if (all || !Objects.equals(lockInfo, lastLockInfo)) {
 			lastLockInfo = lockInfo;
 			syncDataChange(new UpdateCondenserLockPKT((short) containerId, lockInfo));
 		}
-		super.broadcastChanges();
+		super.broadcastPE(all);
 	}
 
 	protected BlockRegistryObject<? extends Condenser, ?> getValidBlock() {
