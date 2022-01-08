@@ -32,7 +32,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.comment("Sets default conversions for various metals from other mods and their default values.")
 				.before(Tags.Items.INGOTS_IRON, 256)
 				.before(ingotTag("uranium"), 4_096)
-				.before(gemTag("amethyst"), 2_048)
+				.before(gemTag("amethyst"), 32)
 				.before(gemTag("ruby"), 2_048)
 				.before(gemTag("sapphire"), 2_048)
 				.before(gemTag("peridot"), 2_048)

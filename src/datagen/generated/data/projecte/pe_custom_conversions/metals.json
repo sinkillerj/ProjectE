@@ -4,7 +4,7 @@
     "before": {
       "#forge:ingots/iron": 256,
       "#forge:ingots/uranium": 4096,
-      "#forge:gems/amethyst": 2048,
+      "#forge:gems/amethyst": 32,
       "#forge:gems/ruby": 2048,
       "#forge:gems/sapphire": 2048,
       "#forge:gems/peridot": 2048
