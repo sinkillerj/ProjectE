@@ -62,7 +62,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		BlockPos fluidPos = result.getBlockPos();
 		BlockState state = level.getBlockState(fluidPos);
 		if (level.mayInteract(player, fluidPos) && player.mayUseItemAt(fluidPos, result.getDirection(), stack) && state.getBlock() instanceof BucketPickup pickup) {
-			Optional<SoundEvent> sound = pickup.getPickupSound();
+			Optional<SoundEvent> sound = pickup.getPickupSound(state);
 			ItemStack itemStack = pickup.pickupBlock(level, fluidPos, state);
 			if (!itemStack.isEmpty()) {
 				sound.ifPresent(soundEvent -> player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,

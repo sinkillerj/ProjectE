@@ -1,7 +1,7 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
-import com.blamejared.crafttweaker.api.actions.IUndoableAction;
-import com.blamejared.crafttweaker.impl_native.blocks.ExpandBlockState;
+import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
+import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,8 +23,8 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		if (add) {
 			WorldTransmutations.register(this.input, this.output, this.sneakOutput);
 		} else {
-			WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.getOrigin() == this.input &&
-																		   entry.getResult() == this.output && entry.getAltResult() == this.sneakOutput);
+			WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.origin() == this.input &&
+																		   entry.result() == this.output && entry.altResult() == this.sneakOutput);
 		}
 	}
 
@@ -124,4 +124,4 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 			return "Restored world transmutation recipes to default";
 		}
 	}
-}*/
+}

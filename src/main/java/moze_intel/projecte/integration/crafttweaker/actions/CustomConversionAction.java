@@ -1,6 +1,6 @@
-/*package moze_intel.projecte.integration.crafttweaker.actions;
+package moze_intel.projecte.integration.crafttweaker.actions;
 
-import com.blamejared.crafttweaker.api.actions.IUndoableAction;
+import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import java.util.Map;
 import java.util.Map.Entry;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -23,7 +23,7 @@ public class CustomConversionAction implements IUndoableAction {
 	@Override
 	public String describe() {
 		StringBuilder inputString = new StringBuilder();
-		for (Entry<NormalizedSimpleStack, Integer> entry : conversion.ingredients.entrySet()) {
+		for (Entry<NormalizedSimpleStack, Integer> entry : conversion.ingredients().entrySet()) {
 			if (inputString.length() > 0) {
 				//If we already have elements, prepend a comma
 				inputString.append(", ");
@@ -34,7 +34,7 @@ public class CustomConversionAction implements IUndoableAction {
 			}
 			inputString.append(entry.getKey());
 		}
-		return "Added custom conversion creating '" + conversion.amount + "' of " + conversion.output + ", from: " + inputString;
+		return "Added custom conversion creating '" + conversion.amount() + "' of " + conversion.output() + ", from: " + inputString;
 	}
 
 	@Override
@@ -44,6 +44,6 @@ public class CustomConversionAction implements IUndoableAction {
 
 	@Override
 	public String describeUndo() {
-		return "Undoing adding of custom conversion creating '" + conversion.amount + "' of " + conversion.output;
+		return "Undoing adding of custom conversion creating '" + conversion.amount() + "' of " + conversion.output();
 	}
-}*/
+}
