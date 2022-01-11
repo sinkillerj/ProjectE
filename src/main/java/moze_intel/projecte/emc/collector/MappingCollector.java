@@ -1,6 +1,6 @@
 package moze_intel.projecte.emc.collector;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -47,18 +47,14 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	}
 
 	private void addConversionToIngredientUsages(Conversion conversion) {
-		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
-			Set<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
-			if (ingredient.getValue() == null) {
-				throw new IllegalArgumentException("ingredient amount value has to be != null");
-			}
+		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+			Set<Conversion> usesForIngredient = getUsesFor(ingredient);
 			usesForIngredient.add(conversion);
 		}
 	}
 
 	@Override
 	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
-		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
 			PECore.debugLog("Ignoring Recipe because of invalid ingredient or output: {} -> {}x{}", ingredientsWithAmount, outnumber, output);
 			return;
@@ -134,7 +130,20 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion, V value) {
 			this.output = output;
 			this.outnumber = outnumber;
-			this.ingredientsWithAmount = ingredientsWithAmount == null ? Collections.emptyMap() : ingredientsWithAmount;
+			if (ingredientsWithAmount == null || ingredientsWithAmount.isEmpty()) {
+				this.ingredientsWithAmount = Collections.emptyMap();
+			} else {
+				ImmutableMap.Builder<T, Integer> builder = ImmutableMap.builder();
+				for (Map.Entry<T, Integer> ingredient : ingredientsWithAmount.entrySet()) {
+					Integer amount = ingredient.getValue();
+					if (amount == null) {
+						throw new IllegalArgumentException("ingredient amount value has to be != null");
+					} else if (amount != 0) {//Ingredients with an amount of 'zero' do not need to be handled.
+						builder.put(ingredient.getKey(), amount);
+					}
+				}
+				this.ingredientsWithAmount = builder.build();
+			}
 			this.arithmeticForConversion = arithmeticForConversion;
 			this.value = value;
 		}
@@ -145,7 +154,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		}
 
 		private String ingredientsToString() {
-			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
+			if (ingredientsWithAmount.isEmpty()) {
 				return "nothing";
 			}
 			return ingredientsWithAmount.entrySet().stream().map(e -> e.getValue() + "*" + e.getKey()).collect(Collectors.joining(" + "));

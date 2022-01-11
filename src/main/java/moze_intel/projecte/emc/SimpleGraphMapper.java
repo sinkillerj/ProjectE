@@ -177,11 +177,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		boolean hasPositiveIngredientValues = false;
 		for (Map.Entry<T, Integer> entry : conversion.ingredientsWithAmount.entrySet()) {
 			if (values.containsKey(entry.getKey())) {
-				//The ingredient has a value
-				if (entry.getValue() == 0) {
-					//Ingredients with an amount of 'zero' do not need to be handled.
-					continue;
-				}
+				//The ingredient has a value and
 				//value = value + amount * ingredientcost
 				V ingredientValue = conversion.arithmeticForConversion.mul(entry.getValue(), values.get(entry.getKey()));
 				if (ingredientValue.compareTo(ZERO) != 0) {
