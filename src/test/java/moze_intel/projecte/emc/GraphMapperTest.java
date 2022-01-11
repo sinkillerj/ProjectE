@@ -624,7 +624,9 @@ class GraphMapperTest {
 		Assertions.assertEquals(1, getValue(values, "notConsume1"));
 		Assertions.assertEquals(0, getValue(values, "notConsume2"));
 		Assertions.assertEquals(5, getValue(values, "c1"));
-		Assertions.assertEquals(0, getValue(values, "c2"));
+		//Even though notConsume2 has no EMC value, it is not actually consumed so need to be
+		// taken into account when calculating the EMC value of c2
+		Assertions.assertEquals(5, getValue(values, "c2"));
 	}
 
 

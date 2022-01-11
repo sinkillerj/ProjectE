@@ -106,7 +106,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		if (overwriteConversion.containsKey(something)) {
 			Conversion oldConversion = overwriteConversion.get(something);
 			PECore.debugLog("Overwriting setValueFromConversion {} with {}", overwriteConversion.get(something), conversion);
-			for (T ingredient : ingredientsWithAmount.keySet()) {
+			for (T ingredient : oldConversion.ingredientsWithAmount.keySet()) {
 				getUsesFor(ingredient).remove(oldConversion);
 			}
 		}
