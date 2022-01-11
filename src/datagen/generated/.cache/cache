@@ -187,8 +187,6 @@ b84f9495b2302fb988f693e8c98595c6e44935a5 data/curios/tags/items/necklace.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/katar.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/forge/tags/blocks/mineable/morning_star.json
 4dc04849003244e69c9420820dfcc81246120946 data/forge/tags/items/chests.json
-a4245f119ece142fe7d949d39fea50ae779459f7 data/forge/tags/items/gems/amethyst.json
-3af5b71a6afb4b445df55b46423cf03010e57fde data/forge/tags/items/ingots/copper.json
 08fadb6f94ec6f2fa264538d33970274d80a03f3 data/forge/tags/items/shears.json
 be0276207445ccbabeee477cff0eaf24d86cd530 data/minecraft/tags/blocks/beacon_base_blocks.json
 32eb8a8165950330dd4356b31d0a65bacf51daa3 data/minecraft/tags/blocks/dragon_immune.json

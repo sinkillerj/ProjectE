@@ -109,7 +109,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 					}
 					return InteractionResult.PASS;
 				}, () -> ToolHelper.digAOE(level, player, hand, stack, pos, sideHit,
-						!(state.getBlock() instanceof GrassBlock) && !state.is(BlockTags.SAND) && !state.is(Tags.Blocks.DIRT), 0));
+						!(state.getBlock() instanceof GrassBlock) && !state.is(BlockTags.SAND) && !state.is(BlockTags.DIRT), 0));
 	}
 
 	@Nonnull

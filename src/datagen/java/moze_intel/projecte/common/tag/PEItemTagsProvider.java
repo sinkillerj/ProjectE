@@ -90,9 +90,5 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.DARK_MATTER.get(),
 				PEItems.RED_MATTER.get()
 		);
-		//TODO - 1.18: Remove these tags from being added to us. Only added until
-		// https://github.com/MinecraftForge/MinecraftForge/pull/7891 is merged
-		tag(ItemTags.bind("forge:ingots/copper")).add(Items.COPPER_INGOT);
-		tag(ItemTags.bind("forge:gems/amethyst")).add(Items.AMETHYST_SHARD);
 	}
 }

@@ -248,7 +248,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 			}
 		}
 		//TODO: Once raw ores are actually tagged uncomment this
-		/*else if (toSmelt.is(Tags.Items.RAW_ORES)) {
+		/*else if (toSmelt.is(Tags.Items.RAW_MATERIALS)) {
 			if (level != null && level.random.nextFloat() < getRawOreDoubleChance()) {
 				smeltResult.grow(smeltResult.getCount());
 			}
