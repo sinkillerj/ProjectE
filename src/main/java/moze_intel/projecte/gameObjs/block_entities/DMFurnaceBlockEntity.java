@@ -246,13 +246,11 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 			if (level != null && level.random.nextFloat() < getOreDoubleChance()) {
 				smeltResult.grow(smeltResult.getCount());
 			}
-		}
-		//TODO: Once raw ores are actually tagged uncomment this
-		/*else if (toSmelt.is(Tags.Items.RAW_MATERIALS)) {
+		} else if (toSmelt.is(Tags.Items.RAW_MATERIALS)) {
 			if (level != null && level.random.nextFloat() < getRawOreDoubleChance()) {
 				smeltResult.grow(smeltResult.getCount());
 			}
-		}*/
+		}
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
 		toSmelt.shrink(1);
 	}
