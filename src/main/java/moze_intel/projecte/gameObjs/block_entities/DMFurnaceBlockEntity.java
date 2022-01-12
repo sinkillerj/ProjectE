@@ -85,8 +85,8 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 	}
 
 	protected float getRawOreDoubleChance() {
-		//Base rate for raw ore doubling chance is: 3 -> 4 which means we multiply our ore double chance by 3/4
-		return getOreDoubleChance() * 0.75F;
+		//Base rate for raw ore doubling chance is: 1 -> 1.333 which means we multiply our ore double chance by 2/3
+		return getOreDoubleChance() * 2 / 3;
 	}
 
 	public int getCookProgressScaled(int value) {
