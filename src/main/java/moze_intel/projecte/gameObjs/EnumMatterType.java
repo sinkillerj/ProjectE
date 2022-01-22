@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,14 +26,14 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 	private final Tag<Block> neededTag;
 
 	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, Tag<Block> neededTag, Tier previous,
-			@Nullable ResourceLocation after) {
+			@Nullable ResourceLocation next) {
 		this.name = name;
 		this.attackDamage = attackDamage;
 		this.efficiency = efficiency;
 		this.chargeModifier = chargeModifier;
 		this.harvestLevel = harvestLevel;
 		this.neededTag = neededTag;
-		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), after == null ? List.of() : List.of(after));
+		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), next == null ? Collections.emptyList() : List.of(next));
 	}
 
 	@Nonnull

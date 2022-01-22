@@ -82,8 +82,8 @@ public class PETags {
 		 */
 		public static final Named<Block> BLACKLIST_TIME_WATCH = tag("blacklist/time_watch");
 
-		public static final Named<Block> NEEDS_DARK_MATTER_TOOL = tag("needs/dark_matter");
-		public static final Named<Block> NEEDS_RED_MATTER_TOOL = tag("needs/red_matter");
+		public static final Named<Block> NEEDS_DARK_MATTER_TOOL = tag("needs_dark_matter_tool");
+		public static final Named<Block> NEEDS_RED_MATTER_TOOL = tag("needs_red_matter_tool");
 
 		public static final Named<Block> MINEABLE_WITH_PE_KATAR = tag("mineable/katar");
 		public static final Named<Block> MINEABLE_WITH_PE_HAMMER = tag("mineable/hammer");
