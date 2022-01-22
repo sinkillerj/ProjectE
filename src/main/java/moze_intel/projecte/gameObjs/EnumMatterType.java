@@ -2,7 +2,9 @@ package moze_intel.projecte.gameObjs;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Tier;
@@ -12,8 +14,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.TierSortingRegistry;
 
 public enum EnumMatterType implements StringRepresentable, Tier {
-	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE),
-	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER);
+	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter")),
+	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER, null);
 
 	private final String name;
 	private final float attackDamage;
@@ -22,14 +24,15 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 	private final int harvestLevel;
 	private final Tag<Block> neededTag;
 
-	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, Tag<Block> neededTag, Tier previous) {
+	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, Tag<Block> neededTag, Tier previous,
+			@Nullable ResourceLocation after) {
 		this.name = name;
 		this.attackDamage = attackDamage;
 		this.efficiency = efficiency;
 		this.chargeModifier = chargeModifier;
 		this.harvestLevel = harvestLevel;
 		this.neededTag = neededTag;
-		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), List.of());
+		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), after == null ? List.of() : List.of(after));
 	}
 
 	@Nonnull
