@@ -240,7 +240,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
 		List<ItemStack> result = new ArrayList<>();
 		if (stack.hasTag()) {
-			ListTag list = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_ITEMS, Tag.TAG_COMPOUND);
+			CompoundTag compound = stack.getOrCreateTag().getCompound(Constants.NBT_KEY_GEM_ITEMS);
+			ListTag list = compound.getList(Constants.NBT_KEY_GEM_ITEMS, Tag.TAG_COMPOUND);
 			for (int i = 0; i < list.size(); i++) {
 				result.add(ItemStack.of(list.getCompound(i)));
 			}
