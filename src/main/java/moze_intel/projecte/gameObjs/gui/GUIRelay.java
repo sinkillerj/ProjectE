@@ -20,17 +20,19 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	private final int emcY;
 	private final int vOffset;
 	private final int emcBarShift;
-	private final int shift;
+	private final int shiftX;
+	private final int shiftY;
 
 	protected GUIRelay(CONTAINER container, Inventory invPlayer, Component title, ResourceLocation texture, int emcX, int emcY, int vOffset,
-			int emcBarShift, int shift) {
+			int emcBarShift, int shiftX, int shiftY) {
 		super(container, invPlayer, title);
 		this.texture = texture;
 		this.emcX = emcX;
 		this.emcY = emcY;
 		this.vOffset = vOffset;
 		this.emcBarShift = emcBarShift;
-		this.shift = shift;
+		this.shiftX = shiftX;
+		this.shiftY = shiftY;
 	}
 
 	@Override
@@ -54,11 +56,11 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 
 		//Klein start bar progress. Max is 30.
 		progress = (int) (menu.getKleinChargeProgress() * 30);
-		blit(matrix, leftPos + 116 + shift, topPos + 67, 0, vOffset, progress, 10);
+		blit(matrix, leftPos + 116 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
 
 		//Burn Slot bar progress. Max is 30.
 		progress = (int) (menu.getInputBurnProgress() * 30);
-		blit(matrix, leftPos + 64 + shift, topPos + 67, 0, vOffset, progress, 10);
+		blit(matrix, leftPos + 64 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
 	}
 
 	public static class GUIRelayMK1 extends GUIRelay<RelayMK1Container> {
@@ -66,7 +68,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 		private static final ResourceLocation MK1_TEXTURE = PECore.rl("textures/gui/relay1.png");
 
 		public GUIRelayMK1(RelayMK1Container container, Inventory invPlayer, Component title) {
-			super(container, invPlayer, title, MK1_TEXTURE, 88, 24, 177, 64, 0);
+			super(container, invPlayer, title, MK1_TEXTURE, 88, 24, 177, 64, 0, 0);
 			this.imageWidth = 175;
 			this.imageHeight = 176;
 			this.titleLabelX = 10;
@@ -78,7 +80,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 		private static final ResourceLocation MK2_TEXTURE = PECore.rl("textures/gui/relay2.png");
 
 		public GUIRelayMK2(RelayMK2Container container, Inventory invPlayer, Component title) {
-			super(container, invPlayer, title, MK2_TEXTURE, 107, 25, 183, 86, 17);
+			super(container, invPlayer, title, MK2_TEXTURE, 107, 25, 183, 86, 17, 1);
 			this.imageWidth = 193;
 			this.imageHeight = 182;
 			this.titleLabelX = 28;
@@ -90,7 +92,7 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 		private static final ResourceLocation MK3_TEXTURE = PECore.rl("textures/gui/relay3.png");
 
 		public GUIRelayMK3(RelayMK3Container container, Inventory invPlayer, Component title) {
-			super(container, invPlayer, title, MK3_TEXTURE, 125, 39, 195, 105, 37);
+			super(container, invPlayer, title, MK3_TEXTURE, 125, 39, 195, 105, 37, 15);
 			this.imageWidth = 212;
 			this.imageHeight = 194;
 			this.titleLabelX = 38;
