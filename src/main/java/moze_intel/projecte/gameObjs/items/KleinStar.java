@@ -33,7 +33,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	public float getWidthForBar(ItemStack stack) {
 		long starEmc = getEmc(stack);
 		if (starEmc == 0) {
-			return 0;
+			return 1;
 		}
 		return (float) (1 - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack));
 	}
