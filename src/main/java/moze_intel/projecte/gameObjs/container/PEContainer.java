@@ -121,7 +121,7 @@ public abstract class PEContainer extends AbstractContainerMenu {
 				// for empty items
 				stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
 				if (slotStack.getCount() == stackToInsert.getCount()) {
-					//Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending on which one we currently are in
+					//Else if we failed to do that also, try transferring to main inventory or the hot bar, depending on which one we currently are in
 					if (currentSlot instanceof MainInventorySlot) {
 						stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
 						stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
@@ -137,6 +137,11 @@ public abstract class PEContainer extends AbstractContainerMenu {
 			return ItemStack.EMPTY;
 		}
 		//Otherwise, decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
+		return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+	}
+
+	@Nonnull
+	protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
 		int difference = slotStack.getCount() - stackToInsert.getCount();
 		currentSlot.remove(difference);
 		ItemStack newStack = ItemHelper.size(slotStack, difference);

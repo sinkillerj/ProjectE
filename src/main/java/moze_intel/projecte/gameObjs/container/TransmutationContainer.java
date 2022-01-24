@@ -1,7 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotInput;
@@ -28,6 +31,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TransmutationContainer extends PEHandContainer {
 
+	private final List<SlotInput> inputSlots = new ArrayList<>();
 	public final TransmutationInventory transmutationInventory;
 	private SlotUnlearn unlearn;
 
@@ -83,6 +87,15 @@ public class TransmutationContainer extends PEHandContainer {
 		addPlayerInventory(35, 117);
 	}
 
+	@Nonnull
+	@Override
+	protected Slot addSlot(@Nonnull Slot slot) {
+		if (slot instanceof SlotInput input) {
+			inputSlots.add(input);
+		}
+		return super.addSlot(slot);
+	}
+
 	@Override
 	public void removed(@Nonnull Player player) {
 		super.removed(player);
@@ -100,12 +113,12 @@ public class TransmutationContainer extends PEHandContainer {
 			//Input Slots, lock slot, and unlearn slot, defer to super (allow basic sneak clicking out of container)
 			return super.quickMoveStack(player, slotIndex);
 		}
-		Slot slot = this.tryGetSlot(slotIndex);
-		if (slot == null || !slot.hasItem()) {
+		Slot currentSlot = tryGetSlot(slotIndex);
+		if (currentSlot == null || !currentSlot.hasItem()) {
 			return ItemStack.EMPTY;
 		}
 		if (slotIndex >= 11 && slotIndex <= 26) {
-			ItemStack stack = slot.getItem().copy();
+			ItemStack stack = currentSlot.getItem().copy();
 			// Output Slots
 			long itemEmc = EMCHelper.getEmcValue(stack);
 			//Double-check the item actually has Emc and something didn't just go terribly wrong
@@ -140,17 +153,30 @@ public class TransmutationContainer extends PEHandContainer {
 				}
 			}
 		} else if (slotIndex > 26) {
-			ItemStack stack = slot.getItem().copy();
-			long emc = EMCHelper.getEmcSellValue(stack);
-			if (emc == 0 && !(stack.getItem() instanceof Tome)) {
-				return ItemStack.EMPTY;
+			ItemStack slotStack = currentSlot.getItem();
+			ItemStack stackToInsert = slotStack;
+			if (stackToInsert.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+				//We are in the main inventory or the hot bar and are handling an item that can store EMC
+				//Start by trying to insert it into the input slots, first attempting to stack with other items
+				stackToInsert = insertItem(inputSlots, stackToInsert, true);
+				if (slotStack.getCount() == stackToInsert.getCount()) {
+					//Then as long as if we still have the same number of items (failed to insert), try to insert it into the input slots allowing for empty items
+					stackToInsert = insertItem(inputSlots, stackToInsert, false);
+				}
+				if (slotStack.getCount() != stackToInsert.getCount()) {
+					return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+				}
 			}
-			if (transmutationInventory.isServer()) {
-				BigInteger emcBigInt = BigInteger.valueOf(emc);
-				transmutationInventory.handleKnowledge(stack);
-				transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stack.getCount())));
+			//Else if we failed to do that also, transfer to the learn slot if the item has EMC
+			long emc = EMCHelper.getEmcSellValue(stackToInsert);
+			if (emc > 0 || stackToInsert.getItem() instanceof Tome) {
+				if (transmutationInventory.isServer()) {
+					BigInteger emcBigInt = BigInteger.valueOf(emc);
+					transmutationInventory.handleKnowledge(stackToInsert);
+					transmutationInventory.addEmc(emcBigInt.multiply(BigInteger.valueOf(stackToInsert.getCount())));
+				}
+				currentSlot.set(ItemStack.EMPTY);
 			}
-			slot.set(ItemStack.EMPTY);
 		}
 		return ItemStack.EMPTY;
 	}
