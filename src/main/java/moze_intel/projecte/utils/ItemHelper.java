@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -223,7 +224,13 @@ public final class ItemHelper {
 		return ItemHandlerHelper.copyStackWithSize(stack, size);
 	}
 
-	public static BlockState stackToState(ItemStack stack) {
-		return stack.getItem() instanceof BlockItem blockItem ? blockItem.getBlock().defaultBlockState() : null;
+	public static BlockState stackToState(ItemStack stack, @Nullable BlockPlaceContext context) {
+		if (stack.getItem() instanceof BlockItem blockItem) {
+			if (context == null) {
+				return blockItem.getBlock().defaultBlockState();
+			}
+			return blockItem.getBlock().getStateForPlacement(context);
+		}
+		return null;
 	}
 }

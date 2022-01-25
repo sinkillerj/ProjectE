@@ -34,11 +34,13 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -81,7 +83,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		ItemStack stack = ctx.getItemInHand();
-		return ctx.getLevel().isClientSide ? InteractionResult.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getClickedPos(), ctx.getClickedFace());
+		return ctx.getLevel().isClientSide ? InteractionResult.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getHand(), ctx.getClickedPos(), ctx.getClickedFace());
 	}
 
 	@Nonnull
@@ -96,12 +98,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			Vec3 lookVec = player.getLookAngle();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
 			Vec3 targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
-			return ItemHelper.actionResultFromType(formBlocks(stack, player, new BlockPos(targVec), null), stack);
+			return ItemHelper.actionResultFromType(formBlocks(stack, player, hand, new BlockPos(targVec), null), stack);
 		}
 		return InteractionResultHolder.pass(stack);
 	}
 
-	private InteractionResult formBlocks(ItemStack eye, Player player, BlockPos startingPos, @Nullable Direction facing) {
+	private void playNoEMCSound(Player player) {
+		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+	}
+
+	private InteractionResult formBlocks(ItemStack eye, Player player, InteractionHand hand, BlockPos startingPos, @Nullable Direction facing) {
 		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
 		if (inventoryCapability.isEmpty()) {
 			return InteractionResult.FAIL;
@@ -109,6 +115,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
 		if (klein.isEmpty() || !klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+			playNoEMCSound(player);
 			return InteractionResult.FAIL;
 		}
 
@@ -121,7 +128,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		byte mode = getMode(eye);
 
 		if (!target.isEmpty()) {
-			newState = ItemHelper.stackToState(target);
+			BlockHitResult hitResult;
+			if (facing == null) {
+				hitResult = new BlockHitResult(Vec3.atCenterOf(startingPos), Direction.UP, startingPos, true);
+			} else {
+				hitResult = new BlockHitResult(new Vec3(startingPos.getX() + 0.5 + facing.getStepX(),
+						startingPos.getY() + 0.5 + facing.getStepY(),
+						startingPos.getZ() + 0.5 + facing.getStepZ()), facing, startingPos, false);
+			}
+			BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(level, player, hand, target.copy(), hitResult));
+			newState = ItemHelper.stackToState(target, context);
 			newBlockEmc = EMCHelper.getEmcValue(target);
 		} else if (startingBlockEmc != 0 && (mode == EXTENSION_MODE || mode == EXTENSION_MODE_CLASSIC)) {
 			//If there is no item key, attempt to determine it for extension mode
@@ -242,11 +258,19 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
 		if (klein.isEmpty()) {
+			playNoEMCSound(player);
 			return false;
 		}
 		Optional<IItemEmcHolder> holderCapability = klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (holderCapability.isEmpty() || oldState == newState || ItemPE.getEmc(klein) < newEMC - oldEMC ||
-			WorldHelper.getBlockEntity(player.getCommandSenderWorld(), placePos) != null) {
+		if (holderCapability.isEmpty()) {
+			playNoEMCSound(player);
+			return false;
+		} else if (oldState == newState) {
+			return false;
+		} else if (ItemPE.getEmc(klein) < newEMC - oldEMC) {
+			playNoEMCSound(player);
+			return false;
+		} else if (WorldHelper.getBlockEntity(player.getCommandSenderWorld(), placePos) != null) {
 			return false;
 		}
 
@@ -259,7 +283,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
-				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).getLevel(), placePos, null));
+				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).getLevel(), placePos, null, player, eye));
 				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC > newEMC) {
 				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);

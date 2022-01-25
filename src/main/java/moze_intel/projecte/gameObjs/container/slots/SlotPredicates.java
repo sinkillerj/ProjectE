@@ -32,7 +32,7 @@ public final class SlotPredicates {
 		if (input.isEmpty()) {
 			return false;
 		}
-		BlockState state = ItemHelper.stackToState(input);
+		BlockState state = ItemHelper.stackToState(input, null);
 		return state != null && !state.hasBlockEntity() && EMCHelper.doesItemHaveEmc(input);
 	};
 
