@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
@@ -156,12 +157,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 
 	@Override
 	public boolean mouseClicked(double x, double y, int mouseButton) {
-		int minX = textBoxFilter.x;
-		int minY = textBoxFilter.y;
-		int maxX = minX + textBoxFilter.getWidth();
-		int maxY = minY + textBoxFilter.getHeight();
-
-		if (x >= minX && x <= maxX && y <= maxY) {
+		if (textBoxFilter.isMouseOver(x, y)) {
 			if (mouseButton == 1) {
 				inv.filter = "";
 				inv.searchpage = 0;
@@ -169,6 +165,10 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 				this.textBoxFilter.setValue("");
 			}
 			return this.textBoxFilter.mouseClicked(x, y, mouseButton);
+		}
+		Slot slotUnderMouse = getSlotUnderMouse();
+		if (slotUnderMouse == null || (!slotUnderMouse.hasItem() && menu.getCarried().isEmpty())) {
+			textBoxFilter.setFocus(false);
 		}
 		return super.mouseClicked(x, y, mouseButton);
 	}
