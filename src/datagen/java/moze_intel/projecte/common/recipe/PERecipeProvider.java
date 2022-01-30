@@ -766,9 +766,9 @@ public class PERecipeProvider extends RecipeProvider {
 	private static void addCovalenceDustRecipes(Consumer<FinishedRecipe> consumer) {
 		ShapelessRecipeBuilder lowCovalenceDust = ShapelessRecipeBuilder.shapeless(PEItems.LOW_COVALENCE_DUST, 40)
 				.requires(Items.CHARCOAL)
-				.unlockedBy("has_cobble", has(Tags.Items.COBBLESTONE));
+				.unlockedBy("has_cobble", has(Tags.Items.COBBLESTONE_NORMAL));
 		for (int i = 0; i < 8; i++) {
-			lowCovalenceDust.requires(Tags.Items.COBBLESTONE);
+			lowCovalenceDust.requires(Tags.Items.COBBLESTONE_NORMAL);
 		}
 		lowCovalenceDust.save(consumer);
 		ShapelessRecipeBuilder.shapeless(PEItems.MEDIUM_COVALENCE_DUST, 40)
