@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.registries;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.EnumFuelType;
 import moze_intel.projecte.gameObjs.EnumMatterType;
@@ -37,7 +38,7 @@ import net.minecraft.world.level.material.Material;
 
 public class PEBlocks {
 
-	public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister();
+	public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(PECore.MODID);
 
 	public static final BlockRegistryObject<AlchemicalChest, BlockItem> ALCHEMICAL_CHEST = BLOCKS.register("alchemical_chest", () -> new AlchemicalChest(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(10, 3_600_000)));
 	public static final BlockRegistryObject<Block, ItemFuelBlock> ALCHEMICAL_COAL = registerFuelBlock("alchemical_coal_block", EnumFuelType.ALCHEMICAL_COAL);

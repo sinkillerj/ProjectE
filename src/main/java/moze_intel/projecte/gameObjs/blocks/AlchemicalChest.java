@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.blocks;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -12,8 +11,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -77,9 +78,11 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
 			@Nonnull BlockHitResult rtr) {
 		if (!level.isClientSide) {
-			AlchBlockEntityChest chest = WorldHelper.getBlockEntity(AlchBlockEntityChest.class, level, pos, true);
+			EmcChestBlockEntity chest = WorldHelper.getBlockEntity(EmcChestBlockEntity.class, level, pos, true);
 			if (chest != null) {
 				NetworkHooks.openGui((ServerPlayer) player, chest, pos);
+				player.awardStat(Stats.OPEN_CHEST);
+				PiglinAi.angerNearbyPiglins(player, true);
 			}
 		}
 		return InteractionResult.SUCCESS;

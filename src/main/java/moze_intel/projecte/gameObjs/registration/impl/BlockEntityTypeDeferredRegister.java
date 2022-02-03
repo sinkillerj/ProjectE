@@ -11,8 +11,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
 
-	public BlockEntityTypeDeferredRegister() {
-		super(ForgeRegistries.BLOCK_ENTITIES);
+	public BlockEntityTypeDeferredRegister(String modid) {
+		super(ForgeRegistries.BLOCK_ENTITIES, modid);
 	}
 
 	public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {

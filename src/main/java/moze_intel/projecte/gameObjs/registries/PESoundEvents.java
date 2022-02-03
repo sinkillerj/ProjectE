@@ -1,12 +1,13 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventRegistryObject;
 import net.minecraft.sounds.SoundEvent;
 
 public class PESoundEvents {
 
-	public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister();
+	public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister(PECore.MODID);
 
 	public static final SoundEventRegistryObject<SoundEvent> WIND_MAGIC = SOUND_EVENTS.register("windmagic");
 	public static final SoundEventRegistryObject<SoundEvent> WATER_MAGIC = SOUND_EVENTS.register("watermagic");

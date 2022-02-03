@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.EnumFuelType;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
@@ -57,7 +58,7 @@ import net.minecraft.world.item.Rarity;
 
 public class PEItems {
 
-	public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister();
+	public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(PECore.MODID);
 
 	public static final ItemRegistryObject<PhilosophersStone> PHILOSOPHERS_STONE = ITEMS.registerNoStack("philosophers_stone", PhilosophersStone::new);
 	public static final ItemRegistryObject<RepairTalisman> REPAIR_TALISMAN = ITEMS.registerNoStack("repair_talisman", RepairTalisman::new);

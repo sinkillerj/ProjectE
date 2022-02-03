@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.MobCategory;
 
 public class PEEntityTypes {
 
-	public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister();
+	public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(PECore.MODID);
 
 	public static final EntityTypeRegistryObject<EntityFireProjectile> FIRE_PROJECTILE = ENTITY_TYPES.register("fire_projectile", EntityType.Builder.<EntityFireProjectile>of(EntityFireProjectile::new, MobCategory.MISC).setTrackingRange(256).setUpdateInterval(10));
 	public static final EntityTypeRegistryObject<EntityHomingArrow> HOMING_ARROW = ENTITY_TYPES.register("homing_arrow", EntityType.Builder.<EntityHomingArrow>of(EntityHomingArrow::new, MobCategory.MISC).setTrackingRange(5).setUpdateInterval(20).setShouldReceiveVelocityUpdates(true));

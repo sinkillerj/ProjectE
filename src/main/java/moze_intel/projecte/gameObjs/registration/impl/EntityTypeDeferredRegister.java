@@ -7,8 +7,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {
 
-	public EntityTypeDeferredRegister() {
-		super(ForgeRegistries.ENTITIES);
+	public EntityTypeDeferredRegister(String modid) {
+		super(ForgeRegistries.ENTITIES, modid);
 	}
 
 	public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder) {

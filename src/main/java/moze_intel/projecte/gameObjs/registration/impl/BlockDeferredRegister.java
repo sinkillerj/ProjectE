@@ -15,8 +15,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
-	public BlockDeferredRegister() {
-		super(ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
+	public BlockDeferredRegister(String modid) {
+		super(ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS, modid);
 	}
 
 	public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {

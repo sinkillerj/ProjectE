@@ -7,8 +7,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class SoundEventDeferredRegister extends WrappedDeferredRegister<SoundEvent> {
 
-	public SoundEventDeferredRegister() {
-		super(ForgeRegistries.SOUND_EVENTS);
+	public SoundEventDeferredRegister(String modid) {
+		super(ForgeRegistries.SOUND_EVENTS, modid);
 	}
 
 	public SoundEventRegistryObject<SoundEvent> register(String name) {

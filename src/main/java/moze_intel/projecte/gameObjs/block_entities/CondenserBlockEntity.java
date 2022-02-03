@@ -16,7 +16,6 @@ import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -28,7 +27,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CondenserBlockEntity extends EmcChestBlockEntity implements MenuProvider {
+public class CondenserBlockEntity extends EmcChestBlockEntity {
 
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();

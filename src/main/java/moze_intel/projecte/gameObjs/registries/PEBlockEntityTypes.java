@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
@@ -19,7 +20,7 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObj
 
 public class PEBlockEntityTypes {
 
-	public static final BlockEntityTypeDeferredRegister BLOCK_ENTITY_TYPES = new BlockEntityTypeDeferredRegister();
+	public static final BlockEntityTypeDeferredRegister BLOCK_ENTITY_TYPES = new BlockEntityTypeDeferredRegister(PECore.MODID);
 
 	public static final BlockEntityTypeRegistryObject<AlchBlockEntityChest> ALCHEMICAL_CHEST = BLOCK_ENTITY_TYPES.builder(PEBlocks.ALCHEMICAL_CHEST, AlchBlockEntityChest::new).clientTicker(AlchBlockEntityChest::tickClient).serverTicker(AlchBlockEntityChest::tickServer).build();
 	public static final BlockEntityTypeRegistryObject<CollectorMK1BlockEntity> COLLECTOR = BLOCK_ENTITY_TYPES.builder(PEBlocks.COLLECTOR, CollectorMK1BlockEntity::new).serverTicker(CollectorMK1BlockEntity::tickServer).build();

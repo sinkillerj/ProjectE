@@ -10,7 +10,6 @@ import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AlchBlockEntityChest extends EmcChestBlockEntity implements MenuProvider {
+public class AlchBlockEntityChest extends EmcChestBlockEntity {
 
 	private final StackHandler inventory = new StackHandler(104) {
 		@Override

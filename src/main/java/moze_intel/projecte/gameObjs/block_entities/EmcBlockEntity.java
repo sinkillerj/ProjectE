@@ -130,9 +130,9 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		return sentEmc;
 	}
 
-	class StackHandler extends ItemStackHandler {
+	protected class StackHandler extends ItemStackHandler {
 
-		StackHandler(int size) {
+		protected StackHandler(int size) {
 			super(size);
 		}
 
@@ -143,13 +143,13 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		}
 	}
 
-	class CompactableStackHandler extends StackHandler {
+	protected class CompactableStackHandler extends StackHandler {
 
 		//Start as needing to check for compacting when loaded
 		private boolean needsCompacting = true;
 		private boolean empty;
 
-		CompactableStackHandler(int size) {
+		protected CompactableStackHandler(int size) {
 			super(size);
 		}
 

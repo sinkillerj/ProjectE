@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -18,9 +17,9 @@ public class DoubleDeferredRegister<PRIMARY extends IForgeRegistryEntry<PRIMARY>
 	@Nonnull
 	protected final DeferredRegister<SECONDARY> secondaryRegister;
 
-	public DoubleDeferredRegister(IForgeRegistry<PRIMARY> primaryRegistry, IForgeRegistry<SECONDARY> secondaryRegistry) {
-		primaryRegister = DeferredRegister.create(primaryRegistry, PECore.MODID);
-		secondaryRegister = DeferredRegister.create(secondaryRegistry, PECore.MODID);
+	public DoubleDeferredRegister(IForgeRegistry<PRIMARY> primaryRegistry, IForgeRegistry<SECONDARY> secondaryRegistry, String modid) {
+		primaryRegister = DeferredRegister.create(primaryRegistry, modid);
+		secondaryRegister = DeferredRegister.create(secondaryRegistry, modid);
 	}
 
 	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,

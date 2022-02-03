@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.registration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import moze_intel.projecte.PECore;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -15,8 +14,8 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
 	@Nonnull
 	protected final DeferredRegister<T> internal;
 
-	protected WrappedDeferredRegister(IForgeRegistry<T> registry) {
-		internal = DeferredRegister.create(registry, PECore.MODID);
+	protected WrappedDeferredRegister(IForgeRegistry<T> registry, String modid) {
+		internal = DeferredRegister.create(registry, modid);
 	}
 
 	protected <I extends T, W extends WrappedRegistryObject<I>> W register(String name, Supplier<? extends I> sup, Function<RegistryObject<I>, W> objectWrapper) {

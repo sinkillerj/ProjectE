@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.registries;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK2BlockEntity;
@@ -31,7 +32,7 @@ import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObjec
 
 public class PEContainerTypes {
 
-	public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister();
+	public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(PECore.MODID);
 
 	public static final ContainerTypeRegistryObject<RMFurnaceContainer> RM_FURNACE_CONTAINER = CONTAINER_TYPES.register(PEBlocks.RED_MATTER_FURNACE, RMFurnaceBlockEntity.class, RMFurnaceContainer::new);
 	public static final ContainerTypeRegistryObject<DMFurnaceContainer> DM_FURNACE_CONTAINER = CONTAINER_TYPES.register(PEBlocks.DARK_MATTER_FURNACE, DMFurnaceBlockEntity.class, DMFurnaceContainer::new);

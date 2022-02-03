@@ -8,8 +8,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class IRecipeSerializerDeferredRegister extends WrappedDeferredRegister<RecipeSerializer<?>> {
 
-	public IRecipeSerializerDeferredRegister() {
-		super(ForgeRegistries.RECIPE_SERIALIZERS);
+	public IRecipeSerializerDeferredRegister(String modid) {
+		super(ForgeRegistries.RECIPE_SERIALIZERS, modid);
 	}
 
 	public <RECIPE extends Recipe<?>, SERIALIZER extends RecipeSerializer<RECIPE>> IRecipeSerializerRegistryObject<RECIPE, SERIALIZER> register(String name,

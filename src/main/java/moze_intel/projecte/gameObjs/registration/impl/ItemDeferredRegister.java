@@ -31,8 +31,8 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 		}
 	};
 
-	public ItemDeferredRegister() {
-		super(ForgeRegistries.ITEMS);
+	public ItemDeferredRegister(String modid) {
+		super(ForgeRegistries.ITEMS, modid);
 	}
 
 	public static Item.Properties getBaseProperties() {

@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObj
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ChestLidController;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 // [VanillaCopy] Adapted from ChestBlockEntity
-public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity {
+public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity, MenuProvider {
 
 	private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
 		@Override
