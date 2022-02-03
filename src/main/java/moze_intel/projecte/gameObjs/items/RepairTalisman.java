@@ -13,7 +13,7 @@ import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
 import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
+import moze_intel.projecte.gameObjs.block_entities.EmcBlockEntity;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -89,7 +89,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	@Override
 	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
 		if (!level.isClientSide) {
-			AlchBlockEntityChest chest = WorldHelper.getBlockEntity(AlchBlockEntityChest.class, level, pos, true);
+			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
 			if (chest != null) {
 				CompoundTag nbt = stack.getOrCreateTag();
 				byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
