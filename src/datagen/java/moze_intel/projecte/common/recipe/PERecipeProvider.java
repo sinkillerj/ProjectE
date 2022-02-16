@@ -668,7 +668,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.pattern("SFS")
 				.define('S', ItemTags.SAPLINGS)
 				.define('D', PEItems.DARK_MATTER)
-				.define('F', Items.POPPY)
+				.define('F', ItemTags.FLOWERS)
 				.define('I', PEItems.IRON_BAND)
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
