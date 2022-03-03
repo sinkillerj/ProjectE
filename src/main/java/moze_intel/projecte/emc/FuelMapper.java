@@ -6,12 +6,14 @@ import java.util.Comparator;
 import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.integration.jei.PEJeiPlugin;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 
 public final class FuelMapper {
 
@@ -38,6 +40,14 @@ public final class FuelMapper {
 	public static void setFuelMap(List<Item> map) {
 		FUEL_MAP.clear();
 		FUEL_MAP.addAll(map);
+		//Synced from server initialize JEI fuel map
+		initializeJEIFuelMap();
+	}
+
+	public static void initializeJEIFuelMap() {
+		if (ModList.get().isLoaded("jei")) {
+			PEJeiPlugin.addFuelRecipes(Collections.unmodifiableList(FUEL_MAP));
+		}
 	}
 
 	public static SyncFuelMapperPKT getSyncPacket() {

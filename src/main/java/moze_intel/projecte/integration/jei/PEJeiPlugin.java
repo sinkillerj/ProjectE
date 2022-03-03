@@ -1,16 +1,18 @@
 package moze_intel.projecte.integration.jei;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
@@ -71,16 +73,25 @@ public class PEJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
 		registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
-		List<FuelUpgradeRecipe> fuelRecipes = new ArrayList<>();
-		//TODO - 1.18: Figure this out it doesn't have recipes in time due to having moved it all back so that we can properly
-		// read stuff from tags
-		for (Item i : FuelMapper.getFuelMap()) {
-			ItemStack stack = new ItemStack(i);
-			ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);
-			if (EMCHelper.getEmcValue(stack) <= EMCHelper.getEmcValue(fuelUpgrade)) {
-				fuelRecipes.add(new FuelUpgradeRecipe(stack, fuelUpgrade));
+	}
+
+	@Override
+	public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime) {
+		lastRecipeManager = jeiRuntime.getRecipeManager();
+	}
+
+	@Nullable
+	private static IRecipeManager lastRecipeManager;
+
+	public static void addFuelRecipes(List<Item> fuelMap) {
+		if (lastRecipeManager != null) {
+			for (Item i : fuelMap) {
+				ItemStack stack = new ItemStack(i);
+				ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);
+				if (EMCHelper.getEmcValue(stack) <= EMCHelper.getEmcValue(fuelUpgrade)) {
+					lastRecipeManager.addRecipe(new FuelUpgradeRecipe(stack, fuelUpgrade), CollectorRecipeCategory.UID);
+				}
 			}
 		}
-		registry.addRecipes(fuelRecipes, CollectorRecipeCategory.UID);
 	}
 }

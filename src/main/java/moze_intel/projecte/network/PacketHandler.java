@@ -81,15 +81,28 @@ public final class PacketHandler {
 		HANDLER.registerMessage(index++, type, IPEPacket::encode, decoder, IPEPacket::handle, Optional.of(networkDirection));
 	}
 
+	private static boolean isLocal(ServerPlayer player) {
+		return !player.server.isDedicatedServer() && player.getGameProfile().getName().equals(player.server.getSingleplayerName());
+	}
+
 	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayer player) {
-		if (player.server.isDedicatedServer() || !player.getGameProfile().getName().equals(player.server.getSingleplayerName())) {
+		if (!isLocal(player)) {
 			sendTo(msg, player);
 		}
 	}
 
+	private static void sendFragmentedEmcPacket(ServerPlayer player, SyncEmcPKT pkt, SyncFuelMapperPKT fuelPkt) {
+		if (isLocal(player)) {
+			//Reach across sides and initialize it
+			FuelMapper.initializeJEIFuelMap();
+		} else {
+			sendTo(pkt, player);
+			sendTo(fuelPkt, player);
+		}
+	}
+
 	public static void sendFragmentedEmcPacket(ServerPlayer player) {
-		sendNonLocal(new SyncEmcPKT(serializeEmcData()), player);
-		sendNonLocal(FuelMapper.getSyncPacket(), player);
+		sendFragmentedEmcPacket(player, new SyncEmcPKT(serializeEmcData()), FuelMapper.getSyncPacket());
 	}
 
 	public static void sendFragmentedEmcPacketToAll() {
@@ -97,8 +110,7 @@ public final class PacketHandler {
 			SyncEmcPKT pkt = new SyncEmcPKT(serializeEmcData());
 			SyncFuelMapperPKT fuelPkt = FuelMapper.getSyncPacket();
 			for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-				sendNonLocal(pkt, player);
-				sendNonLocal(fuelPkt, player);
+				sendFragmentedEmcPacket(player, pkt, fuelPkt);
 			}
 		}
 	}
