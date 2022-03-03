@@ -7,8 +7,10 @@ import moze_intel.projecte.api.nss.NSSItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -25,8 +27,8 @@ public final class ItemInfo {
 	@Nullable
 	private final CompoundTag nbt;
 
-	private ItemInfo(@Nonnull Item item, @Nullable CompoundTag nbt) {
-		this.item = item;
+	private ItemInfo(@Nonnull ItemLike item, @Nullable CompoundTag nbt) {
+		this.item = item.asItem();
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
 
@@ -35,7 +37,7 @@ public final class ItemInfo {
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
-	public static ItemInfo fromItem(@Nonnull Item item, @Nullable CompoundTag nbt) {
+	public static ItemInfo fromItem(@Nonnull ItemLike item, @Nullable CompoundTag nbt) {
 		return new ItemInfo(item, nbt);
 	}
 
@@ -44,7 +46,7 @@ public final class ItemInfo {
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
-	public static ItemInfo fromItem(@Nonnull Item item) {
+	public static ItemInfo fromItem(@Nonnull ItemLike item) {
 		return fromItem(item, null);
 	}
 
@@ -126,6 +128,17 @@ public final class ItemInfo {
 	 */
 	public boolean hasNBT() {
 		return nbt != null;
+	}
+
+	/**
+	 * Checks if the item backing this {@link ItemInfo} is contained in the given tag.
+	 *
+	 * @param tag Tag to check.
+	 *
+	 * @return True if it is contained.
+	 */
+	public boolean is(TagKey<Item> tag) {
+		return getItem().builtInRegistryHolder().is(tag);
 	}
 
 	/**

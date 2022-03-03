@@ -4,15 +4,13 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.MCTag;
-import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
-import com.blamejared.crafttweaker.api.tag.manager.TagManagerItem;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.google.gson.JsonParseException;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.json.NSSSerializer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
@@ -82,7 +80,8 @@ public class CrTNSSResolver {
 	 */
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromItemTag(MCTag<Item> tag) {
-		Tag<Item> itemTag = TagManagerItem.INSTANCE.getInternal(tag);
+		//TODO - 1.18: Figure out
+		TagKey<Item> itemTag = null;//TagManagerItem.INSTANCE.getInternal(tag);
 		if (itemTag == null) {
 			throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
 		}
@@ -128,7 +127,8 @@ public class CrTNSSResolver {
 	 */
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromFluidTag(MCTag<Fluid> tag) {
-		Tag<Fluid> fluidTag = TagManagerFluid.INSTANCE.getInternal(tag);
+		//TODO - 1.18: Figure out
+		TagKey<Fluid> fluidTag = null;//TagManagerFluid.INSTANCE.getInternal(tag);
 		if (fluidTag == null) {
 			throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
 		}

@@ -7,7 +7,7 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -77,12 +77,12 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Item tag to set EMC value of.
 	 * @param emc Value
 	 */
-	default CustomConversionBuilder before(Tag<Item> tag, long emc) {
+	default CustomConversionBuilder before(TagKey<Item> tag, long emc) {
 		return before(NSSItem.createTag(tag), emc);
 	}
 
@@ -108,11 +108,11 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value of "free" to it.
 	 *
 	 * @param tag Item tag to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder before(Tag<Item> tag) {
+	default CustomConversionBuilder before(TagKey<Item> tag) {
 		return before(NSSItem.createTag(tag));
 	}
 
@@ -140,12 +140,12 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Item tag to set EMC value of.
 	 * @param emc Value
 	 */
-	default CustomConversionBuilder after(Tag<Item> tag, long emc) {
+	default CustomConversionBuilder after(TagKey<Item> tag, long emc) {
 		return after(NSSItem.createTag(tag), emc);
 	}
 
@@ -171,11 +171,11 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value of "free" to it.
 	 *
 	 * @param tag Item tag to set as "free" in conversions.
 	 */
-	default CustomConversionBuilder after(Tag<Item> tag) {
+	default CustomConversionBuilder after(TagKey<Item> tag) {
 		return after(NSSItem.createTag(tag));
 	}
 
@@ -203,14 +203,14 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set EMC value of.
 	 * @param emc Value
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder beforeFluid(Tag<Fluid> tag, long emc) {
+	default CustomConversionBuilder beforeFluid(TagKey<Fluid> tag, long emc) {
 		return before(NSSFluid.createTag(tag), emc);
 	}
 
@@ -236,13 +236,13 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then add a "before" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set as "free" in conversions.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder beforeFluid(Tag<Fluid> tag) {
+	default CustomConversionBuilder beforeFluid(TagKey<Fluid> tag) {
 		return before(NSSFluid.createTag(tag));
 	}
 
@@ -270,14 +270,14 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set EMC value of.
 	 * @param emc Value
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder afterFluid(Tag<Fluid> tag, long emc) {
+	default CustomConversionBuilder afterFluid(TagKey<Fluid> tag, long emc) {
 		return after(NSSFluid.createTag(tag), emc);
 	}
 
@@ -303,13 +303,13 @@ interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<Fix
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then add an "after" emc mapping value to it.
 	 *
 	 * @param tag Fluid tag to set as "free" in conversions.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default CustomConversionBuilder afterFluid(Tag<Fluid> tag) {
+	default CustomConversionBuilder afterFluid(TagKey<Fluid> tag) {
 		return after(NSSFluid.createTag(tag));
 	}
 

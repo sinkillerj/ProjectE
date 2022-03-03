@@ -63,7 +63,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 				if (item instanceof PhilosophersStone) {
 					philoStones.add(stack);
 				}
-				if (ItemTags.COALS.contains(item)) {
+				if (stack.is(ItemTags.COALS)) {
 					coals.add(stack);
 				}
 			}

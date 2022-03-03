@@ -7,7 +7,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
@@ -118,7 +118,7 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 		);
 	}
 
-	private void addImmuneBlocks(Named<Block> tag) {
+	private void addImmuneBlocks(TagKey<Block> tag) {
 		tag(tag).add(
 				PEBlocks.DARK_MATTER.getBlock(),
 				PEBlocks.DARK_MATTER_FURNACE.getBlock(),

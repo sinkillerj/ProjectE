@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
@@ -18,12 +19,11 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.emc.EMCReloadListener;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -73,6 +73,8 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -95,9 +97,9 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -113,6 +115,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -141,6 +144,8 @@ public class PECore {
 		return new ResourceLocation(MODID, path);
 	}
 
+	private boolean needsEMCUpdate;
+
 	public PECore() {
 		MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
 
@@ -158,7 +163,8 @@ public class PECore {
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
 		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
+		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(this::tagsUpdated);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
@@ -330,10 +336,30 @@ public class PECore {
 		}
 	}
 
-	private void addReloadListenersLowest(AddReloadListenerEvent event) {
-		//Note: We register our listener for this event on lowest priority so that if other mods register custom NSSTags
-		// or other things that need to be sync'd/reloaded they have a chance to go before we do
-		event.addListener(new EMCReloadListener(event.getDataPackRegistries()));
+	private void tagsUpdated(TagsUpdatedEvent event) {
+		if (needsEMCUpdate) {
+			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+			if (server != null) {
+				needsEMCUpdate = false;
+				long start = System.currentTimeMillis();
+
+				//Clear the cached created tags
+				AbstractNSSTag.clearCreatedTags();
+				CustomEMCParser.init();
+
+				try {
+					EMCMappingHandler.map(server.getServerResources().managers(), server.getResourceManager());
+					PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+					PacketHandler.sendFragmentedEmcPacketToAll();
+				} catch (Throwable t) {
+					PECore.LOGGER.error("Error calculating EMC values", t);
+				}
+			}
+		}
+	}
+
+	private void addReloadListeners(AddReloadListenerEvent event) {
+		event.addListener((ResourceManagerReloadListener) manager -> needsEMCUpdate = true);
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {

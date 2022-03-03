@@ -1,11 +1,10 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
+import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
+import java.util.Optional;
 import javax.annotation.Nullable;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.IIngredients;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +20,13 @@ public class WorldTransmuteEntry {
 
 		public boolean isEmpty() {
 			return item.isEmpty() && fluid.isEmpty();
+		}
+
+		public Either<ItemStack, FluidStack> toEither() {
+			if (fluid.isEmpty()) {
+				return Either.left(item);
+			}
+			return Either.right(fluid);
 		}
 	}
 
@@ -76,34 +82,22 @@ public class WorldTransmuteEntry {
 		return !input.isEmpty() && (!leftOutput.isEmpty() || !rightOutput.isEmpty());
 	}
 
-	public void setIngredients(@Nonnull IIngredients ingredients) {
-		if (!input.fluid().isEmpty()) {
-			ingredients.setInput(VanillaTypes.FLUID, input.fluid());
-		} else if (!input.item().isEmpty()) {
-			ingredients.setInput(VanillaTypes.ITEM, input.item());
+	public Optional<Either<ItemStack, FluidStack>> getInput() {
+		if (input.isEmpty()) {
+			return Optional.empty();
 		}
+		return Optional.of(input.toEither());
+	}
 
-		List<FluidStack> fluidOutputs = new ArrayList<>();
-		if (!leftOutput.fluid().isEmpty()) {
-			fluidOutputs.add(leftOutput.fluid());
+	public Iterable<Either<ItemStack, FluidStack>> getOutput() {
+		List<Either<ItemStack, FluidStack>> outputs = new ArrayList<>();
+		if (!leftOutput.isEmpty()) {
+			outputs.add(leftOutput.toEither());
 		}
-		if (!rightOutput.fluid().isEmpty()) {
-			fluidOutputs.add(rightOutput.fluid());
+		if (!rightOutput.isEmpty()) {
+			outputs.add(rightOutput.toEither());
 		}
-		if (!fluidOutputs.isEmpty()) {
-			ingredients.setOutputs(VanillaTypes.FLUID, fluidOutputs);
-		}
-
-		List<ItemStack> outputList = new ArrayList<>();
-		if (!leftOutput.item().isEmpty()) {
-			outputList.add(leftOutput.item());
-		}
-		if (!rightOutput.item().isEmpty()) {
-			outputList.add(rightOutput.item());
-		}
-		if (!outputList.isEmpty()) {
-			ingredients.setOutputs(VanillaTypes.ITEM, outputList);
-		}
+		return outputs;
 	}
 
 	public ItemStack getInputItem() {

@@ -6,7 +6,7 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -71,21 +71,21 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and add it as an input ingredient.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and add it as an input ingredient.
 	 *
 	 * @param input Item tag used in the conversion.
 	 */
-	default BUILDER ingredient(Tag<Item> input) {
+	default BUILDER ingredient(TagKey<Item> input) {
 		return ingredient(input, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and amount and add it as an input ingredient.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and amount and add it as an input ingredient.
 	 *
 	 * @param input  Item tag used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	default BUILDER ingredient(Tag<Item> input, int amount) {
+	default BUILDER ingredient(TagKey<Item> input, int amount) {
 		return ingredient(NSSItem.createTag(input), amount);
 	}
 
@@ -121,25 +121,25 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and add it as an input ingredient.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and add it as an input ingredient.
 	 *
 	 * @param input Fluid tag used in the conversion.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER ingredientFluid(Tag<Fluid> input) {
+	default BUILDER ingredientFluid(TagKey<Fluid> input) {
 		return ingredientFluid(input, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and amount and add it as an input ingredient.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and amount and add it as an input ingredient.
 	 *
 	 * @param input  Fluid tag used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER ingredientFluid(Tag<Fluid> input, int amount) {
+	default BUILDER ingredientFluid(TagKey<Fluid> input, int amount) {
 		return ingredient(NSSFluid.createTag(input), amount);
 	}
 

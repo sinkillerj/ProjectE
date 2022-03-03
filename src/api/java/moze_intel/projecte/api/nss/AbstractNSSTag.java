@@ -2,13 +2,17 @@ package moze_intel.projecte.api.nss;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:
@@ -83,7 +87,14 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	protected abstract String getJsonPrefix();
 
 	@Nonnull
-	protected abstract TagCollection<TYPE> getTagCollection();
+	protected abstract Optional<Named<TYPE>> getTag();
+
+	protected final Optional<Named<TYPE>> getTag(Registry<TYPE> registry) {
+		if (representsTag()) {
+			return registry.getTag(TagKey.create(registry.key(), getResourceLocation()));
+		}
+		return Optional.empty();
+	}
 
 	protected abstract Function<TYPE, NormalizedSimpleStack> createNew();
 
@@ -94,12 +105,9 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
-		if (representsTag()) {
-			Tag<TYPE> tag = getTagCollection().getTag(getResourceLocation());
-			if (tag != null) {
-				tag.getValues().stream().map(createNew()).forEach(consumer);
-			}
-		}
+		getTag().ifPresent(tag -> tag.stream().map(Holder::value)
+				.map(createNew())
+				.forEach(consumer));
 	}
 
 	@Override

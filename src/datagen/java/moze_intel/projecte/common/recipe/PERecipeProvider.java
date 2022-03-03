@@ -23,7 +23,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -1062,7 +1062,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(consumer, PECore.rl("conversions/" + bName + "_to_" + aName));
 	}
 
-	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, Tag<Item> aTag, ItemLike a, int aAmount, Tag<Item> bTag, ItemLike b,
+	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> aTag, ItemLike a, int aAmount, TagKey<Item> bTag, ItemLike b,
 			int bAmount) {
 		String aName = getName(a);
 		String bName = getName(b);
@@ -1072,7 +1072,7 @@ public class PERecipeProvider extends RecipeProvider {
 		philoConversionRecipe(consumer, bName, bTag, bAmount, aName, a, aAmount);
 	}
 
-	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, String inputName, Tag<Item> inputTag, int inputAmount, String outputName,
+	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, String inputName, TagKey<Item> inputTag, int inputAmount, String outputName,
 			ItemLike output, int outputAmount) {
 		ShapelessRecipeBuilder bToA = ShapelessRecipeBuilder.shapeless(output, outputAmount)
 				.requires(PEItems.PHILOSOPHERS_STONE)
@@ -1087,17 +1087,22 @@ public class PERecipeProvider extends RecipeProvider {
 		return item.asItem().getRegistryName().getPath();
 	}
 
+	//TODO: If forge re exposes it via AT we can remove this copy of has
+	private static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> tag) {
+		return inventoryTrigger(ItemPredicate.Builder.item().of(tag).build());
+	}
+
 	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike... items) {
 		return InventoryChangeTrigger.TriggerInstance.hasItems(items);
 	}
 
 	@SafeVarargs
-	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike item, Tag<Item>... tags) {
+	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike item, TagKey<Item>... tags) {
 		return hasItems(new ItemLike[]{item}, tags);
 	}
 
 	@SafeVarargs
-	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike[] items, Tag<Item>... tags) {
+	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike[] items, TagKey<Item>... tags) {
 		ItemPredicate[] predicates = new ItemPredicate[items.length + tags.length];
 		for (int i = 0; i < items.length; ++i) {
 			predicates[i] = ItemPredicate.Builder.item().of(items[i]).build();

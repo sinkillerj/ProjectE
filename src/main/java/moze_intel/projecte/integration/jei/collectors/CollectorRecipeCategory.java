@@ -1,13 +1,14 @@
 package moze_intel.projecte.integration.jei.collectors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -62,33 +63,16 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public void setIngredients(@Nonnull FuelUpgradeRecipe o, @Nonnull IIngredients ingredients) {
-		ingredients.setInput(VanillaTypes.ITEM, o.getInput());
-		ingredients.setOutput(VanillaTypes.ITEM, o.getOutput());
+	public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull FuelUpgradeRecipe recipe, @Nonnull IFocusGroup focuses) {
+		builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
+				.addItemStack(recipe.input());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 16)
+				.addItemStack(recipe.output());
 	}
 
 	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull FuelUpgradeRecipe o, @Nonnull IIngredients ingredients) {
-		int itemSlots = 0;
-		int xPos = 16;
-		for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM)) {
-			recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
-			recipeLayout.getItemStacks().set(itemSlots, s);
-			itemSlots++;
-			xPos += 16;
-		}
-		xPos = 104;
-		for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM)) {
-			recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
-			recipeLayout.getItemStacks().set(itemSlots, stacks);
-			itemSlots++;
-			xPos += 16;
-		}
-	}
-
-	@Override
-	public void draw(FuelUpgradeRecipe recipe, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
-		Component emc = PELang.EMC.translate(recipe.getUpgradeEMC());
+	public void draw(FuelUpgradeRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
+		Component emc = PELang.EMC.translate(recipe.upgradeEMC());
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(emc);
 		fontRenderer.draw(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);

@@ -5,28 +5,30 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public final class FuelMapper {
 
 	private static final List<Item> FUEL_MAP = new ArrayList<>();
-	private static final ResourceLocation FUEL_TAG = PECore.rl("collector_fuel");
 
 	/**
 	 * Used on server to load the map based on the tag
 	 */
-	public static void loadMap(TagContainer tagCollectionSupplier) {
+	public static void loadMap() {
 		FUEL_MAP.clear();
-		//Note: We need to get the tag by resource location, as named tags are not populated yet here
-		Tag<Item> collectorFuelTag = tagCollectionSupplier.getOrEmpty(Registry.ITEM_REGISTRY).getTagOrEmpty(FUEL_TAG);
-		collectorFuelTag.getValues().stream().filter(EMCHelper::doesItemHaveEmc).forEach(FUEL_MAP::add);
+		//TODO - 1.18: Validate that this works? But it seems to be late or something which causes it to not show in JEI
+		for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(PETags.Items.COLLECTOR_FUEL)) {
+			Item item = itemHolder.value();
+			if (EMCHelper.doesItemHaveEmc(item)) {
+				FUEL_MAP.add(item);
+			}
+		}
 		FUEL_MAP.sort(Comparator.comparing(EMCHelper::getEmcValue));
 	}
 

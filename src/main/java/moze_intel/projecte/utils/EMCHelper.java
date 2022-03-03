@@ -133,7 +133,7 @@ public final class EMCHelper {
 	}
 
 	public static long getEmcValue(ItemLike item) {
-		return item == null ? 0 : getEmcValue(ItemInfo.fromItem(item.asItem()));
+		return item == null ? 0 : getEmcValue(ItemInfo.fromItem(item));
 	}
 
 	/**

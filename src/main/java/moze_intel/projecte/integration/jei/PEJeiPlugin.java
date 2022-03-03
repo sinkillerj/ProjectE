@@ -72,6 +72,8 @@ public class PEJeiPlugin implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registry) {
 		registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
 		List<FuelUpgradeRecipe> fuelRecipes = new ArrayList<>();
+		//TODO - 1.18: Figure this out it doesn't have recipes in time due to having moved it all back so that we can properly
+		// read stuff from tags
 		for (Item i : FuelMapper.getFuelMap()) {
 			ItemStack stack = new ItemStack(i);
 			ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);

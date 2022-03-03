@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
@@ -23,9 +23,9 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 	private final float efficiency;
 	private final float chargeModifier;
 	private final int harvestLevel;
-	private final Tag<Block> neededTag;
+	private final TagKey<Block> neededTag;
 
-	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, Tag<Block> neededTag, Tier previous,
+	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, TagKey<Block> neededTag, Tier previous,
 			@Nullable ResourceLocation next) {
 		this.name = name;
 		this.attackDamage = attackDamage;
@@ -88,7 +88,7 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 
 	@Nonnull
 	@Override
-	public Tag<Block> getTag() {
+	public TagKey<Block> getTag() {
 		return neededTag;
 	}
 }

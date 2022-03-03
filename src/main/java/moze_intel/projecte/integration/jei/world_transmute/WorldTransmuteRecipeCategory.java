@@ -1,15 +1,19 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
@@ -66,56 +70,35 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	}
 
 	@Override
-	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
+	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
 		arrow.draw(matrix, 55, 18);
 	}
 
 	@Override
-	public void setIngredients(WorldTransmuteEntry recipe, @Nonnull IIngredients ingredients) {
-		recipe.setIngredients(ingredients);
-	}
-
-	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull WorldTransmuteEntry recipeWrapper, @Nonnull IIngredients ingredients) {
-		int itemSlots = 0;
-		int fluidSlots = 0;
-
-		int xPos = 16;
-		for (List<FluidStack> s : ingredients.getInputs(VanillaTypes.FLUID)) {
-			recipeLayout.getFluidStacks().init(fluidSlots, true, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
-			recipeLayout.getFluidStacks().set(fluidSlots, s);
-			fluidSlots++;
-			xPos += 16;
-		}
-
-		xPos = 16;
-		for (List<ItemStack> s : ingredients.getInputs(VanillaTypes.ITEM)) {
-			recipeLayout.getItemStacks().init(itemSlots, true, xPos, 16);
-			recipeLayout.getItemStacks().set(itemSlots, s);
-			itemSlots++;
-			xPos += 16;
-		}
-
-		xPos = 96;
-		for (List<ItemStack> stacks : ingredients.getOutputs(VanillaTypes.ITEM)) {
-			recipeLayout.getItemStacks().init(itemSlots, false, xPos, 16);
-			recipeLayout.getItemStacks().set(itemSlots, stacks);
-			itemSlots++;
-			xPos += 16;
-		}
-
-		xPos = 96;
-		for (List<FluidStack> stacks : ingredients.getOutputs(VanillaTypes.FLUID)) {
-			recipeLayout.getFluidStacks().init(fluidSlots, false, xPos, 16, 16, 16, FluidAttributes.BUCKET_VOLUME, false, null);
-			recipeLayout.getFluidStacks().set(fluidSlots, stacks);
-			fluidSlots++;
+	public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull WorldTransmuteEntry recipe, @Nonnull IFocusGroup focuses) {
+		recipe.getInput().ifPresent(recipeInput ->
+				recipeInput.ifLeft(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
+						.addItemStack(input)
+				).ifRight(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
+						.addIngredient(VanillaTypes.FLUID, input)
+						.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
+				)
+		);
+		int xPos = 96;
+		for (Either<ItemStack, FluidStack> output : recipe.getOutput()) {
+			IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, xPos, 16);
+			output.ifLeft(slot::addItemStack)
+					.ifRight(input -> slot
+							.addIngredient(VanillaTypes.FLUID, input)
+							.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
+					);
 			xPos += 16;
 		}
 	}
 
 	@Nonnull
 	@Override
-	public List<Component> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, double mouseX, double mouseY) {
+	public List<Component> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, @Nonnull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
 			return Collections.singletonList(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate());
 		}

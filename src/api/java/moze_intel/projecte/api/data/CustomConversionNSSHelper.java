@@ -6,7 +6,7 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -73,21 +73,21 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
 	 *
 	 * @param output Item tag produced by the conversion.
 	 */
-	default BUILDER conversion(Tag<Item> output) {
+	default BUILDER conversion(TagKey<Item> output) {
 		return conversion(output, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
+	 * Helper method to wrap an {@link TagKey<Item>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
 	 *
 	 * @param output Item tag produced by the conversion.
 	 * @param amount Amount the conversion outputs.
 	 */
-	default BUILDER conversion(Tag<Item> output, int amount) {
+	default BUILDER conversion(TagKey<Item> output, int amount) {
 		return conversion(NSSItem.createTag(output), amount);
 	}
 
@@ -123,25 +123,25 @@ interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> 
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it.
 	 *
 	 * @param output Fluid tag produced by the conversion.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER conversionFluid(Tag<Fluid> output) {
+	default BUILDER conversionFluid(TagKey<Fluid> output) {
 		return conversionFluid(output, 1);
 	}
 
 	/**
-	 * Helper method to wrap an {@link Tag<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
+	 * Helper method to wrap an {@link TagKey<Fluid>} into a {@link NormalizedSimpleStack} and then create a {@link BUILDER} representing it and the given amount.
 	 *
 	 * @param output Fluid tag produced by the conversion.
 	 * @param amount Amount the conversion outputs.
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER conversionFluid(Tag<Fluid> output, int amount) {
+	default BUILDER conversionFluid(TagKey<Fluid> output, int amount) {
 		return conversion(NSSFluid.createTag(output), amount);
 	}
 

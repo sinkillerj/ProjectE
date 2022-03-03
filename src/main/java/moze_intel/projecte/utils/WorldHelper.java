@@ -13,15 +13,16 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.WorldlyContainer;
@@ -361,7 +362,7 @@ public final class WorldHelper {
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof BonemealableBlock growable) {
 				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state, false)) {
-					if (harvest && !PETags.Blocks.BLACKLIST_HARVEST.contains(crop)) {
+					if (harvest && !state.is(PETags.Blocks.BLACKLIST_HARVEST)) {
 						if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of kelp but otherwise allow harvesting them
 							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
@@ -439,15 +440,24 @@ public final class WorldHelper {
 					}
 				}
 				BlockState newState = Blocks.SEAGRASS.defaultBlockState();
-				Optional<ResourceKey<Biome>> optional = level.getBiomeName(blockpos);
-				if (Biomes.WARM_OCEAN.equals(optional.orElse(null))) {
+				Holder<Biome> biome = level.getBiome(blockpos);
+				if (biome.is(Biomes.WARM_OCEAN)) {
 					if (i == 0 && side != null && side.getAxis().isHorizontal()) {
-						newState = BlockTags.WALL_CORALS.getRandomElement(random).defaultBlockState().setValue(BaseCoralWallFanBlock.FACING, side);
+						newState = Registry.BLOCK.getTag(BlockTags.WALL_CORALS)
+								.flatMap(tag -> tag.getRandomElement(random))
+								.map(block -> block.value().defaultBlockState())
+								.orElse(newState);
+						if (newState.hasProperty(BaseCoralWallFanBlock.FACING)) {
+							newState = newState.setValue(BaseCoralWallFanBlock.FACING, side);
+						}
 					} else if (random.nextInt(4) == 0) {
-						newState = BlockTags.UNDERWATER_BONEMEALS.getRandomElement(random).defaultBlockState();
+						newState = Registry.BLOCK.getTag(BlockTags.UNDERWATER_BONEMEALS)
+								.flatMap(tag -> tag.getRandomElement(random))
+								.map(block -> block.value().defaultBlockState())
+								.orElse(newState);
 					}
 				}
-				if (newState.is(BlockTags.WALL_CORALS)) {
+				if (newState.is(BlockTags.WALL_CORALS, s -> s.hasProperty(BaseCoralWallFanBlock.FACING))) {
 					for (int k = 0; !newState.canSurvive(level, blockpos) && k < 4; ++k) {
 						newState = newState.setValue(BaseCoralWallFanBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(random));
 					}
@@ -502,7 +512,7 @@ public final class WorldHelper {
 		}
 	}
 
-	private static boolean validRepelEntity(Entity entity, Tag<EntityType<?>> blacklistTag) {
+	private static boolean validRepelEntity(Entity entity, TagKey<EntityType<?>> blacklistTag) {
 		if (!entity.isSpectator() && !entity.getType().is(blacklistTag)) {
 			if (entity instanceof Projectile) {
 				//Accept any projectile's that are not in the ground, but fail for ones that are in the ground

@@ -28,7 +28,7 @@ public class RecipesCovalenceRepair extends CustomRecipe {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack input = inv.getItem(i);
 			if (!input.isEmpty()) {
-				if (PETags.Items.COVALENCE_DUST.contains(input.getItem())) {
+				if (input.is(PETags.Items.COVALENCE_DUST)) {
 					dust.add(input);
 				} else if (tool.isEmpty() && ItemHelper.isRepairableDamagedItem(input)) {
 					tool = input;

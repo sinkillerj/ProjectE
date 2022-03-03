@@ -22,7 +22,9 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -134,7 +136,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
-			if (!blockEntity.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH.contains(blockEntity.getType())) {
+			if (!blockEntity.isRemoved() && !Registry.BLOCK_ENTITY_TYPE.getHolder(ResourceKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY,
+							blockEntity.getType().getRegistryName())).map(holder -> holder.is(BlockEntities.BLACKLIST_TIME_WATCH)).orElse(false)) {
 				BlockPos pos = blockEntity.getBlockPos();
 				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
 					LevelChunk chunk = level.getChunkAt(pos);
@@ -175,7 +178,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			if (WorldHelper.isBlockLoaded(serverLevel, pos)) {
 				BlockState state = serverLevel.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.isRandomlyTicking() && !PETags.Blocks.BLACKLIST_TIME_WATCH.contains(block)
+				if (state.isRandomlyTicking() && !state.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
 					pos = pos.immutable();

@@ -30,7 +30,7 @@ import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
 import moze_intel.projecte.utils.AnnotationHelper;
-import net.minecraft.server.ServerResources;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -61,7 +61,7 @@ public final class EMCMappingHandler {
 		return val;
 	}
 
-	public static void map(ServerResources dataPackRegistries, ResourceManager resourceManager) {
+	public static void map(ReloadableServerResources serverResources, ResourceManager resourceManager) {
 		//Start by clearing the cached map so if values are removed say by setting EMC to zero then we respect the change
 		clearEmcMap();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
@@ -103,7 +103,7 @@ public final class EMCMappingHandler {
 				try {
 					if (getOrSetDefault(config, "enabledMappers." + emcMapper.getName(), emcMapper.getDescription(), emcMapper.isAvailable())) {
 						DumpToFileCollector.currentGroupName = emcMapper.getName();
-						emcMapper.addMappings(mappingCollector, config, dataPackRegistries, resourceManager);
+						emcMapper.addMappings(mappingCollector, config, serverResources, resourceManager);
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e) {
@@ -147,7 +147,7 @@ public final class EMCMappingHandler {
 		}
 
 		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
-		FuelMapper.loadMap(dataPackRegistries.getTags());
+		FuelMapper.loadMap();
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {

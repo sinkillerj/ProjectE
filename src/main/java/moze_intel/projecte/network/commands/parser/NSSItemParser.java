@@ -6,17 +6,17 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -28,17 +28,18 @@ public class NSSItemParser {
 
 	//This error message is a copy of ItemPredicateArgument.UNKNOWN_TAG
 	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType(PELang.UNKNOWN_TAG::translate);
-	private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = SuggestionsBuilder::buildFuture;
+	private static final BiFunction<SuggestionsBuilder, Registry<Item>, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = (builder, registry) -> builder.buildFuture();
 
 	private final StringReader reader;
 	@Nullable
 	private Item item;
 	@Nullable
 	private CompoundTag nbt;
-	private ResourceLocation tagId = new ResourceLocation("");
+	@Nullable
+	private TagKey<Item> tag;
 	private int readerCursor;
 	/** Builder to be used when creating a list of suggestions */
-	private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
+	private BiFunction<SuggestionsBuilder, Registry<Item>, CompletableFuture<Suggestions>> suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
 
 	public NSSItemParser(StringReader readerIn) {
 		this.reader = readerIn;
@@ -49,9 +50,10 @@ public class NSSItemParser {
 			return new NSSItemResult(this);
 		}
 		//Else it is a tag
-		Tag<Item> tag = ItemTags.getAllTags().getTag(tagId);
-		if (tag == null) {
-			throw UNKNOWN_TAG.create(tagId.toString());
+		else if (tag == null) {
+			throw UNKNOWN_TAG.create("");
+		} else if (!Registry.ITEM.isKnownTagName(tag)) {
+			throw UNKNOWN_TAG.create(tag.location().toString());
 		}
 		return new NSSItemResult(this);
 	}
@@ -63,7 +65,7 @@ public class NSSItemParser {
 			this.suggestionsBuilder = this::suggestTag;
 			this.reader.expect('#');
 			this.readerCursor = this.reader.getCursor();
-			this.tagId = ResourceLocation.read(this.reader);
+			this.tag = TagKey.create(Registry.ITEM_REGISTRY, ResourceLocation.read(this.reader));
 		} else {
 			//Read Item
 			int i = this.reader.getCursor();
@@ -87,7 +89,7 @@ public class NSSItemParser {
 	 *
 	 * @param builder Builder to create list of suggestions
 	 */
-	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder builder) {
+	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder builder, Registry<Item> registry) {
 		if (builder.getRemaining().isEmpty()) {
 			builder.suggest(String.valueOf('{'));
 		}
@@ -99,8 +101,8 @@ public class NSSItemParser {
 	 *
 	 * @param builder Builder to create list of suggestions
 	 */
-	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder.createOffset(this.readerCursor));
+	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder, Registry<Item> registry) {
+		return SharedSuggestionProvider.suggestResource(registry.getTagNames().map(TagKey::location), builder.createOffset(this.readerCursor));
 	}
 
 	/**
@@ -108,8 +110,8 @@ public class NSSItemParser {
 	 *
 	 * @param builder Builder to create list of suggestions
 	 */
-	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder) {
-		SharedSuggestionProvider.suggestResource(ItemTags.getAllTags().getAvailableTags(), builder, String.valueOf('#'));
+	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder, Registry<Item> registry) {
+		SharedSuggestionProvider.suggestResource(registry.getTagNames().map(TagKey::location), builder, String.valueOf('#'));
 		return SharedSuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getKeys(), builder);
 	}
 
@@ -118,8 +120,8 @@ public class NSSItemParser {
 	 *
 	 * @param builder Builder to create list of suggestions
 	 */
-	public CompletableFuture<Suggestions> fillSuggestions(SuggestionsBuilder builder) {
-		return this.suggestionsBuilder.apply(builder.createOffset(this.reader.getCursor()));
+	public CompletableFuture<Suggestions> fillSuggestions(SuggestionsBuilder builder, Registry<Item> registry) {
+		return this.suggestionsBuilder.apply(builder.createOffset(this.reader.getCursor()), registry);
 	}
 
 	public static class NSSItemResult {
@@ -133,7 +135,9 @@ public class NSSItemParser {
 		public NSSItemResult(NSSItemParser parser) {
 			item = parser.item;
 			nbt = parser.nbt;
-			tagId = parser.tagId;
+			if (parser.tag != null) {
+				tagId = parser.tag.location();
+			}
 		}
 
 		public NSSItemResult(@Nonnull ItemStack stack) {

@@ -34,7 +34,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -124,7 +124,7 @@ public class ToolHelper {
 	/**
 	 * Clears the given tag in an AOE. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static InteractionResult clearTagAOE(Level level, Player player, InteractionHand hand, ItemStack stack, long emcCost, Tag<Block> tag) {
+	public static InteractionResult clearTagAOE(Level level, Player player, InteractionHand hand, ItemStack stack, long emcCost, TagKey<Block> tag) {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return InteractionResult.PASS;
 		}

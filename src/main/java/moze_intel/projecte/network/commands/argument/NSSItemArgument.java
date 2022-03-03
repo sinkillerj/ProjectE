@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.network.commands.parser.NSSItemParser;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
+import net.minecraft.core.Registry;
 
 public class NSSItemArgument implements ArgumentType<NSSItemResult> {
 
@@ -34,7 +35,7 @@ public class NSSItemArgument implements ArgumentType<NSSItemResult> {
 			parser.parse();
 		} catch (CommandSyntaxException ignored) {
 		}
-		return parser.fillSuggestions(builder);
+		return parser.fillSuggestions(builder, Registry.ITEM);
 	}
 
 	@Override

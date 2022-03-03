@@ -1,14 +1,14 @@
 package moze_intel.projecte.api.nss;
 
+import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -89,15 +89,11 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSItem} representing a tag from a {@link Tag<Item>}
+	 * Helper method to create an {@link NSSItem} representing a tag from a {@link TagKey<Item>}
 	 */
 	@Nonnull
-	public static NSSItem createTag(@Nonnull Tag<Item> tag) {
-		ResourceLocation tagLocation = SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY).getId(tag);
-		if (tagLocation == null) {
-			throw new IllegalArgumentException("Can't make NSSItem with a tag that does not exist");
-		}
-		return createTag(tagLocation);
+	public static NSSItem createTag(@Nonnull TagKey<Item> tag) {
+		return createTag(tag.location());
 	}
 
 	@Override
@@ -120,8 +116,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	@Nonnull
 	@Override
-	protected TagCollection<Item> getTagCollection() {
-		return SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY);
+	protected Optional<Named<Item>> getTag() {
+		return getTag(Registry.ITEM);
 	}
 
 	@Override

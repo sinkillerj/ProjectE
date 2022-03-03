@@ -1,12 +1,14 @@
 package moze_intel.projecte.utils;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -17,8 +19,8 @@ public class EntityRandomizerHelper {
 
 	public static Mob getRandomEntity(Level level, Mob toRandomize) {
 		EntityType<?> entType = toRandomize.getType();
-		boolean isPeaceful = PETags.Entities.RANDOMIZER_PEACEFUL.contains(entType);
-		boolean isHostile = PETags.Entities.RANDOMIZER_HOSTILE.contains(entType);
+		boolean isPeaceful = entType.is(PETags.Entities.RANDOMIZER_PEACEFUL);
+		boolean isHostile = entType.is(PETags.Entities.RANDOMIZER_HOSTILE);
 		if (isPeaceful && isHostile) {
 			//If it is in both lists do some extra checks to see if it really is peaceful
 			// currently this only includes our special casing for killer rabbits
@@ -43,9 +45,14 @@ public class EntityRandomizerHelper {
 	}
 
 	@Nullable
-	private static Mob createRandomEntity(Level level, Entity current, Named<EntityType<?>> type) {
+	private static Mob createRandomEntity(Level level, Entity current, TagKey<EntityType<?>> type) {
+		Optional<HolderSet.Named<EntityType<?>>> tag = Registry.ENTITY_TYPE.getTag(type);
+		if (tag.isEmpty()) {
+			//Unknown, just return null so nothing happens
+			return null;
+		}
 		EntityType<?> currentType = current.getType();
-		EntityType<?> newType = getRandomTagEntry(level.getRandom(), type, currentType);
+		EntityType<?> newType = getRandomTagEntry(level.getRandom(), tag.get(), currentType.builtInRegistryHolder()).value();
 		if (currentType == newType) {
 			//If the type is identical return null so that nothing happens
 			return null;
@@ -58,20 +65,25 @@ public class EntityRandomizerHelper {
 			newEntity.discard();
 			// and log a warning
 			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.",
-					newType.getRegistryName(), type.getName());
+					newType.getRegistryName(), type.location());
 		}
 		return null;
 	}
 
-	private static <T> T getRandomTagEntry(Random random, Tag<T> tag, T toExclude) {
-		List<T> list = tag.getValues();
-		if (list.isEmpty() || list.size() == 1 && list.contains(toExclude)) {
+	private static <T> Holder<T> getRandomTagEntry(Random random, HolderSet.Named<T> tag, Holder<T> toExclude) {
+		int size = tag.size();
+		if (size == 0 || size == 1 && tag.contains(toExclude)) {
 			return toExclude;
 		}
-		T obj;
+		Holder<T> obj;
 		do {
-			obj = tag.getRandomElement(random);
-		} while (obj.equals(toExclude));
+			Optional<Holder<T>> randomElement = tag.getRandomElement(random);
+			if (randomElement.isEmpty()) {
+				//Something went wrong
+				return toExclude;
+			}
+			obj = randomElement.get();
+		} while (toExclude.value().equals(obj.value()));
 		return obj;
 	}
 }

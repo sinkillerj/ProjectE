@@ -1,14 +1,14 @@
 package moze_intel.projecte.api.nss;
 
+import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -76,15 +76,11 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	}
 
 	/**
-	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link Tag<Fluid>}
+	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link TagKey<Fluid>}
 	 */
 	@Nonnull
-	public static NSSFluid createTag(@Nonnull Tag<Fluid> tag) {
-		ResourceLocation tagLocation = SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getId(tag);
-		if (tagLocation == null) {
-			throw new IllegalArgumentException("Can't make NSSFluid with a tag that does not exist");
-		}
-		return createTag(tagLocation);
+	public static NSSFluid createTag(@Nonnull TagKey<Fluid> tag) {
+		return createTag(tag.location());
 	}
 
 	@Override
@@ -106,8 +102,8 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
 	@Nonnull
 	@Override
-	protected TagCollection<Fluid> getTagCollection() {
-		return SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY);
+	protected Optional<Named<Fluid>> getTag() {
+		return getTag(Registry.FLUID);
 	}
 
 	@Override

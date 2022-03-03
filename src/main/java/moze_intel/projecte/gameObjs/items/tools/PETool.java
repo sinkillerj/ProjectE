@@ -13,7 +13,7 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 	protected final EnumMatterType matterType;
 	private final int numCharges;
 
-	public PETool(EnumMatterType matterType, Tag<Block> blocks, float damage, float attackSpeed, int numCharges, Properties props) {
+	public PETool(EnumMatterType matterType, TagKey<Block> blocks, float damage, float attackSpeed, int numCharges, Properties props) {
 		super(damage, attackSpeed, matterType, blocks, props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
