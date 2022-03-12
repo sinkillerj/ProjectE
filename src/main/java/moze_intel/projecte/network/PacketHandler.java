@@ -92,10 +92,7 @@ public final class PacketHandler {
 	}
 
 	private static void sendFragmentedEmcPacket(ServerPlayer player, SyncEmcPKT pkt, SyncFuelMapperPKT fuelPkt) {
-		if (isLocal(player)) {
-			//Reach across sides and initialize it
-			FuelMapper.initializeJEIFuelMap();
-		} else {
+		if (!isLocal(player)) {
 			sendTo(pkt, player);
 			sendTo(fuelPkt, player);
 		}

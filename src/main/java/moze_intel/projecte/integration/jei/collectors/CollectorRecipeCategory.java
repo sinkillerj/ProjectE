@@ -9,6 +9,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -21,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe> {
 
-	public static final ResourceLocation UID = PECore.rl("collector");
+	public static final RecipeType<FuelUpgradeRecipe> RECIPE_TYPE = new RecipeType<>(PECore.rl("collector"), FuelUpgradeRecipe.class);
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
@@ -34,14 +35,24 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 
 	@Nonnull
 	@Override
-	public ResourceLocation getUid() {
-		return UID;
+	public RecipeType<FuelUpgradeRecipe> getRecipeType() {
+		return RECIPE_TYPE;
 	}
 
-	@Override
 	@Nonnull
-	public Class<FuelUpgradeRecipe> getRecipeClass() {
-		return FuelUpgradeRecipe.class;
+	@Override
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
+	public ResourceLocation getUid() {
+		return getRecipeType().getUid();
+	}
+
+	@Nonnull
+	@Override
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
+	public Class<? extends FuelUpgradeRecipe> getRecipeClass() {
+		return getRecipeType().getRecipeClass();
 	}
 
 	@Nonnull

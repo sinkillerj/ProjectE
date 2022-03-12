@@ -40,14 +40,6 @@ public final class FuelMapper {
 	public static void setFuelMap(List<Item> map) {
 		FUEL_MAP.clear();
 		FUEL_MAP.addAll(map);
-		//Synced from server initialize JEI fuel map
-		initializeJEIFuelMap();
-	}
-
-	public static void initializeJEIFuelMap() {
-		if (ModList.get().isLoaded("jei")) {
-			PEJeiPlugin.addFuelRecipes(Collections.unmodifiableList(FUEL_MAP));
-		}
 	}
 
 	public static SyncFuelMapperPKT getSyncPacket() {

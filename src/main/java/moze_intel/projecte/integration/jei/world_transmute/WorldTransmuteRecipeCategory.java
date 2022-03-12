@@ -14,6 +14,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
@@ -28,7 +29,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
 
-	public static final ResourceLocation UID = PECore.rl("world_transmutation");
+	public static final RecipeType<WorldTransmuteEntry> RECIPE_TYPE = new RecipeType<>(PECore.rl("world_transmutation"), WorldTransmuteEntry.class);
 	private final IDrawable background;
 	private final IDrawable arrow;
 	private final IDrawable icon;
@@ -41,14 +42,24 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 
 	@Nonnull
 	@Override
-	public ResourceLocation getUid() {
-		return UID;
+	public RecipeType<WorldTransmuteEntry> getRecipeType() {
+		return RECIPE_TYPE;
 	}
 
 	@Nonnull
 	@Override
-	public Class<WorldTransmuteEntry> getRecipeClass() {
-		return WorldTransmuteEntry.class;
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
+	public ResourceLocation getUid() {
+		return getRecipeType().getUid();
+	}
+
+	@Nonnull
+	@Override
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
+	public Class<? extends WorldTransmuteEntry> getRecipeClass() {
+		return getRecipeType().getRecipeClass();
 	}
 
 	@Nonnull

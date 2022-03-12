@@ -99,7 +99,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 
 ext {
     versionProperties = ["version"       : projecte_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range]
+                         "loader_version": loader_version_range, "jei_version": jei_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -311,15 +311,12 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    //TODO: Uncomment when it supports 1.18.2
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    //TODO: Switch back to implementation once it supports 1.18.2
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
+    implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
 
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
-    //TODO: Uncomment when it supports 1.18.2
-    //runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     //TODO: Switch back to implementation once it supports 1.18.2
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:${crafttweaker_version}")

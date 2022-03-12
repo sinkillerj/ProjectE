@@ -1,11 +1,12 @@
 package moze_intel.projecte.integration.jei;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -48,50 +49,43 @@ public class PEJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		registration.addRecipeTransferHandler(PhilosStoneContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+		registration.addRecipeTransferHandler(PhilosStoneContainer.class, RecipeTypes.CRAFTING, 1, 9, 10, 36);
 	}
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addRecipeCatalyst(new ItemStack(PEItems.PHILOSOPHERS_STONE), VanillaRecipeCategoryUid.CRAFTING, WorldTransmuteRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.UID);
-		registry.addRecipeCatalyst(new ItemStack(PEBlocks.DARK_MATTER_FURNACE), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
-		registry.addRecipeCatalyst(new ItemStack(PEBlocks.RED_MATTER_FURNACE), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+		registry.addRecipeCatalyst(new ItemStack(PEItems.PHILOSOPHERS_STONE), RecipeTypes.CRAFTING, WorldTransmuteRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.DARK_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
+		registry.addRecipeCatalyst(new ItemStack(PEBlocks.RED_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
 	}
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-		registry.addRecipeClickArea(GUIDMFurnace.class, 73, 34, 25, 16, VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
-		registry.addRecipeClickArea(GUIRMFurnace.class, 88, 35, 25, 17, VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
-		registry.addRecipeClickArea(AbstractCollectorScreen.MK1.class, 138, 31, 10, 24, CollectorRecipeCategory.UID);
-		registry.addRecipeClickArea(AbstractCollectorScreen.MK2.class, 138 + 16, 31, 10, 24, CollectorRecipeCategory.UID);
-		registry.addRecipeClickArea(AbstractCollectorScreen.MK3.class, 138 + 34, 31, 10, 24, CollectorRecipeCategory.UID);
+		registry.addRecipeClickArea(GUIDMFurnace.class, 73, 34, 25, 16, RecipeTypes.SMELTING, RecipeTypes.FUELING);
+		registry.addRecipeClickArea(GUIRMFurnace.class, 88, 35, 25, 17, RecipeTypes.SMELTING, RecipeTypes.FUELING);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK1.class, 138, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK2.class, 138 + 16, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeClickArea(AbstractCollectorScreen.MK3.class, 138 + 34, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);
 	}
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		registry.addRecipes(WorldTransmuteRecipeCategory.getAllTransmutations(), WorldTransmuteRecipeCategory.UID);
+		registry.addRecipes(WorldTransmuteRecipeCategory.RECIPE_TYPE, WorldTransmuteRecipeCategory.getAllTransmutations());
 	}
 
 	@Override
 	public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime) {
-		lastRecipeManager = jeiRuntime.getRecipeManager();
-	}
-
-	@Nullable
-	private static IRecipeManager lastRecipeManager;
-
-	public static void addFuelRecipes(List<Item> fuelMap) {
-		if (lastRecipeManager != null) {
-			for (Item i : fuelMap) {
-				ItemStack stack = new ItemStack(i);
-				ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);
-				if (EMCHelper.getEmcValue(stack) <= EMCHelper.getEmcValue(fuelUpgrade)) {
-					lastRecipeManager.addRecipe(new FuelUpgradeRecipe(stack, fuelUpgrade), CollectorRecipeCategory.UID);
-				}
+		List<FuelUpgradeRecipe> recipes = new ArrayList<>();
+		for (Item i : FuelMapper.getFuelMap()) {
+			ItemStack stack = new ItemStack(i);
+			ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(stack);
+			if (EMCHelper.getEmcValue(stack) <= EMCHelper.getEmcValue(fuelUpgrade)) {
+				recipes.add(new FuelUpgradeRecipe(stack, fuelUpgrade));
 			}
 		}
+		jeiRuntime.getRecipeManager().addRecipes(CollectorRecipeCategory.RECIPE_TYPE, recipes);
 	}
 }
