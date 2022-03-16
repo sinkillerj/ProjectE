@@ -1,11 +1,11 @@
 package moze_intel.projecte.api.nss;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
@@ -116,8 +118,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	@Nonnull
 	@Override
-	protected Optional<Named<Item>> getTag() {
-		return getTag(Registry.ITEM);
+	protected Optional<Either<Named<Item>, ITag<Item>>> getTag() {
+		return getTag(ForgeRegistries.ITEMS);
 	}
 
 	@Override

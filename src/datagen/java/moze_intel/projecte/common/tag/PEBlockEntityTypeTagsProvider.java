@@ -5,16 +5,16 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags.BlockEntities;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
+import net.minecraftforge.registries.ForgeRegistries;
 
-public class PEBlockEntityTypeTagsProvider extends TagsProvider<BlockEntityType<?>> {
+public class PEBlockEntityTypeTagsProvider extends ForgeRegistryTagsProvider<BlockEntityType<?>> {
 
 	public PEBlockEntityTypeTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, Registry.BLOCK_ENTITY_TYPE, PECore.MODID, existingFileHelper);
+		super(generator, ForgeRegistries.BLOCK_ENTITIES, PECore.MODID, existingFileHelper);
 	}
 
 	@Override

@@ -5,15 +5,14 @@ import java.util.Random;
 import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
 
 public class EntityRandomizerHelper {
 
@@ -46,13 +45,9 @@ public class EntityRandomizerHelper {
 
 	@Nullable
 	private static Mob createRandomEntity(Level level, Entity current, TagKey<EntityType<?>> type) {
-		Optional<HolderSet.Named<EntityType<?>>> tag = Registry.ENTITY_TYPE.getTag(type);
-		if (tag.isEmpty()) {
-			//Unknown, just return null so nothing happens
-			return null;
-		}
+		ITag<EntityType<?>> tag = LazyTagLookup.tagManager(ForgeRegistries.ENTITIES).getTag(type);
 		EntityType<?> currentType = current.getType();
-		EntityType<?> newType = getRandomTagEntry(level.getRandom(), tag.get(), currentType.builtInRegistryHolder()).value();
+		EntityType<?> newType = getRandomTagEntry(level.getRandom(), tag, currentType);
 		if (currentType == newType) {
 			//If the type is identical return null so that nothing happens
 			return null;
@@ -70,20 +65,16 @@ public class EntityRandomizerHelper {
 		return null;
 	}
 
-	private static <T> Holder<T> getRandomTagEntry(Random random, HolderSet.Named<T> tag, Holder<T> toExclude) {
+	private static <T> T getRandomTagEntry(Random random, ITag<T> tag, T toExclude) {
 		int size = tag.size();
 		if (size == 0 || size == 1 && tag.contains(toExclude)) {
 			return toExclude;
 		}
-		Holder<T> obj;
+		Optional<T> obj;
 		do {
-			Optional<Holder<T>> randomElement = tag.getRandomElement(random);
-			if (randomElement.isEmpty()) {
-				//Something went wrong
-				return toExclude;
-			}
-			obj = randomElement.get();
-		} while (toExclude.value().equals(obj.value()));
-		return obj;
+			obj = tag.getRandomElement(random);
+		} while (obj.isPresent() && obj.get().equals(toExclude));
+		//Fallback to base
+		return obj.orElse(toExclude);
 	}
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -22,9 +22,7 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -136,8 +134,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
-			if (!blockEntity.isRemoved() && !Registry.BLOCK_ENTITY_TYPE.getHolder(ResourceKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY,
-							blockEntity.getType().getRegistryName())).map(holder -> holder.is(BlockEntities.BLACKLIST_TIME_WATCH)).orElse(false)) {
+			if (!blockEntity.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH_LOOKUP.contains(blockEntity.getType())) {
 				BlockPos pos = blockEntity.getBlockPos();
 				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
 					LevelChunk chunk = level.getChunkAt(pos);

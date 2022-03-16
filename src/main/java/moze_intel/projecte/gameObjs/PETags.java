@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
+import moze_intel.projecte.utils.LazyTagLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -11,6 +12,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class PETags {
 
@@ -40,6 +43,7 @@ public class PETags {
 		 * Items in this tag will be used for the various collector fuel upgrade recipes.
 		 */
 		public static final TagKey<Item> COLLECTOR_FUEL = tag("collector_fuel");
+		public static final LazyTagLookup<Item> COLLECTOR_FUEL_LOOKUP = LazyTagLookup.create(ForgeRegistries.ITEMS, COLLECTOR_FUEL);
 		/**
 		 * Items in this tag can have their NBT tags duped by condensers and transmutation tables
 		 */
@@ -53,6 +57,9 @@ public class PETags {
 		public static final TagKey<Item> CURIOS_KLEIN_STAR = curiosTag("klein_star");
 		public static final TagKey<Item> CURIOS_NECKLACE = curiosTag("necklace");
 		public static final TagKey<Item> CURIOS_RING = curiosTag("ring");
+
+		public static final LazyTagLookup<Item> ORES_LOOKUP = LazyTagLookup.create(ForgeRegistries.ITEMS, Tags.Items.ORES);
+		public static final LazyTagLookup<Item> RAW_ORES_LOOKUP = LazyTagLookup.create(ForgeRegistries.ITEMS, Tags.Items.RAW_MATERIALS);
 
 		private static TagKey<Item> tag(String name) {
 			return ItemTags.create(PECore.rl(name));
@@ -145,6 +152,7 @@ public class PETags {
 		 * Block Entity Types added will not receive extra ticks from the Watch of Flowing Time
 		 */
 		public static final TagKey<BlockEntityType<?>> BLACKLIST_TIME_WATCH = tag("blacklist/time_watch");
+		public static final LazyTagLookup<BlockEntityType<?>> BLACKLIST_TIME_WATCH_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITIES, BLACKLIST_TIME_WATCH);
 
 		private static TagKey<BlockEntityType<?>> tag(String name) {
 			return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, PECore.rl(name));

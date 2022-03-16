@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.nss;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Either;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,6 +14,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:
@@ -86,12 +90,32 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	@Nonnull
 	protected abstract String getJsonPrefix();
 
+	/**
+	 * @return An optional with an object that represents either a named tag or forge's tag representation.
+	 */
 	@Nonnull
-	protected abstract Optional<Named<TYPE>> getTag();
+	protected abstract Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag();
 
-	protected final Optional<Named<TYPE>> getTag(Registry<TYPE> registry) {
+	/**
+	 * Helper to get the tag representation if this {@link NormalizedSimpleStack} is backed by a vanilla registry.
+	 */
+	protected final Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag(Registry<TYPE> registry) {
 		if (representsTag()) {
-			return registry.getTag(TagKey.create(registry.key(), getResourceLocation()));
+			return registry.getTag(TagKey.create(registry.key(), getResourceLocation())).map(Either::left);
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Helper to get the tag representation if this {@link NormalizedSimpleStack} is backed by a forge registry.
+	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	protected final Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag(IForgeRegistry<? extends TYPE> registry) {
+		if (representsTag()) {
+			ITagManager<? extends TYPE> tags = registry.tags();
+			if (tags != null) {
+				return Optional.of(Either.right(tags.getTag((TagKey) tags.createTagKey(getResourceLocation()))));
+			}
 		}
 		return Optional.empty();
 	}
@@ -105,9 +129,10 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
-		getTag().ifPresent(tag -> tag.stream().map(Holder::value)
+		getTag().ifPresent(tag -> tag.map(t -> t.stream().map(Holder::value), ITag::stream)
 				.map(createNew())
-				.forEach(consumer));
+				.forEach(consumer)
+		);
 	}
 
 	@Override

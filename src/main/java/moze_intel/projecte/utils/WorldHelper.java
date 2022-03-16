@@ -14,7 +14,6 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,6 +80,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Helper class for anything that touches a World. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -443,18 +443,12 @@ public final class WorldHelper {
 				Holder<Biome> biome = level.getBiome(blockpos);
 				if (biome.is(Biomes.WARM_OCEAN)) {
 					if (i == 0 && side != null && side.getAxis().isHorizontal()) {
-						newState = Registry.BLOCK.getTag(BlockTags.WALL_CORALS)
-								.flatMap(tag -> tag.getRandomElement(random))
-								.map(block -> block.value().defaultBlockState())
-								.orElse(newState);
+						newState = getRandomState(BlockTags.WALL_CORALS, random, newState);
 						if (newState.hasProperty(BaseCoralWallFanBlock.FACING)) {
 							newState = newState.setValue(BaseCoralWallFanBlock.FACING, side);
 						}
 					} else if (random.nextInt(4) == 0) {
-						newState = Registry.BLOCK.getTag(BlockTags.UNDERWATER_BONEMEALS)
-								.flatMap(tag -> tag.getRandomElement(random))
-								.map(block -> block.value().defaultBlockState())
-								.orElse(newState);
+						newState = getRandomState(BlockTags.UNDERWATER_BONEMEALS, random, newState);
 					}
 				}
 				if (newState.is(BlockTags.WALL_CORALS, s -> s.hasProperty(BaseCoralWallFanBlock.FACING))) {
@@ -475,6 +469,13 @@ public final class WorldHelper {
 			}
 		}
 		return success;
+	}
+
+	private static BlockState getRandomState(TagKey<Block> key, Random random, BlockState fallback) {
+		return LazyTagLookup.tagManager(ForgeRegistries.BLOCKS).getTag(key)
+				.getRandomElement(random)
+				.map(Block::defaultBlockState)
+				.orElse(fallback);
 	}
 
 	/**

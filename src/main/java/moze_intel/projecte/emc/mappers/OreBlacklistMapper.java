@@ -6,12 +6,10 @@ import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import moze_intel.projecte.gameObjs.PETags;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.Tags;
 
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -19,8 +17,8 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
 			ResourceManager resourceManager) {
-		for (Holder<Item> ore : Registry.ITEM.getTagOrEmpty(Tags.Items.ORES)) {
-			NSSItem nssOre = NSSItem.createItem(ore.value());
+		for (Item ore : PETags.Items.ORES_LOOKUP.tag()) {
+			NSSItem nssOre = NSSItem.createItem(ore);
 			mapper.setValueBefore(nssOre, 0L);
 			mapper.setValueAfter(nssOre, 0L);
 		}

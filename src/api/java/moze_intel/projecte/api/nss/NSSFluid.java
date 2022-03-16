@@ -1,17 +1,19 @@
 package moze_intel.projecte.api.nss;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Fluid}s.
@@ -102,8 +104,8 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
 	@Nonnull
 	@Override
-	protected Optional<Named<Fluid>> getTag() {
-		return getTag(Registry.FLUID);
+	protected Optional<Either<Named<Fluid>, ITag<Fluid>>> getTag() {
+		return getTag(ForgeRegistries.FLUIDS);
 	}
 
 	@Override
