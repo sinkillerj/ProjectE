@@ -10,7 +10,6 @@ import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.json.NSSSerializer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
@@ -80,12 +79,10 @@ public class CrTNSSResolver {
 	 */
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromItemTag(MCTag<Item> tag) {
-		//TODO - 1.18: Figure out
-		TagKey<Item> itemTag = null;//TagManagerItem.INSTANCE.getInternal(tag);
-		if (itemTag == null) {
-			throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
+		if (tag.exists()) {
+			return NSSItem.createTag(tag.id());
 		}
-		return NSSItem.createTag(itemTag);
+		throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
 	}
 
 	/**
@@ -127,11 +124,9 @@ public class CrTNSSResolver {
 	 */
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack fromFluidTag(MCTag<Fluid> tag) {
-		//TODO - 1.18: Figure out
-		TagKey<Fluid> fluidTag = null;//TagManagerFluid.INSTANCE.getInternal(tag);
-		if (fluidTag == null) {
-			throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
+		if (tag.exists()) {
+			return NSSFluid.createTag(tag.id());
 		}
-		return NSSFluid.createTag(fluidTag);
+		throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
 	}
 }
