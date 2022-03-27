@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -33,6 +32,7 @@ import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
 @EMCMapper
 public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {

@@ -1,6 +1,5 @@
 package moze_intel.projecte.integration.curios;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +8,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
+import org.jetbrains.annotations.Nullable;
 
 public class CuriosIntegration {
 

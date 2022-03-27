@@ -1,9 +1,9 @@
 package moze_intel.projecte.api.capabilities.item;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -26,7 +26,7 @@ public interface IItemEmcHolder {
 	 *
 	 * @return The amount that was actually added
 	 */
-	long insertEmc(@Nonnull ItemStack stack, long toInsert, EmcAction action);
+	long insertEmc(@NotNull ItemStack stack, long toInsert, EmcAction action);
 
 	/**
 	 * Extracts EMC from the itemstack
@@ -37,7 +37,7 @@ public interface IItemEmcHolder {
 	 *
 	 * @return The amount that was actually extracted
 	 */
-	long extractEmc(@Nonnull ItemStack stack, long toExtract, EmcAction action);
+	long extractEmc(@NotNull ItemStack stack, long toExtract, EmcAction action);
 
 	/**
 	 * Gets the current EMC this stack is showing to the public
@@ -47,7 +47,7 @@ public interface IItemEmcHolder {
 	 * @return The current publicly-accessible EMC stored in this stack
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	long getStoredEmc(@Nonnull ItemStack stack);
+	long getStoredEmc(@NotNull ItemStack stack);
 
 	/**
 	 * Gets the maximum EMC that is allowed to be stored in this stack
@@ -59,7 +59,7 @@ public interface IItemEmcHolder {
 	 * @implNote This value should never be zero
 	 */
 	@Range(from = 1, to = Long.MAX_VALUE)
-	long getMaximumEmc(@Nonnull ItemStack stack);
+	long getMaximumEmc(@NotNull ItemStack stack);
 
 	/**
 	 * Helper method to get the amount of EMC this {@link IItemEmcHolder} needs to become full.
@@ -69,7 +69,7 @@ public interface IItemEmcHolder {
 	 * @return The amount of EMC this {@link IItemEmcHolder} needs.
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getNeededEmc(@Nonnull ItemStack stack) {
+	default long getNeededEmc(@NotNull ItemStack stack) {
 		return Math.max(0, getMaximumEmc(stack) - getStoredEmc(stack));
 	}
 }

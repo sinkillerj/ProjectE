@@ -1,9 +1,9 @@
 package moze_intel.projecte.api.event;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired serverside after a players transmutation knowledge is changed
@@ -16,18 +16,18 @@ public class PlayerKnowledgeChangeEvent extends Event {
 
 	private final UUID playerUUID;
 
-	public PlayerKnowledgeChangeEvent(@Nonnull Player player) {
+	public PlayerKnowledgeChangeEvent(@NotNull Player player) {
 		this(player.getUUID());
 	}
 
-	public PlayerKnowledgeChangeEvent(@Nonnull UUID playerUUID) {
+	public PlayerKnowledgeChangeEvent(@NotNull UUID playerUUID) {
 		this.playerUUID = playerUUID;
 	}
 
 	/**
 	 * @return The player UUID whose knowledge changed. The associated player may or may not be logged in when this event fires.
 	 */
-	@Nonnull
+	@NotNull
 	public UUID getPlayerUUID() {
 		return playerUUID;
 	}

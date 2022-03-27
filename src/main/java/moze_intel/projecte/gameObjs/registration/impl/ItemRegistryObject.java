@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject<ITEM> implements ItemLike, IHasTranslationKey {
 
@@ -13,7 +13,7 @@ public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject
 		super(registryObject);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ITEM asItem() {
 		return get();

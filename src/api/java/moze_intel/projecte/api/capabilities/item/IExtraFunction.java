@@ -1,11 +1,11 @@
 package moze_intel.projecte.api.capabilities.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that perform a specific function when the Extra Function key is activated (default C)
@@ -25,5 +25,5 @@ public interface IExtraFunction {
 	 *
 	 * @return Whether the operation succeeded
 	 */
-	boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, @Nullable InteractionHand hand);
+	boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, @Nullable InteractionHand hand);
 }

@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
@@ -35,6 +33,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityBlock<DMPedestalBlockEntity>, IMatterBlock {
 
@@ -52,21 +52,21 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	}
 
 	@Override
-	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> props) {
 		super.createBlockStateDefinition(props);
 		props.add(BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
 	@Deprecated
-	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+	public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull PathComputationType type) {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
+	public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext ctx) {
 		return SHAPE;
 	}
 
@@ -88,7 +88,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public void onRemove(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			dropItem(level, pos);
 			super.onRemove(state, level, pos, newState, isMoving);
@@ -97,7 +97,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public void attack(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player) {
+	public void attack(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player) {
 		if (!level.isClientSide) {
 			dropItem(level, pos);
 		}
@@ -115,11 +115,11 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-			@Nonnull BlockHitResult rtr) {
+	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+			@NotNull BlockHitResult rtr) {
 		if (!level.isClientSide) {
 			DMPedestalBlockEntity pedestal = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos, true);
 			if (pedestal == null) {
@@ -145,7 +145,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	// [VanillaCopy] Adapted from NoteBlock
 	@Override
 	@Deprecated
-	public void neighborChanged(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Block neighbor, @Nonnull BlockPos neighborPos, boolean isMoving) {
+	public void neighborChanged(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Block neighbor, @NotNull BlockPos neighborPos, boolean isMoving) {
 		boolean hasSignal = level.hasNeighborSignal(pos);
 		DMPedestalBlockEntity ped = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos);
 		if (ped != null && ped.previousRedstoneState != hasSignal) {
@@ -163,13 +163,13 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
 		DMPedestalBlockEntity pedestal = WorldHelper.getBlockEntity(DMPedestalBlockEntity.class, level, pos);
 		if (pedestal != null) {
 			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
@@ -191,13 +191,13 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Override
 	@Deprecated
-	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+	public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
 		super.triggerEvent(state, level, pos, id, param);
 		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable BlockGetter level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltip, flags);
 		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate());
 		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate());
@@ -205,23 +205,23 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
+	public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
 		BlockState state = super.getStateForPlacement(context);
 		return state == null ? null : state.setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public FluidState getFluidState(BlockState state) {
 		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor level,
-			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+	public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor level,
+			@NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
 			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}

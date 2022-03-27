@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge, IBarHelper {
 
@@ -54,7 +54,7 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	}
 
 	@Override
-	public boolean isEnchantable(@Nonnull ItemStack stack) {
+	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
@@ -74,7 +74,7 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -84,17 +84,17 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		float speed = super.getDestroySpeed(stack, state);
 		if (speed == 1 && state.is(PETags.Blocks.MINEABLE_WITH_PE_SWORD)) {
 			speed = matterType.getSpeed();
@@ -103,13 +103,13 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(@Nonnull ItemStack stack, BlockState state) {
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, BlockState state) {
 		//Note: our tag intercepts the vanilla sword matches
 		return state.is(PETags.Blocks.MINEABLE_WITH_PE_SWORD) && TierSortingRegistry.isCorrectTierForDrops(matterType, state);
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
 	}
 
@@ -122,20 +122,20 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	}
 
 	@Override
-	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
+	public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity damaged, @NotNull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AABB getSweepHitBox(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+	public AABB getSweepHitBox(@NotNull ItemStack stack, @NotNull Player player, @NotNull Entity target) {
 		int charge = getCharge(stack);
 		return target.getBoundingBox().inflate(charge, charge / 4D, charge);
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (player.getAttackStrengthScale(0F) == 1) {
 			ToolHelper.attackAOE(stack, player, slayAll(stack), getDamage(), 0, hand);
 			PlayerHelper.resetCooldown(player);
@@ -144,13 +144,13 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 		return false;
 	}
 
-	protected boolean slayAll(@Nonnull ItemStack stack) {
+	protected boolean slayAll(@NotNull ItemStack stack) {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, ItemStack stack) {
 		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 }

@@ -1,6 +1,5 @@
 package moze_intel.projecte.handlers;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -8,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import org.jetbrains.annotations.NotNull;
 
 public class InternalTimers {
 
@@ -69,7 +69,7 @@ public class InternalTimers {
 			super(InternalTimers::new);
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Capability<InternalTimers> getMatchingCapability() {
 			return CAPABILITY;

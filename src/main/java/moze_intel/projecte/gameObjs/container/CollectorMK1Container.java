@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
@@ -17,6 +16,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class CollectorMK1Container extends PEContainer {
 
@@ -63,7 +63,7 @@ public class CollectorMK1Container extends PEContainer {
 	}
 
 	@Override
-	public void clicked(int slotID, int button, @Nonnull ClickType flag, @Nonnull Player player) {
+	public void clicked(int slotID, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotID);
 		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
 			slot.set(ItemStack.EMPTY);
@@ -87,7 +87,7 @@ public class CollectorMK1Container extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return stillValid(player, collector, getValidBlock());
 	}
 

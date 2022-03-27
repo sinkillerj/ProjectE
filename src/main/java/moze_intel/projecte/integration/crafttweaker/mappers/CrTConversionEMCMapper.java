@@ -4,7 +4,6 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
@@ -12,17 +11,18 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.NotNull;
 
 @EMCMapper(requiredMods = "crafttweaker")
 public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	private static final List<CrTConversion> storedConversions = new ArrayList<>();
 
-	public static void addConversion(@Nonnull CrTConversion conversion) {
+	public static void addConversion(@NotNull CrTConversion conversion) {
 		storedConversions.add(conversion);
 	}
 
-	public static void removeConversion(@Nonnull CrTConversion conversion) {
+	public static void removeConversion(@NotNull CrTConversion conversion) {
 		storedConversions.remove(conversion);
 	}
 

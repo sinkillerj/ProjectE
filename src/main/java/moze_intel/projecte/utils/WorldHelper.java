@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
@@ -81,6 +79,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for anything that touches a World. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -240,7 +240,7 @@ public final class WorldHelper {
 	 * ISidedInventory/IInventory.
 	 */
 	@Nullable
-	public static IItemHandler getItemHandler(@Nonnull BlockEntity blockEntity, @Nullable Direction direction) {
+	public static IItemHandler getItemHandler(@NotNull BlockEntity blockEntity, @Nullable Direction direction) {
 		Optional<IItemHandler> capability = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
 		if (capability.isPresent()) {
 			return capability.get();
@@ -561,7 +561,7 @@ public final class WorldHelper {
 		entity.setDeltaMovement(entity.getDeltaMovement().add(r.scale(1 / 1.5 * 1 / distance)));
 	}
 
-	@Nonnull
+	@NotNull
 	public static InteractionResult igniteBlock(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
 		if (player == null) {
@@ -606,7 +606,7 @@ public final class WorldHelper {
 	 *
 	 * @implNote From Mekanism
 	 */
-	public static boolean isBlockLoaded(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+	public static boolean isBlockLoaded(@Nullable BlockGetter world, @NotNull BlockPos pos) {
 		if (world == null) {
 			return false;
 		} else if (world instanceof LevelReader reader) {
@@ -629,7 +629,7 @@ public final class WorldHelper {
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static BlockEntity getBlockEntity(@Nullable BlockGetter level, @Nonnull BlockPos pos) {
+	public static BlockEntity getBlockEntity(@Nullable BlockGetter level, @NotNull BlockPos pos) {
 		if (!isBlockLoaded(level, pos)) {
 			//If the world is null or its a world reader and the block is not loaded, return null
 			return null;
@@ -649,7 +649,7 @@ public final class WorldHelper {
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static <BE extends BlockEntity> BE getBlockEntity(@Nonnull Class<BE> clazz, @Nullable BlockGetter level, @Nonnull BlockPos pos) {
+	public static <BE extends BlockEntity> BE getBlockEntity(@NotNull Class<BE> clazz, @Nullable BlockGetter level, @NotNull BlockPos pos) {
 		return getBlockEntity(clazz, level, pos, false);
 	}
 
@@ -666,7 +666,7 @@ public final class WorldHelper {
 	 * @implNote From Mekanism
 	 */
 	@Nullable
-	public static <BE extends BlockEntity> BE getBlockEntity(@Nonnull Class<BE> clazz, @Nullable BlockGetter level, @Nonnull BlockPos pos, boolean logWrongType) {
+	public static <BE extends BlockEntity> BE getBlockEntity(@NotNull Class<BE> clazz, @Nullable BlockGetter level, @NotNull BlockPos pos, boolean logWrongType) {
 		BlockEntity blockEntity = getBlockEntity(level, pos);
 		if (blockEntity == null) {
 			return null;

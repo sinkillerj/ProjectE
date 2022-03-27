@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.gameObjs.registration.DoubleWrappedRegistryObject;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 @ParametersAreNonnullByDefault
 public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<BLOCK, ITEM> implements ItemLike, IHasTranslationKey {
@@ -17,12 +17,12 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 		super(blockRegistryObject, itemRegistryObject);
 	}
 
-	@Nonnull
+	@NotNull
 	public BLOCK getBlock() {
 		return getPrimary();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ITEM asItem() {
 		return getSecondary();
@@ -35,7 +35,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 
 	public static class WallOrFloorBlockRegistryObject<BLOCK extends Block, WALL_BLOCK extends Block, ITEM extends StandingAndWallBlockItem> extends BlockRegistryObject<BLOCK, ITEM> {
 
-		@Nonnull
+		@NotNull
 		private final RegistryObject<WALL_BLOCK> wallRO;
 
 		public WallOrFloorBlockRegistryObject(RegistryObject<BLOCK> blockRegistryObject, RegistryObject<WALL_BLOCK> wallBlockRegistryObject,
@@ -44,7 +44,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 			this.wallRO = wallBlockRegistryObject;
 		}
 
-		@Nonnull
+		@NotNull
 		public WALL_BLOCK getWallBlock() {
 			return wallRO.get();
 		}

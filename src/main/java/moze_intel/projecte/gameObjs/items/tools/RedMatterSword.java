@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
@@ -12,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RedMatterSword extends PESword implements IItemMode {
 
@@ -24,7 +24,7 @@ public class RedMatterSword extends PESword implements IItemMode {
 	}
 
 	@Override
-	protected boolean slayAll(@Nonnull ItemStack stack) {
+	protected boolean slayAll(@NotNull ItemStack stack) {
 		return getMode(stack) == 1;
 	}
 
@@ -34,7 +34,7 @@ public class RedMatterSword extends PESword implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}

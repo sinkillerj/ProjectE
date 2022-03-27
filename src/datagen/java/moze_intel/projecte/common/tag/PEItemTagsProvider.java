@@ -1,6 +1,5 @@
 package moze_intel.projecte.common.tag;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
@@ -16,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class PEItemTagsProvider extends ItemTagsProvider {
 

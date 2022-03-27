@@ -3,7 +3,6 @@ package moze_intel.projecte.integration.crafttweaker.mappers;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
@@ -12,17 +11,18 @@ import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.NotNull;
 
 @EMCMapper(requiredMods = "crafttweaker")
 public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	private static final Map<NormalizedSimpleStack, Long> customEmcValues = new HashMap<>();
 
-	public static void registerCustomEMC(@Nonnull NormalizedSimpleStack stack, long emcValue) {
+	public static void registerCustomEMC(@NotNull NormalizedSimpleStack stack, long emcValue) {
 		customEmcValues.put(stack, emcValue);
 	}
 
-	public static void unregisterNSS(@Nonnull NormalizedSimpleStack stack) {
+	public static void unregisterNSS(@NotNull NormalizedSimpleStack stack) {
 		customEmcValues.remove(stack);
 	}
 

@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
@@ -33,6 +31,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IBarHelper {
 
@@ -48,7 +48,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public boolean isEnchantable(@Nonnull ItemStack stack) {
+	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
@@ -68,7 +68,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -78,17 +78,17 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		if (ToolHelper.canMatterMine(matterType, state.getBlock())) {
 			return 1_200_000;
 		}
@@ -96,7 +96,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
 	}
 
@@ -106,7 +106,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
@@ -116,9 +116,9 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper(), new ModeChangerItemCapabilityWrapper());
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
@@ -127,7 +127,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 		return InteractionResultHolder.pass(stack);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
@@ -144,7 +144,7 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode, IB
 	}
 
 	@Override
-	public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity living) {
+	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity living) {
 		ToolHelper.digBasedOnMode(stack, level, pos, living, Item::getPlayerPOVHitResult);
 		return true;
 	}

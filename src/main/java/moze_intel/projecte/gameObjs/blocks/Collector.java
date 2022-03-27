@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
@@ -25,6 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Collector extends BlockDirection implements PEEntityBlock<CollectorMK1BlockEntity> {
 
@@ -39,11 +39,11 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		return tier;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-			@Nonnull BlockHitResult hit) {
+	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+			@NotNull BlockHitResult hit) {
 		if (!level.isClientSide) {
 			CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 			if (collector != null) {
@@ -56,7 +56,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 	@Nullable
 	@Override
 	@Deprecated
-	public MenuProvider getMenuProvider(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+	public MenuProvider getMenuProvider(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
 		return WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 	}
 
@@ -72,20 +72,20 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 
 	@Override
 	@Deprecated
-	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+	public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
 		super.triggerEvent(state, level, pos, id, param);
 		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override
 	@Deprecated
-	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
 		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 		if (collector == null) {
 			//If something went wrong fallback to default implementation
@@ -110,7 +110,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 
 	@Override
 	@Deprecated
-	public void onRemove(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			CollectorMK1BlockEntity ent = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos);
 			if (ent != null) {

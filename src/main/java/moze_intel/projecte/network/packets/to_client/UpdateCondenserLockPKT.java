@@ -1,6 +1,5 @@
 package moze_intel.projecte.network.packets.to_client;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.network.packets.IPEPacket;
@@ -8,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.Nullable;
 
 public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) implements IPEPacket {
 

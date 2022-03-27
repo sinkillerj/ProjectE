@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -119,6 +117,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod(PECore.MODID)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -217,9 +217,9 @@ public class PECore {
 			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
 			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATACLYSM, PEBlocks.NOVA_CATACLYSM.getBlock().createDispenseItemBehavior());
 			registerDispenseBehavior(new OptionalDispenseItemBehavior() {
-				@Nonnull
+				@NotNull
 				@Override
-				protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+				protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
 					//Based off the flint and steel dispense behavior
 					if (stack.getItem() instanceof Arcana item) {
 						if (item.getMode(stack) != 1) {
@@ -249,9 +249,9 @@ public class PECore {
 				}
 			}, PEItems.IGNITION_RING, PEItems.ARCANA_RING);
 			DispenserBlock.registerBehavior(PEItems.EVERTIDE_AMULET, new DefaultDispenseItemBehavior() {
-				@Nonnull
+				@NotNull
 				@Override
-				public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+				public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
 					Level level = source.getLevel();

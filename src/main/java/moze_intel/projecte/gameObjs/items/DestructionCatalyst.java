@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelper {
 
@@ -28,7 +28,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
@@ -86,12 +86,12 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return 3;
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -101,12 +101,12 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 }

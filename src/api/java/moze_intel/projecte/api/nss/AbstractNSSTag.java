@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
@@ -17,6 +16,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:
@@ -49,11 +49,11 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 		createdTags.clear();
 	}
 
-	@Nonnull
+	@NotNull
 	private final ResourceLocation resourceLocation;
 	private final boolean isTag;
 
-	protected AbstractNSSTag(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
+	protected AbstractNSSTag(@NotNull ResourceLocation resourceLocation, boolean isTag) {
 		this.resourceLocation = resourceLocation;
 		this.isTag = isTag;
 		if (isTag) {
@@ -64,7 +64,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	/**
 	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link Tag}, or the {@link ResourceLocation} of the
 	 */
-	@Nonnull
+	@NotNull
 	public ResourceLocation getResourceLocation() {
 		return resourceLocation;
 	}
@@ -79,7 +79,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	/**
 	 * @return A string representing a type description of this {@link NormalizedSimpleStack}
 	 */
-	@Nonnull
+	@NotNull
 	protected abstract String getType();
 
 	/**
@@ -87,13 +87,13 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	 *
 	 * @implNote Must end with '|' to properly work. Anything without a '|' is assumed to be an item.
 	 */
-	@Nonnull
+	@NotNull
 	protected abstract String getJsonPrefix();
 
 	/**
 	 * @return An optional with an object that represents either a named tag or forge's tag representation.
 	 */
-	@Nonnull
+	@NotNull
 	protected abstract Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag();
 
 	/**

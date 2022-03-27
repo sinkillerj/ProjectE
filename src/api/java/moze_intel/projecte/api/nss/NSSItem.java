@@ -3,8 +3,6 @@ package moze_intel.projecte.api.nss;
 import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -15,21 +13,23 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
  */
 public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
-	private NSSItem(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
+	private NSSItem(@NotNull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag, nbt);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSItem} representing an item from an {@link ItemStack}
 	 */
-	@Nonnull
-	public static NSSItem createItem(@Nonnull ItemStack stack) {
+	@NotNull
+	public static NSSItem createItem(@NotNull ItemStack stack) {
 		if (stack.isEmpty()) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
@@ -48,16 +48,16 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	/**
 	 * Helper method to create an {@link NSSItem} representing an item from an {@link ItemLike}
 	 */
-	@Nonnull
-	public static NSSItem createItem(@Nonnull ItemLike itemProvider) {
+	@NotNull
+	public static NSSItem createItem(@NotNull ItemLike itemProvider) {
 		return createItem(itemProvider, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSItem} representing an item from an {@link ItemLike} and an optional {@link CompoundTag}
 	 */
-	@Nonnull
-	public static NSSItem createItem(@Nonnull ItemLike itemProvider, @Nullable CompoundTag nbt) {
+	@NotNull
+	public static NSSItem createItem(@NotNull ItemLike itemProvider, @Nullable CompoundTag nbt) {
 		Item item = itemProvider.asItem();
 		if (item == Items.AIR) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
@@ -69,32 +69,32 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	/**
 	 * Helper method to create an {@link NSSItem} representing an item from a {@link ResourceLocation}
 	 */
-	@Nonnull
-	public static NSSItem createItem(@Nonnull ResourceLocation itemID) {
+	@NotNull
+	public static NSSItem createItem(@NotNull ResourceLocation itemID) {
 		return createItem(itemID, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSItem} representing an item from a {@link ResourceLocation} and an optional {@link CompoundTag}
 	 */
-	@Nonnull
-	public static NSSItem createItem(@Nonnull ResourceLocation itemID, @Nullable CompoundTag nbt) {
+	@NotNull
+	public static NSSItem createItem(@NotNull ResourceLocation itemID, @Nullable CompoundTag nbt) {
 		return new NSSItem(itemID, false, nbt);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSItem} representing a tag from a {@link ResourceLocation}
 	 */
-	@Nonnull
-	public static NSSItem createTag(@Nonnull ResourceLocation tagId) {
+	@NotNull
+	public static NSSItem createTag(@NotNull ResourceLocation tagId) {
 		return new NSSItem(tagId, true, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSItem} representing a tag from a {@link TagKey<Item>}
 	 */
-	@Nonnull
-	public static NSSItem createTag(@Nonnull TagKey<Item> tag) {
+	@NotNull
+	public static NSSItem createTag(@NotNull TagKey<Item> tag) {
 		return createTag(tag.location());
 	}
 
@@ -103,20 +103,20 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		return o instanceof NSSItem;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getJsonPrefix() {
 		//We prefer no prefix for NSSItem even though we do support ITEM|
 		return "";
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getType() {
 		return "Item";
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	protected Optional<Either<Named<Item>, ITag<Item>>> getTag() {
 		return getTag(ForgeRegistries.ITEMS);

@@ -1,13 +1,13 @@
 package moze_intel.projecte.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProjectileShooterItemCapabilityWrapper extends BasicItemCapability<IProjectileShooter> implements IProjectileShooter {
 
@@ -17,7 +17,7 @@ public class ProjectileShooterItemCapabilityWrapper extends BasicItemCapability<
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand) {
 		return getItem().shootProjectile(player, stack, hand);
 	}
 }

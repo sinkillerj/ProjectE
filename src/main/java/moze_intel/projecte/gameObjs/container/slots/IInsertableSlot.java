@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @implNote Heavily based off of Mekanism's IInsertableSlot
@@ -29,8 +29,8 @@ public interface IInsertableSlot {
 	 * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
 	 * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
 	 */
-	@Nonnull
-	default ItemStack insertItem(@Nonnull ItemStack stack, boolean simulate) {
+	@NotNull
+	default ItemStack insertItem(@NotNull ItemStack stack, boolean simulate) {
 		Slot self = self();
 		if (stack.isEmpty() || !self.mayPlace(stack)) {
 			//"Fail quick" if the given stack is empty, or we are not valid for the slot

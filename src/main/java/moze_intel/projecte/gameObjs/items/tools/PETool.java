@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapability;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelper {
 
@@ -40,7 +40,7 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 	}
 
 	@Override
-	public boolean isEnchantable(@Nonnull ItemStack stack) {
+	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
@@ -60,7 +60,7 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -70,22 +70,22 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		return ToolHelper.getDestroySpeed(getShortCutDestroySpeed(stack, state), matterType, getCharge(stack));
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
 	}
 
@@ -102,7 +102,7 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 	 *
 	 * For example: Axes are "effective" on all types of wood, but do not automatically allow HARVESTING of all types of wood.
 	 */
-	protected float getShortCutDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	protected float getShortCutDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		return super.getDestroySpeed(stack, state);
 	}
 }

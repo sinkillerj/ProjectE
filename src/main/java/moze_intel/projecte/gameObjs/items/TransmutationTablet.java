@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
@@ -14,6 +13,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class TransmutationTablet extends ItemPE {
 
@@ -21,9 +21,9 @@ public class TransmutationTablet extends ItemPE {
 		super(props);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(hand), buf -> {
 				buf.writeBoolean(true);
@@ -37,11 +37,11 @@ public class TransmutationTablet extends ItemPE {
 	private record ContainerProvider(InteractionHand hand) implements MenuProvider {
 
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.selected);
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Component getDisplayName() {
 			return PELang.TRANSMUTATION_TRANSMUTE.translate();

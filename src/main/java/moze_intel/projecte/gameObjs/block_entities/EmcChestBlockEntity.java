@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.EmcChestBlockEntityContainer;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import net.minecraft.core.BlockPos;
@@ -13,25 +12,26 @@ import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 // [VanillaCopy] Adapted from ChestBlockEntity
 public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity, MenuProvider {
 
 	private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
 		@Override
-		protected void onOpen(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+		protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
 			level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F,
 					level.random.nextFloat() * 0.1F + 0.9F);
 		}
 
 		@Override
-		protected void onClose(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+		protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
 			level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F,
 					level.random.nextFloat() * 0.1F + 0.9F);
 		}
 
 		@Override
-		protected void openerCountChanged(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state, int oldCount, int openCount) {
+		protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int oldCount, int openCount) {
 			level.blockEvent(pos, state.getBlock(), 1, openCount);
 		}
 

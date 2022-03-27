@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
@@ -31,6 +29,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
@@ -47,9 +47,9 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		super(type, pos, state, tier.getStorage());
 		this.chargeRate = tier.getChargeRate();
 		input = new CompactableStackHandler(sizeInv) {
-			@Nonnull
+			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 				return SlotPredicates.RELAY_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
@@ -149,7 +149,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		output.deserializeNBT(nbt.getCompound("Output"));
@@ -157,7 +157,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.put("Input", input.serializeNBT());
 		tag.put("Output", output.serializeNBT());
@@ -180,13 +180,13 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		markDirty(false);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 		return new RelayMK1Container(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return PELang.GUI_RELAY_MK1.translate();
@@ -201,13 +201,13 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		protected RelayItemHandlerProvider() {
 			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
 			NonNullLazy<IItemHandler> automationOutput = NonNullLazy.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
-				@Nonnull
+				@NotNull
 				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+				public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 					return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 				}
 
-				@Nonnull
+				@NotNull
 				@Override
 				public ItemStack extractItem(int slot, int amount, boolean simulate) {
 					ItemStack stack = getStackInSlot(slot);

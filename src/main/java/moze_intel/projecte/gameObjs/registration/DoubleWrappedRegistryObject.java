@@ -1,29 +1,27 @@
 package moze_intel.projecte.gameObjs.registration;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements INamedEntry {
 
-	@Nonnull
+	@NotNull
 	private final RegistryObject<PRIMARY> primaryRO;
-	@Nonnull
+	@NotNull
 	private final RegistryObject<SECONDARY> secondaryRO;
 
-	public DoubleWrappedRegistryObject(RegistryObject<PRIMARY> primaryRO, RegistryObject<SECONDARY> secondaryRO) {
+	public DoubleWrappedRegistryObject(@NotNull RegistryObject<PRIMARY> primaryRO, @NotNull RegistryObject<SECONDARY> secondaryRO) {
 		this.primaryRO = primaryRO;
 		this.secondaryRO = secondaryRO;
 	}
 
-	@Nonnull
+	@NotNull
 	public PRIMARY getPrimary() {
 		return primaryRO.get();
 	}
 
-	@Nonnull
+	@NotNull
 	public SECONDARY getSecondary() {
 		return secondaryRO.get();
 	}

@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * IItemHandler implementation for exposure to the public Useful when you want the IItemHandler itself to have full in/out access internally but restricted access in
@@ -23,22 +23,22 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 		return compose.getSlots();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return compose.getStackInSlot(slot);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 		if (mode == WriteMode.IN || mode == WriteMode.IN_OUT) {
 			return compose.insertItem(slot, stack, simulate);
 		}
 		return stack;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		if (mode == WriteMode.OUT || mode == WriteMode.IN_OUT) {
@@ -53,12 +53,12 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+	public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 		return compose.isItemValid(slot, stack);
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+	public void setStackInSlot(int slot, @NotNull ItemStack stack) {
 		compose.setStackInSlot(slot, stack);
 	}
 

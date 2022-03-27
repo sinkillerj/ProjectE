@@ -3,11 +3,11 @@ package moze_intel.projecte.api.data;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.data.ConversionGroupBuilder.GroupConversionBuilder;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Builder class to help create conversion groups.

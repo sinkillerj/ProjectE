@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.imc;
 
-import javax.annotation.Nullable;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public record WorldTransmutationEntry(BlockState origin, BlockState result, @Nullable BlockState altResult) {
 

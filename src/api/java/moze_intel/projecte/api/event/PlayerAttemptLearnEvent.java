@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.event;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired on the server when a player is attempting to learn a new item
@@ -20,7 +20,7 @@ public class PlayerAttemptLearnEvent extends Event {
 	private final ItemInfo sourceInfo;
 	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptLearnEvent(@Nonnull Player player, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
+	public PlayerAttemptLearnEvent(@NotNull Player player, @NotNull ItemInfo sourceInfo, @NotNull ItemInfo reducedInfo) {
 		this.player = player;
 		this.sourceInfo = sourceInfo;
 		this.reducedInfo = reducedInfo;
@@ -29,7 +29,7 @@ public class PlayerAttemptLearnEvent extends Event {
 	/**
 	 * @return The player who is attempting to learn a new item.
 	 */
-	@Nonnull
+	@NotNull
 	public Player getPlayer() {
 		return player;
 	}
@@ -37,7 +37,7 @@ public class PlayerAttemptLearnEvent extends Event {
 	/**
 	 * @return The {@link ItemInfo} that the player is trying to learn.
 	 */
-	@Nonnull
+	@NotNull
 	public ItemInfo getSourceInfo() {
 		return sourceInfo;
 	}
@@ -47,7 +47,7 @@ public class PlayerAttemptLearnEvent extends Event {
 	 *
 	 * @return The "cleaned" {@link ItemInfo} that the player is trying to learn.
 	 */
-	@Nonnull
+	@NotNull
 	public ItemInfo getReducedInfo() {
 		return reducedInfo;
 	}

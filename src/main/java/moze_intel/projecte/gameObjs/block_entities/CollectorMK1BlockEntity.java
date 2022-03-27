@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
@@ -38,6 +36,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
@@ -278,7 +278,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
@@ -286,7 +286,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.put("Input", input.serializeNBT());
 		tag.put("AuxSlots", auxSlots.serializeNBT());
@@ -303,13 +303,13 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerIn) {
 		return new CollectorMK1Container(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.COLLECTOR);
@@ -323,14 +323,14 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 
 		protected CollectorItemHandlerProvider() {
 			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
-				@Nonnull
+				@NotNull
 				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+				public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 					return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 				}
 			});
 			NonNullLazy<IItemHandler> automationAuxSlots = NonNullLazy.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
-				@Nonnull
+				@NotNull
 				@Override
 				public ItemStack extractItem(int slot, int count, boolean simulate) {
 					if (slot == UPGRADE_SLOT) {

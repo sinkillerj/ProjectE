@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.container.CollectorMK3Container;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class CollectorMK3BlockEntity extends CollectorMK1BlockEntity {
 
@@ -24,13 +24,13 @@ public class CollectorMK3BlockEntity extends CollectorMK1BlockEntity {
 		return 16;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerIn) {
 		return new CollectorMK3Container(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.COLLECTOR_MK3);

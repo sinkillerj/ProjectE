@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -28,6 +27,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityWaterProjectile extends ThrowableProjectile {
 
@@ -91,13 +91,13 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
 		discard();
 	}
 
 	@Override
-	protected void onHitBlock(@Nonnull BlockHitResult result) {
+	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
 		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
 			WorldHelper.placeFluid(player, level, result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
@@ -105,7 +105,7 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHitEntity(@Nonnull EntityHitResult result) {
+	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
 		if (!level.isClientSide && getOwner() instanceof Player player) {
 			Entity ent = result.getEntity();
@@ -116,7 +116,7 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

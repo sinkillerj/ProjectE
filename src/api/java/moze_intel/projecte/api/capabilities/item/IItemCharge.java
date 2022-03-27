@@ -1,13 +1,13 @@
 package moze_intel.projecte.api.capabilities.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.PESounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that have a charge that changes when the respective keybinding is activated (default V)
@@ -20,7 +20,7 @@ public interface IItemCharge {
 
 	String KEY = "Charge";
 
-	int getNumCharges(@Nonnull ItemStack stack);
+	int getNumCharges(@NotNull ItemStack stack);
 
 	/**
 	 * Gets the current percent charge on the given ItemStack. Should be a value between 0 and 1 inclusive.
@@ -29,7 +29,7 @@ public interface IItemCharge {
 	 *
 	 * @return The percent charge on the stack
 	 */
-	default float getChargePercent(@Nonnull ItemStack stack) {
+	default float getChargePercent(@NotNull ItemStack stack) {
 		return (float) getCharge(stack) / getNumCharges(stack);
 	}
 
@@ -40,7 +40,7 @@ public interface IItemCharge {
 	 *
 	 * @return The charge on the stack
 	 */
-	default int getCharge(@Nonnull ItemStack stack) {
+	default int getCharge(@NotNull ItemStack stack) {
 		return stack.getOrCreateTag().getInt(KEY);
 	}
 
@@ -53,7 +53,7 @@ public interface IItemCharge {
 	 *
 	 * @return Whether the operation succeeded
 	 */
-	default boolean changeCharge(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
+	default boolean changeCharge(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand) {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 

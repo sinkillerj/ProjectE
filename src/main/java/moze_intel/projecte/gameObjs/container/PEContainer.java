@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.container;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.container.slots.IInsertableSlot;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
@@ -24,6 +22,8 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class PEContainer extends AbstractContainerMenu {
 
@@ -57,17 +57,17 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		}
 	}
 
-	protected MainInventorySlot createMainInventorySlot(@Nonnull Inventory inv, int index, int x, int y) {
+	protected MainInventorySlot createMainInventorySlot(@NotNull Inventory inv, int index, int x, int y) {
 		return new MainInventorySlot(inv, index, x, y);
 	}
 
-	protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+	protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
 		return new HotBarSlot(inv, index, x, y);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	protected Slot addSlot(@Nonnull Slot slot) {
+	protected Slot addSlot(@NotNull Slot slot) {
 		super.addSlot(slot);
 		if (slot instanceof InventoryContainerSlot containerSlot) {
 			inventoryContainerSlots.add(containerSlot);
@@ -94,9 +94,9 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	 *
 	 * @implNote Copy/based off Mekanism
 	 */
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+	public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
 		Slot currentSlot = slots.get(slotID);
 		if (currentSlot == null || !currentSlot.hasItem()) {
 			return ItemStack.EMPTY;
@@ -140,8 +140,8 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		return transferSuccess(currentSlot, player, slotStack, stackToInsert);
 	}
 
-	@Nonnull
-	protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
+	@NotNull
+	protected ItemStack transferSuccess(@NotNull Slot currentSlot, @NotNull Player player, @NotNull ItemStack slotStack, @NotNull ItemStack stackToInsert) {
 		int difference = slotStack.getCount() - stackToInsert.getCount();
 		currentSlot.remove(difference);
 		ItemStack newStack = ItemHelper.size(slotStack, difference);
@@ -156,8 +156,8 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	 *
 	 * @return Remainder
 	 */
-	@Nonnull
-	public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty) {
+	@NotNull
+	public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, boolean ignoreEmpty) {
 		if (stack.isEmpty()) {
 			//Skip doing anything if the stack is already empty.
 			// Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
@@ -190,9 +190,9 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		intFields.get(idx).set(data);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	protected DataSlot addDataSlot(@Nonnull DataSlot referenceHolder) {
+	protected DataSlot addDataSlot(@NotNull DataSlot referenceHolder) {
 		intFields.add(referenceHolder);
 		return referenceHolder;
 	}

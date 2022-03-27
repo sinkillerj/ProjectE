@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -13,6 +11,8 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.TierSortingRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum EnumMatterType implements StringRepresentable, Tier {
 	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter")),
@@ -36,7 +36,7 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), next == null ? Collections.emptyList() : List.of(next));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getSerializedName() {
 		return name;
@@ -76,7 +76,7 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 		return 0;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Ingredient getRepairIngredient() {
 		return Ingredient.EMPTY;
@@ -86,7 +86,7 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 		return ordinal();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public TagKey<Block> getTag() {
 		return neededTag;

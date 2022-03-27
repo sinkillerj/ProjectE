@@ -1,11 +1,11 @@
 package moze_intel.projecte.emc.nbt.processor;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 @NBTProcessor(priority = Integer.MAX_VALUE)
 public class DamageProcessor implements INBTProcessor {
@@ -21,7 +21,7 @@ public class DamageProcessor implements INBTProcessor {
 	}
 
 	@Override
-	public long recalculateEMC(@Nonnull ItemInfo info, long currentEMC) throws ArithmeticException {
+	public long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException {
 		Item item = info.getItem();
 		if (item.canBeDepleted()) {
 			ItemStack fakeStack = info.createStack();

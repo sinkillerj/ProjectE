@@ -2,7 +2,6 @@ package moze_intel.projecte.utils;
 
 import java.util.Optional;
 import java.util.Random;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import net.minecraft.tags.TagKey;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityRandomizerHelper {
 

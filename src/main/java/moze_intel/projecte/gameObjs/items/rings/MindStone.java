@@ -2,10 +2,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -24,6 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MindStone extends PEToggleItem implements IPedestalItem {
 
@@ -35,7 +35,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean held) {
 		if (level.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
@@ -47,9 +47,9 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
@@ -61,7 +61,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		if (stack.hasTag()) {
 			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(ChatFormatting.DARK_GREEN, ChatFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
@@ -154,8 +154,8 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		boolean sucked = false;
 		for (ExperienceOrb orb : level.getEntitiesOfClass(ExperienceOrb.class, pedestal.getEffectBounds())) {
 			WorldHelper.gravitateEntityTowards(orb, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -178,7 +178,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		return Lists.newArrayList(PELang.PEDESTAL_MIND_STONE.translateColored(ChatFormatting.BLUE));

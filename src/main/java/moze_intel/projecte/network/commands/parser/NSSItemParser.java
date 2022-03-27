@@ -8,8 +8,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.utils.LazyTagLookup;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -22,6 +20,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Customized version of {@link net.minecraft.commands.arguments.item.ItemParser} that does not support NBT on tags, and does not wrap it into a Predicate.
@@ -146,7 +146,7 @@ public class NSSItemParser {
 			}
 		}
 
-		public NSSItemResult(@Nonnull ItemStack stack) {
+		public NSSItemResult(@NotNull ItemStack stack) {
 			item = stack.getItem();
 			nbt = stack.getTag();
 		}

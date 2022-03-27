@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -19,6 +18,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 
@@ -26,13 +26,13 @@ public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 		super(PEBlockEntityTypes.CONDENSER_MK2, pos, state);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	protected IItemHandler createAutomationInventory() {
 		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN) {
-			@Nonnull
+			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
@@ -69,23 +69,23 @@ public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		getOutput().deserializeNBT(nbt.getCompound("Output"));
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.put("Output", getOutput().serializeNBT());
 	}
 
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInv, @Nonnull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInv, @NotNull Player player) {
 		return new CondenserMK2Container(windowId, playerInv, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.CONDENSER_MK2);

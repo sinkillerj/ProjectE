@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject.WallOrFloorBlockRegistryObject;
 import net.minecraft.world.level.block.Block;
@@ -8,6 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
 

@@ -16,8 +16,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
@@ -74,6 +72,8 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ToolHelper {
 
@@ -738,7 +738,7 @@ public class ToolHelper {
 		private final Int2ObjectMap<Multimap<Attribute, AttributeModifier>> cachedMaps = new Int2ObjectArrayMap<>();
 
 		public Multimap<Attribute, AttributeModifier> addChargeAttributeModifier(Multimap<Attribute, AttributeModifier> currentModifiers,
-				@Nonnull EquipmentSlot slot, ItemStack stack) {
+				@NotNull EquipmentSlot slot, ItemStack stack) {
 			if (slot == EquipmentSlot.MAINHAND) {
 				int charge = getCharge(stack);
 				if (charge > 0) {

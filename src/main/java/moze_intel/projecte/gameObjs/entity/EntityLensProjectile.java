@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.WorldHelper;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityLensProjectile extends ThrowableProjectile {
 
@@ -52,7 +52,7 @@ public class EntityLensProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		if (!level.isClientSide) {
 			WorldHelper.createNovaExplosion(level, getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 		}
@@ -66,18 +66,18 @@ public class EntityLensProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(@Nonnull CompoundTag nbt) {
+	public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 		nbt.putInt("Charge", charge);
 	}
 
 	@Override
-	public void readAdditionalSaveData(@Nonnull CompoundTag nbt) {
+	public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
 		charge = nbt.getInt("Charge");
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

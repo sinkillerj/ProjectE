@@ -2,12 +2,9 @@ package moze_intel.projecte.integration.jei;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -29,13 +26,14 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class PEJeiPlugin implements IModPlugin {
 
 	private static final ResourceLocation UID = PECore.rl("main");
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ResourceLocation getPluginUid() {
 		return UID;
@@ -77,7 +75,7 @@ public class PEJeiPlugin implements IModPlugin {
 	}
 
 	@Override
-	public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime) {
+	public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
 		List<FuelUpgradeRecipe> recipes = new ArrayList<>();
 		for (Item i : FuelMapper.getFuelMap()) {
 			ItemStack stack = new ItemStack(i);

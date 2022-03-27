@@ -4,8 +4,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.EMCHelper;
@@ -27,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.NonNullLazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DiviningRod extends ItemPE implements IItemMode {
 
@@ -40,7 +40,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
@@ -132,7 +132,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}

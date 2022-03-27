@@ -3,7 +3,6 @@ package moze_intel.projecte.rendering;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -16,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 public class PedestalRenderer implements BlockEntityRenderer<DMPedestalBlockEntity> {
 
@@ -23,7 +23,7 @@ public class PedestalRenderer implements BlockEntityRenderer<DMPedestalBlockEnti
 	}
 
 	@Override
-	public void render(@Nonnull DMPedestalBlockEntity pedestal, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+	public void render(@NotNull DMPedestalBlockEntity pedestal, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
 		if (!pedestal.isRemoved() && pedestal.getLevel() != null) {
 			if (Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes()) {
 				matrix.pushPose();

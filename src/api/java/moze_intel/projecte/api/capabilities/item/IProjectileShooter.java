@@ -1,11 +1,11 @@
 package moze_intel.projecte.api.capabilities.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that fire a projectile when the Shoot Projectile keybind is activated (default R)
@@ -25,5 +25,5 @@ public interface IProjectileShooter {
 	 *
 	 * @return If the projectile was actually fired
 	 */
-	boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand);
+	boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand);
 }

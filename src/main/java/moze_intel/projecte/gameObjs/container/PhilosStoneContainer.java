@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.CraftingMenu;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * We *don't* use our own container type here. The only thing we do differently is the interact check and that only applies serverside. So just a inheritor class is
@@ -20,7 +20,7 @@ public class PhilosStoneContainer extends CraftingMenu {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return true;
 	}
 }

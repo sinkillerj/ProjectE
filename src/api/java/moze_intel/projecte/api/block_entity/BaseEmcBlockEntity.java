@@ -1,7 +1,5 @@
 package moze_intel.projecte.api.block_entity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
@@ -12,6 +10,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -158,7 +158,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		if (getStoredEmc() > getMaximumEmc()) {
 			currentEMC = getMaximumEmc();
@@ -167,7 +167,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag tag) {
+	public void load(@NotNull CompoundTag tag) {
 		super.load(tag);
 		long set = tag.getLong("EMC");
 		if (set > getMaximumEmc()) {
@@ -176,9 +176,9 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 		currentEMC = set;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 		if (cap == PECapabilities.EMC_STORAGE_CAPABILITY) {
 			if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
 				//If the capability has not been retrieved yet, or it is not valid then recreate it

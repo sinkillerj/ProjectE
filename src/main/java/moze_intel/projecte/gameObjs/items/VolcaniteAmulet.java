@@ -3,11 +3,9 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -40,6 +38,8 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
 
@@ -60,7 +60,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		return stack.copy();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level level = ctx.getLevel();
@@ -84,7 +84,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getCommandSenderWorld());
 		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
@@ -93,7 +93,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_VOLCANITE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		tooltips.add(PELang.TOOLTIP_VOLCANITE_2.translate());
@@ -102,8 +102,8 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.volcanite.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				if (level.getLevelData() instanceof ServerLevelData worldInfo) {
@@ -120,7 +120,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();

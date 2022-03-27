@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -9,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class AlchChestContainer extends EmcChestBlockEntityContainer<AlchBlockEntityChest> {
 
@@ -25,7 +25,7 @@ public class AlchChestContainer extends EmcChestBlockEntityContainer<AlchBlockEn
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return stillValid(player, blockEntity, PEBlocks.ALCHEMICAL_CHEST);
 	}
 }

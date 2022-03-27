@@ -1,9 +1,9 @@
 package moze_intel.projecte.api.nbt;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class used for processing what NBT data modifies the EMC value, and what NBT is needed/should be saved when transmuting an item.
@@ -67,7 +67,7 @@ public interface INBTProcessor {
 	 * @throws ArithmeticException If an overflow happened or some calculation went really bad and we should just hard exit and return the last successful EMC value
 	 *                             calculated.
 	 */
-	long recalculateEMC(@Nonnull ItemInfo info, long currentEMC) throws ArithmeticException;
+	long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException;
 
 	/**
 	 * Gets the minimum {@link CompoundTag} that is needed to recreate/get an EMC value from this {@link INBTProcessor} for an {@link ItemInfo}. This is used for building
@@ -78,7 +78,7 @@ public interface INBTProcessor {
 	 * @return The minimum {@link CompoundTag} needed to recreate/get an EMC value from this {@link INBTProcessor} for an {@link ItemInfo}
 	 */
 	@Nullable
-	default CompoundTag getPersistentNBT(@Nonnull ItemInfo info) {
+	default CompoundTag getPersistentNBT(@NotNull ItemInfo info) {
 		return null;
 	}
 }

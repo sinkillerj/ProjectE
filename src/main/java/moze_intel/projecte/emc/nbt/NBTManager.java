@@ -2,7 +2,6 @@ package moze_intel.projecte.emc.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.config.NBTProcessorConfig;
@@ -11,6 +10,7 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public class NBTManager {
@@ -25,8 +25,8 @@ public class NBTManager {
 		}
 	}
 
-	@Nonnull
-	public static ItemInfo getPersistentInfo(@Nonnull ItemInfo info) {
+	@NotNull
+	public static ItemInfo getPersistentInfo(@NotNull ItemInfo info) {
 		if (!info.hasNBT() || info.is(PETags.Items.NBT_WHITELIST) || EMCMappingHandler.hasEmcValue(info)) {
 			//If we have no NBT, we want to allow the tag to be kept, or we have an exact match to a stored value just go with it
 			return info;
@@ -45,7 +45,7 @@ public class NBTManager {
 	}
 
 	@Range(from = 0, to = Long.MAX_VALUE)
-	public static long getEmcValue(@Nonnull ItemInfo info) {
+	public static long getEmcValue(@NotNull ItemInfo info) {
 		//TODO: Fix this, as it does not catch the edge case that we have an exact match and then there is random added NBT on top of it
 		// but that can be thought about more once we have the first pass complete. For example if someone put an enchantment on a potion
 		long emcValue = EMCMappingHandler.getStoredEmcValue(info);

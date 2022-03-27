@@ -1,8 +1,8 @@
 package moze_intel.projecte.api.proxy;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import org.jetbrains.annotations.NotNull;
 
 public interface ITransmutationProxy {
 
@@ -19,6 +19,6 @@ public interface ITransmutationProxy {
 	 * @return an {@link IKnowledgeProvider} representing the UUID provided, or an {@link IKnowledgeProvider} representing no knowledge if the requested UUID could not be
 	 * found
 	 */
-	@Nonnull
-	IKnowledgeProvider getKnowledgeProviderFor(@Nonnull UUID playerUUID);
+	@NotNull
+	IKnowledgeProvider getKnowledgeProviderFor(@NotNull UUID playerUUID);
 }

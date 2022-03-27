@@ -2,9 +2,9 @@ package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
-import javax.annotation.Nullable;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class WorldTransmuteAction implements IUndoableAction {
 

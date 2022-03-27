@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface defines the contract for some object that exposes transmutation knowledge through the Capability system.
@@ -43,7 +43,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 * @implNote This method defaults to making sure the stack is not empty and then wrapping the stack into an {@link ItemInfo} and calling {@link
 	 * #hasKnowledge(ItemInfo)}
 	 */
-	default boolean hasKnowledge(@Nonnull ItemStack stack) {
+	default boolean hasKnowledge(@NotNull ItemStack stack) {
 		return !stack.isEmpty() && hasKnowledge(ItemInfo.fromStack(stack));
 	}
 
@@ -52,7 +52,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 *
 	 * @return Whether the player has transmutation knowledge for this {@link ItemInfo}
 	 */
-	boolean hasKnowledge(@Nonnull ItemInfo info);
+	boolean hasKnowledge(@NotNull ItemInfo info);
 
 	/**
 	 * @param stack The stack to add to knowledge
@@ -62,7 +62,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 * @implNote This method defaults to making sure the stack is not empty and then wrapping the stack into an {@link ItemInfo} and calling {@link
 	 * #addKnowledge(ItemInfo)}
 	 */
-	default boolean addKnowledge(@Nonnull ItemStack stack) {
+	default boolean addKnowledge(@NotNull ItemStack stack) {
 		return !stack.isEmpty() && addKnowledge(ItemInfo.fromStack(stack));
 	}
 
@@ -71,7 +71,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 *
 	 * @return Whether the operation was successful
 	 */
-	boolean addKnowledge(@Nonnull ItemInfo info);
+	boolean addKnowledge(@NotNull ItemInfo info);
 
 	/**
 	 * @param stack The stack to remove from knowledge
@@ -81,7 +81,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 * @implNote This method defaults to making sure the stack is not empty and then wrapping the stack into an {@link ItemInfo} and calling {@link
 	 * #removeKnowledge(ItemInfo)}
 	 */
-	default boolean removeKnowledge(@Nonnull ItemStack stack) {
+	default boolean removeKnowledge(@NotNull ItemStack stack) {
 		return !stack.isEmpty() && removeKnowledge(ItemInfo.fromStack(stack));
 	}
 
@@ -90,18 +90,18 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 *
 	 * @return Whether the operation was successful
 	 */
-	boolean removeKnowledge(@Nonnull ItemInfo info);
+	boolean removeKnowledge(@NotNull ItemInfo info);
 
 	/**
 	 * @return An unmodifiable but live view of the knowledge list.
 	 */
-	@Nonnull
+	@NotNull
 	Set<ItemInfo> getKnowledge();
 
 	/**
 	 * @return The player's input and lock slots
 	 */
-	@Nonnull
+	@NotNull
 	IItemHandler getInputAndLocks();
 
 	/**
@@ -119,14 +119,14 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 *
 	 * @param player The player to sync to.
 	 */
-	void sync(@Nonnull ServerPlayer player);
+	void sync(@NotNull ServerPlayer player);
 
 	/**
 	 * Syncs the emc stored in this provider to the given player.
 	 *
 	 * @param player The player to sync to.
 	 */
-	void syncEmc(@Nonnull ServerPlayer player);
+	void syncEmc(@NotNull ServerPlayer player);
 
 	/**
 	 * Syncs that a specific item's knowledge changed (either learned or unlearned) to the given player.
@@ -135,7 +135,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 * @param change  The item that changed. (Should be the persistent variant)
 	 * @param learned True if learned, false if unlearned.
 	 */
-	void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned);
+	void syncKnowledgeChange(@NotNull ServerPlayer player, ItemInfo change, boolean learned);
 
 	/**
 	 * Syncs the inputs and locks stored in this provider to the given player.
@@ -144,7 +144,7 @@ public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
 	 * @param slotsChanged  The indices of the slots that need to be synced (may be empty, in which case nothing should happen).
 	 * @param updateTargets How the targets should be updated on the client.
 	 */
-	void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets);
+	void syncInputAndLocks(@NotNull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets);
 
 	/**
 	 * @param changes Slot index to stack for the changes that occurred.

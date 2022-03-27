@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.InteractionHand;
@@ -8,6 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class PEHandContainer extends PEContainer {
 
@@ -25,12 +25,12 @@ public class PEHandContainer extends PEContainer {
 	}
 
 	@Override
-	protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+	protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
 		// special handling to prevent removing the hand container from the player's inventory slot
 		if (hand == InteractionHand.MAIN_HAND && index == selected) {
 			return new HotBarSlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull Player player) {
+				public boolean mayPickup(@NotNull Player player) {
 					return false;
 				}
 			};
@@ -39,12 +39,12 @@ public class PEHandContainer extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return true;
 	}
 
 	@Override
-	public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+	public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
 		if (clickType == ClickType.SWAP) {
 			if (hand == InteractionHand.OFF_HAND && dragType == 40) {
 				//Block pressing f to swap it when it is in the offhand
@@ -59,7 +59,7 @@ public class PEHandContainer extends PEContainer {
 		clickPostValidate(slotId, dragType, clickType, player);
 	}
 
-	public void clickPostValidate(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+	public void clickPostValidate(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
 		super.clicked(slotId, dragType, clickType, player);
 	}
 }

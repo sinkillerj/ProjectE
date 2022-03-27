@@ -2,8 +2,6 @@ package moze_intel.projecte.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,6 +15,8 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -101,7 +101,7 @@ public final class ItemHelper {
 	 * @implNote If the input {@link CompoundTag} only contains the key we want to skip, we return null instead of an empty {@link CompoundTag}.
 	 */
 	@Nullable
-	public static CompoundTag copyNBTSkipKey(@Nonnull CompoundTag nbt, @Nonnull String keyToSkip) {
+	public static CompoundTag copyNBTSkipKey(@NotNull CompoundTag nbt, @NotNull String keyToSkip) {
 		CompoundTag copiedNBT = new CompoundTag();
 		for (String key : nbt.getAllKeys()) {
 			if (keyToSkip.equals(key)) {
@@ -133,7 +133,7 @@ public final class ItemHelper {
 		}
 		return new IItemHandlerModifiable() {
 			@Override
-			public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+			public void setStackInSlot(int slot, @NotNull ItemStack stack) {
 			}
 
 			@Override
@@ -141,19 +141,19 @@ public final class ItemHelper {
 				return list.size();
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
 			public ItemStack getStackInSlot(int slot) {
 				return list.get(slot);
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 				return stack;
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
 			public ItemStack extractItem(int slot, int amount, boolean simulate) {
 				return ItemStack.EMPTY;
@@ -165,7 +165,7 @@ public final class ItemHelper {
 			}
 
 			@Override
-			public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+			public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 				return true;
 			}
 		};

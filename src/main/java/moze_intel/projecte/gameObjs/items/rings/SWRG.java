@@ -2,11 +2,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -39,6 +37,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter {
 
@@ -103,15 +103,15 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int invSlot, boolean isHeldItem) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int invSlot, boolean isHeldItem) {
 		if (invSlot < Inventory.getSelectionSize() && entity instanceof Player player) {
 			tick(stack, player);
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			int newMode = switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
@@ -157,13 +157,13 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.swrg.get() != -1) {
 			if (pedestal.getActivityCooldown() <= 0) {
 				for (Mob living : level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds(),
@@ -182,7 +182,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();
@@ -194,7 +194,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand) {
 		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.level);
 		projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 		player.level.addFreshEntity(projectile);

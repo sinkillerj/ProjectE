@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
@@ -26,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 
@@ -39,7 +39,7 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public boolean isEnchantable(@Nonnull ItemStack stack) {
+	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
@@ -59,7 +59,7 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -69,17 +69,17 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		float speed = super.getDestroySpeed(stack, state);
 		if (speed == 1 && state.is(PETags.Blocks.MINEABLE_WITH_PE_SHEARS)) {
 			speed = matterType.getSpeed();
@@ -88,7 +88,7 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
 	}
 
@@ -98,14 +98,14 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(@Nonnull ItemStack stack, BlockState state) {
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, BlockState state) {
 		//Note: our tag intercepts the vanilla shears matches
 		return state.is(PETags.Blocks.MINEABLE_WITH_PE_SHEARS) && TierSortingRegistry.isCorrectTierForDrops(matterType, state);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getItemInHand(hand));
 	}
 
@@ -115,7 +115,7 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 		return ToolHelper.shearBlock(stack, pos, player) == InteractionResult.SUCCESS;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();

@@ -1,7 +1,6 @@
 package moze_intel.projecte.common;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -18,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class PEAdvancementsProvider extends AdvancementProvider {
 
@@ -26,7 +26,7 @@ public class PEAdvancementsProvider extends AdvancementProvider {
 	}
 
 	@Override
-	protected void registerAdvancements(@Nonnull Consumer<Advancement> advancementConsumer, @Nonnull ExistingFileHelper fileHelper) {
+	protected void registerAdvancements(@NotNull Consumer<Advancement> advancementConsumer, @NotNull ExistingFileHelper fileHelper) {
 		Advancement root = Advancement.Builder.advancement()
 				.display(PEItems.PHILOSOPHERS_STONE,
 						PELang.PROJECTE.translate(),

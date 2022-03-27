@@ -2,9 +2,8 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class SoulStone extends PEToggleItem implements IPedestalItem {
 
@@ -35,7 +35,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean held) {
 		if (level.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
@@ -58,8 +58,8 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds(),
@@ -75,7 +75,7 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();

@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotGhost extends SlotItemHandler {
 
@@ -17,12 +17,12 @@ public class SlotGhost extends SlotItemHandler {
 		this.validator = validator;
 	}
 
-	public boolean isValid(@Nonnull ItemStack stack) {
+	public boolean isValid(@NotNull ItemStack stack) {
 		return validator.test(stack);
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		if (!stack.isEmpty() && isValid(stack)) {
 			this.set(stack);
 		}
@@ -30,7 +30,7 @@ public class SlotGhost extends SlotItemHandler {
 	}
 
 	@Override
-	public void set(@Nonnull ItemStack stack) {
+	public void set(@NotNull ItemStack stack) {
 		super.set(ItemHelper.getNormalizedStack(stack));
 	}
 
@@ -45,7 +45,7 @@ public class SlotGhost extends SlotItemHandler {
 	}
 
 	@Override
-	public int getMaxStackSize(@Nonnull ItemStack stack) {
+	public int getMaxStackSize(@NotNull ItemStack stack) {
 		return 1;
 	}
 }

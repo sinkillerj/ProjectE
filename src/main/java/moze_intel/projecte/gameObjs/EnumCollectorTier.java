@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs;
 
-import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public enum EnumCollectorTier implements StringRepresentable {
@@ -19,7 +19,7 @@ public enum EnumCollectorTier implements StringRepresentable {
 		this.storage = storage;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getSerializedName() {
 		return name;

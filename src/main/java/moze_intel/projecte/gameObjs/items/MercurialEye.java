@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
@@ -51,6 +49,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MercurialEye extends ItemMode implements IExtraFunction {
 
@@ -69,7 +69,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		int selected = player.getInventory().selected;
 		MenuProvider provider = new SimpleMenuProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
 		NetworkHooks.openGui((ServerPlayer) player, provider, b -> {
@@ -79,16 +79,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		return true;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		ItemStack stack = ctx.getItemInHand();
 		return ctx.getLevel().isClientSide ? InteractionResult.SUCCESS : formBlocks(stack, ctx.getPlayer(), ctx.getHand(), ctx.getClickedPos(), ctx.getClickedFace());
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (getMode(stack) == CREATION_MODE) {
 			if (level.isClientSide) {
@@ -299,7 +299,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		return false;
 	}
 
-	private int fillGaps(ItemStack eye, Player player, Level level, BlockState startingState, BlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
+	private int fillGaps(ItemStack eye, Player player, Level level, BlockState startingState, BlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners,
+			NonNullList<ItemStack> drops) {
 		int hitTargets = 0;
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
 			VoxelShape bb = startingState.getCollisionShape(level, pos);

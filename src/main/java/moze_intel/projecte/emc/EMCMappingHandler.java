@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -42,6 +41,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.math3.fraction.BigFraction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public final class EMCMappingHandler {
@@ -193,7 +193,7 @@ public final class EMCMappingHandler {
 		return emc.size();
 	}
 
-	public static boolean hasEmcValue(@Nonnull ItemInfo info) {
+	public static boolean hasEmcValue(@NotNull ItemInfo info) {
 		return emc.containsKey(info);
 	}
 
@@ -201,7 +201,7 @@ public final class EMCMappingHandler {
 	 * Gets the stored emc value or zero if there is no entry in the map for the given value.
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	public static long getStoredEmcValue(@Nonnull ItemInfo info) {
+	public static long getStoredEmcValue(@NotNull ItemInfo info) {
 		return emc.getOrDefault(info, 0L);
 	}
 

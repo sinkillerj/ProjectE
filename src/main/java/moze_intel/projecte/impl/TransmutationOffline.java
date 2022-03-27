@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -27,6 +26,7 @@ import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class TransmutationOffline {
 
@@ -97,27 +97,27 @@ public class TransmutationOffline {
 			}
 
 			@Override
-			public boolean hasKnowledge(@Nonnull ItemInfo info) {
+			public boolean hasKnowledge(@NotNull ItemInfo info) {
 				return toCopy.hasKnowledge(info);
 			}
 
 			@Override
-			public boolean addKnowledge(@Nonnull ItemInfo info) {
+			public boolean addKnowledge(@NotNull ItemInfo info) {
 				return false;
 			}
 
 			@Override
-			public boolean removeKnowledge(@Nonnull ItemInfo info) {
+			public boolean removeKnowledge(@NotNull ItemInfo info) {
 				return false;
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
 			public Set<ItemInfo> getKnowledge() {
 				return immutableKnowledge;
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
 			public IItemHandler getInputAndLocks() {
 				return immutableInputLocks;
@@ -133,22 +133,22 @@ public class TransmutationOffline {
 			}
 
 			@Override
-			public void sync(@Nonnull ServerPlayer player) {
+			public void sync(@NotNull ServerPlayer player) {
 				toCopy.sync(player);
 			}
 
 			@Override
-			public void syncEmc(@Nonnull ServerPlayer player) {
+			public void syncEmc(@NotNull ServerPlayer player) {
 				toCopy.syncEmc(player);
 			}
 
 			@Override
-			public void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned) {
+			public void syncKnowledgeChange(@NotNull ServerPlayer player, ItemInfo change, boolean learned) {
 				toCopy.syncKnowledgeChange(player, change, learned);
 			}
 
 			@Override
-			public void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+			public void syncInputAndLocks(@NotNull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
 				toCopy.syncInputAndLocks(player, slotsChanged, updateTargets);
 			}
 

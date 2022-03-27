@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -44,6 +42,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
 
@@ -67,7 +67,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isShiftKeyDown() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
@@ -103,7 +103,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		Level level = player.getCommandSenderWorld();
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, level);
@@ -113,7 +113,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (!player.getCommandSenderWorld().isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(stack));
 		}
@@ -121,7 +121,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
@@ -185,13 +185,13 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	private record ContainerProvider(ItemStack stack) implements MenuProvider {
 
-		@Nonnull
+		@NotNull
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(player.getCommandSenderWorld(), player.blockPosition()));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Component getDisplayName() {
 			return stack.getHoverName();

@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerScreen<CONTAINER> {
 
@@ -36,14 +36,14 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
+	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
 		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
 		//Don't render inventory as we don't have space
 		this.font.draw(matrix, Constants.EMC_FORMATTER.format(menu.emc.get()), emcX, emcY, 0x404040);
 	}
 
 	@Override
-	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, this.texture);

@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.container.slots.transmutation;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
@@ -13,6 +12,7 @@ import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotLock extends InventoryContainerSlot {
 
@@ -24,11 +24,11 @@ public class SlotLock extends InventoryContainerSlot {
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		return SlotPredicates.RELAY_INV.test(stack);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack remove(int amount) {
 		ItemStack stack = super.remove(amount);
@@ -41,7 +41,7 @@ public class SlotLock extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void set(@Nonnull ItemStack stack) {
+	public void set(@NotNull ItemStack stack) {
 		super.set(stack);
 		if (inv.isServer()) {
 			if (stack.isEmpty()) {

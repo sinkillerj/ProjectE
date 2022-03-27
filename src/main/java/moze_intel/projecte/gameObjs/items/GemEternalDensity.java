@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
@@ -47,6 +45,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
 
@@ -67,7 +67,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean isHeld) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean isHeld) {
 		if (!level.isClientSide && entity instanceof Player) {
 			entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> condense(stack, inv));
 		}
@@ -126,9 +126,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return hasChanged;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			if (player.isShiftKeyDown()) {
@@ -268,7 +268,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
@@ -280,7 +280,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		if (!level.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
 			if (chest != null) {
@@ -295,19 +295,19 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
 		return !player.getCommandSenderWorld().isClientSide && condense(stack, inv);
 	}
 
 	private record ContainerProvider(InteractionHand hand, ItemStack stack) implements MenuProvider {
 
-		@Nonnull
+		@NotNull
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			return new EternalDensityContainer(windowId, playerInventory, hand, playerInventory.selected, new EternalDensityInventory(stack));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Component getDisplayName() {
 			return TextComponentUtil.build(PEItems.GEM_OF_ETERNAL_DENSITY.get());

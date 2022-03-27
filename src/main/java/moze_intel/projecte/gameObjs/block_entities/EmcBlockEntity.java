@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.block_entities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.block_entity.BaseEmcBlockEntity;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
@@ -18,6 +17,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
@@ -74,7 +74,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public final CompoundTag getUpdateTag() {
 		//TODO: Eventually it would be nice to try and minimize how much data we send in the update tags

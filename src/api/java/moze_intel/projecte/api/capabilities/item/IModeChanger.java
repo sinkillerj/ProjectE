@@ -1,11 +1,11 @@
 package moze_intel.projecte.api.capabilities.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that switch between modes when the mode switch keybind is activated (default G)
@@ -23,7 +23,7 @@ public interface IModeChanger {
 	 *
 	 * @return The mode of this ItemStack
 	 */
-	byte getMode(@Nonnull ItemStack stack);
+	byte getMode(@NotNull ItemStack stack);
 
 	/**
 	 * Called serverside when the player presses change mode
@@ -34,5 +34,5 @@ public interface IModeChanger {
 	 *
 	 * @return Whether the operation succeeded
 	 */
-	boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, @Nullable InteractionHand hand);
+	boolean changeMode(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand);
 }

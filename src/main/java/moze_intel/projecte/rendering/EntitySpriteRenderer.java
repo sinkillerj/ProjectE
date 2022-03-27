@@ -3,12 +3,12 @@ package moze_intel.projecte.rendering;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
-import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
 public class EntitySpriteRenderer<ENTITY extends Entity> extends EntityRenderer<ENTITY> {
 
@@ -19,14 +19,14 @@ public class EntitySpriteRenderer<ENTITY extends Entity> extends EntityRenderer<
 		this.texture = texture;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ResourceLocation getTextureLocation(@Nonnull ENTITY entity) {
+	public ResourceLocation getTextureLocation(@NotNull ENTITY entity) {
 		return texture;
 	}
 
 	@Override
-	public void render(@Nonnull ENTITY entity, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
+	public void render(@NotNull ENTITY entity, float entityYaw, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light) {
 		matrix.pushPose();
 		matrix.mulPose(entityRenderDispatcher.cameraOrientation());
 		matrix.scale(0.5F, 0.5F, 0.5F);

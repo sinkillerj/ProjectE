@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityMobRandomizer extends ThrowableProjectile {
 
@@ -50,7 +50,7 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		if (level.isClientSide) {
 			for (int i = 0; i < 4; ++i) {
 				level.addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
@@ -63,7 +63,7 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHitEntity(@Nonnull EntityHitResult result) {
+	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
 		if (!level.isClientSide && result.getEntity() instanceof Mob ent && getOwner() instanceof Player player) {
 			Mob randomized = EntityRandomizerHelper.getRandomEntity(level, ent);
@@ -85,7 +85,7 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

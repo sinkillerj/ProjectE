@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.container;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class TransmutationContainer extends PEHandContainer {
 
@@ -87,9 +87,9 @@ public class TransmutationContainer extends PEHandContainer {
 		addPlayerInventory(35, 117);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	protected Slot addSlot(@Nonnull Slot slot) {
+	protected Slot addSlot(@NotNull Slot slot) {
 		if (slot instanceof SlotInput input) {
 			inputSlots.add(input);
 		}
@@ -97,7 +97,7 @@ public class TransmutationContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void removed(@Nonnull Player player) {
+	public void removed(@NotNull Player player) {
 		super.removed(player);
 		if (!player.isAlive() || player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected()) {
 			player.drop(unlearn.getItem(), false);
@@ -106,9 +106,9 @@ public class TransmutationContainer extends PEHandContainer {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
+	public ItemStack quickMoveStack(@NotNull Player player, int slotIndex) {
 		if (slotIndex < 9 || slotIndex == 10) {
 			//Input Slots, lock slot, and unlearn slot, defer to super (allow basic sneak clicking out of container)
 			return super.quickMoveStack(player, slotIndex);
@@ -182,7 +182,7 @@ public class TransmutationContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void clickPostValidate(int slotIndex, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+	public void clickPostValidate(int slotIndex, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
 		if (player.getCommandSenderWorld().isClientSide && transmutationInventory.getHandlerForSlot(slotIndex) == transmutationInventory.outputs) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
@@ -193,7 +193,7 @@ public class TransmutationContainer extends PEHandContainer {
 	}
 
 	@Override
-	public boolean canDragTo(@Nonnull Slot slot) {
+	public boolean canDragTo(@NotNull Slot slot) {
 		return !(slot instanceof SlotConsume || slot instanceof SlotUnlearn || slot instanceof SlotInput || slot instanceof SlotLock || slot instanceof SlotOutput);
 	}
 }

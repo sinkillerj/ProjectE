@@ -1,8 +1,6 @@
 package moze_intel.projecte.api;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.nss.NSSItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -12,6 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class used for keeping track of a combined {@link Item} and {@link CompoundTag}. Unlike {@link ItemStack} this class does not keep track of count, and overrides {@link
@@ -22,12 +22,12 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public final class ItemInfo {
 
-	@Nonnull
+	@NotNull
 	private final Item item;
 	@Nullable
 	private final CompoundTag nbt;
 
-	private ItemInfo(@Nonnull ItemLike item, @Nullable CompoundTag nbt) {
+	private ItemInfo(@NotNull ItemLike item, @Nullable CompoundTag nbt) {
 		this.item = item.asItem();
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}
@@ -37,7 +37,7 @@ public final class ItemInfo {
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
-	public static ItemInfo fromItem(@Nonnull ItemLike item, @Nullable CompoundTag nbt) {
+	public static ItemInfo fromItem(@NotNull ItemLike item, @Nullable CompoundTag nbt) {
 		return new ItemInfo(item, nbt);
 	}
 
@@ -46,7 +46,7 @@ public final class ItemInfo {
 	 *
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
-	public static ItemInfo fromItem(@Nonnull ItemLike item) {
+	public static ItemInfo fromItem(@NotNull ItemLike item) {
 		return fromItem(item, null);
 	}
 
@@ -55,7 +55,7 @@ public final class ItemInfo {
 	 *
 	 * @apiNote While it is not required that the stack is not empty, it is expected to check yourself to make sure it is not empty.
 	 */
-	public static ItemInfo fromStack(@Nonnull ItemStack stack) {
+	public static ItemInfo fromStack(@NotNull ItemStack stack) {
 		return fromItem(stack.getItem(), stack.getTag());
 	}
 
@@ -65,7 +65,7 @@ public final class ItemInfo {
 	 * @return An {@link ItemInfo} object from a given {@link NSSItem}, or null if the given {@link NSSItem} represents a tag or the item it represents is not registered
 	 */
 	@Nullable
-	public static ItemInfo fromNSS(@Nonnull NSSItem stack) {
+	public static ItemInfo fromNSS(@NotNull NSSItem stack) {
 		if (stack.representsTag()) {
 			return null;
 		}
@@ -84,7 +84,7 @@ public final class ItemInfo {
 	 * @return An {@link ItemInfo} that is represented by the given {@link CompoundTag}, or null if no {@link ItemInfo} is stored or the item is not registered.
 	 */
 	@Nullable
-	public static ItemInfo read(@Nonnull CompoundTag nbt) {
+	public static ItemInfo read(@NotNull CompoundTag nbt) {
 		if (nbt.contains("item", Tag.TAG_STRING)) {
 			ResourceLocation registryName = ResourceLocation.tryParse(nbt.getString("item"));
 			if (registryName == null) {
@@ -105,7 +105,7 @@ public final class ItemInfo {
 	/**
 	 * @return The {@link Item} stored in this {@link ItemInfo}.
 	 */
-	@Nonnull
+	@NotNull
 	public Item getItem() {
 		return item;
 	}
@@ -157,7 +157,7 @@ public final class ItemInfo {
 	/**
 	 * Writes the item and nbt fields to a NBT object.
 	 */
-	public CompoundTag write(@Nonnull CompoundTag nbt) {
+	public CompoundTag write(@NotNull CompoundTag nbt) {
 		nbt.putString("item", item.getRegistryName().toString());
 		if (this.nbt != null) {
 			nbt.put("nbt", this.nbt);

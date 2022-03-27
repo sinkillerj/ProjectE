@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -24,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class AlchemicalBag extends ItemPE {
 
@@ -34,9 +34,9 @@ public class AlchemicalBag extends ItemPE {
 		this.color = color;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(player.getItemInHand(hand), hand), buf -> {
 				buf.writeEnum(hand);
@@ -83,16 +83,16 @@ public class AlchemicalBag extends ItemPE {
 			this.hand = hand;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			IItemHandlerModifiable inv = (IItemHandlerModifiable) player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)
 					.orElseThrow(NullPointerException::new)
 					.getBag(color);
 			return new AlchBagContainer(windowId, playerInventory, hand, inv, playerInventory.selected, false);
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Component getDisplayName() {
 			return stack.getHoverName();

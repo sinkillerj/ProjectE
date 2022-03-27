@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class EmcChestBlockEntityContainer<BE extends EmcChestBlockEntity> extends PEContainer {
 
@@ -17,7 +17,7 @@ public abstract class EmcChestBlockEntityContainer<BE extends EmcChestBlockEntit
 	}
 
 	@Override
-	public void removed(@Nonnull Player player) {
+	public void removed(@NotNull Player player) {
 		super.removed(player);
 		blockEntity.stopOpen(player);
 	}

@@ -1,11 +1,11 @@
 package moze_intel.projecte.api.nss;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} and {@link NSSNBT} simpler, and automatically be able to register conversions for:
@@ -23,7 +23,7 @@ public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> imple
 	@Nullable
 	private final CompoundTag nbt;
 
-	protected AbstractNBTNSSTag(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
+	protected AbstractNBTNSSTag(@NotNull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag);
 		this.nbt = nbt != null && nbt.isEmpty() ? null : nbt;
 	}

@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
+import org.jetbrains.annotations.Nullable;
 
 public class WorldTransmuteEntry {
 

@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 // Partial copy of SlotItemHandler with a validator
 public class ValidatedSlot extends InventoryContainerSlot {
@@ -16,7 +16,7 @@ public class ValidatedSlot extends InventoryContainerSlot {
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		return super.mayPlace(stack) && validator.test(stack);
 	}
 }

@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.block_entities;
 
 import java.util.Optional;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements IDMPedestal {
 
@@ -136,7 +136,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		inventory.deserializeNBT(nbt);
 		setActive(nbt.getBoolean("isActive"));
@@ -145,7 +145,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.merge(inventory.serializeNBT());
 		tag.putBoolean("isActive", getActive());

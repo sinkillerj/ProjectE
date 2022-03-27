@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 
@@ -28,14 +28,14 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
+	public boolean matches(@NotNull CraftingContainer inv, @NotNull Level level) {
 		//If we have at least one matching recipe, return that we found a match
 		return !getMatchingRecipes(inv, level).isEmpty();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv) {
+	public ItemStack assemble(@NotNull CraftingContainer inv) {
 		Set<SmeltingRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
 		if (matchingRecipes.isEmpty()) {
 			return ItemStack.EMPTY;
@@ -47,7 +47,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 		return output;
 	}
 
-	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @Nonnull Level level) {
+	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @NotNull Level level) {
 		List<ItemStack> philoStones = new ArrayList<>();
 		List<ItemStack> coals = new ArrayList<>();
 		List<ItemStack> allItems = new ArrayList<>();
@@ -112,7 +112,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 		return width * height >= 9;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return PERecipeSerializers.PHILO_STONE_SMELTING.get();

@@ -1,10 +1,10 @@
 package moze_intel.projecte.api.event;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired on the server when a player is attempting to place an item in the condenser.
@@ -20,7 +20,7 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	private final ItemInfo sourceInfo;
 	private final ItemInfo reducedInfo;
 
-	public PlayerAttemptCondenserSetEvent(@Nonnull Player entityPlayer, @Nonnull ItemInfo sourceInfo, @Nonnull ItemInfo reducedInfo) {
+	public PlayerAttemptCondenserSetEvent(@NotNull Player entityPlayer, @NotNull ItemInfo sourceInfo, @NotNull ItemInfo reducedInfo) {
 		player = entityPlayer;
 		this.sourceInfo = sourceInfo;
 		this.reducedInfo = reducedInfo;
@@ -29,7 +29,7 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	/**
 	 * @return The player who is attempting to put in the condenser slot.
 	 */
-	@Nonnull
+	@NotNull
 	public Player getPlayer() {
 		return player;
 	}
@@ -37,7 +37,7 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	/**
 	 * @return The {@link ItemInfo} that the player is trying to condense.
 	 */
-	@Nonnull
+	@NotNull
 	public ItemInfo getSourceInfo() {
 		return sourceInfo;
 	}
@@ -47,7 +47,7 @@ public class PlayerAttemptCondenserSetEvent extends Event {
 	 *
 	 * @return The "cleaned" {@link ItemInfo} that the player is trying to learn.
 	 */
-	@Nonnull
+	@NotNull
 	public ItemInfo getReducedInfo() {
 		return reducedInfo;
 	}

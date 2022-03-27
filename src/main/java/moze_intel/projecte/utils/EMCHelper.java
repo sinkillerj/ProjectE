@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
@@ -23,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -106,7 +106,7 @@ public final class EMCHelper {
 		return -1;
 	}
 
-	private static long tryExtract(@Nonnull ItemStack stack, long minFuel) {
+	private static long tryExtract(@NotNull ItemStack stack, long minFuel) {
 		if (stack.isEmpty()) {
 			return 0;
 		}

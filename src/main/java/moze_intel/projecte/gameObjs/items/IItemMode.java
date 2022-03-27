@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -11,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public interface IItemMode extends IModeChanger {
 
@@ -30,12 +30,12 @@ public interface IItemMode extends IModeChanger {
 	}
 
 	@Override
-	default byte getMode(@Nonnull ItemStack stack) {
+	default byte getMode(@NotNull ItemStack stack) {
 		return stack.hasTag() ? stack.getOrCreateTag().getByte(Constants.NBT_KEY_MODE) : 0;
 	}
 
 	@Override
-	default boolean changeMode(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	default boolean changeMode(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		byte numModes = getModeCount();
 		if (numModes < 2) {
 			//If we have no modes or we are set to the only mode fail

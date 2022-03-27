@@ -1,12 +1,12 @@
 package moze_intel.projecte.capability;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
 
 public class AlchChestItemCapabilityWrapper extends BasicItemCapability<IAlchChestItem> implements IAlchChestItem {
 
@@ -16,7 +16,7 @@ public class AlchChestItemCapabilityWrapper extends BasicItemCapability<IAlchChe
 	}
 
 	@Override
-	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		return getItem().updateInAlchChest(level, pos, stack);
 	}
 }

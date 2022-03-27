@@ -2,10 +2,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
@@ -34,6 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.NotNull;
 
 public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
@@ -69,15 +69,15 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int invSlot, boolean isSelected) {
 		if (!level.isClientSide && getMode(stack) == 1 && entity instanceof LivingEntity) {
 			fireArrow(stack, level, (LivingEntity) entity, 1F);
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
 			fireArrow(player.getItemInHand(hand), level, player, 1F);
 		}
@@ -94,8 +94,8 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				if (!level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds()).isEmpty()) {
@@ -118,7 +118,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -11,6 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class RelayMK2BlockEntity extends RelayMK1BlockEntity {
 
@@ -18,13 +18,13 @@ public class RelayMK2BlockEntity extends RelayMK1BlockEntity {
 		super(PEBlockEntityTypes.RELAY_MK2, pos, state, 13, EnumRelayTier.MK2);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 		return new RelayMK2Container(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return PELang.GUI_RELAY_MK2.translate();

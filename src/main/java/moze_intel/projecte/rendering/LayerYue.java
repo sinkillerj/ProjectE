@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -14,6 +13,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 
 public class LayerYue extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
@@ -30,7 +30,7 @@ public class LayerYue extends RenderLayer<AbstractClientPlayer, PlayerModel<Abst
 	}
 
 	@Override
-	public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, @Nonnull AbstractClientPlayer player,
+	public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, @NotNull AbstractClientPlayer player,
 			float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (player.isInvisible()) {
 			return;

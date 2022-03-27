@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.math.BigInteger;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
@@ -19,6 +18,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class GUITransmutation extends PEContainerScreen<TransmutationContainer> {
@@ -60,7 +60,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
@@ -69,7 +69,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
+	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
 		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
 		//Don't render inventory as we don't have space
 		BigInteger emcAmount = inv.getAvailableEmc();
@@ -181,7 +181,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderTooltip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEmc();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {

@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
-import javax.annotation.Nullable;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldTransmutations;
@@ -31,6 +30,7 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidAttributes;
+import org.jetbrains.annotations.Nullable;
 
 public class TransmutationRenderingOverlay implements IIngameOverlay {
 

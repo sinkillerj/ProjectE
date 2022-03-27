@@ -1,8 +1,7 @@
 package moze_intel.projecte.gameObjs.items;
 
-import javax.annotation.Nonnull;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
+import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.EMCHelper;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
@@ -26,7 +26,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return stack.hasTag();
 	}
 
@@ -40,18 +40,18 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide && !FMLEnvironment.production) {
 			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
@@ -78,7 +78,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	// -- IItemEmc -- //
 
 	@Override
-	public long insertEmc(@Nonnull ItemStack stack, long toInsert, EmcAction action) {
+	public long insertEmc(@NotNull ItemStack stack, long toInsert, EmcAction action) {
 		if (toInsert < 0) {
 			return extractEmc(stack, -toInsert, action);
 		}
@@ -90,7 +90,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	}
 
 	@Override
-	public long extractEmc(@Nonnull ItemStack stack, long toExtract, EmcAction action) {
+	public long extractEmc(@NotNull ItemStack stack, long toExtract, EmcAction action) {
 		if (toExtract < 0) {
 			return insertEmc(stack, -toExtract, action);
 		}
@@ -104,13 +104,13 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 
 	@Override
 	@Range(from = 0, to = Long.MAX_VALUE)
-	public long getStoredEmc(@Nonnull ItemStack stack) {
+	public long getStoredEmc(@NotNull ItemStack stack) {
 		return ItemPE.getEmc(stack);
 	}
 
 	@Override
 	@Range(from = 1, to = Long.MAX_VALUE)
-	public long getMaximumEmc(@Nonnull ItemStack stack) {
+	public long getMaximumEmc(@NotNull ItemStack stack) {
 		return EMCHelper.getKleinStarMaxEmc(stack);
 	}
 }

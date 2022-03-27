@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -26,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
 
@@ -40,13 +40,13 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEItems.PHILOSOPHERS_STONE));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeType<WorldTransmuteEntry> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
@@ -54,7 +54,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		return getRecipeType().getUid();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
@@ -62,31 +62,31 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		return getRecipeType().getRecipeClass();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getTitle() {
 		return PELang.WORLD_TRANSMUTE.translate();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public IDrawable getBackground() {
 		return background;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public IDrawable getIcon() {
 		return icon;
 	}
 
 	@Override
-	public void draw(@Nonnull WorldTransmuteEntry recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
+	public void draw(@NotNull WorldTransmuteEntry recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull PoseStack matrix, double mouseX, double mouseY) {
 		arrow.draw(matrix, 55, 18);
 	}
 
 	@Override
-	public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull WorldTransmuteEntry recipe, @Nonnull IFocusGroup focuses) {
+	public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull WorldTransmuteEntry recipe, @NotNull IFocusGroup focuses) {
 		recipe.getInput().ifPresent(recipeInput ->
 				recipeInput.ifLeft(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 						.addItemStack(input)
@@ -107,9 +107,9 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public List<Component> getTooltipStrings(@Nonnull WorldTransmuteEntry recipe, @Nonnull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+	public List<Component> getTooltipStrings(@NotNull WorldTransmuteEntry recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
 		if (mouseX > 67 && mouseX < 107 && mouseY > 18 && mouseY < 38) {
 			return Collections.singletonList(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate());
 		}

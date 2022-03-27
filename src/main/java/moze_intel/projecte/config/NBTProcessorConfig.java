@@ -3,13 +3,13 @@ package moze_intel.projecte.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.config.value.CachedBooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * For config options having to do with NBT Processors. Syncs from server to client.
@@ -28,7 +28,7 @@ public class NBTProcessorConfig extends BasePEConfig {
 	 * @implNote We register the dummy config as being owned by our mod container, but we don't tell the mod container about the dummy config so that it does not
 	 * overwrite our main server config.
 	 */
-	public static void setup(@Nonnull List<INBTProcessor> processors) {
+	public static void setup(@NotNull List<INBTProcessor> processors) {
 		if (INSTANCE == null) {
 			ProjectEConfig.registerConfig(INSTANCE = new NBTProcessorConfig(processors));
 		}
@@ -37,7 +37,7 @@ public class NBTProcessorConfig extends BasePEConfig {
 	private final ForgeConfigSpec configSpec;
 	private final Map<String, ProcessorConfig> processorConfigs = new HashMap<>();
 
-	private NBTProcessorConfig(@Nonnull List<INBTProcessor> processors) {
+	private NBTProcessorConfig(@NotNull List<INBTProcessor> processors) {
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.comment("This config is used to control which NBT Processors get used, and which ones actually contribute to the persistent NBT data that gets " +
 						"saved to knowledge/copied in a condenser.",

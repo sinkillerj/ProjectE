@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.container;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.block_entities.CondenserBlockEntity;
 import moze_intel.projecte.gameObjs.blocks.Condenser;
@@ -21,6 +19,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBlockEntity> {
 
@@ -69,12 +69,12 @@ public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBl
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return stillValid(player, blockEntity, getValidBlock());
 	}
 
 	@Override
-	public void clicked(int slot, int button, @Nonnull ClickType flag, @Nonnull Player player) {
+	public void clicked(int slot, int button, @NotNull ClickType flag, @NotNull Player player) {
 		if (slot == 0) {
 			if (blockEntity.attemptCondenserSet(player)) {
 				this.broadcastChanges();

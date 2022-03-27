@@ -1,6 +1,5 @@
 package moze_intel.projecte.common.tag;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
@@ -9,6 +8,7 @@ import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 

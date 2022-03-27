@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.ItemCapabilityWrapper;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 
@@ -33,7 +33,7 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public boolean isEnchantable(@Nonnull ItemStack stack) {
+	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
@@ -53,7 +53,7 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -63,22 +63,22 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
 	}
 
@@ -87,7 +87,7 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();

@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
+import org.jetbrains.annotations.NotNull;
 
 public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
@@ -43,7 +43,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean held) {
 		if (level.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
@@ -62,7 +62,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level level = ctx.getLevel();
@@ -169,8 +169,8 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				WorldHelper.growNearbyRandomly(true, level, pos, null);
@@ -182,7 +182,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();

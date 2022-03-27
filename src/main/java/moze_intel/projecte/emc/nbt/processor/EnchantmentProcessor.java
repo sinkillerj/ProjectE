@@ -1,8 +1,6 @@
 package moze_intel.projecte.emc.nbt.processor;
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
@@ -11,6 +9,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NBTProcessor
 public class EnchantmentProcessor implements INBTProcessor {
@@ -45,7 +45,7 @@ public class EnchantmentProcessor implements INBTProcessor {
 	}
 
 	@Override
-	public long recalculateEMC(@Nonnull ItemInfo info, long currentEMC) throws ArithmeticException {
+	public long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException {
 		Map<Enchantment, Integer> enchants = ItemInfoHelper.getEnchantments(info);
 		for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
 			int rarityWeight = entry.getKey().getRarity().getWeight();
@@ -58,7 +58,7 @@ public class EnchantmentProcessor implements INBTProcessor {
 
 	@Nullable
 	@Override
-	public CompoundTag getPersistentNBT(@Nonnull ItemInfo info) {
+	public CompoundTag getPersistentNBT(@NotNull ItemInfo info) {
 		CompoundTag tag = info.getNBT();
 		if (tag == null) {
 			return null;

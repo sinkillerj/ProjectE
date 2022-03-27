@@ -2,10 +2,10 @@ package moze_intel.projecte.config.value;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.config.IPEConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
@@ -36,7 +36,7 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> {
 
 	protected abstract REAL encode(TYPE value);
 
-	@Nonnull
+	@NotNull
 	public TYPE get() {
 		if (cachedValue == null) {
 			//If we don't have a cached value, resolve it from the actual ConfigValue

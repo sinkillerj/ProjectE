@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -47,6 +45,8 @@ import net.minecraft.world.level.chunk.LevelChunk.BoundTickingBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk.RebindableTickingBlockEntityWrapper;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
@@ -56,9 +56,9 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
@@ -73,7 +73,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int invSlot, boolean isHeld) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int invSlot, boolean isHeld) {
 		super.inventoryTick(stack, level, entity, invSlot, isHeld);
 		if (!(entity instanceof Player player) || invSlot >= Inventory.getSelectionSize() || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
@@ -210,7 +210,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
@@ -220,8 +220,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		if (!level.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			AABB bBox = pedestal.getEffectBounds();
@@ -236,7 +236,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();
@@ -250,12 +250,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return 2;
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -265,12 +265,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 }

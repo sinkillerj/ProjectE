@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.container;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
@@ -18,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class DMFurnaceContainer extends PEContainer {
 
@@ -90,7 +90,7 @@ public class DMFurnaceContainer extends PEContainer {
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		return stillValid(player, furnace, getValidBlock());
 	}
 }

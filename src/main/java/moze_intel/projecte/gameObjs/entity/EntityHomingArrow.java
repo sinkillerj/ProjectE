@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.entity;
 
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityHomingArrow extends Arrow {
 
@@ -37,7 +37,7 @@ public class EntityHomingArrow extends Arrow {
 		this.pickup = Pickup.CREATIVE_ONLY;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public EntityType<?> getType() {
 		return PEEntityTypes.HOMING_ARROW.get();
@@ -50,7 +50,7 @@ public class EntityHomingArrow extends Arrow {
 	}
 
 	@Override
-	protected void doPostHurtEffects(@Nonnull LivingEntity living) {
+	protected void doPostHurtEffects(@NotNull LivingEntity living) {
 		super.doPostHurtEffects(living);
 		// Strip damage vulnerability
 		living.invulnerableTime = 0;
@@ -148,7 +148,7 @@ public class EntityHomingArrow extends Arrow {
 				m20 * normal.x + m21 * normal.y + m22 * normal.z);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	protected ItemStack getPickupItem() {
 		return new ItemStack(Items.ARROW);
@@ -207,7 +207,7 @@ public class EntityHomingArrow extends Arrow {
 		return param;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

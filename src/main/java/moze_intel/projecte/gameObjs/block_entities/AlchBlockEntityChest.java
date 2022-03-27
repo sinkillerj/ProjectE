@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class AlchBlockEntityChest extends EmcChestBlockEntity {
 
@@ -37,13 +37,13 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		inventory.deserializeNBT(nbt);
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.merge(inventory.serializeNBT());
 	}
@@ -78,13 +78,13 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 		alchChest.updateComparators();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerIn) {
 		return new AlchChestContainer(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.ALCHEMICAL_CHEST);

@@ -3,8 +3,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Random;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
 import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
@@ -44,6 +42,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 
@@ -63,7 +63,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
 	}
@@ -75,15 +75,15 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			   ToolHelper.DEFAULT_PE_KATAR_ACTIONS.contains(toolAction);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public AABB getSweepHitBox(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+	public AABB getSweepHitBox(@NotNull ItemStack stack, @NotNull Player player, @NotNull Entity target) {
 		int charge = getCharge(stack);
 		return target.getBoundingBox().inflate(charge, charge / 4D, charge);
 	}
 
 	@Override
-	protected float getShortCutDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+	protected float getShortCutDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		float destroySpeed = super.getShortCutDestroySpeed(stack, state);
 		if (destroySpeed == 1) {
 			//Special handling for swords which still have hardcoded material checks
@@ -97,7 +97,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		return destroySpeed;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
@@ -130,7 +130,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	}
 
 	@Override
-	public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity damaged, @Nonnull LivingEntity damager) {
+	public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity damaged, @NotNull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
 		return true;
 	}
@@ -141,15 +141,15 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		return ToolHelper.shearBlock(stack, pos, player) == InteractionResult.SUCCESS;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		//Shear entities
 		return ItemHelper.actionResultFromType(ToolHelper.shearEntityAOE(player, hand, 0), player.getItemInHand(hand));
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (player.getAttackStrengthScale(0F) == 1) {
 			ToolHelper.attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.server.difficulty.katarDeathAura.get(), 0, hand);
 			PlayerHelper.resetCooldown(player);
@@ -158,29 +158,29 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public UseAnim getUseAnimation(@Nonnull ItemStack stack) {
+	public UseAnim getUseAnimation(@NotNull ItemStack stack) {
 		return UseAnim.BLOCK;
 	}
 
 	@Override
-	public int getUseDuration(@Nonnull ItemStack stack) {
+	public int getUseDuration(@NotNull ItemStack stack) {
 		return 72_000;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, ItemStack stack) {
 		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
 	}
 
 	/**
 	 * Copy of {@link net.minecraft.world.item.ShearsItem#interactLivingEntity(ItemStack, Player, LivingEntity, InteractionHand)}
 	 */
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResult interactLivingEntity(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull LivingEntity entity, @Nonnull InteractionHand hand) {
+	public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
 		if (entity instanceof IForgeShearable target) {
 			BlockPos pos = entity.blockPosition();
 			if (target.isShearable(stack, entity.level, pos)) {

@@ -1,6 +1,5 @@
 package moze_intel.projecte.common;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.data.ConversionGroupBuilder;
 import moze_intel.projecte.api.data.CustomConversionBuilder;
@@ -19,10 +18,11 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.Tags.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
+import org.jetbrains.annotations.NotNull;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
 
-	public PECustomConversionProvider(@Nonnull DataGenerator generator) {
+	public PECustomConversionProvider(@NotNull DataGenerator generator) {
 		super(generator);
 	}
 

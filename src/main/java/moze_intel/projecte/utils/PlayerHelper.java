@@ -3,7 +3,6 @@ package moze_intel.projecte.utils;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
@@ -37,6 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!

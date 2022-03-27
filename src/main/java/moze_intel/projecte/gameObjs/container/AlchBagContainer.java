@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
@@ -13,6 +12,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class AlchBagContainer extends PEHandContainer {
 
@@ -38,12 +38,12 @@ public class AlchBagContainer extends PEHandContainer {
 		if (immutable) {
 			return new InventoryContainerSlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull Player player) {
+				public boolean mayPickup(@NotNull Player player) {
 					return false;
 				}
 
 				@Override
-				public boolean mayPlace(@Nonnull ItemStack stack) {
+				public boolean mayPlace(@NotNull ItemStack stack) {
 					return false;
 				}
 			};
@@ -52,16 +52,16 @@ public class AlchBagContainer extends PEHandContainer {
 	}
 
 	@Override
-	protected MainInventorySlot createMainInventorySlot(@Nonnull Inventory inv, int index, int x, int y) {
+	protected MainInventorySlot createMainInventorySlot(@NotNull Inventory inv, int index, int x, int y) {
 		if (immutable) {
 			return new MainInventorySlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull Player player) {
+				public boolean mayPickup(@NotNull Player player) {
 					return false;
 				}
 
 				@Override
-				public boolean mayPlace(@Nonnull ItemStack stack) {
+				public boolean mayPlace(@NotNull ItemStack stack) {
 					return false;
 				}
 			};
@@ -70,16 +70,16 @@ public class AlchBagContainer extends PEHandContainer {
 	}
 
 	@Override
-	protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+	protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
 		if (immutable) {
 			return new HotBarSlot(inv, index, x, y) {
 				@Override
-				public boolean mayPickup(@Nonnull Player player) {
+				public boolean mayPickup(@NotNull Player player) {
 					return false;
 				}
 
 				@Override
-				public boolean mayPlace(@Nonnull ItemStack stack) {
+				public boolean mayPlace(@NotNull ItemStack stack) {
 					return false;
 				}
 			};
@@ -87,14 +87,14 @@ public class AlchBagContainer extends PEHandContainer {
 		return super.createHotBarSlot(inv, index, x, y);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
+	public ItemStack quickMoveStack(@NotNull Player player, int slotIndex) {
 		return immutable ? ItemStack.EMPTY : super.quickMoveStack(player, slotIndex);
 	}
 
 	@Override
-	public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+	public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
 		if (!immutable) {
 			super.clicked(slotId, dragType, clickType, player);
 		}

@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.world.Container;
@@ -9,6 +8,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 //Note: We cannot just extend SlotGhost as we use this as a fake slot that doesn't even have an item handler backing it
 public class SlotCondenserLock extends Slot {
@@ -23,7 +23,7 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		if (!stack.isEmpty() && SlotPredicates.HAS_EMC.test(stack)) {
 			this.set(ItemHelper.getNormalizedStack(stack));
 		}
@@ -31,7 +31,7 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public boolean mayPickup(@Nonnull Player player) {
+	public boolean mayPickup(@NotNull Player player) {
 		return false;
 	}
 
@@ -41,22 +41,22 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	@Nonnull
+	@NotNull
 	public ItemStack getItem() {
 		ItemInfo lockInfo = this.lockInfo.get();
 		return lockInfo == null ? ItemStack.EMPTY : lockInfo.createStack();
 	}
 
 	@Override
-	public void set(@Nonnull ItemStack stack) {
+	public void set(@NotNull ItemStack stack) {
 	}
 
 	@Override
-	public void onQuickCraft(@Nonnull ItemStack oldStack, @Nonnull ItemStack newStack) {
+	public void onQuickCraft(@NotNull ItemStack oldStack, @NotNull ItemStack newStack) {
 	}
 
 	@Override
-	@Nonnull
+	@NotNull
 	public ItemStack remove(int amount) {
 		return getItem();
 	}

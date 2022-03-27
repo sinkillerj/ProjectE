@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityNovaCatalystPrimed extends PrimedTnt {
 
@@ -26,7 +26,7 @@ public class EntityNovaCatalystPrimed extends PrimedTnt {
 		blocksBuilding = true;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public EntityType<?> getType() {
 		return PEEntityTypes.NOVA_CATALYST_PRIMED.get();
@@ -37,7 +37,7 @@ public class EntityNovaCatalystPrimed extends PrimedTnt {
 		WorldHelper.createNovaExplosion(level, this, getX(), getY(), getZ(), 16.0F);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

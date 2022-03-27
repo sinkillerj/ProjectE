@@ -3,11 +3,9 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.BasicItemCapability;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
@@ -44,6 +42,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedestalItem {
 
@@ -65,7 +65,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		return stack.copy();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
@@ -91,7 +91,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		Level level = player.getCommandSenderWorld();
 		if (ProjectEConfig.server.items.opEvertide.get() || !level.dimensionType().ultraWarm()) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -104,7 +104,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_EVERTIDE_1.translate(ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 		tooltips.add(PELang.TOOLTIP_EVERTIDE_2.translate());
@@ -113,8 +113,8 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				if (level.getLevelData() instanceof ServerLevelData worldInfo) {
@@ -131,7 +131,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();
@@ -144,7 +144,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	private static class InfiniteFluidHandler extends BasicItemCapability<IFluidHandlerItem> implements IFluidHandlerItem {
 
-		@Nonnull
+		@NotNull
 		@Override
 		public ItemStack getContainer() {
 			return getStack();
@@ -155,7 +155,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			return 1;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public FluidStack getFluidInTank(int tank) {
 			return tank == 0 ? new FluidStack(Fluids.WATER, Integer.MAX_VALUE) : FluidStack.EMPTY;
@@ -167,7 +167,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		}
 
 		@Override
-		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+		public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
 			return stack.getFluid().is(FluidTags.WATER);
 		}
 
@@ -179,7 +179,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			return 0;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction action) {
 			if (resource.getFluid().is(FluidTags.WATER)) {
@@ -188,7 +188,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			return FluidStack.EMPTY;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction action) {
 			return new FluidStack(Fluids.WATER, maxDrain);

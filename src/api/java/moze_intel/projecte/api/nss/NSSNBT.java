@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.nss;
 
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An extension of {@link NormalizedSimpleStack} that allows for representing stacks that are both "simple" and can have a {@link CompoundTag} attached.

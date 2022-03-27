@@ -1,6 +1,5 @@
 package moze_intel.projecte.network.packets.to_client;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.network.packets.IPEPacket;
@@ -8,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class SyncEmcPKT implements IPEPacket {
 

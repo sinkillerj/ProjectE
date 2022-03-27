@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import moze_intel.projecte.utils.Constants;
@@ -8,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class EternalDensityInventory implements IItemHandlerModifiable {
 
@@ -27,21 +27,21 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 		return inventory.getSlots();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return inventory.getStackInSlot(slot);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 		ItemStack ret = inventory.insertItem(slot, stack, simulate);
 		writeBack();
 		return ret;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		ItemStack ret = inventory.extractItem(slot, amount, simulate);
@@ -55,12 +55,12 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+	public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 		return inventory.isItemValid(slot, stack);
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+	public void setStackInSlot(int slot, @NotNull ItemStack stack) {
 		inventory.setStackInSlot(slot, stack);
 		writeBack();
 	}

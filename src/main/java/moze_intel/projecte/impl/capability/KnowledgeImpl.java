@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -36,6 +34,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class KnowledgeImpl {
 
@@ -88,7 +88,7 @@ public final class KnowledgeImpl {
 		}
 
 		@Nullable
-		private ItemInfo getIfPersistent(@Nonnull ItemInfo info) {
+		private ItemInfo getIfPersistent(@NotNull ItemInfo info) {
 			if (!info.hasNBT() || EMCMappingHandler.hasEmcValue(info)) {
 				//If we have no NBT or the base mapping has an emc value for our item with the given NBT
 				// then we don't have an extended state
@@ -104,7 +104,7 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public boolean hasKnowledge(@Nonnull ItemInfo info) {
+		public boolean hasKnowledge(@NotNull ItemInfo info) {
 			if (fullKnowledge) {
 				//If we have all knowledge, check if the item has extra data and
 				// may not actually be in our knowledge set but can be added to it
@@ -115,7 +115,7 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public boolean addKnowledge(@Nonnull ItemInfo info) {
+		public boolean addKnowledge(@NotNull ItemInfo info) {
 			if (fullKnowledge) {
 				ItemInfo persistentInfo = getIfPersistent(info);
 				if (persistentInfo == null) {
@@ -142,7 +142,7 @@ public final class KnowledgeImpl {
 			return tryAdd(NBTManager.getPersistentInfo(info));
 		}
 
-		private boolean tryAdd(@Nonnull ItemInfo cleanedInfo) {
+		private boolean tryAdd(@NotNull ItemInfo cleanedInfo) {
 			if (knowledge.add(cleanedInfo)) {
 				fireChangedEvent();
 				return true;
@@ -151,7 +151,7 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public boolean removeKnowledge(@Nonnull ItemInfo info) {
+		public boolean removeKnowledge(@NotNull ItemInfo info) {
 			if (fullKnowledge) {
 				if (info.getItem() instanceof Tome) {
 					//If we have full knowledge and are trying to remove the tome allow it
@@ -172,7 +172,7 @@ public final class KnowledgeImpl {
 			return tryRemove(NBTManager.getPersistentInfo(info));
 		}
 
-		private boolean tryRemove(@Nonnull ItemInfo cleanedInfo) {
+		private boolean tryRemove(@NotNull ItemInfo cleanedInfo) {
 			if (knowledge.remove(cleanedInfo)) {
 				fireChangedEvent();
 				return true;
@@ -180,7 +180,7 @@ public final class KnowledgeImpl {
 			return false;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Set<ItemInfo> getKnowledge() {
 			if (fullKnowledge) {
@@ -192,7 +192,7 @@ public final class KnowledgeImpl {
 			return Collections.unmodifiableSet(knowledge);
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public IItemHandlerModifiable getInputAndLocks() {
 			return inputLocks;
@@ -209,22 +209,22 @@ public final class KnowledgeImpl {
 		}
 
 		@Override
-		public void sync(@Nonnull ServerPlayer player) {
+		public void sync(@NotNull ServerPlayer player) {
 			PacketHandler.sendTo(new KnowledgeSyncPKT(serializeNBT()), player);
 		}
 
 		@Override
-		public void syncEmc(@Nonnull ServerPlayer player) {
+		public void syncEmc(@NotNull ServerPlayer player) {
 			PacketHandler.sendTo(new KnowledgeSyncEmcPKT(getEmc()), player);
 		}
 
 		@Override
-		public void syncKnowledgeChange(@Nonnull ServerPlayer player, ItemInfo change, boolean learned) {
+		public void syncKnowledgeChange(@NotNull ServerPlayer player, ItemInfo change, boolean learned) {
 			PacketHandler.sendTo(new KnowledgeSyncChangePKT(change, learned), player);
 		}
 
 		@Override
-		public void syncInputAndLocks(@Nonnull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
+		public void syncInputAndLocks(@NotNull ServerPlayer player, List<Integer> slotsChanged, TargetUpdateType updateTargets) {
 			if (!slotsChanged.isEmpty()) {
 				int slots = inputLocks.getSlots();
 				Map<Integer, ItemStack> stacksToSync = new HashMap<>();
@@ -320,7 +320,7 @@ public final class KnowledgeImpl {
 			super(new DefaultImpl(player));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Capability<IKnowledgeProvider> getMatchingCapability() {
 			return PECapabilities.KNOWLEDGE_CAPABILITY;

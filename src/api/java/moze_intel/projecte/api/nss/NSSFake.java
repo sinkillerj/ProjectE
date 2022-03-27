@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.nss;
 
 import com.google.common.base.Objects;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} for representing abstract objects, that do not actually exist.
@@ -38,14 +38,14 @@ public final class NSSFake implements NormalizedSimpleStack {
 	 *
 	 * @apiNote For internal use by ProjectE
 	 */
-	public static void setCurrentNamespace(@Nonnull String ns) {
+	public static void setCurrentNamespace(@NotNull String ns) {
 		currentNamespace = ns;
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFake} representing an abstract object that does not actually exist from a description.
 	 */
-	@Nonnull
+	@NotNull
 	public static NormalizedSimpleStack create(String description) {
 		return new NSSFake(currentNamespace, description);
 	}

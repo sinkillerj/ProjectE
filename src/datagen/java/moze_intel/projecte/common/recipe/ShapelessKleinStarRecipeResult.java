@@ -1,12 +1,12 @@
 package moze_intel.projecte.common.recipe;
 
 import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ShapelessKleinStarRecipeResult implements FinishedRecipe {
 
@@ -17,17 +17,17 @@ public class ShapelessKleinStarRecipeResult implements FinishedRecipe {
 	}
 
 	@Override
-	public void serializeRecipeData(@Nonnull JsonObject json) {
+	public void serializeRecipeData(@NotNull JsonObject json) {
 		internal.serializeRecipeData(json);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ResourceLocation getId() {
 		return internal.getId();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeSerializer<?> getType() {
 		//Overwrite it with our recipe serializer

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BlockDirection extends Block {
 
@@ -27,12 +27,12 @@ public abstract class BlockDirection extends Block {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> props) {
 		super.createBlockStateDefinition(props);
 		props.add(FACING);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
 		if (ctx.getPlayer() != null) {
@@ -43,7 +43,7 @@ public abstract class BlockDirection extends Block {
 
 	@Override
 	@Deprecated
-	public void onRemove(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 			if (blockEntity != null) {
@@ -55,7 +55,7 @@ public abstract class BlockDirection extends Block {
 
 	@Override
 	@Deprecated
-	public void attack(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player) {
+	public void attack(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player) {
 		if (!level.isClientSide) {
 			ItemStack stack = player.getMainHandItem();
 			if (!stack.isEmpty() && stack.getItem() instanceof PhilosophersStone) {
@@ -64,14 +64,14 @@ public abstract class BlockDirection extends Block {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {

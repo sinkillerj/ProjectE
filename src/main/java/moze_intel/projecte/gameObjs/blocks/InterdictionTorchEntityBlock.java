@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.block_entities.InterdictionTorchBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -11,6 +9,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface InterdictionTorchEntityBlock extends PEEntityBlock<InterdictionTorchBlockEntity> {
 
@@ -28,7 +28,7 @@ public interface InterdictionTorchEntityBlock extends PEEntityBlock<Interdiction
 
 		@Override
 		@Deprecated
-		public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
 			super.triggerEvent(state, level, pos, id, param);
 			return triggerBlockEntityEvent(state, level, pos, id, param);
 		}
@@ -42,7 +42,7 @@ public interface InterdictionTorchEntityBlock extends PEEntityBlock<Interdiction
 
 		@Override
 		@Deprecated
-		public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+		public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
 			super.triggerEvent(state, level, pos, id, param);
 			return triggerBlockEntityEvent(state, level, pos, id, param);
 		}

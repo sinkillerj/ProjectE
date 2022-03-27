@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockEntityTypeRegistryObject<BE extends BlockEntity> extends WrappedRegistryObject<BlockEntityType<BE>> {
 

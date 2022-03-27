@@ -1,12 +1,12 @@
 package moze_intel.projecte.api.proxy;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public interface IEMCProxy {
@@ -22,7 +22,7 @@ public interface IEMCProxy {
 	 *
 	 * @return Whether the block has an emc value
 	 */
-	default boolean hasValue(@Nonnull Block block) {
+	default boolean hasValue(@NotNull Block block) {
 		return hasValue(Objects.requireNonNull(block).asItem());
 	}
 
@@ -37,7 +37,7 @@ public interface IEMCProxy {
 	 *
 	 * @return Whether the item has an emc value
 	 */
-	default boolean hasValue(@Nonnull Item item) {
+	default boolean hasValue(@NotNull Item item) {
 		return Objects.requireNonNull(item) != Items.AIR && hasValue(ItemInfo.fromItem(item));
 	}
 
@@ -54,7 +54,7 @@ public interface IEMCProxy {
 	 *
 	 * @return Whether the ItemStack has an emc value
 	 */
-	default boolean hasValue(@Nonnull ItemStack stack) {
+	default boolean hasValue(@NotNull ItemStack stack) {
 		return !Objects.requireNonNull(stack).isEmpty() && hasValue(ItemInfo.fromStack(stack));
 	}
 
@@ -69,7 +69,7 @@ public interface IEMCProxy {
 	 *
 	 * @return Whether the ItemInfo has an emc value
 	 */
-	default boolean hasValue(@Nonnull ItemInfo info) {
+	default boolean hasValue(@NotNull ItemInfo info) {
 		return getValue(Objects.requireNonNull(info)) > 0;
 	}
 
@@ -85,7 +85,7 @@ public interface IEMCProxy {
 	 * @return The block's EMC value, or 0 if there is none
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getValue(@Nonnull Block block) {
+	default long getValue(@NotNull Block block) {
 		return getValue(Objects.requireNonNull(block).asItem());
 	}
 
@@ -101,7 +101,7 @@ public interface IEMCProxy {
 	 * @return The item's EMC value, or 0 if there is none
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getValue(@Nonnull Item item) {
+	default long getValue(@NotNull Item item) {
 		return Objects.requireNonNull(item) == Items.AIR ? 0 : getValue(ItemInfo.fromItem(item));
 	}
 
@@ -119,7 +119,7 @@ public interface IEMCProxy {
 	 * @return The stack's EMC value, or 0 if there is none
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getValue(@Nonnull ItemStack stack) {
+	default long getValue(@NotNull ItemStack stack) {
 		return Objects.requireNonNull(stack).isEmpty() ? 0 : getValue(ItemInfo.fromStack(stack));
 	}
 
@@ -137,7 +137,7 @@ public interface IEMCProxy {
 	 * @return The stack's EMC value, or 0 if there is none
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	long getValue(@Nonnull ItemInfo info);
+	long getValue(@NotNull ItemInfo info);
 
 	/**
 	 * Queries the EMC sell-value for the provided stack
@@ -151,7 +151,7 @@ public interface IEMCProxy {
 	 * @return EMC the stack should yield when burned by transmutation, condensers, or relays
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getSellValue(@Nonnull ItemStack stack) {
+	default long getSellValue(@NotNull ItemStack stack) {
 		return Objects.requireNonNull(stack).isEmpty() ? 0 : getSellValue(ItemInfo.fromStack(stack));
 	}
 
@@ -167,7 +167,7 @@ public interface IEMCProxy {
 	 * @return EMC the stack should yield when burned by transmutation, condensers, or relays
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	long getSellValue(@Nonnull ItemInfo info);
+	long getSellValue(@NotNull ItemInfo info);
 
 	/**
 	 * Gets an {@link ItemInfo} with the {@link net.minecraft.nbt.CompoundTag} reduced to what will be saved to knowledge/used for condensing.
@@ -177,6 +177,6 @@ public interface IEMCProxy {
 	 * @return An {@link ItemInfo} for the same item as the input info, but with a potentially reduced {@link net.minecraft.nbt.CompoundTag}, containing whatever data is
 	 * persistent/matters.
 	 */
-	@Nonnull
-	ItemInfo getPersistentInfo(@Nonnull ItemInfo info);
+	@NotNull
+	ItemInfo getPersistentInfo(@NotNull ItemInfo info);
 }

@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.customRecipes;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.utils.EMCHelper;
@@ -14,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RecipesCovalenceRepair extends CustomRecipe {
 
@@ -45,14 +45,14 @@ public class RecipesCovalenceRepair extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
+	public boolean matches(@NotNull CraftingContainer inv, @NotNull Level level) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		return targetInfo != null && targetInfo.emcPerDurability <= targetInfo.dustEmc;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv) {
+	public ItemStack assemble(@NotNull CraftingContainer inv) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		if (targetInfo == null) {
 			//If there isn't actually a match return no result
@@ -68,7 +68,7 @@ public class RecipesCovalenceRepair extends CustomRecipe {
 		return width > 1 || height > 1;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return PERecipeSerializers.COVALENCE_REPAIR.get();

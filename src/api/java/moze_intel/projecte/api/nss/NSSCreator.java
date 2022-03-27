@@ -1,7 +1,7 @@
 package moze_intel.projecte.api.nss;
 
 import com.google.gson.JsonParseException;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for creating a {@link NormalizedSimpleStack} from a {@link String} retrieved from JSON.
@@ -18,6 +18,6 @@ public interface NSSCreator {
 	 *
 	 * @throws JsonParseException If something went wrong parsing the {@link String}.
 	 */
-	@Nonnull
+	@NotNull
 	NormalizedSimpleStack create(String string) throws JsonParseException;
 }

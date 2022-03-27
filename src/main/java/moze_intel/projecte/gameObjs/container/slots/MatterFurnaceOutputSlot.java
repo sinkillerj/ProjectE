@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 //[VanillaCopy] Adapted from FurnaceResultSlot
 public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
@@ -18,11 +18,11 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack remove(int amount) {
 		if (this.hasItem()) {
@@ -32,13 +32,13 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void onTake(@Nonnull Player player, @Nonnull ItemStack stack) {
+	public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
 		this.checkTakeAchievements(stack);
 		super.onTake(player, stack);
 	}
 
 	@Override
-	protected void onQuickCraft(@Nonnull ItemStack stack, int pAmount) {
+	protected void onQuickCraft(@NotNull ItemStack stack, int pAmount) {
 		this.removeCount += pAmount;
 		this.checkTakeAchievements(stack);
 	}

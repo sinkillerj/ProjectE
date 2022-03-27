@@ -2,10 +2,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
@@ -51,7 +51,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, level, entity, slot, held);
 		if (!level.isClientSide && entity instanceof Player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			AABB box = new AABB(entity.getX() - 3, entity.getY() - 3, entity.getZ() - 3,
@@ -61,9 +61,9 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			int offset = 3 + this.getCharge(stack);
@@ -75,8 +75,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				AABB aabb = pedestal.getEffectBounds();
@@ -92,7 +92,7 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		//Only used on the client
@@ -106,12 +106,12 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return 4;
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -121,12 +121,12 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 }

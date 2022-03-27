@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -14,6 +13,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class MercurialEyeContainer extends PEHandContainer {
 
@@ -34,7 +34,7 @@ public class MercurialEyeContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void clickPostValidate(int slotId, int button, @Nonnull ClickType flag, @Nonnull Player player) {
+	public void clickPostValidate(int slotId, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotId);
 		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
 			slot.set(ItemStack.EMPTY);
@@ -43,9 +43,9 @@ public class MercurialEyeContainer extends PEHandContainer {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+	public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
 		//If we are in the inventory start by trying to insert into the ghost slot if it isn't empty
 		if (slotID > 1 && !mercurialTarget.hasItem()) {
 			Slot currentSlot = slots.get(slotID);

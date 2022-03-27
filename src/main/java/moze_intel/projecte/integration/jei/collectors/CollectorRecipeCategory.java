@@ -1,7 +1,6 @@
 package moze_intel.projecte.integration.jei.collectors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -19,6 +18,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecipe> {
 
@@ -33,13 +33,13 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEBlocks.COLLECTOR));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeType<FuelUpgradeRecipe> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
@@ -47,7 +47,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		return getRecipeType().getUid();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true)
@@ -55,26 +55,26 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 		return getRecipeType().getRecipeClass();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getTitle() {
 		return PELang.JEI_COLLECTOR.translate();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public IDrawable getBackground() {
 		return background;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public IDrawable getIcon() {
 		return icon;
 	}
 
 	@Override
-	public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull FuelUpgradeRecipe recipe, @Nonnull IFocusGroup focuses) {
+	public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull FuelUpgradeRecipe recipe, @NotNull IFocusGroup focuses) {
 		builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 				.addItemStack(recipe.input());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 16)
@@ -82,7 +82,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public void draw(FuelUpgradeRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull PoseStack matrix, double mouseX, double mouseY) {
+	public void draw(FuelUpgradeRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull PoseStack matrix, double mouseX, double mouseY) {
 		Component emc = PELang.EMC.translate(recipe.upgradeEMC());
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(emc);

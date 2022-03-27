@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.block_entities.RelayMK1BlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1BlockEntity> {
 
@@ -31,11 +31,11 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Block
 		return tier;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-			@Nonnull BlockHitResult rtr) {
+	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+			@NotNull BlockHitResult rtr) {
 		if (!level.isClientSide) {
 			RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
 			if (relay != null) {
@@ -57,20 +57,20 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Block
 
 	@Override
 	@Deprecated
-	public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+	public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
 		super.triggerEvent(state, level, pos, id, param);
 		return triggerBlockEntityEvent(state, level, pos, id, param);
 	}
 
 	@Override
 	@Deprecated
-	public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
 		return true;
 	}
 
 	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
 		RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
 		if (relay == null) {
 			return 0;

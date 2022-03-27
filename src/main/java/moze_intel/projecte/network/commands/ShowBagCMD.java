@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -40,6 +39,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class ShowBagCMD {
 
@@ -99,18 +99,18 @@ public class ShowBagCMD {
 	private static MenuProvider getContainer(ServerPlayer sender, Component name, IItemHandlerModifiable inv, boolean immutable,
 			BooleanSupplier canInteractWith) {
 		return new MenuProvider() {
-			@Nonnull
+			@NotNull
 			@Override
 			public Component getDisplayName() {
 				return name;
 			}
 
 			@Override
-			public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInv, @Nonnull Player player) {
+			public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInv, @NotNull Player player) {
 				//Note: Selected is unused for offhand
 				return new AlchBagContainer(windowId, sender.getInventory(), InteractionHand.OFF_HAND, inv, 0, immutable) {
 					@Override
-					public boolean stillValid(@Nonnull Player player) {
+					public boolean stillValid(@NotNull Player player) {
 						return canInteractWith.getAsBoolean();
 					}
 				};

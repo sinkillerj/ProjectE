@@ -1,7 +1,5 @@
 package moze_intel.projecte.capability.managing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -9,6 +7,8 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Simplified/modified version of Mekanism's BasicCapabilityResolver
@@ -17,7 +17,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 
 	public static ICapabilityResolver<IItemHandler> getBasicItemHandlerResolver(NonNullSupplier<IItemHandler> supplier) {
 		return new BasicCapabilityResolver<>(supplier) {
-			@Nonnull
+			@NotNull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
@@ -27,7 +27,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 
 	public static ICapabilityResolver<IItemHandler> getBasicItemHandlerResolver(IItemHandler handler) {
 		return new BasicCapabilityResolver<>(handler) {
-			@Nonnull
+			@NotNull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
@@ -46,9 +46,9 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 		this.supplier = supplier instanceof NonNullLazy ? supplier : NonNullLazy.of(supplier);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public <T> LazyOptional<T> getCapabilityUnchecked(@Nonnull Capability<T> capability, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapabilityUnchecked(@NotNull Capability<T> capability, @Nullable Direction side) {
 		if (cachedCapability == null || !cachedCapability.isPresent()) {
 			//If the capability has not been retrieved yet or it is not valid then recreate it
 			cachedCapability = LazyOptional.of(supplier);
@@ -57,7 +57,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 	}
 
 	@Override
-	public void invalidate(@Nonnull Capability<?> capability, @Nullable Direction side) {
+	public void invalidate(@NotNull Capability<?> capability, @Nullable Direction side) {
 		//We only have one capability so just invalidate everything
 		invalidateAll();
 	}

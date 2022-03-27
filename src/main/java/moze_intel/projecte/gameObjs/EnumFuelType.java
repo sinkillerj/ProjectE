@@ -1,7 +1,7 @@
 package moze_intel.projecte.gameObjs;
 
-import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum EnumFuelType implements StringRepresentable {
 	ALCHEMICAL_COAL("alchemical_coal", 1_600 * 4),//Four times the burn time of coal
@@ -16,7 +16,7 @@ public enum EnumFuelType implements StringRepresentable {
 		this.burnTime = burnTime;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getSerializedName() {
 		return name;

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -18,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.NotNull;
 
 //Only used on the client
 // [VanillaCopy] Adapted from ChestRenderer
@@ -40,7 +40,7 @@ public class ChestRenderer implements BlockEntityRenderer<EmcChestBlockEntity> {
 	}
 
 	@Override
-	public void render(@Nonnull EmcChestBlockEntity chest, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+	public void render(@NotNull EmcChestBlockEntity chest, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
 		matrix.pushPose();
 		if (chest.getLevel() != null && !chest.isRemoved()) {
 			BlockState state = chest.getLevel().getBlockState(chest.getBlockPos());

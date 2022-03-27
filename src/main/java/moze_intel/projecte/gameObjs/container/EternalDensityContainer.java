@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -14,6 +13,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class EternalDensityContainer extends PEHandContainer {
 
@@ -34,9 +34,9 @@ public class EternalDensityContainer extends PEHandContainer {
 		addPlayerInventory(8, 93);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack quickMoveStack(@Nonnull Player player, int slotIndex) {
+	public ItemStack quickMoveStack(@NotNull Player player, int slotIndex) {
 		if (slotIndex > 8) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
@@ -47,7 +47,7 @@ public class EternalDensityContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void clickPostValidate(int slotIndex, int button, @Nonnull ClickType flag, @Nonnull Player player) {
+	public void clickPostValidate(int slotIndex, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotIndex);
 		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
 			slot.set(ItemStack.EMPTY);
@@ -57,7 +57,7 @@ public class EternalDensityContainer extends PEHandContainer {
 	}
 
 	@Override
-	public boolean canDragTo(@Nonnull Slot slot) {
+	public boolean canDragTo(@NotNull Slot slot) {
 		return false;
 	}
 }

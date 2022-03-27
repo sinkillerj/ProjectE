@@ -4,8 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
@@ -17,21 +15,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //Removed in favor of just using partial NBT ingredients
 @Deprecated(forRemoval = true)
 public class FullKleinStarIngredient extends Ingredient {
 
 	public static final IIngredientSerializer<FullKleinStarIngredient> SERIALIZER = new IIngredientSerializer<>() {
-		@Nonnull
+		@NotNull
 		@Override
-		public FullKleinStarIngredient parse(@Nonnull FriendlyByteBuf buffer) {
+		public FullKleinStarIngredient parse(@NotNull FriendlyByteBuf buffer) {
 			return new FullKleinStarIngredient(buffer.readEnum(EnumKleinTier.class));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
-		public FullKleinStarIngredient parse(@Nonnull JsonObject json) {
+		public FullKleinStarIngredient parse(@NotNull JsonObject json) {
 			int tier = GsonHelper.getAsInt(json, "tier");
 			EnumKleinTier[] tiers = EnumKleinTier.values();
 			if (tier < 0 || tier >= tiers.length) {
@@ -41,7 +41,7 @@ public class FullKleinStarIngredient extends Ingredient {
 		}
 
 		@Override
-		public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull FullKleinStarIngredient ingredient) {
+		public void write(@NotNull FriendlyByteBuf buffer, @NotNull FullKleinStarIngredient ingredient) {
 			buffer.writeEnum(((KleinStar) ingredient.star.getItem()).tier);
 		}
 	};
@@ -74,13 +74,13 @@ public class FullKleinStarIngredient extends Ingredient {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public IIngredientSerializer<? extends Ingredient> getSerializer() {
 		return SERIALIZER;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public JsonElement toJson() {
 		JsonObject json = new JsonObject();

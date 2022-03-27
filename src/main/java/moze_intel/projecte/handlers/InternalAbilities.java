@@ -1,6 +1,5 @@
 package moze_intel.projecte.handlers;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -13,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import org.jetbrains.annotations.NotNull;
 
 public final class InternalAbilities {
 
@@ -144,7 +144,7 @@ public final class InternalAbilities {
 			super(() -> new InternalAbilities(player));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Capability<InternalAbilities> getMatchingCapability() {
 			return CAPABILITY;

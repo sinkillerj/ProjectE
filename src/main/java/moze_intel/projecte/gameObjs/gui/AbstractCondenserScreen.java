@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCondenserScreen<T extends CondenserContainer> extends PEContainerScreen<T> {
 
@@ -25,7 +25,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected abstract ResourceLocation getTexture();
 
 	@Override
-	protected void renderBg(@Nonnull PoseStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, getTexture());
@@ -37,7 +37,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull PoseStack matrix, int x, int y) {
+	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
 		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 		Component emc = TransmutationEMCFormatter.formatEMC(toDisplay);
@@ -45,7 +45,7 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	}
 
 	@Override
-	protected void renderTooltip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
 		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 
 		if (toDisplay < 1e12) {

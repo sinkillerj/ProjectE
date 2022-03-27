@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
 import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.core.NonNullList;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
 
 public class RecipeShapelessKleinStar implements CraftingRecipe {
 
@@ -24,26 +24,26 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 		this.compose = compose;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ResourceLocation getId() {
 		return compose.getId();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return PERecipeSerializers.KLEIN.get();
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level worldIn) {
+	public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
 		return compose.matches(inv, worldIn);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv) {
+	public ItemStack assemble(@NotNull CraftingContainer inv) {
 		ItemStack result = compose.assemble(inv);
 		long storedEMC = 0;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -63,19 +63,19 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 		return compose.canCraftInDimensions(width, height);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getResultItem() {
 		return compose.getResultItem();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingContainer inv) {
+	public NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv) {
 		return compose.getRemainingItems(inv);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return compose.getIngredients();
@@ -87,7 +87,7 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getGroup() {
 		return compose.getGroup();
@@ -95,20 +95,20 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 
 	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeShapelessKleinStar> {
 
-		@Nonnull
+		@NotNull
 		@Override
-		public RecipeShapelessKleinStar fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+		public RecipeShapelessKleinStar fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
 			return new RecipeShapelessKleinStar(RecipeSerializer.SHAPELESS_RECIPE.fromJson(recipeId, json));
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
-		public RecipeShapelessKleinStar fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
+		public RecipeShapelessKleinStar fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
 			return new RecipeShapelessKleinStar(RecipeSerializer.SHAPELESS_RECIPE.fromNetwork(recipeId, buffer));
 		}
 
 		@Override
-		public void toNetwork(@Nonnull FriendlyByteBuf buffer, RecipeShapelessKleinStar recipe) {
+		public void toNetwork(@NotNull FriendlyByteBuf buffer, RecipeShapelessKleinStar recipe) {
 			RecipeSerializer.SHAPELESS_RECIPE.toNetwork(buffer, recipe.compose);
 		}
 	}

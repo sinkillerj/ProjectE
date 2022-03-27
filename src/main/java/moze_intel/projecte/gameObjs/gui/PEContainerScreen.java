@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
@@ -16,7 +16,7 @@ public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends
 	}
 
 	@Override
-	public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+	public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(matrix);
 		super.render(matrix, mouseX, mouseY, partialTicks);
 		this.renderTooltip(matrix, mouseX, mouseY);
@@ -32,7 +32,7 @@ public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends
 		}
 	}
 
-	//Note: Technically this really should be init(@Nonnull Minecraft minecraft, int width, int height)
+	//Note: Technically this really should be init(@NotNull Minecraft minecraft, int width, int height)
 	// but given we don't actually have any data that would use the resize params we can get away with
 	// just resetting the switchingToJEI here
 	@Override

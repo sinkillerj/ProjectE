@@ -3,8 +3,6 @@ package moze_intel.projecte.api.nss;
 import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,21 +12,23 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Fluid}s.
  */
 public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
-	private NSSFluid(@Nonnull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
+	private NSSFluid(@NotNull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag, nbt);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link FluidStack}
 	 */
-	@Nonnull
-	public static NSSFluid createFluid(@Nonnull FluidStack stack) {
+	@NotNull
+	public static NSSFluid createFluid(@NotNull FluidStack stack) {
 		//Don't bother checking if it is empty as getFluid returns EMPTY which will then fail anyways for being empty
 		return createFluid(stack.getFluid(), stack.getTag());
 	}
@@ -36,16 +36,16 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link Fluid}
 	 */
-	@Nonnull
-	public static NSSFluid createFluid(@Nonnull Fluid fluid) {
+	@NotNull
+	public static NSSFluid createFluid(@NotNull Fluid fluid) {
 		return createFluid(fluid, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link Fluid} and an optional {@link CompoundTag}
 	 */
-	@Nonnull
-	public static NSSFluid createFluid(@Nonnull Fluid fluid, @Nullable CompoundTag nbt) {
+	@NotNull
+	public static NSSFluid createFluid(@NotNull Fluid fluid, @Nullable CompoundTag nbt) {
 		if (fluid == Fluids.EMPTY) {
 			throw new IllegalArgumentException("Can't make NSSFluid with an empty fluid");
 		}
@@ -56,32 +56,32 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link ResourceLocation}
 	 */
-	@Nonnull
-	public static NSSFluid createFluid(@Nonnull ResourceLocation fluidID) {
+	@NotNull
+	public static NSSFluid createFluid(@NotNull ResourceLocation fluidID) {
 		return createFluid(fluidID, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a fluid from a {@link ResourceLocation} and an optional {@link CompoundTag}
 	 */
-	@Nonnull
-	public static NSSFluid createFluid(@Nonnull ResourceLocation fluidID, @Nullable CompoundTag nbt) {
+	@NotNull
+	public static NSSFluid createFluid(@NotNull ResourceLocation fluidID, @Nullable CompoundTag nbt) {
 		return new NSSFluid(fluidID, false, nbt);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link ResourceLocation}
 	 */
-	@Nonnull
-	public static NSSFluid createTag(@Nonnull ResourceLocation tagId) {
+	@NotNull
+	public static NSSFluid createTag(@NotNull ResourceLocation tagId) {
 		return new NSSFluid(tagId, true, null);
 	}
 
 	/**
 	 * Helper method to create an {@link NSSFluid} representing a tag from a {@link TagKey<Fluid>}
 	 */
-	@Nonnull
-	public static NSSFluid createTag(@Nonnull TagKey<Fluid> tag) {
+	@NotNull
+	public static NSSFluid createTag(@NotNull TagKey<Fluid> tag) {
 		return createTag(tag.location());
 	}
 
@@ -90,19 +90,19 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 		return o instanceof NSSFluid;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getJsonPrefix() {
 		return "FLUID|";
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public String getType() {
 		return "Fluid";
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	protected Optional<Either<Named<Fluid>, ITag<Fluid>>> getTag() {
 		return getTag(ForgeRegistries.FLUIDS);

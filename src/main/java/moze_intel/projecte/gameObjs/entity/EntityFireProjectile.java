@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
@@ -22,6 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityFireProjectile extends ThrowableProjectile {
 
@@ -42,13 +42,13 @@ public class EntityFireProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHit(@Nonnull HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
 		discard();
 	}
 
 	@Override
-	protected void onHitBlock(@Nonnull BlockHitResult result) {
+	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
 		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
 			BlockPos pos = result.getBlockPos();
@@ -72,7 +72,7 @@ public class EntityFireProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	protected void onHitEntity(@Nonnull EntityHitResult result) {
+	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
 		if (!level.isClientSide && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.IGNITION_RING.get());
@@ -89,18 +89,18 @@ public class EntityFireProjectile extends ThrowableProjectile {
 	}
 
 	@Override
-	public void readAdditionalSaveData(@Nonnull CompoundTag compound) {
+	public void readAdditionalSaveData(@NotNull CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		fromArcana = compound.getBoolean("fromArcana");
 	}
 
 	@Override
-	public void addAdditionalSaveData(@Nonnull CompoundTag compound) {
+	public void addAdditionalSaveData(@NotNull CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("fromArcana", fromArcana);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

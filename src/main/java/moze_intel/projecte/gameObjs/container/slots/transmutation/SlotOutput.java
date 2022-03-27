@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
 import java.math.BigInteger;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotOutput extends InventoryContainerSlot {
 
@@ -23,7 +23,7 @@ public class SlotOutput extends InventoryContainerSlot {
 		remove(amount);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack remove(int amount) {
 		ItemStack stack = ItemHelper.size(getItem(), amount);
@@ -43,11 +43,11 @@ public class SlotOutput extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void set(@Nonnull ItemStack stack) {
+	public void set(@NotNull ItemStack stack) {
 	}
 
 	@Override
-	public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
 		return false;
 	}
 

@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -19,6 +17,8 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProjectETNT extends TntBlock {
 
@@ -35,14 +35,14 @@ public class ProjectETNT extends TntBlock {
 	}
 
 	@Override
-	public void onCaughtFire(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
+	public void onCaughtFire(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
 		if (!level.isClientSide) {
 			createAndAddEntity(level, pos, igniter);
 			level.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
 		}
 	}
 
-	public void createAndAddEntity(@Nonnull Level level, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+	public void createAndAddEntity(@NotNull Level level, @NotNull BlockPos pos, @Nullable LivingEntity igniter) {
 		PrimedTnt tnt = tntEntityCreator.create(level, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
 		level.addFreshEntity(tnt);
 		level.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -51,9 +51,9 @@ public class ProjectETNT extends TntBlock {
 	public DispenseItemBehavior createDispenseItemBehavior() {
 		//Based off vanilla's TNT behavior
 		return new DefaultDispenseItemBehavior() {
-			@Nonnull
+			@NotNull
 			@Override
-			protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+			protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
 				BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
 				createAndAddEntity(source.getLevel(), blockpos, null);
 				source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
@@ -64,7 +64,7 @@ public class ProjectETNT extends TntBlock {
 	}
 
 	@Override
-	public void wasExploded(Level level, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+	public void wasExploded(Level level, @NotNull BlockPos pos, @NotNull Explosion explosion) {
 		if (!level.isClientSide) {
 			PrimedTnt tnt = tntEntityCreator.create(level, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
 			int fuse = tnt.getFuse();

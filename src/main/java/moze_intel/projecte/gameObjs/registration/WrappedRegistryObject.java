@@ -1,22 +1,20 @@
 package moze_intel.projecte.gameObjs.registration;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T>, INamedEntry {
 
-	@Nonnull
+	@NotNull
 	protected RegistryObject<T> registryObject;
 
-	protected WrappedRegistryObject(RegistryObject<T> registryObject) {
+	protected WrappedRegistryObject(@NotNull RegistryObject<T> registryObject) {
 		this.registryObject = registryObject;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public T get() {
 		return registryObject.get();

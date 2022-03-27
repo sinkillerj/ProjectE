@@ -2,8 +2,6 @@ package moze_intel.projecte.impl.capability;
 
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -17,6 +15,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class AlchBagImpl {
 
@@ -28,9 +28,9 @@ public final class AlchBagImpl {
 
 		private final Map<DyeColor, ItemStackHandler> inventories = new EnumMap<>(DyeColor.class);
 
-		@Nonnull
+		@NotNull
 		@Override
-		public IItemHandler getBag(@Nonnull DyeColor color) {
+		public IItemHandler getBag(@NotNull DyeColor color) {
 			if (!inventories.containsKey(color)) {
 				inventories.put(color, new ItemStackHandler(104));
 			}
@@ -38,7 +38,7 @@ public final class AlchBagImpl {
 		}
 
 		@Override
-		public void sync(@Nullable DyeColor color, @Nonnull ServerPlayer player) {
+		public void sync(@Nullable DyeColor color, @NotNull ServerPlayer player) {
 			PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
 		}
 
@@ -78,7 +78,7 @@ public final class AlchBagImpl {
 			super(getDefault());
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Capability<IAlchBagProvider> getMatchingCapability() {
 			return PECapabilities.ALCH_BAG_CAPABILITY;

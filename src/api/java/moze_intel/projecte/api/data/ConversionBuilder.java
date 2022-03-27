@@ -4,15 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Builder class to help create conversions.
  */
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> implements ConversionBuilderNSSHelper<BUILDER> {
 
@@ -21,7 +20,7 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 	private final int outputAmount;
 	private boolean propagateTags;
 
-	ConversionBuilder(NormalizedSimpleStack output, int outputAmount) {
+	ConversionBuilder(@NotNull NormalizedSimpleStack output, int outputAmount) {
 		this.output = output;
 		this.outputAmount = outputAmount;
 	}
@@ -50,7 +49,7 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 	}
 
 	@Override
-	public BUILDER ingredient(NormalizedSimpleStack input, int amount) {
+	public BUILDER ingredient(@NotNull NormalizedSimpleStack input, int amount) {
 		if (ingredients.containsKey(input)) {
 			throw new RuntimeException("Conversion already contains ingredient '" + input + "', merge identical ingredients.");
 		} else if (amount == 0) {

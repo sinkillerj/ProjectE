@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
@@ -14,6 +13,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class HyperkineticLens extends ItemPE implements IProjectileShooter, IItemCharge, IBarHelper {
 
@@ -23,9 +23,9 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			shootProjectile(player, stack, hand);
@@ -34,7 +34,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		Level level = player.getCommandSenderWorld();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
@@ -48,12 +48,12 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	}
 
 	@Override
-	public int getNumCharges(@Nonnull ItemStack stack) {
+	public int getNumCharges(@NotNull ItemStack stack) {
 		return 3;
 	}
 
 	@Override
-	public boolean isBarVisible(@Nonnull ItemStack stack) {
+	public boolean isBarVisible(@NotNull ItemStack stack) {
 		return true;
 	}
 
@@ -63,12 +63,12 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		return getScaledBarWidth(stack);
 	}
 
 	@Override
-	public int getBarColor(@Nonnull ItemStack stack) {
+	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
 	}
 }

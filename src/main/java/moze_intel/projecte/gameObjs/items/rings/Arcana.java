@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
@@ -43,6 +41,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
 
@@ -72,7 +72,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> list) {
+	public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list) {
 		//Only used on the client
 		if (allowdedIn(group)) {
 			for (byte i = 0; i < getModeCount(); ++i) {
@@ -100,14 +100,14 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int slot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean held) {
 		if (!level.isClientSide && slot < Inventory.getSelectionSize() && entity instanceof ServerPlayer player) {
 			tick(stack, level, player);
 		}
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltips, @Nonnull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			tooltips.add(getToolTip(stack));
@@ -116,9 +116,9 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
 			CompoundTag compound = player.getItemInHand(hand).getOrCreateTag();
 			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
@@ -126,7 +126,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		if (getMode(ctx.getItemInHand()) == 1) {
@@ -139,7 +139,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean doExtraFunction(@Nonnull ItemStack stack, @Nonnull Player player, InteractionHand hand) {
+	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		//GIANT FIRE ROW OF DEATH
 		Level level = player.getCommandSenderWorld();
 		if (level.isClientSide) {
@@ -170,7 +170,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		Level level = player.getCommandSenderWorld();
 		if (level.isClientSide) {
 			return false;

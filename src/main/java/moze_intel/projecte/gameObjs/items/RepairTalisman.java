@@ -3,7 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestItem, IPedestalItem {
 
@@ -50,7 +50,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int invSlot, boolean isSelected) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int invSlot, boolean isSelected) {
 		if (!level.isClientSide && entity instanceof Player player) {
 			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
 				timers.activateRepair();
@@ -62,8 +62,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.repair.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				level.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds()).forEach(RepairTalisman::repairAllItems);
@@ -75,7 +75,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();
@@ -87,7 +87,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchChest(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull ItemStack stack) {
+	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		if (!level.isClientSide) {
 			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
 			if (chest != null) {
@@ -111,7 +111,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public boolean updateInAlchBag(@Nonnull IItemHandler inv, @Nonnull Player player, @Nonnull ItemStack stack) {
+	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
 		if (player.getCommandSenderWorld().isClientSide) {
 			return false;
 		}

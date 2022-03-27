@@ -3,7 +3,6 @@ package moze_intel.projecte.rendering;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 //Only used on the client
 public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
@@ -26,7 +26,7 @@ public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
 	}
 
 	@Override
-	public void render(@Nonnull T entity, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
+	public void render(@NotNull T entity, float entityYaw, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light) {
 		matrix.pushPose();
 		matrix.translate(0.0D, 0.5D, 0.0D);
 		int fuse = entity.getFuse();
@@ -47,9 +47,9 @@ public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
 		super.render(entity, entityYaw, partialTick, matrix, renderer, light);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ResourceLocation getTextureLocation(@Nonnull T entity) {
+	public ResourceLocation getTextureLocation(@NotNull T entity) {
 		return TextureAtlas.LOCATION_BLOCKS;
 	}
 }

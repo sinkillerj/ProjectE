@@ -2,7 +2,6 @@ package moze_intel.projecte.common.recipe;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
@@ -36,6 +35,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.conditions.TrueCondition;
+import org.jetbrains.annotations.NotNull;
 
 public class PERecipeProvider extends RecipeProvider {
 
@@ -44,7 +44,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	protected void buildCraftingRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
+	protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.COVALENCE_REPAIR.get());
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.PHILO_STONE_SMELTING.get());
 		fuelUpgradeRecipe(consumer, Items.COAL, PEItems.ALCHEMICAL_COAL);

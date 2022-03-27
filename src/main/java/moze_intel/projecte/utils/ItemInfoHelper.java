@@ -3,7 +3,6 @@ package moze_intel.projecte.utils;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemInfoHelper {
 
@@ -46,7 +46,7 @@ public class ItemInfoHelper {
 		return map;
 	}
 
-	public static String getEnchantTagLocation(@Nonnull ItemInfo info) {
+	public static String getEnchantTagLocation(@NotNull ItemInfo info) {
 		return info.getItem() == Items.ENCHANTED_BOOK ? "StoredEnchantments" : "Enchantments";
 	}
 

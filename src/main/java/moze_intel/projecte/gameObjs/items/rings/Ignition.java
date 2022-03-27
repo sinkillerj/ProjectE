@@ -2,10 +2,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
+import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtector, IProjectileShooter {
 
@@ -44,7 +44,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public void inventoryTick(@Nonnull ItemStack stack, Level level, @Nonnull Entity entity, int inventorySlot, boolean held) {
+	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int inventorySlot, boolean held) {
 		if (level.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
 			return;
 		}
@@ -62,15 +62,15 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public InteractionResult useOn(@Nonnull UseOnContext ctx) {
+	public InteractionResult useOn(@NotNull UseOnContext ctx) {
 		return WorldHelper.igniteBlock(ctx);
 	}
 
 	@Override
-	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull BlockPos pos,
-			@Nonnull PEDESTAL pedestal) {
+	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				for (Mob living : level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds())) {
@@ -85,7 +85,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
 		List<Component> list = new ArrayList<>();
@@ -97,7 +97,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public boolean shootProjectile(@Nonnull Player player, @Nonnull ItemStack stack, InteractionHand hand) {
+	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		Level level = player.getCommandSenderWorld();
 		if (level.isClientSide) {
 			return false;

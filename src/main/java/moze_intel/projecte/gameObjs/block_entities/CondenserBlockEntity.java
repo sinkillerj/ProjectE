@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
@@ -27,6 +25,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CondenserBlockEntity extends EmcChestBlockEntity {
 
@@ -84,16 +84,16 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 		return inputInventory;
 	}
 
-	@Nonnull
+	@NotNull
 	protected IItemHandler createAutomationInventory() {
 		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT) {
-			@Nonnull
+			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 
-			@Nonnull
+			@NotNull
 			@Override
 			public ItemStack extractItem(int slot, int max, boolean simulate) {
 				if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot))) {
@@ -211,14 +211,14 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag nbt) {
+	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		lockInfo = ItemInfo.read(nbt.getCompound("LockInfo"));
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag) {
+	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.put("Input", inputInventory.serializeNBT());
 		if (lockInfo != null) {
@@ -227,11 +227,11 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player playerIn) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerIn) {
 		return new CondenserContainer(windowId, playerInventory, this);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.CONDENSER);

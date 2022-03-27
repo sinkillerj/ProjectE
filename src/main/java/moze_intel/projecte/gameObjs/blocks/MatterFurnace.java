@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock, PEEntityBlock<DMFurnaceBlockEntity> {
 
@@ -34,7 +34,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock,
 	}
 
 	@Override
-	protected void openContainer(Level level, @Nonnull BlockPos pos, @Nonnull Player player) {
+	protected void openContainer(Level level, @NotNull BlockPos pos, @NotNull Player player) {
 		if (!level.isClientSide) {
 			DMFurnaceBlockEntity furnace = WorldHelper.getBlockEntity(DMFurnaceBlockEntity.class, level, pos, true);
 			if (furnace != null) {
@@ -45,7 +45,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock,
 
 	@Override
 	@Deprecated
-	public void onRemove(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity furnace = WorldHelper.getBlockEntity(level, pos);
 			if (furnace != null) {
@@ -56,7 +56,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock,
 	}
 
 	@Override
-	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
 		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 		if (blockEntity != null) {
 			return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(ItemHandlerHelper::calcRedstoneFromInventory).orElse(0);

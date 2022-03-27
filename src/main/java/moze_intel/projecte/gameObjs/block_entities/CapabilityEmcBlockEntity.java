@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.capability.managing.ICapabilityResolver;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import net.minecraft.core.BlockPos;
@@ -11,6 +9,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public abstract class CapabilityEmcBlockEntity extends EmcBlockEntity {
@@ -36,9 +36,9 @@ public abstract class CapabilityEmcBlockEntity extends EmcBlockEntity {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && itemHandlerResolver != null) {
 			//Should never be null but just in case
 			return itemHandlerResolver.getCapabilityUnchecked(cap, side);

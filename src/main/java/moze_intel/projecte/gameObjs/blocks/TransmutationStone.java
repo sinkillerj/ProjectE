@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
@@ -33,6 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TransmutationStone extends DirectionalBlock implements SimpleWaterloggedBlock {
 
@@ -49,21 +49,21 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	}
 
 	@Override
-	protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> props) {
+	protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> props) {
 		super.createBlockStateDefinition(props);
 		props.add(FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
 	@Deprecated
-	public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
+	public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull PathComputationType type) {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx) {
+	public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext ctx) {
 		Direction facing = state.getValue(FACING);
 		return switch (facing) {
 			case DOWN -> DOWN_SHAPE;
@@ -75,11 +75,11 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 		};
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-			@Nonnull BlockHitResult rtr) {
+	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+			@NotNull BlockHitResult rtr) {
 		if (!level.isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
@@ -88,37 +88,37 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
+	public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
 		BlockState state = super.getStateForPlacement(context);
 		return state == null ? null : state.setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public FluidState getFluidState(BlockState state) {
 		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
-	public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor level,
-			@Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+	public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor level,
+			@NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
 			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
 		return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	@Deprecated
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
@@ -128,11 +128,11 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	private static class ContainerProvider implements MenuProvider {
 
 		@Override
-		public AbstractContainerMenu createMenu(int windowId, @Nonnull Inventory playerInventory, @Nonnull Player player) {
+		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			return new TransmutationContainer(windowId, playerInventory);
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Component getDisplayName() {
 			return PELang.TRANSMUTATION_TRANSMUTE.translate();

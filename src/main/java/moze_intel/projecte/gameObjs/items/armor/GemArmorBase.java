@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.items.armor;
 
-import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -9,6 +8,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GemArmorBase extends PEArmor {
 
@@ -54,12 +54,12 @@ public abstract class GemArmorBase extends PEArmor {
 		private static final GemArmorMaterial INSTANCE = new GemArmorMaterial();
 
 		@Override
-		public int getDurabilityForSlot(@Nonnull EquipmentSlot slot) {
+		public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
 			return 0;
 		}
 
 		@Override
-		public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
+		public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
 			if (slot == EquipmentSlot.FEET) {
 				return 3;
 			} else if (slot == EquipmentSlot.LEGS) {
@@ -77,19 +77,19 @@ public abstract class GemArmorBase extends PEArmor {
 			return 0;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public SoundEvent getEquipSound() {
 			return SoundEvents.ARMOR_EQUIP_DIAMOND;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public Ingredient getRepairIngredient() {
 			return Ingredient.EMPTY;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public String getName() {
 			//Only used on the client
