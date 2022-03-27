@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -73,7 +74,8 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -115,7 +117,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -144,7 +145,8 @@ public class PECore {
 		return new ResourceLocation(MODID, path);
 	}
 
-	private boolean needsEMCUpdate;
+	@Nullable
+	private EmcUpdateData emcUpdateResourceManager;
 
 	public PECore() {
 		MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
@@ -178,6 +180,7 @@ public class PECore {
 		CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 		CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
 		//Add our ingredients
+		//noinspection removal
 		CraftingHelper.register(rl("full_klein_star"), FullKleinStarIngredient.SERIALIZER);
 	}
 
@@ -288,7 +291,7 @@ public class PECore {
 				return InteractionResult.SUCCESS;
 			});
 			CauldronInteraction.WATER.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
-				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)){
+				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
 					return InteractionResult.PASS;
 				} else if (!level.isClientSide) {
 					//Raise the fill level
@@ -337,29 +340,24 @@ public class PECore {
 	}
 
 	private void tagsUpdated(TagsUpdatedEvent event) {
-		if (needsEMCUpdate) {
-			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			if (server != null) {
-				needsEMCUpdate = false;
-				long start = System.currentTimeMillis();
-
-				//Clear the cached created tags
-				AbstractNSSTag.clearCreatedTags();
-				CustomEMCParser.init();
-
-				try {
-					EMCMappingHandler.map(server.getServerResources().managers(), server.getResourceManager());
-					PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
-					PacketHandler.sendFragmentedEmcPacketToAll();
-				} catch (Throwable t) {
-					PECore.LOGGER.error("Error calculating EMC values", t);
-				}
+		if (emcUpdateResourceManager != null) {
+			long start = System.currentTimeMillis();
+			//Clear the cached created tags
+			AbstractNSSTag.clearCreatedTags();
+			CustomEMCParser.init();
+			try {
+				EMCMappingHandler.map(emcUpdateResourceManager.serverResources(), emcUpdateResourceManager.resourceManager());
+				PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+				PacketHandler.sendFragmentedEmcPacketToAll();
+			} catch (Throwable t) {
+				PECore.LOGGER.error("Error calculating EMC values", t);
 			}
+			emcUpdateResourceManager = null;
 		}
 	}
 
 	private void addReloadListeners(AddReloadListenerEvent event) {
-		event.addListener((ResourceManagerReloadListener) manager -> needsEMCUpdate = true);
+		event.addListener((ResourceManagerReloadListener) manager -> emcUpdateResourceManager = new EmcUpdateData(event.getServerResources(), manager));
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
@@ -384,5 +382,8 @@ public class PECore {
 		CustomEMCParser.flush();
 		TransmutationOffline.cleanAll();
 		EMCMappingHandler.clearEmcMap();
+	}
+
+	private record EmcUpdateData(ReloadableServerResources serverResources, ResourceManager resourceManager) {
 	}
 }
