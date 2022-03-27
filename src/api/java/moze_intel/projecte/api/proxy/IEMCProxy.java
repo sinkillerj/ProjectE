@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Range;
 
 public interface IEMCProxy {
 
@@ -83,6 +84,7 @@ public interface IEMCProxy {
 	 *
 	 * @return The block's EMC value, or 0 if there is none
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	default long getValue(@Nonnull Block block) {
 		return getValue(Objects.requireNonNull(block).asItem());
 	}
@@ -98,6 +100,7 @@ public interface IEMCProxy {
 	 *
 	 * @return The item's EMC value, or 0 if there is none
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	default long getValue(@Nonnull Item item) {
 		return Objects.requireNonNull(item) == Items.AIR ? 0 : getValue(ItemInfo.fromItem(item));
 	}
@@ -115,6 +118,7 @@ public interface IEMCProxy {
 	 *
 	 * @return The stack's EMC value, or 0 if there is none
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	default long getValue(@Nonnull ItemStack stack) {
 		return Objects.requireNonNull(stack).isEmpty() ? 0 : getValue(ItemInfo.fromStack(stack));
 	}
@@ -132,6 +136,7 @@ public interface IEMCProxy {
 	 *
 	 * @return The stack's EMC value, or 0 if there is none
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	long getValue(@Nonnull ItemInfo info);
 
 	/**
@@ -145,6 +150,7 @@ public interface IEMCProxy {
 	 *
 	 * @return EMC the stack should yield when burned by transmutation, condensers, or relays
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	default long getSellValue(@Nonnull ItemStack stack) {
 		return Objects.requireNonNull(stack).isEmpty() ? 0 : getSellValue(ItemInfo.fromStack(stack));
 	}
@@ -160,6 +166,7 @@ public interface IEMCProxy {
 	 *
 	 * @return EMC the stack should yield when burned by transmutation, condensers, or relays
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	long getSellValue(@Nonnull ItemInfo info);
 
 	/**

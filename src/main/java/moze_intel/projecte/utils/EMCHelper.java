@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.Range;
 
 /**
  * Helper class for EMC. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -34,8 +35,8 @@ public final class EMCHelper {
 	 *
 	 * @implNote Order it tries to extract from is, Curios, Offhand, main inventory
 	 */
-	public static long consumePlayerFuel(Player player, long minFuel) {
-		if (player.isCreative()) {
+	public static long consumePlayerFuel(Player player, @Range(from = 0, to = Long.MAX_VALUE) long minFuel) {
+		if (player.isCreative() || minFuel == 0) {
 			return minFuel;
 		}
 		IItemHandler curios = PlayerHelper.getCurios(player);
@@ -132,6 +133,7 @@ public final class EMCHelper {
 		return getEmcValue(item) > 0;
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(ItemLike item) {
 		return item == null ? 0 : getEmcValue(ItemInfo.fromItem(item));
 	}
@@ -139,24 +141,29 @@ public final class EMCHelper {
 	/**
 	 * Does not consider stack size
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(ItemStack stack) {
 		return stack.isEmpty() ? 0 : getEmcValue(ItemInfo.fromStack(stack));
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(ItemInfo info) {
 		return NBTManager.getEmcValue(info);
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcSellValue(ItemStack stack) {
 		return stack.isEmpty() ? 0 : getEmcSellValue(ItemInfo.fromStack(stack));
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcSellValue(ItemInfo info) {
 		return getEmcSellValue(getEmcValue(info));
 	}
 
-	public static long getEmcSellValue(long originalValue) {
-		if (originalValue <= 0) {
+	@Range(from = 0, to = Long.MAX_VALUE)
+	public static long getEmcSellValue(@Range(from = 0, to = Long.MAX_VALUE) long originalValue) {
+		if (originalValue == 0) {
 			return 0;
 		}
 		long emc = (long) Math.floor(originalValue * ProjectEConfig.server.difficulty.covalenceLoss.get());
@@ -201,13 +208,15 @@ public final class EMCHelper {
 		return prefix.translateColored(ChatFormatting.YELLOW, ChatFormatting.WHITE, value, ChatFormatting.BLUE, sell);
 	}
 
+	@Range(from = 1, to = Long.MAX_VALUE)
 	public static long getKleinStarMaxEmc(ItemStack stack) {
 		if (stack.getItem() instanceof KleinStar star) {
 			return Constants.MAX_KLEIN_EMC[star.tier.ordinal()];
 		}
-		return 0;
+		return Constants.MAX_KLEIN_EMC[0];
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEMCPerDurability(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return 0;

@@ -11,6 +11,7 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.utils.AnnotationHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Range;
 
 public class NBTManager {
 
@@ -43,6 +44,7 @@ public class NBTManager {
 		return ItemInfo.fromItem(info.getItem(), ItemHelper.recombineNBT(persistentNBT));
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(@Nonnull ItemInfo info) {
 		//TODO: Fix this, as it does not catch the edge case that we have an exact match and then there is random added NBT on top of it
 		// but that can be thought about more once we have the first pass complete. For example if someone put an enchantment on a potion

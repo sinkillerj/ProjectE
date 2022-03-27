@@ -18,6 +18,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
+//Removed in favor of just using partial NBT ingredients
+@Deprecated(forRemoval = true)
 public class FullKleinStarIngredient extends Ingredient {
 
 	public static final IIngredientSerializer<FullKleinStarIngredient> SERIALIZER = new IIngredientSerializer<>() {

@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Range;
 
 public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 
@@ -27,7 +28,8 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		this(type, pos, state, Constants.BLOCK_ENTITY_MAX_EMC);
 	}
 
-	public EmcBlockEntity(BlockEntityTypeRegistryObject<? extends EmcBlockEntity> type, BlockPos pos, BlockState state, long maxAmount) {
+	public EmcBlockEntity(BlockEntityTypeRegistryObject<? extends EmcBlockEntity> type, BlockPos pos, BlockState state,
+			@Range(from = 1, to = Long.MAX_VALUE) long maxAmount) {
 		super(type.get(), pos, state);
 		setMaximumEMC(maxAmount);
 	}
@@ -91,6 +93,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 	 *
 	 * @return The amount of Emc we actually sent
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	protected long sendToAllAcceptors(long emc) {
 		if (level == null || !canProvideEmc()) {
 			//If we cannot provide emc then just return

@@ -5,14 +5,15 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
-import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -22,6 +23,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -32,6 +34,7 @@ import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.conditions.TrueCondition;
 
 public class PERecipeProvider extends RecipeProvider {
@@ -104,7 +107,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.addCondition(TomeEnabledCondition.INSTANCE)
 				.addCondition(FullKleinStarsCondition.INSTANCE)
 				.addRecipe(c -> baseTomeRecipe(alternate)
-						.define('K', new FullKleinStarIngredient(EnumKleinTier.OMEGA))
+						.define('K', getFullKleinStarIngredient(EnumKleinTier.OMEGA))
 						.save(c))
 				//Tome enabled but should not use full stars
 				.addCondition(TomeEnabledCondition.INSTANCE)
@@ -436,12 +439,18 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_boots", has(PEItems.RED_MATTER_BOOTS)), PEItems.GEM_BOOTS);
 	}
 
+	private static Ingredient getFullKleinStarIngredient(EnumKleinTier tier) {
+		CompoundTag nbt = new CompoundTag();
+		ItemPE.setEmc(nbt, Constants.MAX_KLEIN_EMC[tier.ordinal()]);
+		return PartialNBTIngredient.of(PEItems.getStar(tier), nbt);
+	}
+
 	private static void gemArmorRecipe(Consumer<FinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, ItemLike result) {
 		new ConditionalRecipe.Builder()
 				//Full stars should be used
 				.addCondition(FullKleinStarsCondition.INSTANCE)
 				.addRecipe(c -> builder.get()
-						.requires(new FullKleinStarIngredient(EnumKleinTier.OMEGA))
+						.requires(getFullKleinStarIngredient(EnumKleinTier.OMEGA))
 						.save(c))
 				//Full stars should not be used (Always true, this is the fallback)
 				.addCondition(TrueCondition.INSTANCE)
@@ -1085,11 +1094,6 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static String getName(ItemLike item) {
 		return item.asItem().getRegistryName().getPath();
-	}
-
-	//TODO: If forge re exposes it via AT we can remove this copy of has
-	private static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> tag) {
-		return inventoryTrigger(ItemPredicate.Builder.item().of(tag).build());
 	}
 
 	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike... items) {

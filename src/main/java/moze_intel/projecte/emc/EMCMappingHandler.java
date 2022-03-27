@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -28,17 +29,26 @@ import moze_intel.projecte.emc.collector.LongToBigFractionCollector;
 import moze_intel.projecte.emc.generator.BigFractionToLongGenerator;
 import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.impl.capability.KnowledgeImpl;
+import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
+import moze_intel.projecte.network.packets.to_client.knowledge.UpdateTransmutationTargetsPkt;
 import moze_intel.projecte.utils.AnnotationHelper;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.math3.fraction.BigFraction;
+import org.jetbrains.annotations.Range;
 
 public final class EMCMappingHandler {
 
 	private static final List<IEMCMapper<NormalizedSimpleStack, Long>> mappers = new ArrayList<>();
 	private static final Map<ItemInfo, Long> emc = new HashMap<>();
+	private static int loadIndex = -1;
 
 	public static void loadMappers() {
 		//If we don't have any mappers loaded try to load them
@@ -146,8 +156,33 @@ public final class EMCMappingHandler {
 			}
 		}
 
-		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
+		fireEmcRemapEvent();
+	}
+
+	private static void fireEmcRemapEvent() {
+		//Start by doing our implementations
 		FuelMapper.loadMap();
+		loadIndex++;
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		if (server != null) {
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
+					if (knowledge instanceof KnowledgeImpl.DefaultImpl impl && impl.pruneStaleKnowledge()) {
+						knowledge.sync(player);
+					} else if (player.containerMenu instanceof TransmutationContainer) {
+						//If knowledge didn't get trimmed due to pruning, tell clients that have the transmutation gui open
+						// that they should update targets anyway, as it is possible EMC values changed and the order things
+						// are drawn needs to be changed
+						PacketHandler.sendTo(new UpdateTransmutationTargetsPkt(), player);
+					}
+				});
+			}
+		}
+		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
+	}
+
+	public static int getLoadIndex() {
+		return loadIndex;
 	}
 
 	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
@@ -165,6 +200,7 @@ public final class EMCMappingHandler {
 	/**
 	 * Gets the stored emc value or zero if there is no entry in the map for the given value.
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getStoredEmcValue(@Nonnull ItemInfo info) {
 		return emc.getOrDefault(info, 0L);
 	}

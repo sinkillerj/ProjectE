@@ -43,7 +43,7 @@ public final class KnowledgeImpl {
 		return new DefaultImpl(null);
 	}
 
-	private static class DefaultImpl implements IKnowledgeProvider {
+	public static class DefaultImpl implements IKnowledgeProvider {
 
 		@Nullable
 		private final Player player;
@@ -282,8 +282,6 @@ public final class KnowledgeImpl {
 				}
 			}
 
-			pruneStaleKnowledge();
-
 			for (int i = 0; i < inputLocks.getSlots(); i++) {
 				inputLocks.setStackInSlot(i, ItemStack.EMPTY);
 			}
@@ -291,27 +289,26 @@ public final class KnowledgeImpl {
 			fullKnowledge = properties.getBoolean("fullknowledge");
 		}
 
-		private void pruneStaleKnowledge() {
-			List<ItemInfo> toRemove = new ArrayList<>();
+		//Note: We call this for all players when EMC changes rather than pruning on load as EMC may not be done being calculated yet
+		// when on an integrated server
+		public final boolean pruneStaleKnowledge() {
 			List<ItemInfo> toAdd = new ArrayList<>();
-			for (ItemInfo info : knowledge) {
+			boolean hasRemoved = knowledge.removeIf(info -> {
 				ItemInfo persistentInfo = NBTManager.getPersistentInfo(info);
 				if (!info.equals(persistentInfo)) {
-					//If something about the persistence changed and the item we have is no longer directly learnable
-					// we remove it from our knowledge
-					toRemove.add(info);
 					//If the new persistent variant has an EMC value though we add it because that is what they would have learned
 					// had they tried to consume the item now instead of before
 					if (EMCHelper.doesItemHaveEmc(persistentInfo)) {
 						toAdd.add(persistentInfo);
 					}
-				} else if (!EMCHelper.doesItemHaveEmc(info)) {
-					//If the items do match but it just no longer has an EMC value, then we remove it as well
-					toRemove.add(info);
+					//If something about the persistence changed and the item we have is no longer directly learnable
+					// we remove it from our knowledge
+					return true;
 				}
-			}
-			toRemove.forEach(knowledge::remove);
-			knowledge.addAll(toAdd);
+				//If the items do match but it just no longer has an EMC value, then we remove it as well
+				return !EMCHelper.doesItemHaveEmc(info);
+			});
+			return knowledge.addAll(toAdd) || hasRemoved;
 		}
 	}
 

@@ -42,7 +42,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	public int unlearnFlag = 0;
 	public String filter = "";
 	public int searchpage = 0;
-	private final List<ItemInfo> knowledge = new ArrayList<>();
+	private List<ItemInfo> knowledge = Collections.emptyList();
 
 	public TransmutationInventory(Player player) {
 		super((IItemHandlerModifiable) player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
@@ -139,9 +139,10 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		if (isServer()) {
 			return;
 		}
-		knowledge.clear();
-		knowledge.addAll(provider.getKnowledge());
-		knowledge.sort(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)));
+		knowledge = provider.getKnowledge().stream()
+				.filter(EMCHelper::doesItemHaveEmc)
+				.sorted(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)))
+				.toList();
 		for (int i = 0; i < outputs.getSlots(); i++) {
 			outputs.setStackInSlot(i, ItemStack.EMPTY);
 		}

@@ -20,8 +20,9 @@
             "item": "projecte:swiftwolf_rending_gale"
           },
           {
-            "type": "projecte:full_klein_star",
-            "tier": 5
+            "type": "forge:partial_nbt",
+            "item": "projecte:klein_star_omega",
+            "nbt": "{StoredEMC:51200000L}"
           }
         ],
         "result": {

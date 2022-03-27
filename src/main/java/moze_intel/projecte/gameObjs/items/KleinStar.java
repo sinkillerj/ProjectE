@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.Range;
 
 public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 
@@ -102,11 +103,13 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	}
 
 	@Override
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getStoredEmc(@Nonnull ItemStack stack) {
 		return ItemPE.getEmc(stack);
 	}
 
 	@Override
+	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getMaximumEmc(@Nonnull ItemStack stack) {
 		return EMCHelper.getKleinStarMaxEmc(stack);
 	}

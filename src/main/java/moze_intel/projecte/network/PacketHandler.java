@@ -22,6 +22,7 @@ import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncChan
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncInputsAndLocksPKT;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncPKT;
+import moze_intel.projecte.network.packets.to_client.knowledge.UpdateTransmutationTargetsPkt;
 import moze_intel.projecte.network.packets.to_server.KeyPressPKT;
 import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
@@ -36,7 +37,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public final class PacketHandler {
 
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
+	private static final String PROTOCOL_VERSION = Integer.toString(2);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
 			.named(PECore.rl("main_channel"))
 			.clientAcceptedVersions(PROTOCOL_VERSION::equals)
@@ -65,6 +66,7 @@ public final class PacketHandler {
 		registerServerToClient(SyncEmcPKT.class, SyncEmcPKT::decode);
 		registerServerToClient(SyncFuelMapperPKT.class, SyncFuelMapperPKT::decode);
 		registerServerToClient(UpdateCondenserLockPKT.class, UpdateCondenserLockPKT::decode);
+		registerServerToClient(UpdateTransmutationTargetsPkt.class, UpdateTransmutationTargetsPkt::decode);
 		registerServerToClient(UpdateWindowIntPKT.class, UpdateWindowIntPKT::decode);
 		registerServerToClient(UpdateWindowLongPKT.class, UpdateWindowLongPKT::decode);
 	}

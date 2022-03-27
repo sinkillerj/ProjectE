@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs;
 
 import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Range;
 
 public enum EnumCollectorTier implements StringRepresentable {
 	MK1("collector_mk1", 4, 10_000),
@@ -12,7 +13,7 @@ public enum EnumCollectorTier implements StringRepresentable {
 	private final long genRate;
 	private final long storage;
 
-	EnumCollectorTier(String name, long genRate, long storage) {
+	EnumCollectorTier(String name, @Range(from = 0, to = Long.MAX_VALUE) long genRate, @Range(from = 1, to = Long.MAX_VALUE) long storage) {
 		this.name = name;
 		this.genRate = genRate;
 		this.storage = storage;
@@ -24,10 +25,12 @@ public enum EnumCollectorTier implements StringRepresentable {
 		return name;
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getGenRate() {
 		return genRate;
 	}
 
+	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getStorage() {
 		return storage;
 	}

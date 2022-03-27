@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -36,6 +37,8 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	private boolean isAcceptingEmc;
 	public long displayEmc;
 	public long requiredEmc;
+	//Start at one less than actual just to ensure we run initially after loading
+	private int loadIndex = EMCMappingHandler.getLoadIndex() - 1;
 
 	public CondenserBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.CONDENSER, pos, state);
@@ -57,7 +60,11 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	@Nullable
-	public ItemInfo getLockInfo() {
+	public final ItemInfo getLockInfo() {
+		if (requiredEmc == 0 && (level == null || !level.isClientSide)) {
+			//If the lock doesn't have EMC don't tell the client it is there
+			return null;
+		}
 		return lockInfo;
 	}
 
@@ -98,33 +105,35 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	public static void tickServer(Level level, BlockPos pos, BlockState state, CondenserBlockEntity condenser) {
-		condenser.checkLockAndUpdate();
+		condenser.checkLockAndUpdate(false);
 		condenser.displayEmc = condenser.getStoredEmc();
-		if (condenser.lockInfo != null && condenser.requiredEmc != 0) {
+		if (condenser.getLockInfo() != null) {
 			condenser.condense();
 		}
 		condenser.updateComparators();
 	}
 
-	private void checkLockAndUpdate() {
-		if (lockInfo == null) {
-			displayEmc = 0;
-			requiredEmc = 0;
-			this.isAcceptingEmc = false;
+	private void checkLockAndUpdate(boolean force) {
+		if (!force && loadIndex == EMCMappingHandler.getLoadIndex()) {
+			//Only update if we are forcing it or are on a different load index
 			return;
 		}
-		long lockEmc = EMCHelper.getEmcValue(lockInfo);
-		if (lockEmc > 0) {
-			if (requiredEmc != lockEmc) {
-				requiredEmc = lockEmc;
-				this.isAcceptingEmc = true;
+		loadIndex = EMCMappingHandler.getLoadIndex();
+		if (lockInfo != null) {
+			long lockEmc = EMCHelper.getEmcValue(lockInfo);
+			if (lockEmc > 0) {
+				if (requiredEmc != lockEmc) {
+					requiredEmc = lockEmc;
+					this.isAcceptingEmc = true;
+				}
+				return;
 			}
-		} else {
-			lockInfo = null;
-			displayEmc = 0;
-			requiredEmc = 0;
-			this.isAcceptingEmc = false;
+			//Don't reset the lockInfo just because it has no EMC, as if a reload makes it have EMC again
+			// then we want to allow it to happen again
 		}
+		displayEmc = 0;
+		requiredEmc = 0;
+		this.isAcceptingEmc = false;
 	}
 
 	protected void condense() {
@@ -142,7 +151,8 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 		}
 	}
 
-	protected void pushStack() {
+	protected final void pushStack() {
+		ItemInfo lockInfo = getLockInfo();
 		if (lockInfo != null) {
 			ItemHandlerHelper.insertItemStacked(outputInventory, lockInfo.createStack(), false);
 		}
@@ -159,6 +169,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	public boolean isStackEqualToLock(ItemStack stack) {
+		ItemInfo lockInfo = getLockInfo();
 		if (lockInfo == null || stack.isEmpty()) {
 			return false;
 		}
@@ -174,20 +185,27 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 		if (level == null || level.isClientSide) {
 			return false;
 		}
-		if (lockInfo == null) {
+		if (getLockInfo() == null) {
 			ItemStack stack = player.containerMenu.getCarried();
 			if (!stack.isEmpty()) {
 				ItemInfo sourceInfo = ItemInfo.fromStack(stack);
 				ItemInfo reducedInfo = NBTManager.getPersistentInfo(sourceInfo);
 				if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo))) {
 					lockInfo = reducedInfo;
+					checkLockAndUpdate(true);
 					markDirty(false);
 					return true;
 				}
+				return false;
 			}
-			return false;
+			//If the lock info is actually null and the player didn't carry anything don't do anything
+			// otherwise just fall through as we need to update it to actually being empty
+			if (lockInfo == null) {
+				return false;
+			}
 		}
 		lockInfo = null;
+		checkLockAndUpdate(true);
 		markDirty(false);
 		return true;
 	}

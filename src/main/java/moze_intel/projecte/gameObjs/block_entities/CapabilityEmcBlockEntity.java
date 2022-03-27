@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.Range;
 
 public abstract class CapabilityEmcBlockEntity extends EmcBlockEntity {
 
@@ -21,7 +22,8 @@ public abstract class CapabilityEmcBlockEntity extends EmcBlockEntity {
 		super(type, pos, state);
 	}
 
-	public CapabilityEmcBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state, long maxAmount) {
+	public CapabilityEmcBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state,
+			@Range(from = 1, to = Long.MAX_VALUE)long maxAmount) {
 		super(type, pos, state, maxAmount);
 	}
 

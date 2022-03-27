@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.ModList;
+import org.jetbrains.annotations.Range;
 
 public class ItemPE extends Item {
 
@@ -57,24 +58,29 @@ public class ItemPE extends Item {
 		return new ItemCapabilityWrapper(stack, supportedCapabilities);
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmc(ItemStack stack) {
 		return stack.hasTag() ? stack.getTag().getLong(Constants.NBT_KEY_STORED_EMC) : 0;
 	}
 
-	public static void setEmc(ItemStack stack, long amount) {
-		stack.getOrCreateTag().putLong(Constants.NBT_KEY_STORED_EMC, amount);
+	public static void setEmc(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
+		setEmc(stack.getOrCreateTag(), amount);
 	}
 
-	public static void addEmcToStack(ItemStack stack, long amount) {
-		setEmc(stack, getEmc(stack) + amount);
+	public static void setEmc(CompoundTag nbt, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
+		nbt.putLong(Constants.NBT_KEY_STORED_EMC, amount);
 	}
 
-	public static void removeEmc(ItemStack stack, long amount) {
-		long result = getEmc(stack) - amount;
-		if (result < 0) {
-			result = 0;
+	public static void addEmcToStack(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
+		if (amount > 0) {
+			setEmc(stack, getEmc(stack) + amount);
 		}
-		setEmc(stack, result);
+	}
+
+	public static void removeEmc(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
+		if (amount > 0) {
+			setEmc(stack, Math.max(getEmc(stack) - amount, 0));
+		}
 	}
 
 	public static boolean consumeFuel(Player player, ItemStack stack, long amount, boolean shouldRemove) {

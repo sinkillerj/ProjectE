@@ -41,6 +41,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
+import org.jetbrains.annotations.Range;
 
 public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
@@ -72,6 +73,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 	}
 
 	@Override
+	@Range(from = 0, to = Long.MAX_VALUE)
 	protected long getEmcInsertLimit() {
 		return EMC_CONSUMPTION;
 	}

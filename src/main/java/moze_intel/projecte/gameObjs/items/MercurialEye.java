@@ -139,6 +139,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(level, player, hand, target.copy(), hitResult));
 			newState = ItemHelper.stackToState(target, context);
 			newBlockEmc = EMCHelper.getEmcValue(target);
+			if (newBlockEmc == 0) {
+				//If the target no longer has an EMC value fail
+				return InteractionResult.FAIL;
+			}
 		} else if (startingBlockEmc != 0 && (mode == EXTENSION_MODE || mode == EXTENSION_MODE_CLASSIC)) {
 			//If there is no item key, attempt to determine it for extension mode
 			newState = startingState;

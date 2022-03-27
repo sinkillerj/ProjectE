@@ -6,6 +6,7 @@ import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.Range;
 
 public class EmcHolderItemCapabilityWrapper extends BasicItemCapability<IItemEmcHolder> implements IItemEmcHolder {
 
@@ -25,11 +26,13 @@ public class EmcHolderItemCapabilityWrapper extends BasicItemCapability<IItemEmc
 	}
 
 	@Override
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getStoredEmc(@Nonnull ItemStack stack) {
 		return getItem().getStoredEmc(stack);
 	}
 
 	@Override
+	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getMaximumEmc(@Nonnull ItemStack stack) {
 		return getItem().getMaximumEmc(stack);
 	}

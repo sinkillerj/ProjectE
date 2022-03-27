@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.capabilities.block_entity;
 
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.Range;
 
 /**
  * This interface represents a capability for block entities that want to support storing, providing, or receiving EMC.
@@ -45,6 +46,7 @@ public interface IEmcStorage {
 	 *
 	 * @return The current EMC stored
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	long getStoredEmc();
 
 	/**
@@ -54,6 +56,7 @@ public interface IEmcStorage {
 	 *
 	 * @implNote This value should never be zero
 	 */
+	@Range(from = 1, to = Long.MAX_VALUE)
 	long getMaximumEmc();
 
 	/**
@@ -61,6 +64,7 @@ public interface IEmcStorage {
 	 *
 	 * @return The amount of EMC this {@link IEmcStorage} needs.
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	default long getNeededEmc() {
 		return Math.max(0, getMaximumEmc() - getStoredEmc());
 	}

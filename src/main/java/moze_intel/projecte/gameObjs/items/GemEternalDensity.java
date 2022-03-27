@@ -80,11 +80,15 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!gem.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || ItemPE.getEmc(gem) >= Constants.BLOCK_ENTITY_MAX_EMC) {
 			return false;
 		}
-
+		ItemStack target = getTarget(gem);
+		long targetEmc = EMCHelper.getEmcValue(target);
+		if (targetEmc == 0) {
+			//Target doesn't have an EMC value set, just exit early
+			return false;
+		}
 		boolean hasChanged = false;
 		boolean isWhitelist = ItemHelper.checkItemNBT(gem, Constants.NBT_KEY_GEM_WHITELIST);
 		List<ItemStack> whitelist = getWhitelist(gem);
-		ItemStack target = getTarget(gem);
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack s = inv.getStackInSlot(i);
 			if (s.isEmpty() || s.getMaxStackSize() == 1) {
@@ -92,11 +96,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			}
 
 			long emcValue = EMCHelper.getEmcValue(s);
-			if (emcValue <= 0 || emcValue >= EMCHelper.getEmcValue(target) || inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty()) {
+			if (emcValue == 0 || emcValue >= targetEmc || inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty()) {
 				continue;
 			}
 
-			if ((isWhitelist && listContains(whitelist, s)) || (!isWhitelist && !listContains(whitelist, s))) {
+			if (isWhitelist == listContains(whitelist, s)) {
 				ItemStack copy = inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, false);
 				addToList(gem, copy);
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.getCount());
@@ -106,7 +110,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 
 		long value = EMCHelper.getEmcValue(target);
-		if (!EMCHelper.doesItemHaveEmc(target)) {
+		if (value == 0) {
 			return hasChanged;
 		}
 

@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Range;
 
 /**
  * Base class for the reference implementations IEmcStorage
@@ -31,7 +32,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 		setMaximumEMC(Long.MAX_VALUE);
 	}
 
-	public final void setMaximumEMC(long max) {
+	public final void setMaximumEMC(@Range(from = 1, to = Long.MAX_VALUE) long max) {
 		maximumEMC = max;
 		if (getStoredEmc() > getMaximumEmc()) {
 			currentEMC = getMaximumEmc();
@@ -40,11 +41,13 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	}
 
 	@Override
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getStoredEmc() {
 		return currentEMC;
 	}
 
 	@Override
+	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getMaximumEmc() {
 		return maximumEMC;
 	}
@@ -52,6 +55,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	/**
 	 * @return The maximum amount of Emc that can be inserted at once into this {@link IEmcStorage}
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	protected long getEmcInsertLimit() {
 		return getNeededEmc();
 	}
@@ -59,6 +63,7 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	/**
 	 * @return The maximum amount of Emc that can be extracted at once from this {@link IEmcStorage}
 	 */
+	@Range(from = 0, to = Long.MAX_VALUE)
 	protected long getEmcExtractLimit() {
 		return getStoredEmc();
 	}

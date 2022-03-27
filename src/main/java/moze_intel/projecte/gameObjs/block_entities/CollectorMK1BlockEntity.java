@@ -38,6 +38,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.Range;
 
 public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
 
@@ -208,11 +209,17 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		}
 	}
 
+	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getEmcToNextGoal() {
-		if (!getLock().isEmpty()) {
-			return EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
+		ItemStack lock = getLock();
+		ItemStack upgrading = getUpgrading();
+		long targetEmc;
+		if (lock.isEmpty()) {
+			targetEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(upgrading));
+		} else {
+			targetEmc = EMCHelper.getEmcValue(lock);
 		}
-		return EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
+		return Math.max(targetEmc - EMCHelper.getEmcValue(upgrading), 0);
 	}
 
 	public long getItemCharge() {
