@@ -77,13 +77,13 @@ public class CrTNSSResolver {
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Item>}.
 	 */
-	@ZenCodeType.Method
+	/*@ZenCodeType.Method//TODO: Re-enable after CrT Updates
 	public static NormalizedSimpleStack fromItemTag(MCTag<Item> tag) {
 		if (tag.exists()) {
 			return NSSItem.createTag(tag.id());
 		}
 		throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
-	}
+	}*/
 
 	/**
 	 * Creates a {@link NormalizedSimpleStack} that matches the given stack's fluid and NBT.
@@ -122,11 +122,11 @@ public class CrTNSSResolver {
 	 *
 	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Fluid>}.
 	 */
-	@ZenCodeType.Method
+	/*@ZenCodeType.Method//TODO: Re-enable after CrT Updates
 	public static NormalizedSimpleStack fromFluidTag(MCTag<Fluid> tag) {
 		if (tag.exists()) {
 			return NSSFluid.createTag(tag.id());
 		}
 		throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
-	}
+	}*/
 }
