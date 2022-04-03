@@ -93,6 +93,17 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 		return compose.getGroup();
 	}
 
+	@NotNull
+	@Override
+	public ItemStack getToastSymbol() {
+		return compose.getToastSymbol();
+	}
+
+	@Override
+	public boolean isIncomplete() {
+		return compose.isIncomplete();
+	}
+
 	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeShapelessKleinStar> {
 
 		@NotNull
