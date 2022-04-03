@@ -3,7 +3,7 @@ package moze_intel.projecte.integration.crafttweaker.nss;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.google.gson.JsonParseException;
 import moze_intel.projecte.api.nss.NSSFluid;
@@ -71,19 +71,19 @@ public class CrTNSSResolver {
 	}
 
 	/**
-	 * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Item>}.
+	 * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Item>}.
 	 *
 	 * @param tag Item Tag to represent
 	 *
-	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Item>}.
+	 * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Item>}.
 	 */
-	/*@ZenCodeType.Method//TODO: Re-enable after CrT Updates
-	public static NormalizedSimpleStack fromItemTag(MCTag<Item> tag) {
+	@ZenCodeType.Method
+	public static NormalizedSimpleStack fromItemTag(KnownTag<Item> tag) {
 		if (tag.exists()) {
 			return NSSItem.createTag(tag.id());
 		}
 		throw new IllegalArgumentException("Item tag " + tag.getCommandString() + " does not exist.");
-	}*/
+	}
 
 	/**
 	 * Creates a {@link NormalizedSimpleStack} that matches the given stack's fluid and NBT.
@@ -116,17 +116,17 @@ public class CrTNSSResolver {
 	}
 
 	/**
-	 * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Fluid>}.
+	 * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Fluid>}.
 	 *
 	 * @param tag Fluid Tag to represent
 	 *
-	 * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Fluid>}.
+	 * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Fluid>}.
 	 */
-	/*@ZenCodeType.Method//TODO: Re-enable after CrT Updates
-	public static NormalizedSimpleStack fromFluidTag(MCTag<Fluid> tag) {
+	@ZenCodeType.Method
+	public static NormalizedSimpleStack fromFluidTag(KnownTag<Fluid> tag) {
 		if (tag.exists()) {
 			return NSSFluid.createTag(tag.id());
 		}
 		throw new IllegalArgumentException("Fluid tag " + tag.getCommandString() + " does not exist.");
-	}*/
+	}
 }

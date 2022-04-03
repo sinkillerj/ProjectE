@@ -261,8 +261,8 @@ repositories {
         }
     }
     maven {
-        name 'TOP'
-        url "https://maven.tterrag.com/"
+        name 'Modmaven'
+        url 'https://modmaven.dev/'
         content {
             includeGroup 'mcjty.theoneprobe'
         }
@@ -313,13 +313,18 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
+    //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
+    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
+        transitive = false
+    }
+    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+        transitive = false
+    }
 
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    //TODO: Switch back to implementation once it supports 1.18.2
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
     forgeLibrary group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
