@@ -71,7 +71,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 			WorldHelper.createLootDrop(drops, level, ctx.getClickedPos());
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.CONSUME;
 	}
 
 	private int calculateDepthFromCharge(ItemStack stack) {

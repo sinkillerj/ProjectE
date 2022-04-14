@@ -83,7 +83,7 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 		if (!level.isClientSide) {
 			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(), b -> b.writeBoolean(false));
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	@Nullable

@@ -110,7 +110,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 				player.sendMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]), Util.NIL_UUID);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.CONSUME;
 	}
 
 	private int getDepthFromMode(ItemStack stack) {

@@ -160,7 +160,6 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
-			PlayerHelper.swingItem(player, hand);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -385,7 +384,6 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, level, pos);
-			PlayerHelper.swingItem(player, hand);
 			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			return InteractionResult.SUCCESS;
 		}
@@ -515,7 +513,6 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
-			PlayerHelper.swingItem(player, hand);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -585,7 +582,6 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
-			PlayerHelper.swingItem(player, hand);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;

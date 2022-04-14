@@ -79,13 +79,13 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 					if (useBoneMeal(level, pos, side)) {
 						player.getInventory().removeItem(i, 4);
 						player.inventoryMenu.broadcastChanges();
-						return InteractionResult.SUCCESS;
+						return InteractionResult.CONSUME;
 					}
 					break;
 				}
 			}
 		} else if (plantSeeds(level, player, pos)) {
-			return InteractionResult.SUCCESS;
+			return InteractionResult.CONSUME;
 		}
 		return InteractionResult.FAIL;
 	}

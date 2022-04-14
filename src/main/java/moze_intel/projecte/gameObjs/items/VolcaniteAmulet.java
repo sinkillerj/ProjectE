@@ -74,13 +74,13 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 				Optional<IFluidHandler> capability = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
 				if (capability.isPresent()) {
 					capability.get().fill(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-					return InteractionResult.SUCCESS;
+					return InteractionResult.CONSUME;
 				}
 			}
 			WorldHelper.placeFluid((ServerPlayer) player, level, pos, sideHit, Fluids.LAVA, false);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	@Override

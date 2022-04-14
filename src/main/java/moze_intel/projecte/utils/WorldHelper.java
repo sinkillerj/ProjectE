@@ -593,7 +593,7 @@ public final class WorldHelper {
 		} else {
 			return InteractionResult.PASS;
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	/**

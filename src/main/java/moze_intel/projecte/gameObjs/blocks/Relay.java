@@ -36,13 +36,14 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Block
 	@Deprecated
 	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
 			@NotNull BlockHitResult rtr) {
-		if (!level.isClientSide) {
-			RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
-			if (relay != null) {
-				NetworkHooks.openGui((ServerPlayer) player, relay, pos);
-			}
+		if (level.isClientSide) {
+			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.SUCCESS;
+		RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, pos, true);
+		if (relay != null) {
+			NetworkHooks.openGui((ServerPlayer) player, relay, pos);
+		}
+		return InteractionResult.CONSUME;
 	}
 
 	@Nullable

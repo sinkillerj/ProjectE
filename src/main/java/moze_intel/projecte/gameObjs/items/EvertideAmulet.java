@@ -81,13 +81,13 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 				Optional<IFluidHandler> capability = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
 				if (capability.isPresent()) {
 					capability.get().fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-					return InteractionResult.SUCCESS;
+					return InteractionResult.CONSUME;
 				}
 			}
 			WorldHelper.placeFluid((ServerPlayer) player, level, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	@Override

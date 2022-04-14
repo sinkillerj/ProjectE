@@ -67,7 +67,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			if (!itemStack.isEmpty()) {
 				sound.ifPresent(soundEvent -> player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,
 						SoundSource.PLAYERS, 1.0F, 1.0F));
-				return InteractionResult.SUCCESS;
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
 		}
 		return InteractionResult.PASS;
@@ -76,10 +76,12 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@NotNull
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-		if (tryPickupFluid(level, player, player.getItemInHand(hand)) != InteractionResult.SUCCESS) {
-			changeMode(player, player.getItemInHand(hand), hand);
+		ItemStack stack = player.getItemInHand(hand);
+		InteractionResult result = tryPickupFluid(level, player, stack);
+		if (!result.consumesAction() && changeMode(player, stack, hand)) {
+			result = InteractionResult.sidedSuccess(level.isClientSide);
 		}
-		return InteractionResultHolder.success(player.getItemInHand(hand));
+		return ItemHelper.actionResultFromType(result, stack);
 	}
 
 	@Override

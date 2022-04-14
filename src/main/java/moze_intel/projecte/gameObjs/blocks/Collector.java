@@ -44,13 +44,14 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 	@Deprecated
 	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
 			@NotNull BlockHitResult hit) {
-		if (!level.isClientSide) {
-			CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
-			if (collector != null) {
-				NetworkHooks.openGui((ServerPlayer) player, collector, pos);
-			}
+		if (level.isClientSide) {
+			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.SUCCESS;
+		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
+		if (collector != null) {
+			NetworkHooks.openGui((ServerPlayer) player, collector, pos);
+		}
+		return InteractionResult.CONSUME;
 	}
 
 	@Nullable

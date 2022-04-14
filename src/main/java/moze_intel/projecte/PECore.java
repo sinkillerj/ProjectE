@@ -288,7 +288,7 @@ public class PECore {
 				if (!level.isClientSide) {
 					level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
 			CauldronInteraction.WATER.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
 				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
@@ -297,13 +297,13 @@ public class PECore {
 					//Raise the fill level
 					level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
 			CauldronInteraction.EMPTY.put(PEItems.VOLCANITE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
 				if (!level.isClientSide && ItemPE.consumeFuel(player, stack, 32, true)) {
 					level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
 
 			// internals unsafe

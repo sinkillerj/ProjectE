@@ -138,7 +138,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
 		//Shear the block instead of breaking it if it supports shearing (and has drops to give) instead of actually breaking it normally
-		return ToolHelper.shearBlock(stack, pos, player) == InteractionResult.SUCCESS;
+		return ToolHelper.shearBlock(stack, pos, player).consumesAction();
 	}
 
 	@NotNull

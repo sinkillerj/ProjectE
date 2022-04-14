@@ -77,15 +77,16 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 	@Deprecated
 	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
 			@NotNull BlockHitResult rtr) {
-		if (!level.isClientSide) {
-			EmcChestBlockEntity chest = WorldHelper.getBlockEntity(EmcChestBlockEntity.class, level, pos, true);
-			if (chest != null) {
-				NetworkHooks.openGui((ServerPlayer) player, chest, pos);
-				player.awardStat(Stats.OPEN_CHEST);
-				PiglinAi.angerNearbyPiglins(player, true);
-			}
+		if (level.isClientSide) {
+			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.SUCCESS;
+		EmcChestBlockEntity chest = WorldHelper.getBlockEntity(EmcChestBlockEntity.class, level, pos, true);
+		if (chest != null) {
+			NetworkHooks.openGui((ServerPlayer) player, chest, pos);
+			player.awardStat(Stats.OPEN_CHEST);
+			PiglinAi.angerNearbyPiglins(player, true);
+		}
+		return InteractionResult.CONSUME;
 	}
 
 	@Nullable

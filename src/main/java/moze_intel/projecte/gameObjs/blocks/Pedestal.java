@@ -139,7 +139,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	// [VanillaCopy] Adapted from NoteBlock

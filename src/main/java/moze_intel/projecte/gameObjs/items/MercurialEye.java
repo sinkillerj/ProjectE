@@ -251,7 +251,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 				WorldHelper.createLootDrop(drops, player.getCommandSenderWorld(), startingPos);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.CONSUME;
 	}
 
 	private boolean doBlockPlace(Player player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
