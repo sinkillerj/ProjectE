@@ -3,6 +3,7 @@ package moze_intel.projecte.integration.crafttweaker.actions;
 import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import java.util.Map;
 import java.util.Map.Entry;
+import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.integration.crafttweaker.mappers.CrTConversionEMCMapper;
 import moze_intel.projecte.integration.crafttweaker.mappers.CrTConversionEMCMapper.CrTConversion;
@@ -11,8 +12,8 @@ public class CustomConversionAction implements IUndoableAction {
 
 	private final CrTConversion conversion;
 
-	public CustomConversionAction(NormalizedSimpleStack output, int amount, Map<NormalizedSimpleStack, Integer> ingredients) {
-		conversion = new CrTConversion(output, amount, ingredients);
+	public CustomConversionAction(NormalizedSimpleStack output, int amount, boolean propagateTags, boolean set, Map<NormalizedSimpleStack, Integer> ingredients) {
+		conversion = new CrTConversion(output, amount, propagateTags, set, ingredients);
 	}
 
 	@Override
@@ -34,7 +35,11 @@ public class CustomConversionAction implements IUndoableAction {
 			}
 			inputString.append(entry.getKey());
 		}
-		return "Added custom conversion creating '" + conversion.amount() + "' of " + conversion.output() + ", from: " + inputString;
+		String description = "Added custom conversion creating '" + conversion.amount() + "' of " + conversion.output() + ", from: " + inputString;
+		if (conversion.propagateTags() && conversion.output() instanceof NSSTag) {
+			description += "; propagating to elements of " + conversion.output();
+		}
+		return description;
 	}
 
 	@Override

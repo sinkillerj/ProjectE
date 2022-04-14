@@ -84,7 +84,7 @@ public final class PacketHandler {
 	}
 
 	private static boolean isLocal(ServerPlayer player) {
-		return !player.server.isDedicatedServer() && player.getGameProfile().getName().equals(player.server.getSingleplayerName());
+		return player.server.isSingleplayerOwner(player.getGameProfile());
 	}
 
 	public static <MSG extends IPEPacket> void sendNonLocal(MSG msg, ServerPlayer player) {
