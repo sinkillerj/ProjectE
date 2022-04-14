@@ -30,7 +30,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	public CollectorRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEBlocks.COLLECTOR));
+		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PEBlocks.COLLECTOR));
 	}
 
 	@NotNull

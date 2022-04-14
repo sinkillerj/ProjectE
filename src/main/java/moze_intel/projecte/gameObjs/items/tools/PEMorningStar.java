@@ -93,7 +93,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		BlockState state = level.getBlockState(pos);
 		//Order that it attempts to use the item:
 		// Till (Shovel), Vein (or AOE) mine gravel/clay, vein mine ore, AOE dig (if it is sand, dirt, or grass don't do depth)
-		return ToolHelper.performActions(ToolHelper.flattenAOE(context, 0),
+		return ToolHelper.performActions(ToolHelper.flattenAOE(context, state, 0),
 				() -> ToolHelper.dowseCampfire(context, state),
 				() -> {
 					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {

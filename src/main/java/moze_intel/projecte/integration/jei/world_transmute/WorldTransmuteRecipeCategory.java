@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -37,7 +38,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	public WorldTransmuteRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(PEItems.PHILOSOPHERS_STONE));
+		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PEItems.PHILOSOPHERS_STONE));
 	}
 
 	@NotNull
@@ -91,7 +92,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 				recipeInput.ifLeft(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 						.addItemStack(input)
 				).ifRight(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
-						.addIngredient(VanillaTypes.FLUID, input)
+						.addIngredient(ForgeTypes.FLUID_STACK, input)
 						.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
 				)
 		);
@@ -100,7 +101,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 			IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, xPos, 16);
 			output.ifLeft(slot::addItemStack)
 					.ifRight(input -> slot
-							.addIngredient(VanillaTypes.FLUID, input)
+							.addIngredient(ForgeTypes.FLUID_STACK, input)
 							.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
 					);
 			xPos += 16;

@@ -104,7 +104,7 @@ public class PEShovel extends ShovelItem implements IItemCharge, IBarHelper {
 		Direction sideHit = context.getClickedFace();
 		ItemStack stack = context.getItemInHand();
 		BlockState state = level.getBlockState(pos);
-		return ToolHelper.performActions(ToolHelper.flattenAOE(context, 0),
+		return ToolHelper.performActions(ToolHelper.flattenAOE(context, state, 0),
 				() -> ToolHelper.dowseCampfire(context, state),
 				() -> {
 					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {

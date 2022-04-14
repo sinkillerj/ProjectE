@@ -21,7 +21,14 @@ public class TomeEnabledCondition implements ICondition {
 	}
 
 	@Override
+	@SuppressWarnings("removal")
+	@Deprecated(forRemoval = true)
 	public boolean test() {
+		return test(IContext.EMPTY);
+	}
+
+	@Override
+	public boolean test(IContext context) {
 		return ProjectEConfig.common.craftableTome.get();
 	}
 

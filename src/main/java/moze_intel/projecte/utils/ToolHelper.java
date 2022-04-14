@@ -4,14 +4,12 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -50,7 +48,6 @@ import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -101,16 +98,16 @@ public class ToolHelper {
 	 */
 	@SafeVarargs
 	public static InteractionResult performActions(InteractionResult firstAction, Supplier<InteractionResult>... secondaryActions) {
-		if (firstAction == InteractionResult.SUCCESS) {
-			return InteractionResult.SUCCESS;
+		if (firstAction.consumesAction()) {
+			return firstAction;
 		}
 		InteractionResult result = firstAction;
 		boolean hasFailed = result == InteractionResult.FAIL;
 		for (Supplier<InteractionResult> secondaryAction : secondaryActions) {
 			result = secondaryAction.get();
-			if (result == InteractionResult.SUCCESS) {
+			if (result.consumesAction()) {
 				//If we were successful
-				return InteractionResult.SUCCESS;
+				return result;
 			}
 			hasFailed &= result == InteractionResult.FAIL;
 		}
@@ -184,7 +181,7 @@ public class ToolHelper {
 			if (!level.isClientSide()) {
 				level.setBlock(pos, state.setValue(CampfireBlock.LIT, Boolean.FALSE), Block.UPDATE_ALL_IMMEDIATE);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 		return InteractionResult.PASS;
 	}
@@ -192,201 +189,96 @@ public class ToolHelper {
 	/**
 	 * Tills in an AOE using a hoe. Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static InteractionResult tillHoeAOE(UseOnContext context, long emcCost) {
-		Player player = context.getPlayer();
-		if (player == null) {
-			return InteractionResult.PASS;
-		}
-		Level level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		Block type = level.getBlockState(pos).getBlock();
-		//TODO: Hopefully one day make this not go based off of the internal map
-		Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> conversion = HoeItem.TILLABLES.get(type);
-		if (conversion == null) {
-			//Skip tilling the blocks if the one we clicked cannot be tilled
-			return InteractionResult.PASS;
-		}
-		Predicate<UseOnContext> canConvert = conversion.getFirst();
-		if (!canConvert.test(context)) {
-			//Skip tilling the blocks if the one we clicked cannot be tilled
-			return InteractionResult.PASS;
-		} else if (level.isClientSide) {
-			return InteractionResult.SUCCESS;
-		}
-		Consumer<UseOnContext> converter = conversion.getSecond();
-		converter.accept(context);
-		level.playSound(null, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-		ItemStack stack = context.getItemInHand();
-		int charge = getCharge(stack);
-		if (charge > 0) {
-			for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge))) {
-				if (pos.equals(newPos)) {
-					//Skip the source position as it is free, and we manually handled it before the loop
-					continue;
-				}
-				//Note: Unfortunately we no longer can compare this based on output state as we do not have easy access to it,
-				// so instead we have to instead go based on the input block
-				if (level.getBlockState(newPos).is(type)) {
-					//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
-					// matter we make sure to get an immutable instance of newPos
-					newPos = newPos.immutable();
-					//Create a new used context based on the original one to try and pass the proper information to the conversion
-					UseOnContext adjustedContext = new UseOnContext(level, player, context.getHand(), stack, new BlockHitResult(
-							context.getClickLocation().add(newPos.getX() - pos.getX(), newPos.getY() - pos.getY(), newPos.getZ() - pos.getZ()),
-							context.getClickedFace(), newPos, context.isInside()));
-					if (canConvert.test(adjustedContext)) {
-						if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-							//Apply the conversion
-							converter.accept(adjustedContext);
-						} else {
-							//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
-							break;
-						}
-					}
-				}
-			}
-		}
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-		return InteractionResult.SUCCESS;
+	public static InteractionResult tillAOE(UseOnContext context, BlockState clickedState, long emcCost) {
+		return useAOE(context, clickedState, emcCost, ToolActions.HOE_TILL, SoundEvents.HOE_TILL, -1, new HoeToolAOEData());
 	}
 
 	/**
 	 * Tills in an AOE using a shovel (ex: grass to grass path). Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static InteractionResult flattenAOE(UseOnContext context, long emcCost) {
-		Player player = context.getPlayer();
-		if (player == null) {
-			return InteractionResult.PASS;
-		}
+	public static InteractionResult flattenAOE(UseOnContext context, BlockState clickedState, long emcCost) {
 		Direction sideHit = context.getClickedFace();
 		if (sideHit == Direction.DOWN) {
-			//Don't allow tilling a block from underneath
+			//Don't allow flattening a block from underneath
 			return InteractionResult.PASS;
 		}
-		ItemStack stack = context.getItemInHand();
-		Level level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		BlockState tilledState = level.getBlockState(pos).getToolModifiedState(level, pos, player, stack, ToolActions.SHOVEL_FLATTEN);
-		if (tilledState == null) {
-			//Skip tilling the blocks if the one we clicked cannot be tilled
-			return InteractionResult.PASS;
-		}
-		BlockPos abovePos = pos.above();
-		BlockState aboveState = level.getBlockState(abovePos);
-		//Check to make sure the block above is not opaque
-		if (aboveState.isSolidRender(level, abovePos)) {
-			//If the block above our source is opaque, just skip tiling in general
-			return InteractionResult.PASS;
-		} else if (level.isClientSide) {
-			return InteractionResult.SUCCESS;
-		}
-		level.setBlock(pos, tilledState, Block.UPDATE_ALL_IMMEDIATE);
-		removeAboveIfPlant((ServerPlayer) player, level, pos.above(), aboveState);
-		level.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-		int charge = getCharge(stack);
-		if (charge > 0) {
-			for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge))) {
-				if (pos.equals(newPos)) {
-					//Skip the source position as it is free and we manually handled it before the loop
-					continue;
-				}
-				aboveState = level.getBlockState(newPos.above());
-				//Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
-				// the same as the one we got on the initial block we interacted with
-				if (!aboveState.isSolidRender(level, newPos.above()) && tilledState == level.getBlockState(newPos).getToolModifiedState(level, newPos, player, stack, ToolActions.SHOVEL_FLATTEN)) {
-					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
-						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
-						// matter we make sure to get an immutable instance of newPos
-						newPos = newPos.immutable();
-						//Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do), rather than using our
-						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
-						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
-						// location and were told that we are allowed to use our item.
-						level.setBlock(newPos, tilledState, Block.UPDATE_ALL_IMMEDIATE);
-						removeAboveIfPlant((ServerPlayer) player, level, newPos.above(), aboveState);
-					} else {
-						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
-						break;
-					}
-				}
-			}
-		}
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-		return InteractionResult.SUCCESS;
-	}
-
-	private static void removeAboveIfPlant(ServerPlayer player, Level level, BlockPos above, BlockState aboveState) {
-		Material aboveMaterial = aboveState.getMaterial();
-		if ((aboveMaterial == Material.PLANT || aboveMaterial == Material.REPLACEABLE_PLANT) && !aboveState.hasBlockEntity()) {
-			//If the block above the one we tilled is a plant (and not a block entity because you never know), then we try to remove it
-			//Note: We do check for breaking the block above that we attempt to break it though, as we
-			// have not done any events that have told use we are allowed to break blocks in that spot.
-			if (PlayerHelper.hasBreakPermission(player, above)) {
-				level.destroyBlock(above, true);
-			}
-		}
+		return useAOE(context, clickedState, emcCost, ToolActions.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1, new ShovelToolAOEData());
 	}
 
 	/**
 	 * Strips logs in an AOE using an axe (ex: log to stripped log). Charge affects the AOE. Optional per-block EMC cost.
 	 */
-	public static InteractionResult stripLogsAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1);
+	public static InteractionResult stripLogsAOE(UseOnContext context, BlockState clickedState, long emcCost) {
+		return useAxeAOE(context, clickedState, emcCost, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1);
 	}
 
-	public static InteractionResult scrapeAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE);
+	public static InteractionResult scrapeAOE(UseOnContext context, BlockState clickedState, long emcCost) {
+		return useAxeAOE(context, clickedState, emcCost, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE);
 	}
 
-	public static InteractionResult waxOffAOE(UseOnContext context, long emcCost) {
-		return useAxeAOE(context, emcCost, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
+	public static InteractionResult waxOffAOE(UseOnContext context, BlockState clickedState, long emcCost) {
+		return useAxeAOE(context, clickedState, emcCost, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
 	}
 
-	public static InteractionResult useAxeAOE(UseOnContext context, long emcCost, ToolAction action, SoundEvent sound, int particle) {
+	private static InteractionResult useAxeAOE(UseOnContext context, BlockState clickedState, long emcCost, ToolAction action, SoundEvent sound, int particle) {
+		return useAOE(context, clickedState, emcCost, action, sound, particle, new AxeToolAOEData());
+	}
+
+	private static InteractionResult useAOE(UseOnContext context, BlockState clickedState, long emcCost, ToolAction action, SoundEvent sound, int particle,
+			IToolAOEData toolAOEData) {
 		Player player = context.getPlayer();
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
-		ItemStack stack = context.getItemInHand();
 		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
-		BlockState clickedState = level.getBlockState(pos);
-		BlockState strippedState = clickedState.getToolModifiedState(level, pos, player, stack, action);
-		if (strippedState == null) {
-			//Skip stripping the blocks if the one we clicked cannot be stripped
+		if (!toolAOEData.isValid(level, pos, clickedState)) {
+			//Skip modifying the blocks if there is something we think is invalid about the position in the world in general
+			return InteractionResult.PASS;
+		}
+		BlockState modifiedState = clickedState.getToolModifiedState(context, action, false);
+		if (modifiedState == null) {
+			//Skip modifying the blocks if the one we clicked cannot be modified
 			return InteractionResult.PASS;
 		} else if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
-		Axis axis = getAxis(clickedState);
 		//Process the block we interacted with initially and play the sound
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
-		level.setBlock(pos, strippedState, Block.UPDATE_ALL_IMMEDIATE);
+		level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
 		level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
 		if (particle != -1) {
 			level.levelEvent(null, particle, pos, 0);
 		}
+		ItemStack stack = context.getItemInHand();
 		int charge = getCharge(stack);
 		if (charge > 0) {
 			Direction side = context.getClickedFace();
-			for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, side, charge))) {
+			toolAOEData.persistData(level, pos, clickedState, side);
+			for (BlockPos newPos : toolAOEData.getTargetPositions(pos, side, charge)) {
 				if (pos.equals(newPos)) {
-					//Skip the source position as it is free and we manually handled it before the loop
+					//Skip the source position as we manually handled it before the loop
 					continue;
 				}
-				//Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
-				// Also make sure that it is on the same axis as the block we initially clicked
+				//Check to make that the result we would get from modifying the other block is the same as the one we got on the initial block we interacted with
+				// Also make sure that it is properly valid
 				BlockState state = level.getBlockState(newPos);
-				if (axis == getAxis(state) && strippedState == state.getToolModifiedState(level, newPos, player, stack, action)) {
+				//Create a new used context based on the original one to try and pass the proper information to the conversion
+				UseOnContext adjustedContext = new UseOnContext(level, context.getPlayer(), context.getHand(), context.getItemInHand(), new BlockHitResult(
+						context.getClickLocation().add(newPos.getX() - pos.getX(), newPos.getY() - pos.getY(), newPos.getZ() - pos.getZ()),
+						context.getClickedFace(), newPos, context.isInside()));
+				if (toolAOEData.isValid(level, newPos, state) && modifiedState == state.getToolModifiedState(adjustedContext, action, true)) {
 					if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
 						newPos = newPos.immutable();
-						//Replace the block. Note it just directly sets it (in the same way that AxeItem does), rather than using our
-						// checkedReplaceBlock so as to make the blocks not "blink" when getting changed. We don't bother using
-						// checkedReplaceBlock as we already fired all the events/checks for seeing if we are allowed to use this item in this
-						// location and were told that we are allowed to use our item.
-						level.setBlock(newPos, strippedState, Block.UPDATE_ALL_IMMEDIATE);
+						//Run it without simulation in case there are any side effects
+						state.getToolModifiedState(adjustedContext, action, false);
+						//Replace the block. Note it just directly sets it (in the same way the normal tools do), rather than using our
+						// checkedReplaceBlock to make the blocks not "blink" when getting changed. We don't bother using checkedReplaceBlock
+						// as we already fired all the events/checks for seeing if we are allowed to use this item in this location and were
+						// told that we are allowed to use our item.
+						level.setBlock(newPos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
 						if (particle != -1) {
 							level.levelEvent(null, particle, newPos, 0);
 						}
@@ -398,12 +290,7 @@ public class ToolHelper {
 			}
 		}
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-		return InteractionResult.SUCCESS;
-	}
-
-	@Nullable
-	private static Axis getAxis(BlockState state) {
-		return state.hasProperty(RotatedPillarBlock.AXIS) ? state.getValue(RotatedPillarBlock.AXIS) : null;
+		return InteractionResult.CONSUME;
 	}
 
 	/**
@@ -722,6 +609,82 @@ public class ToolHelper {
 
 	private static byte getMode(ItemStack stack) {
 		return stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
+	}
+
+	private interface IToolAOEData {
+
+		boolean isValid(Level level, BlockPos pos, BlockState state);
+
+		default void persistData(Level level, BlockPos pos, BlockState state, Direction side) {
+		}
+
+		Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius);
+	}
+
+	private static abstract class FlatToolAOEData implements IToolAOEData {
+
+		@Override
+		public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
+			return BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
+		}
+	}
+
+	private static class HoeToolAOEData extends FlatToolAOEData {
+
+		@Override
+		public boolean isValid(Level level, BlockPos pos, BlockState state) {
+			//Always return that we are valid if we could find a conversion, we unfortunately are no longer able
+			// to allow conversions when there is plants on top of it as then the tool modified state won't return
+			// anything
+			return true;
+		}
+	}
+
+	private static class ShovelToolAOEData extends FlatToolAOEData {
+
+		@Override
+		public boolean isValid(Level level, BlockPos pos, BlockState state) {
+			BlockPos abovePos = pos.above();
+			BlockState aboveState = level.getBlockState(abovePos);
+			//Allow flattening a block when the above block is air
+			if (aboveState.isAir()) {
+				return true;
+			}
+			//Or it is a replaceable plant that is also not solid (such as tall grass)
+			Material material = aboveState.getMaterial();
+			if (material == Material.REPLACEABLE_PLANT || material == Material.REPLACEABLE_FIREPROOF_PLANT) {
+				return !aboveState.isSolidRender(level, abovePos);
+			}
+			return false;
+		}
+	}
+
+	private static class AxeToolAOEData implements IToolAOEData {
+
+		@Nullable
+		private Axis axis;
+		private boolean isSet;
+
+		@Override
+		public boolean isValid(Level level, BlockPos blockPos, BlockState state) {
+			return !isSet || axis == getAxis(state);
+		}
+
+		@Override
+		public void persistData(Level level, BlockPos pos, BlockState state, Direction side) {
+			axis = getAxis(state);
+			isSet = true;
+		}
+
+		@Override
+		public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
+			return WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, side, radius));
+		}
+
+		@Nullable
+		private Axis getAxis(BlockState state) {
+			return state.hasProperty(RotatedPillarBlock.AXIS) ? state.getValue(RotatedPillarBlock.AXIS) : null;
+		}
 	}
 
 	@FunctionalInterface

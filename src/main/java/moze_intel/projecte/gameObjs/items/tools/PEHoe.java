@@ -87,6 +87,6 @@ public class PEHoe extends HoeItem implements IItemCharge, IBarHelper {
 	@NotNull
 	@Override
 	public InteractionResult useOn(@NotNull UseOnContext context) {
-		return ToolHelper.tillHoeAOE(context, 0);
+		return ToolHelper.tillAOE(context, context.getLevel().getBlockState(context.getClickedPos()), 0);
 	}
 }

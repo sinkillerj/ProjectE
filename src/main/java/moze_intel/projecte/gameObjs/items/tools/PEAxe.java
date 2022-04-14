@@ -94,14 +94,15 @@ public class PEAxe extends AxeItem implements IItemCharge, IBarHelper {
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
+		Level level = context.getLevel();
+		BlockState state = level.getBlockState(context.getClickedPos());
 		//Order that it attempts to use the item:
 		// Strip logs, AOE remove logs
-		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, 0),
-				() -> ToolHelper.scrapeAOE(context, 0),
-				() -> ToolHelper.waxOffAOE(context, 0),
+		return ToolHelper.performActions(ToolHelper.stripLogsAOE(context, state, 0),
+				() -> ToolHelper.scrapeAOE(context, state, 0),
+				() -> ToolHelper.waxOffAOE(context, state, 0),
 				() -> {
-					Level level = context.getLevel();
-					if (level.getBlockState(context.getClickedPos()).is(BlockTags.LOGS)) {
+					if (state.is(BlockTags.LOGS)) {
 						//Mass clear
 						//Note: We already tried to strip the log in an earlier action
 						return ToolHelper.clearTagAOE(level, player, context.getHand(), context.getItemInHand(), 0, BlockTags.LOGS);
