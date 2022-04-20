@@ -1,6 +1,7 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.config.value.CachedBooleanValue;
+import moze_intel.projecte.config.value.CachedIntValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -17,6 +18,7 @@ public class ClientConfig extends BasePEConfig {
 	public final CachedBooleanValue statToolTips;
 	public final CachedBooleanValue pedestalToolTips;
 	public final CachedBooleanValue pulsatingOverlay;
+	public final CachedIntValue condenserEmcDisplayMode;
 
 	ClientConfig() {
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -40,6 +42,9 @@ public class ClientConfig extends BasePEConfig {
 		pulsatingOverlay = CachedBooleanValue.wrap(this, builder
 				.comment("The Philosopher's Stone overlay softly pulsates")
 				.define("pulsatingOverlay", false));
+		condenserEmcDisplayMode = CachedIntValue.wrap(this, builder
+				.comment("Sets how EMC is displayed inside Energy Condensers.\n0: Shows how much EMC is stored or how much is required to make the item if there is Excess stored EMC. (EE2 Style)\n1: Will show the stored amount of EMC and render green if the value exceeds required amount.\n2: If the stored EMC value is greater then required it will display the total EMC stored seperately in green.\nNote: If the value displayed would overrun the edge of the GUI it will instead state 'Overflow'.")
+				.define("showTotalEMCInCondenser", 0));
 		builder.pop();
 		configSpec = builder.build();
 	}
