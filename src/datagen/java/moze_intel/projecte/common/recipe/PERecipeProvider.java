@@ -765,7 +765,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.pattern("MIM")
 				.pattern("SBS")
 				.define('B', Items.SNOWBALL)
-				.define('S', Items.SNOW)
+				.define('S', Items.SNOW_BLOCK)
 				.define('I', PEItems.IRON_BAND)
 				.define('M', PEItems.DARK_MATTER)
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
