@@ -48,7 +48,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 	private static final long EMC_CONSUMPTION = 2;
 	private final CompactableStackHandler inputInventory = new CompactableStackHandler(getInvSize());
 	private final CompactableStackHandler outputInventory = new CompactableStackHandler(getInvSize());
-	private final ItemStackHandler fuelInv = new StackHandler(1);
+	private final StackHandler fuelInv = new StackHandler(1);
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
 	private final RecipeWrapper dummyFurnace = new RecipeWrapper(new ItemStackHandler());
@@ -156,6 +156,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 				if (furnace.isBurning() && !fuelItem.isEmpty()) {
 					ItemStack copy = fuelItem.copy();
 					fuelItem.shrink(1);
+					furnace.fuelInv.onContentsChanged(0);
 					if (fuelItem.isEmpty()) {
 						furnace.fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
 					}
@@ -255,6 +256,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 		}
 		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
 		toSmelt.shrink(1);
+		inputInventory.onContentsChanged(0);
 	}
 
 	protected boolean canSmelt() {

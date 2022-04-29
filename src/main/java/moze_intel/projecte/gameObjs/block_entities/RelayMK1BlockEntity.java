@@ -99,6 +99,7 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 				if (emcVal > 0 && emcVal <= relay.getNeededEmc()) {
 					relay.forceInsertEmc(emcVal, EmcAction.EXECUTE);
 					relay.getBurn().shrink(1);
+					relay.input.onContentsChanged(0);
 				}
 			}
 		}

@@ -49,7 +49,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 			needsCompacting = true;
 		}
 	};
-	private final ItemStackHandler auxSlots = new StackHandler(3) {
+	private final StackHandler auxSlots = new StackHandler(3) {
 		@Override
 		protected void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
@@ -198,6 +198,7 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						getUpgraded().grow(1);
 						upgrading.shrink(1);
+						auxSlots.onContentsChanged(UPGRADE_SLOT);
 					}
 				}
 			} else {
