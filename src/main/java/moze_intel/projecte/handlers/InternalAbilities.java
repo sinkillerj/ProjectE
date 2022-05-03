@@ -1,5 +1,6 @@
 package moze_intel.projecte.handlers;
 
+import java.util.UUID;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -9,6 +10,10 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -16,13 +21,14 @@ import org.jetbrains.annotations.NotNull;
 
 public final class InternalAbilities {
 
+	private static final UUID STEP_ASSIST_MODIFIER_UUID = UUID.fromString("4726C09D-FD86-46D0-92DD-49ED952A12D2");
+	private static final AttributeModifier STEP_ASSIST = new AttributeModifier(STEP_ASSIST_MODIFIER_UUID, "Step Assist", 0.4, Operation.ADDITION);
 	public static final Capability<InternalAbilities> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 	public static final ResourceLocation NAME = PECore.rl("internal_abilities");
 
 	private final ServerPlayer player;
 	private boolean swrgOverride = false;
 	private boolean gemArmorReady = false;
-	private boolean stepAssisted = false;
 	private boolean hadFlightItem = false;
 	private boolean wasFlyingGamemode = false;
 	private boolean isFlyingGamemode = false;
@@ -92,23 +98,25 @@ public final class InternalAbilities {
 			wasFlyingGamemode = isFlyingGamemode;
 			wasFlying = player.getAbilities().flying;
 		}
-		if (!shouldPlayerStep()) {
-			if (stepAssisted) {
-				//If we don't have step assist but we previously did, then lower the step height
-				stepAssisted = false;
-				PlayerHelper.updateClientServerStepHeight(player, 0.6F);
+
+		AttributeInstance attributeInstance = player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
+		if (attributeInstance != null) {
+			AttributeModifier existing = attributeInstance.getModifier(STEP_ASSIST_MODIFIER_UUID);
+			if (shouldPlayerStep()) {
+				if (existing == null) {
+					//Should step but doesn't have the modifier yet, add it
+					attributeInstance.addTransientModifier(STEP_ASSIST);
+				}
+			} else if (existing != null) {
+				//Shouldn't step but has modifier, remove it
+				attributeInstance.removeModifier(existing);
 			}
-		} else if (!stepAssisted) {
-			//If we should be able to have auto step, but we don't have it set yet, enable it
-			stepAssisted = true;
-			PlayerHelper.updateClientServerStepHeight(player, 1.0F);
 		}
 	}
 
 	public void onDimensionChange() {
 		// Resend everything needed on clientside (all except fire resist)
 		PlayerHelper.updateClientServerFlight(player, player.getAbilities().mayfly);
-		PlayerHelper.updateClientServerStepHeight(player, stepAssisted ? 1.0F : 0.6F);
 	}
 
 	private boolean shouldPlayerFly() {

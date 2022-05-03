@@ -9,7 +9,6 @@ import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
 import moze_intel.projecte.network.packets.to_client.SetFlyPKT;
-import moze_intel.projecte.network.packets.to_client.StepHeightPKT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
@@ -158,11 +157,6 @@ public final class PlayerHelper {
 		PacketHandler.sendTo(new SetFlyPKT(allowFlying, isFlying), player);
 		player.getAbilities().mayfly = allowFlying;
 		player.getAbilities().flying = isFlying;
-	}
-
-	public static void updateClientServerStepHeight(ServerPlayer player, float value) {
-		player.maxUpStep = value;
-		PacketHandler.sendTo(new StepHeightPKT(value), player);
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, BigInteger value) {
