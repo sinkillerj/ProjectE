@@ -168,6 +168,9 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 				this.textBoxFilter.setValue("");
 			}
 			return this.textBoxFilter.mouseClicked(x, y, mouseButton);
+		} else {
+			// If the mouse is not in the filter box, then we should unfocus it
+			this.textBoxFilter.setFocus(false);
 		}
 		return super.mouseClicked(x, y, mouseButton);
 	}
