@@ -12,7 +12,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -143,8 +142,7 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	@NotNull
 	protected ItemStack transferSuccess(@NotNull Slot currentSlot, @NotNull Player player, @NotNull ItemStack slotStack, @NotNull ItemStack stackToInsert) {
 		int difference = slotStack.getCount() - stackToInsert.getCount();
-		currentSlot.remove(difference);
-		ItemStack newStack = ItemHelper.size(slotStack, difference);
+		ItemStack newStack = currentSlot.remove(difference);
 		currentSlot.onTake(player, newStack);
 		return newStack;
 	}
