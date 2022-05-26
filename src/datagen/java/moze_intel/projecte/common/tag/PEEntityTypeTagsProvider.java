@@ -50,7 +50,8 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.WANDERING_TRADER,
 				EntityType.STRIDER,
 				EntityType.GLOW_SQUID,
-				EntityType.GOAT
+				EntityType.GOAT,
+				EntityType.BEE
 		);
 		tag(PETags.Entities.RANDOMIZER_HOSTILE).add(
 				EntityType.ZOMBIE,

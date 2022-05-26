@@ -551,7 +551,7 @@ cbcb4111b7dc05e4b25fe928079fcf48a2fd00eb data/projecte/tags/blocks/needs_dark_ma
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/interdiction.json
 74700d556ca80c7a1db5fd4efb09c3ddb26cad66 data/projecte/tags/entity_types/blacklist/swrg.json
 1f5594ebabadcab45b037722b48f01acb2b3d743 data/projecte/tags/entity_types/randomizer/hostile.json
-a677aa53e79545e8f541f8cc97aac2e46ad972f6 data/projecte/tags/entity_types/randomizer/peaceful.json
+e2ea0bf6ee921a6dadf4d2da9f75d0528feeffb4 data/projecte/tags/entity_types/randomizer/peaceful.json
 ac47e652db430d28309c1d1c73f70bd639f26aff data/projecte/tags/items/alchemical_bags.json
 e346c37e2811af615884acbad6f206269883481f data/projecte/tags/items/collector_fuel.json
 f2fe5bde6c4e01519849d99ffccc4184276ddcfb data/projecte/tags/items/covalence_dust.json
