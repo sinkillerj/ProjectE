@@ -18,7 +18,7 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 	@Override
 	protected void addTags() {
-		//Note: Intentionally does not include Axolotls
+		//Note: Intentionally does not include Axolotls or allays
 		tag(PETags.Entities.RANDOMIZER_PEACEFUL).add(
 				EntityType.SHEEP,
 				EntityType.PIG,
@@ -51,7 +51,9 @@ public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				EntityType.STRIDER,
 				EntityType.GLOW_SQUID,
 				EntityType.GOAT,
-				EntityType.BEE
+				EntityType.BEE,
+				EntityType.FROG,
+				EntityType.TADPOLE
 		);
 		tag(PETags.Entities.RANDOMIZER_HOSTILE).add(
 				EntityType.ZOMBIE,

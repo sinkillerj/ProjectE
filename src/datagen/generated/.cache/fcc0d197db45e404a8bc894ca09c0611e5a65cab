@@ -1,7 +1,7 @@
-// 1.19	2022-06-12T13:59:08.5194491	Tags for minecraft:entity_type
+// 1.19	2022-06-12T14:19:56.3850439	Tags for minecraft:entity_type
 347212bf7c84c5279c4d1e105470a30be61b8c70 data/minecraft/tags/entity_types/arrows.json
 71024194932bd2c14f21c5429e5a40bf45705c26 data/minecraft/tags/entity_types/impact_projectiles.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/entity_types/blacklist/interdiction.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/entity_types/blacklist/swrg.json
 263995270039da950f2e27b535f1b7c71a5f5423 data/projecte/tags/entity_types/randomizer/hostile.json
-75ebd12de51312cb16b4e72d830557ed37038603 data/projecte/tags/entity_types/randomizer/peaceful.json
+8cf31b0f1e4ba2586b8dab6aaa102b19add9f3c8 data/projecte/tags/entity_types/randomizer/peaceful.json
