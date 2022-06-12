@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecte:item/rings/mind_stone_off"
-  },
   "overrides": [
     {
+      "model": "projecte:item/mind_stone_on",
       "predicate": {
         "projecte:active": 1.0
-      },
-      "model": "projecte:item/mind_stone_on"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "projecte:item/rings/mind_stone_off"
+  }
 }

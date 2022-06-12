@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "123",
-    "4RR",
-    "RRR"
-  ],
   "key": {
     "1": {
       "item": "projecte:rm_shears"
@@ -22,6 +17,11 @@
       "item": "projecte:red_matter"
     }
   },
+  "pattern": [
+    "123",
+    "4RR",
+    "RRR"
+  ],
   "result": {
     "item": "projecte:rm_katar"
   }

@@ -18,7 +18,6 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -62,12 +61,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
-				player.sendMessage(PELang.TIME_WATCH_DISABLED.translate(), Util.NIL_UUID);
+				player.sendSystemMessage(PELang.TIME_WATCH_DISABLED.translate());
 				return InteractionResultHolder.fail(stack);
 			}
 			byte current = getTimeBoost(stack);
 			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
-			player.sendMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)), Util.NIL_UUID);
+			player.sendSystemMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)));
 		}
 		return InteractionResultHolder.success(stack);
 	}

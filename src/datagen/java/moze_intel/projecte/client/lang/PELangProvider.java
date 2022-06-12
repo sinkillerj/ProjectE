@@ -5,10 +5,12 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
+import moze_intel.projecte.integration.jade.JadeDataProvider;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 
 public class PELangProvider extends BaseLanguageProvider {
 
@@ -86,6 +88,12 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.GUI_RELAY_MK1, "Relay MKI");
 		add(PELang.GUI_RELAY_MK2, "Relay MKII");
 		add(PELang.GUI_RELAY_MK3, "Relay MKIII");
+		//Jade config strings
+		addJadeConfigTooltip(JadeDataProvider.ID, "EMC Provider");
+	}
+
+	private void addJadeConfigTooltip(ResourceLocation location, String value) {
+		add("config.jade.plugin_" + location.getNamespace() + "." + location.getPath(), value);
 	}
 
 	private void addAdvancements() {
@@ -165,7 +173,6 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.COMMAND_SET_SUCCESS, "Set EMC value for %s to %s!");
 		add(PELang.RELOAD_NOTICE, "Restart or use \"/reload\" when all changes are complete.");
 		add(PELang.SHOWBAG_NOT_FOUND, "UUID %s not found in playerdata/");
-		add(PELang.SHOWBAG_UUID, "Malformed UUID: %s");
 		add(PELang.SHOWBAG_NAMED, "%s (%s)");
 	}
 

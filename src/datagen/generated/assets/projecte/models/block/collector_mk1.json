@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "side": "projecte:block/collectors/other",
-    "front": "projecte:block/collectors/front",
     "bottom": "projecte:block/collectors/other",
+    "front": "projecte:block/collectors/front",
+    "side": "projecte:block/collectors/other",
     "top": "projecte:block/collectors/top_1"
   }
 }

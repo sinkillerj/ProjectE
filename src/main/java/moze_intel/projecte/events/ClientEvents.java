@@ -16,7 +16,7 @@ public class ClientEvents {
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		Minecraft mc = Minecraft.getInstance();
 		if (event.getEntity() instanceof EntitySWRGProjectile projectile && mc.mouseHandler.isMouseGrabbed()) {
-			mc.getSoundManager().play(new MovingSoundSWRG(projectile));
+			mc.getSoundManager().play(new MovingSoundSWRG(projectile, event.getWorld().getRandom()));
 		}
 	}
 }

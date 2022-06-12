@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 public class RecipeShapelessKleinStar implements CraftingRecipe {
@@ -104,7 +103,7 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 		return compose.isIncomplete();
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeShapelessKleinStar> {
+	public static class Serializer implements RecipeSerializer<RecipeShapelessKleinStar> {
 
 		@NotNull
 		@Override

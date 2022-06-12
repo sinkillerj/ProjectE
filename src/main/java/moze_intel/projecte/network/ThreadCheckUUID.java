@@ -1,5 +1,6 @@
 package moze_intel.projecte.network;
 
+import com.mojang.logging.LogUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,7 +27,7 @@ public class ThreadCheckUUID extends Thread {
 			String line = reader.readLine();
 
 			if (line == null) {
-				PECore.LOGGER.fatal("UUID check failed!");
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "UUID check failed!");
 				throw new IOException("No data from github UUID list!");
 			}
 
@@ -44,7 +45,7 @@ public class ThreadCheckUUID extends Thread {
 
 			PECore.uuids.addAll(uuids);
 		} catch (IOException e) {
-			PECore.LOGGER.fatal("Caught exception in UUID Checker thread!", e);
+			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Caught exception in UUID Checker thread!", e);
 		} finally {
 			if (isServerSide) {
 				hasRunServer = true;

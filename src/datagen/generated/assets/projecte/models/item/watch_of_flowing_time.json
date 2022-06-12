@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecte:item/rings/time_watch_off"
-  },
   "overrides": [
     {
+      "model": "projecte:item/watch_of_flowing_time_on",
       "predicate": {
         "projecte:active": 1.0
-      },
-      "model": "projecte:item/watch_of_flowing_time_on"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "projecte:item/rings/time_watch_off"
+  }
 }

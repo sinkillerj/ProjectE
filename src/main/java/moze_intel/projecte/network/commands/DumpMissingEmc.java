@@ -9,6 +9,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.NonNullList;
@@ -22,7 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class DumpMissingEmc {
 
-	public static ArgumentBuilder<CommandSourceStack, ?> register() {
+	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
 		return Commands.literal("dumpmissingemc")
 				.requires(cs -> cs.hasPermission(2))
 				.executes(DumpMissingEmc::execute);
@@ -75,7 +76,7 @@ public class DumpMissingEmc {
 				source.sendSuccess(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING.translate(missingCount), true);
 			}
 			for (ItemInfo itemInfo : missing) {
-				PECore.LOGGER.info(itemInfo);
+				PECore.LOGGER.info(itemInfo.toString());
 			}
 		}
 		return missingCount;

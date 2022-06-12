@@ -14,7 +14,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -40,17 +39,17 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	public void init() {
 		super.init();
 
-		this.textBoxFilter = new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, TextComponent.EMPTY);
+		this.textBoxFilter = new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, Component.empty());
 		this.textBoxFilter.setValue(inv.filter);
 
-		addRenderableWidget(new Button(leftPos + 125, topPos + 100, 14, 14, new TextComponent("<"), b -> {
+		addRenderableWidget(new Button(leftPos + 125, topPos + 100, 14, 14, Component.literal("<"), b -> {
 			if (inv.searchpage != 0) {
 				inv.searchpage--;
 			}
 			inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
 			inv.updateClientTargets();
 		}));
-		addRenderableWidget(new Button(leftPos + 193, topPos + 100, 14, 14, new TextComponent(">"), b -> {
+		addRenderableWidget(new Button(leftPos + 193, topPos + 100, 14, 14, Component.literal(">"), b -> {
 			if (inv.getKnowledgeSize() > 12) {
 				inv.searchpage++;
 			}

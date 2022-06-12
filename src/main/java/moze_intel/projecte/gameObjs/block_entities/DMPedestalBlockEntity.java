@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import java.util.Optional;
-import java.util.Random;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -12,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -97,7 +97,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.2, 0, 0, 0);
 		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.5, 0, 0, 0);
 		level.addParticle(ParticleTypes.FLAME, x + 0.8, y + 0.3, z + 0.8, 0, 0, 0);
-		Random rand = level.random;
+		RandomSource rand = level.random;
 		for (int i = 0; i < 3; ++i) {
 			int j = rand.nextInt(2) * 2 - 1;
 			int k = rand.nextInt(2) * 2 - 1;

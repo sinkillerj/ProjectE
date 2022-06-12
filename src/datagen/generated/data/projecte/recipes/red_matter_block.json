@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "MM",
-    "MM"
-  ],
   "key": {
     "M": {
       "item": "projecte:red_matter"
     }
   },
+  "pattern": [
+    "MM",
+    "MM"
+  ],
   "result": {
     "item": "projecte:red_matter_block"
   }

@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,7 @@ public class FormatSplitter {
 		while (matcher.find()) {
 			int curStart = matcher.start();
 			if (curStart > start) {
-				//There is a gap so we need to grab the piece in between
+				//There is a gap, so we need to grab the piece in between
 				components.add(new TextComponent(text.substring(start, curStart)));
 			}
 			String piece = matcher.group();
@@ -57,6 +58,7 @@ public class FormatSplitter {
 	 * @apiNote Can return two TextComponents neighboring each other it doesn't bother combining them
 	 */
 	private static List<Component> splitMessageFormatInternal(String text) {
+		//TODO: Eventually if needed make it combine the neighboring TextComponents
 		List<Component> components = new ArrayList<>();
 		StringBuilder formattingCode = new StringBuilder();
 		StringBuilder rawText = new StringBuilder();
@@ -96,7 +98,7 @@ public class FormatSplitter {
 								//We use subtract one here so when it is incremented at the end of the loop, it starts in the right place
 								i = secondBracket - 1;
 							} else {
-								//If we only have a depth of one and it is not a valid message format, then we just add it as a raw string
+								//If we only have a depth of one, and it is not a valid message format, then we just add it as a raw string
 								components.add(new TextComponent(piece));
 							}
 						} else {
@@ -127,7 +129,7 @@ public class FormatSplitter {
 				//and then try to add the remaining stuff directly
 				components.addAll(splitMessageFormatInternal(text.substring(secondBracket)));
 			} else {
-				//If we don't have a closing bracket and we didn't have more brackets at some point, add what we have as raw text
+				//If we don't have a closing bracket, and we didn't have more brackets at some point, add what we have as raw text
 				String remainingString = formattingCode.toString();
 				if (!remainingString.isEmpty()) {
 					components.add(new TextComponent(remainingString));
@@ -142,7 +144,8 @@ public class FormatSplitter {
 		String contents();
 	}
 
-	public record TextComponent(String contents) implements Component {}
+	private record TextComponent(String contents) implements Component {
+	}
 
 	public static class FormatComponent implements Component {
 
@@ -214,11 +217,11 @@ public class FormatSplitter {
 		private static MessageFormatComponent fromContents(String contents) {
 			int length = contents.length();
 			if (length < 3 || contents.charAt(0) != '{' || contents.charAt(length - 1) != '}') {
-				//If we don't have at least one digit between the two brackets or we don't start and end with a bracket
+				//If we don't have at least one digit between the two brackets, or we don't start and end with a bracket
 				// then this is not a valid
 				return null;
 			}
-			int firstComma = contents.indexOf(",");
+			int firstComma = contents.indexOf(',');
 			int argumentIndex;
 			try {
 				argumentIndex = Integer.parseInt(contents.substring(1, firstComma == -1 ? length - 1 : firstComma));
@@ -231,11 +234,11 @@ public class FormatSplitter {
 				return null;
 			}
 			if (firstComma == -1) {
-				//If we don't have a comma so it is only an argument index we can just exit now
+				//If we don't have a comma, so it is only an argument index we can just exit now
 				return new MessageFormatComponent(contents, argumentIndex, null, null, false);
 			}
 			//Look for the next comma
-			int secondComma = contents.indexOf(",", firstComma + 1);
+			int secondComma = contents.indexOf(',', firstComma + 1);
 			String formatType = contents.substring(firstComma + 1, secondComma == -1 ? length - 1 : secondComma);
 			//Set the format style based on the format type or to null if we do not have one
 			String formatStyle = secondComma == -1 ? null : contents.substring(secondComma + 1, length - 1);
@@ -243,7 +246,7 @@ public class FormatSplitter {
 			boolean isChoice = false;
 			switch (trimmedFormatType) {
 				//Built in Java Format Types
-				case "number":
+				case "number" -> {
 					if (formatStyle != null && !formatStyle.equals("integer") && !formatStyle.equals("currency") && !formatStyle.equals("percent")) {
 						//If it is not a valid format style for number check if it is a valid SubformatPattern
 						// number uses DecimalFormat as a SubformatPattern
@@ -254,25 +257,24 @@ public class FormatSplitter {
 							return null;
 						}
 					}
-					break;
-				case "date":
-				case "time":
+				}
+				case "date", "time" -> {
 					if (formatStyle != null && !formatStyle.equals("short") && !formatStyle.equals("medium") && !formatStyle.equals("long") && !formatStyle.equals("full")) {
 						//If it is not a valid format style for date or time check if it is a valid SubformatPattern
 						// time and date both use SimpleDateFormat as a SubformatPattern
 						try {
-							new SimpleDateFormat(formatStyle);
+							new SimpleDateFormat(formatStyle, Locale.ENGLISH);
 						} catch (IllegalArgumentException e) {
 							//If it is not a valid SimpleDateFormat then it is not a valid format overall, so return null
 							return null;
 						}
 					}
-					break;
-				case "choice":
+				}
+				case "choice" -> {
 					if (formatStyle == null) {
 						return null;
 					}
-					//Choice is only valid when it has a SubformatPattern so we return null if we don't have a formatStyle
+					//Choice is only valid when it has a SubformatPattern, so we return null if we don't have a formatStyle
 					try {
 						new ChoiceFormat(formatStyle);
 					} catch (IllegalArgumentException e) {
@@ -280,38 +282,36 @@ public class FormatSplitter {
 						return null;
 					}
 					isChoice = true;
-					break;
+				}
 				//Forge added Format types
-				case "modinfo":
+				case "modinfo" -> {
 					if (formatStyle == null || (!formatStyle.equals("id") && !formatStyle.equals("name"))) {
 						//modinfo only supports id, and name, and is not valid if the type is missing
 						return null;
 					}
-					break;
-				case "lower":
-				case "upper":
-				case "vr":
+				}
+				case "lower", "upper", "vr" -> {
 					if (formatStyle != null) {
 						//lower, upper, and vr do not support any format style
 						return null;
 					}
-					break;
-				case "exc":
+				}
+				case "exc" -> {
 					if (formatStyle == null || (!formatStyle.equals("class") && !formatStyle.equals("msg"))) {
 						//exc only supports class, and msg, and is not valid if the type is missing
 						return null;
 					}
-					break;
-				case "i18n":
-				case "ornull":
+				}
+				case "i18n", "ornull" -> {
 					if (formatStyle == null) {
 						//i18n, and ornull both require a format style
 						return null;
 					}
-					break;
-				default:
+				}
+				default -> {
 					//Not a valid format type
 					return null;
+				}
 			}
 			return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isChoice);
 		}

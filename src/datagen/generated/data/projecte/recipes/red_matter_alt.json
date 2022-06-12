@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "projecte:red_matter",
-  "pattern": [
-    "ADA",
-    "ADA",
-    "ADA"
-  ],
   "key": {
     "A": {
       "item": "projecte:aeternalis_fuel"
@@ -14,6 +9,11 @@
       "item": "projecte:dark_matter"
     }
   },
+  "pattern": [
+    "ADA",
+    "ADA",
+    "ADA"
+  ],
   "result": {
     "item": "projecte:red_matter"
   }

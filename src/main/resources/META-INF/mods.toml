@@ -24,9 +24,3 @@ license="MIT"
   mandatory=true
   versionRange="${forge_version}"
   side="BOTH"
-[[dependencies.projecte]]
-  modId="jei"
-  mandatory=false
-  versionRange="${jei_version}"
-  ordering="AFTER"
-  side="BOTH"

@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "projecte:dm_hammer"
+    },
+    "M": {
+      "item": "projecte:dark_matter"
+    },
+    "R": {
+      "item": "projecte:red_matter"
+    }
+  },
   "pattern": [
     "RMR",
     " H ",
     " M "
   ],
-  "key": {
-    "R": {
-      "item": "projecte:red_matter"
-    },
-    "M": {
-      "item": "projecte:dark_matter"
-    },
-    "H": {
-      "item": "projecte:dm_hammer"
-    }
-  },
   "result": {
     "item": "projecte:rm_hammer"
   }

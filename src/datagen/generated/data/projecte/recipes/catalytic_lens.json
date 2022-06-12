@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "projecte:catalytic_lens",
-  "pattern": [
-    "MMM",
-    "DMH",
-    "MMM"
-  ],
   "key": {
     "D": {
       "item": "projecte:destruction_catalyst"
@@ -17,6 +12,11 @@
       "item": "projecte:dark_matter"
     }
   },
+  "pattern": [
+    "MMM",
+    "DMH",
+    "MMM"
+  ],
   "result": {
     "item": "projecte:catalytic_lens"
   }

@@ -1,6 +1,8 @@
 {
   "pack": {
-    "pack_format": 9,
-    "description": "Resources used for ProjectE"
+    "description": "Resources used for ProjectE",
+    "pack_format": 10,
+    "forge:resource_pack_format": 9,
+    "forge:data_pack_format": 10
   }
 }

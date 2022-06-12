@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "side": "projecte:block/relays/other",
-    "front": "projecte:block/relays/front",
     "bottom": "projecte:block/relays/other",
+    "front": "projecte:block/relays/front",
+    "side": "projecte:block/relays/other",
     "top": "projecte:block/relays/top_1"
   }
 }

@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "projecte:alchemical_chest"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "O": {
+      "tag": "forge:obsidian"
+    }
+  },
   "pattern": [
     "ODO",
     "DCD",
     "ODO"
   ],
-  "key": {
-    "C": {
-      "item": "projecte:alchemical_chest"
-    },
-    "O": {
-      "tag": "forge:obsidian"
-    },
-    "D": {
-      "tag": "forge:gems/diamond"
-    }
-  },
   "result": {
     "item": "projecte:condenser_mk1"
   }

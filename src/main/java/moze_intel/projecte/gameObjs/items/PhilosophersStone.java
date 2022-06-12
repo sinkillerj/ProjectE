@@ -136,10 +136,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		}
 		Stream<BlockPos> stream = null;
 		switch (mode) {
-			case 0: // Cube
-				stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, -charge), pos.offset(charge, charge, charge));
-				break;
-			case 1: // Panel
+			// Cube
+			case 0 -> stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, -charge), pos.offset(charge, charge, charge));
+			case 1 -> {// Panel
 				if (sideHit == Direction.UP || sideHit == Direction.DOWN) {
 					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge));
 				} else if (sideHit == Direction.EAST || sideHit == Direction.WEST) {
@@ -147,15 +146,15 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 				} else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH) {
 					stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, 0), pos.offset(charge, charge, 0));
 				}
-				break;
-			case 2: // Line
+			}
+			case 2 -> {// Line
 				Direction playerFacing = player.getDirection();
 				if (playerFacing.getAxis() == Direction.Axis.Z) {
 					stream = BlockPos.betweenClosedStream(pos.offset(0, 0, -charge), pos.offset(0, 0, charge));
 				} else if (playerFacing.getAxis() == Direction.Axis.X) {
 					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, 0), pos.offset(charge, 0, 0));
 				}
-				break;
+			}
 		}
 		if (stream == null) {
 			return Collections.emptyMap();

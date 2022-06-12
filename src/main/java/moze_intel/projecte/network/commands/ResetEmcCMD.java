@@ -7,16 +7,17 @@ import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public class ResetEmcCMD {
 
-	public static LiteralArgumentBuilder<CommandSourceStack> register() {
+	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("resetemc")
 				.requires(cs -> cs.hasPermission(2))
-				.then(Commands.argument("item", new NSSItemArgument())
+				.then(Commands.argument("item", NSSItemArgument.nss(context))
 						.executes(ctx -> resetEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> resetEmc(ctx, RemoveEmcCMD.getHeldStack(ctx)));
 	}

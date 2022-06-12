@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "DDD",
-    "DFD",
-    "DDD"
-  ],
   "key": {
     "D": {
       "item": "projecte:dark_matter_block"
@@ -13,6 +8,11 @@
       "item": "minecraft:furnace"
     }
   },
+  "pattern": [
+    "DDD",
+    "DFD",
+    "DDD"
+  ],
   "result": {
     "item": "projecte:dm_furnace"
   }

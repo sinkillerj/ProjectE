@@ -1,13 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "projecte:conversions/diamond_to_gold_ingot"
-    ]
-  },
   "criteria": {
     "has_diamond": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -19,13 +13,14 @@
             "tag": "forge:gems/diamond"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "projecte:conversions/diamond_to_gold_ingot"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -33,5 +28,10 @@
       "has_diamond",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/diamond_to_gold_ingot"
+    ]
+  }
 }

@@ -3,7 +3,6 @@ package moze_intel.projecte.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -20,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.WorldlyContainer;
@@ -428,7 +428,7 @@ public final class WorldHelper {
 	public static boolean growWaterPlant(ServerLevel level, BlockPos pos, BlockState state, @Nullable Direction side) {
 		boolean success = false;
 		if (state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8) {
-			Random random = level.getRandom();
+			RandomSource random = level.getRandom();
 			label76:
 			for (int i = 0; i < 128; ++i) {
 				BlockPos blockpos = pos;
@@ -471,7 +471,7 @@ public final class WorldHelper {
 		return success;
 	}
 
-	private static BlockState getRandomState(TagKey<Block> key, Random random, BlockState fallback) {
+	private static BlockState getRandomState(TagKey<Block> key, RandomSource random, BlockState fallback) {
 		return LazyTagLookup.tagManager(ForgeRegistries.BLOCKS).getTag(key)
 				.getRandomElement(random)
 				.map(Block::defaultBlockState)

@@ -6,11 +6,10 @@ import java.util.function.Supplier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
-public class DoubleDeferredRegister<PRIMARY extends IForgeRegistryEntry<PRIMARY>, SECONDARY extends IForgeRegistryEntry<SECONDARY>> {
+public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 
 	@NotNull
 	protected final DeferredRegister<PRIMARY> primaryRegister;

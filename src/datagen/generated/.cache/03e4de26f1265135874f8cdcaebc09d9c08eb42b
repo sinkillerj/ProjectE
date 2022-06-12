@@ -1,0 +1,13 @@
+// 1.19	2022-06-12T13:59:08.5255822	Tags for minecraft:item
+b3907f1aa02b78471363a02cc94dc9569664a81d data/curios/tags/items/belt.json
+9090bbbb09865a842a67d6a0c05eaf72df3720f7 data/curios/tags/items/klein_star.json
+58753d63ef9f09a75ea529395bb7c6d282310f2b data/curios/tags/items/necklace.json
+0d7912a5e8d1f8651e741cd6d82efa0d3b1797e6 data/curios/tags/items/ring.json
+b1526b0ba3ea9a6445822180462b59f848cbf363 data/forge/tags/items/chests.json
+23bba3c6ab8a4ee4fe3dfcf867543820950ed620 data/forge/tags/items/shears.json
+e2750619a3147db38539ae8ccecab0b32bb6be23 data/minecraft/tags/items/beacon_payment_items.json
+a21477f6ced81fb2173b05a7ff0e6ca53eb87243 data/minecraft/tags/items/freeze_immune_wearables.json
+823df3f383ec8da9f84db57523a1d8ee863903b7 data/projecte/tags/items/alchemical_bags.json
+e4725bb8b1976c0a55fd0ced5bb9741612220299 data/projecte/tags/items/collector_fuel.json
+fd5806da7a4775edf3b8f6520ee2bdd6d4068164 data/projecte/tags/items/covalence_dust.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/items/nbt_whitelist.json

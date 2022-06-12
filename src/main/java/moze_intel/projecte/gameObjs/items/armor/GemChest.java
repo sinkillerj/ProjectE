@@ -36,7 +36,6 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 				timers.activateFeed();
 				if (player.getFoodData().needsFood() && timers.canFeed()) {
 					player.getFoodData().eat(2, 10);
-					level.gameEvent(player, GameEvent.EAT, player.eyeBlockPosition());
 					player.gameEvent(GameEvent.EAT);
 				}
 			});

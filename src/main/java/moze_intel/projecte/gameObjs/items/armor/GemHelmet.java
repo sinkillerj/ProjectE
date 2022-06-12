@@ -10,7 +10,6 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -49,9 +48,9 @@ public class GemHelmet extends GemArmorBase {
 			value = true;
 		}
 		if (value) {
-			player.sendMessage(PELang.NIGHT_VISION.translate(ChatFormatting.GREEN, PELang.GEM_ENABLED), Util.NIL_UUID);
+			player.sendSystemMessage(PELang.NIGHT_VISION.translate(ChatFormatting.GREEN, PELang.GEM_ENABLED));
 		} else {
-			player.sendMessage(PELang.NIGHT_VISION.translate(ChatFormatting.RED, PELang.GEM_DISABLED), Util.NIL_UUID);
+			player.sendSystemMessage(PELang.NIGHT_VISION.translate(ChatFormatting.RED, PELang.GEM_DISABLED));
 		}
 	}
 

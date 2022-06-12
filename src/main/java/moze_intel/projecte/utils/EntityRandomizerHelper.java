@@ -1,10 +1,10 @@
 package moze_intel.projecte.utils;
 
 import java.util.Optional;
-import java.util.Random;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -59,13 +59,13 @@ public class EntityRandomizerHelper {
 			//There are "invalid" entries in the list that do not correspond to, kill the new entity
 			newEntity.discard();
 			// and log a warning
-			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.",
-					newType.getRegistryName(), type.location());
+			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.", RegistryUtils.getName(newType),
+					type.location());
 		}
 		return null;
 	}
 
-	private static <T> T getRandomTagEntry(Random random, ITag<T> tag, T toExclude) {
+	private static <T> T getRandomTagEntry(RandomSource random, ITag<T> tag, T toExclude) {
 		int size = tag.size();
 		if (size == 0 || size == 1 && tag.contains(toExclude)) {
 			return toExclude;

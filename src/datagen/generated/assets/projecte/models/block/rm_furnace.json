@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "side": "projecte:block/red_matter_block",
     "front": "projecte:block/matter_furnace/rm_off",
+    "side": "projecte:block/red_matter_block",
     "top": "projecte:block/red_matter_block"
   }
 }

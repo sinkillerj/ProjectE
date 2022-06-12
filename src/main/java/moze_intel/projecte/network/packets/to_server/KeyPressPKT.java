@@ -13,7 +13,6 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -52,17 +51,17 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 		for (InteractionHand hand : InteractionHand.values()) {
 			ItemStack stack = player.getItemInHand(hand);
 			switch (key) {
-				case CHARGE:
+				case CHARGE -> {
 					if (tryPerformCapability(stack, PECapabilities.CHARGE_ITEM_CAPABILITY, capability -> capability.changeCharge(player, stack, hand))) {
 						return;
 					} else if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && GemArmorBase.hasAnyPiece(player)) {
 						internalAbilities.setGemState(!internalAbilities.getGemState());
 						ILangEntry langEntry = internalAbilities.getGemState() ? PELang.GEM_ACTIVATE : PELang.GEM_DEACTIVATE;
-						player.sendMessage(langEntry.translate(), Util.NIL_UUID);
+						player.sendSystemMessage(langEntry.translate());
 						return;
 					}
-					break;
-				case EXTRA_FUNCTION:
+				}
+				case EXTRA_FUNCTION -> {
 					if (tryPerformCapability(stack, PECapabilities.EXTRA_FUNCTION_ITEM_CAPABILITY, capability -> capability.doExtraFunction(stack, player, hand))) {
 						return;
 					} else if (hand == InteractionHand.MAIN_HAND && isSafe(stack) && internalAbilities.getGemState()) {
@@ -73,8 +72,8 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 							return;
 						}
 					}
-					break;
-				case FIRE_PROJECTILE:
+				}
+				case FIRE_PROJECTILE -> {
 					if (!stack.isEmpty() && internalAbilities.getProjectileCooldown() == 0 &&
 						tryPerformCapability(stack, PECapabilities.PROJECTILE_SHOOTER_ITEM_CAPABILITY, capability -> capability.shootProjectile(player, stack, hand))) {
 						PlayerHelper.swingItem(player, hand);
@@ -87,12 +86,12 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 							return;
 						}
 					}
-					break;
-				case MODE:
+				}
+				case MODE -> {
 					if (tryPerformCapability(stack, PECapabilities.MODE_CHANGER_ITEM_CAPABILITY, capability -> capability.changeMode(player, stack, hand))) {
 						return;
 					}
-					break;
+				}
 			}
 		}
 	}

@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:charcoal",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:charcoal"
   }
 }

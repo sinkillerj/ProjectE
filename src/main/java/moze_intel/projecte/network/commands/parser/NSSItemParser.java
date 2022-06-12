@@ -5,22 +5,24 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.datafixers.util.Either;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import moze_intel.projecte.utils.LazyTagLookup;
+import moze_intel.projecte.utils.RegistryUtils;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,72 +30,88 @@ import org.jetbrains.annotations.Nullable;
  */
 public class NSSItemParser {
 
-	//This error message is a copy of ItemPredicateArgument.UNKNOWN_TAG
+	//This error message is a copy of ItemParser ERROR_UNKNOWN_ITEM and ERROR_UNKNOWN_TAG
+	private static final DynamicCommandExceptionType UNKNOWN_ITEM = new DynamicCommandExceptionType(PELang.UNKNOWN_ITEM::translate);
 	private static final DynamicCommandExceptionType UNKNOWN_TAG = new DynamicCommandExceptionType(PELang.UNKNOWN_TAG::translate);
-	private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> DEFAULT_SUGGESTIONS_BUILDER = SuggestionsBuilder::buildFuture;
+	private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
+	private static final char SYNTAX_START_NBT = '{';
+	private static final char SYNTAX_TAG = '#';
 
+	private final HolderLookup<Item> items;
 	private final StringReader reader;
-	@Nullable
-	private Item item;
+	private Either<Holder<Item>, ResourceLocation> result;
 	@Nullable
 	private CompoundTag nbt;
-	@Nullable
-	private TagKey<Item> tag;
-	private int readerCursor;
 	/** Builder to be used when creating a list of suggestions */
-	private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
+	private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
-	public NSSItemParser(StringReader readerIn) {
+	public NSSItemParser(HolderLookup<Item> items, StringReader readerIn) {
+		this.items = items;
 		this.reader = readerIn;
 	}
 
-	public NSSItemResult getResult() throws CommandSyntaxException {
-		if (item != null) {
-			return new NSSItemResult(this);
+	public static NSSItemResult parseResult(HolderLookup<Item> items, StringReader reader) throws CommandSyntaxException {
+		int cursor = reader.getCursor();
+		try {
+			NSSItemParser nssItemParser = new NSSItemParser(items, reader);
+			nssItemParser.parse();
+			return nssItemParser.result.map(item -> new ItemResult(item, nssItemParser.nbt), TagResult::new);
+		} catch (CommandSyntaxException e) {
+			reader.setCursor(cursor);
+			throw e;
 		}
-		//Else it is a tag
-		else if (tag == null) {
-			throw UNKNOWN_TAG.create("");
-		} else if (!LazyTagLookup.tagManager(ForgeRegistries.ITEMS).isKnownTagName(tag)) {
-			throw UNKNOWN_TAG.create(tag.location().toString());
-		}
-		return new NSSItemResult(this);
-	}
-
-	public NSSItemParser parse() throws CommandSyntaxException {
-		this.suggestionsBuilder = this::suggestTagOrItem;
-		if (this.reader.canRead() && this.reader.peek() == '#') {
-			//Read Tag
-			this.suggestionsBuilder = this::suggestTag;
-			this.reader.expect('#');
-			this.readerCursor = this.reader.getCursor();
-			this.tag = TagKey.create(Registry.ITEM_REGISTRY, ResourceLocation.read(this.reader));
-		} else {
-			//Read Item
-			int i = this.reader.getCursor();
-			ResourceLocation itemId = ResourceLocation.read(this.reader);
-			item = ForgeRegistries.ITEMS.getValue(itemId);
-			if (item == null) {
-				this.reader.setCursor(i);
-				throw ItemParser.ERROR_UNKNOWN_ITEM.createWithContext(this.reader, itemId);
-			}
-			this.suggestionsBuilder = this::suggestItem;
-			if (this.reader.canRead() && this.reader.peek() == '{') {
-				this.suggestionsBuilder = DEFAULT_SUGGESTIONS_BUILDER;
-				this.nbt = new TagParser(this.reader).readStruct();
-			}
-		}
-		return this;
 	}
 
 	/**
-	 * Builds a list of suggestions based on item registry names.
+	 * Create a list of suggestions for the specified builder.
 	 *
 	 * @param builder Builder to create list of suggestions
 	 */
-	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder builder) {
+	public static CompletableFuture<Suggestions> fillSuggestions(HolderLookup<Item> items, SuggestionsBuilder builder) {
+		StringReader reader = new StringReader(builder.getInput());
+		reader.setCursor(builder.getStart());
+		NSSItemParser parser = new NSSItemParser(items, reader);
+		try {
+			parser.parse();
+		} catch (CommandSyntaxException ignored) {
+		}
+		return parser.suggestions.apply(builder.createOffset(reader.getCursor()));
+	}
+
+	private void parse() throws CommandSyntaxException {
+		this.suggestions = this::suggestTagOrItem;
+		int cursor = this.reader.getCursor();
+		if (this.reader.canRead() && this.reader.peek() == SYNTAX_TAG) {
+			//Read Tag
+			this.reader.expect(SYNTAX_TAG);
+			this.suggestions = this::suggestTag;
+			ResourceLocation name = ResourceLocation.read(this.reader);
+			Optional<? extends HolderSet<Item>> tag = this.items.get(TagKey.create(Registry.ITEM_REGISTRY, name));
+			tag.orElseThrow(() -> {
+				//If it isn't present reset and error
+				this.reader.setCursor(cursor);
+				return UNKNOWN_TAG.createWithContext(this.reader, name);
+			});
+			this.result = Either.right(name);
+		} else {
+			//Read Item
+			ResourceLocation name = ResourceLocation.read(this.reader);
+			Optional<Holder<Item>> item = this.items.get(ResourceKey.create(Registry.ITEM_REGISTRY, name));
+			this.result = Either.left(item.orElseThrow(() -> {
+				this.reader.setCursor(cursor);
+				return UNKNOWN_ITEM.createWithContext(this.reader, name);
+			}));
+			this.suggestions = this::suggestOpenNbt;
+			if (this.reader.canRead() && this.reader.peek() == SYNTAX_START_NBT) {
+				this.suggestions = SUGGEST_NOTHING;
+				this.nbt = new TagParser(this.reader).readStruct();
+			}
+		}
+	}
+
+	private CompletableFuture<Suggestions> suggestOpenNbt(SuggestionsBuilder builder) {
 		if (builder.getRemaining().isEmpty()) {
-			builder.suggest(String.valueOf('{'));
+			builder.suggest(String.valueOf(SYNTAX_START_NBT));
 		}
 		return builder.buildFuture();
 	}
@@ -104,7 +122,11 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggestResource(getTagNames(), builder.createOffset(this.readerCursor));
+		return SharedSuggestionProvider.suggestResource(this.items.listTags().map(TagKey::location), builder, String.valueOf(SYNTAX_TAG));
+	}
+
+	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder p_235323_) {
+		return SharedSuggestionProvider.suggestResource(this.items.listElements().map(ResourceKey::location), p_235323_);
 	}
 
 	/**
@@ -113,52 +135,40 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder) {
-		SharedSuggestionProvider.suggestResource(getTagNames(), builder, String.valueOf('#'));
-		return SharedSuggestionProvider.suggestResource(ForgeRegistries.ITEMS.getKeys(), builder);
+		suggestTag(builder);
+		return suggestItem(builder);
 	}
 
-	private Stream<ResourceLocation> getTagNames() {
-		return LazyTagLookup.tagManager(ForgeRegistries.ITEMS).getTagNames().map(TagKey::location);
+	public static NSSItemResult resultOf(ItemStack stack) {
+		return new ItemResult(stack.getItem(), stack.getTag());
 	}
 
-	/**
-	 * Create a list of suggestions for the specified builder.
-	 *
-	 * @param builder Builder to create list of suggestions
-	 */
-	public CompletableFuture<Suggestions> fillSuggestions(SuggestionsBuilder builder) {
-		return this.suggestionsBuilder.apply(builder.createOffset(this.reader.getCursor()));
+	public interface NSSItemResult {
+
+		String getStringRepresentation();
 	}
 
-	public static class NSSItemResult {
+	private record ItemResult(Item item, @Nullable CompoundTag nbt) implements NSSItemResult {
 
-		@Nullable
-		private final Item item;
-		@Nullable
-		private final CompoundTag nbt;
-		private ResourceLocation tagId = new ResourceLocation("");
-
-		public NSSItemResult(NSSItemParser parser) {
-			item = parser.item;
-			nbt = parser.nbt;
-			if (parser.tag != null) {
-				tagId = parser.tag.location();
-			}
+		public ItemResult(Holder<Item> item, @Nullable CompoundTag nbt) {
+			this(item.get(), nbt);
 		}
 
-		public NSSItemResult(@NotNull ItemStack stack) {
-			item = stack.getItem();
-			nbt = stack.getTag();
-		}
-
+		@Override
 		public String getStringRepresentation() {
-			if (item == null) {
-				return "#" + tagId;
-			}
+			String registryName = RegistryUtils.getName(item).toString();
 			if (nbt == null) {
-				return item.getRegistryName().toString();
+				return registryName;
 			}
-			return item.getRegistryName().toString() + nbt;
+			return registryName + nbt;
+		}
+	}
+
+	private record TagResult(ResourceLocation tagName) implements NSSItemResult {
+
+		@Override
+		public String getStringRepresentation() {
+			return SYNTAX_TAG + tagName.toString();
 		}
 	}
 }

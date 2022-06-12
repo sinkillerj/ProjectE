@@ -1,17 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "projecte:repair_talisman",
-  "pattern": [
-    "HML",
-    "SPS",
-    "LMH"
-  ],
   "key": {
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "S": {
-      "tag": "forge:string"
+    "H": {
+      "item": "projecte:high_covalence_dust"
     },
     "L": {
       "item": "projecte:low_covalence_dust"
@@ -19,10 +11,18 @@
     "M": {
       "item": "projecte:medium_covalence_dust"
     },
-    "H": {
-      "item": "projecte:high_covalence_dust"
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "S": {
+      "tag": "forge:string"
     }
   },
+  "pattern": [
+    "HML",
+    "SPS",
+    "LMH"
+  ],
   "result": {
     "item": "projecte:repair_talisman"
   }

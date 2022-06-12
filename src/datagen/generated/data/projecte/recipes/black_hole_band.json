@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "SSS",
-    "DID",
-    "SSS"
-  ],
   "key": {
-    "S": {
-      "tag": "forge:string"
-    },
     "D": {
       "item": "projecte:dark_matter"
     },
     "I": {
       "item": "projecte:iron_band"
+    },
+    "S": {
+      "tag": "forge:string"
     }
   },
+  "pattern": [
+    "SSS",
+    "DID",
+    "SSS"
+  ],
   "result": {
     "item": "projecte:black_hole_band"
   }

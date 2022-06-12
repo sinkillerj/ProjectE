@@ -3,7 +3,6 @@ package moze_intel.projecte.network;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.Util;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -62,9 +61,9 @@ public class ThreadCheckUpdate extends Thread {
 	public static void worldLoad(EntityJoinWorldEvent evt) {
 		if (evt.getEntity() instanceof LocalPlayer player && target != null && !hasSentMessage) {
 			hasSentMessage = true;
-			player.sendMessage(PELang.UPDATE_AVAILABLE.translate(target), Util.NIL_UUID);
-			player.sendMessage(PELang.UPDATE_GET_IT.translate(), Util.NIL_UUID);
-			player.sendMessage(TextComponentUtil.build(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL), curseURL), Util.NIL_UUID);
+			player.sendSystemMessage(PELang.UPDATE_AVAILABLE.translate(target));
+			player.sendSystemMessage(PELang.UPDATE_GET_IT.translate());
+			player.sendSystemMessage(TextComponentUtil.build(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL), curseURL));
 		}
 	}
 }

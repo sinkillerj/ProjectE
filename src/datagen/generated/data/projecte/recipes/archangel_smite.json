@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "BFB",
-    "MIM",
-    "BFB"
-  ],
   "key": {
     "B": {
       "item": "minecraft:bow"
@@ -19,6 +14,11 @@
       "item": "projecte:dark_matter"
     }
   },
+  "pattern": [
+    "BFB",
+    "MIM",
+    "BFB"
+  ],
   "result": {
     "item": "projecte:archangel_smite"
   }

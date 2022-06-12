@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "FMF",
-    "DID",
-    "FMF"
-  ],
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -19,6 +14,11 @@
       "item": "projecte:mobius_fuel"
     }
   },
+  "pattern": [
+    "FMF",
+    "DID",
+    "FMF"
+  ],
   "result": {
     "item": "projecte:ignition_ring"
   }

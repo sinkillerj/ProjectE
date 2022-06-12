@@ -1,10 +1,9 @@
 package moze_intel.projecte.gameObjs.registration;
 
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
-public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements INamedEntry {
+public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEntry {
 
 	@NotNull
 	private final RegistryObject<PRIMARY> primaryRO;

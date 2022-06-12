@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GGG",
-    "RLR",
-    "GGG"
-  ],
   "key": {
-    "R": {
-      "item": "projecte:red_matter"
-    },
     "G": {
       "tag": "forge:dusts/glowstone"
     },
     "L": {
       "tag": "forge:gems/lapis"
+    },
+    "R": {
+      "item": "projecte:red_matter"
     }
   },
+  "pattern": [
+    "GGG",
+    "RLR",
+    "GGG"
+  ],
   "result": {
     "item": "projecte:soul_stone"
   }

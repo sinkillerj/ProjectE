@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "M",
-    "D",
-    "D"
-  ],
   "key": {
     "D": {
       "tag": "forge:gems/diamond"
@@ -13,6 +8,11 @@
       "item": "projecte:dark_matter"
     }
   },
+  "pattern": [
+    "M",
+    "D",
+    "D"
+  ],
   "result": {
     "item": "projecte:dm_shovel"
   }

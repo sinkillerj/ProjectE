@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncEmcPKT implements IPEPacket {
@@ -27,7 +28,7 @@ public class SyncEmcPKT implements IPEPacket {
 	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeVarInt(data.length);
 		for (EmcPKTInfo info : data) {
-			buffer.writeRegistryId(info.item);
+			buffer.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, info.item);
 			buffer.writeNbt(info.nbt());
 			buffer.writeVarLong(info.emc());
 		}
@@ -37,7 +38,7 @@ public class SyncEmcPKT implements IPEPacket {
 		int size = buffer.readVarInt();
 		EmcPKTInfo[] data = new EmcPKTInfo[size];
 		for (int i = 0; i < size; i++) {
-			data[i] = new EmcPKTInfo(buffer.readRegistryId(), buffer.readNbt(), buffer.readVarLong());
+			data[i] = new EmcPKTInfo(buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS), buffer.readNbt(), buffer.readVarLong());
 		}
 		return new SyncEmcPKT(data);
 	}

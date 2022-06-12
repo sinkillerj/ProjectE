@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "SSS",
-    "RLR",
-    "SSS"
-  ],
   "key": {
+    "L": {
+      "tag": "forge:gems/lapis"
+    },
     "R": {
       "item": "projecte:red_matter"
     },
     "S": {
       "item": "minecraft:sugar"
-    },
-    "L": {
-      "tag": "forge:gems/lapis"
     }
   },
+  "pattern": [
+    "SSS",
+    "RLR",
+    "SSS"
+  ],
   "result": {
     "item": "projecte:body_stone"
   }

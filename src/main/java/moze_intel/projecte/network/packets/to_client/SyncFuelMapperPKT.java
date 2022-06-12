@@ -7,6 +7,7 @@ import moze_intel.projecte.network.packets.IPEPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket {
 
@@ -19,7 +20,7 @@ public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket {
 	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeVarInt(items.size());
 		for (Item item : items) {
-			buffer.writeRegistryId(item);
+			buffer.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, item);
 		}
 	}
 
@@ -27,7 +28,7 @@ public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket {
 		int size = buffer.readVarInt();
 		List<Item> items = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			items.add(buffer.readRegistryId());
+			items.add(buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS));
 		}
 		return new SyncFuelMapperPKT(items);
 	}

@@ -7,8 +7,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
+import moze_intel.projecte.network.commands.parser.NSSItemParser;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,10 +20,10 @@ public class RemoveEmcCMD {
 
 	private static final SimpleCommandExceptionType EMPTY_STACK = new SimpleCommandExceptionType(PELang.COMMAND_NO_ITEM.translate());
 
-	public static LiteralArgumentBuilder<CommandSourceStack> register() {
+	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("removeemc")
 				.requires(cs -> cs.hasPermission(2))
-				.then(Commands.argument("item", new NSSItemArgument())
+				.then(Commands.argument("item", NSSItemArgument.nss(context))
 						.executes(ctx -> removeEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> removeEmc(ctx, getHeldStack(ctx)));
 	}
@@ -43,6 +45,6 @@ public class RemoveEmcCMD {
 		if (stack.isEmpty()) {
 			throw EMPTY_STACK.create();
 		}
-		return new NSSItemResult(stack);
+		return NSSItemParser.resultOf(stack);
 	}
 }

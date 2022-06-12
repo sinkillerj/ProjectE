@@ -70,7 +70,7 @@
   "command.projecte.set.success": "Set EMC value for %s to %s!",
   "command.projecte.showbag.named": "%s (%s)",
   "command.projecte.showbag.offline.notfound": "UUID %s not found in playerdata/",
-  "command.projecte.showbag.offline.uuid": "Malformed UUID: %s",
+  "config.jade.plugin_projecte.emc_provider": "EMC Provider",
   "curios.identifier.klein_star": "Klein Star",
   "divining_rod.projecte.avg_emc": "Average EMC for %s blocks: %s",
   "divining_rod.projecte.max_emc": "Max EMC: %s",

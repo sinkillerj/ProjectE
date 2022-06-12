@@ -3,7 +3,6 @@ package moze_intel.projecte.api.nss;
 import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link net.minecraftforge.registries.tags.ITag} this {@link NormalizedSimpleStack} is for.
  *
  * @implNote This does not handle NBT on Tags.
  */

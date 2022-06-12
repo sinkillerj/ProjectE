@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,7 +76,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 									unhandled.add(recipe);
 								}
 							} catch (Exception e) {
-								PECore.LOGGER.fatal("A fatal error occurred while trying to map the recipe: {}", recipe.getId());
+								PECore.LOGGER.error(LogUtils.FATAL_MARKER, "A fatal error occurred while trying to map the recipe: {}", recipe.getId());
 								throw e;
 							}
 						}

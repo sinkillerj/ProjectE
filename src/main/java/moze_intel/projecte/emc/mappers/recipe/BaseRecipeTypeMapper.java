@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
@@ -141,12 +143,12 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			return ingredient.getItems();
 		} catch (Exception e) {
 			if (isTagException(e)) {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Ingredient of type: {} crashed when getting the matching stacks "
-									+ "due to not properly deserializing and handling tags. Please report this to the ingredient's creator.",
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Ingredient of type: {} crashed when getting the matching stacks "
+														   + "due to not properly deserializing and handling tags. Please report this to the ingredient's creator.",
 						recipeID, ingredient.getClass().getName(), e);
 			} else {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Ingredient of type: {} crashed when getting the matching stacks. "
-									+ "Please report this to the ingredient's creator.", recipeID, ingredient.getClass().getName(), e);
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Ingredient of type: {} crashed when getting the matching stacks. "
+														   + "Please report this to the ingredient's creator.", recipeID, ingredient.getClass().getName(), e);
 			}
 			return null;
 		}
@@ -165,24 +167,24 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				ingredientMap.addIngredient(NSSItem.createItem(item.getContainerItem(stack)), -1);
 			}
 		} catch (Exception e) {
-			ResourceLocation itemName = item.getRegistryName();
+			ResourceLocation itemName = RegistryUtils.getName(item);
 			if (hasContainerItem) {
 				if (isTagException(e)) {
-					PECore.LOGGER.fatal("Error mapping recipe {}. Item: {} reported that it has a container item, "
-										+ "but errors when trying to get the container item due to not properly deserializing and handling tags. "
-										+ "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
+					PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Item: {} reported that it has a container item, "
+															   + "but errors when trying to get the container item due to not properly deserializing and handling tags. "
+															   + "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
 				} else {
-					PECore.LOGGER.fatal("Error mapping recipe {}. Item: {} reported that it has a container item, "
-										+ "but errors when trying to get the container item based on the stack in the recipe. "
-										+ "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
+					PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Item: {} reported that it has a container item, "
+															   + "but errors when trying to get the container item based on the stack in the recipe. "
+															   + "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
 				}
 			} else if (isTagException(e)) {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Item: {} crashed when checking if the stack has a container item, "
-									+ "due to not properly deserializing and handling tags. Please report this to {}.", recipeID, itemName,
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Item: {} crashed when checking if the stack has a container item, "
+														   + "due to not properly deserializing and handling tags. Please report this to {}.", recipeID, itemName,
 						itemName.getNamespace(), e);
 			} else {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Item: {} crashed when checking if the stack in the recipe has a container item. "
-									+ "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Item: {} crashed when checking if the stack in the recipe has a container item. "
+														   + "Please report this to {}.", recipeID, itemName, itemName.getNamespace(), e);
 			}
 			//If something failed because the recipe errored, return that we did handle it so that we don't try to handle it later
 			// as there is a 99% chance it will just fail again anyways
@@ -203,10 +205,10 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 		} catch (Exception e) {
 			ResourceLocation recipeID = recipe.getId();
 			if (isTagException(e)) {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Failed to get ingredients due to the recipe not properly deserializing and handling tags. "
-									+ "Please report this to {}.", recipeID, recipeID.getNamespace(), e);
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Failed to get ingredients due to the recipe not properly deserializing and handling tags. "
+														   + "Please report this to {}.", recipeID, recipeID.getNamespace(), e);
 			} else {
-				PECore.LOGGER.fatal("Error mapping recipe {}. Failed to get ingredients. Please report this to {}.", recipeID, recipeID.getNamespace(), e);
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Failed to get ingredients. Please report this to {}.", recipeID, recipeID.getNamespace(), e);
 			}
 		}
 		return null;

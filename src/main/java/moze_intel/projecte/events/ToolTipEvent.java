@@ -15,7 +15,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,7 +45,7 @@ public class ToolTipEvent {
 		}
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
-			current.getTags().forEach(tag -> event.getToolTip().add(new TextComponent("#" + tag.location())));
+			current.getTags().forEach(tag -> event.getToolTip().add(Component.literal("#" + tag.location())));
 		}
 
 		if (ProjectEConfig.client.emcToolTips.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {

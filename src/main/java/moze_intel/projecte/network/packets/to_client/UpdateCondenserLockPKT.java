@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) implements IPEPacket {
@@ -31,7 +32,7 @@ public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo
 			buffer.writeBoolean(false);
 		} else {
 			buffer.writeBoolean(true);
-			buffer.writeRegistryId(lockInfo.getItem());
+			buffer.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, lockInfo.getItem());
 			buffer.writeNbt(lockInfo.getNBT());
 		}
 	}
@@ -40,7 +41,7 @@ public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo
 		short windowId = buffer.readShort();
 		ItemInfo lockInfo = null;
 		if (buffer.readBoolean()) {
-			lockInfo = ItemInfo.fromItem(buffer.readRegistryId(), buffer.readNbt());
+			lockInfo = ItemInfo.fromItem(buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS), buffer.readNbt());
 		}
 		return new UpdateCondenserLockPKT(windowId, lockInfo);
 	}

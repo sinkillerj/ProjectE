@@ -62,8 +62,12 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		if (item == Items.AIR) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		//This should never be null or it would have crashed on being registered
-		return createItem(item.getRegistryName(), nbt);
+		ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(item);
+		if (registryName == null) {
+			throw new IllegalArgumentException("Can't make an NSSItem with an unregistered item");
+		}
+		//This should never be null, or it would have crashed on being registered
+		return createItem(registryName, nbt);
 	}
 
 	/**

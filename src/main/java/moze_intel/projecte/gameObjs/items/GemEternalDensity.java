@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.PECore;
@@ -157,25 +158,21 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static ItemStack getTarget(ItemStack stack) {
 		Item item = stack.getItem();
 		if (!(item instanceof GemEternalDensity gem)) {
-			PECore.LOGGER.fatal("Invalid gem of eternal density: {}", stack);
+			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Invalid gem of eternal density: {}", stack);
 			return ItemStack.EMPTY;
 		}
 		byte target = gem.getMode(stack);
-		switch (target) {
-			case 0:
-				return new ItemStack(Items.IRON_INGOT);
-			case 1:
-				return new ItemStack(Items.GOLD_INGOT);
-			case 2:
-				return new ItemStack(Items.DIAMOND);
-			case 3:
-				return new ItemStack(PEItems.DARK_MATTER);
-			case 4:
-				return new ItemStack(PEItems.RED_MATTER);
-			default:
-				PECore.LOGGER.fatal("Invalid target for gem of eternal density: {}", target);
-				return ItemStack.EMPTY;
-		}
+		return switch (target) {
+			case 0 -> new ItemStack(Items.IRON_INGOT);
+			case 1 -> new ItemStack(Items.GOLD_INGOT);
+			case 2 -> new ItemStack(Items.DIAMOND);
+			case 3 -> new ItemStack(PEItems.DARK_MATTER);
+			case 4 -> new ItemStack(PEItems.RED_MATTER);
+			default -> {
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Invalid target for gem of eternal density: {}", target);
+				yield ItemStack.EMPTY;
+			}
+		};
 	}
 
 	private static void setItems(ItemStack stack, List<ItemStack> list) {

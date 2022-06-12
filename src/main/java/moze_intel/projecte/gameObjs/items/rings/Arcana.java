@@ -74,7 +74,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list) {
 		//Only used on the client
-		if (allowdedIn(group)) {
+		if (allowedIn(group)) {
 			for (byte i = 0; i < getModeCount(); ++i) {
 				ItemStack stack = new ItemStack(this);
 				stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
@@ -147,22 +147,20 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		}
 		if (getMode(stack) == 1) { // ignition
 			switch (player.getDirection()) {
-				case SOUTH: // fall through
-				case NORTH:
+				case SOUTH, NORTH -> {
 					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-30, -5, -3), player.blockPosition().offset(30, 5, 3))) {
 						if (level.isEmptyBlock(pos)) {
 							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 						}
 					}
-					break;
-				case WEST: // fall through
-				case EAST:
+				}
+				case WEST, EAST -> {
 					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-3, -5, -30), player.blockPosition().offset(3, 5, 30))) {
 						if (level.isEmptyBlock(pos)) {
 							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 						}
 					}
-					break;
+				}
 			}
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}

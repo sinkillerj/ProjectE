@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.mojang.logging.LogUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -117,7 +118,8 @@ public final class EMCMappingHandler {
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					}
 				} catch (Exception e) {
-					PECore.LOGGER.fatal("Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!", emcMapper.getClass().getName(), e);
+					PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!",
+							emcMapper.getClass().getName(), e);
 				}
 			}
 			DumpToFileCollector.currentGroupName = "NSSHelper";

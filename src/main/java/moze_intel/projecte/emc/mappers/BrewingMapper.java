@@ -31,7 +31,6 @@ import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 @EMCMapper
@@ -58,7 +57,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		return true;
 	}
 
-	private static <T extends ForgeRegistryEntry<T>> void addReagents(List<PotionBrewing.Mix<T>> conversions) {
+	private static <T> void addReagents(List<PotionBrewing.Mix<T>> conversions) {
 		for (PotionBrewing.Mix<T> conversion : conversions) {
 			for (ItemStack r : conversion.ingredient.getItems()) {
 				allReagents.add(ItemInfo.fromStack(r));

@@ -158,7 +158,7 @@ public final class ItemInfo {
 	 * Writes the item and nbt fields to a NBT object.
 	 */
 	public CompoundTag write(@NotNull CompoundTag nbt) {
-		nbt.putString("item", item.getRegistryName().toString());
+		nbt.putString("item", getRegistryName().toString());
 		if (this.nbt != null) {
 			nbt.put("nbt", this.nbt);
 		}
@@ -187,8 +187,12 @@ public final class ItemInfo {
 	@Override
 	public String toString() {
 		if (nbt != null) {
-			return item.getRegistryName() + " " + nbt;
+			return getRegistryName() + " " + nbt;
 		}
-		return item.getRegistryName().toString();
+		return getRegistryName().toString();
+	}
+
+	private ResourceLocation getRegistryName() {
+		return ForgeRegistries.ITEMS.getKey(item);
 	}
 }

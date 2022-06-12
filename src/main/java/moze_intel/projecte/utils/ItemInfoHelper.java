@@ -66,7 +66,7 @@ public class ItemInfoHelper {
 			if (nbt == null) {
 				nbt = new CompoundTag();
 			}
-			nbt.putString("Potion", potion.getRegistryName().toString());
+			nbt.putString("Potion", RegistryUtils.getName(potion).toString());
 		}
 		return ItemInfo.fromItem(info.getItem(), nbt);
 	}

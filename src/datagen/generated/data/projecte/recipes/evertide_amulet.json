@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "WWW",
-    "DDD",
-    "WWW"
-  ],
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -13,6 +8,11 @@
       "item": "minecraft:water_bucket"
     }
   },
+  "pattern": [
+    "WWW",
+    "DDD",
+    "WWW"
+  ],
   "result": {
     "item": "projecte:evertide_amulet"
   }

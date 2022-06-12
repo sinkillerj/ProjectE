@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -270,6 +271,6 @@ public class PEItemModelProvider extends ItemModelProvider {
 	}
 
 	private static String getName(ItemLike itemProvider) {
-		return itemProvider.asItem().getRegistryName().getPath();
+		return RegistryUtils.getPath(itemProvider.asItem());
 	}
 }

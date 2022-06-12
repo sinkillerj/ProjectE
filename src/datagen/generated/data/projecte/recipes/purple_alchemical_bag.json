@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "CCC",
-    "WAW",
-    "WWW"
-  ],
   "key": {
     "A": {
       "item": "projecte:alchemical_chest"
@@ -16,6 +11,11 @@
       "item": "minecraft:purple_wool"
     }
   },
+  "pattern": [
+    "CCC",
+    "WAW",
+    "WWW"
+  ],
   "result": {
     "item": "projecte:purple_alchemical_bag"
   }

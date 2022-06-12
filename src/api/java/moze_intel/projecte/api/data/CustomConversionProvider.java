@@ -1,7 +1,5 @@
 package moze_intel.projecte.api.data;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -9,10 +7,12 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base Data Generator Provider class for use in creating custom conversion json data files that ProjectE will read from the data pack.
@@ -20,8 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class CustomConversionProvider implements DataProvider {
-
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private final Map<ResourceLocation, CustomConversionBuilder> customConversions = new LinkedHashMap<>();
 	private final DataGenerator generator;
@@ -31,14 +29,15 @@ public abstract class CustomConversionProvider implements DataProvider {
 	}
 
 	@Override
-	public final void run(HashCache cache) {
+	public void run(@NotNull CachedOutput cache) throws IOException {
 		customConversions.clear();
 		addCustomConversions();
+		Path outputFolder = generator.getOutputFolder(Target.DATA_PACK);
 		for (Map.Entry<ResourceLocation, CustomConversionBuilder> entry : customConversions.entrySet()) {
 			ResourceLocation customConversion = entry.getKey();
-			Path path = generator.getOutputFolder().resolve("data/" + customConversion.getNamespace() + "/pe_custom_conversions/" + customConversion.getPath() + ".json");
+			Path path = outputFolder.resolve(customConversion.getNamespace() + "/pe_custom_conversions/" + customConversion.getPath() + ".json");
 			try {
-				DataProvider.save(GSON, cache, entry.getValue().serialize(), path);
+				DataProvider.saveStable(cache, entry.getValue().serialize(), path);
 			} catch (IOException e) {
 				throw new RuntimeException("Couldn't save custom conversion file for conversion: " + customConversion, e);
 			}

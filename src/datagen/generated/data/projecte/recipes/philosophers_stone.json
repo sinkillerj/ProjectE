@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "projecte:philosophers_stone",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "G": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
   "pattern": [
     "RGR",
     "GDG",
     "RGR"
   ],
-  "key": {
-    "R": {
-      "tag": "forge:dusts/redstone"
-    },
-    "G": {
-      "tag": "forge:dusts/glowstone"
-    },
-    "D": {
-      "tag": "forge:gems/diamond"
-    }
-  },
   "result": {
     "item": "projecte:philosophers_stone"
   }

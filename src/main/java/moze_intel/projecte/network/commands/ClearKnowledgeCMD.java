@@ -9,7 +9,7 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeClearPKT;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ClearKnowledgeCMD {
 
-	public static ArgumentBuilder<CommandSourceStack, ?> register() {
+	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
 		return Commands.literal("clearknowledge")
 				.requires(cs -> cs.hasPermission(2))
 				.then(Commands.argument("targets", EntityArgument.players())
@@ -31,7 +31,7 @@ public class ClearKnowledgeCMD {
 			PacketHandler.sendTo(new KnowledgeClearPKT(), player);
 			source.sendSuccess(PELang.CLEAR_KNOWLEDGE_SUCCESS.translate(player.getDisplayName()), true);
 			if (player != source.getEntity()) {
-				player.sendMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(ChatFormatting.RED, source.getDisplayName()), Util.NIL_UUID);
+				player.sendSystemMessage(PELang.CLEAR_KNOWLEDGE_NOTIFY.translateColored(ChatFormatting.RED, source.getDisplayName()));
 			}
 		}
 		return targets.size();

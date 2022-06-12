@@ -1,21 +1,51 @@
 {
   "advancements": [
     {
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+          "has_chestplate": {
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "projecte:rm_chestplate"
+                  ]
+                }
+              ]
+            },
+            "trigger": "minecraft:inventory_changed"
+          },
+          "has_the_recipe": {
+            "conditions": {
+              "recipe": "projecte:gem_chestplate"
+            },
+            "trigger": "minecraft:recipe_unlocked"
+          }
+        },
+        "requirements": [
+          [
+            "has_chestplate",
+            "has_the_recipe"
+          ]
+        ],
+        "rewards": {
+          "recipes": [
+            "projecte:gem_chestplate"
+          ]
+        }
+      },
       "conditions": [
         {
           "type": "projecte:full_klein_stars"
         }
-      ],
+      ]
+    },
+    {
       "advancement": {
         "parent": "minecraft:recipes/root",
-        "rewards": {
-          "recipes": [
-            "projecte:gem_chestplate"
-          ]
-        },
         "criteria": {
           "has_chestplate": {
-            "trigger": "minecraft:inventory_changed",
             "conditions": {
               "items": [
                 {
@@ -24,13 +54,14 @@
                   ]
                 }
               ]
-            }
+            },
+            "trigger": "minecraft:inventory_changed"
           },
           "has_the_recipe": {
-            "trigger": "minecraft:recipe_unlocked",
             "conditions": {
               "recipe": "projecte:gem_chestplate"
-            }
+            },
+            "trigger": "minecraft:recipe_unlocked"
           }
         },
         "requirements": [
@@ -38,49 +69,18 @@
             "has_chestplate",
             "has_the_recipe"
           ]
-        ]
-      }
-    },
-    {
+        ],
+        "rewards": {
+          "recipes": [
+            "projecte:gem_chestplate"
+          ]
+        }
+      },
       "conditions": [
         {
           "type": "forge:true"
         }
-      ],
-      "advancement": {
-        "parent": "minecraft:recipes/root",
-        "rewards": {
-          "recipes": [
-            "projecte:gem_chestplate"
-          ]
-        },
-        "criteria": {
-          "has_chestplate": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-              "items": [
-                {
-                  "items": [
-                    "projecte:rm_chestplate"
-                  ]
-                }
-              ]
-            }
-          },
-          "has_the_recipe": {
-            "trigger": "minecraft:recipe_unlocked",
-            "conditions": {
-              "recipe": "projecte:gem_chestplate"
-            }
-          }
-        },
-        "requirements": [
-          [
-            "has_chestplate",
-            "has_the_recipe"
-          ]
-        ]
-      }
+      ]
     }
   ]
 }

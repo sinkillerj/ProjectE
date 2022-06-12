@@ -5,7 +5,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -43,7 +42,7 @@ public interface IItemMode extends IModeChanger {
 		}
 		//Update the mode
 		stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, (byte) ((getMode(stack) + 1) % numModes));
-		player.sendMessage(getModeSwitchEntry().translate(getModeLangEntry(stack)), Util.NIL_UUID);
+		player.sendSystemMessage(getModeSwitchEntry().translate(getModeLangEntry(stack)));
 		return true;
 	}
 

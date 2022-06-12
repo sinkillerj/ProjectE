@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -28,7 +28,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.apache.commons.io.IOUtils;
 
 @EMCMapper
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -68,8 +67,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		int extensionLength = extension.length();
 
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (ResourceLocation file : resourceManager.listResources(folder, n -> n.endsWith(extension))) {
+		for (Map.Entry<ResourceLocation, List<Resource>> entry : resourceManager.listResourceStacks(folder, n -> n.getPath().endsWith(extension)).entrySet()) {
 			// <domain>:foo/bar
+			ResourceLocation file = entry.getKey();
 			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folderLength + 1, file.getPath().length() - extensionLength));
 
 			PECore.LOGGER.info("Considering file {}, ID {}", file, conversionId);
@@ -77,16 +77,15 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
 			try {
-				for (Resource resource : resourceManager.getResources(file)) {
+				for (Resource resource : entry.getValue()) {
 					CustomConversionFile result;
-					try {
-						result = parseJson(new InputStreamReader(resource.getInputStream()));
+					try (Reader reader = resource.openAsReader()) {
+						result = parseJson(reader);
 					} catch (JsonParseException ex) {
 						PECore.LOGGER.error("Malformed JSON", ex);
 						continue;
 					}
 					loading.merge(conversionId, result, CustomConversionFile::merge);
-					IOUtils.closeQuietly(resource);
 				}
 			} catch (IOException e) {
 				PECore.LOGGER.error("Could not load resource {}", file, e);

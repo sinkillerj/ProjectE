@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:gold_ingot",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:gold_ingot"
   }
 }

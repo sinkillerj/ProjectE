@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecte:item/rings/ignition_off"
-  },
   "overrides": [
     {
+      "model": "projecte:item/ignition_on",
       "predicate": {
         "projecte:active": 1.0
-      },
-      "model": "projecte:item/ignition_on"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "projecte:item/rings/ignition_off"
+  }
 }

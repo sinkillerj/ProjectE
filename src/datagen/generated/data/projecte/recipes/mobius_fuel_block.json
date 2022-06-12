@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "FFF",
-    "FFF",
-    "FFF"
-  ],
   "key": {
     "F": {
       "item": "projecte:mobius_fuel"
     }
   },
+  "pattern": [
+    "FFF",
+    "FFF",
+    "FFF"
+  ],
   "result": {
     "item": "projecte:mobius_fuel_block"
   }

@@ -30,7 +30,7 @@
     }
   ],
   "result": {
-    "item": "projecte:low_covalence_dust",
-    "count": 40
+    "count": 40,
+    "item": "projecte:low_covalence_dust"
   }
 }

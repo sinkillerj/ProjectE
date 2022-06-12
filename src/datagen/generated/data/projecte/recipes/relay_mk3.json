@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "OUO",
-    "OPO",
-    "OOO"
-  ],
   "key": {
     "O": {
       "tag": "forge:obsidian"
@@ -16,6 +11,11 @@
       "item": "projecte:red_matter"
     }
   },
+  "pattern": [
+    "OUO",
+    "OPO",
+    "OOO"
+  ],
   "result": {
     "item": "projecte:relay_mk3"
   }

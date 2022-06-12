@@ -5,6 +5,7 @@ import net.minecraft.Util;
 
 public enum PELang implements ILangEntry {
 	//Vanilla
+	UNKNOWN_ITEM("argument.item.id.invalid"),
 	UNKNOWN_TAG("arguments.item.tag.unknown"),
 	//Misc
 	PROJECTE("misc", "mod_name"),
@@ -29,7 +30,6 @@ public enum PELang implements ILangEntry {
 	COMMAND_SET_SUCCESS("command", "set.success"),
 	RELOAD_NOTICE("command", "reload.notice"),
 	SHOWBAG_NOT_FOUND("command", "showbag.offline.notfound"),
-	SHOWBAG_UUID("command", "showbag.offline.uuid"),
 	SHOWBAG_NAMED("command", "showbag.named"),
 	//Diving Rod
 	DIVINING_AVG_EMC("divining_rod", "avg_emc"),

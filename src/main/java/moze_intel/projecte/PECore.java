@@ -1,7 +1,7 @@
 package moze_intel.projecte;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,11 +27,11 @@ import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.PETags;
-import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarIngredient;
 import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
+import moze_intel.projecte.gameObjs.registries.PEArgumentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -54,18 +54,14 @@ import moze_intel.projecte.network.commands.RemoveEmcCMD;
 import moze_intel.projecte.network.commands.ResetEmcCMD;
 import moze_intel.projecte.network.commands.SetEmcCMD;
 import moze_intel.projecte.network.commands.ShowBagCMD;
-import moze_intel.projecte.network.commands.argument.ColorArgument;
-import moze_intel.projecte.network.commands.argument.NSSItemArgument;
-import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -78,7 +74,6 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -96,7 +91,6 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -115,10 +109,10 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.registries.RegisterEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 @Mod(PECore.MODID)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -127,7 +121,7 @@ public class PECore {
 	public static final String MODID = ProjectEAPI.PROJECTE_MODID;
 	public static final String MODNAME = "ProjectE";
 	public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"), "[" + MODNAME + "]");
-	public static final Logger LOGGER = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final List<String> uuids = new ArrayList<>();
 
@@ -157,13 +151,14 @@ public class PECore {
 		modEventBus.addListener(this::imcHandle);
 		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addListener(this::registerCapabilities);
-		modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+		modEventBus.addListener(this::registerRecipeSerializers);
 		PEBlocks.BLOCKS.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
 		PEItems.ITEMS.register(modEventBus);
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
+		PEArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
 		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::tagsUpdated);
@@ -175,13 +170,12 @@ public class PECore {
 		ProjectEConfig.register();
 	}
 
-	private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-		//Add our condition serializers
-		CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
-		CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
-		//Add our ingredients
-		//noinspection removal
-		CraftingHelper.register(rl("full_klein_star"), FullKleinStarIngredient.SERIALIZER);
+	private void registerRecipeSerializers(RegisterEvent event) {
+		event.register(Registry.RECIPE_SERIALIZER_REGISTRY, helper -> {
+			//Add our condition serializers
+			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
+			CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
+		});
 	}
 
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -305,11 +299,6 @@ public class PECore {
 				}
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
-
-			// internals unsafe
-			ArgumentTypes.register(MODID + ":uuid", UUIDArgument.class, new EmptyArgumentSerializer<>(UUIDArgument::new));
-			ArgumentTypes.register(MODID + ":color", ColorArgument.class, new EmptyArgumentSerializer<>(ColorArgument::new));
-			ArgumentTypes.register(MODID + ":nss", NSSItemArgument.class, new EmptyArgumentSerializer<>(NSSItemArgument::new));
 		});
 	}
 
@@ -347,7 +336,7 @@ public class PECore {
 			CustomEMCParser.init();
 			try {
 				EMCMappingHandler.map(emcUpdateResourceManager.serverResources(), emcUpdateResourceManager.resourceManager());
-				PECore.LOGGER.info("Registered " + EMCMappingHandler.getEmcMapSize() + " EMC values. (took " + (System.currentTimeMillis() - start) + " ms)");
+				PECore.LOGGER.info("Registered {} EMC values. (took {} ms)", EMCMappingHandler.getEmcMapSize(), System.currentTimeMillis() - start);
 				PacketHandler.sendFragmentedEmcPacketToAll();
 			} catch (Throwable t) {
 				PECore.LOGGER.error("Error calculating EMC values", t);
@@ -361,14 +350,17 @@ public class PECore {
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
-		LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("projecte")
-				.then(ClearKnowledgeCMD.register())
-				.then(DumpMissingEmc.register())
-				.then(RemoveEmcCMD.register())
-				.then(ResetEmcCMD.register())
-				.then(SetEmcCMD.register())
-				.then(ShowBagCMD.register());
-		event.getDispatcher().register(root);
+		CommandBuildContext context = null;//event.getBuildContext();
+		//TODO - 1.19: Re-enable
+		if (false)
+		event.getDispatcher().register(Commands.literal("projecte")
+				.then(ClearKnowledgeCMD.register(context))
+				.then(DumpMissingEmc.register(context))
+				.then(RemoveEmcCMD.register(context))
+				.then(ResetEmcCMD.register(context))
+				.then(SetEmcCMD.register(context))
+				.then(ShowBagCMD.register(context))
+		);
 	}
 
 	private void serverStarting(ServerStartingEvent event) {

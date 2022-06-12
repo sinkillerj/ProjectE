@@ -1,15 +1,15 @@
 package moze_intel.projecte.api;
 
+import com.mojang.logging.LogUtils;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 public final class ProjectEAPI {
 
 	private static IEMCProxy emcProxy;
 	private static ITransmutationProxy transProxy;
-	private static final Logger LOGGER = LogManager.getLogger("projecteapi");
+	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String PROJECTE_MODID = "projecte";
 
 	private ProjectEAPI() {

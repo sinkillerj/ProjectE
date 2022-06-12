@@ -9,10 +9,12 @@ import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
+import moze_intel.projecte.gameObjs.registration.impl.ItemRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -98,7 +100,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addCustomRecipeSerializer(Consumer<FinishedRecipe> consumer, SimpleRecipeSerializer<?> serializer) {
-		SpecialRecipeBuilder.special(serializer).save(consumer, serializer.getRegistryName().toString());
+		SpecialRecipeBuilder.special(serializer).save(consumer, RegistryUtils.getName(serializer).toString());
 	}
 
 	private static void tomeRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
@@ -132,7 +134,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.define('M', PEItems.MEDIUM_COVALENCE_DUST)
 				.define('H', PEItems.HIGH_COVALENCE_DUST)
 				.unlockedBy("has_covalence_dust", hasItems(PEItems.LOW_COVALENCE_DUST, PEItems.MEDIUM_COVALENCE_DUST, PEItems.HIGH_COVALENCE_DUST))
-				.group(PEItems.TOME_OF_KNOWLEDGE.get().getRegistryName().toString());
+				.group(PEItems.TOME_OF_KNOWLEDGE.getRegistryName().toString());
 	}
 
 	private static void addMatterRecipes(Consumer<FinishedRecipe> consumer) {
@@ -166,7 +168,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void redMatterRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
-		String name = PEItems.RED_MATTER.get().getRegistryName().toString();
+		String name = PEItems.RED_MATTER.getRegistryName().toString();
 		ShapedRecipeBuilder redMatter = ShapedRecipeBuilder.shaped(PEItems.RED_MATTER)
 				.define('A', PEItems.AETERNALIS_FUEL)
 				.define('D', PEItems.DARK_MATTER)
@@ -445,7 +447,7 @@ public class PERecipeProvider extends RecipeProvider {
 		return PartialNBTIngredient.of(PEItems.getStar(tier), nbt);
 	}
 
-	private static void gemArmorRecipe(Consumer<FinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, ItemLike result) {
+	private static void gemArmorRecipe(Consumer<FinishedRecipe> consumer, Supplier<ShapelessRecipeBuilder> builder, ItemRegistryObject<?> result) {
 		new ConditionalRecipe.Builder()
 				//Full stars should be used
 				.addCondition(FullKleinStarsCondition.INSTANCE)
@@ -460,7 +462,7 @@ public class PERecipeProvider extends RecipeProvider {
 				//Add the advancement json
 				.generateAdvancement()
 				//Build the recipe
-				.build(consumer, result.asItem().getRegistryName());
+				.build(consumer, result.getRegistryName());
 	}
 
 	private static void fuelUpgradeRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output) {
@@ -888,7 +890,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void catalyticLensRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
-		String name = PEItems.CATALYTIC_LENS.get().getRegistryName().toString();
+		String name = PEItems.CATALYTIC_LENS.getRegistryName().toString();
 		ShapedRecipeBuilder lens = ShapedRecipeBuilder.shaped(PEItems.CATALYTIC_LENS)
 				.pattern("MMM")
 				.pattern(alternate ? "HMD" : "DMH")
@@ -906,7 +908,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void philosopherStoneRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
-		String name = PEItems.PHILOSOPHERS_STONE.get().getRegistryName().toString();
+		String name = PEItems.PHILOSOPHERS_STONE.getRegistryName().toString();
 		ShapedRecipeBuilder philoStone = ShapedRecipeBuilder.shaped(PEItems.PHILOSOPHERS_STONE)
 				.define('R', Tags.Items.DUSTS_REDSTONE)
 				.define('G', Tags.Items.DUSTS_GLOWSTONE)
@@ -929,7 +931,7 @@ public class PERecipeProvider extends RecipeProvider {
 	private static void repairTalismanRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String lowToHigh = "LMH";
 		String highToLow = "HML";
-		String name = PEItems.REPAIR_TALISMAN.get().getRegistryName().toString();
+		String name = PEItems.REPAIR_TALISMAN.getRegistryName().toString();
 		ShapedRecipeBuilder talisman = ShapedRecipeBuilder.shaped(PEItems.REPAIR_TALISMAN)
 				.pattern(alternate ? highToLow : lowToHigh)
 				.pattern("SPS")
@@ -1093,7 +1095,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static String getName(ItemLike item) {
-		return item.asItem().getRegistryName().getPath();
+		return RegistryUtils.getPath(item.asItem());
 	}
 
 	protected static InventoryChangeTrigger.TriggerInstance hasItems(ItemLike... items) {

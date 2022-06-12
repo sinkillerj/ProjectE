@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "OBO",
-    "BRB",
-    "BDB"
-  ],
   "key": {
     "B": {
       "item": "minecraft:bricks"
-    },
-    "R": {
-      "item": "projecte:red_matter"
     },
     "D": {
       "tag": "forge:gems/diamond"
     },
     "O": {
       "tag": "forge:obsidian"
+    },
+    "R": {
+      "item": "projecte:red_matter"
     }
   },
+  "pattern": [
+    "OBO",
+    "BRB",
+    "BDB"
+  ],
   "result": {
     "item": "projecte:mercurial_eye"
   }

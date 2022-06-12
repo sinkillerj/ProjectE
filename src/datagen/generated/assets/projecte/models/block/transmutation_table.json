@@ -1,13 +1,32 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "bottom": "projecte:block/transmutation_stone/bottom",
-    "top": "projecte:block/transmutation_stone/top",
-    "side": "projecte:block/transmutation_stone/side",
-    "particle": "projecte:block/transmutation_stone/top"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#bottom"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#side"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#side"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#side"
+        }
+      },
       "from": [
         0,
         0,
@@ -17,32 +36,13 @@
         16,
         4,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#bottom",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#top"
-        },
-        "north": {
-          "texture": "#side",
-          "cullface": "north"
-        },
-        "south": {
-          "texture": "#side",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#side",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#side",
-          "cullface": "east"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "bottom": "projecte:block/transmutation_stone/bottom",
+    "particle": "projecte:block/transmutation_stone/top",
+    "side": "projecte:block/transmutation_stone/side",
+    "top": "projecte:block/transmutation_stone/top"
+  }
 }

@@ -49,8 +49,12 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 		if (fluid == Fluids.EMPTY) {
 			throw new IllegalArgumentException("Can't make NSSFluid with an empty fluid");
 		}
-		//This should never be null or it would have crashed on being registered
-		return createFluid(fluid.getRegistryName(), nbt);
+		ResourceLocation registryName = ForgeRegistries.FLUIDS.getKey(fluid);
+		if (registryName == null) {
+			throw new IllegalArgumentException("Can't make an NSSFluid with an unregistered fluid");
+		}
+		//This should never be null, or it would have crashed on being registered
+		return createFluid(registryName, nbt);
 	}
 
 	/**

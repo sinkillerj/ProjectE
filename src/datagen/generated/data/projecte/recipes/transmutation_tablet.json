@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "DSD",
-    "STS",
-    "DSD"
-  ],
   "key": {
-    "S": {
-      "tag": "forge:stone"
-    },
     "D": {
       "item": "projecte:dark_matter_block"
+    },
+    "S": {
+      "tag": "forge:stone"
     },
     "T": {
       "item": "projecte:transmutation_table"
     }
   },
+  "pattern": [
+    "DSD",
+    "STS",
+    "DSD"
+  ],
   "result": {
     "item": "projecte:transmutation_tablet"
   }

@@ -11,7 +11,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITag;
@@ -25,14 +24,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link Tag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.
  */
 public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	private static final Set<NSSTag> createdTags = new HashSet<>();
 
 	/**
-	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link Tag}
+	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link ITag}
 	 *
 	 * @apiNote This method is meant for internal use of adding Tag -> Type and Type -> Tag conversions
 	 */
@@ -41,7 +40,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link Tag}s
+	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link ITag}s
 	 *
 	 * @apiNote This method is meant for internal use when the EMC mapper is reloading.
 	 */
@@ -62,7 +61,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link Tag}, or the {@link ResourceLocation} of the
+	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link ITag}, or the {@link ResourceLocation} of the object
 	 */
 	@NotNull
 	public ResourceLocation getResourceLocation() {

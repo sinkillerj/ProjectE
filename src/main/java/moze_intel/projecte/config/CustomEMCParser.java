@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.mojang.logging.LogUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -69,7 +70,7 @@ public final class CustomEMCParser {
 					writeDefaultFile();
 				}
 			} catch (IOException e) {
-				PECore.LOGGER.fatal("Exception in file I/O: couldn't create custom configuration files.");
+				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception in file I/O: couldn't create custom configuration files.");
 			}
 		}
 
@@ -77,7 +78,7 @@ public final class CustomEMCParser {
 			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
 			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem) || e.emc < 0);
 		} catch (IOException | JsonParseException e) {
-			PECore.LOGGER.fatal("Couldn't read custom emc file", e);
+			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Couldn't read custom emc file", e);
 			currentEntries = new CustomEMCFile(new ArrayList<>());
 		}
 	}

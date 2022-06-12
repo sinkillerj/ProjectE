@@ -42,9 +42,9 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -53,12 +53,12 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -67,22 +67,24 @@ public class ClientRegistration {
 	public static final ResourceLocation MODE_OVERRIDE = PECore.rl("mode");
 
 	@SubscribeEvent
-	public static void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event) {
-		registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
-		registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
-		registerScreen(PEContainerTypes.CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
-		registerScreen(PEContainerTypes.CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
-		registerScreen(PEContainerTypes.ALCH_CHEST_CONTAINER, AlchChestScreen::new);
-		registerScreen(PEContainerTypes.ALCH_BAG_CONTAINER, AlchBagScreen::new);
-		registerScreen(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
-		registerScreen(PEContainerTypes.TRANSMUTATION_CONTAINER, GUITransmutation::new);
-		registerScreen(PEContainerTypes.RELAY_MK1_CONTAINER, GUIRelayMK1::new);
-		registerScreen(PEContainerTypes.RELAY_MK2_CONTAINER, GUIRelayMK2::new);
-		registerScreen(PEContainerTypes.RELAY_MK3_CONTAINER, GUIRelayMK3::new);
-		registerScreen(PEContainerTypes.COLLECTOR_MK1_CONTAINER, AbstractCollectorScreen.MK1::new);
-		registerScreen(PEContainerTypes.COLLECTOR_MK2_CONTAINER, AbstractCollectorScreen.MK2::new);
-		registerScreen(PEContainerTypes.COLLECTOR_MK3_CONTAINER, AbstractCollectorScreen.MK3::new);
-		registerScreen(PEContainerTypes.MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
+	public static void registerContainers(RegisterEvent event) {
+		event.register(Registry.MENU_REGISTRY, helper -> {
+			registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
+			registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
+			registerScreen(PEContainerTypes.CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
+			registerScreen(PEContainerTypes.CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
+			registerScreen(PEContainerTypes.ALCH_CHEST_CONTAINER, AlchChestScreen::new);
+			registerScreen(PEContainerTypes.ALCH_BAG_CONTAINER, AlchBagScreen::new);
+			registerScreen(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
+			registerScreen(PEContainerTypes.TRANSMUTATION_CONTAINER, GUITransmutation::new);
+			registerScreen(PEContainerTypes.RELAY_MK1_CONTAINER, GUIRelayMK1::new);
+			registerScreen(PEContainerTypes.RELAY_MK2_CONTAINER, GUIRelayMK2::new);
+			registerScreen(PEContainerTypes.RELAY_MK3_CONTAINER, GUIRelayMK3::new);
+			registerScreen(PEContainerTypes.COLLECTOR_MK1_CONTAINER, AbstractCollectorScreen.MK1::new);
+			registerScreen(PEContainerTypes.COLLECTOR_MK2_CONTAINER, AbstractCollectorScreen.MK2::new);
+			registerScreen(PEContainerTypes.COLLECTOR_MK3_CONTAINER, AbstractCollectorScreen.MK3::new);
+			registerScreen(PEContainerTypes.MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
+		});
 	}
 
 	@SubscribeEvent
@@ -164,7 +166,7 @@ public class ClientRegistration {
 		}
 	}
 
-	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
+	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess < C >> void registerScreen(ContainerTypeRegistryObject < C > type, ScreenConstructor < C, U > factory) {
 		MenuScreens.register(type.get(), factory);
 	}
 }

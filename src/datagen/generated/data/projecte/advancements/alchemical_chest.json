@@ -1,23 +1,7 @@
 {
   "parent": "projecte:root",
-  "display": {
-    "icon": {
-      "item": "projecte:alchemical_chest"
-    },
-    "title": {
-      "translate": "advancements.projecte.alch_chest"
-    },
-    "description": {
-      "translate": "advancements.projecte.alch_chest.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "alch_chest": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projecte.alch_chest.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projecte:alchemical_chest"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projecte.alch_chest"
     }
   },
   "requirements": [

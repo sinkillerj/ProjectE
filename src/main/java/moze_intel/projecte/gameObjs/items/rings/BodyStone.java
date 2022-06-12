@@ -52,7 +52,6 @@ public class BodyStone extends PEToggleItem implements IPedestalItem {
 					if (player.getFoodData().needsFood() && timers.canFeed()) {
 						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						player.getFoodData().eat(2, 10);
-						level.gameEvent(player, GameEvent.EAT, player.eyeBlockPosition());
 						player.gameEvent(GameEvent.EAT);
 						removeEmc(stack, 64);
 					}

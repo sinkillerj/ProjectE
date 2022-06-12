@@ -18,12 +18,13 @@ import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.impl.capability.AlchBagImpl;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
-import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
@@ -45,14 +46,14 @@ public class ShowBagCMD {
 
 	private static final SimpleCommandExceptionType NOT_FOUND = new SimpleCommandExceptionType(PELang.SHOWBAG_NOT_FOUND.translate());
 
-	public static LiteralArgumentBuilder<CommandSourceStack> register() {
+	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("showbag")
 				.requires(cs -> cs.hasPermission(2))
-				.then(Commands.argument("color", new ColorArgument())
+				.then(Commands.argument("color", ColorArgument.color())
 						.then(Commands.argument("target", EntityArgument.player())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))))
-						.then(Commands.argument("uuid", new UUIDArgument())
-								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), UUIDArgument.getUUID(ctx, "uuid")))));
+						.then(Commands.argument("uuid", UuidArgument.uuid())
+								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), UuidArgument.getUuid(ctx, "uuid")))));
 	}
 
 	private static int showBag(CommandContext<CommandSourceStack> ctx, DyeColor color, ServerPlayer player) throws CommandSyntaxException {

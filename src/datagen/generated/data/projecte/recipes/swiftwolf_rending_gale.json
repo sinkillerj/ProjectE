@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "DFD",
-    "FIF",
-    "DFD"
-  ],
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -16,6 +11,11 @@
       "item": "projecte:iron_band"
     }
   },
+  "pattern": [
+    "DFD",
+    "FIF",
+    "DFD"
+  ],
   "result": {
     "item": "projecte:swiftwolf_rending_gale"
   }

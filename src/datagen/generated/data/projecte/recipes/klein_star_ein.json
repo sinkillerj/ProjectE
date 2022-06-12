@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "M": {
+      "item": "projecte:mobius_fuel"
+    }
+  },
   "pattern": [
     "MMM",
     "MDM",
     "MMM"
   ],
-  "key": {
-    "M": {
-      "item": "projecte:mobius_fuel"
-    },
-    "D": {
-      "tag": "forge:gems/diamond"
-    }
-  },
   "result": {
     "item": "projecte:klein_star_ein"
   }

@@ -13,20 +13,9 @@
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "group": "projecte:tome",
-        "pattern": [
-          "LMH",
-          "KBK",
-          "HML"
-        ],
         "key": {
           "B": {
             "item": "minecraft:book"
-          },
-          "L": {
-            "item": "projecte:low_covalence_dust"
-          },
-          "M": {
-            "item": "projecte:medium_covalence_dust"
           },
           "H": {
             "item": "projecte:high_covalence_dust"
@@ -35,8 +24,19 @@
             "type": "forge:partial_nbt",
             "item": "projecte:klein_star_omega",
             "nbt": "{StoredEMC:51200000L}"
+          },
+          "L": {
+            "item": "projecte:low_covalence_dust"
+          },
+          "M": {
+            "item": "projecte:medium_covalence_dust"
           }
         },
+        "pattern": [
+          "LMH",
+          "KBK",
+          "HML"
+        ],
         "result": {
           "item": "projecte:tome"
         }
@@ -51,28 +51,28 @@
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "group": "projecte:tome",
-        "pattern": [
-          "LMH",
-          "KBK",
-          "HML"
-        ],
         "key": {
           "B": {
             "item": "minecraft:book"
-          },
-          "L": {
-            "item": "projecte:low_covalence_dust"
-          },
-          "M": {
-            "item": "projecte:medium_covalence_dust"
           },
           "H": {
             "item": "projecte:high_covalence_dust"
           },
           "K": {
             "item": "projecte:klein_star_omega"
+          },
+          "L": {
+            "item": "projecte:low_covalence_dust"
+          },
+          "M": {
+            "item": "projecte:medium_covalence_dust"
           }
         },
+        "pattern": [
+          "LMH",
+          "KBK",
+          "HML"
+        ],
         "result": {
           "item": "projecte:tome"
         }

@@ -1,23 +1,7 @@
 {
   "parent": "projecte:philosophers_stone",
-  "display": {
-    "icon": {
-      "item": "projecte:klein_star_ein"
-    },
-    "title": {
-      "translate": "advancements.projecte.klein_star"
-    },
-    "description": {
-      "translate": "advancements.projecte.klein_star.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "klein_star": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projecte.klein_star.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projecte:klein_star_ein"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projecte.klein_star"
     }
   },
   "requirements": [

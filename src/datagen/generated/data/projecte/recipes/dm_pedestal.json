@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:dark_matter_block"
+    },
+    "R": {
+      "item": "projecte:red_matter"
+    }
+  },
   "pattern": [
     "RDR",
     "RDR",
     "DDD"
   ],
-  "key": {
-    "R": {
-      "item": "projecte:red_matter"
-    },
-    "D": {
-      "item": "projecte:dark_matter_block"
-    }
-  },
   "result": {
     "item": "projecte:dm_pedestal"
   }

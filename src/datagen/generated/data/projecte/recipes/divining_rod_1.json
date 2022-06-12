@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "projecte:low_covalence_dust"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
+  },
   "pattern": [
     "DDD",
     "DSD",
     "DDD"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:rods/wooden"
-    },
-    "D": {
-      "item": "projecte:low_covalence_dust"
-    }
-  },
   "result": {
     "item": "projecte:divining_rod_1"
   }

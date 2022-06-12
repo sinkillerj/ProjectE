@@ -1,6 +1,50 @@
 {
   "advancements": [
     {
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+          "has_covalence_dust": {
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "projecte:low_covalence_dust"
+                  ]
+                },
+                {
+                  "items": [
+                    "projecte:medium_covalence_dust"
+                  ]
+                },
+                {
+                  "items": [
+                    "projecte:high_covalence_dust"
+                  ]
+                }
+              ]
+            },
+            "trigger": "minecraft:inventory_changed"
+          },
+          "has_the_recipe": {
+            "conditions": {
+              "recipe": "projecte:tome"
+            },
+            "trigger": "minecraft:recipe_unlocked"
+          }
+        },
+        "requirements": [
+          [
+            "has_covalence_dust",
+            "has_the_recipe"
+          ]
+        ],
+        "rewards": {
+          "recipes": [
+            "projecte:tome"
+          ]
+        }
+      },
       "conditions": [
         {
           "type": "projecte:tome_enabled"
@@ -8,17 +52,13 @@
         {
           "type": "projecte:full_klein_stars"
         }
-      ],
+      ]
+    },
+    {
       "advancement": {
         "parent": "minecraft:recipes/root",
-        "rewards": {
-          "recipes": [
-            "projecte:tome"
-          ]
-        },
         "criteria": {
           "has_covalence_dust": {
-            "trigger": "minecraft:inventory_changed",
             "conditions": {
               "items": [
                 {
@@ -37,13 +77,14 @@
                   ]
                 }
               ]
-            }
+            },
+            "trigger": "minecraft:inventory_changed"
           },
           "has_the_recipe": {
-            "trigger": "minecraft:recipe_unlocked",
             "conditions": {
               "recipe": "projecte:tome"
-            }
+            },
+            "trigger": "minecraft:recipe_unlocked"
           }
         },
         "requirements": [
@@ -51,59 +92,18 @@
             "has_covalence_dust",
             "has_the_recipe"
           ]
-        ]
-      }
-    },
-    {
+        ],
+        "rewards": {
+          "recipes": [
+            "projecte:tome"
+          ]
+        }
+      },
       "conditions": [
         {
           "type": "projecte:tome_enabled"
         }
-      ],
-      "advancement": {
-        "parent": "minecraft:recipes/root",
-        "rewards": {
-          "recipes": [
-            "projecte:tome"
-          ]
-        },
-        "criteria": {
-          "has_covalence_dust": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-              "items": [
-                {
-                  "items": [
-                    "projecte:low_covalence_dust"
-                  ]
-                },
-                {
-                  "items": [
-                    "projecte:medium_covalence_dust"
-                  ]
-                },
-                {
-                  "items": [
-                    "projecte:high_covalence_dust"
-                  ]
-                }
-              ]
-            }
-          },
-          "has_the_recipe": {
-            "trigger": "minecraft:recipe_unlocked",
-            "conditions": {
-              "recipe": "projecte:tome"
-            }
-          }
-        },
-        "requirements": [
-          [
-            "has_covalence_dust",
-            "has_the_recipe"
-          ]
-        ]
-      }
+      ]
     }
   ]
 }

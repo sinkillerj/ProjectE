@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
+    },
+    "O": {
+      "tag": "forge:obsidian"
+    },
+    "S": {
+      "item": "minecraft:glass"
+    }
+  },
   "pattern": [
     "OSO",
     "ODO",
     "OOO"
   ],
-  "key": {
-    "S": {
-      "item": "minecraft:glass"
-    },
-    "O": {
-      "tag": "forge:obsidian"
-    },
-    "D": {
-      "tag": "forge:storage_blocks/diamond"
-    }
-  },
   "result": {
     "item": "projecte:relay_mk1"
   }

@@ -26,26 +26,22 @@ public class ProjectEDataGenerator {
 	public static void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-		if (event.includeClient()) {
-			//Client side data generators
-			gen.addProvider(new PELangProvider(gen));
-			gen.addProvider(new PESoundProvider(gen, existingFileHelper));
-			gen.addProvider(new PEBlockStateProvider(gen, existingFileHelper));
-			gen.addProvider(new PEItemModelProvider(gen, existingFileHelper));
-		}
-		if (event.includeServer()) {
-			//Server side data generators
-			//Tag data generators
-			PEBlockTagsProvider blockTagsProvider = new PEBlockTagsProvider(gen, existingFileHelper);
-			gen.addProvider(blockTagsProvider);
-			gen.addProvider(new PEItemTagsProvider(gen, blockTagsProvider, existingFileHelper));
-			gen.addProvider(new PEEntityTypeTagsProvider(gen, existingFileHelper));
-			gen.addProvider(new PEBlockEntityTypeTagsProvider(gen, existingFileHelper));
-			//Other generators (after tags in case we need them to exist)
-			gen.addProvider(new PEAdvancementsProvider(gen, existingFileHelper));
-			gen.addProvider(new PELootProvider(gen));
-			gen.addProvider(new PERecipeProvider(gen));
-			gen.addProvider(new PECustomConversionProvider(gen));
-		}
+		//Client side data generators
+		gen.addProvider(event.includeClient(), new PELangProvider(gen));
+		gen.addProvider(event.includeClient(), new PESoundProvider(gen, existingFileHelper));
+		gen.addProvider(event.includeClient(), new PEBlockStateProvider(gen, existingFileHelper));
+		gen.addProvider(event.includeClient(), new PEItemModelProvider(gen, existingFileHelper));
+		//Server side data generators
+		//Tag data generators
+		PEBlockTagsProvider blockTagsProvider = new PEBlockTagsProvider(gen, existingFileHelper);
+		gen.addProvider(event.includeServer(), blockTagsProvider);
+		gen.addProvider(event.includeServer(), new PEItemTagsProvider(gen, blockTagsProvider, existingFileHelper));
+		gen.addProvider(event.includeServer(), new PEEntityTypeTagsProvider(gen, existingFileHelper));
+		gen.addProvider(event.includeServer(), new PEBlockEntityTypeTagsProvider(gen, existingFileHelper));
+		//Other generators (after tags in case we need them to exist)
+		gen.addProvider(event.includeServer(), new PEAdvancementsProvider(gen, existingFileHelper));
+		gen.addProvider(event.includeServer(), new PELootProvider(gen));
+		gen.addProvider(event.includeServer(), new PERecipeProvider(gen));
+		gen.addProvider(event.includeServer(), new PECustomConversionProvider(gen));
 	}
 }

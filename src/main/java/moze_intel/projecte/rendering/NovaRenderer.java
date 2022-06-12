@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import java.util.function.Supplier;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
@@ -17,10 +18,12 @@ import org.jetbrains.annotations.NotNull;
 //Only used on the client
 public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
 
+	private final BlockRenderDispatcher blockRenderer;
 	private final Supplier<BlockState> stateSupplier;
 
 	public NovaRenderer(EntityRendererProvider.Context context, Supplier<BlockState> stateSupplier) {
 		super(context);
+		this.blockRenderer = context.getBlockRenderDispatcher();
 		this.stateSupplier = stateSupplier;
 		this.shadowRadius = 0.5F;
 	}
@@ -42,7 +45,7 @@ public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
 		matrix.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 		matrix.translate(-0.5D, -0.5D, 0.5D);
 		matrix.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-		TntMinecartRenderer.renderWhiteSolidBlock(stateSupplier.get(), matrix, renderer, light, fuse / 5 % 2 == 0);
+		TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, stateSupplier.get(), matrix, renderer, light, fuse / 5 % 2 == 0);
 		matrix.popPose();
 		super.render(entity, entityYaw, partialTick, matrix, renderer, light);
 	}

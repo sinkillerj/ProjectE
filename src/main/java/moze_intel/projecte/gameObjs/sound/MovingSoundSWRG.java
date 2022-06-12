@@ -5,6 +5,7 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
 // [VanillaCopy] MinecartTickableSound
 //Only used on the client
@@ -13,8 +14,8 @@ public class MovingSoundSWRG extends AbstractTickableSoundInstance {
 	private final EntitySWRGProjectile swrgProjectile;
 	private float distance = 0.0F;
 
-	public MovingSoundSWRG(EntitySWRGProjectile swrgProjectile) {
-		super(PESoundEvents.WIND_MAGIC.get(), SoundSource.WEATHER);
+	public MovingSoundSWRG(EntitySWRGProjectile swrgProjectile, RandomSource random) {
+		super(PESoundEvents.WIND_MAGIC.get(), SoundSource.WEATHER, random);
 		this.swrgProjectile = swrgProjectile;
 		this.x = this.swrgProjectile.getX();
 		this.y = this.swrgProjectile.getY();

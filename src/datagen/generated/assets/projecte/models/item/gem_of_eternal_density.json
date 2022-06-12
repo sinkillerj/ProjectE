@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecte:item/dense_gem_off"
-  },
   "overrides": [
     {
+      "model": "projecte:item/gem_of_eternal_density_on",
       "predicate": {
         "projecte:active": 1.0
-      },
-      "model": "projecte:item/gem_of_eternal_density_on"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "projecte:item/dense_gem_off"
+  }
 }

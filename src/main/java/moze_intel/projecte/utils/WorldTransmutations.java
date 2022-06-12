@@ -145,7 +145,7 @@ public final class WorldTransmutations {
 				// so instead). The other case this may fail is if something changed between
 				// MC versions and we need to fix some conversion that no longer necessarily
 				// makes sense
-				PECore.LOGGER.error("Something went wrong registering conversions for " + from.getRegistryName(), e);
+				PECore.LOGGER.error("Something went wrong registering conversions for {}", RegistryUtils.getName(from), e);
 			}
 		}
 	}

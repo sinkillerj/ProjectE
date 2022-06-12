@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "ADA",
-    "AAA"
-  ],
   "key": {
     "A": {
       "item": "projecte:aeternalis_fuel"
@@ -13,6 +8,11 @@
       "tag": "forge:storage_blocks/diamond"
     }
   },
+  "pattern": [
+    "AAA",
+    "ADA",
+    "AAA"
+  ],
   "result": {
     "item": "projecte:dark_matter"
   }

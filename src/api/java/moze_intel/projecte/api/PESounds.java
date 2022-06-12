@@ -1,28 +1,25 @@
 package moze_intel.projecte.api;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@ObjectHolder(ProjectEAPI.PROJECTE_MODID)
 public final class PESounds {
 
-	@ObjectHolder("windmagic")
-	public static SoundEvent WIND = null;
-	@ObjectHolder("watermagic")
-	public static SoundEvent WATER = null;
-	@ObjectHolder("power")
-	public static SoundEvent POWER = null;
-	@ObjectHolder("heal")
-	public static SoundEvent HEAL = null;
-	@ObjectHolder("destruct")
-	public static SoundEvent DESTRUCT = null;
-	@ObjectHolder("charge")
-	public static SoundEvent CHARGE = null;
-	@ObjectHolder("uncharge")
-	public static SoundEvent UNCHARGE = null;
-	@ObjectHolder("transmute")
-	public static SoundEvent TRANSMUTE = null;
+	public static RegistryObject<SoundEvent> WIND = get("windmagic");
+	public static RegistryObject<SoundEvent> WATER = get("watermagic");
+	public static RegistryObject<SoundEvent> POWER = get("power");
+	public static RegistryObject<SoundEvent> HEAL = get("heal");
+	public static RegistryObject<SoundEvent> DESTRUCT = get("destruct");
+	public static RegistryObject<SoundEvent> CHARGE = get("charge");
+	public static RegistryObject<SoundEvent> UNCHARGE = get("uncharge");
+	public static RegistryObject<SoundEvent> TRANSMUTE = get("transmute");
 
 	private PESounds() {
+	}
+
+	private static RegistryObject<SoundEvent> get(String name) {
+		return RegistryObject.create(new ResourceLocation(ProjectEAPI.PROJECTE_MODID, name), ForgeRegistries.SOUND_EVENTS);
 	}
 }

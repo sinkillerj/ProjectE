@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public record KnowledgeSyncChangePKT(ItemInfo change, boolean learned) implements IPEPacket {
 
@@ -31,12 +32,12 @@ public record KnowledgeSyncChangePKT(ItemInfo change, boolean learned) implement
 
 	@Override
 	public void encode(FriendlyByteBuf buffer) {
-		buffer.writeRegistryId(change.getItem());
+		buffer.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, change.getItem());
 		buffer.writeNbt(change.getNBT());
 		buffer.writeBoolean(learned);
 	}
 
 	public static KnowledgeSyncChangePKT decode(FriendlyByteBuf buffer) {
-		return new KnowledgeSyncChangePKT(ItemInfo.fromItem(buffer.readRegistryId(), buffer.readNbt()), buffer.readBoolean());
+		return new KnowledgeSyncChangePKT(ItemInfo.fromItem(buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS), buffer.readNbt()), buffer.readBoolean());
 	}
 }

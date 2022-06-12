@@ -1,7 +1,8 @@
 package moze_intel.projecte.utils;
 
-import java.util.Collections;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
@@ -54,8 +55,9 @@ public class NovaExplosion extends Explosion {
 		}
 		if (hasExplosionMode) {
 			NonNullList<ItemStack> allDrops = NonNullList.create();
-			List<BlockPos> affectedBlockPositions = getToBlow();
-			Collections.shuffle(affectedBlockPositions, level.random);
+			List<BlockPos> toBlow = getToBlow();
+			ObjectArrayList<BlockPos> affectedBlockPositions = toBlow instanceof ObjectArrayList<BlockPos> to ? to : new ObjectArrayList<>(toBlow);
+			Util.shuffle(affectedBlockPositions, level.random);
 			for (BlockPos pos : affectedBlockPositions) {
 				BlockState state = level.getBlockState(pos);
 				if (!state.isAir()) {

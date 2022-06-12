@@ -17,6 +17,13 @@ public class ColorArgument implements ArgumentType<DyeColor> {
 
 	private static final List<String> EXAMPLES = Arrays.asList("red", "brown", "light_gray");
 
+	private ColorArgument() {
+	}
+
+	public static ColorArgument color() {
+		return new ColorArgument();
+	}
+
 	@Override
 	public DyeColor parse(StringReader reader) throws CommandSyntaxException {
 		String s = reader.readUnquotedString();

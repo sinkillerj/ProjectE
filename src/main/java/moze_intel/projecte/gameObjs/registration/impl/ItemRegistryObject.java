@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
 import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
+import moze_intel.projecte.utils.RegistryUtils;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.RegistryObject;
@@ -22,5 +24,9 @@ public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject
 	@Override
 	public String getTranslationKey() {
 		return get().getDescriptionId();
+	}
+
+	public ResourceLocation getRegistryName() {
+		return RegistryUtils.getName(get());
 	}
 }

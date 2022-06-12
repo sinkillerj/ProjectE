@@ -4,6 +4,7 @@ import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
+import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -157,7 +158,7 @@ public class PEBlockStateProvider extends BlockStateProvider {
 
 	private void registerInterdictionTorch() {
 		simpleBlock(PEBlocks.INTERDICTION_TORCH.getBlock(), models().torch(getName(PEBlocks.INTERDICTION_TORCH), modLoc("block/interdiction_torch")));
-		horizontalBlock(PEBlocks.INTERDICTION_TORCH.getWallBlock(), models().torchWall(PEBlocks.INTERDICTION_TORCH.getWallBlock().getRegistryName().getPath(),
+		horizontalBlock(PEBlocks.INTERDICTION_TORCH.getWallBlock(), models().torchWall(RegistryUtils.getPath(PEBlocks.INTERDICTION_TORCH.getWallBlock()),
 				modLoc("block/interdiction_torch")), 90);
 	}
 
@@ -202,6 +203,6 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private static String getName(ItemLike itemProvider) {
-		return itemProvider.asItem().getRegistryName().getPath();
+		return RegistryUtils.getPath(itemProvider.asItem());
 	}
 }

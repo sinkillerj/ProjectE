@@ -1,26 +1,26 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "projecte:item/rings/swrg_off"
-  },
   "overrides": [
     {
+      "model": "projecte:item/swiftwolf_rending_gale_fly",
       "predicate": {
         "projecte:mode": 1.0
-      },
-      "model": "projecte:item/swiftwolf_rending_gale_fly"
+      }
     },
     {
+      "model": "projecte:item/swiftwolf_rending_gale_repel",
       "predicate": {
         "projecte:mode": 2.0
-      },
-      "model": "projecte:item/swiftwolf_rending_gale_repel"
+      }
     },
     {
+      "model": "projecte:item/swiftwolf_rending_gale_fly_repel",
       "predicate": {
         "projecte:mode": 3.0
-      },
-      "model": "projecte:item/swiftwolf_rending_gale_fly_repel"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "projecte:item/rings/swrg_off"
+  }
 }
