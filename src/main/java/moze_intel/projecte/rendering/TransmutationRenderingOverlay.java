@@ -98,7 +98,7 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 		BlockHitResult rtr = philoStone.getHitBlock(player);
 		if (rtr.getType() == HitResult.Type.BLOCK) {
 			BlockState current = level.getBlockState(rtr.getBlockPos());
-			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isShiftKeyDown());
+			transmutationResult = WorldTransmutations.getWorldTransmutation(current, player.isSecondaryUseActive());
 			if (transmutationResult != null) {
 				Vec3 viewPosition = activeRenderInfo.getPosition();
 				int charge = philoStone.getCharge(stack);

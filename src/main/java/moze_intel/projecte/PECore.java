@@ -350,9 +350,7 @@ public class PECore {
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
-		CommandBuildContext context = null;//event.getBuildContext();
-		//TODO - 1.19: Re-enable
-		if (false)
+		CommandBuildContext context = event.getBuildContext();
 		event.getDispatcher().register(Commands.literal("projecte")
 				.then(ClearKnowledgeCMD.register(context))
 				.then(DumpMissingEmc.register(context))

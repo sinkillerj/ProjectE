@@ -158,7 +158,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int charge = getCharge(eye);
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
-			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isShiftKeyDown() && !startingState.isAir())) {
+			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isSecondaryUseActive() && !startingState.isAir())) {
 				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = level.getBlockState(offsetPos);
 				if (!offsetState.getMaterial().isReplaceable()) {

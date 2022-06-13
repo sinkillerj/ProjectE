@@ -48,11 +48,11 @@ public class GemLegs extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, Level level, Player player) {
 		if (level.isClientSide) {
-			if (player.isShiftKeyDown() && !player.isOnGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
+			if (player.isSecondaryUseActive() && !player.isOnGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
 				player.setDeltaMovement(player.getDeltaMovement().add(0, -0.32F, 0));
 			}
 		}
-		if (player.isShiftKeyDown()) {
+		if (player.isSecondaryUseActive()) {
 			AABB box = new AABB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
 					player.getX() + 3.5, player.getY() + 3.5, player.getZ() + 3.5);
 			WorldHelper.repelEntitiesSWRG(level, box, player);

@@ -57,7 +57,7 @@ public interface IItemCharge {
 		int currentCharge = getCharge(stack);
 		int numCharges = getNumCharges(stack);
 
-		if (player.isShiftKeyDown()) {
+		if (player.isSecondaryUseActive()) {
 			if (currentCharge > 0) {
 				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), PESounds.UNCHARGE.get(), SoundSource.PLAYERS, 1.0F,
 						0.5F + ((0.5F / (float) numCharges) * currentCharge));

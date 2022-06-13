@@ -64,7 +64,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public BlockHitResult getHitBlock(Player player) {
-		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isShiftKeyDown() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isSecondaryUseActive() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 	}
 
 	@NotNull
@@ -128,7 +128,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	public static Map<BlockPos, BlockState> getChanges(Level level, BlockPos pos, Player player, Direction sideHit, int mode, int charge) {
 		BlockState targeted = level.getBlockState(pos);
-		boolean isSneaking = player.isShiftKeyDown();
+		boolean isSneaking = player.isSecondaryUseActive();
 		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
 		if (result == null) {
 			//Targeted block has no transmutations, no positions

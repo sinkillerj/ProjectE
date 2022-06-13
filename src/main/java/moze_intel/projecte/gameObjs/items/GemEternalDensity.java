@@ -132,7 +132,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
-			if (player.isShiftKeyDown()) {
+			if (player.isSecondaryUseActive()) {
 				CompoundTag nbt = stack.getOrCreateTag();
 				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);

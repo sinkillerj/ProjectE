@@ -7,12 +7,20 @@ import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Instrument;
+import net.minecraft.world.item.InstrumentItem;
+import net.minecraft.world.item.Instruments;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraftforge.common.Tags;
@@ -49,6 +57,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(ingotTag("cyanite"), 4).ingredient(ingotTag("uranium")).propagateTags().end()
 		;
 		NormalizedSimpleStack singleEMC = NSSFake.create("single_emc");
+		ItemStack waterBottle = PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER);
 		CustomConversionBuilder defaultBuilder = createConversionBuilder(PECore.rl("defaults"))
 				.comment("Default values for vanilla items.")
 				.group("default")
@@ -57,11 +66,13 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.PODZOL).ingredient(Items.DIRT, 2).end()
 				.conversion(Items.ROOTED_DIRT).ingredient(Items.DIRT).ingredient(Items.HANGING_ROOTS).end()
 				.conversion(Items.MYCELIUM).ingredient(Items.DIRT, 2).end()
+				.conversion(Items.MUD).ingredient(Items.DIRT).ingredient(waterBottle).ingredient(Items.GLASS_BOTTLE, -1).end()
 				.conversion(Items.CRIMSON_NYLIUM).ingredient(Items.NETHERRACK, 2).end()
 				.conversion(Items.WARPED_NYLIUM).ingredient(Items.NETHERRACK, 2).end()
 				.conversion(Items.IRON_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_IRON, 8).end()
 				.conversion(Items.GOLDEN_HORSE_ARMOR).ingredient(Tags.Items.INGOTS_GOLD, 8).end()
 				.conversion(Items.DIAMOND_HORSE_ARMOR).ingredient(Tags.Items.GEMS_DIAMOND, 8).end()
+				.conversion(Items.DISC_FRAGMENT_5, 9).ingredient(Items.MUSIC_DISC_5).end()
 				.conversion(Items.CARVED_PUMPKIN).ingredient(Items.PUMPKIN).end()
 				.conversion(Items.ENCHANTED_BOOK).ingredient(Items.BOOK).end()
 				.conversion(Items.ENCHANTED_GOLDEN_APPLE).ingredient(Items.APPLE).ingredient(Tags.Items.STORAGE_BLOCKS_GOLD, 8).end()
@@ -85,6 +96,12 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.SOUL_SOIL).ingredient(Items.SOUL_SAND).end()
 				.conversion(Items.WARPED_WART_BLOCK).ingredient(Items.NETHER_WART_BLOCK).end()
 				.conversion(Items.SHROOMLIGHT).ingredient(Items.GLOWSTONE_DUST).ingredient(Tags.Items.MUSHROOMS).end()
+				.conversion(Items.OCHRE_FROGLIGHT, 3).ingredient(Items.MAGMA_CREAM).end()
+				.conversion(Items.PEARLESCENT_FROGLIGHT, 3).ingredient(Items.MAGMA_CREAM).end()
+				.conversion(Items.VERDANT_FROGLIGHT, 3).ingredient(Items.MAGMA_CREAM).end()
+				.conversion(Items.SCULK).ingredient(Items.SCULK_VEIN, 4).end()
+				.conversion(Items.SCULK_SENSOR).ingredient(Items.COMPARATOR, 4).ingredient(Items.REPEATER, 4).ingredient(Items.SCULK, 1).end()
+				.conversion(Items.SCULK_SHRIEKER).ingredient(Items.SCULK_CATALYST, 4).end()
 				.end()
 				.group("dirt_path")
 				.comment("Adds the various valid conversions into dirt paths.")
@@ -225,6 +242,8 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.CHORUS_PLANT, 64)
 				.before(Items.CHORUS_FLOWER, 96)
 				.before(Items.CHORUS_FRUIT, 192)
+				.before(Items.SCULK_VEIN, 4)
+				.before(Items.SCULK_CATALYST, 8_040)
 				.before(Tags.Items.SEEDS_WHEAT, 16)
 				.before(Tags.Items.SEEDS_BEETROOT, 16)
 				.before(Items.MELON_SLICE, 16)
@@ -254,6 +273,16 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.EGG, 32)
 				.before(Items.SCUTE, 96)
 				.before(Items.TURTLE_EGG, 192)
+				//Regular horns
+				.before(horn(Instruments.PONDER_GOAT_HORN), 96)
+				.before(horn(Instruments.SING_GOAT_HORN), 96)
+				.before(horn(Instruments.SEEK_GOAT_HORN), 96)
+				.before(horn(Instruments.FEEL_GOAT_HORN), 96)
+				//Screaming horns
+				.before(horn(Instruments.ADMIRE_GOAT_HORN), 192)
+				.before(horn(Instruments.CALL_GOAT_HORN), 192)
+				.before(horn(Instruments.YEARN_GOAT_HORN), 192)
+				.before(horn(Instruments.DREAM_GOAT_HORN), 192)
 				.before(Items.FEATHER, 48)
 				.before(Items.RABBIT_HIDE, 16)
 				.before(Items.RABBIT_FOOT, 128)
@@ -272,6 +301,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.HEART_OF_THE_SEA, 32_768)
 				.before(Items.DRAGON_EGG, 262_144)
 				.before(Items.SADDLE, 192)
+				.before(Items.ECHO_SHARD, 192)
 				.before(Items.NAME_TAG, 192)
 				.before(ItemTags.MUSIC_DISCS, 2_048)
 				.before(Items.FLINT, 4)
@@ -293,6 +323,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(ItemTags.SAPLINGS, 32)
 				.before(Tags.Items.RODS_WOODEN, 4)
 				.before(ItemTags.LEAVES, 1)
+				.before(Items.MANGROVE_ROOTS, 4)
 				.before(ItemTags.WOOL, 48)
 				.before(Items.NETHERITE_SCRAP, 12_288)
 				.before(Tags.Items.GEMS_DIAMOND, 8_192)
@@ -306,6 +337,10 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 					.ingredient(color.getTag())
 					.end();
 		}
+	}
+
+	private ItemStack horn(ResourceKey<Instrument> instrument) {
+		return InstrumentItem.create(Items.GOAT_HORN, Registry.INSTRUMENT.getHolder(instrument).orElseThrow());
 	}
 
 	private static NormalizedSimpleStack ingotTag(String ingot) {

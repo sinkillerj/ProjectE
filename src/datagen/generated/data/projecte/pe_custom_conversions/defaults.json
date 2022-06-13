@@ -180,6 +180,14 @@
         },
         {
           "ingredients": {
+            "minecraft:dirt": 1,
+            "minecraft:glass_bottle": -1,
+            "minecraft:potion{Potion:\"minecraft:water\"}": 1
+          },
+          "output": "minecraft:mud"
+        },
+        {
+          "ingredients": {
             "minecraft:netherrack": 2
           },
           "output": "minecraft:crimson_nylium"
@@ -207,6 +215,13 @@
             "#forge:gems/diamond": 8
           },
           "output": "minecraft:diamond_horse_armor"
+        },
+        {
+          "count": 9,
+          "ingredients": [
+            "minecraft:music_disc_5"
+          ],
+          "output": "minecraft:disc_fragment_5"
         },
         {
           "ingredients": [
@@ -328,6 +343,47 @@
             "#forge:mushrooms"
           ],
           "output": "minecraft:shroomlight"
+        },
+        {
+          "count": 3,
+          "ingredients": [
+            "minecraft:magma_cream"
+          ],
+          "output": "minecraft:ochre_froglight"
+        },
+        {
+          "count": 3,
+          "ingredients": [
+            "minecraft:magma_cream"
+          ],
+          "output": "minecraft:pearlescent_froglight"
+        },
+        {
+          "count": 3,
+          "ingredients": [
+            "minecraft:magma_cream"
+          ],
+          "output": "minecraft:verdant_froglight"
+        },
+        {
+          "ingredients": {
+            "minecraft:sculk_vein": 4
+          },
+          "output": "minecraft:sculk"
+        },
+        {
+          "ingredients": {
+            "minecraft:comparator": 4,
+            "minecraft:repeater": 4,
+            "minecraft:sculk": 1
+          },
+          "output": "minecraft:sculk_sensor"
+        },
+        {
+          "ingredients": {
+            "minecraft:sculk_catalyst": 4
+          },
+          "output": "minecraft:sculk_shrieker"
         }
       ]
     },
@@ -608,6 +664,7 @@
       "minecraft:diorite": 16,
       "minecraft:dirt": 1,
       "minecraft:dragon_egg": 262144,
+      "minecraft:echo_shard": 192,
       "minecraft:egg": 32,
       "minecraft:end_stone": 1,
       "minecraft:ender_pearl": 1024,
@@ -621,6 +678,14 @@
       "minecraft:ghast_tear": 4096,
       "minecraft:glow_berries": 16,
       "minecraft:glow_lichen": 8,
+      "minecraft:goat_horn{instrument:\"minecraft:admire_goat_horn\"}": 192,
+      "minecraft:goat_horn{instrument:\"minecraft:call_goat_horn\"}": 192,
+      "minecraft:goat_horn{instrument:\"minecraft:dream_goat_horn\"}": 192,
+      "minecraft:goat_horn{instrument:\"minecraft:feel_goat_horn\"}": 96,
+      "minecraft:goat_horn{instrument:\"minecraft:ponder_goat_horn\"}": 96,
+      "minecraft:goat_horn{instrument:\"minecraft:seek_goat_horn\"}": 96,
+      "minecraft:goat_horn{instrument:\"minecraft:sing_goat_horn\"}": 96,
+      "minecraft:goat_horn{instrument:\"minecraft:yearn_goat_horn\"}": 192,
       "minecraft:granite": 16,
       "minecraft:grass": 1,
       "minecraft:gravel": 4,
@@ -637,6 +702,7 @@
       "minecraft:large_fern": 1,
       "minecraft:lily_pad": 16,
       "minecraft:magma_block": 128,
+      "minecraft:mangrove_roots": 4,
       "minecraft:melon_slice": 16,
       "minecraft:moss_block": 12,
       "minecraft:mutton": 64,
@@ -663,6 +729,8 @@
       "minecraft:saddle": 192,
       "minecraft:salmon": 64,
       "minecraft:sand": 1,
+      "minecraft:sculk_catalyst": 8040,
+      "minecraft:sculk_vein": 4,
       "minecraft:scute": 96,
       "minecraft:sea_pickle": 16,
       "minecraft:seagrass": 1,
