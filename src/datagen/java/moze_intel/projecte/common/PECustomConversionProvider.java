@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.Tags.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
@@ -148,11 +148,11 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.end()
 				.group("fluid")
 				.comment("Calculates the costs of filled buckets and some fluids.")
-				.conversionFluid(FluidTags.LAVA, FluidAttributes.BUCKET_VOLUME).ingredient(Items.OBSIDIAN).end()
-				.conversionFluid(Tags.Fluids.MILK, FluidAttributes.BUCKET_VOLUME).ingredient(singleEMC, 16).end()//One bucket worth of milk is 16 emc
-				.conversion(Items.WATER_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME).end()
-				.conversion(Items.LAVA_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.LAVA, FluidAttributes.BUCKET_VOLUME).end()
-				.conversion(Items.MILK_BUCKET).ingredient(Items.BUCKET).ingredientFluid(Fluids.MILK, FluidAttributes.BUCKET_VOLUME).end()
+				.conversionFluid(FluidTags.LAVA, FluidType.BUCKET_VOLUME).ingredient(Items.OBSIDIAN).end()
+				.conversionFluid(Tags.Fluids.MILK, FluidType.BUCKET_VOLUME).ingredient(singleEMC, 16).end()//One bucket worth of milk is 16 emc
+				.conversion(Items.WATER_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.WATER, FluidType.BUCKET_VOLUME).end()
+				.conversion(Items.LAVA_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.LAVA, FluidType.BUCKET_VOLUME).end()
+				.conversion(Items.MILK_BUCKET).ingredient(Items.BUCKET).ingredientFluid(Fluids.MILK, FluidType.BUCKET_VOLUME).end()
 				.end()
 				.before(singleEMC, 1)
 				.beforeFluid(FluidTags.WATER)

@@ -18,7 +18,7 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
-import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -26,6 +26,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -50,8 +51,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		RecipeManager recipeManager = serverResources.getRecipeManager();
 		//Make a new fake group manager here instead of across the entire mapper so that we can reclaim the memory when we are done with this method
 		NSSFakeGroupManager fakeGroupManager = new NSSFakeGroupManager();
-		for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
-			ResourceLocation typeRegistryName = Registry.RECIPE_TYPE.getKey(recipeType);
+		for (Map.Entry<ResourceKey<RecipeType<?>>, RecipeType<?>> entry : ForgeRegistries.RECIPE_TYPES.getEntries()) {
+			ResourceLocation typeRegistryName = entry.getKey().location();
+			RecipeType<?> recipeType = entry.getValue();
 			boolean wasHandled = false;
 			List<? extends Recipe<?>> recipes = null;
 			List<Recipe<?>> unhandled = new ArrayList<>();

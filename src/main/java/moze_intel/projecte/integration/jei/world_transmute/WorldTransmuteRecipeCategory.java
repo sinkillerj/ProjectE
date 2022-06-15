@@ -24,8 +24,8 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
@@ -93,7 +93,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 						.addItemStack(input)
 				).ifRight(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 						.addIngredient(ForgeTypes.FLUID_STACK, input)
-						.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
+						.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 				)
 		);
 		int xPos = 96;
@@ -102,7 +102,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 			output.ifLeft(slot::addItemStack)
 					.ifRight(input -> slot
 							.addIngredient(ForgeTypes.FLUID_STACK, input)
-							.setFluidRenderer(FluidAttributes.BUCKET_VOLUME, false, 16, 16)
+							.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 					);
 			xPos += 16;
 		}

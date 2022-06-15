@@ -442,7 +442,7 @@ public class ToolHelper {
 		Block block = level.getBlockState(pos).getBlock();
 		if (block instanceof IForgeShearable target) {
 			if (target.isShearable(stack, level, pos) && (level.isClientSide || PlayerHelper.hasBreakPermission((ServerPlayer) player, pos))) {
-				List<ItemStack> drops = target.onSheared(player, stack, level, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
+				List<ItemStack> drops = target.onSheared(player, stack, level, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
 				if (!drops.isEmpty()) {
 					if (!level.isClientSide) {
 						//Protect against any mods that may use unmodifiable lists in their onSheared return
@@ -464,7 +464,7 @@ public class ToolHelper {
 	public static InteractionResult shearEntityAOE(Player player, InteractionHand hand, long emcCost) {
 		Level level = player.getCommandSenderWorld();
 		ItemStack stack = player.getItemInHand(hand);
-		int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
+		int fortune = stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
 		int offset = (int) Math.pow(2, 2 + getCharge(stack));
 		//Get all entities also making sure that they are shearable
 		List<Entity> list = level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(offset, offset / 2.0, offset), SHEARABLE);

@@ -29,7 +29,7 @@ import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,7 +104,7 @@ public class BrewingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		//Add conversion for empty bottle + water to water bottle
 		Map<NormalizedSimpleStack, Integer> waterIngredients = new HashMap<>();
 		waterIngredients.put(NSSItem.createItem(Items.GLASS_BOTTLE), 1);
-		waterIngredients.put(NSSFluid.createTag(FluidTags.WATER), FluidAttributes.BUCKET_VOLUME / 3);
+		waterIngredients.put(NSSFluid.createTag(FluidTags.WATER), FluidType.BUCKET_VOLUME / 3);
 		mapper.addConversion(1, NSSItem.createItem(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), waterIngredients);
 
 		Set<Class<?>> canNotMap = new HashSet<>();

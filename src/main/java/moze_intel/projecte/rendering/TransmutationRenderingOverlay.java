@@ -1,6 +1,8 @@
 package moze_intel.projecte.rendering;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -12,6 +14,7 @@ import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -25,11 +28,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidAttributes;
 import org.jetbrains.annotations.Nullable;
 
 public class TransmutationRenderingOverlay implements IIngameOverlay {
@@ -47,21 +51,23 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		if (!mc.options.hideGui && transmutationResult != null) {
 			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
-				FluidAttributes resultAttributes = liquidBlock.getFluid().getAttributes();
-				int color = resultAttributes.getColor();
+				IFluidTypeRenderProperties properties = RenderProperties.get(liquidBlock.getFluid());
+				int color = properties.getColorTint();
 				float red = (color >> 16 & 0xFF) / 255.0F;
 				float green = (color >> 8 & 0xFF) / 255.0F;
 				float blue = (color & 0xFF) / 255.0F;
 				float alpha = (color >> 24 & 0xFF) / 255.0F;
-				TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(resultAttributes.getStillTexture());
-				Tesselator tessellator = Tesselator.getInstance();
-				BufferBuilder wr = tessellator.getBuilder();
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+				RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+				RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+				TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(properties.getStillTexture());
+				BufferBuilder wr = Tesselator.getInstance().getBuilder();
 				wr.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-				wr.vertex(0, 0, 0).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(0, 16, 0).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(16, 16, 0).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(16, 0, 0).uv(sprite.getU1(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
-				tessellator.end();
+				wr.vertex(0, 0, gui.getBlitOffset()).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(0, 16, gui.getBlitOffset()).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 16, gui.getBlitOffset()).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 0, gui.getBlitOffset()).uv(sprite.getU1(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				BufferUploader.drawWithShader(wr.end());
 			} else {
 				//Just render it normally instead of with the given model as some block's don't render properly then as an item
 				// for example glass panes

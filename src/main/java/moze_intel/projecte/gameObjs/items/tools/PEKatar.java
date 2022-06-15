@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -185,7 +184,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			BlockPos pos = entity.blockPosition();
 			if (target.isShearable(stack, entity.level, pos)) {
 				if (!entity.level.isClientSide) {
-					List<ItemStack> drops = target.onSheared(player, stack, entity.level, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
+					List<ItemStack> drops = target.onSheared(player, stack, entity.level, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
 					Random rand = new Random();
 					drops.forEach(d -> {
 						ItemEntity ent = entity.spawnAtLocation(d, 1.0F);

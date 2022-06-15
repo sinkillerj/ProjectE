@@ -51,9 +51,9 @@ public class TextComponentUtil {
 			} else if (component instanceof ItemStack stack) {
 				current = stack.getHoverName().copy();
 			} else if (component instanceof FluidStack stack) {
-				current = translate(stack.getTranslationKey());
+				current = stack.getDisplayName().copy();
 			} else if (component instanceof Fluid fluid) {
-				current = translate(fluid.getAttributes().getTranslationKey());
+				current = translate(fluid.getFluidType().getDescriptionId());
 			} else {
 				//Fallback to a generic replacement
 				current = getString(component.toString());
@@ -116,9 +116,9 @@ public class TextComponentUtil {
 			} else if (component instanceof ItemStack stack) {
 				current = stack.getHoverName().copy();
 			} else if (component instanceof FluidStack stack) {
-				current = translate(stack.getTranslationKey());
+				current = stack.getDisplayName().copy();
 			} else if (component instanceof Fluid fluid) {
-				current = translate(fluid.getAttributes().getTranslationKey());
+				current = translate(fluid.getFluidType().getDescriptionId());
 			}
 			//Formatting
 			else if (component instanceof ChatFormatting formatting && !hasStyleType(cachedStyle, formatting)) {
