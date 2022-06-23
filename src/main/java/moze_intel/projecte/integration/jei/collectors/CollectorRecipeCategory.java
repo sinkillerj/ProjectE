@@ -16,7 +16,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,22 +36,6 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	@Override
 	public RecipeType<FuelUpgradeRecipe> getRecipeType() {
 		return RECIPE_TYPE;
-	}
-
-	@NotNull
-	@Override
-	@SuppressWarnings("removal")
-	@Deprecated(forRemoval = true)
-	public ResourceLocation getUid() {
-		return getRecipeType().getUid();
-	}
-
-	@NotNull
-	@Override
-	@SuppressWarnings("removal")
-	@Deprecated(forRemoval = true)
-	public Class<? extends FuelUpgradeRecipe> getRecipeClass() {
-		return getRecipeType().getRecipeClass();
 	}
 
 	@NotNull

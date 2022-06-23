@@ -24,6 +24,7 @@ import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class PEJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		registration.addRecipeTransferHandler(PhilosStoneContainer.class, RecipeTypes.CRAFTING, 1, 9, 10, 36);
+		registration.addRecipeTransferHandler(PhilosStoneContainer.class, MenuType.CRAFTING, RecipeTypes.CRAFTING, 1, 9, 10, 36);
 	}
 
 	@Override

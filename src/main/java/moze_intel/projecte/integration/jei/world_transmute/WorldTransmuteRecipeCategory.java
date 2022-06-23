@@ -22,7 +22,6 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -45,22 +44,6 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	@Override
 	public RecipeType<WorldTransmuteEntry> getRecipeType() {
 		return RECIPE_TYPE;
-	}
-
-	@NotNull
-	@Override
-	@SuppressWarnings("removal")
-	@Deprecated(forRemoval = true)
-	public ResourceLocation getUid() {
-		return getRecipeType().getUid();
-	}
-
-	@NotNull
-	@Override
-	@SuppressWarnings("removal")
-	@Deprecated(forRemoval = true)
-	public Class<? extends WorldTransmuteEntry> getRecipeClass() {
-		return getRecipeType().getRecipeClass();
 	}
 
 	@NotNull
