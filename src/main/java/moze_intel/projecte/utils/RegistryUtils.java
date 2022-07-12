@@ -31,7 +31,7 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(EntityType<?> element) {
-        return getName(ForgeRegistries.ENTITIES, element);
+        return getName(ForgeRegistries.ENTITY_TYPES, element);
     }
 
     public static ResourceLocation getName(Potion element) {

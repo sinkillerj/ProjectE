@@ -38,7 +38,7 @@ public class AlchemicalBag extends ItemPE {
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
-			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(player.getItemInHand(hand), hand), buf -> {
+			NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(player.getItemInHand(hand), hand), buf -> {
 				buf.writeEnum(hand);
 				buf.writeByte(player.getInventory().selected);
 				buf.writeBoolean(false);

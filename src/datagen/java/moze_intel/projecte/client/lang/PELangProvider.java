@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.integration.jade.JadeDataProvider;
+import moze_intel.projecte.integration.jade.PEJadeConstants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.Util;
@@ -89,7 +89,7 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.GUI_RELAY_MK2, "Relay MKII");
 		add(PELang.GUI_RELAY_MK3, "Relay MKIII");
 		//Jade config strings
-		addJadeConfigTooltip(JadeDataProvider.ID, "EMC Provider");
+		addJadeConfigTooltip(PEJadeConstants.EMC_PROVIDER, "EMC Provider");
 	}
 
 	private void addJadeConfigTooltip(ResourceLocation location, String value) {

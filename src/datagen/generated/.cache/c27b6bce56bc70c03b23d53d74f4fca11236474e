@@ -1,4 +1,4 @@
-// 1.19	2022-06-12T13:59:08.5214465	Block States: projecte
+// 1.19	2022-07-09T14:45:07.1407405	Block States: projecte
 9856188d04dacdca3f11ccc503b4bcbca6aa1dc4 assets/projecte/blockstates/aeternalis_fuel_block.json
 3020df6885e467689fd0277bf1fa83390f340eca assets/projecte/blockstates/alchemical_chest.json
 6942162349a8399cbaa2fa90036772a56f3a7137 assets/projecte/blockstates/alchemical_coal_block.json
@@ -34,7 +34,7 @@ ee69ee43fd62ee6bd2612fe1de661b2c1f47b4cc assets/projecte/models/block/condenser_
 7179b90a0488744e063d4aeaad1d2a4f38d1a071 assets/projecte/models/block/dm_furnace.json
 fde747e628e5e8ad2b8622313510c7968bbc811c assets/projecte/models/block/dm_furnace_on.json
 3bf4cac43365a11cabf17e499e984d05831f38fb assets/projecte/models/block/dm_pedestal.json
-234d21cb30d6343b8445257f77f03e18121c23d8 assets/projecte/models/block/interdiction_torch.json
+58bb491c0f826d96569bcab85c9d9d629e081830 assets/projecte/models/block/interdiction_torch.json
 f11553e36679773a4c0e6258978b15aa87ae4c8e assets/projecte/models/block/mobius_fuel_block.json
 6dfe64d55cbdb8e278545a3f8e1c94ba8285ccc1 assets/projecte/models/block/nova_cataclysm.json
 84ca542af3b846d8a17e8a6fc076382070882973 assets/projecte/models/block/nova_catalyst.json
@@ -45,4 +45,4 @@ df599b25860843dffd5cf72e1e68f036af9d085f assets/projecte/models/block/relay_mk3.
 81a41ec62356744eb03711afc67ac6ecaa815ffa assets/projecte/models/block/rm_furnace.json
 8db3af01207dc8f1aa203c949c7f58a08146a44a assets/projecte/models/block/rm_furnace_on.json
 a39224637f07dc1cef5e83092f2f761a1bb075c1 assets/projecte/models/block/transmutation_table.json
-70a90480190e8e01c1b0723297acb42f9601d077 assets/projecte/models/block/wall_interdiction_torch.json
+9de5df0ba8c885b8ff1d2ecc40d3090838a4a19f assets/projecte/models/block/wall_interdiction_torch.json

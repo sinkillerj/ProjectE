@@ -30,13 +30,10 @@ import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -48,10 +45,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ScreenOpenEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -91,25 +89,19 @@ public class ClientRegistration {
 	public static void clientSetup(FMLClientSetupEvent evt) {
 		if (ModList.get().isLoaded("jei")) {
 			//Note: This listener is only registered if JEI is loaded
-			MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ScreenOpenEvent event) -> {
-				if (Minecraft.getInstance().screen instanceof PEContainerScreen screen) {
+			MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ScreenEvent.Opening event) -> {
+				if (event.getCurrentScreen() instanceof PEContainerScreen screen) {
 					//If JEI is loaded and our current screen is a mekanism gui,
 					// check if the new screen is a JEI recipe screen
-					if (event.getScreen() instanceof IRecipesGui) {
+					if (event.getNewScreen() instanceof IRecipesGui) {
 						//If it is mark on our current screen that we are switching to JEI
 						screen.switchingToJEI = true;
 					}
 				}
 			});
 		}
-		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.CROSSHAIR_ELEMENT, "PETransmutationResult", new TransmutationRenderingOverlay());
-
-		//Render layers
-		ItemBlockRenderTypes.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getBlock(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(PEBlocks.INTERDICTION_TORCH.getWallBlock(), RenderType.cutout());
 
 		evt.enqueueWork(() -> {
-			ClientKeyHelper.registerKeyBindings();
 			//Property Overrides
 			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, level, entity, seed) -> ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
 					PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
@@ -118,6 +110,16 @@ public class ClientRegistration {
 			addPropertyOverrides(MODE_OVERRIDE, (stack, level, entity, seed) -> stack.hasTag() ? stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE) : 0F,
 					PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
 		});
+	}
+
+	@SubscribeEvent
+	public static void registerKeybindings(RegisterKeyMappingsEvent event) {
+		ClientKeyHelper.registerKeyBindings(event);
+	}
+
+	@SubscribeEvent
+	public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+		event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "transmutation_result", new TransmutationRenderingOverlay());
 	}
 
 	@SubscribeEvent

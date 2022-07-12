@@ -49,7 +49,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		}
 		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 		if (collector != null) {
-			NetworkHooks.openGui((ServerPlayer) player, collector, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, collector, pos);
 		}
 		return InteractionResult.CONSUME;
 	}

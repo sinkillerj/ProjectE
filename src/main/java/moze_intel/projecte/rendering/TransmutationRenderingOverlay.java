@@ -28,15 +28,14 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
-import net.minecraftforge.client.event.DrawSelectionEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
-public class TransmutationRenderingOverlay implements IIngameOverlay {
+public class TransmutationRenderingOverlay implements IGuiOverlay {
 
 	private final Minecraft mc = Minecraft.getInstance();
 	@Nullable
@@ -48,11 +47,11 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 	}
 
 	@Override
-	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+	public void render(ForgeGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		if (!mc.options.hideGui && transmutationResult != null) {
 			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
-				IFluidTypeRenderProperties properties = RenderProperties.get(liquidBlock.getFluid());
-				int color = properties.getColorTint();
+				IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(liquidBlock.getFluid());
+				int color = properties.getTintColor();
 				float red = (color >> 16 & 0xFF) / 255.0F;
 				float green = (color >> 8 & 0xFF) / 255.0F;
 				float blue = (color & 0xFF) / 255.0F;
@@ -84,7 +83,7 @@ public class TransmutationRenderingOverlay implements IIngameOverlay {
 		}
 	}
 
-	private void onOverlay(DrawSelectionEvent.HighlightBlock event) {
+	private void onOverlay(RenderHighlightEvent.Block event) {
 		Camera activeRenderInfo = event.getCamera();
 		if (!(activeRenderInfo.getEntity() instanceof Player player)) {
 			return;

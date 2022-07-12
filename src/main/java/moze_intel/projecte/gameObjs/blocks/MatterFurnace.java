@@ -38,7 +38,7 @@ public class MatterFurnace extends AbstractFurnaceBlock implements IMatterBlock,
 		if (!level.isClientSide) {
 			DMFurnaceBlockEntity furnace = WorldHelper.getBlockEntity(DMFurnaceBlockEntity.class, level, pos, true);
 			if (furnace != null) {
-				NetworkHooks.openGui((ServerPlayer) player, furnace, pos);
+				NetworkHooks.openScreen((ServerPlayer) player, furnace, pos);
 			}
 		}
 	}

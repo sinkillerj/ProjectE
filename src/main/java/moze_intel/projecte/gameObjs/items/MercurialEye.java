@@ -72,7 +72,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		int selected = player.getInventory().selected;
 		MenuProvider provider = new SimpleMenuProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
-		NetworkHooks.openGui((ServerPlayer) player, provider, b -> {
+		NetworkHooks.openScreen((ServerPlayer) player, provider, b -> {
 			b.writeEnum(hand);
 			b.writeByte(selected);
 		});

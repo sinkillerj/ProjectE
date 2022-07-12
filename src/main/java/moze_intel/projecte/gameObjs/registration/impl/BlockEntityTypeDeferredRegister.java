@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
 
 	public BlockEntityTypeDeferredRegister(String modid) {
-		super(ForgeRegistries.BLOCK_ENTITIES, modid);
+		super(ForgeRegistries.BLOCK_ENTITY_TYPES, modid);
 	}
 
 	public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {

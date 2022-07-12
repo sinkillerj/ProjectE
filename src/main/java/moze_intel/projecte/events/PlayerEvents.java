@@ -58,11 +58,11 @@ public class PlayerEvents {
 		original.reviveCaps();
 		original.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(old -> {
 			CompoundTag bags = old.serializeNBT();
-			event.getPlayer().getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
+			event.getEntity().getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
 		});
 		original.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
 			CompoundTag knowledge = old.serializeNBT();
-			event.getPlayer().getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
+			event.getEntity().getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
 		});
 		//Re-invalidate the player's caps now that we copied ours over
 		original.invalidateCaps();
@@ -71,7 +71,7 @@ public class PlayerEvents {
 	// On death or return from end, sync to the client
 	@SubscribeEvent
 	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-		if (event.getPlayer() instanceof ServerPlayer player) {
+		if (event.getEntity() instanceof ServerPlayer player) {
 			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
 			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 		}
@@ -79,12 +79,12 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-		if (event.getPlayer() instanceof ServerPlayer player) {
+		if (event.getEntity() instanceof ServerPlayer player) {
 			// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
 			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
 			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
 		}
-		event.getPlayer().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
+		event.getEntity().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
 	}
 
 	@SubscribeEvent
@@ -107,7 +107,7 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void playerConnect(PlayerEvent.PlayerLoggedInEvent event) {
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		PacketHandler.sendFragmentedEmcPacket(player);
 
 		player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
@@ -131,15 +131,15 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
-		if (PECore.uuids.contains(evt.getPlayer().getUUID().toString())) {
-			Component joinMessage = PELang.HIGH_ALCHEMIST.translateColored(ChatFormatting.BLUE, ChatFormatting.GOLD, evt.getPlayer().getDisplayName());
+		if (PECore.uuids.contains(evt.getEntity().getUUID().toString())) {
+			Component joinMessage = PELang.HIGH_ALCHEMIST.translateColored(ChatFormatting.BLUE, ChatFormatting.GOLD, evt.getEntity().getDisplayName());
 			ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(joinMessage, ChatType.SYSTEM);
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event) {
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		Level level = player.getCommandSenderWorld();
 		if (level.isClientSide) {
 			return;
@@ -177,7 +177,7 @@ public class PlayerEvents {
 	public static void onLivingHurt(LivingHurtEvent evt) {
 		float damage = evt.getAmount();
 		if (damage > 0) {
-			LivingEntity entityLiving = evt.getEntityLiving();
+			LivingEntity entityLiving = evt.getEntity();
 			DamageSource source = evt.getSource();
 			float totalPercentReduced = getReductionForSlot(entityLiving, source, EquipmentSlot.HEAD, damage) +
 										getReductionForSlot(entityLiving, source, EquipmentSlot.CHEST, damage) +

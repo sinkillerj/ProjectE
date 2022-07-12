@@ -82,7 +82,7 @@ public class AlchemicalChest extends BlockDirection implements SimpleWaterlogged
 		}
 		EmcChestBlockEntity chest = WorldHelper.getBlockEntity(EmcChestBlockEntity.class, level, pos, true);
 		if (chest != null) {
-			NetworkHooks.openGui((ServerPlayer) player, chest, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, chest, pos);
 			player.awardStat(Stats.OPEN_CHEST);
 			PiglinAi.angerNearbyPiglins(player, true);
 		}

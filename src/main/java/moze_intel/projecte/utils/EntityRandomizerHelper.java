@@ -45,7 +45,7 @@ public class EntityRandomizerHelper {
 
 	@Nullable
 	private static Mob createRandomEntity(Level level, Entity current, TagKey<EntityType<?>> type) {
-		ITag<EntityType<?>> tag = LazyTagLookup.tagManager(ForgeRegistries.ENTITIES).getTag(type);
+		ITag<EntityType<?>> tag = LazyTagLookup.tagManager(ForgeRegistries.ENTITY_TYPES).getTag(type);
 		EntityType<?> currentType = current.getType();
 		EntityType<?> newType = getRandomTagEntry(level.getRandom(), tag, currentType);
 		if (currentType == newType) {

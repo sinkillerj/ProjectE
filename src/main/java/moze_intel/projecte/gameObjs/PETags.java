@@ -152,7 +152,7 @@ public class PETags {
 		 * Block Entity Types added will not receive extra ticks from the Watch of Flowing Time
 		 */
 		public static final TagKey<BlockEntityType<?>> BLACKLIST_TIME_WATCH = tag("blacklist/time_watch");
-		public static final LazyTagLookup<BlockEntityType<?>> BLACKLIST_TIME_WATCH_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITIES, BLACKLIST_TIME_WATCH);
+		public static final LazyTagLookup<BlockEntityType<?>> BLACKLIST_TIME_WATCH_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITY_TYPES, BLACKLIST_TIME_WATCH);
 
 		private static TagKey<BlockEntityType<?>> tag(String name) {
 			return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, PECore.rl(name));

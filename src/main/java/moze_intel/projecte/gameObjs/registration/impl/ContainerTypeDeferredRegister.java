@@ -17,7 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
 	public ContainerTypeDeferredRegister(String modid) {
-		super(ForgeRegistries.CONTAINERS, modid);
+		super(ForgeRegistries.MENU_TYPES, modid);
 	}
 
 	public <CONTAINER extends AbstractContainerMenu, BE extends BlockEntity> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider,

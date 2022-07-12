@@ -158,7 +158,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 					fuelItem.shrink(1);
 					furnace.fuelInv.onContentsChanged(0);
 					if (fuelItem.isEmpty()) {
-						furnace.fuelInv.setStackInSlot(0, copy.getItem().getContainerItem(copy));
+						furnace.fuelInv.setStackInSlot(0, copy.getItem().getCraftingRemainingItem(copy));
 					}
 					furnace.markDirty(false);
 				}

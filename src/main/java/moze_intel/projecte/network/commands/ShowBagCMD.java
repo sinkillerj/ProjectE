@@ -67,7 +67,7 @@ public class ShowBagCMD {
 	}
 
 	private static int showBag(ServerPlayer senderPlayer, MenuProvider container) {
-		NetworkHooks.openGui(senderPlayer, container, b -> {
+		NetworkHooks.openScreen(senderPlayer, container, b -> {
 			b.writeBoolean(false);
 			b.writeBoolean(false);
 		});

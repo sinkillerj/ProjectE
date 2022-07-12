@@ -1,6 +1,5 @@
 package moze_intel.projecte.integration.jade;
 
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +10,6 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class JadeDataProvider implements IBlockComponentProvider {
 
-	public static final ResourceLocation ID = PECore.rl("emc_provider");
 	static final JadeDataProvider INSTANCE = new JadeDataProvider();
 
 	@Override
@@ -26,6 +24,6 @@ public class JadeDataProvider implements IBlockComponentProvider {
 
 	@Override
 	public ResourceLocation getUid() {
-		return ID;
+		return PEJadeConstants.EMC_PROVIDER;
 	}
 }

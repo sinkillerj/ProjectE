@@ -36,7 +36,7 @@ public class GemLegs extends GemArmorBase {
 	private final Map<Integer, Long> lastJumpTracker = new HashMap<>();
 
 	private void onJump(LivingEvent.LivingJumpEvent evt) {
-		if (evt.getEntityLiving() instanceof Player player && player.getCommandSenderWorld().isClientSide) {
+		if (evt.getEntity() instanceof Player player && player.getCommandSenderWorld().isClientSide) {
 			lastJumpTracker.put(player.getId(), player.getCommandSenderWorld().getGameTime());
 		}
 	}

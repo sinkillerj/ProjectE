@@ -146,7 +146,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
-				NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(hand, stack), buf -> {
+				NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(hand, stack), buf -> {
 					buf.writeEnum(hand);
 					buf.writeByte(player.getInventory().selected);
 				});

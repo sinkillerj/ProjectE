@@ -161,10 +161,10 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 		try {
 			//Note: We include the hasContainerItem check in the try catch, as if a mod is handling tags incorrectly
 			// there is a chance their hasContainerItem is checking something about tags, and
-			hasContainerItem = item.hasContainerItem(stack);
+			hasContainerItem = item.hasCraftingRemainingItem(stack);
 			if (hasContainerItem) {
 				//If this item has a container for the stack, we remove the cost of the container itself
-				ingredientMap.addIngredient(NSSItem.createItem(item.getContainerItem(stack)), -1);
+				ingredientMap.addIngredient(NSSItem.createItem(item.getCraftingRemainingItem(stack)), -1);
 			}
 		} catch (Exception e) {
 			ResourceLocation itemName = RegistryUtils.getName(item);

@@ -6,7 +6,7 @@ import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
@@ -58,7 +58,7 @@ public class ThreadCheckUpdate extends Thread {
 	}
 
 	@SubscribeEvent
-	public static void worldLoad(EntityJoinWorldEvent evt) {
+	public static void worldLoad(EntityJoinLevelEvent evt) {
 		if (evt.getEntity() instanceof LocalPlayer player && target != null && !hasSentMessage) {
 			hasSentMessage = true;
 			player.sendSystemMessage(PELang.UPDATE_AVAILABLE.translate(target));

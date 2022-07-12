@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class PEBlockEntityTypeTagsProvider extends ForgeRegistryTagsProvider<BlockEntityType<?>> {
 
 	public PEBlockEntityTypeTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, ForgeRegistries.BLOCK_ENTITIES, PECore.MODID, existingFileHelper);
+		super(generator, ForgeRegistries.BLOCK_ENTITY_TYPES, PECore.MODID, existingFileHelper);
 	}
 
 	@Override

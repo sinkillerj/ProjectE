@@ -10,7 +10,7 @@ import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.event.TickEvent;
@@ -33,7 +33,7 @@ public class ClientKeyHelper {
 		}
 	}
 
-	public static void registerKeyBindings() {
+	public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
 		ImmutableBiMap.Builder<KeyMapping, PEKeybind> builder = ImmutableBiMap.builder();
 		addKeyBinding(builder, PEKeybind.HELMET_TOGGLE, KeyModifier.SHIFT, GLFW.GLFW_KEY_X);
 		addKeyBinding(builder, PEKeybind.BOOTS_TOGGLE, KeyModifier.NONE, GLFW.GLFW_KEY_X);
@@ -43,9 +43,7 @@ public class ClientKeyHelper {
 		addKeyBinding(builder, PEKeybind.MODE, KeyModifier.NONE, GLFW.GLFW_KEY_G);
 		mcToPe = builder.build();
 		peToMc = mcToPe.inverse();
-		for (KeyMapping k : mcToPe.keySet()) {
-			ClientRegistry.registerKeyBinding(k);
-		}
+		mcToPe.keySet().forEach(event::register);
 	}
 
 	private static void addKeyBinding(ImmutableBiMap.Builder<KeyMapping, PEKeybind> builder, PEKeybind keyBind, KeyModifier modifier, int keyCode) {

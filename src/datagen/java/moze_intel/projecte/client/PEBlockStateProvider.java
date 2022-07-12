@@ -157,9 +157,10 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerInterdictionTorch() {
-		simpleBlock(PEBlocks.INTERDICTION_TORCH.getBlock(), models().torch(getName(PEBlocks.INTERDICTION_TORCH), modLoc("block/interdiction_torch")));
+		simpleBlock(PEBlocks.INTERDICTION_TORCH.getBlock(), models().torch(getName(PEBlocks.INTERDICTION_TORCH), modLoc("block/interdiction_torch"))
+				.renderType(new ResourceLocation("cutout")));
 		horizontalBlock(PEBlocks.INTERDICTION_TORCH.getWallBlock(), models().torchWall(RegistryUtils.getPath(PEBlocks.INTERDICTION_TORCH.getWallBlock()),
-				modLoc("block/interdiction_torch")), 90);
+				modLoc("block/interdiction_torch")).renderType(new ResourceLocation("cutout")), 90);
 	}
 
 	private void registerFurnace(BlockRegistryObject<?, ?> furnace, String prefix, String sideTexture) {

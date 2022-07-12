@@ -54,12 +54,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack) {
+	public boolean hasCraftingRemainingItem(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack) {
+	public ItemStack getCraftingRemainingItem(ItemStack stack) {
 		return stack.copy();
 	}
 
@@ -115,7 +115,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (!player.getCommandSenderWorld().isClientSide) {
-			NetworkHooks.openGui((ServerPlayer) player, new ContainerProvider(stack));
+			NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(stack));
 		}
 		return true;
 	}

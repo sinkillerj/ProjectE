@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.sound.MovingSoundSWRG;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -13,10 +13,10 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEvents {
 
 	@SubscribeEvent
-	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+	public static void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Minecraft mc = Minecraft.getInstance();
 		if (event.getEntity() instanceof EntitySWRGProjectile projectile && mc.mouseHandler.isMouseGrabbed()) {
-			mc.getSoundManager().play(new MovingSoundSWRG(projectile, event.getWorld().getRandom()));
+			mc.getSoundManager().play(new MovingSoundSWRG(projectile, event.getLevel().getRandom()));
 		}
 	}
 }
