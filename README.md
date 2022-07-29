@@ -32,6 +32,9 @@ SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 
 pupnewfster - Rising Superstar - Current Lead of New Version Ports
 
+* Twitter: https://twitter.com/pupnewfster
+* GitHub Sponsors: https://github.com/sponsors/pupnewfster
+* Ko-fi: https://ko-fi.com/pupnewfster
 * Patreon: https://www.patreon.com/pupnewfster
 
 MaPePeR(Blubberbub) - Alchemical Value Archivist - Lead EMC Mapper Developer: 

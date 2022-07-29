@@ -18,7 +18,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -133,7 +132,7 @@ public class PlayerEvents {
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
 		if (PECore.uuids.contains(evt.getEntity().getUUID().toString())) {
 			Component joinMessage = PELang.HIGH_ALCHEMIST.translateColored(ChatFormatting.BLUE, ChatFormatting.GOLD, evt.getEntity().getDisplayName());
-			ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(joinMessage, ChatType.SYSTEM);
+			ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(joinMessage, false);
 		}
 	}
 
