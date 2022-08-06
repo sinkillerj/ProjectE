@@ -15,7 +15,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +26,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityLavaProjectile extends ThrowableProjectile {
+public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 
 	public EntityLavaProjectile(EntityType<EntityLavaProjectile> type, Level level) {
 		super(type, level);
@@ -44,11 +43,7 @@ public class EntityLavaProjectile extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide) {
-			if (tickCount > 400 || !level.isLoaded(blockPosition())) {
-				discard();
-				return;
-			}
+		if (!level.isClientSide && isAlive()) {
 			Entity thrower = getOwner();
 			if (thrower instanceof ServerPlayer player) {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
@@ -71,11 +66,6 @@ public class EntityLavaProjectile extends ThrowableProjectile {
 				discard();
 			}
 		}
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override

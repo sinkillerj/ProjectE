@@ -13,7 +13,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
@@ -24,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntitySWRGProjectile extends ThrowableProjectile {
+public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 
 	private boolean fromArcana = false;
 
@@ -44,25 +43,17 @@ public class EntitySWRGProjectile extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && tickCount > 400) {
-			discard();
-			return;
-		}
-
-		// Undo the 0.99 (0.8 in water) drag applied in superclass
-		double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
-		this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
-		if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
-			if (level.getLevelData() instanceof ServerLevelData levelData) {
-				levelData.setThundering(true);
+		if (isAlive()) {
+			// Undo the 0.99 (0.8 in water) drag applied in superclass
+			double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
+			this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
+			if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
+				if (level.getLevelData() instanceof ServerLevelData levelData) {
+					levelData.setThundering(true);
+				}
+				discard();
 			}
-			discard();
 		}
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override

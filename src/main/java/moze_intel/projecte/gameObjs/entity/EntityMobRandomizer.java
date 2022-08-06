@@ -13,14 +13,13 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Rabbit.RabbitGroupData;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityMobRandomizer extends ThrowableProjectile {
+public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 
 	public EntityMobRandomizer(EntityType<EntityMobRandomizer> type, Level level) {
 		super(type, level);
@@ -37,16 +36,9 @@ public class EntityMobRandomizer extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getCommandSenderWorld().isClientSide) {
-			if (tickCount > 400 || isInWater() || !getCommandSenderWorld().isLoaded(blockPosition())) {
-				this.discard();
-			}
+		if (!this.getCommandSenderWorld().isClientSide && isAlive() && isInWater()) {
+			this.discard();
 		}
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override

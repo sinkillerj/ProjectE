@@ -12,7 +12,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,7 +28,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityWaterProjectile extends ThrowableProjectile {
+public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 
 	public EntityWaterProjectile(EntityType<EntityWaterProjectile> type, Level level) {
 		super(type, level);
@@ -46,11 +45,7 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getCommandSenderWorld().isClientSide) {
-			if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
-				discard();
-				return;
-			}
+		if (!this.getCommandSenderWorld().isClientSide && isAlive()) {
 			Entity thrower = getOwner();
 			if (thrower instanceof ServerPlayer player) {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
@@ -83,11 +78,6 @@ public class EntityWaterProjectile extends ThrowableProjectile {
 				discard();
 			}
 		}
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override

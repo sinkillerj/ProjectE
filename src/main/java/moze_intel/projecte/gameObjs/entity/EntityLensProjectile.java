@@ -10,14 +10,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityLensProjectile extends ThrowableProjectile {
+public class EntityLensProjectile extends NoGravityThrowableProjectile {
 
 	private int charge;
 
@@ -37,14 +36,7 @@ public class EntityLensProjectile extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (getCommandSenderWorld().isClientSide) {
-			return;
-		}
-		if (tickCount > 400 || !getCommandSenderWorld().isLoaded(blockPosition())) {
-			discard();
-			return;
-		}
-		if (isInWater()) {
+		if (!getCommandSenderWorld().isClientSide && isAlive() && isInWater()) {
 			playSound(SoundEvents.GENERIC_BURN, 0.7F, 1.6F + (random.nextFloat() - random.nextFloat()) * 0.4F);
 			((ServerLevel) level).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
 			discard();
@@ -58,11 +50,6 @@ public class EntityLensProjectile extends ThrowableProjectile {
 		}
 		gameEvent(GameEvent.PROJECTILE_LAND, getOwner());
 		discard();
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityFireProjectile extends ThrowableProjectile {
+public class EntityFireProjectile extends NoGravityThrowableProjectile {
 
 	private boolean fromArcana = false;
 
@@ -34,11 +33,6 @@ public class EntityFireProjectile extends ThrowableProjectile {
 	public EntityFireProjectile(Player entity, boolean fromArcana, Level level) {
 		super(PEEntityTypes.FIRE_PROJECTILE.get(), entity, level);
 		this.fromArcana = fromArcana;
-	}
-
-	@Override
-	public float getGravity() {
-		return 0;
 	}
 
 	@Override
