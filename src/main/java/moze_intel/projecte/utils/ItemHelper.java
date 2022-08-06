@@ -36,13 +36,6 @@ public final class ItemHelper {
 	}
 
 	/**
-	 * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
-	 */
-	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
-		return ItemStack.matches(getNormalizedStack(stack1), getNormalizedStack(stack2));
-	}
-
-	/**
 	 * Checks the item's NBT for a given boolean value.
 	 *
 	 * @param stack Stack, assumes it has already been validated to not be empty

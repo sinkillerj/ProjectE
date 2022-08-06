@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -42,6 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -91,18 +93,25 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		boolean isWhitelist = ItemHelper.checkItemNBT(gem, Constants.NBT_KEY_GEM_WHITELIST);
 		List<ItemStack> whitelist = getWhitelist(gem);
 		for (int i = 0; i < inv.getSlots(); i++) {
-			ItemStack s = inv.getStackInSlot(i);
-			if (s.isEmpty() || s.getMaxStackSize() == 1) {
+			ItemStack stack = inv.getStackInSlot(i);
+			if (stack.isEmpty()) {
+				continue;
+			}
+			Lazy<Boolean> whiteListed = Lazy.of(() -> whitelist.stream().anyMatch(s -> ItemHandlerHelper.canItemStacksStack(s, stack)));
+			if (!stack.isStackable()) {
+				//Only skip unstackable items if they are not explicitly whitelisted
+				if (!isWhitelist || !whiteListed.get()) {
+					continue;
+				}
+			}
+
+			long emcValue = EMCHelper.getEmcValue(stack);
+			if (emcValue == 0 || emcValue >= targetEmc || inv.extractItem(i, stack.getCount() == 1 ? 1 : stack.getCount() / 2, true).isEmpty()) {
 				continue;
 			}
 
-			long emcValue = EMCHelper.getEmcValue(s);
-			if (emcValue == 0 || emcValue >= targetEmc || inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, true).isEmpty()) {
-				continue;
-			}
-
-			if (isWhitelist == listContains(whitelist, s)) {
-				ItemStack copy = inv.extractItem(i, s.getCount() == 1 ? 1 : s.getCount() / 2, false);
+			if (isWhitelist == whiteListed.get()) {
+				ItemStack copy = inv.extractItem(i, stack.getCount() == 1 ? 1 : stack.getCount() / 2, false);
 				addToList(gem, copy);
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.getCount());
 				hasChanged = true;
@@ -205,7 +214,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	private static void addToList(List<ItemStack> list, ItemStack stack) {
 		boolean hasFound = false;
 		for (ItemStack s : list) {
-			if (s.getCount() < s.getMaxStackSize() && ItemHelper.areItemStacksEqual(s, stack)) {
+			if (s.getCount() < s.getMaxStackSize() && ItemHandlerHelper.canItemStacksStack(s, stack)) {
 				int remain = s.getMaxStackSize() - s.getCount();
 				if (stack.getCount() <= remain) {
 					s.grow(stack.getCount());
@@ -239,19 +248,19 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
-		List<ItemStack> result = new ArrayList<>();
 		if (stack.hasTag()) {
 			CompoundTag compound = stack.getOrCreateTag().getCompound(Constants.NBT_KEY_GEM_ITEMS);
 			ListTag list = compound.getList(Constants.NBT_KEY_GEM_ITEMS, Tag.TAG_COMPOUND);
+			List<ItemStack> result = new ArrayList<>(list.size());
 			for (int i = 0; i < list.size(); i++) {
-				result.add(ItemStack.of(list.getCompound(i)));
+				ItemStack s = ItemStack.of(list.getCompound(i));
+				if (!s.isEmpty() && result.stream().noneMatch(r -> ItemHandlerHelper.canItemStacksStack(r, s))) {
+					//Only add unique whitelist entries
+					result.add(s);
+				}
 			}
 		}
-		return result;
-	}
-
-	private static boolean listContains(List<ItemStack> list, ItemStack stack) {
-		return list.stream().anyMatch(s -> ItemHelper.areItemStacksEqual(s, stack));
+		return Collections.emptyList();
 	}
 
 	@Override
