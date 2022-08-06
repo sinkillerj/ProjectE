@@ -295,13 +295,14 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    //TODO - 1.19.1: Update when this updates to 1.19.1
+    //TODO - 1.19.2: Update when this updates to 1.19.2
     compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge:${jei_version}")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
+    //TODO - 1.19.2: Update when this updates to 1.19.2
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minor_minecraft_version}-${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minor_minecraft_version}-${curios_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {

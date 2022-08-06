@@ -57,7 +57,39 @@ public class PETags {
 		public static final TagKey<Item> CURIOS_KLEIN_STAR = curiosTag("klein_star");
 		public static final TagKey<Item> CURIOS_NECKLACE = curiosTag("necklace");
 		public static final TagKey<Item> CURIOS_RING = curiosTag("ring");
+		//Forge tools/armor tags
 
+		public static final TagKey<Item> TOOLS_HAMMERS = forgeTag("tools/hammers");
+		public static final TagKey<Item> TOOLS_KATARS = forgeTag("tools/katars");
+		public static final TagKey<Item> TOOLS_MORNING_STARS = forgeTag("tools/morning_stars");
+
+		public static final TagKey<Item> ARMORS_HELMETS_DARK_MATTER = forgeTag("armors/armors/dark_matter");
+		public static final TagKey<Item> ARMORS_CHESTPLATES_DARK_MATTER = forgeTag("armors/chestplates/dark_matter");
+		public static final TagKey<Item> ARMORS_LEGGINGS_DARK_MATTER = forgeTag("armors/leggings/dark_matter");
+		public static final TagKey<Item> ARMORS_BOOTS_DARK_MATTER = forgeTag("armors/boots/dark_matter");
+
+		public static final TagKey<Item> TOOLS_SWORDS_DARK_MATTER = forgeTag("tools/swords/dark_matter");
+		public static final TagKey<Item> TOOLS_AXES_DARK_MATTER = forgeTag("tools/axes/dark_matter");
+		public static final TagKey<Item> TOOLS_PICKAXES_DARK_MATTER = forgeTag("tools/pickaxes/dark_matter");
+		public static final TagKey<Item> TOOLS_SHOVELS_DARK_MATTER = forgeTag("tools/shovels/dark_matter");
+		public static final TagKey<Item> TOOLS_HOES_DARK_MATTER = forgeTag("tools/hoes/dark_matter");
+		public static final TagKey<Item> TOOLS_HAMMERS_DARK_MATTER = forgeTag("tools/hammers/dark_matter");
+
+		public static final TagKey<Item> ARMORS_HELMETS_RED_MATTER = forgeTag("armors/armors/red_matter");
+		public static final TagKey<Item> ARMORS_CHESTPLATES_RED_MATTER = forgeTag("armors/chestplates/red_matter");
+		public static final TagKey<Item> ARMORS_LEGGINGS_RED_MATTER = forgeTag("armors/leggings/red_matter");
+		public static final TagKey<Item> ARMORS_BOOTS_RED_MATTER = forgeTag("armors/boots/red_matter");
+
+		public static final TagKey<Item> TOOLS_SWORDS_RED_MATTER = forgeTag("tools/swords/red_matter");
+		public static final TagKey<Item> TOOLS_AXES_RED_MATTER = forgeTag("tools/axes/red_matter");
+		public static final TagKey<Item> TOOLS_PICKAXES_RED_MATTER = forgeTag("tools/pickaxes/red_matter");
+		public static final TagKey<Item> TOOLS_SHOVELS_RED_MATTER = forgeTag("tools/shovels/red_matter");
+		public static final TagKey<Item> TOOLS_HOES_RED_MATTER = forgeTag("tools/hoes/red_matter");
+		public static final TagKey<Item> TOOLS_HAMMERS_RED_MATTER = forgeTag("tools/hammers/red_matter");
+		public static final TagKey<Item> TOOLS_KATARS_RED_MATTER = forgeTag("tools/katars/red_matter");
+		public static final TagKey<Item> TOOLS_MORNING_STARS_RED_MATTER = forgeTag("tools/morning_stars/red_matter");
+
+		//Lazy lookups
 		public static final LazyTagLookup<Item> ORES_LOOKUP = LazyTagLookup.create(ForgeRegistries.ITEMS, Tags.Items.ORES);
 		public static final LazyTagLookup<Item> RAW_ORES_LOOKUP = LazyTagLookup.create(ForgeRegistries.ITEMS, Tags.Items.RAW_MATERIALS);
 
@@ -67,6 +99,10 @@ public class PETags {
 
 		private static TagKey<Item> curiosTag(String name) {
 			return ItemTags.create(new ResourceLocation(IntegrationHelper.CURIO_MODID, name));
+		}
+
+		private static TagKey<Item> forgeTag(String name) {
+			return ItemTags.create(new ResourceLocation("forge", name));
 		}
 	}
 
