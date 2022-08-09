@@ -45,6 +45,7 @@ public final class EMCMapper
 
 	public static double covalenceLoss = ProjectEConfig.difficulty.covalenceLoss;
 	public static boolean covalenceLossRounding = ProjectEConfig.difficulty.covalenceLossRounding;
+	public static boolean condenserIgnoreCovalenceLoss = ProjectEConfig.misc.condenserIgnoreCovalenceLoss;
 
 	public static void map()
 	{

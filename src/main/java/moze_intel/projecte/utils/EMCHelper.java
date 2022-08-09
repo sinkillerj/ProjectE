@@ -303,6 +303,12 @@ public final class EMCHelper
 		return emc;
 	}
 
+	public static long getEmcSellValue(ItemStack stack, boolean isCondenser) {
+		if (!isCondenser || !EMCMapper.condenserIgnoreCovalenceLoss) return getEmcSellValue(stack);
+
+		return EMCHelper.getEmcValue(stack);
+	}
+
 	public static String getEmcSellString(ItemStack stack, int stackSize)
 	{
 		if (EMCMapper.covalenceLoss == 1.0)

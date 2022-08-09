@@ -163,7 +163,7 @@ public class CondenserTile extends TileEmc implements IEmcAcceptor
 			}
 
 			inputInventory.extractItem(i, 1, false);
-			this.addEMC(EMCHelper.getEmcSellValue(stack));
+			this.addEMC(EMCHelper.getEmcSellValue(stack, true));
 			break;
 		}
 		

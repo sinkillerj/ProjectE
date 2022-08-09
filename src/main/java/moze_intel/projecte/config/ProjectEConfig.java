@@ -96,6 +96,9 @@ public final class ProjectEConfig
 		@Config.RangeInt(min = 0)
 		@Config.Comment("A cooldown (in ticks) for Gem Chestplate explosion")
 		public int gemChestCooldown = 0;
+
+		@Config.Comment("Set to true to make Energy Condensers ignore Covalence Loss")
+		public boolean condenserIgnoreCovalenceLoss = false;
 	}
 
 	@Config.Comment({"Cooldown for various items within the pedestal. A cooldown of -1 will disable the functionality.",
