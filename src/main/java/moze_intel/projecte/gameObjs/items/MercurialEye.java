@@ -322,7 +322,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			return false;
 		}
 
-		if (oldEMC == 0 && oldState.getBlock().blockHardness == -1.0F)
+		if (oldEMC == 0 && oldState.getBlockHardness(player.getEntityWorld(), placePos) == -1.0F)
 		{
 			//Don't allow replacing unbreakable blocks (unless they have an EMC value)
 			return false;
