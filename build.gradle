@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sonatype"
@@ -47,39 +47,30 @@ jar {
         attributes 'FMLAT': 'pe_at.cfg'
     }
 }
-
 repositories {
-	maven { //MinecraftForge
-		name "MinecraftForge Maven"
-		url "http://files.minecraftforge.net/maven/"
+	maven {
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
 	}
-
-    maven {
-        name 'Chisel'
-        url "http://maven.tterrag.com/"
-    }
-
-    maven {
-        name = "thiakil"
-        url = "http://maven.thiakil.com"
-    }
-
-    maven {
-        name 'JEI'
-        url "http://dvs1.progwml6.com/files/maven"
-    }
-
-    maven {
-        name 'jared'
-        url "http://maven.blamejared.com"
-    }
+	maven {
+		name = "progwml6"
+		url = "http://dvs1.progwml6.com/files/maven/"
+	}
+	maven {
+		name = "blamejared"
+		url = "http://maven.blamejared.com/"
+	}
+	maven {
+		name "tterrag Maven"
+		url "https://maven.tterrag.com/"
+	}
 }
  
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
-    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+    deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    deobfCompile "baubles:Baubles:${baubles_version}"
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
     deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
     deobfCompile "CraftTweaker2:ZenScript:1.12-${crafttweaker_version}"
