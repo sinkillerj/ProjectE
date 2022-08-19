@@ -41,6 +41,8 @@
         "1.16.5-latest": "PE1.0.1B",
         "1.16.5-recommended": "PE1.0.1B",
         "1.18.2-latest": "1.0.0",
-        "1.18.2-recommended": "1.0.0"
+        "1.18.2-recommended": "1.0.0",
+        "1.19.2-latest": "1.0.0B",
+        "1.19.2-recommended": "1.0.0B"
     }
 }
