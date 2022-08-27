@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -25,7 +26,7 @@ public class DumpMissingEmc {
 
 	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
 		return Commands.literal("dumpmissingemc")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_DUMP_MISSING)
 				.executes(DumpMissingEmc::execute);
 	}
 

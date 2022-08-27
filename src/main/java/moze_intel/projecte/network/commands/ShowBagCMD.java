@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
@@ -48,7 +49,7 @@ public class ShowBagCMD {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("showbag")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_SHOW_BAG)
 				.then(Commands.argument("color", ColorArgument.color())
 						.then(Commands.argument("target", EntityArgument.player())
 								.executes(ctx -> showBag(ctx, ColorArgument.getColor(ctx, "color"), EntityArgument.getPlayer(ctx, "target"))))

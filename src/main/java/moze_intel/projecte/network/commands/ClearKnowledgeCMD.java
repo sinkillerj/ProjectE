@@ -3,6 +3,7 @@ package moze_intel.projecte.network.commands;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import java.util.Collection;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.network.PacketHandler;
@@ -19,7 +20,7 @@ public class ClearKnowledgeCMD {
 
 	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
 		return Commands.literal("clearknowledge")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_CLEAR_KNOWLEDGE)
 				.then(Commands.argument("targets", EntityArgument.players())
 						.executes(cs -> execute(cs, EntityArgument.getPlayers(cs, "targets"))));
 	}

@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser;
@@ -22,7 +23,7 @@ public class RemoveEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("removeemc")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_REMOVE_EMC)
 				.then(Commands.argument("item", NSSItemArgument.nss(context))
 						.executes(ctx -> removeEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> removeEmc(ctx, getHeldStack(ctx)));

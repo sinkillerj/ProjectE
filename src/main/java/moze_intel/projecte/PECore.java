@@ -165,6 +165,7 @@ public class PECore {
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
+		MinecraftForge.EVENT_BUS.addListener(PEPermissions::registerPermissionNodes);
 
 		//Register our config files
 		ProjectEConfig.register();
@@ -352,6 +353,7 @@ public class PECore {
 	private void registerCommands(RegisterCommandsEvent event) {
 		CommandBuildContext context = event.getBuildContext();
 		event.getDispatcher().register(Commands.literal("projecte")
+				.requires(PEPermissions.COMMAND)
 				.then(ClearKnowledgeCMD.register(context))
 				.then(DumpMissingEmc.register(context))
 				.then(RemoveEmcCMD.register(context))

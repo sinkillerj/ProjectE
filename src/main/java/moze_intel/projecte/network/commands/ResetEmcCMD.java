@@ -3,6 +3,7 @@ package moze_intel.projecte.network.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
@@ -16,7 +17,7 @@ public class ResetEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("resetemc")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_RESET_EMC)
 				.then(Commands.argument("item", NSSItemArgument.nss(context))
 						.executes(ctx -> resetEmc(ctx, NSSItemArgument.getNSS(ctx, "item"))))
 				.executes(ctx -> resetEmc(ctx, RemoveEmcCMD.getHeldStack(ctx)));

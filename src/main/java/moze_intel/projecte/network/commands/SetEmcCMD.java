@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
@@ -16,7 +17,7 @@ public class SetEmcCMD {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
 		return Commands.literal("setemc")
-				.requires(cs -> cs.hasPermission(2))
+				.requires(PEPermissions.COMMAND_SET_EMC)
 				.then(Commands.argument("emc", LongArgumentType.longArg(0, Long.MAX_VALUE))
 						.then(Commands.argument("item", NSSItemArgument.nss(context))
 								.executes(ctx -> setEmc(ctx, NSSItemArgument.getNSS(ctx, "item"), LongArgumentType.getLong(ctx, "emc"))))
