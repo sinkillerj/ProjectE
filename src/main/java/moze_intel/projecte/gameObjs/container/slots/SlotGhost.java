@@ -30,6 +30,11 @@ public class SlotGhost extends SlotItemHandler {
 	}
 
 	@Override
+	public void initialize(@NotNull ItemStack stack) {
+		super.initialize(ItemHelper.getNormalizedStack(stack));
+	}
+
+	@Override
 	public void set(@NotNull ItemStack stack) {
 		super.set(ItemHelper.getNormalizedStack(stack));
 	}

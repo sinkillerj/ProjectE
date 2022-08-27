@@ -12,11 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 public record UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) implements IPEPacket {
 
-	public UpdateCondenserLockPKT(short windowId, @Nullable ItemInfo lockInfo) {
-		this.windowId = windowId;
-		this.lockInfo = lockInfo;
-	}
-
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		LocalPlayer player = Minecraft.getInstance().player;

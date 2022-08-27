@@ -9,9 +9,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 public record SearchUpdatePKT(int slot, ItemStack itemStack) implements IPEPacket {
 
-	public SearchUpdatePKT(int slot, ItemStack itemStack) {
-		this.slot = slot;
-		this.itemStack = itemStack.copy();
+	public SearchUpdatePKT {
+		itemStack = itemStack.copy();
 	}
 
 	@Override
