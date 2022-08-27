@@ -71,10 +71,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -241,7 +241,7 @@ public final class WorldHelper {
 	 */
 	@Nullable
 	public static IItemHandler getItemHandler(@NotNull BlockEntity blockEntity, @Nullable Direction direction) {
-		Optional<IItemHandler> capability = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
+		Optional<IItemHandler> capability = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction).resolve();
 		if (capability.isPresent()) {
 			return capability.get();
 		} else if (blockEntity instanceof WorldlyContainer container) {

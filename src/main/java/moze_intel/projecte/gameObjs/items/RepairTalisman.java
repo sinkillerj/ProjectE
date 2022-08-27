@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,7 +96,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 				if (coolDown > 0) {
 					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
 				} else {
-					chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+					chest.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> {
 						if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
 							nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 							//Note: We don't need to recheck comparators as repairing doesn't change the number
@@ -128,7 +128,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	private static void repairAllItems(Player player) {
 		Predicate<ItemStack> canRepairPlayerItem = CAN_REPAIR_ITEM.and(stack -> stack != player.getMainHandItem() || !player.swinging);
-		player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> repairAllItems(inv, canRepairPlayerItem));
+		player.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> repairAllItems(inv, canRepairPlayerItem));
 		IItemHandler curios = PlayerHelper.getCurios(player);
 		if (curios != null) {
 			repairAllItems(curios, canRepairPlayerItem);

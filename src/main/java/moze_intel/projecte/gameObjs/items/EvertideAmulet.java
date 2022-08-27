@@ -37,9 +37,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +78,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 			Direction sideHit = ctx.getClickedFace();
 			if (blockEntity != null) {
-				Optional<IFluidHandler> capability = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, sideHit).resolve();
+				Optional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, sideHit).resolve();
 				if (capability.isPresent()) {
 					capability.get().fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 					return InteractionResult.CONSUME;
@@ -196,7 +196,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 		@Override
 		public Capability<IFluidHandlerItem> getCapability() {
-			return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
+			return ForgeCapabilities.FLUID_HANDLER_ITEM;
 		}
 	}
 }

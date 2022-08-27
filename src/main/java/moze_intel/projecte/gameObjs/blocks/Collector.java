@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +92,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 			//If something went wrong fallback to default implementation
 			return super.getAnalogOutputSignal(state, level, pos);
 		}
-		Optional<IItemHandler> cap = collector.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).resolve();
+		Optional<IItemHandler> cap = collector.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).resolve();
 		if (cap.isEmpty()) {
 			//If something went wrong fallback to default implementation
 			return super.getAnalogOutputSignal(state, level, pos);

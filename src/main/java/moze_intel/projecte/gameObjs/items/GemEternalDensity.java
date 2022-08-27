@@ -43,8 +43,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
@@ -72,7 +72,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean isHeld) {
 		if (!level.isClientSide && entity instanceof Player) {
-			entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(inv -> condense(stack, inv));
+			entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(inv -> condense(stack, inv));
 		}
 	}
 
@@ -290,7 +290,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		if (!level.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
 			if (chest != null) {
-				chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+				chest.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> {
 					if (condense(stack, inv)) {
 						chest.setChanged();
 					}

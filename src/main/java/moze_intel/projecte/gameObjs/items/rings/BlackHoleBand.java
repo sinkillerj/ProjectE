@@ -39,7 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -145,7 +145,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 				for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, aabb, ent -> !ent.isSpectator() && ent.isAlive())) {
 					WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 					if (!level.isClientSide && e.distanceToSqr(centeredX, centeredY, centeredZ) < 1.21) {
-						chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+						chest.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> {
 							ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
 							if (!result.isEmpty()) {
 								e.setItem(result);

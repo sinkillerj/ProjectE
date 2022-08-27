@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BlockDirection extends Block {
@@ -47,7 +47,7 @@ public abstract class BlockDirection extends Block {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 			if (blockEntity != null) {
-				blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> WorldHelper.dropInventory(inv, level, pos));
+				blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> WorldHelper.dropInventory(inv, level, pos));
 			}
 			super.onRemove(state, level, pos, newState, isMoving);
 		}

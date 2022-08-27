@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -145,7 +145,7 @@ public class TransmutationContainer extends PEHandContainer {
 					}
 					//Set the stack size to what we found the max value is we have room for (capped at the stack's own max size)
 					stack.setCount(stackSize);
-					IItemHandler inv = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+					IItemHandler inv = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
 					if (transmutationInventory.isServer()) {
 						transmutationInventory.removeEmc(totalEmc);
 					}

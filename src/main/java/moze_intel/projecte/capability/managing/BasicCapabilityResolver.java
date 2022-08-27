@@ -2,10 +2,10 @@ package moze_intel.projecte.capability.managing;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 			@NotNull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+				return ForgeCapabilities.ITEM_HANDLER;
 			}
 		};
 	}
@@ -30,7 +30,7 @@ public abstract class BasicCapabilityResolver<CAPABILITY> implements ICapability
 			@NotNull
 			@Override
 			public Capability<IItemHandler> getMatchingCapability() {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+				return ForgeCapabilities.ITEM_HANDLER;
 			}
 		};
 	}

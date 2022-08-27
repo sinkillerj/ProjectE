@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public class AlchChestContainer extends EmcChestBlockEntityContainer<AlchBlockEn
 
 	public AlchChestContainer(int windowId, Inventory playerInv, AlchBlockEntityChest chest) {
 		super(PEContainerTypes.ALCH_CHEST_CONTAINER, windowId, playerInv, chest);
-		IItemHandler inv = this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+		IItemHandler inv = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
 		//Chest Inventory
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 13; j++) {

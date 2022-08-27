@@ -42,8 +42,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
@@ -108,7 +108,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private InteractionResult formBlocks(ItemStack eye, Player player, InteractionHand hand, BlockPos startingPos, @Nullable Direction facing) {
-		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+		Optional<IItemHandler> inventoryCapability = eye.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
 		if (inventoryCapability.isEmpty()) {
 			return InteractionResult.FAIL;
 		}
@@ -255,7 +255,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private boolean doBlockPlace(Player player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
-		Optional<IItemHandler> inventoryCapability = eye.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+		Optional<IItemHandler> inventoryCapability = eye.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
 		if (inventoryCapability.isEmpty()) {
 			return false;
 		}
@@ -373,7 +373,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
 		@Override
 		public Capability<IItemHandler> getCapability() {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+			return ForgeCapabilities.ITEM_HANDLER;
 		}
 
 		@Override
