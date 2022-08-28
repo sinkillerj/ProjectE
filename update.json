@@ -28,6 +28,10 @@
         "1.0.0": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
         "1.0.1": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
     },
+    "1.19.2": {
+        "1.0.0B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information.",
+        "1.0.1B": "See https://www.curseforge.com/minecraft/mc-mods/projecte/files for detailed information."
+    },
     "homepage": "https://minecraft.curseforge.com/projects/projecte/",
     "promos": {
         "1.12-latest": "1.12-PE1.3.2h",
@@ -42,7 +46,7 @@
         "1.16.5-recommended": "PE1.0.1B",
         "1.18.2-latest": "1.0.0",
         "1.18.2-recommended": "1.0.0",
-        "1.19.2-latest": "1.0.0B",
-        "1.19.2-recommended": "1.0.0B"
+        "1.19.2-latest": "1.0.1B",
+        "1.19.2-recommended": "1.0.1B"
     }
 }
