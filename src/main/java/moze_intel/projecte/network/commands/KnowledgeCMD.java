@@ -19,7 +19,9 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public class KnowledgeCMD {
@@ -33,7 +35,7 @@ public class KnowledgeCMD {
 		return Commands.literal("knowledge")
 			.then(Commands.literal("clear")
 				.requires(PEPermissions.COMMAND_KNOWLEDGE_CLEAR)
-				.then(Commands.argument("player", EntityArgument.player())
+				.then(Commands.argument("targets", EntityArgument.players())
 					.executes((ctx) -> handle(ctx, ActionType.CLEAR))
 				)
 			)
@@ -58,25 +60,41 @@ public class KnowledgeCMD {
 			);
 	}
 
-	private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
-		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
+	private static @Nullable IKnowledgeProvider getProvider(ServerPlayer player){
 		Optional<IKnowledgeProvider> cap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).resolve();
-		if (cap.isEmpty()) {
+		return cap.orElse(null);
+	}
+
+	private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
+		if (action == ActionType.CLEAR) {
+			Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "targets");
+			int successCount = 0;
+			for(ServerPlayer player : targets) {
+				IKnowledgeProvider provider = getProvider(player);
+				if(provider == null) {
+					ctx.getSource().sendFailure(PELang.COMMAND_PROVIDER_FAIL.translateColored(ChatFormatting.RED));
+					continue;
+				}
+
+				if (provider.getKnowledge().size() == 0) {
+					ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName()));
+					continue;
+				}
+				provider.clearKnowledge();
+				provider.sync(player);
+				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
+				successCount++;
+			}
+
+			return successCount;
+		}
+
+		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
+		IKnowledgeProvider provider = getProvider(player);
+		if(provider == null) {
 			ctx.getSource().sendFailure(PELang.COMMAND_PROVIDER_FAIL.translateColored(ChatFormatting.RED));
 			return 0;
 		}
-		IKnowledgeProvider provider = cap.get();
-		if (action == ActionType.CLEAR) {
-			if (provider.getKnowledge().size() == 0) {
-				ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName()));
-				return 0;
-			}
-			provider.clearKnowledge();
-			provider.sync(player);
-			ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
-			return 1;
-		}
-
 		ItemStack item = new ItemStack(ItemArgument.getItem(ctx, "item").getItem());
 
 		if (!EMCHelper.doesItemHaveEmc(item)) {
