@@ -9,6 +9,8 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeClearPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
@@ -81,7 +83,7 @@ public class KnowledgeCMD {
 					continue;
 				}
 				provider.clearKnowledge();
-				provider.sync(player);
+				PacketHandler.sendTo(new KnowledgeClearPKT(), player);
 				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
 				successCount++;
 			}
