@@ -89,30 +89,30 @@ public class KnowledgeCMD {
 				if (provider.hasKnowledge(item)) {
 					ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_LEARN_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), item.getDisplayName()));
 					return 0;
-				} else {
-					provider.addKnowledge(item);
-					provider.sync(player);
-					ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 				}
+
+				provider.addKnowledge(item);
+				provider.sync(player);
+				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case UNLEARN -> {
 				if (!provider.hasKnowledge(item)) {
 					ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_UNLEARN_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), item.getDisplayName()));
 					return 0;
-				} else {
-					provider.removeKnowledge(item);
-					provider.sync(player);
-					ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 				}
+
+				provider.removeKnowledge(item);
+				provider.sync(player);
+				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case TEST -> {
 				if (provider.hasKnowledge(item)) {
 					ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 					return 1;
-				} else {
-					ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_TEST_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), item.getDisplayName()));
-					return 0;
 				}
+
+				ctx.getSource().sendFailure(PELang.COMMAND_KNOWLEDGE_TEST_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), item.getDisplayName()));
+				return 0;
 			}
 		}
 		provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(item)), true);

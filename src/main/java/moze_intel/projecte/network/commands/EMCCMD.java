@@ -123,10 +123,10 @@ public class EMCCMD {
 				if(newEMC.compareTo(value) >= 0) {
 					ctx.getSource().sendSuccess(PELang.COMMAND_EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(value)), true);
 					return 1;
-				} else {
-					ctx.getSource().sendFailure(PELang.COMMAND_EMC_TEST_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), formatEMC(value)));
-					return 0;
 				}
+
+				ctx.getSource().sendFailure(PELang.COMMAND_EMC_TEST_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), formatEMC(value)));
+				return 0;
 			}
 		}
 
