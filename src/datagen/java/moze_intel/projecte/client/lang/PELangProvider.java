@@ -179,7 +179,6 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.COMMAND_EMC_TEST_SUCCESS, "%s does have enough emc to remove %s.");
 		add(PELang.COMMAND_EMC_TEST_FAIL, "%s does not have enough emc to remove %s.");
 		add(PELang.COMMAND_EMC_GET_SUCCESS, "%s has %s EMC.");
-		add(PELang.COMMAND_EMC_TEST_FAIL, "%s does not have enough emc to remove %s.");
 		add(PELang.COMMAND_KNOWLEDGE_INVALID, "The item \"%s\" does not  have an EMC value, and cannot be learned.");
 		add(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS, "Successfully cleared the knowledge of %s.");
 		add(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL, "%s does not have any knowledge to clear.");
