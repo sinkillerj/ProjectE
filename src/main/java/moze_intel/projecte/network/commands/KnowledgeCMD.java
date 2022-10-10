@@ -110,7 +110,6 @@ public class KnowledgeCMD {
 				}
 
 				provider.addKnowledge(item);
-				provider.sync(player);
 				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case UNLEARN -> {
@@ -120,7 +119,6 @@ public class KnowledgeCMD {
 				}
 
 				provider.removeKnowledge(item);
-				provider.sync(player);
 				ctx.getSource().sendSuccess(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case TEST -> {
