@@ -29,6 +29,15 @@ public class PEPermissions {
 	public static final CommandPermissionNode COMMAND_RESET_EMC = nodeOpCommand("reset_emc");
 	public static final CommandPermissionNode COMMAND_SET_EMC = nodeOpCommand("set_emc");
 	public static final CommandPermissionNode COMMAND_SHOW_BAG = nodeOpCommand("show_bag");
+	public static final CommandPermissionNode COMMAND_EMC_ADD = nodeOpCommand("emc.add");
+	public static final CommandPermissionNode COMMAND_EMC_REMOVE = nodeOpCommand("emc.remove");
+	public static final CommandPermissionNode COMMAND_EMC_SET = nodeOpCommand("emc.set");
+	public static final CommandPermissionNode COMMAND_EMC_TEST = nodeOpCommand("emc.test");
+	public static final CommandPermissionNode COMMAND_EMC_GET = nodeOpCommand("emc.get");
+	public static final CommandPermissionNode COMMAND_KNOWLEDGE_CLEAR = nodeOpCommand("knowledge.clear");
+	public static final CommandPermissionNode COMMAND_KNOWLEDGE_LEARN = nodeOpCommand("knowledge.learn");
+	public static final CommandPermissionNode COMMAND_KNOWLEDGE_UNLEARN = nodeOpCommand("knowledge.unlearn");
+	public static final CommandPermissionNode COMMAND_KNOWLEDGE_TEST = nodeOpCommand("knowledge.test");
 
 	private static CommandPermissionNode nodeOpCommand(String nodeName) {
 		PermissionNode<Boolean> node = node("command." + nodeName, PermissionTypes.BOOLEAN, PLAYER_IS_OP);

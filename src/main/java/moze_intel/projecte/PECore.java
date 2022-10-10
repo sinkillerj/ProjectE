@@ -48,12 +48,7 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
-import moze_intel.projecte.network.commands.DumpMissingEmc;
-import moze_intel.projecte.network.commands.RemoveEmcCMD;
-import moze_intel.projecte.network.commands.ResetEmcCMD;
-import moze_intel.projecte.network.commands.SetEmcCMD;
-import moze_intel.projecte.network.commands.ShowBagCMD;
+import moze_intel.projecte.network.commands.*;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.commands.CommandBuildContext;
@@ -360,6 +355,8 @@ public class PECore {
 				.then(ResetEmcCMD.register(context))
 				.then(SetEmcCMD.register(context))
 				.then(ShowBagCMD.register(context))
+				.then(EMCCMD.register(context))
+				.then(KnowledgeCMD.register(context))
 		);
 	}
 
