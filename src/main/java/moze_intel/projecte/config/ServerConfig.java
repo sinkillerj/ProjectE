@@ -108,6 +108,7 @@ public final class ServerConfig extends BasePEConfig {
 
 		public final CachedIntValue timePedBonus;
 		public final CachedDoubleValue timePedMobSlowness;
+		public final CachedDoubleValue maxTPSLoss;
 		public final CachedBooleanValue interdictionMode;
 
 		private Effects(IPEConfig config, ForgeConfigSpec.Builder builder) {
@@ -118,6 +119,9 @@ public final class ServerConfig extends BasePEConfig {
 			timePedMobSlowness = CachedDoubleValue.wrap(config, builder
 					.comment("Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.")
 					.defineInRange("timePedMobSlowness", 0.10, 0, 1));
+			maxTPSLoss = CachedDoubleValue.wrap(config, builder
+					.comment("Maximum TPS loss allowed before the Watch of Flowing Time will stop working. Set to -1.0 to disable.")
+					.defineInRange("maxTPSLoss", 5.0, -1, 20));
 			interdictionMode = CachedBooleanValue.wrap(config, builder
 					.comment("If true the Interdiction Torch only affects hostile mobs and projectiles. If false it affects all non blacklisted living entities.")
 					.define("interdictionMode", true));
@@ -154,6 +158,7 @@ public final class ServerConfig extends BasePEConfig {
 					.push("cooldown");
 			pedestal = new Pedestal(config, builder);
 			player = new Player(config, builder);
+
 			builder.pop();
 		}
 
