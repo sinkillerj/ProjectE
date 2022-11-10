@@ -183,8 +183,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	public static void completeTick(Level level, BooleanSupplier haveTime) {
 		long currentTime = System.currentTimeMillis();
 		double maxTPSLost = ProjectEConfig.server.effects.maxTPSLoss.get();
-		double asMS = 1000d / (20 - maxTPSLost) - 50;
-
+		double asMS;
+		if (maxTPSLost >= 20 || maxTPSLost < 0) {
+			asMS = 10000;
+		} else {
+			asMS = 1000d / (20 - maxTPSLost) - 50;
+		}
 		// we now need to turn the 2 queues into a schedule that overshoots by the same ratio of ticks done to ticks scheduled for each
 		// we start by combining the 2 queues into a single one
 		// add up the total ticks,
