@@ -60,7 +60,6 @@ import moze_intel.projecte.network.commands.argument.NSSItemArgument;
 import moze_intel.projecte.network.commands.argument.UUIDArgument;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.synchronization.ArgumentTypes;

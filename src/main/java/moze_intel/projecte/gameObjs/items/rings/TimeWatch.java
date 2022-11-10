@@ -4,8 +4,6 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectHeapPriorityQueue;
-import it.unimi.dsi.fastutil.objects.ObjectIndirectHeaps;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -51,7 +49,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IPlantable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Interface;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
@@ -348,7 +345,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	private static class SpedUpBlockEntity implements SpedUpItem {
 		private final BlockEntity entity;
-		private int ticksLeft = 0;
+		private int ticksLeft;
 		@Nullable
 		private Runnable onTick;
 
@@ -407,9 +404,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		private final BlockPos pos;
 		private final BlockState state;
 		private final ServerLevel serverLevel;
-		private int ticksLeft = 0;
-		@Nullable
-		private Runnable onTick;
+		private int ticksLeft;
 
 		public SpedUpRandomBlock(ServerLevel level, BlockPos pos, BlockState state, int ticks) {
 			this.serverLevel = level;
