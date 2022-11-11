@@ -227,7 +227,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			if (haveTime.getAsBoolean()) currentTime = System.currentTimeMillis();
 			else if (System.currentTimeMillis() - currentTime > asMS) {
 				// we have run out of time, so we will drop the rest of the queue
-				System.out.println("TimeWatch: Ran out of time, dropping " + (totalTicks - ticksTot) + " extra block ticks");
+//				System.out.println("TimeWatch: Ran out of time, dropping " + (totalTicks - ticksTot) + " extra block ticks");
 				break;
 			}
 
