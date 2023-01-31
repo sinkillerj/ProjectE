@@ -51,6 +51,10 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				PEBlocks.MOBIUS_FUEL.getBlock(),
 				PEBlocks.AETERNALIS_FUEL.getBlock()
 		);
+		// Allow interdiction torches to connect to walls.
+		tag(BlockTags.WALL_POST_OVERRIDE).add(
+				PEBlocks.INTERDICTION_TORCH.getBlock()
+		);
 		addImmuneBlocks(BlockTags.DRAGON_IMMUNE);
 		addImmuneBlocks(BlockTags.WITHER_IMMUNE);
 
