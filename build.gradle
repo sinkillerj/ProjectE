@@ -229,7 +229,8 @@ minecraft {
 repositories {
     maven {
         name 'JEI'
-        url "https://dvs1.progwml6.com/files/maven"
+        // url "https://dvs1.progwml6.com/files/maven" -- Server is down, also use blamejared instead according to mezz
+        url "https://maven.blamejared.com"
         content {
             includeGroup 'mezz.jei'
         }
