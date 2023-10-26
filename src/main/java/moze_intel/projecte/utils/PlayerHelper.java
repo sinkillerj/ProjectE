@@ -8,7 +8,6 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
-import moze_intel.projecte.network.packets.to_client.SetFlyPKT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
@@ -154,9 +153,9 @@ public final class PlayerHelper {
 	}
 
 	public static void updateClientServerFlight(ServerPlayer player, boolean allowFlying, boolean isFlying) {
-		PacketHandler.sendTo(new SetFlyPKT(allowFlying, isFlying), player);
 		player.getAbilities().mayfly = allowFlying;
 		player.getAbilities().flying = isFlying;
+		player.onUpdateAbilities();
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, BigInteger value) {

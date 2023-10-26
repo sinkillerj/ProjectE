@@ -8,7 +8,6 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
-import moze_intel.projecte.network.packets.to_client.SetFlyPKT;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
@@ -36,7 +35,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public final class PacketHandler {
 
-	private static final String PROTOCOL_VERSION = Integer.toString(3);
+	private static final String PROTOCOL_VERSION = Integer.toString(4);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
 			.named(PECore.rl("main_channel"))
 			.clientAcceptedVersions(PROTOCOL_VERSION::equals)
@@ -59,7 +58,6 @@ public final class PacketHandler {
 		registerServerToClient(KnowledgeSyncEmcPKT.class, KnowledgeSyncEmcPKT::decode);
 		registerServerToClient(KnowledgeSyncInputsAndLocksPKT.class, KnowledgeSyncInputsAndLocksPKT::decode);
 		registerServerToClient(KnowledgeSyncChangePKT.class, KnowledgeSyncChangePKT::decode);
-		registerServerToClient(SetFlyPKT.class, SetFlyPKT::decode);
 		registerServerToClient(SyncBagDataPKT.class, SyncBagDataPKT::decode);
 		registerServerToClient(SyncEmcPKT.class, SyncEmcPKT::decode);
 		registerServerToClient(SyncFuelMapperPKT.class, SyncFuelMapperPKT::decode);
