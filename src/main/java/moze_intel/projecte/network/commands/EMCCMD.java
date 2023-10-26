@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.commands;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -70,16 +71,17 @@ public class EMCCMD {
 	}
 
 	private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
+		CommandSourceStack source = ctx.getSource();
 		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
 		Optional<IKnowledgeProvider> cap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).resolve();
 		if (cap.isEmpty()) {
-			ctx.getSource().sendFailure(PELang.COMMAND_PROVIDER_FAIL.translateColored(ChatFormatting.RED));
+			source.sendFailure(PELang.COMMAND_PROVIDER_FAIL.translate(player.getDisplayName()));
 			return 0;
 		}
 		IKnowledgeProvider provider = cap.get();
 		if (action == ActionType.GET) {
-			ctx.getSource().sendSuccess(PELang.COMMAND_EMC_GET_SUCCESS.translate(player.getDisplayName(), formatEMC(provider.getEmc())), true);
-			return 1;
+			source.sendSuccess(PELang.COMMAND_EMC_GET_SUCCESS.translate(player.getDisplayName(), formatEMC(provider.getEmc())), true);
+			return Command.SINGLE_SUCCESS;
 		}
 		String val = StringArgumentType.getString(ctx, "value");
 		@Nullable BigInteger value = null;
@@ -92,15 +94,13 @@ public class EMCCMD {
 						action = action == ActionType.ADD ? ActionType.REMOVE : ActionType.ADD;
 						value = value.abs();
 					}
-					case SET, TEST -> {
-						value = null;
-					}
+					case SET, TEST -> value = null;
 				}
 			}
 		} catch (NumberFormatException ignore) {
 		}
 		if (value == null) {
-			ctx.getSource().sendFailure(PELang.COMMAND_EMC_INVALID.translateColored(ChatFormatting.RED, val));
+			source.sendFailure(PELang.COMMAND_EMC_INVALID.translate(val));
 			return 0;
 		}
 
@@ -108,33 +108,33 @@ public class EMCCMD {
 		switch (action) {
 			case ADD -> {
 				newEMC = newEMC.add(value);
-				ctx.getSource().sendSuccess(PELang.COMMAND_EMC_ADD_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+				source.sendSuccess(PELang.COMMAND_EMC_ADD_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
 			}
 			case REMOVE -> {
 				newEMC = newEMC.subtract(value);
 				if (newEMC.compareTo(BigInteger.ZERO) < 0) {
-					ctx.getSource().sendFailure(PELang.COMMAND_EMC_NEGATIVE.translateColored(ChatFormatting.RED, formatEMC(value), player.getDisplayName()));
+					source.sendFailure(PELang.COMMAND_EMC_NEGATIVE.translate(formatEMC(value), player.getDisplayName()));
 					return 0;
 				}
-				ctx.getSource().sendSuccess(PELang.COMMAND_EMC_REMOVE_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+				source.sendSuccess(PELang.COMMAND_EMC_REMOVE_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
 			}
 			case SET -> {
 				newEMC = value;
-				ctx.getSource().sendSuccess(PELang.COMMAND_EMC_SET_SUCCESS.translate(player.getDisplayName(), formatEMC(value)), true);
+				source.sendSuccess(PELang.COMMAND_EMC_SET_SUCCESS.translate(player.getDisplayName(), formatEMC(value)), true);
 			}
 			case TEST -> {
 				if (newEMC.compareTo(value) >= 0) {
-					ctx.getSource().sendSuccess(PELang.COMMAND_EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(value)), true);
-					return 1;
+					source.sendSuccess(PELang.COMMAND_EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(value)), true);
+					return Command.SINGLE_SUCCESS;
 				}
 
-				ctx.getSource().sendFailure(PELang.COMMAND_EMC_TEST_FAIL.translateColored(ChatFormatting.RED, player.getDisplayName(), formatEMC(value)));
+				source.sendFailure(PELang.COMMAND_EMC_TEST_FAIL.translate(player.getDisplayName(), formatEMC(value)));
 				return 0;
 			}
 		}
 
 		provider.setEmc(newEMC);
 		provider.syncEmc(player);
-		return 1;
+		return Command.SINGLE_SUCCESS;
 	}
 }
