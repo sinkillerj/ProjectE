@@ -97,10 +97,10 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			if (stack.isEmpty()) {
 				continue;
 			}
-			Lazy<Boolean> whiteListed = Lazy.of(() -> whitelist.stream().anyMatch(s -> ItemHandlerHelper.canItemStacksStack(s, stack)));
+			Lazy<Boolean> filtered = Lazy.of(() -> whitelist.stream().anyMatch(s -> ItemHandlerHelper.canItemStacksStack(s, stack)));
 			if (!stack.isStackable()) {
 				//Only skip unstackable items if they are not explicitly whitelisted
-				if (!isWhitelist || !whiteListed.get()) {
+				if (!isWhitelist || !filtered.get()) {
 					continue;
 				}
 			}
@@ -110,7 +110,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				continue;
 			}
 
-			if (isWhitelist == whiteListed.get()) {
+			if (isWhitelist == filtered.get()) {
 				ItemStack copy = inv.extractItem(i, stack.getCount() == 1 ? 1 : stack.getCount() / 2, false);
 				addToList(gem, copy);
 				ItemPE.addEmcToStack(gem, EMCHelper.getEmcValue(copy) * copy.getCount());
@@ -259,6 +259,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					result.add(s);
 				}
 			}
+			return result;
 		}
 		return Collections.emptyList();
 	}
