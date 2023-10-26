@@ -110,7 +110,6 @@ public class KnowledgeCMD {
 				if (provider.hasKnowledge(item)) {
 					return failure(source, PELang.COMMAND_KNOWLEDGE_LEARN_FAIL, player, item);
 				}
-
 				provider.addKnowledge(item);
 				source.sendSuccess(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
@@ -118,7 +117,6 @@ public class KnowledgeCMD {
 				if (!provider.hasKnowledge(item)) {
 					return failure(source, PELang.COMMAND_KNOWLEDGE_UNLEARN_FAIL, player, item);
 				}
-
 				provider.removeKnowledge(item);
 				source.sendSuccess(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
@@ -130,7 +128,7 @@ public class KnowledgeCMD {
 				return failure(source, PELang.COMMAND_KNOWLEDGE_TEST_FAIL, player, item);
 			}
 		}
-		provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(item)), true);
+		provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(item)), action == ActionType.LEARN);
 
 		return Command.SINGLE_SUCCESS;
 	}
