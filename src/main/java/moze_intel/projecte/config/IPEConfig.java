@@ -1,7 +1,6 @@
 package moze_intel.projecte.config;
 
-import moze_intel.projecte.config.value.CachedPrimitiveValue;
-import moze_intel.projecte.config.value.CachedResolvableConfigValue;
+import moze_intel.projecte.config.value.CachedValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -11,13 +10,15 @@ public interface IPEConfig {
 
 	ForgeConfigSpec getConfigSpec();
 
+	default boolean isLoaded() {
+		return getConfigSpec().isLoaded();
+	}
+
 	ModConfig.Type getConfigType();
 
-	void clearCache();
+	void clearCache(boolean unloading);
 
-	<T, R> void addCachedValue(CachedResolvableConfigValue<T, R> configValue);
-
-	<T> void addCachedValue(CachedPrimitiveValue<T> configValue);
+	<T> void addCachedValue(CachedValue<T> configValue);
 
 	/**
 	 * Should this config be added to the mods "config" files. Make this return false to only create the config. This will allow it to be tracked, but not override the

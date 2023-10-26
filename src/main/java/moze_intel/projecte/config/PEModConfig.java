@@ -7,6 +7,7 @@ import moze_intel.projecte.PECore;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 /**
@@ -30,8 +31,9 @@ public class PEModConfig extends ModConfig {
 		return PE_TOML;
 	}
 
-	public void clearCache() {
-		peConfig.clearCache();
+	public void clearCache(ModConfigEvent event) {
+		//TODO - 1.20: Add support for the unloading event subtype
+		peConfig.clearCache(false);//event instanceof ModConfigEvent.Unloading);
 	}
 
 	private static class PEConfigFileTypeHandler extends ConfigFileTypeHandler {

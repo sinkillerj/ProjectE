@@ -1,7 +1,6 @@
 package moze_intel.projecte.config.value;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 import moze_intel.projecte.config.IPEConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import org.jetbrains.annotations.NotNull;
@@ -13,23 +12,13 @@ import org.jetbrains.annotations.Nullable;
  *
  * @implNote From Mekanism
  */
-public abstract class CachedResolvableConfigValue<TYPE, REAL> {
+public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValue<REAL> implements Supplier<TYPE> {
 
-	private final ConfigValue<REAL> internal;
-	private List<Runnable> invalidationListeners;
 	@Nullable
 	private TYPE cachedValue;
 
 	protected CachedResolvableConfigValue(IPEConfig config, ConfigValue<REAL> internal) {
-		this.internal = internal;
-		config.addCachedValue(this);
-	}
-
-	public void addInvalidationListener(Runnable listener) {
-		if (invalidationListeners == null) {
-			invalidationListeners = new ArrayList<>();
-		}
-		invalidationListeners.add(listener);
+		super(config, internal);
 	}
 
 	protected abstract TYPE resolve(REAL encoded);
@@ -37,6 +26,15 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> {
 	protected abstract REAL encode(TYPE value);
 
 	@NotNull
+	public TYPE getOrDefault() {
+		if (cachedValue != null || isLoaded()) {
+			return get();
+		}
+		return resolve(internal.getDefault());
+	}
+
+	@NotNull
+	@Override
 	public TYPE get() {
 		if (cachedValue == null) {
 			//If we don't have a cached value, resolve it from the actual ConfigValue
@@ -50,10 +48,15 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> {
 		cachedValue = value;
 	}
 
-	public void clearCache() {
-		cachedValue = null;
-		if (invalidationListeners != null) {
-			invalidationListeners.forEach(Runnable::run);
+	@Override
+	protected boolean clearCachedValue(boolean checkChanged) {
+		if (cachedValue == null) {
+			//Isn't cached don't need to clear it or run any invalidation listeners
+			return false;
 		}
+		TYPE oldCachedValue = cachedValue;
+		cachedValue = null;
+		//Return if we are meant to check the changed ones, and it is different than it used to be
+		return checkChanged && !oldCachedValue.equals(get());
 	}
 }
