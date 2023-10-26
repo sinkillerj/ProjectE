@@ -27,7 +27,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 	@Override
 	public void handle(NetworkEvent.Context context) {
 		ServerPlayer player = context.getSender();
-		if (player == null) {
+		if (player == null || player.isSpectator()) {
 			return;
 		}
 		if (key == PEKeybind.HELMET_TOGGLE) {
