@@ -108,7 +108,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
@@ -150,7 +149,7 @@ public class PECore {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::commonSetup);
 		modEventBus.addListener(this::imcQueue);
-		modEventBus.addListener(this::imcHandle);
+		modEventBus.addListener(IMCHandler::handleMessages);
 		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addListener(this::registerCapabilities);
 		modEventBus.addListener(this::registerRecipeSerializers);
@@ -315,10 +314,6 @@ public class PECore {
 		WorldTransmutations.init();
 		NSSSerializer.init();
 		IntegrationHelper.sendIMCMessages(event);
-	}
-
-	private void imcHandle(InterModProcessEvent event) {
-		IMCHandler.handleMessages();
 	}
 
 	private void onConfigLoad(ModConfigEvent configEvent) {

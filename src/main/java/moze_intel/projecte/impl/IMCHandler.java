@@ -13,13 +13,13 @@ import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 
 public class IMCHandler {
 
-	public static void handleMessages() {
+	public static void handleMessages(InterModProcessEvent event) {
 		List<WorldTransmutationEntry> entries = new ArrayList<>();
-		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
+		event.getIMCStream(IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
 				.filter(msg -> msg.messageSupplier().get() instanceof WorldTransmutationEntry)
 				.forEach(msg -> {
 					WorldTransmutationEntry transmutationEntry = (WorldTransmutationEntry) msg.messageSupplier().get();
@@ -34,13 +34,13 @@ public class IMCHandler {
 				});
 		WorldTransmutations.setWorldTransmutation(entries);
 
-		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_CUSTOM_EMC::equals)
+		event.getIMCStream(IMCMethods.REGISTER_CUSTOM_EMC::equals)
 				.filter(msg -> msg.messageSupplier().get() instanceof CustomEMCRegistration)
 				.forEach(msg -> APICustomEMCMapper.INSTANCE.registerCustomEMC(msg.senderModId(), (CustomEMCRegistration) msg.messageSupplier().get()));
 
-		//Note: It is first come first serve. If we already received a value for it, we don't try to overwrite it, but we do log a warning
+		//Note: It is first come, first served. If we already received a value for it, we don't try to overwrite it, but we do log a warning
 		Map<String, NSSCreator> creators = new HashMap<>();
-		InterModComms.getMessages(PECore.MODID, IMCMethods.REGISTER_NSS_SERIALIZER::equals)
+		event.getIMCStream(IMCMethods.REGISTER_NSS_SERIALIZER::equals)
 				.filter(msg -> msg.messageSupplier().get() instanceof NSSCreatorInfo)
 				.forEach(msg -> {
 					NSSCreatorInfo creatorInfo = (NSSCreatorInfo) msg.messageSupplier().get();
