@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-06T14:53:52.6921226	Tags for minecraft:block
+// 1.19.2	2023-10-26T13:49:11.3389142	Tags for minecraft:block
 b1526b0ba3ea9a6445822180462b59f848cbf363 data/forge/tags/blocks/chests.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/blocks/mineable/hammer.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/blocks/mineable/katar.json
@@ -8,6 +8,7 @@ af05dfc39403f7e43b207b4f9f799680dfb879a5 data/minecraft/tags/blocks/beacon_base_
 80651c858ef9ad556ac1dbb33366b7b1e59ab155 data/minecraft/tags/blocks/guarded_by_piglins.json
 583003d087ec1651ae5181db38641f30b5f77268 data/minecraft/tags/blocks/infiniburn_overworld.json
 ed04a4e069248f6aa21db30539ef3ff23a835670 data/minecraft/tags/blocks/mineable/pickaxe.json
+1f18749008a9b10f3ef3d1e859d8a2ae600174fc data/minecraft/tags/blocks/wall_post_override.json
 39f15f2a1d9e3801a3b07cf3f27b055129ed5164 data/minecraft/tags/blocks/wither_immune.json
 f727cd35e5b65198c6adffd4ab4dddae51bf6c05 data/projecte/tags/blocks/blacklist/harvest.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/blocks/blacklist/time_watch.json

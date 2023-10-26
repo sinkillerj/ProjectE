@@ -116,6 +116,8 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				PETags.Blocks.MINEABLE_WITH_PE_HAMMER,//Note: Pickaxe is inherited from hammer
 				BlockTags.MINEABLE_WITH_SHOVEL
 		);
+
+		tag(BlockTags.WALL_POST_OVERRIDE).add(PEBlocks.INTERDICTION_TORCH.getBlock());
 	}
 
 	private void addImmuneBlocks(TagKey<Block> tag) {
