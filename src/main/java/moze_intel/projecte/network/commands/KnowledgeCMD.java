@@ -1,9 +1,10 @@
 package moze_intel.projecte.network.commands;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import java.util.Collection;
+import java.util.Optional;
 import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -23,46 +24,46 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Optional;
-
 public class KnowledgeCMD {
+
 	private enum ActionType {
 		LEARN,
 		UNLEARN,
 		CLEAR,
 		TEST
 	}
+
 	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
 		return Commands.literal("knowledge")
-			.then(Commands.literal("clear")
-				.requires(PEPermissions.COMMAND_KNOWLEDGE_CLEAR)
-				.then(Commands.argument("targets", EntityArgument.players())
-					.executes((ctx) -> handle(ctx, ActionType.CLEAR))
+				.requires(PEPermissions.COMMAND_KNOWLEDGE)
+				.then(Commands.literal("clear")
+						.requires(PEPermissions.COMMAND_KNOWLEDGE_CLEAR)
+						.then(Commands.argument("targets", EntityArgument.players())
+								.executes((ctx) -> handle(ctx, ActionType.CLEAR))
+						)
 				)
-			)
-			.then(Commands.literal("learn")
-				.requires(PEPermissions.COMMAND_KNOWLEDGE_LEARN)
-				.then(executeWithParameters(ActionType.LEARN, context))
-			)
-			.then(Commands.literal("unlearn")
-				.requires(PEPermissions.COMMAND_KNOWLEDGE_UNLEARN)
-				.then(executeWithParameters(ActionType.UNLEARN, context))
-			)
-			.then(Commands.literal("test")
-				.requires(PEPermissions.COMMAND_KNOWLEDGE_TEST)
-				.then(executeWithParameters(ActionType.TEST, context))
-			);
+				.then(Commands.literal("learn")
+						.requires(PEPermissions.COMMAND_KNOWLEDGE_LEARN)
+						.then(executeWithParameters(ActionType.LEARN, context))
+				)
+				.then(Commands.literal("unlearn")
+						.requires(PEPermissions.COMMAND_KNOWLEDGE_UNLEARN)
+						.then(executeWithParameters(ActionType.UNLEARN, context))
+				)
+				.then(Commands.literal("test")
+						.requires(PEPermissions.COMMAND_KNOWLEDGE_TEST)
+						.then(executeWithParameters(ActionType.TEST, context))
+				);
 	}
 
 	private static ArgumentBuilder<CommandSourceStack, ?> executeWithParameters(ActionType actionType, CommandBuildContext context) {
 		return Commands.argument("player", EntityArgument.player())
-			.then(Commands.argument("item", ItemArgument.item(context))
-				.executes(ctx -> handle(ctx, actionType))
-			);
+				.then(Commands.argument("item", ItemArgument.item(context))
+						.executes(ctx -> handle(ctx, actionType))
+				);
 	}
 
-	private static @Nullable IKnowledgeProvider getProvider(ServerPlayer player){
+	private static @Nullable IKnowledgeProvider getProvider(ServerPlayer player) {
 		Optional<IKnowledgeProvider> cap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).resolve();
 		return cap.orElse(null);
 	}
@@ -71,9 +72,9 @@ public class KnowledgeCMD {
 		if (action == ActionType.CLEAR) {
 			Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "targets");
 			int successCount = 0;
-			for(ServerPlayer player : targets) {
+			for (ServerPlayer player : targets) {
 				IKnowledgeProvider provider = getProvider(player);
-				if(provider == null) {
+				if (provider == null) {
 					ctx.getSource().sendFailure(PELang.COMMAND_PROVIDER_FAIL.translateColored(ChatFormatting.RED));
 					continue;
 				}
@@ -93,7 +94,7 @@ public class KnowledgeCMD {
 
 		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
 		IKnowledgeProvider provider = getProvider(player);
-		if(provider == null) {
+		if (provider == null) {
 			ctx.getSource().sendFailure(PELang.COMMAND_PROVIDER_FAIL.translateColored(ChatFormatting.RED));
 			return 0;
 		}
