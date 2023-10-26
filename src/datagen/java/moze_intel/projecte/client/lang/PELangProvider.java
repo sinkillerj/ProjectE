@@ -172,12 +172,12 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.COMMAND_RESET_SUCCESS, "Reset EMC value for %s.");
 		add(PELang.COMMAND_SET_SUCCESS, "Set EMC value for %s to %s!");
 		add(PELang.COMMAND_EMC_INVALID, "The value \"%s\" is invalid, it must be a positive integer.");
-		add(PELang.COMMAND_EMC_NEGATIVE, "Cannot remove %s emc from %s as this would make their emc negative.");
+		add(PELang.COMMAND_EMC_NEGATIVE, "Cannot remove %s EMC from %s as this would make their EMC negative.");
 		add(PELang.COMMAND_EMC_ADD_SUCCESS, "Added %s EMC to %s.");
 		add(PELang.COMMAND_EMC_REMOVE_SUCCESS, "Removed %s EMC from %s.");
 		add(PELang.COMMAND_EMC_SET_SUCCESS, "Set the EMC of %s to %s.");
-		add(PELang.COMMAND_EMC_TEST_SUCCESS, "%s does have enough emc to remove %s.");
-		add(PELang.COMMAND_EMC_TEST_FAIL, "%s does not have enough emc to remove %s.");
+		add(PELang.COMMAND_EMC_TEST_SUCCESS, "%s does have enough EMC to remove %s.");
+		add(PELang.COMMAND_EMC_TEST_FAIL, "%s does not have enough EMC to remove %s.");
 		add(PELang.COMMAND_EMC_GET_SUCCESS, "%s has %s EMC.");
 		add(PELang.COMMAND_KNOWLEDGE_INVALID, "The item \"%s\" does not  have an EMC value, and cannot be learned.");
 		add(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS, "Successfully cleared the knowledge of %s.");
