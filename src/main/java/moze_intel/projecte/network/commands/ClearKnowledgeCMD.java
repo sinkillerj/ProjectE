@@ -16,6 +16,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 
+// TODO - 1.20: Remove, replaced with: /projecte knowledge clear
 public class ClearKnowledgeCMD {
 
 	public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {

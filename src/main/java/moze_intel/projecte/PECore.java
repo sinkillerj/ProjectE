@@ -50,6 +50,8 @@ import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
 import moze_intel.projecte.network.commands.DumpMissingEmc;
+import moze_intel.projecte.network.commands.EMCCMD;
+import moze_intel.projecte.network.commands.KnowledgeCMD;
 import moze_intel.projecte.network.commands.RemoveEmcCMD;
 import moze_intel.projecte.network.commands.ResetEmcCMD;
 import moze_intel.projecte.network.commands.SetEmcCMD;
@@ -360,6 +362,8 @@ public class PECore {
 				.then(ResetEmcCMD.register(context))
 				.then(SetEmcCMD.register(context))
 				.then(ShowBagCMD.register(context))
+				.then(EMCCMD.register(context))
+				.then(KnowledgeCMD.register(context))
 		);
 	}
 
