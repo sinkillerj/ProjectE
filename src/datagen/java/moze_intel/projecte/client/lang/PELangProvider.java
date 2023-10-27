@@ -200,7 +200,8 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.EMC_MAX_OUTPUT_RATE, "Maximum Output Rate: %s EMC/s");
 		add(PELang.EMC_MAX_STORAGE, "Maximum Storage: %s EMC");
 		add(PELang.EMC_STORED, "Stored EMC: %s");
-		add(PELang.EMC_HAS_KNOWLEDGE, "Transmutable");
+		add(PELang.EMC_HAS_KNOWLEDGE, "Learned");
+		add(PELang.EMC_NO_KNOWLEDGE, "Unlearned");
 		add(PELang.EMC_TOOLTIP, "EMC: %s");
 		add(PELang.EMC_STACK_TOOLTIP, "Stack EMC: %s");
 		add(PELang.EMC_TOOLTIP_WITH_SELL, "EMC: %s (%s)");

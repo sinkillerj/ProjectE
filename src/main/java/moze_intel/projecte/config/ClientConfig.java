@@ -14,6 +14,7 @@ public class ClientConfig extends BasePEConfig {
 	public final CachedBooleanValue tagToolTips;
 	public final CachedBooleanValue emcToolTips;
 	public final CachedBooleanValue shiftEmcToolTips;
+	public final CachedBooleanValue shiftLearnedToolTips;
 	public final CachedBooleanValue statToolTips;
 	public final CachedBooleanValue pedestalToolTips;
 	public final CachedBooleanValue pulsatingOverlay;
@@ -31,6 +32,9 @@ public class ClientConfig extends BasePEConfig {
 		shiftEmcToolTips = CachedBooleanValue.wrap(this, builder
 				.comment("Requires holding shift to display the EMC value as a tooltip on items and blocks. Note: this does nothing if emcToolTips is disabled.")
 				.define("shiftEmcToolTips", false));
+		shiftLearnedToolTips = CachedBooleanValue.wrap(this, builder
+				.comment("Requires holding shift to display the learned/unlearned text as a tooltip on items and blocks. Note: this does nothing if emcToolTips is disabled.")
+				.define("shiftLearnedToolTips", true));
 		statToolTips = CachedBooleanValue.wrap(this, builder
 				.comment("Show stats as tooltips for various ProjectE blocks")
 				.define("statToolTips", true));

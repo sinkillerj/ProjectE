@@ -55,8 +55,12 @@ public class ToolTipEvent {
 				if (current.getCount() > 1) {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
-				if (Screen.hasShiftDown() && clientPlayer != null && clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
-					event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));
+				if (clientPlayer != null && (!ProjectEConfig.client.shiftLearnedToolTips.get() || Screen.hasShiftDown())) {
+					if (clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
+						event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));
+					} else {
+						event.getToolTip().add(PELang.EMC_NO_KNOWLEDGE.translateColored(ChatFormatting.RED));
+					}
 				}
 			}
 		}

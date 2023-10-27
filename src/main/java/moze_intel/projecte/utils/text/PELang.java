@@ -64,6 +64,7 @@ public enum PELang implements ILangEntry {
 	EMC_MAX_STORAGE("emc", "max_storage"),
 	EMC_STORED("emc", "stored"),
 	EMC_HAS_KNOWLEDGE("emc", "has_knowledge"),
+	EMC_NO_KNOWLEDGE("emc", "no_knowledge"),
 	EMC_TOOLTIP("emc", "tooltip"),
 	EMC_STACK_TOOLTIP("emc", "tooltip.stack"),
 	EMC_TOOLTIP_WITH_SELL("emc", "tooltip.with_sell"),
