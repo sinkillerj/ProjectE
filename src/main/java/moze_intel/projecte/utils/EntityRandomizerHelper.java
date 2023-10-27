@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class EntityRandomizerHelper {
 
+	@Nullable
 	public static Mob getRandomEntity(Level level, Mob toRandomize) {
 		EntityType<?> entType = toRandomize.getType();
 		boolean isPeaceful = entType.is(PETags.Entities.RANDOMIZER_PEACEFUL);
@@ -37,10 +38,7 @@ public class EntityRandomizerHelper {
 			}
 			return ent;
 		}
-		if (level.random.nextBoolean()) {
-			return EntityType.SLIME.create(level);
-		}
-		return EntityType.SHEEP.create(level);
+		return null;
 	}
 
 	@Nullable
