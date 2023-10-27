@@ -1,18 +1,20 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+import java.util.function.Consumer
+
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.+"
+    id "com.github.johnrengelman.shadow" version "8.1.+"
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.5'
+    gradleVersion = '8.4'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -56,11 +58,11 @@ sourceSets {
     }
 }
 
-def libraryConfigs = new HashSet<org.gradle.api.artifacts.Configuration>();
+def libraryConfigs = new HashSet<Configuration>()
 configurations { configContainer ->
     sourceSets.each { sourceSet ->
-        def configName = sourceSet.name == "main" ? "forgeLibrary" : sourceSet.name + "ForgeLibrary";
-        def implementationConfigName = sourceSet.name == "main" ? "implementation" : sourceSet.name + "Implementation"
+        def configName = sourceSet.getTaskName(null, "forgeLibrary")
+        def implementationConfigName = sourceSet.getTaskName(null, "implementation")
         def libraryConfig = configContainer.maybeCreate(configName)
         def implementationConfig = configContainer.maybeCreate(implementationConfigName)
         implementationConfig.extendsFrom libraryConfig
@@ -132,8 +134,6 @@ minecraft {
     runs { runSpecContainer ->
         client {
             workingDirectory file('run')
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -170,8 +170,6 @@ minecraft {
         }
         server {
             workingDirectory file('run')
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -189,8 +187,6 @@ minecraft {
         data {
             workingDirectory file('run')
             environment 'target', 'fmluserdevdata'
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -226,62 +222,37 @@ minecraft {
     }
 }
 
-repositories {
-    maven {
-        name 'JEI'
-        url "https://dvs1.progwml6.com/files/maven"
-        content {
-            includeGroup 'mezz.jei'
+void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
+    exclusiveRepo(handler, url, filter -> {
+        for (def group : groups) {
+            filter.includeGroup(group)
         }
-    }
-    maven {
-        name 'CraftTweaker'
-        url "https://maven.blamejared.com"
-        content {
-            includeGroup 'com.blamejared.crafttweaker'
-        }
-    }
-    maven {
-        name 'curios'
-        url "https://maven.theillusivec4.top/"
-        content {
-            includeGroup 'top.theillusivec4.curios'
-        }
-    }
-    maven {
-        name 'Modmaven'
-        url 'https://modmaven.dev/'
-        content {
-            includeGroup 'mcjty.theoneprobe'
-        }
-    }
-    maven {
-        name 'CurseMaven'
-        url 'https://www.cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
+    })
+}
 
-    whenObjectAdded {
-        //ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
-        if (it instanceof MavenArtifactRepository) {
-            def url = it.url.toString()
-            if (url == 'https://maven.minecraftforge.net/' || url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
-                try {
-                    it.content {
-                        excludeGroup 'curse.maven'
-                        excludeGroup 'mezz.jei'
-                        excludeGroup 'mcjty.theoneprobe'
-                        excludeGroup 'com.blamejared.crafttweaker'
-                        excludeGroup 'top.theillusivec4.curios'
-                    }
-                    println("Adding exclusions to ${it.url}")
-                } catch (Exception ignored) {
-                    //oh well
-                }
-            }
-        }
+//Note: This cannot be static so that fg.repository can be properly accessed
+@SuppressWarnings('GrMethodMayBeStatic')
+void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
+    handler.exclusiveContent {
+        it.forRepositories(handler.maven {
+            setUrl(url)
+        }, fg.repository)//Add FG's repo so we make sure we are able to then find the mapped deps
+        it.filter { f -> filterSetup.accept(f) }
+    }
+}
+
+repositories { RepositoryHandler handler ->
+    exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
+        filter.includeGroupByRegex 'com\\.blamejared.*'
+        filter.includeGroup 'mezz.jei'
+        filter.includeGroup 'org.openzen.zencode'
+    })
+    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
+    maven {//TODO - 1.20: Remove this
+        name "forge"
+        url "https://maven.minecraftforge.net/"
     }
 }
 
@@ -290,6 +261,7 @@ test {
 }
 
 dependencies {
+    //TODO - 1.20: Switch to neoforge
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
@@ -313,8 +285,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
-    //TODO - 1.19: Switch back to implementation once updated update
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
     forgeLibrary group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
@@ -389,11 +360,11 @@ shadowJar {
 
 reobf {
     shadowJar {}
-    apiJar { classpath.from(sourceSets.api.compileClasspath) }
-    jar { classpath.from(sourceSets.main.compileClasspath) }
+    apiJar { libraries.from(sourceSets.api.compileClasspath) }
+    jar { libraries.from(sourceSets.main.compileClasspath) }
 }
 
-task updateJSON {
+tasks.register('updateJSON') {
     doLast {
         def updateJsonFile = file('update.json')
         def updateJson = new JsonSlurper().parse(updateJsonFile) as Map

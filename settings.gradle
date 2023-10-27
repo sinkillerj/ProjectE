@@ -1,13 +1,21 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven {
+        maven {//TODO - 1.20: Remove this
             name "forge"
             url "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name "NeoForge"
+            url "https://maven.neoforged.net/releases/"
         }
         maven {
             name 'parchment'
             url 'https://maven.parchmentmc.org'
         }
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
 }
