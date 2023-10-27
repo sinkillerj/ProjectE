@@ -23,8 +23,10 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		if (add) {
 			WorldTransmutations.register(this.input, this.output, this.sneakOutput);
 		} else {
-			WorldTransmutations.getWorldTransmutations().removeIf(entry -> entry.origin() == this.input &&
-																		   entry.result() == this.output && entry.altResult() == this.sneakOutput);
+			WorldTransmutations.getWorldTransmutations().removeIf(entry -> {
+				BlockState altOutput = this.sneakOutput == null ? this.output : this.sneakOutput;
+				return entry.origin() == this.input && entry.result() == this.output && entry.altResult() == altOutput;
+			});
 		}
 	}
 
