@@ -5,12 +5,12 @@ import org.jetbrains.annotations.Range;
 
 /**
  * This interface represents a capability for block entities that want to support storing, providing, or receiving EMC.
- *
+ * <p>
  * The contract of this interface is only the above statement However, ProjectE implements an "active-push" system, where providers automatically send EMC to acceptors.
  * You are recommended to follow this convention.
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link net.minecraft.world.level.block.entity.BlockEntity#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus

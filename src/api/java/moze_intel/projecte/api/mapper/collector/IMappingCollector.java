@@ -14,7 +14,7 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	/**
 	 * Add a Conversion that produced {@code outnumber} items of {@code output} by consuming the ingredients, that are specified in the {@code ingredientsWithAmount}
 	 * Map.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * The Map contains the ingredients and the amount of how many are consumed. It can contain negative amounts, if you get multiple items back. An amount of 0 will
@@ -28,7 +28,7 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Add a Conversion that produced {@code outnumber} items of {@code output} by consuming the {@code ingredients}.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * Each entry in {@code ingredients} is 1 item. May contain the same items multiple times.
@@ -41,12 +41,12 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Set a fixed {@code value} for {@code something} before the calculation happens.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * {@code value} has to be >= 0 or {@link IValueArithmetic#isFree(Comparable) Free}, which indicates that {@code something} can be used in Conversions, but does not
 	 * add anything to the value of the Conversion-result.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * ALL {@code setValueAfter} WILL BE CLEARED!
@@ -58,11 +58,11 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 
 	/**
 	 * Set a fixed {@code value} for {@code something} after the calculation was done. This value will not be propagated.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * {@code value} has to be >= 0.
-	 *
+	 * <p>
 	 * <br/>
 	 *
 	 * THIS WILL BE OVERWRITTEN, IF {@code setValueBefore} IS CALLED!

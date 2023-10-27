@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that have a charge that changes when the respective keybinding is activated (default V)
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IItemCharge {

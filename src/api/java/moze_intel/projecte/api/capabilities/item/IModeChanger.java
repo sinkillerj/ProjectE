@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that switch between modes when the mode switch keybind is activated (default G)
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IModeChanger {

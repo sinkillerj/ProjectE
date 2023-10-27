@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Range;
 
 /**
  * This interface defines the contract for items that wish to expose their internal EMC storage for external manipulation
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus

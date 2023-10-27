@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} simpler, and automatically be able to register conversions for:
- *
+ * <p>
  * - Tag -> Type
- *
+ * <p>
  * - Type -> Tag
  *
  * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.

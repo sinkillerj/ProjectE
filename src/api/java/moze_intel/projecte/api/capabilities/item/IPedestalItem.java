@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface specifies items that perform a specific function every tick when inside an activated Dark Matter Pedestal
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link net.minecraft.world.item.ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus

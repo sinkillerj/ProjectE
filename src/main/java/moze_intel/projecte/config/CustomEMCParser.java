@@ -124,7 +124,7 @@ public final class CustomEMCParser {
 			try {
 				Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(currentEntries));
 			} catch (IOException e) {
-				e.printStackTrace();
+				PECore.LOGGER.error("Failed to write custom EMC file", e);
 			}
 			dirty = false;
 		}
@@ -136,7 +136,7 @@ public final class CustomEMCParser {
 		try {
 			Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(elem));
 		} catch (IOException e) {
-			e.printStackTrace();
+			PECore.LOGGER.error("Failed to write default custom EMC file", e);
 		}
 	}
 }

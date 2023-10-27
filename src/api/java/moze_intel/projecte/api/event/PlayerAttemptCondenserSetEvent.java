@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired on the server when a player is attempting to place an item in the condenser.
- *
+ * <p>
  * This event is {@link Cancelable}
  *
  * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}

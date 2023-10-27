@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that perform a specific function when the Extra Function key is activated (default C)
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IExtraFunction {

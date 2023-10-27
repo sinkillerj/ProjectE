@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface defines the contract for some object that exposes transmutation knowledge through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link net.minecraft.world.entity.Entity#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {

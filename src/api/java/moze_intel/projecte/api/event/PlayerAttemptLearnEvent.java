@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired on the server when a player is attempting to learn a new item
- *
+ * <p>
  * This event is {@link Cancelable}
  *
  * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}

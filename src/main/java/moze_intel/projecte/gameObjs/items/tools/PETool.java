@@ -99,7 +99,7 @@ public abstract class PETool extends DiggerItem implements IItemCharge, IBarHelp
 
 	/**
 	 * Override this if we need to also include any "shortcuts" that specific vanilla tool types include for specific blocks/material types.
-	 *
+	 * <p> <p>
 	 * For example: Axes are "effective" on all types of wood, but do not automatically allow HARVESTING of all types of wood.
 	 */
 	protected float getShortCutDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {

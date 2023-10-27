@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interfaces specifies items that perform a specific function every tick when inside an Alchemical Bag, on a player
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  *
  * @author williewillus

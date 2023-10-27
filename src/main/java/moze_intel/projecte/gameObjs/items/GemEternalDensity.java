@@ -80,7 +80,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	 * @return Whether the inventory was changed
 	 */
 	private static boolean condense(ItemStack gem, IItemHandler inv) {
-		if (!gem.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || ItemPE.getEmc(gem) >= Constants.BLOCK_ENTITY_MAX_EMC) {
+		if (!gem.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || ItemPE.getEmc(gem) == Constants.BLOCK_ENTITY_MAX_EMC) {
 			return false;
 		}
 		ItemStack target = getTarget(gem);

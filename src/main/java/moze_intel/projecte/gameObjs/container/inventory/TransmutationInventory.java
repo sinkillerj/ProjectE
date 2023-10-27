@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider.TargetUpdateType;
@@ -223,7 +224,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		try {
 			return info.createStack().getHoverName().getString().toLowerCase(Locale.ROOT).contains(filter);
 		} catch (Exception e) {
-			e.printStackTrace();
+			PECore.LOGGER.error("Failed to check filter", e);
 			//From old code... Not sure if intended to not remove items that crash on getDisplayName
 			return true;
 		}

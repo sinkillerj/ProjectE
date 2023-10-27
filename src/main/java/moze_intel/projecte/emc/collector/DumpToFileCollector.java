@@ -3,6 +3,7 @@ package moze_intel.projecte.emc.collector;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -68,7 +69,7 @@ public class DumpToFileCollector<A extends IValueArithmetic<?>> extends Abstract
 		try {
 			out.write(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			PECore.LOGGER.error("Failed to dump to file", e);
 		}
 		inner.finishCollection();
 	}

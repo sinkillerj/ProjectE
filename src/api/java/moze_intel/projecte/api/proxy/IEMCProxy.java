@@ -13,9 +13,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value registry if the given block has an EMC value
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param block The block we want to query
@@ -28,9 +28,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value registry if the given item has an EMC value
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param item The item we want to query
@@ -43,11 +43,11 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value registry if the given ItemStack has an EMC value
-	 *
+	 * <p>
 	 * This will also use the damage value to check if the Item has an EMC value
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param stack The stack we want to query
@@ -60,9 +60,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value registry if the given ItemInfo has an EMC value
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param info The ItemInfo we want to query
@@ -75,9 +75,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value for the provided block
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param block The block we want to query
@@ -91,9 +91,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value for the provided item
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param item The item we want to query
@@ -107,11 +107,11 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value for the provided stack
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
-	 *
+	 * <p>
 	 * This takes into account bonuses such as stored emc in power items and enchantments
 	 *
 	 * @param stack The stack we want to query
@@ -125,11 +125,11 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC value for the provided ItemInfo
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
-	 *
+	 * <p>
 	 * This takes into account bonuses such as stored emc in power items and enchantments
 	 *
 	 * @param info The ItemInfo we want to query
@@ -141,9 +141,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC sell-value for the provided stack
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param stack The stack we want to query
@@ -157,9 +157,9 @@ public interface IEMCProxy {
 
 	/**
 	 * Queries the EMC sell-value for the provided ItemInfo
-	 *
+	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
-	 *
+	 * <p>
 	 * Can be called on both sides
 	 *
 	 * @param info The ItemInfo we want to query

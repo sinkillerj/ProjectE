@@ -59,7 +59,7 @@ public class BlockEntityTypeDeferredRegister extends WrappedDeferredRegister<Blo
 			registryObject.clientTicker(clientTicker).serverTicker(serverTicker);
 			return register(block.getInternalRegistryName(), () -> {
 						Block[] validBlocks;
-						if (block instanceof WallOrFloorBlockRegistryObject wallOrFloorBlock) {
+						if (block instanceof WallOrFloorBlockRegistryObject<?, ?, ?> wallOrFloorBlock) {
 							validBlocks = new Block[]{block.getBlock(), wallOrFloorBlock.getWallBlock()};
 						} else {
 							validBlocks = new Block[]{block.getBlock()};

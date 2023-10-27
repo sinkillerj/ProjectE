@@ -8,7 +8,7 @@ import java.util.Map;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 
 /**
- * Holds deserialized custom conversions. Full grammar specification: https://gist.github.com/williewillus/9ebb0d04329526e31564
+ * Holds deserialized custom conversions. <a href="https://gist.github.com/williewillus/9ebb0d04329526e31564">Full grammar specification</a>
  */
 public class CustomConversionFile {
 

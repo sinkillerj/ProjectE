@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface specifies items that fire a projectile when the Shoot Projectile keybind is activated (default R)
- *
+ * <p>
  * This is exposed through the Capability system.
- *
+ * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
  */
 public interface IProjectileShooter {

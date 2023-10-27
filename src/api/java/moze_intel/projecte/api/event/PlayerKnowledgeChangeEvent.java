@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired serverside after a players transmutation knowledge is changed
- *
+ * <p>
  * This event is not {@link net.minecraftforge.eventbus.api.Cancelable}, and has no result
- *
+ * <p>
  * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
  */
 public class PlayerKnowledgeChangeEvent extends Event {

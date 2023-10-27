@@ -143,7 +143,7 @@ public final class EMCMappingHandler {
 					PregeneratedEMC.write(pregeneratedEmcFile, graphMapperValues);
 					PECore.debugLog("Wrote Pregen-file!");
 				} catch (IOException e) {
-					e.printStackTrace();
+					PECore.LOGGER.error("Failed to write Pregen-file", e);
 				}
 			}
 		}

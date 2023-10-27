@@ -37,7 +37,7 @@ public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity imple
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
-			return player.containerMenu instanceof EmcChestBlockEntityContainer container && container.blockEntityMatches(EmcChestBlockEntity.this);
+			return player.containerMenu instanceof EmcChestBlockEntityContainer<?> container && container.blockEntityMatches(EmcChestBlockEntity.this);
 		}
 	};
 	private final ChestLidController chestLidController = new ChestLidController();

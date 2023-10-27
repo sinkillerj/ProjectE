@@ -25,7 +25,7 @@ public class CustomConversionAction implements IUndoableAction {
 	public String describe() {
 		StringBuilder inputString = new StringBuilder();
 		for (Entry<NormalizedSimpleStack, Integer> entry : conversion.ingredients().entrySet()) {
-			if (inputString.length() > 0) {
+			if (!inputString.isEmpty()) {
 				//If we already have elements, prepend a comma
 				inputString.append(", ");
 			}

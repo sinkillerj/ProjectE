@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Range;
 
 /**
  * Base class for the reference implementations IEmcStorage
- *
+ * <p>
  * Extend this if you want fine-grained control over all aspects of how your block entity provides or accepts EMC
  *
  * @author williewillus

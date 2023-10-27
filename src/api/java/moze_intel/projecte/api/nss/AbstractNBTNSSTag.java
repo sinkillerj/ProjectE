@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Abstract implementation to make implementing {@link NSSTag} and {@link NSSNBT} simpler, and automatically be able to register conversions for:
- *
+ * <p>
  * - Tag -> Type
- *
+ * <p>
  * - Type -> Tag
  *
  * @param <TYPE> The type of the {@link net.minecraftforge.registries.tags.ITag} this {@link NormalizedSimpleStack} is for.

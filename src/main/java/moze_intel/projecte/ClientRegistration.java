@@ -90,7 +90,7 @@ public class ClientRegistration {
 		if (ModList.get().isLoaded("jei")) {
 			//Note: This listener is only registered if JEI is loaded
 			MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (ScreenEvent.Opening event) -> {
-				if (event.getCurrentScreen() instanceof PEContainerScreen screen) {
+				if (event.getCurrentScreen() instanceof PEContainerScreen<?> screen) {
 					//If JEI is loaded and our current screen is a mekanism gui,
 					// check if the new screen is a JEI recipe screen
 					if (event.getNewScreen() instanceof IRecipesGui) {
