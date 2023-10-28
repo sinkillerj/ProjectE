@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 // [VanillaCopy] Adapted from ChestBlockEntity
 public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity, MenuProvider {
@@ -44,6 +45,11 @@ public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity imple
 
 	protected EmcChestBlockEntity(BlockEntityTypeRegistryObject<? extends EmcChestBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
+	}
+
+	protected EmcChestBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state,
+			@Range(from = 1, to = Long.MAX_VALUE)long maxAmount) {
+		super(type, pos, state, maxAmount);
 	}
 
 	public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, EmcChestBlockEntity chest) {

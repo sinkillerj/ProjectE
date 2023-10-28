@@ -32,7 +32,7 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 	private boolean inventoryChanged;
 
 	public AlchBlockEntityChest(BlockPos pos, BlockState state) {
-		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state);
+		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state, 1_000);
 		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 

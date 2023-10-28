@@ -40,7 +40,7 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 	public boolean previousRedstoneState = false;
 
 	public DMPedestalBlockEntity(BlockPos pos, BlockState state) {
-		super(PEBlockEntityTypes.DARK_MATTER_PEDESTAL, pos, state);
+		super(PEBlockEntityTypes.DARK_MATTER_PEDESTAL, pos, state, 1_000);
 		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
