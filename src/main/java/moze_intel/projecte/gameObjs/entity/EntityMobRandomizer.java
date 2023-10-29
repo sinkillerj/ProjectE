@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,9 +61,11 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
 		if (!level().isClientSide && result.getEntity() instanceof Mob ent && getOwner() instanceof Player player) {
-			Mob randomized = EntityRandomizerHelper.getRandomEntity(level(), ent);
+			ServerLevel level = (ServerLevel) level();
+			Mob randomized = EntityRandomizerHelper.getRandomEntity(level, ent);
+			//TODO: Ideally we wouldn't consume fuel until after we make sure it was able to be added to the world and we remove it
+			// but odds are we will be able to so for now I am not going to worry about it
 			if (randomized != null && EMCHelper.consumePlayerFuel(player, 384) != -1) {
-				ent.discard();
 				randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
 				SpawnGroupData data;
 				if (randomized instanceof Rabbit rabbit && rabbit.getVariant() == Variant.EVIL) {
@@ -72,9 +75,13 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 				} else {
 					data = null;
 				}
-				randomized.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
-				level().addFreshEntity(randomized);
-				randomized.spawnAnim();
+				ForgeEventFactory.onFinalizeSpawn(randomized, level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
+				level.tryAddFreshEntityWithPassengers(randomized);
+				if (randomized.isAddedToWorld()) {
+					randomized.spawnAnim();
+					//Don't remove the old entity until the new one is added in case another mod is cancelling the spawning
+					ent.discard();
+				}
 			}
 		}
 	}
