@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "F": {
       "item": "projecte:aeternalis_fuel"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "projecte:aeternalis_fuel_block"
-  }
+  },
+  "show_notification": true
 }

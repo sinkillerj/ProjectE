@@ -65,7 +65,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			Optional<SoundEvent> sound = pickup.getPickupSound(state);
 			ItemStack itemStack = pickup.pickupBlock(level, fluidPos, state);
 			if (!itemStack.isEmpty()) {
-				sound.ifPresent(soundEvent -> player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,
+				sound.ifPresent(soundEvent -> player.level().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,
 						SoundSource.PLAYERS, 1.0F, 1.0F));
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
@@ -163,7 +163,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			for (ItemEntity e : player.getCommandSenderWorld().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(5))) {
+			for (ItemEntity e : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(5))) {
 				WorldHelper.gravitateEntityTowards(e, player.getX(), player.getY(), player.getZ());
 			}
 		}

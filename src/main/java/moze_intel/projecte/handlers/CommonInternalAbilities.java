@@ -43,14 +43,14 @@ public class CommonInternalAbilities {
 			int y = (int) (player.getY() - player.getMyRidingOffset());
 			int z = (int) Math.floor(player.getZ());
 			BlockPos pos = new BlockPos(x, y, z);
-			FluidState below = player.level.getFluidState(pos.below());
+			FluidState below = player.level().getFluidState(pos.below());
 			boolean water = waterWalkOnType.canWalk() && below.is(FluidTags.WATER);
 			//Note: Technically we could probably only have lava be true if water is false, but given the
 			// fact vanilla uses tags for logic and technically (although it probably would cause lots of
 			// weirdness, the block we are standing on could be both water and lava, which would mean that
 			// we would want to apply both speed boosts).
 			boolean lava = lavaWalkOnType.canWalk() && below.is(FluidTags.LAVA);
-			if ((water || lava) && player.level.isEmptyBlock(pos)) {
+			if ((water || lava) && player.level().isEmptyBlock(pos)) {
 				if (!player.isShiftKeyDown()) {
 					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0, 1));
 					player.fallDistance = 0.0F;
@@ -58,14 +58,14 @@ public class CommonInternalAbilities {
 				}
 				applyWaterSpeed = water && waterWalkOnType == WalkOnType.ABLE_WITH_SPEED;
 				applyLavaSpeed = lava && lavaWalkOnType == WalkOnType.ABLE_WITH_SPEED;
-			} else if (!player.level.isClientSide) {
+			} else if (!player.level().isClientSide) {
 				if (waterWalkOnType.canWalk() && player.isInWater()) {
 					//Things that apply water walking also refresh air supply when in water
 					player.setAirSupply(player.getMaxAirSupply());
 				}
 			}
 		}
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			AttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (attribute != null) {
 				updateSpeed(attribute, applyWaterSpeed, WATER_SPEED_BOOST);

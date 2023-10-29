@@ -8,6 +8,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ItemLike;
@@ -17,8 +18,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PEItemModelProvider extends ItemModelProvider {
 
-	public PEItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-		super(generator, PECore.MODID, existingFileHelper);
+	public PEItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+		super(output, PECore.MODID, existingFileHelper);
 	}
 
 	@Override

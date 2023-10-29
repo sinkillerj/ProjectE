@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "projecte:alchemical_chest"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:condenser_mk1"
-  }
+  },
+  "show_notification": true
 }

@@ -2,6 +2,7 @@ package moze_intel.projecte.integration.crafttweaker.actions;
 
 import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -65,6 +66,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 			return "Undoing addition of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
 				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
+
+		@Override
+		public String systemName() {
+			return PECore.MODNAME;
+		}
 	}
 
 	public static class Remove extends WorldTransmuteAction {
@@ -102,6 +108,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 			return "Undoing removal of world transmutation recipe for: " + ExpandBlockState.getCommandString(input) + " with output: " +
 				   ExpandBlockState.getCommandString(output) + " and secondary output: " + ExpandBlockState.getCommandString(sneakOutput);
 		}
+
+		@Override
+		public String systemName() {
+			return PECore.MODNAME;
+		}
 	}
 
 	public static class RemoveAll implements IUndoableAction {
@@ -124,6 +135,11 @@ public abstract class WorldTransmuteAction implements IUndoableAction {
 		@Override
 		public String describeUndo() {
 			return "Restored world transmutation recipes to default";
+		}
+
+		@Override
+		public String systemName() {
+			return PECore.MODNAME;
 		}
 	}
 }

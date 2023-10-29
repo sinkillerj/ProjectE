@@ -1,10 +1,12 @@
 package moze_intel.projecte.common.loot;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TntBlock;
@@ -15,12 +17,18 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.jetbrains.annotations.NotNull;
 
-public class PEBlockLootTable extends BlockLoot {
+public class PEBlockLootTable extends BlockLootSubProvider {
 
 	private final Set<Block> knownBlocks = new HashSet<>();
 
+	public PEBlockLootTable() {
+		//Note: We manually handle explosion resistance on a case by case basis
+		//TODO - 1.20: This isn't necessarily correct for ProjectE, figure out how to handle explosion resistance?
+		super(Collections.emptySet(), FeatureFlags.VANILLA_SET);
+	}
+
 	@Override
-	protected void addTables() {
+	protected void generate() {
 		dropSelf(PEBlocks.AETERNALIS_FUEL.getBlock());
 		dropSelf(PEBlocks.ALCHEMICAL_CHEST.getBlock());
 		dropSelf(PEBlocks.ALCHEMICAL_COAL.getBlock());
@@ -51,7 +59,7 @@ public class PEBlockLootTable extends BlockLoot {
 		add(block, dropping(drop));
 	}
 
-	protected static LootTable.Builder dropping(ItemLike item) {
+	protected LootTable.Builder dropping(ItemLike item) {
 		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.name("main")
 				.add(LootItem.lootTableItem(item))

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "tag": "forge:gems/diamond"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:hyperkinetic_lens"
-  }
+  },
+  "show_notification": true
 }

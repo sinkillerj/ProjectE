@@ -7,6 +7,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -44,20 +45,20 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
 			BlockPos pos = result.getBlockPos();
-			Block block = level.getBlockState(pos).getBlock();
+			Block block = level().getBlockState(pos).getBlock();
 			if (block == Blocks.OBSIDIAN) {
-				level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
+				level().setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
 			} else if (block == Blocks.SAND) {
 				BlockPos.betweenClosedStream(pos.offset(-2, -2, -2), pos.offset(2, 2, 2)).forEach(currentPos -> {
-					if (level.getBlockState(currentPos).getBlock() == Blocks.SAND) {
+					if (level().getBlockState(currentPos).getBlock() == Blocks.SAND) {
 						PlayerHelper.checkedPlaceBlock(player, pos.immutable(), Blocks.GLASS.defaultBlockState());
 					}
 				});
 			} else {
 				BlockPos.betweenClosedStream(pos.offset(-1, -1, -1), pos.offset(1, 1, 1)).forEach(currentPos -> {
-					if (level.isEmptyBlock(currentPos)) {
+					if (level().isEmptyBlock(currentPos)) {
 						PlayerHelper.checkedPlaceBlock(player, currentPos.immutable(), Blocks.FIRE.defaultBlockState());
 					}
 				});
@@ -68,12 +69,12 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level.isClientSide && getOwner() instanceof Player player) {
+		if (!level().isClientSide && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.IGNITION_RING.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				Entity ent = result.getEntity();
 				ent.setSecondsOnFire(5);
-				ent.hurt(DamageSource.IN_FIRE, 5);
+				ent.hurt(level().damageSources().inFire(), 5);
 			}
 		}
 	}
@@ -96,7 +97,7 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

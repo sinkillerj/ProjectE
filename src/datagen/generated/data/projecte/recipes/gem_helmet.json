@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shapeless",
+        "category": "equipment",
         "ingredients": [
           {
             "item": "projecte:rm_helmet"
@@ -38,6 +39,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shapeless",
+        "category": "equipment",
         "ingredients": [
           {
             "item": "projecte:rm_helmet"

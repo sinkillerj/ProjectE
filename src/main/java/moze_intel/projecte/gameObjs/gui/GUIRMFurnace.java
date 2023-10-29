@@ -1,11 +1,9 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.block_entities.RMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,19 +25,15 @@ public class GUIRMFurnace extends PEContainerScreen<RMFurnaceContainer> {
 	}
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, texture);
-
-		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int x, int y) {
+		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		int progress;
 		if (furnace.isBurning()) {
 			progress = furnace.getBurnTimeRemainingScaled(12);
-			blit(matrix, leftPos + 66, topPos + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
+			graphics.blit(texture, leftPos + 66, topPos + 38 + 10 - progress, 210, 10 - progress, 21, progress + 2);
 		}
 		progress = furnace.getCookProgressScaled(24);
-		blit(matrix, leftPos + 88, topPos + 35, 210, 14, progress, 17);
+		graphics.blit(texture, leftPos + 88, topPos + 35, 210, 14, progress, 17);
 	}
 }

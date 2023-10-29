@@ -22,7 +22,6 @@ import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +34,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -69,18 +67,6 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public ItemStack getCraftingRemainingItem(ItemStack stack) {
 		return stack.copy();
-	}
-
-	@Override
-	public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list) {
-		//Only used on the client
-		if (allowedIn(group)) {
-			for (byte i = 0; i < getModeCount(); ++i) {
-				ItemStack stack = new ItemStack(this);
-				stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
-				list.add(stack);
-			}
-		}
 	}
 
 	@Override
@@ -141,7 +127,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		//GIANT FIRE ROW OF DEATH
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (level.isClientSide) {
 			return true;
 		}
@@ -169,7 +155,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (level.isClientSide) {
 			return false;
 		}

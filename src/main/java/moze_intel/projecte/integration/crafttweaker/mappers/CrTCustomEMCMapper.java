@@ -9,6 +9,7 @@ import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
-			ResourceManager resourceManager) {
+			RegistryAccess registryAccess, ResourceManager resourceManager) {
 		for (Map.Entry<NormalizedSimpleStack, Long> entry : customEmcValues.entrySet()) {
 			NormalizedSimpleStack normStack = entry.getKey();
 			long value = entry.getValue();

@@ -5,6 +5,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.EntityRandomizerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Rabbit.RabbitGroupData;
+import net.minecraft.world.entity.animal.Rabbit.Variant;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -36,16 +38,16 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getCommandSenderWorld().isClientSide && isAlive() && isInWater()) {
+		if (!this.level().isClientSide && isAlive() && isInWater()) {
 			this.discard();
 		}
 	}
 
 	@Override
 	protected void onHit(@NotNull HitResult result) {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			for (int i = 0; i < 4; ++i) {
-				level.addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
+				level().addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2.0D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 			}
 		}
 		if (!isInWater()) {
@@ -57,21 +59,21 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level.isClientSide && result.getEntity() instanceof Mob ent && getOwner() instanceof Player player) {
-			Mob randomized = EntityRandomizerHelper.getRandomEntity(level, ent);
+		if (!level().isClientSide && result.getEntity() instanceof Mob ent && getOwner() instanceof Player player) {
+			Mob randomized = EntityRandomizerHelper.getRandomEntity(level(), ent);
 			if (randomized != null && EMCHelper.consumePlayerFuel(player, 384) != -1) {
 				ent.discard();
 				randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
 				SpawnGroupData data;
-				if (randomized instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
+				if (randomized instanceof Rabbit rabbit && rabbit.getVariant() == Variant.EVIL) {
 					//If we are creating a rabbit, and it is supposed to be the killer bunny, we need to pass that data
 					// to onInitialSpawn, or it will reset it to a random type of rabbit
-					data = new RabbitGroupData(99);
+					data = new RabbitGroupData(Variant.EVIL);
 				} else {
 					data = null;
 				}
-				randomized.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
-				getCommandSenderWorld().addFreshEntity(randomized);
+				randomized.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
+				level().addFreshEntity(randomized);
 				randomized.spawnAnim();
 			}
 		}
@@ -79,7 +81,7 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

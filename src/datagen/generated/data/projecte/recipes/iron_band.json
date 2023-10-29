@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "I": {
       "tag": "forge:ingots/iron"
@@ -20,5 +21,6 @@
   ],
   "result": {
     "item": "projecte:iron_band"
-  }
+  },
+  "show_notification": true
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "minecraft:snowball"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:zero_ring"
-  }
+  },
+  "show_notification": true
 }

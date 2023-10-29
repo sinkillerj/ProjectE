@@ -1,13 +1,11 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.RelayMK2Container;
 import moze_intel.projecte.gameObjs.container.RelayMK3Container;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,31 +34,27 @@ public class GUIRelay<CONTAINER extends RelayMK1Container> extends PEContainerSc
 	}
 
 	@Override
-	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
-		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
+	protected void renderLabels(@NotNull GuiGraphics graphics, int x, int y) {
+		graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
 		//Don't render inventory as we don't have space
-		this.font.draw(matrix, Constants.EMC_FORMATTER.format(menu.emc.get()), emcX, emcY, 0x404040);
+		graphics.drawString(font, Constants.EMC_FORMATTER.format(menu.emc.get()), emcX, emcY, 0x404040, false);
 	}
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, this.texture);
-
-		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int x, int y) {
+		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		//Emc bar progress
 		int progress = (int) ((double) menu.emc.get() / menu.relay.getMaximumEmc() * Constants.MAX_CONDENSER_PROGRESS);
-		blit(matrix, leftPos + emcBarShift, topPos + 6, 30, vOffset, progress, 10);
+		graphics.blit(texture, leftPos + emcBarShift, topPos + 6, 30, vOffset, progress, 10);
 
 		//Klein start bar progress. Max is 30.
 		progress = (int) (menu.getKleinChargeProgress() * 30);
-		blit(matrix, leftPos + 116 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
+		graphics.blit(texture, leftPos + 116 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
 
 		//Burn Slot bar progress. Max is 30.
 		progress = (int) (menu.getInputBurnProgress() * 30);
-		blit(matrix, leftPos + 64 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
+		graphics.blit(texture, leftPos + 64 + shiftX, topPos + 67 + shiftY, 0, vOffset, progress, 10);
 	}
 
 	public static class GUIRelayMK1 extends GUIRelay<RelayMK1Container> {

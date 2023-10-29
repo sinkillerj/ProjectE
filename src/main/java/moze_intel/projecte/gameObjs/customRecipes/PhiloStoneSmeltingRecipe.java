@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Set;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 
-	public PhiloStoneSmeltingRecipe(ResourceLocation id) {
-		super(id);
+	public PhiloStoneSmeltingRecipe(ResourceLocation id, CraftingBookCategory category) {
+		super(id, category);
 	}
 
 	@Override
@@ -35,14 +37,14 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingContainer inv) {
+	public ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
 		Set<SmeltingRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
 		if (matchingRecipes.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 		//If we have at least one matching recipe, return the output
 		//Note: It is multiplied by seven as we have seven inputs
-		ItemStack output = matchingRecipes.stream().findFirst().get().getResultItem().copy();
+		ItemStack output = matchingRecipes.stream().findFirst().get().getResultItem(registryAccess).copy();
 		output.setCount(output.getCount() * 7);
 		return output;
 	}

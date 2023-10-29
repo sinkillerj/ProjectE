@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "M": {
       "item": "projecte:dark_matter"
@@ -11,5 +12,6 @@
   ],
   "result": {
     "item": "projecte:dark_matter_block"
-  }
+  },
+  "show_notification": true
 }

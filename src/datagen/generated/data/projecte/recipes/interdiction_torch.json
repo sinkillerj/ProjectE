@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "tag": "forge:gems/diamond"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:interdiction_torch"
-  }
+  },
+  "show_notification": true
 }

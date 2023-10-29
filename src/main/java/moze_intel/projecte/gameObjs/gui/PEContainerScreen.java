@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,10 +16,10 @@ public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends
 	}
 
 	@Override
-	public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(matrix);
-		super.render(matrix, mouseX, mouseY, partialTicks);
-		this.renderTooltip(matrix, mouseX, mouseY);
+	public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(graphics);
+		super.render(graphics, mouseX, mouseY, partialTicks);
+		this.renderTooltip(graphics, mouseX, mouseY);
 	}
 
 	@Override

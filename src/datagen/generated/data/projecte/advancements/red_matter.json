@@ -33,5 +33,6 @@
     [
       "rm"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

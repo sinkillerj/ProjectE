@@ -14,6 +14,7 @@ import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 
 public class NSSItemArgument implements ArgumentType<NSSItemResult> {
@@ -23,7 +24,7 @@ public class NSSItemArgument implements ArgumentType<NSSItemResult> {
 	private final HolderLookup<Item> items;
 
 	private NSSItemArgument(CommandBuildContext context) {
-		this.items = context.holderLookup(Registry.ITEM_REGISTRY);
+		this.items = context.holderLookup(Registries.ITEM);
 	}
 
 	public static NSSItemArgument nss(CommandBuildContext context) {

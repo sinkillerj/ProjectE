@@ -34,7 +34,7 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 	public boolean changeMode(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
 		CompoundTag nbt = stack.getOrCreateTag();
 		boolean isActive = nbt.getBoolean(Constants.NBT_KEY_ACTIVE);
-		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), isActive ? PESoundEvents.UNCHARGE.get() : PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), isActive ? PESoundEvents.UNCHARGE.get() : PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		nbt.putBoolean(Constants.NBT_KEY_ACTIVE, !isActive);
 		return true;
 	}

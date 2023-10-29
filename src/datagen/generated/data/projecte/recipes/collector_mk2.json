@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
       "item": "minecraft:glowstone"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:collector_mk2"
-  }
+  },
+  "show_notification": true
 }

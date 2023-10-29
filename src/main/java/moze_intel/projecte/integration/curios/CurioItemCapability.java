@@ -22,7 +22,7 @@ public class CurioItemCapability extends BasicItemCapability<ICurio> implements 
 	@Override
 	public void curioTick(SlotContext context) {
 		if (!context.cosmetic()) {
-			getStack().inventoryTick(context.entity().getCommandSenderWorld(), context.entity(), context.index(), false);
+			getStack().inventoryTick(context.entity().level(), context.entity(), context.index(), false);
 		}
 	}
 }

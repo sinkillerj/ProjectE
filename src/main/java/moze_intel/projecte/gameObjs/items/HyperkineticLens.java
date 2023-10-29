@@ -35,7 +35,7 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		long requiredEmc = Constants.EXPLOSIVE_LENS_COST[this.getCharge(stack)];
 		if (!consumeFuel(player, stack, requiredEmc, true)) {
 			return false;

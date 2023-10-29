@@ -1,0 +1,22 @@
+// 1.20.1	2023-10-29T11:45:33.5186057	Tags for minecraft:block mod id projecte
+b1526b0ba3ea9a6445822180462b59f848cbf363 data/forge/tags/blocks/chests.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/blocks/mineable/hammer.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/blocks/mineable/katar.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/blocks/mineable/morning_star.json
+af05dfc39403f7e43b207b4f9f799680dfb879a5 data/minecraft/tags/blocks/beacon_base_blocks.json
+39f15f2a1d9e3801a3b07cf3f27b055129ed5164 data/minecraft/tags/blocks/dragon_immune.json
+80651c858ef9ad556ac1dbb33366b7b1e59ab155 data/minecraft/tags/blocks/guarded_by_piglins.json
+583003d087ec1651ae5181db38641f30b5f77268 data/minecraft/tags/blocks/infiniburn_overworld.json
+ed04a4e069248f6aa21db30539ef3ff23a835670 data/minecraft/tags/blocks/mineable/pickaxe.json
+1f18749008a9b10f3ef3d1e859d8a2ae600174fc data/minecraft/tags/blocks/wall_post_override.json
+39f15f2a1d9e3801a3b07cf3f27b055129ed5164 data/minecraft/tags/blocks/wither_immune.json
+f727cd35e5b65198c6adffd4ab4dddae51bf6c05 data/projecte/tags/blocks/blacklist/harvest.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/blocks/blacklist/time_watch.json
+f549715bfd65ed54ca643077696fcff45e31cb72 data/projecte/tags/blocks/farming_override.json
+74142de6ac4e0ad4bd76bf47acf98ffc2cd55937 data/projecte/tags/blocks/mineable/hammer.json
+2e9e86f2e370dc114e16ca201b884b3e89031ec4 data/projecte/tags/blocks/mineable/katar.json
+998f7ded66d9c45bbec2edd6fd54a56db9762e60 data/projecte/tags/blocks/mineable/morning_star.json
+6676abfbbbdb240339c747e3d2cdce7e2c4475e2 data/projecte/tags/blocks/mineable/shears.json
+e7a8c631b3ba3bd9a98d2bb83f927b25fe348d37 data/projecte/tags/blocks/mineable/sword.json
+a9eb6aef4429122627692f08698f74e0f501f970 data/projecte/tags/blocks/needs_dark_matter_tool.json
+f229860ac0cfd87e67fb747643b9e36fdb97fc40 data/projecte/tags/blocks/needs_red_matter_tool.json

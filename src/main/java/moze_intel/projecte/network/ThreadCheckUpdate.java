@@ -11,6 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLConfig;
+import net.minecraftforge.fml.loading.FMLConfig.ConfigValue;
 import net.minecraftforge.forgespi.language.IModInfo;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
@@ -27,7 +28,7 @@ public class ThreadCheckUpdate extends Thread {
 
 	@Override
 	public void run() {
-		if (!FMLConfig.runVersionCheck()) {
+		if (!FMLConfig.getBoolConfigValue(ConfigValue.VERSION_CHECK)) {
 			//Forge update checker disabled, just exit
 			return;
 		}

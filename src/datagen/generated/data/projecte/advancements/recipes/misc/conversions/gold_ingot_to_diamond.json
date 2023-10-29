@@ -33,5 +33,6 @@
     "recipes": [
       "projecte:conversions/gold_ingot_to_diamond"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -1,7 +1,7 @@
 package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.function.Supplier;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -42,9 +42,9 @@ public class NovaRenderer<T extends PrimedTnt> extends EntityRenderer<T> {
 			matrix.scale(f1, f1, f1);
 		}
 
-		matrix.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+		matrix.mulPose(Axis.YP.rotationDegrees(-90.0F));
 		matrix.translate(-0.5D, -0.5D, 0.5D);
-		matrix.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+		matrix.mulPose(Axis.YP.rotationDegrees(90.0F));
 		TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, stateSupplier.get(), matrix, renderer, light, fuse / 5 % 2 == 0);
 		matrix.popPose();
 		super.render(entity, entityYaw, partialTick, matrix, renderer, light);

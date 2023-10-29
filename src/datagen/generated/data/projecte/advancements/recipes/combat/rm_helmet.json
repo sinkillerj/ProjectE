@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:red_matter"
+            ]
+          },
+          {
+            "items": [
+              "projecte:dm_helmet"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:rm_helmet"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_matter",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:rm_helmet"
+    ]
+  },
+  "sends_telemetry_event": false
+}

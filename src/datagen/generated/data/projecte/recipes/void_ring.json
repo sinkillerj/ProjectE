@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
   "ingredients": [
     {
       "item": "projecte:black_hole_band"

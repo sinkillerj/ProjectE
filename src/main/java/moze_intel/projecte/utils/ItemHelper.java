@@ -210,11 +210,12 @@ public final class ItemHelper {
 		return combinedNBT;
 	}
 
+	//TODO - 1.20: Evaluate usages of this method and see what can just call copyWithCount directly
 	public static ItemStack size(ItemStack stack, int size) {
 		if (size <= 0 || stack.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
-		return ItemHandlerHelper.copyStackWithSize(stack, size);
+		return stack.copyWithCount(size);
 	}
 
 	public static BlockState stackToState(ItemStack stack, @Nullable BlockPlaceContext context) {

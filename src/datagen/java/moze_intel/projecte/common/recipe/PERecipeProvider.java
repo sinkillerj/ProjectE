@@ -18,8 +18,9 @@ import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -31,7 +32,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
@@ -41,12 +42,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PERecipeProvider extends RecipeProvider {
 
-	public PERecipeProvider(DataGenerator generator) {
-		super(generator);
+	public PERecipeProvider(PackOutput output) {
+		super(output);
 	}
 
 	@Override
-	protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
+	protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.COVALENCE_REPAIR.get());
 		addCustomRecipeSerializer(consumer, PERecipeSerializers.PHILO_STONE_SMELTING.get());
 		fuelUpgradeRecipe(consumer, Items.COAL, PEItems.ALCHEMICAL_COAL);
@@ -70,7 +71,7 @@ public class PERecipeProvider extends RecipeProvider {
 		//Conversion recipes
 		addConversionRecipes(consumer);
 		//Alchemical Chest
-		ShapedRecipeBuilder.shaped(PEBlocks.ALCHEMICAL_CHEST)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.ALCHEMICAL_CHEST)
 				.pattern("LMH")
 				.pattern("SDS")
 				.pattern("ICI")
@@ -84,7 +85,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_covalence_dust", hasItems(PEItems.LOW_COVALENCE_DUST, PEItems.MEDIUM_COVALENCE_DUST, PEItems.HIGH_COVALENCE_DUST))
 				.save(consumer);
 		//Interdiction Torch
-		ShapedRecipeBuilder.shaped(PEBlocks.INTERDICTION_TORCH)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.INTERDICTION_TORCH)
 				.pattern("RDR")
 				.pattern("DPD")
 				.pattern("GGG")
@@ -99,7 +100,7 @@ public class PERecipeProvider extends RecipeProvider {
 		tomeRecipe(consumer, true);
 	}
 
-	private static void addCustomRecipeSerializer(Consumer<FinishedRecipe> consumer, SimpleRecipeSerializer<?> serializer) {
+	private static void addCustomRecipeSerializer(Consumer<FinishedRecipe> consumer, SimpleCraftingRecipeSerializer<?> serializer) {
 		SpecialRecipeBuilder.special(serializer).save(consumer, RegistryUtils.getName(serializer).toString());
 	}
 
@@ -125,7 +126,7 @@ public class PERecipeProvider extends RecipeProvider {
 	private static ShapedRecipeBuilder baseTomeRecipe(boolean alternate) {
 		String lowToHigh = "LMH";
 		String highToLow = "HML";
-		return ShapedRecipeBuilder.shaped(PEItems.TOME_OF_KNOWLEDGE)
+		return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.TOME_OF_KNOWLEDGE)
 				.pattern(alternate ? lowToHigh : highToLow)
 				.pattern("KBK")
 				.pattern(alternate ? highToLow : lowToHigh)
@@ -145,7 +146,7 @@ public class PERecipeProvider extends RecipeProvider {
 		gemArmorRecipes(consumer);
 		addFurnaceRecipes(consumer);
 		//Dark Matter
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER)
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PEItems.DARK_MATTER)
 				.pattern("AAA")
 				.pattern("ADA")
 				.pattern("AAA")
@@ -154,7 +155,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_aeternalis", has(PEItems.AETERNALIS_FUEL))
 				.save(consumer);
 		//Dark Matter Pedestal
-		ShapedRecipeBuilder.shaped(PEBlocks.DARK_MATTER_PEDESTAL)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.DARK_MATTER_PEDESTAL)
 				.pattern("RDR")
 				.pattern("RDR")
 				.pattern("DDD")
@@ -169,7 +170,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void redMatterRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.RED_MATTER.getRegistryName().toString();
-		ShapedRecipeBuilder redMatter = ShapedRecipeBuilder.shaped(PEItems.RED_MATTER)
+		ShapedRecipeBuilder redMatter = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PEItems.RED_MATTER)
 				.define('A', PEItems.AETERNALIS_FUEL)
 				.define('D', PEItems.DARK_MATTER)
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
@@ -190,14 +191,14 @@ public class PERecipeProvider extends RecipeProvider {
 	private static void darkMatterGearRecipes(Consumer<FinishedRecipe> consumer) {
 		CriterionTriggerInstance hasMatter = has(PEItems.DARK_MATTER);
 		//Helmet
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_HELMET)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.DARK_MATTER_HELMET)
 				.pattern("MMM")
 				.pattern("M M")
 				.define('M', PEItems.DARK_MATTER)
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Chestplate
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_CHESTPLATE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.DARK_MATTER_CHESTPLATE)
 				.pattern("M M")
 				.pattern("MMM")
 				.pattern("MMM")
@@ -205,7 +206,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Leggings
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_LEGGINGS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.DARK_MATTER_LEGGINGS)
 				.pattern("MMM")
 				.pattern("M M")
 				.pattern("M M")
@@ -213,14 +214,14 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Boots
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_BOOTS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.DARK_MATTER_BOOTS)
 				.pattern("M M")
 				.pattern("M M")
 				.define('M', PEItems.DARK_MATTER)
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Axe
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_AXE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_AXE)
 				.pattern("MM")
 				.pattern("MD")
 				.pattern(" D")
@@ -229,7 +230,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Pickaxe
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_PICKAXE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_PICKAXE)
 				.pattern("MMM")
 				.pattern(" D ")
 				.pattern(" D ")
@@ -238,7 +239,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Shovel
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_SHOVEL)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_SHOVEL)
 				.pattern("M")
 				.pattern("D")
 				.pattern("D")
@@ -247,7 +248,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Sword
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_SWORD)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.DARK_MATTER_SWORD)
 				.pattern("M")
 				.pattern("M")
 				.pattern("D")
@@ -256,7 +257,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Hoe
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_HOE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_HOE)
 				.pattern("MM")
 				.pattern(" D")
 				.pattern(" D")
@@ -265,7 +266,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Shears
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_SHEARS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_SHEARS)
 				.pattern(" M")
 				.pattern("D ")
 				.define('D', Tags.Items.GEMS_DIAMOND)
@@ -273,7 +274,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasMatter)
 				.save(consumer);
 		//Hammer
-		ShapedRecipeBuilder.shaped(PEItems.DARK_MATTER_HAMMER)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DARK_MATTER_HAMMER)
 				.pattern("MDM")
 				.pattern(" D ")
 				.pattern(" D ")
@@ -285,7 +286,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void redMatterGearRecipes(Consumer<FinishedRecipe> consumer) {
 		//Helmet
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_HELMET)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_HELMET)
 				.pattern("MMM")
 				.pattern("MDM")
 				.define('M', PEItems.RED_MATTER)
@@ -293,7 +294,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_HELMET))
 				.save(consumer);
 		//Chestplate
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_CHESTPLATE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_CHESTPLATE)
 				.pattern("MDM")
 				.pattern("MMM")
 				.pattern("MMM")
@@ -302,7 +303,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_CHESTPLATE))
 				.save(consumer);
 		//Leggings
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_LEGGINGS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_LEGGINGS)
 				.pattern("MMM")
 				.pattern("MDM")
 				.pattern("M M")
@@ -311,7 +312,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_LEGGINGS))
 				.save(consumer);
 		//Boots
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_BOOTS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_BOOTS)
 				.pattern("MDM")
 				.pattern("M M")
 				.define('M', PEItems.RED_MATTER)
@@ -319,7 +320,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_BOOTS))
 				.save(consumer);
 		//Axe
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_AXE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_AXE)
 				.pattern("RR")
 				.pattern("RA")
 				.pattern(" M")
@@ -329,7 +330,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_AXE))
 				.save(consumer);
 		//Pickaxe
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_PICKAXE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_PICKAXE)
 				.pattern("RRR")
 				.pattern(" P ")
 				.pattern(" M ")
@@ -339,7 +340,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_PICKAXE))
 				.save(consumer);
 		//Shovel
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_SHOVEL)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_SHOVEL)
 				.pattern("R")
 				.pattern("S")
 				.pattern("M")
@@ -349,7 +350,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_SHOVEL))
 				.save(consumer);
 		//Sword
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_SWORD)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_SWORD)
 				.pattern("R")
 				.pattern("R")
 				.pattern("S")
@@ -358,7 +359,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_SWORD))
 				.save(consumer);
 		//Hoe
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_HOE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_HOE)
 				.pattern("RR")
 				.pattern(" H")
 				.pattern(" M")
@@ -368,7 +369,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_HOE))
 				.save(consumer);
 		//Shears
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_SHEARS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_SHEARS)
 				.pattern(" R")
 				.pattern("S ")
 				.define('R', PEItems.RED_MATTER)
@@ -376,7 +377,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_SHEARS))
 				.save(consumer);
 		//Hammer
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_HAMMER)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_HAMMER)
 				.pattern("RMR")
 				.pattern(" H ")
 				.pattern(" M ")
@@ -386,7 +387,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.RED_MATTER, PEItems.DARK_MATTER_HAMMER))
 				.save(consumer);
 		//Katar (unlike the other recipes, any of the tools will work as a recipe unlock/showing)
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_KATAR)
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, PEItems.RED_MATTER_KATAR)
 				.pattern("123")
 				.pattern("4RR")
 				.pattern("RRR")
@@ -401,7 +402,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_hoe", has(PEItems.RED_MATTER_HOE))
 				.save(consumer);
 		//Morning Star (unlike the other recipes, any of the tools will work as a recipe unlock/showing)
-		ShapedRecipeBuilder.shaped(PEItems.RED_MATTER_MORNING_STAR)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.RED_MATTER_MORNING_STAR)
 				.pattern("123")
 				.pattern("RRR")
 				.pattern("RRR")
@@ -417,25 +418,25 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void gemArmorRecipes(Consumer<FinishedRecipe> consumer) {
 		//Helmet
-		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(PEItems.GEM_HELMET)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, PEItems.GEM_HELMET)
 				.requires(PEItems.RED_MATTER_HELMET)
 				.requires(PEItems.EVERTIDE_AMULET)
 				.requires(PEItems.SOUL_STONE)
 				.unlockedBy("has_helmet", has(PEItems.RED_MATTER_HELMET)), PEItems.GEM_HELMET);
 		//Chestplate
-		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(PEItems.GEM_CHESTPLATE)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, PEItems.GEM_CHESTPLATE)
 				.requires(PEItems.RED_MATTER_CHESTPLATE)
 				.requires(PEItems.VOLCANITE_AMULET)
 				.requires(PEItems.BODY_STONE)
 				.unlockedBy("has_chestplate", has(PEItems.RED_MATTER_CHESTPLATE)), PEItems.GEM_CHESTPLATE);
 		//Leggings
-		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(PEItems.GEM_LEGGINGS)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, PEItems.GEM_LEGGINGS)
 				.requires(PEItems.RED_MATTER_LEGGINGS)
 				.requires(PEItems.BLACK_HOLE_BAND)
 				.requires(PEItems.WATCH_OF_FLOWING_TIME)
 				.unlockedBy("has_leggings", has(PEItems.RED_MATTER_LEGGINGS)), PEItems.GEM_LEGGINGS);
 		//Boots
-		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(PEItems.GEM_BOOTS)
+		gemArmorRecipe(consumer, () -> ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, PEItems.GEM_BOOTS)
 				.requires(PEItems.RED_MATTER_BOOTS)
 				.requires(PEItems.SWIFTWOLF_RENDING_GALE, 2)
 				.unlockedBy("has_boots", has(PEItems.RED_MATTER_BOOTS)), PEItems.GEM_BOOTS);
@@ -468,12 +469,12 @@ public class PERecipeProvider extends RecipeProvider {
 	private static void fuelUpgradeRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output) {
 		String inputName = getName(input);
 		String outputName = getName(output);
-		ShapelessRecipeBuilder.shapeless(output)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.requires(input, 4)
 				.unlockedBy("has_" + inputName, hasItems(PEItems.PHILOSOPHERS_STONE, input))
 				.save(consumer);
-		ShapelessRecipeBuilder.shapeless(input, 4)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, input, 4)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.requires(output)
 				.unlockedBy("has_" + outputName, hasItems(PEItems.PHILOSOPHERS_STONE, output))
@@ -481,7 +482,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void fuelBlockRecipes(Consumer<FinishedRecipe> consumer, ItemLike fuel, ItemLike block) {
-		ShapedRecipeBuilder.shaped(block)
+		ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, block)
 				.pattern("FFF")
 				.pattern("FFF")
 				.pattern("FFF")
@@ -489,28 +490,28 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_" + getName(fuel), has(fuel))
 				.save(consumer);
 		String blockName = getName(block);
-		ShapelessRecipeBuilder.shapeless(fuel, 9)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, fuel, 9)
 				.requires(block)
 				.unlockedBy("has_" + blockName, has(block))
 				.save(consumer, PECore.rl("conversions/" + blockName + "_deconstruct"));
 	}
 
 	private static void matterBlockRecipes(Consumer<FinishedRecipe> consumer, ItemLike matter, ItemLike block) {
-		ShapedRecipeBuilder.shaped(block)
+		ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, block)
 				.pattern("MM")
 				.pattern("MM")
 				.define('M', matter)
 				.unlockedBy("has_" + getName(matter), has(matter))
 				.save(consumer);
 		String blockName = getName(block);
-		ShapelessRecipeBuilder.shapeless(matter, 4)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, matter, 4)
 				.requires(block)
 				.unlockedBy("has_" + blockName, has(block))
 				.save(consumer, PECore.rl("conversions/" + blockName + "_deconstruct"));
 	}
 
 	private static void addCollectorRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEBlocks.COLLECTOR)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.COLLECTOR)
 				.pattern("GTG")
 				.pattern("GDG")
 				.pattern("GFG")
@@ -525,7 +526,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addCollectorUpgradeRecipes(Consumer<FinishedRecipe> consumer, ItemLike collector, ItemLike previous, ItemLike upgradeItem) {
-		ShapedRecipeBuilder.shaped(collector)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, collector)
 				.pattern("GUG")
 				.pattern("GPG")
 				.pattern("GGG")
@@ -537,7 +538,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addRelayRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEBlocks.RELAY)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.RELAY)
 				.pattern("OSO")
 				.pattern("ODO")
 				.pattern("OOO")
@@ -551,7 +552,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addRelayUpgradeRecipes(Consumer<FinishedRecipe> consumer, ItemLike relay, ItemLike previous, ItemLike upgradeItem) {
-		ShapedRecipeBuilder.shaped(relay)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, relay)
 				.pattern("OUO")
 				.pattern("OPO")
 				.pattern("OOO")
@@ -563,7 +564,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addCondenserRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEBlocks.CONDENSER)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.CONDENSER)
 				.pattern("ODO")
 				.pattern("DCD")
 				.pattern("ODO")
@@ -572,7 +573,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.define('D', Tags.Items.GEMS_DIAMOND)
 				.unlockedBy("has_alchemical_chest", has(PEBlocks.ALCHEMICAL_CHEST))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(PEBlocks.CONDENSER_MK2)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.CONDENSER_MK2)
 				.pattern("RDR")
 				.pattern("DCD")
 				.pattern("RDR")
@@ -584,7 +585,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addFurnaceRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEBlocks.DARK_MATTER_FURNACE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.DARK_MATTER_FURNACE)
 				.pattern("DDD")
 				.pattern("DFD")
 				.pattern("DDD")
@@ -592,7 +593,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.define('F', Items.FURNACE)
 				.unlockedBy("has_dark_matter", has(PEBlocks.DARK_MATTER))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(PEBlocks.RED_MATTER_FURNACE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.RED_MATTER_FURNACE)
 				.pattern(" R ")
 				.pattern("RFR")
 				.define('R', PEBlocks.RED_MATTER)
@@ -602,7 +603,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addKleinRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEItems.KLEIN_STAR_EIN)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.KLEIN_STAR_EIN)
 				.pattern("MMM")
 				.pattern("MDM")
 				.pattern("MMM")
@@ -618,7 +619,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void kleinStarUpgrade(Consumer<FinishedRecipe> consumer, ItemLike star, ItemLike previous) {
 		//Wrap the consumer so that we can replace it with the proper serializer
-		ShapelessRecipeBuilder.shapeless(star)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, star)
 				.requires(previous, 4)
 				.unlockedBy("has_components", has(previous))
 				.save(recipe -> consumer.accept(new ShapelessKleinStarRecipeResult(recipe)));
@@ -626,7 +627,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void addRingRecipes(Consumer<FinishedRecipe> consumer) {
 		//Arcana (Any ring or red matter)
-		ShapedRecipeBuilder.shaped(PEItems.ARCANA_RING)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.ARCANA_RING)
 				.pattern("ZIH")
 				.pattern("SMM")
 				.pattern("MMM")
@@ -642,7 +643,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.RED_MATTER))
 				.save(consumer);
 		//Archangel Smite
-		ShapedRecipeBuilder.shaped(PEItems.ARCHANGEL_SMITE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.ARCHANGEL_SMITE)
 				.pattern("BFB")
 				.pattern("MIM")
 				.pattern("BFB")
@@ -653,7 +654,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Black Hole Band
-		ShapedRecipeBuilder.shaped(PEItems.BLACK_HOLE_BAND)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.BLACK_HOLE_BAND)
 				.pattern("SSS")
 				.pattern("DID")
 				.pattern("SSS")
@@ -663,7 +664,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Body Stone
-		ShapedRecipeBuilder.shaped(PEItems.BODY_STONE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.BODY_STONE)
 				.pattern("SSS")
 				.pattern("RLR")
 				.pattern("SSS")
@@ -673,7 +674,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.RED_MATTER))
 				.save(consumer);
 		//Harvest Goddess
-		ShapedRecipeBuilder.shaped(PEItems.HARVEST_GODDESS_BAND)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.HARVEST_GODDESS_BAND)
 				.pattern("SFS")
 				.pattern("DID")
 				.pattern("SFS")
@@ -684,7 +685,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Ignition
-		ShapedRecipeBuilder.shaped(PEItems.IGNITION_RING)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.IGNITION_RING)
 				.pattern("FMF")
 				.pattern("DID")
 				.pattern("FMF")
@@ -695,7 +696,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Iron Band
-		ShapedRecipeBuilder.shaped(PEItems.IRON_BAND)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.IRON_BAND)
 				.pattern("III")
 				.pattern("ILI")
 				.pattern("III")
@@ -705,14 +706,14 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_amulet", has(PEItems.VOLCANITE_AMULET))
 				.save(consumer);
 		//Life Stone
-		ShapelessRecipeBuilder.shapeless(PEItems.LIFE_STONE)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PEItems.LIFE_STONE)
 				.requires(PEItems.BODY_STONE)
 				.requires(PEItems.SOUL_STONE)
 				.unlockedBy("has_body", has(PEItems.BODY_STONE))
 				.unlockedBy("has_soul", has(PEItems.SOUL_STONE))
 				.save(consumer);
 		//Mind Stone
-		ShapedRecipeBuilder.shaped(PEItems.MIND_STONE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.MIND_STONE)
 				.pattern("BBB")
 				.pattern("RLR")
 				.pattern("BBB")
@@ -722,7 +723,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.RED_MATTER))
 				.save(consumer);
 		//Soul Stone
-		ShapedRecipeBuilder.shaped(PEItems.SOUL_STONE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.SOUL_STONE)
 				.pattern("GGG")
 				.pattern("RLR")
 				.pattern("GGG")
@@ -732,7 +733,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.RED_MATTER))
 				.save(consumer);
 		//SWRG
-		ShapedRecipeBuilder.shaped(PEItems.SWIFTWOLF_RENDING_GALE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.SWIFTWOLF_RENDING_GALE)
 				.pattern("DFD")
 				.pattern("FIF")
 				.pattern("DFD")
@@ -742,7 +743,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Void Ring
-		ShapelessRecipeBuilder.shapeless(PEItems.VOID_RING)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, PEItems.VOID_RING)
 				.requires(PEItems.BLACK_HOLE_BAND)
 				.requires(PEItems.GEM_OF_ETERNAL_DENSITY)
 				.requires(PEItems.RED_MATTER, 2)
@@ -751,7 +752,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_gem", has(PEItems.GEM_OF_ETERNAL_DENSITY))
 				.save(consumer);
 		//Watch of Flowing Time
-		ShapedRecipeBuilder.shaped(PEItems.WATCH_OF_FLOWING_TIME)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.WATCH_OF_FLOWING_TIME)
 				.pattern("DGD")
 				.pattern("OCO")
 				.pattern("DGD")
@@ -762,7 +763,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", hasItems(PEItems.DARK_MATTER, Items.CLOCK))
 				.save(consumer);
 		//Zero
-		ShapedRecipeBuilder.shaped(PEItems.ZERO_RING)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.ZERO_RING)
 				.pattern("SBS")
 				.pattern("MIM")
 				.pattern("SBS")
@@ -775,19 +776,19 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addCovalenceDustRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapelessRecipeBuilder lowCovalenceDust = ShapelessRecipeBuilder.shapeless(PEItems.LOW_COVALENCE_DUST, 40)
+		ShapelessRecipeBuilder lowCovalenceDust = ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PEItems.LOW_COVALENCE_DUST, 40)
 				.requires(Items.CHARCOAL)
 				.unlockedBy("has_cobble", has(Tags.Items.COBBLESTONE_NORMAL));
 		for (int i = 0; i < 8; i++) {
 			lowCovalenceDust.requires(Tags.Items.COBBLESTONE_NORMAL);
 		}
 		lowCovalenceDust.save(consumer);
-		ShapelessRecipeBuilder.shapeless(PEItems.MEDIUM_COVALENCE_DUST, 40)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PEItems.MEDIUM_COVALENCE_DUST, 40)
 				.requires(Tags.Items.INGOTS_IRON)
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
 				.save(consumer);
-		ShapelessRecipeBuilder.shapeless(PEItems.HIGH_COVALENCE_DUST, 40)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PEItems.HIGH_COVALENCE_DUST, 40)
 				.requires(Tags.Items.GEMS_DIAMOND)
 				.requires(Items.COAL)
 				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND))
@@ -795,7 +796,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addDiviningRodRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEItems.LOW_DIVINING_ROD)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.LOW_DIVINING_ROD)
 				.pattern("DDD")
 				.pattern("DSD")
 				.pattern("DDD")
@@ -808,7 +809,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void diviningRodRecipe(Consumer<FinishedRecipe> consumer, ItemLike rod, ItemLike previous, ItemLike covalence) {
-		ShapedRecipeBuilder.shaped(rod)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, rod)
 				.pattern("DDD")
 				.pattern("DSD")
 				.pattern("DDD")
@@ -823,7 +824,7 @@ public class PERecipeProvider extends RecipeProvider {
 		catalyticLensRecipe(consumer, false);
 		catalyticLensRecipe(consumer, true);
 		//Destruction Catalyst
-		ShapedRecipeBuilder.shaped(PEItems.DESTRUCTION_CATALYST)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.DESTRUCTION_CATALYST)
 				.pattern("NMN")
 				.pattern("MFM")
 				.pattern("NMN")
@@ -833,7 +834,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_catalyst", has(PEBlocks.NOVA_CATALYST))
 				.save(consumer);
 		//Evertide Amulet
-		ShapedRecipeBuilder.shaped(PEItems.EVERTIDE_AMULET)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.EVERTIDE_AMULET)
 				.pattern("WWW")
 				.pattern("DDD")
 				.pattern("WWW")
@@ -842,7 +843,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Gem of Eternal Density
-		ShapedRecipeBuilder.shaped(PEItems.GEM_OF_ETERNAL_DENSITY)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.GEM_OF_ETERNAL_DENSITY)
 				.pattern("DOD")
 				.pattern("MDM")
 				.pattern("DOD")
@@ -852,7 +853,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_matter", has(PEItems.DARK_MATTER))
 				.save(consumer);
 		//Hyperkinetic Lens
-		ShapedRecipeBuilder.shaped(PEItems.HYPERKINETIC_LENS)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.HYPERKINETIC_LENS)
 				.pattern("DDD")
 				.pattern("MNM")
 				.pattern("DDD")
@@ -862,7 +863,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.unlockedBy("has_catalyst", has(PEBlocks.NOVA_CATALYST))
 				.save(consumer);
 		//Mercurial Eye
-		ShapedRecipeBuilder.shaped(PEItems.MERCURIAL_EYE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.MERCURIAL_EYE)
 				.pattern("OBO")
 				.pattern("BRB")
 				.pattern("BDB")
@@ -879,7 +880,7 @@ public class PERecipeProvider extends RecipeProvider {
 		repairTalismanRecipe(consumer, false);
 		repairTalismanRecipe(consumer, true);
 		//Volcanite Amulet
-		ShapedRecipeBuilder.shaped(PEItems.VOLCANITE_AMULET)
+		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.VOLCANITE_AMULET)
 				.pattern("LLL")
 				.pattern("DDD")
 				.pattern("LLL")
@@ -891,7 +892,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void catalyticLensRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.CATALYTIC_LENS.getRegistryName().toString();
-		ShapedRecipeBuilder lens = ShapedRecipeBuilder.shaped(PEItems.CATALYTIC_LENS)
+		ShapedRecipeBuilder lens = ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.CATALYTIC_LENS)
 				.pattern("MMM")
 				.pattern(alternate ? "HMD" : "DMH")
 				.pattern("MMM")
@@ -909,7 +910,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void philosopherStoneRecipe(Consumer<FinishedRecipe> consumer, boolean alternate) {
 		String name = PEItems.PHILOSOPHERS_STONE.getRegistryName().toString();
-		ShapedRecipeBuilder philoStone = ShapedRecipeBuilder.shaped(PEItems.PHILOSOPHERS_STONE)
+		ShapedRecipeBuilder philoStone = ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.PHILOSOPHERS_STONE)
 				.define('R', Tags.Items.DUSTS_REDSTONE)
 				.define('G', Tags.Items.DUSTS_GLOWSTONE)
 				.define('D', Tags.Items.GEMS_DIAMOND)
@@ -932,7 +933,7 @@ public class PERecipeProvider extends RecipeProvider {
 		String lowToHigh = "LMH";
 		String highToLow = "HML";
 		String name = PEItems.REPAIR_TALISMAN.getRegistryName().toString();
-		ShapedRecipeBuilder talisman = ShapedRecipeBuilder.shaped(PEItems.REPAIR_TALISMAN)
+		ShapedRecipeBuilder talisman = ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, PEItems.REPAIR_TALISMAN)
 				.pattern(alternate ? highToLow : lowToHigh)
 				.pattern("SPS")
 				.pattern(alternate ? lowToHigh : highToLow)
@@ -951,7 +952,7 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addTransmutationTableRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(PEBlocks.TRANSMUTATION_TABLE)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEBlocks.TRANSMUTATION_TABLE)
 				.pattern("OSO")
 				.pattern("SPS")
 				.pattern("OSO")
@@ -960,7 +961,7 @@ public class PERecipeProvider extends RecipeProvider {
 				.define('P', PEItems.PHILOSOPHERS_STONE)
 				.unlockedBy("has_philo_stone", has(PEItems.PHILOSOPHERS_STONE))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(PEItems.TRANSMUTATION_TABLET)
+		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, PEItems.TRANSMUTATION_TABLET)
 				.pattern("DSD")
 				.pattern("STS")
 				.pattern("DSD")
@@ -972,12 +973,12 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void addNovaRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapelessRecipeBuilder.shapeless(PEBlocks.NOVA_CATALYST, 2)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, PEBlocks.NOVA_CATALYST, 2)
 				.requires(Items.TNT)
 				.requires(PEItems.MOBIUS_FUEL)
 				.unlockedBy("has_tnt", has(Items.TNT))
 				.save(consumer);
-		ShapelessRecipeBuilder.shapeless(PEBlocks.NOVA_CATACLYSM, 2)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, PEBlocks.NOVA_CATACLYSM, 2)
 				.requires(PEBlocks.NOVA_CATALYST)
 				.requires(PEItems.AETERNALIS_FUEL)
 				.unlockedBy("has_catalyst", has(PEBlocks.NOVA_CATALYST))
@@ -990,7 +991,7 @@ public class PERecipeProvider extends RecipeProvider {
 		for (DyeColor color : DyeColor.values()) {
 			AlchemicalBag bag = PEItems.getBag(color);
 			//Crafting recipe
-			ShapedRecipeBuilder.shaped(bag)
+			ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, bag)
 					.pattern("CCC")
 					.pattern("WAW")
 					.pattern("WWW")
@@ -1000,7 +1001,7 @@ public class PERecipeProvider extends RecipeProvider {
 					.unlockedBy("has_alchemical_chest", hasChest)
 					.save(consumer);
 			//Dye bag conversion recipes
-			ShapelessRecipeBuilder.shapeless(bag)
+			ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, bag)
 					.requires(PETags.Items.ALCHEMICAL_BAGS)
 					.requires(color.getTag())
 					.unlockedBy("has_alchemical_bag", hasBag)
@@ -1037,20 +1038,20 @@ public class PERecipeProvider extends RecipeProvider {
 		//Iron -> Ender Pearl
 		philoConversionRecipe(consumer, getName(Items.IRON_INGOT), Tags.Items.INGOTS_IRON, 4, getName(Items.ENDER_PEARL), Items.ENDER_PEARL, 1);
 		//Dirt -> Grass
-		ShapelessRecipeBuilder.shapeless(Items.GRASS_BLOCK)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GRASS_BLOCK)
 				.requires(PEItems.ARCANA_RING)
 				.requires(Items.DIRT)
 				.unlockedBy("has_arcana_ring", has(PEItems.ARCANA_RING))
 				.save(consumer, PECore.rl("conversions/dirt_to_grass"));
 		//Redstone -> Lava
-		ShapelessRecipeBuilder.shapeless(Items.LAVA_BUCKET)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.LAVA_BUCKET)
 				.requires(PEItems.VOLCANITE_AMULET)
 				.requires(Items.BUCKET)
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_volcanite_amulet", has(PEItems.VOLCANITE_AMULET))
 				.save(consumer, PECore.rl("conversions/redstone_to_lava"));
 		//Water -> Ice
-		ShapelessRecipeBuilder.shapeless(Items.ICE)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.ICE)
 				.requires(Ingredient.of(PEItems.ARCANA_RING, PEItems.ZERO_RING))
 				.requires(Ingredient.of(Items.WATER_BUCKET, PEItems.EVERTIDE_AMULET))
 				.unlockedBy("has_arcana_ring", has(PEItems.ARCANA_RING))
@@ -1061,12 +1062,12 @@ public class PERecipeProvider extends RecipeProvider {
 	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, ItemLike a, int aAmount, ItemLike b, int bAmount) {
 		String aName = getName(a);
 		String bName = getName(b);
-		ShapelessRecipeBuilder.shapeless(b, bAmount)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, b, bAmount)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.requires(a, aAmount)
 				.unlockedBy("has_" + aName, hasItems(PEItems.PHILOSOPHERS_STONE, a))
 				.save(consumer, PECore.rl("conversions/" + aName + "_to_" + bName));
-		ShapelessRecipeBuilder.shapeless(a, aAmount)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, a, aAmount)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.requires(b, bAmount)
 				.unlockedBy("has_" + bName, hasItems(PEItems.PHILOSOPHERS_STONE, b))
@@ -1085,7 +1086,7 @@ public class PERecipeProvider extends RecipeProvider {
 
 	private static void philoConversionRecipe(Consumer<FinishedRecipe> consumer, String inputName, TagKey<Item> inputTag, int inputAmount, String outputName,
 			ItemLike output, int outputAmount) {
-		ShapelessRecipeBuilder bToA = ShapelessRecipeBuilder.shapeless(output, outputAmount)
+		ShapelessRecipeBuilder bToA = ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, outputAmount)
 				.requires(PEItems.PHILOSOPHERS_STONE)
 				.unlockedBy("has_" + inputName, hasItems(PEItems.PHILOSOPHERS_STONE, inputTag));
 		for (int i = 0; i < inputAmount; i++) {

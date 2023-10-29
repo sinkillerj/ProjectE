@@ -16,7 +16,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +45,7 @@ public class NovaExplosion extends Explosion {
 		if (level.isClientSide) {
 			level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F, false);
 		}
-		boolean hasExplosionMode = mode != Explosion.BlockInteraction.NONE;
+		boolean hasExplosionMode = mode != Explosion.BlockInteraction.KEEP;
 		if (spawnParticles) {
 			if (hasExplosionMode && size >= 2.0F) {
 				level.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1.0D, 0.0D, 0.0D);
@@ -85,13 +85,12 @@ public class NovaExplosion extends Explosion {
 					level.getProfiler().push("explosion_blocks");
 					if (level instanceof ServerLevel serverLevel && state.canDropFromExplosion(level, pos, this)) {
 						BlockEntity blockEntity = state.hasBlockEntity() ? WorldHelper.getBlockEntity(serverLevel, pos) : null;
-						LootContext.Builder builder = new LootContext.Builder(serverLevel)
-								.withRandom(serverLevel.random)
+						LootParams.Builder builder = new LootParams.Builder(serverLevel)
 								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 								.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
 								.withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity)
 								.withOptionalParameter(LootContextParams.THIS_ENTITY, getExploder());
-						if (mode == Explosion.BlockInteraction.DESTROY) {
+						if (mode == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
 							builder.withParameter(LootContextParams.EXPLOSION_RADIUS, size);
 						}
 
@@ -104,7 +103,7 @@ public class NovaExplosion extends Explosion {
 			}
 
 			// PE: Drop all together
-			LivingEntity placer = getSourceMob();
+			LivingEntity placer = getIndirectSourceEntity();
 			if (placer == null) {
 				WorldHelper.createLootDrop(allDrops, level, x, y, z);
 			} else {

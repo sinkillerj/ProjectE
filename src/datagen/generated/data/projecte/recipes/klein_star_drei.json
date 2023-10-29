@@ -1,5 +1,6 @@
 {
   "type": "projecte:crafting_shapeless_kleinstar",
+  "category": "equipment",
   "ingredients": [
     {
       "item": "projecte:klein_star_zwei"

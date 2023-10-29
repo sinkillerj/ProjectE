@@ -2,17 +2,17 @@ package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +42,8 @@ public class PedestalRenderer implements BlockEntityRenderer<DMPedestalBlockEnti
 				matrix.translate(0, Mth.sin((gameTime + partialTick) / 10.0F) * 0.1 + 0.1, 0);
 				matrix.scale(0.75F, 0.75F, 0.75F);
 				float angle = (gameTime + partialTick) / 20.0F * (180F / (float) Math.PI);
-				matrix.mulPose(Vector3f.YP.rotationDegrees(angle));
-				Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer, (int) pedestal.getBlockPos().asLong());
+				matrix.mulPose(Axis.YP.rotationDegrees(angle));
+				Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlayLight, matrix, renderer, pedestal.getLevel(), (int) pedestal.getBlockPos().asLong());
 				matrix.popPose();
 			}
 		}

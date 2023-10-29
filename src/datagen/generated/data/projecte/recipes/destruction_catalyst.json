@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "F": {
       "item": "minecraft:flint_and_steel"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:destruction_catalyst"
-  }
+  },
+  "show_notification": true
 }

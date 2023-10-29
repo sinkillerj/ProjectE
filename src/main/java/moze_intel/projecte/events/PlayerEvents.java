@@ -24,11 +24,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
@@ -139,7 +141,7 @@ public class PlayerEvents {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void pickupItem(EntityItemPickupEvent event) {
 		Player player = event.getEntity();
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (level.isClientSide) {
 			return;
 		}
@@ -166,7 +168,7 @@ public class PlayerEvents {
 	//This event is called when the entity first is about to take damage, if it gets cancelled it is as if they never got hit/damaged
 	@SubscribeEvent
 	public static void onAttacked(LivingAttackEvent evt) {
-		if (evt.getEntity() instanceof ServerPlayer player && evt.getSource().isFire() && TickEvents.shouldPlayerResistFire(player)) {
+		if (evt.getEntity() instanceof ServerPlayer player && evt.getSource().is(DamageTypeTags.IS_FIRE) && TickEvents.shouldPlayerResistFire(player)) {
 			evt.setCanceled(true);
 		}
 	}
@@ -194,8 +196,8 @@ public class PlayerEvents {
 	private static float getReductionForSlot(LivingEntity entityLiving, DamageSource source, EquipmentSlot slot, float damage) {
 		ItemStack armorStack = entityLiving.getItemBySlot(slot);
 		if (armorStack.getItem() instanceof PEArmor armorItem) {
-			EquipmentSlot type = armorItem.getSlot();
-			if (type != slot) {
+			ArmorItem.Type type = armorItem.getType();
+			if (type.getSlot() != slot) {
 				//If the armor slot does not match the slot this piece of armor is for then it shouldn't be providing any reduction
 				return 0;
 			}

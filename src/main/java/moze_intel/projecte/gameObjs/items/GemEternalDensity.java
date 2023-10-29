@@ -303,7 +303,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
-		return !player.getCommandSenderWorld().isClientSide && condense(stack, inv);
+		return !player.level().isClientSide && condense(stack, inv);
 	}
 
 	private record ContainerProvider(InteractionHand hand, ItemStack stack) implements MenuProvider {

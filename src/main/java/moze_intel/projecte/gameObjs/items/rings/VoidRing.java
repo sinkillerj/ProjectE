@@ -62,7 +62,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 		BlockHitResult lookingAt = PlayerHelper.getBlockLookingAt(player, 64);
 		BlockPos c;
 		if (lookingAt.getType() == Type.MISS) {
-			c = new BlockPos(PlayerHelper.getLookVec(player, 32).getRight());
+			c = BlockPos.containing(PlayerHelper.getLookVec(player, 32).getRight());
 		} else {
 			c = lookingAt.getBlockPos();
 		}
@@ -72,7 +72,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 				player.stopRiding();
 			}
 			player.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1, 1);
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
 			player.getCooldowns().addCooldown(this, 10);
 			return true;

@@ -33,7 +33,8 @@
           "recipes": [
             "projecte:gem_chestplate"
           ]
-        }
+        },
+        "sends_telemetry_event": false
       },
       "conditions": [
         {
@@ -74,7 +75,8 @@
           "recipes": [
             "projecte:gem_chestplate"
           ]
-        }
+        },
+        "sends_telemetry_event": false
       },
       "conditions": [
         {

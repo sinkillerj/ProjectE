@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "1": {
       "item": "projecte:rm_hammer"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:rm_morning_star"
-  }
+  },
+  "show_notification": true
 }

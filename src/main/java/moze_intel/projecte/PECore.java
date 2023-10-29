@@ -35,6 +35,7 @@ import moze_intel.projecte.gameObjs.registries.PEArgumentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import moze_intel.projecte.gameObjs.registries.PECreativeTabs;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
@@ -48,7 +49,6 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.ClearKnowledgeCMD;
 import moze_intel.projecte.network.commands.DumpMissingEmc;
 import moze_intel.projecte.network.commands.EMCCMD;
 import moze_intel.projecte.network.commands.KnowledgeCMD;
@@ -63,12 +63,13 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -153,14 +154,15 @@ public class PECore {
 		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addListener(this::registerCapabilities);
 		modEventBus.addListener(this::registerRecipeSerializers);
+		PEArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
+		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 		PEBlocks.BLOCKS.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
+		PECreativeTabs.CREATIVE_TABS.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
 		PEItems.ITEMS.register(modEventBus);
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
-		PEArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
-		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::tagsUpdated);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
@@ -173,7 +175,7 @@ public class PECore {
 	}
 
 	private void registerRecipeSerializers(RegisterEvent event) {
-		event.register(Registry.RECIPE_SERIALIZER_REGISTRY, helper -> {
+		event.register(Registries.RECIPE_SERIALIZER, helper -> {
 			//Add our condition serializers
 			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
 			CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
@@ -333,7 +335,7 @@ public class PECore {
 			AbstractNSSTag.clearCreatedTags();
 			CustomEMCParser.init();
 			try {
-				EMCMappingHandler.map(emcUpdateResourceManager.serverResources(), emcUpdateResourceManager.resourceManager());
+				EMCMappingHandler.map(emcUpdateResourceManager.serverResources(), emcUpdateResourceManager.registryAccess(), emcUpdateResourceManager.resourceManager());
 				PECore.LOGGER.info("Registered {} EMC values. (took {} ms)", EMCMappingHandler.getEmcMapSize(), System.currentTimeMillis() - start);
 				PacketHandler.sendFragmentedEmcPacketToAll();
 			} catch (Throwable t) {
@@ -344,14 +346,13 @@ public class PECore {
 	}
 
 	private void addReloadListeners(AddReloadListenerEvent event) {
-		event.addListener((ResourceManagerReloadListener) manager -> emcUpdateResourceManager = new EmcUpdateData(event.getServerResources(), manager));
+		event.addListener((ResourceManagerReloadListener) manager -> emcUpdateResourceManager = new EmcUpdateData(event.getServerResources(), event.getRegistryAccess(), manager));
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
 		CommandBuildContext context = event.getBuildContext();
 		event.getDispatcher().register(Commands.literal("projecte")
 				.requires(PEPermissions.COMMAND)
-				.then(ClearKnowledgeCMD.register(context))
 				.then(DumpMissingEmc.register(context))
 				.then(RemoveEmcCMD.register(context))
 				.then(ResetEmcCMD.register(context))
@@ -375,6 +376,6 @@ public class PECore {
 		EMCMappingHandler.clearEmcMap();
 	}
 
-	private record EmcUpdateData(ReloadableServerResources serverResources, ResourceManager resourceManager) {
+	private record EmcUpdateData(ReloadableServerResources serverResources, RegistryAccess registryAccess, ResourceManager resourceManager) {
 	}
 }

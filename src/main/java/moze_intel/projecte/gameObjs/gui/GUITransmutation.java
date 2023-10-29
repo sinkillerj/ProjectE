@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.math.BigInteger;
 import java.util.Locale;
 import moze_intel.projecte.PECore;
@@ -10,9 +8,9 @@ import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,63 +40,64 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		this.textBoxFilter = new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, Component.empty());
 		this.textBoxFilter.setValue(inv.filter);
 
-		addRenderableWidget(new Button(leftPos + 125, topPos + 100, 14, 14, Component.literal("<"), b -> {
-			if (inv.searchpage != 0) {
-				inv.searchpage--;
-			}
-			inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
-			inv.updateClientTargets();
-		}));
-		addRenderableWidget(new Button(leftPos + 193, topPos + 100, 14, 14, Component.literal(">"), b -> {
-			if (inv.getKnowledgeSize() > 12) {
-				inv.searchpage++;
-			}
-			inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
-			inv.updateClientTargets();
-		}));
+		addRenderableWidget(Button.builder(Component.literal("<"), b -> {
+					if (inv.searchpage != 0) {
+						inv.searchpage--;
+					}
+					inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
+					inv.updateClientTargets();
+				}).pos(leftPos + 125, topPos + 100)
+				.size(14, 14)
+				.build());
+		addRenderableWidget(Button.builder(Component.literal(">"), b -> {
+					if (inv.getKnowledgeSize() > 12) {
+						inv.searchpage++;
+					}
+					inv.filter = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
+					inv.updateClientTargets();
+				}).pos(leftPos + 193, topPos + 100)
+				.size(14, 14)
+				.build());
 	}
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, texture);
-		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-		this.textBoxFilter.render(matrix, mouseX, mouseY, partialTicks);
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		this.textBoxFilter.render(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
-		this.font.draw(matrix, title, titleLabelX, titleLabelY, 0x404040);
+	protected void renderLabels(@NotNull GuiGraphics graphics, int x, int y) {
+		graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
 		//Don't render inventory as we don't have space
 		BigInteger emcAmount = inv.getAvailableEmc();
-		this.font.draw(matrix, PELang.EMC_TOOLTIP.translate(""), 6, this.imageHeight - 104, 0x404040);
+		graphics.drawString(font, PELang.EMC_TOOLTIP.translate(""), 6, this.imageHeight - 104, 0x404040, false);
 		Component emc = TransmutationEMCFormatter.formatEMC(emcAmount);
-		this.font.draw(matrix, emc, 6, this.imageHeight - 94, 0x404040);
+		graphics.drawString(font, emc, 6, this.imageHeight - 94, 0x404040, false);
 
 		if (inv.learnFlag > 0) {
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_1.translate(), 98, 30, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_2.translate(), 99, 38, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_3.translate(), 100, 46, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_4.translate(), 101, 54, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_5.translate(), 102, 62, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_6.translate(), 103, 70, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_7.translate(), 104, 78, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_LEARNED_8.translate(), 107, 86, 0x404040);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_1.translate(), 98, 30, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_2.translate(), 99, 38, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_3.translate(), 100, 46, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_4.translate(), 101, 54, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_5.translate(), 102, 62, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_6.translate(), 103, 70, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_7.translate(), 104, 78, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_LEARNED_8.translate(), 107, 86, 0x404040, false);
 
 			inv.learnFlag--;
 		}
 
 		if (inv.unlearnFlag > 0) {
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_1.translate(), 97, 22, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_2.translate(), 98, 30, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_3.translate(), 99, 38, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_4.translate(), 100, 46, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_5.translate(), 101, 54, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_6.translate(), 102, 62, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_7.translate(), 103, 70, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_8.translate(), 104, 78, 0x404040);
-			this.font.draw(matrix, PELang.TRANSMUTATION_UNLEARNED_9.translate(), 107, 86, 0x404040);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_1.translate(), 97, 22, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_2.translate(), 98, 30, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_3.translate(), 99, 38, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_4.translate(), 100, 46, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_5.translate(), 101, 54, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_6.translate(), 102, 62, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_7.translate(), 103, 70, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_8.translate(), 104, 78, 0x404040, false);
+			graphics.drawString(font, PELang.TRANSMUTATION_UNLEARNED_9.translate(), 107, 86, 0x404040, false);
 
 			inv.unlearnFlag--;
 		}
@@ -115,7 +114,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		if (textBoxFilter.isFocused()) {
 			//Manually make it so that hitting escape when the filter is focused will exit the focus
 			if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-				textBoxFilter.setFocus(false);
+				textBoxFilter.setFocused(false);
 				return true;
 			}
 			//Otherwise have it handle the key press
@@ -167,7 +166,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		}
 		Slot slotUnderMouse = getSlotUnderMouse();
 		if (slotUnderMouse == null || (!slotUnderMouse.hasItem() && menu.getCarried().isEmpty())) {
-			textBoxFilter.setFocus(false);
+			textBoxFilter.setFocused(false);
 		}
 		return super.mouseClicked(x, y, mouseButton);
 	}
@@ -180,11 +179,11 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
 		BigInteger emcAmount = inv.getAvailableEmc();
 
 		if (emcAmount.compareTo(Constants.MAX_EXACT_TRANSMUTATION_DISPLAY) < 0) {
-			super.renderTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(graphics, mouseX, mouseY);
 			return;
 		}
 
@@ -194,9 +193,9 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
-			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(emcAmount)), mouseX, mouseY);
+			setTooltipForNextRenderPass(PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(emcAmount)));
 		} else {
-			super.renderTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(graphics, mouseX, mouseY);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "H": {
       "item": "projecte:harvest_goddess_band"
@@ -24,5 +25,6 @@
   ],
   "result": {
     "item": "projecte:arcana_ring"
-  }
+  },
+  "show_notification": true
 }

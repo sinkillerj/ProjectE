@@ -20,7 +20,6 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.rendering.ChestRenderer;
 import moze_intel.projecte.rendering.EntitySpriteRenderer;
 import moze_intel.projecte.rendering.LayerYue;
@@ -38,8 +37,7 @@ import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ItemLike;
@@ -48,7 +46,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -66,7 +63,7 @@ public class ClientRegistration {
 
 	@SubscribeEvent
 	public static void registerContainers(RegisterEvent event) {
-		event.register(Registry.MENU_REGISTRY, helper -> {
+		event.register(Registries.MENU, helper -> {
 			registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
 			registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
 			registerScreen(PEContainerTypes.CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
@@ -148,16 +145,6 @@ public class ClientRegistration {
 			PlayerRenderer skin = event.getSkin(skinName);
 			if (skin != null) {
 				skin.addLayer(new LayerYue(skin));
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void onStitch(TextureStitchEvent.Pre evt) {
-		if (evt.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-			//If curios is loaded add the klein star slot icon the the block map as curios no longer does it automatically
-			if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
-				evt.addSprite(IntegrationHelper.CURIOS_KLEIN_STAR);
 			}
 		}
 	}

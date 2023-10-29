@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "projecte:condenser_mk1"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:condenser_mk2"
-  }
+  },
+  "show_notification": true
 }

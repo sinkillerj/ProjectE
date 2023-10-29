@@ -252,6 +252,7 @@
   "misc.projecte.high_alchemist_joined": "High alchemist %s has joined the server",
   "misc.projecte.mod_name": "ProjectE",
   "misc.projecte.mode_switch": "Set target to: %s",
+  "misc.projecte.pack_description": "Resources used for ProjectE",
   "misc.projecte.seconds": "%s seconds",
   "misc.projecte.seconds.every_tick": "%s seconds (every tick)",
   "misc.projecte.update.available": "New ProjectE update available! Version: %s",

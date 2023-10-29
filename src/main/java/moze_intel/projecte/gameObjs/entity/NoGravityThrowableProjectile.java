@@ -24,8 +24,8 @@ public abstract class NoGravityThrowableProjectile extends ThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.getCommandSenderWorld().isClientSide) {
-			if (tickCount > 400 || getDeltaMovement().equals(Vec3.ZERO) || !getCommandSenderWorld().isLoaded(blockPosition())) {
+		if (!this.level().isClientSide) {
+			if (tickCount > 400 || getDeltaMovement().equals(Vec3.ZERO) || !level().isLoaded(blockPosition())) {
 				discard();
 			}
 		}

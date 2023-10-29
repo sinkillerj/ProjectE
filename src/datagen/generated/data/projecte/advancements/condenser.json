@@ -33,5 +33,6 @@
     [
       "condenser"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

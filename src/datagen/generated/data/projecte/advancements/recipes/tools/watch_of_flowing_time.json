@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:dark_matter"
+            ]
+          },
+          {
+            "items": [
+              "minecraft:clock"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:watch_of_flowing_time"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_matter",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:watch_of_flowing_time"
+    ]
+  },
+  "sends_telemetry_event": false
+}

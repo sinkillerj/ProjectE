@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "projecte:red_matter",
   "key": {
     "A": {
@@ -16,5 +17,6 @@
   ],
   "result": {
     "item": "projecte:red_matter"
-  }
+  },
+  "show_notification": true
 }

@@ -28,8 +28,8 @@ public class SetEmcCMD {
 	private static int setEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack, long emc) {
 		String toSet = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toSet, emc);
-		ctx.getSource().sendSuccess(PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);
-		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
+		ctx.getSource().sendSuccess(() -> PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);
+		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE::translate, true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

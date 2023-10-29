@@ -12,6 +12,6 @@ public class SoundEventDeferredRegister extends WrappedDeferredRegister<SoundEve
 	}
 
 	public SoundEventRegistryObject<SoundEvent> register(String name) {
-		return register(name, () -> new SoundEvent(PECore.rl(name)), SoundEventRegistryObject::new);
+		return register(name, () -> SoundEvent.createVariableRangeEvent(PECore.rl(name)), SoundEventRegistryObject::new);
 	}
 }

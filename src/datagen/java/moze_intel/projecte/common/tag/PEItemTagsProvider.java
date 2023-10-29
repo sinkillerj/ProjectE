@@ -1,12 +1,14 @@
 package moze_intel.projecte.common.tag;
 
+import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
@@ -15,20 +17,23 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PEItemTagsProvider extends ItemTagsProvider {
 
-	public PEItemTagsProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, blockTagsProvider, PECore.MODID, existingFileHelper);
+	public PEItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags,
+			@Nullable ExistingFileHelper existingFileHelper) {
+		super(output, lookupProvider, blockTags, PECore.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		addGear();
-		TagsProvider.TagAppender<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
+		IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));
 		}
@@ -60,7 +65,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
-		TagAppender<Item> kleinStarBuilder = tag(PETags.Items.CURIOS_KLEIN_STAR);
+		IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> kleinStarBuilder = tag(PETags.Items.CURIOS_KLEIN_STAR);
 		for (EnumKleinTier tier : EnumKleinTier.values()) {
 			kleinStarBuilder.add(PEItems.getStar(tier));
 		}
@@ -103,23 +108,23 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PETags.Items.TOOLS_KATARS,
 				PETags.Items.TOOLS_MORNING_STARS
 		);
-		tag(Tags.Items.TOOLS_SWORDS).addTags(
+		tag(ItemTags.SWORDS).addTags(
 				makeTag(PETags.Items.TOOLS_SWORDS_DARK_MATTER, PEItems.DARK_MATTER_SWORD),
 				makeTag(PETags.Items.TOOLS_SWORDS_RED_MATTER, PEItems.RED_MATTER_SWORD)
 		);
-		tag(Tags.Items.TOOLS_AXES).addTags(
+		tag(ItemTags.AXES).addTags(
 				makeTag(PETags.Items.TOOLS_AXES_DARK_MATTER, PEItems.DARK_MATTER_AXE),
 				makeTag(PETags.Items.TOOLS_AXES_RED_MATTER, PEItems.RED_MATTER_AXE)
 		);
-		tag(Tags.Items.TOOLS_PICKAXES).addTags(
+		tag(ItemTags.PICKAXES).addTags(
 				makeTag(PETags.Items.TOOLS_PICKAXES_DARK_MATTER, PEItems.DARK_MATTER_PICKAXE),
 				makeTag(PETags.Items.TOOLS_PICKAXES_RED_MATTER, PEItems.RED_MATTER_PICKAXE)
 		);
-		tag(Tags.Items.TOOLS_SHOVELS).addTags(
+		tag(ItemTags.SHOVELS).addTags(
 				makeTag(PETags.Items.TOOLS_SHOVELS_DARK_MATTER, PEItems.DARK_MATTER_SHOVEL),
 				makeTag(PETags.Items.TOOLS_SHOVELS_RED_MATTER, PEItems.RED_MATTER_SHOVEL)
 		);
-		tag(Tags.Items.TOOLS_HOES).addTags(
+		tag(ItemTags.HOES).addTags(
 				makeTag(PETags.Items.TOOLS_HOES_DARK_MATTER, PEItems.DARK_MATTER_HOE),
 				makeTag(PETags.Items.TOOLS_HOES_RED_MATTER, PEItems.RED_MATTER_HOE)
 		);

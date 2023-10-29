@@ -9,13 +9,13 @@ import moze_intel.projecte.integration.jade.PEJadeConstants;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.Util;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
 public class PELangProvider extends BaseLanguageProvider {
 
-	public PELangProvider(DataGenerator gen) {
-		super(gen, PECore.MODID);
+	public PELangProvider(PackOutput output) {
+		super(output, PECore.MODID);
 	}
 
 	@Override
@@ -32,11 +32,12 @@ public class PELangProvider extends BaseLanguageProvider {
 		addTooltips();
 		addTransmutation();
 		//Misc stuff
-		add(PELang.PROJECTE, "ProjectE");
+		add(PELang.PROJECTE, PECore.MODNAME);
+		add(PELang.PACK_DESCRIPTION, "Resources used for " + PECore.MODNAME);
 		add(PELang.SECONDS, "%s seconds");
 		add(PELang.EVERY_TICK, "%s seconds (every tick)");
 		add(PELang.HIGH_ALCHEMIST, "High alchemist %s has joined the server");
-		add(PELang.UPDATE_AVAILABLE, "New ProjectE update available! Version: %s");
+		add(PELang.UPDATE_AVAILABLE, "New " + PECore.MODNAME + " update available! Version: %s");
 		add(PELang.UPDATE_GET_IT, "Get it here!");
 		add(PELang.BLACKLIST, "Blacklist");
 		add(PELang.WHITELIST, "Whitelist");

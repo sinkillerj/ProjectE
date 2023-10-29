@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "H": {
       "item": "projecte:dm_hoe"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:rm_hoe"
-  }
+  },
+  "show_notification": true
 }

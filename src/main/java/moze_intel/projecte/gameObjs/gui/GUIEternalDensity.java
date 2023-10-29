@@ -1,12 +1,10 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,23 +23,21 @@ public class GUIEternalDensity extends PEContainerScreen<EternalDensityContainer
 	@Override
 	public void init() {
 		super.init();
-		addRenderableWidget(new Button(leftPos + 62, topPos + 4, 52, 20,
-				(menu.inventory.isWhitelistMode() ? PELang.WHITELIST : PELang.BLACKLIST).translate(), b -> {
-			menu.inventory.changeMode();
-			b.setMessage(menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());
-		}));
+		addRenderableWidget(Button.builder((menu.inventory.isWhitelistMode() ? PELang.WHITELIST : PELang.BLACKLIST).translate(), b -> {
+					menu.inventory.changeMode();
+					b.setMessage(menu.inventory.isWhitelistMode() ? PELang.WHITELIST.translate() : PELang.BLACKLIST.translate());
+				}).pos(leftPos + 62, topPos + 4)
+				.size(52, 20)
+				.build());
 	}
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, texture);
-		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int x, int y) {
+		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
+	protected void renderLabels(@NotNull GuiGraphics graphics, int x, int y) {
 		//Don't render title or inventory as we don't have space
 	}
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "minecraft:bricks"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:mercurial_eye"
-  }
+  },
+  "show_notification": true
 }

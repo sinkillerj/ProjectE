@@ -48,10 +48,6 @@ public class SlotCondenserLock extends Slot {
 	}
 
 	@Override
-	public void initialize(@NotNull ItemStack stack) {
-	}
-
-	@Override
 	public void set(@NotNull ItemStack stack) {
 	}
 

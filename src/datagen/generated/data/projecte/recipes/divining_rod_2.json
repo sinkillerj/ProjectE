@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "item": "projecte:medium_covalence_dust"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "projecte:divining_rod_2"
-  }
+  },
+  "show_notification": true
 }

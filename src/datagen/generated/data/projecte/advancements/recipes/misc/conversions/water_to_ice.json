@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_arcana_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:arcana_ring"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:conversions/water_to_ice"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_zero_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:zero_ring"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_arcana_ring",
+      "has_zero_ring",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/water_to_ice"
+    ]
+  },
+  "sends_telemetry_event": false
+}

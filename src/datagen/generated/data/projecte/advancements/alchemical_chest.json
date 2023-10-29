@@ -33,5 +33,6 @@
     [
       "alch_chest"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

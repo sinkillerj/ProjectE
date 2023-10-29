@@ -52,7 +52,7 @@ public final class PlayerHelper {
 		if (!hasEditPermission(player, pos)) {
 			return false;
 		}
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		BlockSnapshot before = BlockSnapshot.create(level.dimension(), level, pos);
 		level.setBlockAndUpdate(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.defaultBlockState(), player);
@@ -111,7 +111,7 @@ public final class PlayerHelper {
 	public static BlockHitResult getBlockLookingAt(Player player, double maxDistance) {
 		Pair<Vec3, Vec3> vecs = getLookVec(player, maxDistance);
 		ClipContext ctx = new ClipContext(vecs.getLeft(), vecs.getRight(), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player);
-		return player.getCommandSenderWorld().clip(ctx);
+		return player.level().clip(ctx);
 	}
 
 	/**
@@ -127,11 +127,11 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasBreakPermission(ServerPlayer player, BlockPos pos) {
-		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.getCommandSenderWorld(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
+		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.level(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
 	}
 
 	public static boolean hasEditPermission(ServerPlayer player, BlockPos pos) {
-		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection((ServerLevel) player.getCommandSenderWorld(), pos, player)) {
+		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection((ServerLevel) player.level(), pos, player)) {
 			return false;
 		}
 		return Arrays.stream(Direction.values()).allMatch(e -> player.mayUseItemAt(pos, e, ItemStack.EMPTY));
@@ -143,7 +143,7 @@ public final class PlayerHelper {
 	}
 
 	public static void swingItem(Player player, InteractionHand hand) {
-		if (player.getCommandSenderWorld() instanceof ServerLevel level) {
+		if (player.level() instanceof ServerLevel level) {
 			level.getChunkSource().broadcastAndSend(player, new ClientboundAnimatePacket(player, hand == InteractionHand.MAIN_HAND ? 0 : 3));
 		}
 	}

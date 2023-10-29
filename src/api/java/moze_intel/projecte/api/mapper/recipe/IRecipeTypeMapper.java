@@ -2,6 +2,7 @@ package moze_intel.projecte.api.mapper.recipe;
 
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -26,10 +27,10 @@ public interface IRecipeTypeMapper {
 
 	/**
 	 * This method is used to determine the default for enabling/disabling this {@link IRecipeTypeMapper}. If this returns {@code false} {@link #canHandle(RecipeType)}
-	 * and {@link #handleRecipe(IMappingCollector, Recipe, INSSFakeGroupManager)} will not be called.
+	 * and {@link #handleRecipe(IMappingCollector, Recipe, RegistryAccess, INSSFakeGroupManager)} will not be called.
 	 *
-	 * @return {@code true} if you want {@link #canHandle(RecipeType)} and {@link #handleRecipe(IMappingCollector, Recipe, INSSFakeGroupManager)} to be called, {@code
-	 * false} otherwise.
+	 * @return {@code true} if you want {@link #canHandle(RecipeType)} and {@link #handleRecipe(IMappingCollector, Recipe, RegistryAccess, INSSFakeGroupManager)} to be
+	 * called, {@code false} otherwise.
 	 */
 	default boolean isAvailable() {
 		return true;
@@ -49,6 +50,7 @@ public interface IRecipeTypeMapper {
 	 *
 	 * @param mapper           The mapper to add mapping data to.
 	 * @param recipe           The recipe to attempt to map.
+	 * @param registryAccess   Registry access for use in getting recipe outputs and the like
 	 * @param fakeGroupManager The manager for helping create and manage "groupings" of valid ingredients.
 	 *
 	 * @return {@code true} if the {@link IRecipeTypeMapper} handled the given {@link Recipe}, {@code false} otherwise
@@ -57,5 +59,5 @@ public interface IRecipeTypeMapper {
 	 * @implNote Due to how the fakeGroupManager works, {@link moze_intel.projecte.api.nss.NSSFake} implementations should only be created in this method with
 	 * descriptions that are more complex than a single integer, as otherwise they may intersect with {@link NormalizedSimpleStack}s created by the fakeGroupManager.
 	 */
-	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, INSSFakeGroupManager fakeGroupManager);
+	boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, RegistryAccess registryAccess, INSSFakeGroupManager fakeGroupManager);
 }

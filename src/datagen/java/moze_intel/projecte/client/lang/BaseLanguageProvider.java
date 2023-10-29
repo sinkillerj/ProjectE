@@ -1,11 +1,11 @@
 package moze_intel.projecte.client.lang;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,10 +16,12 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
 	private final ConvertibleLanguageProvider[] altProviders;
 
-	public BaseLanguageProvider(DataGenerator gen, String modid) {
-		super(gen, modid, "en_us");
+	public BaseLanguageProvider(PackOutput output, String modid) {
+		super(output, modid, "en_us");
 		altProviders = new ConvertibleLanguageProvider[]{
-				new UpsideDownLanguageProvider(gen, modid)
+				new UpsideDownLanguageProvider(output, modid),
+				new NonAmericanLanguageProvider(output, modid, "en_au"),
+				new NonAmericanLanguageProvider(output, modid, "en_gb")
 		};
 	}
 
@@ -38,11 +40,18 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 		}
 	}
 
+	@NotNull
 	@Override
-	public void run(@NotNull CachedOutput cache) throws IOException {
-		super.run(cache);
-		for (ConvertibleLanguageProvider provider : altProviders) {
-			provider.run(cache);
+	public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+		CompletableFuture<?> future = super.run(cache);
+		if (altProviders.length > 0) {
+			CompletableFuture<?>[] futures = new CompletableFuture[altProviders.length + 1];
+			futures[0] = future;
+			for (int i = 0; i < altProviders.length; i++) {
+				futures[i + 1] = altProviders[i].run(cache);
+			}
+			return CompletableFuture.allOf(futures);
 		}
+		return future;
 	}
 }

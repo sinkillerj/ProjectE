@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "item": "projecte:dm_chestplate"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "projecte:rm_chestplate"
-  }
+  },
+  "show_notification": true
 }

@@ -27,7 +27,6 @@ public class PEPermissions {
 	public static final CommandPermissionNode COMMAND = new CommandPermissionNode(node("command", PermissionTypes.BOOLEAN,
 			(player, uuid, contexts) -> player != null && player.hasPermissions(Commands.LEVEL_ALL)), Commands.LEVEL_ALL);
 
-	public static final CommandPermissionNode COMMAND_CLEAR_KNOWLEDGE = nodeOpCommand("clear_knowledge");
 	public static final CommandPermissionNode COMMAND_DUMP_MISSING = nodeOpCommand("dump_missing");
 	public static final CommandPermissionNode COMMAND_REMOVE_EMC = nodeOpCommand("remove_emc");
 	public static final CommandPermissionNode COMMAND_RESET_EMC = nodeOpCommand("reset_emc");

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
   "ingredients": [
     {
       "item": "projecte:body_stone"

@@ -7,11 +7,11 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -43,25 +43,25 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && isAlive()) {
+		if (!level().isClientSide && isAlive()) {
 			Entity thrower = getOwner();
 			if (thrower instanceof ServerPlayer player) {
 				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
-					if (level.isLoaded(pos)) {
-						BlockState state = level.getBlockState(pos);
+					if (level().isLoaded(pos)) {
+						BlockState state = level().getBlockState(pos);
 						if (state.getFluidState().is(FluidTags.WATER)) {
 							pos = pos.immutable();
 							if (PlayerHelper.hasEditPermission(player, pos)) {
-								WorldHelper.drainFluid(level, pos, state, Fluids.WATER);
-								level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
-										2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+								WorldHelper.drainFluid(level(), pos, state, Fluids.WATER);
+								level().playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+										2.6F + (level().random.nextFloat() - level().random.nextFloat()) * 0.8F);
 							}
 						}
 					}
 				});
 			}
 			if (getY() > 128) {
-				LevelData worldInfo = level.getLevelData();
+				LevelData worldInfo = level().getLevelData();
 				worldInfo.setRaining(false);
 				discard();
 			}
@@ -77,10 +77,10 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
-				WorldHelper.placeFluid(player, level, result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
+				WorldHelper.placeFluid(player, level(), result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);
 			}
 		}
 	}
@@ -88,19 +88,19 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level.isClientSide && getOwner() instanceof Player player) {
+		if (!level().isClientSide && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				Entity ent = result.getEntity();
 				ent.setSecondsOnFire(5);
-				ent.hurt(DamageSource.IN_FIRE, 5);
+				ent.hurt(level().damageSources().inFire(), 5);
 			}
 		}
 	}
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

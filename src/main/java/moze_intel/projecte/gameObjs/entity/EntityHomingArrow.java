@@ -5,6 +5,7 @@ import java.util.List;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -58,7 +59,7 @@ public class EntityHomingArrow extends Arrow {
 
 	@Override
 	public void tick() {
-		if (!level.isClientSide && this.tickCount > 3) {
+		if (!level().isClientSide && this.tickCount > 3) {
 			if (hasTarget() && (!getTarget().isAlive() || this.inGround)) {
 				entityData.set(DW_TARGET_ID, NO_TARGET);
 			}
@@ -74,8 +75,8 @@ public class EntityHomingArrow extends Arrow {
 			double mX = getDeltaMovement().x();
 			double mY = getDeltaMovement().y();
 			double mZ = getDeltaMovement().z();
-			this.getCommandSenderWorld().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
-			this.getCommandSenderWorld().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.level().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
+			this.level().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
 			Vec3 arrowLoc = new Vec3(getX(), getY(), getZ());
@@ -155,7 +156,7 @@ public class EntityHomingArrow extends Arrow {
 	}
 
 	private void findNewTarget() {
-		List<Mob> candidates = level.getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(8, 8, 8));
+		List<Mob> candidates = level().getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(8, 8, 8));
 
 		if (!candidates.isEmpty()) {
 			candidates.sort(Comparator.comparing(EntityHomingArrow.this::distanceToSqr, Double::compare));
@@ -166,7 +167,7 @@ public class EntityHomingArrow extends Arrow {
 	}
 
 	private Mob getTarget() {
-		return (Mob) level.getEntity(entityData.get(DW_TARGET_ID));
+		return (Mob) level().getEntity(entityData.get(DW_TARGET_ID));
 	}
 
 	private boolean hasTarget() {
@@ -209,7 +210,7 @@ public class EntityHomingArrow extends Arrow {
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

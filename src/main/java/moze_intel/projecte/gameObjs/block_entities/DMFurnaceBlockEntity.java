@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
@@ -239,7 +238,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 		dummyFurnace.setItem(0, in);
 		Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, dummyFurnace, level);
 		dummyFurnace.setItem(0, ItemStack.EMPTY);
-		return recipe.map(Recipe::getResultItem).orElse(ItemStack.EMPTY);
+		return recipe.map(r -> r.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
 	}
 
 	private void smeltItem() {
@@ -271,8 +270,7 @@ public class DMFurnaceBlockEntity extends CapabilityEmcBlockEntity implements Me
 		ItemStack currentSmelted = outputInventory.getStackInSlot(outputInventory.getSlots() - 1);
 		if (currentSmelted.isEmpty()) {
 			return true;
-		}
-		if (!smeltResult.sameItem(currentSmelted)) {
+		} else if (!ItemHandlerHelper.canItemStacksStack(smeltResult, currentSmelted)) {
 			return false;
 		}
 		int result = currentSmelted.getCount() + smeltResult.getCount();

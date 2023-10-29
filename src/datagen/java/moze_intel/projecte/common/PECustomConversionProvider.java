@@ -1,5 +1,6 @@
 package moze_intel.projecte.common;
 
+import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.data.ConversionGroupBuilder;
 import moze_intel.projecte.api.data.CustomConversionBuilder;
@@ -7,8 +8,9 @@ import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -30,12 +32,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
 
-	public PECustomConversionProvider(@NotNull DataGenerator generator) {
-		super(generator);
+	public PECustomConversionProvider(@NotNull PackOutput output, @NotNull CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(output, lookupProvider);
 	}
 
 	@Override
-	protected void addCustomConversions() {
+	protected void addCustomConversions(@NotNull HolderLookup.Provider registries) {
 		createConversionBuilder(PECore.rl("metals"))
 				.comment("Sets default conversions for various metals from other mods and their default values.")
 				.before(Tags.Items.INGOTS_IRON, 256)
@@ -274,15 +276,15 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.SCUTE, 96)
 				.before(Items.TURTLE_EGG, 192)
 				//Regular horns
-				.before(horn(Instruments.PONDER_GOAT_HORN), 96)
-				.before(horn(Instruments.SING_GOAT_HORN), 96)
-				.before(horn(Instruments.SEEK_GOAT_HORN), 96)
-				.before(horn(Instruments.FEEL_GOAT_HORN), 96)
+				.before(horn(registries, Instruments.PONDER_GOAT_HORN), 96)
+				.before(horn(registries, Instruments.SING_GOAT_HORN), 96)
+				.before(horn(registries, Instruments.SEEK_GOAT_HORN), 96)
+				.before(horn(registries, Instruments.FEEL_GOAT_HORN), 96)
 				//Screaming horns
-				.before(horn(Instruments.ADMIRE_GOAT_HORN), 192)
-				.before(horn(Instruments.CALL_GOAT_HORN), 192)
-				.before(horn(Instruments.YEARN_GOAT_HORN), 192)
-				.before(horn(Instruments.DREAM_GOAT_HORN), 192)
+				.before(horn(registries, Instruments.ADMIRE_GOAT_HORN), 192)
+				.before(horn(registries, Instruments.CALL_GOAT_HORN), 192)
+				.before(horn(registries, Instruments.YEARN_GOAT_HORN), 192)
+				.before(horn(registries, Instruments.DREAM_GOAT_HORN), 192)
 				.before(Items.FEATHER, 48)
 				.before(Items.RABBIT_HIDE, 16)
 				.before(Items.RABBIT_FOOT, 128)
@@ -339,8 +341,11 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 		}
 	}
 
-	private ItemStack horn(ResourceKey<Instrument> instrument) {
-		return InstrumentItem.create(Items.GOAT_HORN, Registry.INSTRUMENT.getHolder(instrument).orElseThrow());
+	private ItemStack horn(HolderLookup.Provider registries, ResourceKey<Instrument> instrument) {
+		return registries.lookup(Registries.INSTRUMENT)
+				.flatMap(instruments -> instruments.get(instrument))
+				.map(inst -> InstrumentItem.create(Items.GOAT_HORN, inst))
+				.orElseThrow(() -> new RuntimeException("Unable to find instrument for creating horn"));
 	}
 
 	private static NormalizedSimpleStack ingotTag(String ingot) {

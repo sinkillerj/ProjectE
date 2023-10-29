@@ -32,8 +32,8 @@ public class RemoveEmcCMD {
 	private static int removeEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack) {
 		String toRemove = stack.getStringRepresentation();
 		CustomEMCParser.addToFile(toRemove, 0);
-		ctx.getSource().sendSuccess(PELang.COMMAND_REMOVE_SUCCESS.translate(toRemove), true);
-		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
+		ctx.getSource().sendSuccess(() -> PELang.COMMAND_REMOVE_SUCCESS.translate(toRemove), true);
+		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE::translate, true);
 		return Command.SINGLE_SUCCESS;
 	}
 

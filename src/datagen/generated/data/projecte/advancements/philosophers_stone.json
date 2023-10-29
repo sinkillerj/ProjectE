@@ -33,5 +33,6 @@
     [
       "philosophers_stone"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

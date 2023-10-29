@@ -18,6 +18,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
@@ -80,7 +81,7 @@ public class EMCCMD {
 		}
 		IKnowledgeProvider provider = cap.get();
 		if (action == ActionType.GET) {
-			source.sendSuccess(PELang.COMMAND_EMC_GET_SUCCESS.translate(player.getDisplayName(), formatEMC(provider.getEmc())), true);
+			source.sendSuccess(() -> PELang.COMMAND_EMC_GET_SUCCESS.translate(player.getDisplayName(), formatEMC(provider.getEmc())), true);
 			return Command.SINGLE_SUCCESS;
 		}
 		String val = StringArgumentType.getString(ctx, "value");
@@ -108,7 +109,8 @@ public class EMCCMD {
 		switch (action) {
 			case ADD -> {
 				newEMC = newEMC.add(value);
-				source.sendSuccess(PELang.COMMAND_EMC_ADD_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+				Component message = PELang.COMMAND_EMC_ADD_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC));
+				source.sendSuccess(() -> message, true);
 			}
 			case REMOVE -> {
 				newEMC = newEMC.subtract(value);
@@ -116,15 +118,18 @@ public class EMCCMD {
 					source.sendFailure(PELang.COMMAND_EMC_NEGATIVE.translate(formatEMC(value), player.getDisplayName()));
 					return 0;
 				}
-				source.sendSuccess(PELang.COMMAND_EMC_REMOVE_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+				Component message = PELang.COMMAND_EMC_REMOVE_SUCCESS.translate(formatEMC(value), player.getDisplayName(), formatEMC(newEMC));
+				source.sendSuccess(() -> message, true);
 			}
 			case SET -> {
 				newEMC = value;
-				source.sendSuccess(PELang.COMMAND_EMC_SET_SUCCESS.translate(player.getDisplayName(), formatEMC(value)), true);
+				Component message = PELang.COMMAND_EMC_SET_SUCCESS.translate(player.getDisplayName(), formatEMC(value));
+				source.sendSuccess(() -> message, true);
 			}
 			case TEST -> {
 				if (newEMC.compareTo(value) >= 0) {
-					source.sendSuccess(PELang.COMMAND_EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(value)), true);
+					Component message = PELang.COMMAND_EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(value));
+					source.sendSuccess(() -> message, true);
 					return Command.SINGLE_SUCCESS;
 				}
 

@@ -92,7 +92,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (ProjectEConfig.server.items.opEvertide.get() || !level.dimensionType().ultraWarm()) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			EntityWaterProjectile ent = new EntityWaterProjectile(player, level);

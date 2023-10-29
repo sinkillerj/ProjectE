@@ -13,12 +13,8 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -35,7 +31,9 @@ public class DumpMissingEmc {
 		Set<ItemInfo> missing = new HashSet<>();
 		for (Map.Entry<ResourceKey<Item>, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
 			Item item = entry.getValue();
-			CreativeModeTab group = item.getItemCategory();
+			//TODO - 1.20: Is there a good way to get various instances added to the creative tab?
+			// as creative tabs while yes they have a registry some mods may assume certain bits are client only for now
+			/*CreativeModeTab group = item.getItemCategory();
 			if (group != null || !(item instanceof EnchantedBookItem)) {
 				//Vanilla has special handing for filling the enchanted book item's group, so don't try to fill it
 				try {
@@ -59,8 +57,9 @@ public class DumpMissingEmc {
 				} catch (Exception ignored) {
 					//Fall down and try to use the raw item
 				}
-			}
+			}*/
 			if (item != Items.AIR) {
+				//TODO - 1.20: Should this use item.getDefaultInstance
 				ItemInfo itemInfo = ItemInfo.fromItem(item);
 				if (EMCHelper.getEmcValue(itemInfo) == 0) {
 					missing.add(itemInfo);
@@ -69,12 +68,12 @@ public class DumpMissingEmc {
 		}
 		int missingCount = missing.size();
 		if (missingCount == 0) {
-			source.sendSuccess(PELang.DUMP_MISSING_EMC_NONE_MISSING.translate(), true);
+			source.sendSuccess(PELang.DUMP_MISSING_EMC_NONE_MISSING::translate, true);
 		} else {
 			if (missingCount == 1) {
-				source.sendSuccess(PELang.DUMP_MISSING_EMC_ONE_MISSING.translate(), true);
+				source.sendSuccess(PELang.DUMP_MISSING_EMC_ONE_MISSING::translate, true);
 			} else {
-				source.sendSuccess(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING.translate(missingCount), true);
+				source.sendSuccess(() -> PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING.translate(missingCount), true);
 			}
 			for (ItemInfo itemInfo : missing) {
 				PECore.LOGGER.info(itemInfo.toString());

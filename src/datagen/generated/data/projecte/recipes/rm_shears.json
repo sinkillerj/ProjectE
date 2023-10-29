@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "R": {
       "item": "projecte:red_matter"
@@ -14,5 +15,6 @@
   ],
   "result": {
     "item": "projecte:rm_shears"
-  }
+  },
+  "show_notification": true
 }

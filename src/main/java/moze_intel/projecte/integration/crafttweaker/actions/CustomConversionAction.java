@@ -3,6 +3,7 @@ package moze_intel.projecte.integration.crafttweaker.actions;
 import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import java.util.Map;
 import java.util.Map.Entry;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.integration.crafttweaker.mappers.CrTConversionEMCMapper;
@@ -50,5 +51,10 @@ public class CustomConversionAction implements IUndoableAction {
 	@Override
 	public String describeUndo() {
 		return "Undoing adding of custom conversion creating '" + conversion.amount() + "' of " + conversion.output();
+	}
+
+	@Override
+	public String systemName() {
+		return PECore.MODNAME;
 	}
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "minecraft:book"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:mind_stone"
-  }
+  },
+  "show_notification": true
 }

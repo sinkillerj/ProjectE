@@ -9,6 +9,7 @@ public enum PELang implements ILangEntry {
 	UNKNOWN_TAG("arguments.item.tag.unknown"),
 	//Misc
 	PROJECTE("misc", "mod_name"),
+	PACK_DESCRIPTION("misc", "pack_description"),
 	SECONDS("misc", "seconds"),
 	EVERY_TICK("misc", "seconds.every_tick"),
 	HIGH_ALCHEMIST("misc", "high_alchemist_joined"),

@@ -32,8 +32,7 @@ public class PEModConfig extends ModConfig {
 	}
 
 	public void clearCache(ModConfigEvent event) {
-		//TODO - 1.20: Add support for the unloading event subtype
-		peConfig.clearCache(false);//event instanceof ModConfigEvent.Unloading);
+		peConfig.clearCache(event instanceof ModConfigEvent.Unloading);
 	}
 
 	private static class PEConfigFileTypeHandler extends ConfigFileTypeHandler {

@@ -73,8 +73,9 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
+				DamageSource fire = level.damageSources().inFire();
 				for (Mob living : level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds())) {
-					living.hurt(DamageSource.IN_FIRE, 3.0F);
+					living.hurt(fire, 3.0F);
 					living.setSecondsOnFire(8);
 				}
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.ignition.get());
@@ -98,7 +99,7 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (level.isClientSide) {
 			return false;
 		}

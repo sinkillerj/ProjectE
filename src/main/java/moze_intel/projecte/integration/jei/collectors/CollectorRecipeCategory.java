@@ -1,6 +1,5 @@
 package moze_intel.projecte.integration.jei.collectors;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,6 +14,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -65,11 +65,11 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public void draw(FuelUpgradeRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull PoseStack matrix, double mouseX, double mouseY) {
+	public void draw(FuelUpgradeRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
 		Component emc = PELang.EMC.translate(recipe.upgradeEMC());
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(emc);
-		fontRenderer.draw(matrix, emc, (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080);
-		arrow.draw(matrix, 55, 18);
+		graphics.drawString(fontRenderer, emc.getVisualOrderText(), (getBackground().getWidth() - stringWidth) / 2F, 5, 0x808080, false);
+		arrow.draw(graphics, 55, 18);
 	}
 }

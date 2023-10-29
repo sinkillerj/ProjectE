@@ -1,0 +1,74 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_axe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:rm_axe"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_hoe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:rm_hoe"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_shears": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:rm_shears"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_sword": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:rm_sword"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:rm_katar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_shears",
+      "has_axe",
+      "has_sword",
+      "has_hoe",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:rm_katar"
+    ]
+  },
+  "sends_telemetry_event": false
+}

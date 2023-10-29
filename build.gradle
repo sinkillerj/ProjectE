@@ -247,12 +247,9 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup 'org.openzen.zencode'
     })
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
-    maven {//TODO - 1.20: Remove this
-        name "forge"
-        url "https://maven.minecraftforge.net/"
-    }
 }
 
 test {
@@ -260,8 +257,7 @@ test {
 }
 
 dependencies {
-    //TODO - 1.20: Switch to neoforge
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
@@ -270,8 +266,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
@@ -282,7 +278,7 @@ dependencies {
     }
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
-    compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
+    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
@@ -380,7 +376,7 @@ tasks.register('updateJSON') {
 
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
-    it.options.compilerArgs << "-Xmaxerrs" << "100000"
+    it.options.compilerArgs.addAll(["-Xmaxerrs", "100000"])
 })
 
 artifacts {

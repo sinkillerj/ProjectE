@@ -45,7 +45,7 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
-		stack.onCraftedBy(player.level, player, removeCount);
+		stack.onCraftedBy(player.level(), player, removeCount);
 		removeCount = 0;
 		ForgeEventFactory.firePlayerSmeltedEvent(player, stack);
 	}

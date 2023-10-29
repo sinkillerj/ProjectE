@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "1": {
       "item": "projecte:rm_shears"
@@ -24,5 +25,6 @@
   ],
   "result": {
     "item": "projecte:rm_katar"
-  }
+  },
+  "show_notification": true
 }

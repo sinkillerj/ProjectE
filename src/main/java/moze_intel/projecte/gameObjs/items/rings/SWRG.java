@@ -53,9 +53,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
 			// Repel on both sides - smooth animation
-			WorldHelper.repelEntitiesSWRG(player.getCommandSenderWorld(), player.getBoundingBox().inflate(5), player);
+			WorldHelper.repelEntitiesSWRG(player.level(), player.getBoundingBox().inflate(5), player);
 		}
-		if (player.getCommandSenderWorld().isClientSide) {
+		if (player.level().isClientSide) {
 			return;
 		}
 		ServerPlayer playerMP = (ServerPlayer) player;
@@ -142,10 +142,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 		if (mode == 0 || oldMode == 3) {
 			//At least one mode deactivated
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 		} else if (oldMode == 0 || mode == 3) {
 			//At least one mode activated
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
 	}
@@ -195,9 +195,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, @Nullable InteractionHand hand) {
-		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.level);
+		EntitySWRGProjectile projectile = new EntitySWRGProjectile(player, false, player.level());
 		projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-		player.level.addFreshEntity(projectile);
+		player.level().addFreshEntity(projectile);
 		return true;
 	}
 }

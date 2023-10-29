@@ -60,7 +60,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	}
 
 	public boolean isServer() {
-		return !player.getCommandSenderWorld().isClientSide;
+		return !player.level().isClientSide;
 	}
 
 	/**

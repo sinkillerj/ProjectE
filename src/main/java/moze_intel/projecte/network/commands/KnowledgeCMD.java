@@ -80,7 +80,7 @@ public class KnowledgeCMD {
 								} else {
 									provider.clearKnowledge();
 									PacketHandler.sendTo(new KnowledgeClearPKT(), player);
-									source.sendSuccess(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
+									source.sendSuccess(() -> PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
 									successCount++;
 								}
 							}
@@ -111,18 +111,18 @@ public class KnowledgeCMD {
 					return failure(source, PELang.COMMAND_KNOWLEDGE_LEARN_FAIL, player, item);
 				}
 				provider.addKnowledge(item);
-				source.sendSuccess(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
+				source.sendSuccess(() -> PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case UNLEARN -> {
 				if (!provider.hasKnowledge(item)) {
 					return failure(source, PELang.COMMAND_KNOWLEDGE_UNLEARN_FAIL, player, item);
 				}
 				provider.removeKnowledge(item);
-				source.sendSuccess(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
+				source.sendSuccess(() -> PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 			}
 			case TEST -> {
 				if (provider.hasKnowledge(item)) {
-					source.sendSuccess(PELang.COMMAND_KNOWLEDGE_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
+					source.sendSuccess(() -> PELang.COMMAND_KNOWLEDGE_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), item.getDisplayName()), true);
 					return Command.SINGLE_SUCCESS;
 				}
 				return failure(source, PELang.COMMAND_KNOWLEDGE_TEST_FAIL, player, item);

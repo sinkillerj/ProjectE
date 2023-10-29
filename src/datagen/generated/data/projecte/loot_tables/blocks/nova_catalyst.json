@@ -26,5 +26,6 @@
       "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "projecte:blocks/nova_catalyst"
 }

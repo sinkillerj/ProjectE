@@ -5,6 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import moze_intel.projecte.gameObjs.registration.DoubleDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject.WallOrFloorBlockRegistryObject;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.StandingAndWallBlockItem;
@@ -33,12 +34,12 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 		RegistryObject<BLOCK> primaryObject = primaryRegister.register(name, () -> blockSupplier.apply(baseProperties));
 		RegistryObject<WALL_BLOCK> wallObject = primaryRegister.register("wall_" + name, () -> wallBlockSupplier.apply(baseProperties.lootFrom(primaryObject)));
 		return new WallOrFloorBlockRegistryObject<>(primaryObject, wallObject, secondaryRegister.register(name, () -> new StandingAndWallBlockItem(primaryObject.get(), wallObject.get(),
-				ItemDeferredRegister.getBaseProperties())));
+				new Item.Properties(), Direction.DOWN)));
 	}
 
 	public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerDefaultProperties(String name, Supplier<? extends BLOCK> blockSupplier,
 			BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-		return register(name, blockSupplier, block -> itemCreator.apply(block, ItemDeferredRegister.getBaseProperties()));
+		return register(name, blockSupplier, block -> itemCreator.apply(block, new Item.Properties()));
 	}
 
 	public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,

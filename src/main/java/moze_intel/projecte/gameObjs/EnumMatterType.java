@@ -10,13 +10,14 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum EnumMatterType implements StringRepresentable, Tier {
-	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter")),
-	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER, null);
+	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter"), MapColor.COLOR_BLACK),
+	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER, null, MapColor.COLOR_RED);
 
 	private final String name;
 	private final float attackDamage;
@@ -24,15 +25,17 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 	private final float chargeModifier;
 	private final int harvestLevel;
 	private final TagKey<Block> neededTag;
+	private final MapColor mapColor;
 
 	EnumMatterType(String name, float attackDamage, float efficiency, float chargeModifier, int harvestLevel, TagKey<Block> neededTag, Tier previous,
-			@Nullable ResourceLocation next) {
+			@Nullable ResourceLocation next, MapColor mapColor) {
 		this.name = name;
 		this.attackDamage = attackDamage;
 		this.efficiency = efficiency;
 		this.chargeModifier = chargeModifier;
 		this.harvestLevel = harvestLevel;
 		this.neededTag = neededTag;
+		this.mapColor = mapColor;
 		TierSortingRegistry.registerTier(this, PECore.rl(name), List.of(previous), next == null ? Collections.emptyList() : List.of(next));
 	}
 
@@ -80,6 +83,10 @@ public enum EnumMatterType implements StringRepresentable, Tier {
 	@Override
 	public Ingredient getRepairIngredient() {
 		return Ingredient.EMPTY;
+	}
+
+	public MapColor getMapColor() {
+		return mapColor;
 	}
 
 	public int getMatterTier() {

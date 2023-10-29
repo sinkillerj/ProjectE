@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "tag": "forge:gems/diamond"
@@ -14,5 +15,6 @@
   ],
   "result": {
     "item": "projecte:dm_shears"
-  }
+  },
+  "show_notification": true
 }

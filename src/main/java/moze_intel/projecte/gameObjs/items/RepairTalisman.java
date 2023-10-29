@@ -112,7 +112,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
-		if (player.getCommandSenderWorld().isClientSide) {
+		if (player.level().isClientSide) {
 			return false;
 		}
 		CompoundTag nbt = stack.getOrCreateTag();

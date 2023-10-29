@@ -18,6 +18,7 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
@@ -44,7 +45,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, final CommentedFileConfig config, ReloadableServerResources serverResources,
-			ResourceManager resourceManager) {
+			RegistryAccess registryAccess, ResourceManager resourceManager) {
 		NSSFake.setCurrentNamespace("craftingMapper");
 		Map<ResourceLocation, RecipeCountInfo> recipeCount = new HashMap<>();
 		Set<ResourceLocation> canNotMap = new HashSet<>();
@@ -72,7 +73,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 						int numHandled = 0;
 						for (Recipe<?> recipe : recipes) {
 							try {
-								if (recipeMapper.handleRecipe(mapper, recipe, fakeGroupManager)) {
+								if (recipeMapper.handleRecipe(mapper, recipe, registryAccess, fakeGroupManager)) {
 									numHandled++;
 								} else {
 									unhandled.add(recipe);

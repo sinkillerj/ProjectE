@@ -66,7 +66,7 @@ public class ProjectETNT extends TntBlock {
 	@Override
 	public void wasExploded(Level level, @NotNull BlockPos pos, @NotNull Explosion explosion) {
 		if (!level.isClientSide) {
-			PrimedTnt tnt = tntEntityCreator.create(level, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getSourceMob());
+			PrimedTnt tnt = tntEntityCreator.create(level, (float) pos.getX() + 0.5F, pos.getY(), (float) pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
 			int fuse = tnt.getFuse();
 			tnt.setFuse((short) (level.random.nextInt(fuse / 4) + fuse / 8));
 			level.addFreshEntity(tnt);

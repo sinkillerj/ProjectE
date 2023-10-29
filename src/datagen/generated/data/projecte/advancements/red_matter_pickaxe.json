@@ -33,5 +33,6 @@
     [
       "rm_pick"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "F": {
       "item": "projecte:alchemical_coal"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "projecte:alchemical_coal_block"
-  }
+  },
+  "show_notification": true
 }

@@ -6,6 +6,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -36,17 +37,17 @@ public class EntityLensProjectile extends NoGravityThrowableProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!getCommandSenderWorld().isClientSide && isAlive() && isInWater()) {
+		if (!level().isClientSide && isAlive() && isInWater()) {
 			playSound(SoundEvents.GENERIC_BURN, 0.7F, 1.6F + (random.nextFloat() - random.nextFloat()) * 0.4F);
-			((ServerLevel) level).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
+			((ServerLevel) level()).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
 			discard();
 		}
 	}
 
 	@Override
 	protected void onHit(@NotNull HitResult result) {
-		if (!level.isClientSide) {
-			WorldHelper.createNovaExplosion(level, getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+		if (!level().isClientSide) {
+			WorldHelper.createNovaExplosion(level(), getOwner(), getX(), getY(), getZ(), Constants.EXPLOSIVE_LENS_RADIUS[charge]);
 		}
 		gameEvent(GameEvent.PROJECTILE_LAND, getOwner());
 		discard();
@@ -66,7 +67,7 @@ public class EntityLensProjectile extends NoGravityThrowableProjectile {
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

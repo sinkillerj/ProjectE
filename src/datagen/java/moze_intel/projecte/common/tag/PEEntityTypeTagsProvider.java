@@ -1,23 +1,26 @@
 package moze_intel.projecte.common.tag;
 
+import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
-	public PEEntityTypeTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(generator, PECore.MODID, existingFileHelper);
+	public PEEntityTypeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+		super(output, lookupProvider, PECore.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		//Note: Intentionally does not include Axolotls or allays
 		tag(PETags.Entities.RANDOMIZER_PEACEFUL).add(
 				EntityType.SHEEP,

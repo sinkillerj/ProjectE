@@ -4,10 +4,12 @@ import com.google.gson.JsonObject;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -42,8 +44,8 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingContainer inv) {
-		ItemStack result = compose.assemble(inv);
+	public ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
+		ItemStack result = compose.assemble(inv, registryAccess);
 		long storedEMC = 0;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
@@ -64,8 +66,8 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack getResultItem() {
-		return compose.getResultItem();
+	public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+		return compose.getResultItem(registryAccess);
 	}
 
 	@NotNull
@@ -101,6 +103,12 @@ public class RecipeShapelessKleinStar implements CraftingRecipe {
 	@Override
 	public boolean isIncomplete() {
 		return compose.isIncomplete();
+	}
+
+	@NotNull
+	@Override
+	public CraftingBookCategory category() {
+		return compose.category();
 	}
 
 	public static class Serializer implements RecipeSerializer<RecipeShapelessKleinStar> {

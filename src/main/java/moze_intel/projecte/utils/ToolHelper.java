@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
+import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -60,12 +61,12 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.common.IForgeShearable;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
@@ -383,7 +384,7 @@ public class ToolHelper {
 		}
 		if (hasAction) {
 			WorldHelper.createLootDrop(drops, level, pos);
-			player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -393,14 +394,15 @@ public class ToolHelper {
 	 * Attacks through armor. Charge affects damage. Free operation.
 	 */
 	public static void attackWithCharge(ItemStack stack, LivingEntity damaged, LivingEntity damager, float baseDmg) {
-		if (!(damager instanceof Player player) || damager.getCommandSenderWorld().isClientSide) {
+		if (!(damager instanceof Player player) || damager.level().isClientSide) {
 			return;
 		}
-		DamageSource dmg = DamageSource.playerAttack(player);
+		DamageSource dmg = damager.damageSources().playerAttack(player);
 		int charge = getCharge(stack);
 		float totalDmg = baseDmg;
 		if (charge > 0) {
-			dmg.bypassArmor();
+			//TODO - 1.20: Figure out how to make this bypass armor. It may have to be a custom damage type
+			//dmg.bypassArmor();
 			totalDmg += charge;
 		}
 		damaged.hurt(dmg, totalDmg);
@@ -410,13 +412,14 @@ public class ToolHelper {
 	 * Attacks in an AOE. Charge affects AOE, not damage (intentional). Optional per-entity EMC cost.
 	 */
 	public static void attackAOE(ItemStack stack, Player player, boolean slayAll, float damage, long emcCost, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		if (level.isClientSide) {
 			return;
 		}
 		int charge = getCharge(stack);
 		List<Entity> toAttack = level.getEntities(player, player.getBoundingBox().inflate(2.5F * charge), slayAll ? SLAY_ALL : SLAY_MOB);
-		DamageSource src = DamageSource.playerAttack(player).bypassArmor();
+		//TODO - 1.20: Figure out how to make this bypass armor. It may have to be a custom damage type
+		DamageSource src = level.damageSources().playerAttack(player);//.bypassArmor();
 		boolean hasAction = false;
 		for (Entity entity : toAttack) {
 			if (ItemPE.consumeFuel(player, stack, emcCost, true)) {
@@ -437,7 +440,7 @@ public class ToolHelper {
 	 * Called when tools that act as shears start breaking a block. Free operation.
 	 */
 	public static InteractionResult shearBlock(ItemStack stack, BlockPos pos, Player player) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		Block block = level.getBlockState(pos).getBlock();
 		if (block instanceof IForgeShearable target) {
 			if (target.isShearable(stack, level, pos) && (level.isClientSide || PlayerHelper.hasBreakPermission((ServerPlayer) player, pos))) {
@@ -461,7 +464,7 @@ public class ToolHelper {
 	 * Shears entities in an AOE. Charge affects AOE. Optional per-entity EMC cost.
 	 */
 	public static InteractionResult shearEntityAOE(Player player, InteractionHand hand, long emcCost) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		ItemStack stack = player.getItemInHand(hand);
 		int fortune = stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
 		int offset = (int) Math.pow(2, 2 + getCharge(stack));
@@ -524,7 +527,7 @@ public class ToolHelper {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return InteractionResult.PASS;
 		}
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		BlockState target = level.getBlockState(pos);
 		if (target.getDestroySpeed(level, pos) <= -1 || !stack.isCorrectToolForDrops(target)) {
 			return InteractionResult.FAIL;
@@ -560,7 +563,7 @@ public class ToolHelper {
 		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
 			return InteractionResult.PASS;
 		}
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		ItemStack stack = player.getItemInHand(hand);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
@@ -646,9 +649,9 @@ public class ToolHelper {
 				return true;
 			}
 			//Or it is a replaceable plant that is also not solid (such as tall grass)
-			Material material = aboveState.getMaterial();
-			if (material == Material.REPLACEABLE_PLANT || material == Material.REPLACEABLE_FIREPROOF_PLANT) {
-				return !aboveState.isSolidRender(level, abovePos);
+			//Note: This may not be the most optimal way of checking this, but it gives a decent enough estimate of it
+			if (aboveState.is(PETags.Blocks.FARMING_OVERRIDE) || aboveState.canBeReplaced() && aboveState.getBlock() instanceof IPlantable) {
+				return aboveState.getFluidState().isEmpty() && !aboveState.isSolidRender(level, abovePos);
 			}
 			return false;
 		}

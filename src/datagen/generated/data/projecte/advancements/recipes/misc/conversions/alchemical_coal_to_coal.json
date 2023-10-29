@@ -35,5 +35,6 @@
     "recipes": [
       "projecte:conversions/alchemical_coal_to_coal"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

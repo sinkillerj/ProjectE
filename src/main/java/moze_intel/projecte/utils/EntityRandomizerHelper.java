@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.animal.Rabbit.Variant;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
@@ -24,7 +25,7 @@ public class EntityRandomizerHelper {
 		if (isPeaceful && isHostile) {
 			//If it is in both lists do some extra checks to see if it really is peaceful
 			// currently this only includes our special casing for killer rabbits
-			if (toRandomize instanceof Rabbit rabbit && rabbit.getRabbitType() == 99) {
+			if (toRandomize instanceof Rabbit rabbit && rabbit.getVariant() == Variant.EVIL) {
 				//Killer rabbits are not peaceful
 				isPeaceful = false;
 			}
@@ -34,7 +35,7 @@ public class EntityRandomizerHelper {
 		} else if (isHostile) {
 			Mob ent = createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
 			if (ent instanceof Rabbit rabbit) {
-				rabbit.setRabbitType(99);
+				rabbit.setVariant(Variant.EVIL);
 			}
 			return ent;
 		}

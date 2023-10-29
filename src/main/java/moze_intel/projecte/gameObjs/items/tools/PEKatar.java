@@ -36,7 +36,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
@@ -88,8 +87,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			//Special handling for swords which still have hardcoded material checks
 			// Note: we don't bother with the cobweb check because that will get caught by the tag for the blocks we can mine,
 			// but we do need to include the material based checks that vanilla's sword still has
-			Material material = state.getMaterial();
-			if (material == Material.PLANT || material == Material.REPLACEABLE_PLANT || state.is(BlockTags.LEAVES) || material == Material.VEGETABLE) {
+			if (state.is(BlockTags.SWORD_EFFICIENT)) {
 				return 1.5F;
 			}
 		}
@@ -182,9 +180,9 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
 		if (entity instanceof IForgeShearable target) {
 			BlockPos pos = entity.blockPosition();
-			if (target.isShearable(stack, entity.level, pos)) {
-				if (!entity.level.isClientSide) {
-					List<ItemStack> drops = target.onSheared(player, stack, entity.level, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
+			if (target.isShearable(stack, entity.level(), pos)) {
+				if (!entity.level().isClientSide) {
+					List<ItemStack> drops = target.onSheared(player, stack, entity.level(), pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
 					Random rand = new Random();
 					drops.forEach(d -> {
 						ItemEntity ent = entity.spawnAtLocation(d, 1.0F);

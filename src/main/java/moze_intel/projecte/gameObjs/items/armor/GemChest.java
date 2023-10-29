@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public GemChest(Properties props) {
-		super(EquipmentSlot.CHEST, props);
+		super(ArmorItem.Type.CHESTPLATE, props);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
 	public void doExplode(Player player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
-			WorldHelper.createNovaExplosion(player.getCommandSenderWorld(), player, player.getX(), player.getY(), player.getZ(), 9.0F);
+			WorldHelper.createNovaExplosion(player.level(), player, player.getX(), player.getY(), player.getZ(), 9.0F);
 		}
 	}
 

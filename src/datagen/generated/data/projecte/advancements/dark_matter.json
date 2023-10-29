@@ -33,5 +33,6 @@
     [
       "dm"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

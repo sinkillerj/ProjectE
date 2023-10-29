@@ -61,7 +61,7 @@ public class TickEvents {
 			});
 
 			event.player.getCapability(CommonInternalAbilities.CAPABILITY).ifPresent(CommonInternalAbilities::tick);
-			if (!event.player.getCommandSenderWorld().isClientSide) {
+			if (event.side.isServer()) {
 				event.player.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::tick);
 				event.player.getCapability(InternalTimers.CAPABILITY).ifPresent(InternalTimers::tick);
 				if (event.player.isOnFire() && shouldPlayerResistFire((ServerPlayer) event.player)) {

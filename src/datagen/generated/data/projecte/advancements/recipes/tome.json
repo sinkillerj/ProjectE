@@ -43,7 +43,8 @@
           "recipes": [
             "projecte:tome"
           ]
-        }
+        },
+        "sends_telemetry_event": false
       },
       "conditions": [
         {
@@ -97,7 +98,8 @@
           "recipes": [
             "projecte:tome"
           ]
-        }
+        },
+        "sends_telemetry_event": false
       },
       "conditions": [
         {

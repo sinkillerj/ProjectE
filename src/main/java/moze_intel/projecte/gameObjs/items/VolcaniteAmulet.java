@@ -85,10 +85,10 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
-		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.getCommandSenderWorld());
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
+		EntityLavaProjectile ent = new EntityLavaProjectile(player, player.level());
 		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-		player.getCommandSenderWorld().addFreshEntity(ent);
+		player.level().addFreshEntity(ent);
 		return true;
 	}
 

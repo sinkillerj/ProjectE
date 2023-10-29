@@ -2,8 +2,7 @@ package moze_intel.projecte.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.UUID;
 import moze_intel.projecte.PECore;
 import net.minecraft.client.model.PlayerModel;
@@ -14,6 +13,7 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class LayerYue extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
@@ -41,10 +41,10 @@ public class LayerYue extends RenderLayer<AbstractClientPlayer, PlayerModel<Abst
 			double yShift = -0.498;
 			if (player.isCrouching()) {
 				//Only modify where it renders if the player's pose is crouching
-				matrix.mulPose(Vector3f.XP.rotationDegrees(-28.64789F));
+				matrix.mulPose(Axis.XP.rotationDegrees(-28.64789F));
 				yShift = -0.44;
 			}
-			matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrix.mulPose(Axis.ZP.rotationDegrees(180));
 			matrix.scale(3, 3, 3);
 			matrix.translate(-0.5, yShift, -0.5);
 			VertexConsumer builder = renderer.getBuffer(PERenderType.YEU_RENDERER.apply(CLAR_UUID.equals(player.getUUID()) ? HEART_LOC : YUE_LOC));

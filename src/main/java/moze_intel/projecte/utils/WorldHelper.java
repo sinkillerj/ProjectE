@@ -65,7 +65,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
@@ -110,7 +109,7 @@ public final class WorldHelper {
 	 * Equivalent of World.newExplosion
 	 */
 	public static void createNovaExplosion(Level level, Entity exploder, double x, double y, double z, float power) {
-		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, true, Explosion.BlockInteraction.BREAK);
+		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, true, Explosion.BlockInteraction.DESTROY);
 		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion))) {
 			explosion.explode();
 			explosion.finalizeExplosion(true);
@@ -222,8 +221,8 @@ public final class WorldHelper {
 			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(level, pos, blockState, fluid.getSource(false));
 			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 		} else {
-			Material material = blockState.getMaterial();
-			if ((!material.isSolid() || material.isReplaceable()) && !material.isLiquid()) {
+			//TODO - 1.20: Validate this if statement
+			if ((!blockState.isSolid() || blockState.canBeReplaced(fluid)) && !blockState.liquid()) {
 				level.destroyBlock(pos, true);
 			}
 			if (player == null) {
@@ -302,7 +301,7 @@ public final class WorldHelper {
 	 * Wrapper around BlockPos.getAllInBox() with an AABB Note that this is inclusive of all positions in the AABB!
 	 */
 	public static Iterable<BlockPos> getPositionsFromBox(AABB box) {
-		return getPositionsFromBox(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
+		return getPositionsFromBox(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ));
 	}
 
 	/**
@@ -517,7 +516,7 @@ public final class WorldHelper {
 		if (!entity.isSpectator() && !entity.getType().is(blacklistTag)) {
 			if (entity instanceof Projectile) {
 				//Accept any projectile's that are not in the ground, but fail for ones that are in the ground
-				return !entity.isOnGround();
+				return !entity.onGround();
 			}
 			return entity instanceof Mob;
 		}

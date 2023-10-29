@@ -1,6 +1,5 @@
 package moze_intel.projecte.integration.jei.world_transmute;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +20,7 @@ import moze_intel.projecte.api.imc.WorldTransmutationEntry;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -65,8 +65,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	}
 
 	@Override
-	public void draw(@NotNull WorldTransmuteEntry recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull PoseStack matrix, double mouseX, double mouseY) {
-		arrow.draw(matrix, 55, 18);
+	public void draw(@NotNull WorldTransmuteEntry recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
+		arrow.draw(graphics, 55, 18);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 				FluidStack inputFluid = e.getInputFluid();
 				if (inputFluid.isEmpty()) {
 					ItemStack inputItem = e.getInputItem();
-					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputItem).anyMatch(otherInputItem -> !otherInputItem.isEmpty() && inputItem.sameItem(otherInputItem));
+					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputItem).anyMatch(otherInputItem -> !otherInputItem.isEmpty() && ItemStack.isSameItemSameTags(inputItem, otherInputItem));
 				} else {
 					alreadyHas = visible.stream().map(WorldTransmuteEntry::getInputFluid).anyMatch(otherInputFluid -> !otherInputFluid.isEmpty() && inputFluid.isFluidEqual(otherInputFluid));
 				}

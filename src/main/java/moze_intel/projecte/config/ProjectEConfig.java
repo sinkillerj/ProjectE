@@ -12,7 +12,7 @@ public class ProjectEConfig {
 	public static final ClientConfig client = new ClientConfig();
 
 	static {
-		CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(PECore.MODNAME), PECore.MODNAME);
+		CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(PECore.MODNAME));
 	}
 
 	public static void register() {

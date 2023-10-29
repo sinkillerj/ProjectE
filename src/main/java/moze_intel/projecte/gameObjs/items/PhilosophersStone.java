@@ -64,7 +64,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	}
 
 	public BlockHitResult getHitBlock(Player player) {
-		return getPlayerPOVHitResult(player.getCommandSenderWorld(), player, player.isSecondaryUseActive() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+		return getPlayerPOVHitResult(player.level(), player, player.isSecondaryUseActive() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 	}
 
 	@NotNull
@@ -104,7 +104,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	@Override
 	public boolean shootProjectile(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1, 1);
 		EntityMobRandomizer ent = new EntityMobRandomizer(player, level);
 		ent.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
@@ -114,7 +114,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
-		if (!player.getCommandSenderWorld().isClientSide) {
+		if (!player.level().isClientSide) {
 			NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(stack));
 		}
 		return true;
@@ -187,7 +187,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		@NotNull
 		@Override
 		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
-			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(player.getCommandSenderWorld(), player.blockPosition()));
+			return new PhilosStoneContainer(windowId, playerInventory, ContainerLevelAccess.create(player.level(), player.blockPosition()));
 		}
 
 		@NotNull

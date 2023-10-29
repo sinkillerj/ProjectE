@@ -1,27 +1,18 @@
 package moze_intel.projecte.integration.curios;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandler;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotTypeMessage;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 public class CuriosIntegration {
 
 	@Nullable
 	public static IItemHandler getAll(LivingEntity living) {
-		return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve().orElse(null);
-	}
-
-	public static void sendIMC(InterModEnqueueEvent event) {
-		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("necklace").build());
-		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("belt").build());
-		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("ring").build());
-		InterModComms.sendTo(IntegrationHelper.CURIO_MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("klein_star")
-				.icon(PECore.rl("curios/empty_klein_star")).build());
+		return CuriosApi.getCuriosInventory(living)
+				.lazyMap(ICuriosItemHandler::getEquippedCurios)
+				.resolve()
+				.orElse(null);
 	}
 }

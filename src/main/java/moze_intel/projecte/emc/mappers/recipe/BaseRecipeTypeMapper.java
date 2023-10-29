@@ -14,6 +14,7 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
 import moze_intel.projecte.utils.RegistryUtils;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
@@ -35,8 +36,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, INSSFakeGroupManager fakeGroupManager) {
-		ItemStack recipeOutput = recipe.getResultItem();
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, RegistryAccess registryAccess, INSSFakeGroupManager fakeGroupManager) {
+		ItemStack recipeOutput = recipe.getResultItem(registryAccess);
 		if (recipeOutput.isEmpty()) {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
 			return false;

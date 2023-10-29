@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "projecte:volcanite_amulet"
-  }
+  },
+  "show_notification": true
 }

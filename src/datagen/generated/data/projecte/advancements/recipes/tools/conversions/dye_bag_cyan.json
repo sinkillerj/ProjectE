@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alchemical_bag": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "projecte:alchemical_bags"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:conversions/dye_bag_cyan"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_alchemical_bag",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:conversions/dye_bag_cyan"
+    ]
+  },
+  "sends_telemetry_event": false
+}

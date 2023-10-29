@@ -46,7 +46,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	public void fireVolley(ItemStack stack, Player player) {
 		for (int i = 0; i < 10; i++) {
-			fireArrow(stack, player.level, player, 4F);
+			fireArrow(stack, player.level(), player, 4F);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			fireVolley(stack, player);
 		}
 		return super.onLeftClickEntity(stack, player, entity);

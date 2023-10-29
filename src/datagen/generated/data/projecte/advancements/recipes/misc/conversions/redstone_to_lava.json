@@ -30,5 +30,6 @@
     "recipes": [
       "projecte:conversions/redstone_to_lava"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

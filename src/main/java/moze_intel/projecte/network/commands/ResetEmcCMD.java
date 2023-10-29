@@ -26,8 +26,8 @@ public class ResetEmcCMD {
 	private static int resetEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack) {
 		String toReset = stack.getStringRepresentation();
 		if (CustomEMCParser.removeFromFile(toReset)) {
-			ctx.getSource().sendSuccess(PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
-			ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE.translate(), true);
+			ctx.getSource().sendSuccess(() -> PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
+			ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE::translate, true);
 			return Command.SINGLE_SUCCESS;
 		}
 		throw new CommandRuntimeException(PELang.COMMAND_INVALID_ITEM.translate(toReset));

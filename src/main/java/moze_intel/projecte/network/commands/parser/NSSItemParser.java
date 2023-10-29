@@ -15,7 +15,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceKey;
@@ -86,7 +86,7 @@ public class NSSItemParser {
 			this.reader.expect(SYNTAX_TAG);
 			this.suggestions = this::suggestTag;
 			ResourceLocation name = ResourceLocation.read(this.reader);
-			Optional<? extends HolderSet<Item>> tag = this.items.get(TagKey.create(Registry.ITEM_REGISTRY, name));
+			Optional<? extends HolderSet<Item>> tag = this.items.get(TagKey.create(Registries.ITEM, name));
 			tag.orElseThrow(() -> {
 				//If it isn't present reset and error
 				this.reader.setCursor(cursor);
@@ -96,7 +96,7 @@ public class NSSItemParser {
 		} else {
 			//Read Item
 			ResourceLocation name = ResourceLocation.read(this.reader);
-			Optional<Holder<Item>> item = this.items.get(ResourceKey.create(Registry.ITEM_REGISTRY, name));
+			Optional<Holder.Reference<Item>> item = this.items.get(ResourceKey.create(Registries.ITEM, name));
 			this.result = Either.left(item.orElseThrow(() -> {
 				this.reader.setCursor(cursor);
 				return UNKNOWN_ITEM.createWithContext(this.reader, name);
@@ -122,11 +122,11 @@ public class NSSItemParser {
 	 * @param builder Builder to create list of suggestions
 	 */
 	private CompletableFuture<Suggestions> suggestTag(SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggestResource(this.items.listTags().map(TagKey::location), builder, String.valueOf(SYNTAX_TAG));
+		return SharedSuggestionProvider.suggestResource(this.items.listTags().map(reference -> reference.key().location()), builder, String.valueOf(SYNTAX_TAG));
 	}
 
-	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder p_235323_) {
-		return SharedSuggestionProvider.suggestResource(this.items.listElements().map(ResourceKey::location), p_235323_);
+	private CompletableFuture<Suggestions> suggestItem(SuggestionsBuilder builder) {
+		return SharedSuggestionProvider.suggestResource(this.items.listElements().map(reference -> reference.key().location()), builder);
 	}
 
 	/**

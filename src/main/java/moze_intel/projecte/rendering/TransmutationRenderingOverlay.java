@@ -8,12 +8,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -34,6 +34,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class TransmutationRenderingOverlay implements IGuiOverlay {
 
@@ -47,7 +48,7 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics graphics, float partialTicks, int width, int height) {
 		if (!mc.options.hideGui && transmutationResult != null) {
 			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
 				IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(liquidBlock.getFluid());
@@ -56,21 +57,22 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 				float green = (color >> 8 & 0xFF) / 255.0F;
 				float blue = (color & 0xFF) / 255.0F;
 				float alpha = (color >> 24 & 0xFF) / 255.0F;
+				//TODO - 1.20: Can we improve how this is done?
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 				RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 				TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(properties.getStillTexture());
 				BufferBuilder wr = Tesselator.getInstance().getBuilder();
 				wr.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-				wr.vertex(0, 0, gui.getBlitOffset()).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(0, 16, gui.getBlitOffset()).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(16, 16, gui.getBlitOffset()).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
-				wr.vertex(16, 0, gui.getBlitOffset()).uv(sprite.getU1(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(0, 0, 0).uv(sprite.getU0(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(0, 16, 0).uv(sprite.getU0(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 16, 0).uv(sprite.getU1(), sprite.getV1()).color(red, green, blue, alpha).endVertex();
+				wr.vertex(16, 0, 0).uv(sprite.getU1(), sprite.getV0()).color(red, green, blue, alpha).endVertex();
 				BufferUploader.drawWithShader(wr.end());
 			} else {
 				//Just render it normally instead of with the given model as some block's don't render properly then as an item
 				// for example glass panes
-				mc.getItemRenderer().renderGuiItem(new ItemStack(transmutationResult.getBlock()), 0, 0);
+				graphics.renderItem(new ItemStack(transmutationResult.getBlock()), 0, 0);
 			}
 			long gameTime = mc.level == null ? 0 : mc.level.getGameTime();
 			if (lastGameTime != gameTime) {
@@ -89,7 +91,7 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 			return;
 		}
 		lastGameTime = mc.level == null ? 0 : mc.level.getGameTime();
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		ItemStack stack = player.getMainHandItem();
 		if (stack.isEmpty()) {
 			stack = player.getOffhandItem();

@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.LazyTagLookup;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -123,6 +123,8 @@ public class PETags {
 		 */
 		public static final TagKey<Block> BLACKLIST_TIME_WATCH = tag("blacklist/time_watch");
 
+		public static final TagKey<Block> FARMING_OVERRIDE = tag("farming_override");
+
 		public static final TagKey<Block> NEEDS_DARK_MATTER_TOOL = tag("needs_dark_matter_tool");
 		public static final TagKey<Block> NEEDS_RED_MATTER_TOOL = tag("needs_red_matter_tool");
 
@@ -172,7 +174,7 @@ public class PETags {
 		public static final TagKey<EntityType<?>> RANDOMIZER_HOSTILE = tag("randomizer/hostile");
 
 		private static TagKey<EntityType<?>> tag(String name) {
-			return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, PECore.rl(name));
+			return TagKey.create(Registries.ENTITY_TYPE, PECore.rl(name));
 		}
 	}
 
@@ -191,7 +193,7 @@ public class PETags {
 		public static final LazyTagLookup<BlockEntityType<?>> BLACKLIST_TIME_WATCH_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITY_TYPES, BLACKLIST_TIME_WATCH);
 
 		private static TagKey<BlockEntityType<?>> tag(String name) {
-			return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, PECore.rl(name));
+			return TagKey.create(Registries.BLOCK_ENTITY_TYPE, PECore.rl(name));
 		}
 	}
 }

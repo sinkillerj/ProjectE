@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class PEArmor extends ArmorItem {
 
-	protected PEArmor(ArmorMaterial material, EquipmentSlot armorPiece, Properties props) {
+	protected PEArmor(ArmorMaterial material, ArmorItem.Type armorPiece, Properties props) {
 		super(material, armorPiece, props);
 	}
 
@@ -47,15 +47,15 @@ public abstract class PEArmor extends ArmorItem {
 	 * @apiNote A value of zero means that there is no special bonus blocking powers for that damage type, and the piece's base reduction will be get used instead by the
 	 * damage calculation event.
 	 */
-	public abstract float getMaxDamageAbsorb(EquipmentSlot slot, DamageSource source);
+	public abstract float getMaxDamageAbsorb(ArmorItem.Type type, DamageSource source);
 
 	/**
 	 * Gets the overall effectiveness of a given slots piece.
 	 */
-	public float getPieceEffectiveness(EquipmentSlot slot) {
-		if (slot == EquipmentSlot.FEET || slot == EquipmentSlot.HEAD) {
+	public float getPieceEffectiveness(ArmorItem.Type type) {
+		if (type == ArmorItem.Type.BOOTS || type == ArmorItem.Type.HELMET) {
 			return 0.2F;
-		} else if (slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS) {
+		} else if (type == ArmorItem.Type.CHESTPLATE || type == ArmorItem.Type.LEGGINGS) {
 			return 0.3F;
 		}
 		return 0;

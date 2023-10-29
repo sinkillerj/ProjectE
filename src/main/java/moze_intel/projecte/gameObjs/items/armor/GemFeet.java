@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -38,7 +39,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	private final Multimap<Attribute, AttributeModifier> attributes;
 
 	public GemFeet(Properties props) {
-		super(EquipmentSlot.FEET, props);
+		super(ArmorItem.Type.BOOTS, props);
 		Builder<Attribute, AttributeModifier> attributesBuilder = ImmutableMultimap.builder();
 		attributesBuilder.putAll(getDefaultAttributeModifiers(EquipmentSlot.FEET));
 		attributesBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(MODIFIER, "Armor modifier", 1.0, Operation.MULTIPLY_TOTAL));
@@ -76,7 +77,7 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 			if (!player.getAbilities().flying && isJumpPressed()) {
 				player.setDeltaMovement(player.getDeltaMovement().add(0, 0.1, 0));
 			}
-			if (!player.isOnGround()) {
+			if (!player.onGround()) {
 				if (player.getDeltaMovement().y() <= 0) {
 					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
 				}

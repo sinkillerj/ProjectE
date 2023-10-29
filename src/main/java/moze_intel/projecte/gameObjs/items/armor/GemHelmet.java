@@ -18,14 +18,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public class GemHelmet extends GemArmorBase {
 
 	public GemHelmet(Properties props) {
-		super(EquipmentSlot.HEAD, props);
+		super(ArmorItem.Type.HELMET, props);
 	}
 
 	public static void toggleNightVision(ItemStack helm, Player player) {
@@ -87,9 +87,9 @@ public class GemHelmet extends GemArmorBase {
 	public void doZap(Player player) {
 		if (ProjectEConfig.server.difficulty.offensiveAbilities.get()) {
 			BlockHitResult strikeResult = PlayerHelper.getBlockLookingAt(player, 120.0F);
-			if (strikeResult.getType() != Type.MISS) {
+			if (strikeResult.getType() != HitResult.Type.MISS) {
 				BlockPos strikePos = strikeResult.getBlockPos();
-				Level level = player.getCommandSenderWorld();
+				Level level = player.level();
 				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
 					lightning.moveTo(Vec3.atCenterOf(strikePos));

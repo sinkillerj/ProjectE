@@ -176,7 +176,7 @@ public abstract class PEContainer extends AbstractContainerMenu {
 
 	protected static boolean stillValid(Player player, BlockEntity blockEntity, BlockRegistryObject<?, ?> blockRO) {
 		BlockPos pos = blockEntity.getBlockPos();
-		return player.level.getBlockState(pos).getBlock() == blockRO.getBlock() &&
+		return player.level().getBlockState(pos).getBlock() == blockRO.getBlock() &&
 			   player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64.0;
 	}
 

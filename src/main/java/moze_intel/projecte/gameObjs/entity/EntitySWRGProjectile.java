@@ -7,6 +7,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -47,8 +48,8 @@ public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 			// Undo the 0.99 (0.8 in water) drag applied in superclass
 			double inverse = 1D / (isInWater() ? 0.8D : 0.99D);
 			this.setDeltaMovement(this.getDeltaMovement().scale(inverse));
-			if (!level.isClientSide && isAlive() && getY() > level.getMaxBuildHeight() && level.isRaining()) {
-				if (level.getLevelData() instanceof ServerLevelData levelData) {
+			if (!level().isClientSide && isAlive() && getY() > level().getMaxBuildHeight() && level().isRaining()) {
+				if (level().getLevelData() instanceof ServerLevelData levelData) {
 					levelData.setThundering(true);
 				}
 				discard();
@@ -65,24 +66,24 @@ public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 768, true)) {
 				BlockPos pos = result.getBlockPos();
-				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
+				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level());
 				if (lightning != null) {
 					lightning.moveTo(Vec3.atCenterOf(pos));
 					lightning.setCause(player);
-					level.addFreshEntity(lightning);
+					level().addFreshEntity(lightning);
 				}
-				if (level.isThundering()) {
+				if (level().isThundering()) {
 					for (int i = 0; i < 3; i++) {
-						LightningBolt bonus = EntityType.LIGHTNING_BOLT.create(level);
+						LightningBolt bonus = EntityType.LIGHTNING_BOLT.create(level());
 						if (bonus != null) {
-							bonus.moveTo(pos.getX() + 0.5 + level.random.nextGaussian(), pos.getY() + 0.5 + level.random.nextGaussian(),
-									pos.getZ() + 0.5 + level.random.nextGaussian());
+							bonus.moveTo(pos.getX() + 0.5 + level().random.nextGaussian(), pos.getY() + 0.5 + level().random.nextGaussian(),
+									pos.getZ() + 0.5 + level().random.nextGaussian());
 							bonus.setCause(player);
-							level.addFreshEntity(bonus);
+							level().addFreshEntity(bonus);
 						}
 					}
 				}
@@ -93,14 +94,14 @@ public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level.isClientSide && result.getEntity() instanceof LivingEntity e && getOwner() instanceof Player player) {
+		if (!level().isClientSide && result.getEntity() instanceof LivingEntity e && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING.get() : PEItems.SWIFTWOLF_RENDING_GALE.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 64, true)) {
 				// Minor damage, so we count as the attacker for launching the mob
-				e.hurt(DamageSource.playerAttack(player), 1F);
+				e.hurt(level().damageSources().playerAttack(player), 1F);
 
 				// Fake onGround before knockBack, so you can re-launch mobs that have already been launched
-				boolean oldOnGround = e.isOnGround();
+				boolean oldOnGround = e.onGround();
 				e.setOnGround(true);
 				e.knockback(5F, -getDeltaMovement().x() * 0.25, -getDeltaMovement().z() * 0.25);
 				e.setOnGround(oldOnGround);
@@ -123,7 +124,7 @@ public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

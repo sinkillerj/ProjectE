@@ -35,5 +35,6 @@
     "recipes": [
       "projecte:conversions/coal_to_charcoal"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -133,7 +134,7 @@ public final class PacketHandler {
 	 */
 	public static <MSG extends IPEPacket> void sendTo(MSG msg, ServerPlayer player) {
 		if (!(player instanceof FakePlayer)) {
-			HANDLER.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			HANDLER.send(PacketDistributor.PLAYER.with(() -> player), msg);
 		}
 	}
 }

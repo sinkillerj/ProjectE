@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "minecraft:bow"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:archangel_smite"
-  }
+  },
+  "show_notification": true
 }

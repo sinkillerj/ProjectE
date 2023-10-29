@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "O": {
       "tag": "forge:obsidian"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:transmutation_table"
-  }
+  },
+  "show_notification": true
 }

@@ -33,5 +33,6 @@
     [
       "rm_furnace"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

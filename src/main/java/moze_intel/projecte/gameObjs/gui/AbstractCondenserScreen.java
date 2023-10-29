@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,31 +25,31 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	protected abstract ResourceLocation getTexture();
 
 	@Override
-	protected void renderBg(@NotNull PoseStack matrix, float partialTicks, int x, int y) {
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int x, int y) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, getTexture());
 
-		blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		graphics.blit(getTexture(), leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		int progress = menu.getProgressScaled();
-		blit(matrix, leftPos + 33, topPos + 10, 0, 235, progress, 10);
+		graphics.blit(getTexture(), leftPos + 33, topPos + 10, 0, 235, progress, 10);
 	}
 
 	@Override
-	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
+	protected void renderLabels(@NotNull GuiGraphics graphics, int x, int y) {
 		//Don't render title or inventory as we don't have space
 		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 		Component emc = TransmutationEMCFormatter.formatEMC(toDisplay);
-		this.font.draw(matrix, emc, 140, 10, 0x404040);
+		graphics.drawString(font, emc, 140, 10, 0x404040, false);
 	}
 
 	@Override
-	protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+	protected void renderTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
 		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
 
 		if (toDisplay < 1e12) {
-			super.renderTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(graphics, mouseX, mouseY);
 			return;
 		}
 
@@ -59,9 +59,9 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 		int emcBottom = emcTop + 15;
 
 		if (mouseX > emcLeft && mouseX < emcRight && mouseY > emcTop && mouseY < emcBottom) {
-			renderTooltip(matrix, PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(toDisplay)), mouseX, mouseY);
+			setTooltipForNextRenderPass(PELang.EMC_TOOLTIP.translate(Constants.EMC_FORMATTER.format(toDisplay)));
 		} else {
-			super.renderTooltip(matrix, mouseX, mouseY);
+			super.renderTooltip(graphics, mouseX, mouseY);
 		}
 	}
 

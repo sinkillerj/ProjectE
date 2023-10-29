@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,7 +31,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
 	}
 
 	public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
-		return register(name, () -> new MenuType<>(factory), ContainerTypeRegistryObject::new);
+		return register(name, () -> new MenuType<>(factory, FeatureFlags.VANILLA_SET), ContainerTypeRegistryObject::new);
 	}
 
 	private static <BE extends BlockEntity> BE getBlockEntityFromBuf(FriendlyByteBuf buf, Class<BE> type) {

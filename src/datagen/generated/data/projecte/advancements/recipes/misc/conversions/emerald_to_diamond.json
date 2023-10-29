@@ -33,5 +33,6 @@
     "recipes": [
       "projecte:conversions/emerald_to_diamond"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

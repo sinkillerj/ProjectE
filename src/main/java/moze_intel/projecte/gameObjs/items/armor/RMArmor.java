@@ -3,15 +3,17 @@ package moze_intel.projecte.gameObjs.items.armor;
 import moze_intel.projecte.PECore;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 public class RMArmor extends PEArmor {
 
-	public RMArmor(EquipmentSlot armorType, Properties props) {
+	public RMArmor(ArmorItem.Type armorType, Properties props) {
 		super(RMArmorMaterial.INSTANCE, armorType, props);
 	}
 
@@ -21,20 +23,20 @@ public class RMArmor extends PEArmor {
 	}
 
 	@Override
-	public float getMaxDamageAbsorb(EquipmentSlot slot, DamageSource source) {
-		if (source.isExplosion()) {
+	public float getMaxDamageAbsorb(ArmorItem.Type type, DamageSource source) {
+		if (source.is(DamageTypeTags.IS_EXPLOSION)) {
 			return 500;
 		}
-		if (slot == EquipmentSlot.FEET && source == DamageSource.FALL) {
-			return 10 / getPieceEffectiveness(slot);
-		} else if (slot == EquipmentSlot.HEAD && source == DamageSource.DROWN) {
-			return 10 / getPieceEffectiveness(slot);
+		if (type == ArmorItem.Type.BOOTS && source.is(DamageTypeTags.IS_FALL)) {
+			return 10 / getPieceEffectiveness(type);
+		} else if (type == ArmorItem.Type.HELMET && source.is(DamageTypeTags.IS_DROWNING)) {
+			return 10 / getPieceEffectiveness(type);
 		}
-		if (source.isBypassArmor()) {
+		if (source.is(DamageTypeTags.BYPASSES_ARMOR)) {
 			return 0;
 		}
 		//If the source is not unblockable, allow our piece to block a certain amount of damage
-		if (slot == EquipmentSlot.HEAD || slot == EquipmentSlot.FEET) {
+		if (type == ArmorItem.Type.HELMET || type == ArmorItem.Type.BOOTS) {
 			return 250;
 		}
 		return 350;
@@ -45,22 +47,18 @@ public class RMArmor extends PEArmor {
 		private static final RMArmorMaterial INSTANCE = new RMArmorMaterial();
 
 		@Override
-		public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
+		public int getDurabilityForType(@NotNull ArmorItem.Type type) {
 			return 0;
 		}
 
 		@Override
-		public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
-			if (slot == EquipmentSlot.FEET) {
-				return 3;
-			} else if (slot == EquipmentSlot.LEGS) {
-				return 6;
-			} else if (slot == EquipmentSlot.CHEST) {
-				return 8;
-			} else if (slot == EquipmentSlot.HEAD) {
-				return 3;
-			}
-			return 0;
+		public int getDefenseForType(@NotNull ArmorItem.Type type) {
+			return switch (type) {
+				case BOOTS -> 3;
+				case LEGGINGS -> 6;
+				case CHESTPLATE -> 8;
+				case HELMET -> 3;
+			};
 		}
 
 		@Override

@@ -183,7 +183,7 @@ public class TransmutationContainer extends PEHandContainer {
 
 	@Override
 	public void clickPostValidate(int slotIndex, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
-		if (player.getCommandSenderWorld().isClientSide && transmutationInventory.getHandlerForSlot(slotIndex) == transmutationInventory.outputs) {
+		if (player.level().isClientSide && transmutationInventory.getHandlerForSlot(slotIndex) == transmutationInventory.outputs) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
 				PacketHandler.sendToServer(new SearchUpdatePKT(transmutationInventory.getIndexFromSlot(slotIndex), slot.getItem()));

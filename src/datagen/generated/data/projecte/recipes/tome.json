@@ -12,6 +12,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "equipment",
         "group": "projecte:tome",
         "key": {
           "B": {
@@ -39,7 +40,8 @@
         ],
         "result": {
           "item": "projecte:tome"
-        }
+        },
+        "show_notification": true
       }
     },
     {
@@ -50,6 +52,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "equipment",
         "group": "projecte:tome",
         "key": {
           "B": {
@@ -75,7 +78,8 @@
         ],
         "result": {
           "item": "projecte:tome"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

@@ -4,6 +4,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -34,12 +35,12 @@ public class EntityNovaCataclysmPrimed extends PrimedTnt {
 
 	@Override
 	protected void explode() {
-		WorldHelper.createNovaExplosion(level, this, getX(), getY(), getZ(), 48.0F);
+		WorldHelper.createNovaExplosion(level(), this, getX(), getY(), getZ(), 48.0F);
 	}
 
 	@NotNull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

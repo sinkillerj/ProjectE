@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "group": "projecte:repair_talisman",
   "key": {
     "H": {
@@ -25,5 +26,6 @@
   ],
   "result": {
     "item": "projecte:repair_talisman"
-  }
+  },
+  "show_notification": true
 }

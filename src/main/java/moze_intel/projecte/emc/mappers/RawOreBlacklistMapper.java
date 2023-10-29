@@ -7,6 +7,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.gameObjs.PETags;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
@@ -16,7 +17,7 @@ public class RawOreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, 
 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
-			ResourceManager resourceManager) {
+			RegistryAccess registryAccess, ResourceManager resourceManager) {
 		for (Item rawOre : PETags.Items.RAW_ORES_LOOKUP.tag()) {
 			NSSItem nssRawORe = NSSItem.createItem(rawOre);
 			mapper.setValueBefore(nssRawORe, 0L);

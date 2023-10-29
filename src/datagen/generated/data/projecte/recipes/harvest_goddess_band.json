@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:harvest_goddess_band"
-  }
+  },
+  "show_notification": true
 }

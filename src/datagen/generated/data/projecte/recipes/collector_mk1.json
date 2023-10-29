@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "tag": "forge:storage_blocks/diamond"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "projecte:collector_mk1"
-  }
+  },
+  "show_notification": true
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "item": "projecte:dark_matter_block"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "projecte:dm_pedestal"
-  }
+  },
+  "show_notification": true
 }

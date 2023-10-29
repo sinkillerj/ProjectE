@@ -6,9 +6,11 @@ import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class RecipesCovalenceRepair extends CustomRecipe {
 
-	public RecipesCovalenceRepair(ResourceLocation id) {
-		super(id);
+	public RecipesCovalenceRepair(ResourceLocation id, CraftingBookCategory category) {
+		super(id, category);
 	}
 
 	@Nullable
@@ -52,7 +54,7 @@ public class RecipesCovalenceRepair extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingContainer inv) {
+	public ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
 		RepairTargetInfo targetInfo = findIngredients(inv);
 		if (targetInfo == null) {
 			//If there isn't actually a match return no result

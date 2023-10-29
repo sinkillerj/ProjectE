@@ -33,5 +33,6 @@
     "recipes": [
       "projecte:conversions/iron_ingot_to_gold_ingot"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -97,7 +98,7 @@ public class CrTNSSResolver {
 		if (stack.isEmpty()) {
 			throw new IllegalArgumentException("Cannot make an NSS Representation from an empty fluid stack.");
 		}
-		return NSSFluid.createFluid(stack.getInternal());
+		return NSSFluid.createFluid(stack.<FluidStack>getInternal());
 	}
 
 	/**

@@ -70,7 +70,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			if (blockEmc == 0) {
 				for (SmeltingRecipe furnaceRecipe : furnaceRecipes.get()) {
 					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
-						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getResultItem());
+						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getResultItem(level.registryAccess()));
 						if (currentValue != 0) {
 							if (!emcValues.contains(currentValue)) {
 								emcValues.add(currentValue);

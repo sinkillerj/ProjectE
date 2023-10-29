@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.integration.curios.CurioItemCapability;
-import moze_intel.projecte.integration.curios.CuriosIntegration;
 import moze_intel.projecte.integration.top.TOPIntegration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
@@ -22,9 +21,6 @@ public class IntegrationHelper {
 
 	public static void sendIMCMessages(InterModEnqueueEvent event) {
 		ModList modList = ModList.get();
-		if (modList.isLoaded(CURIO_MODID)) {
-			CuriosIntegration.sendIMC(event);
-		}
 		if (modList.isLoaded(TOP_MODID)) {
 			TOPIntegration.sendIMC(event);
 		}

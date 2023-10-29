@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "item": "projecte:dark_matter_block"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:transmutation_tablet"
-  }
+  },
+  "show_notification": true
 }

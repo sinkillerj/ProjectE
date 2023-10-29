@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "A": {
       "item": "projecte:aeternalis_fuel"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "projecte:dark_matter"
-  }
+  },
+  "show_notification": true
 }

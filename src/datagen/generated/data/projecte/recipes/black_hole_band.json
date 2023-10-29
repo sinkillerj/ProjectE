@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "D": {
       "item": "projecte:dark_matter"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:black_hole_band"
-  }
+  },
+  "show_notification": true
 }

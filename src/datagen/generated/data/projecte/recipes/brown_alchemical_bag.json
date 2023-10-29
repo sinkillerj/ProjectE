@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "A": {
       "item": "projecte:alchemical_chest"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "projecte:brown_alchemical_bag"
-  }
+  },
+  "show_notification": true
 }

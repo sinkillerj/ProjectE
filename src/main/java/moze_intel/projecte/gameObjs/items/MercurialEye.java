@@ -98,13 +98,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			Vec3 lookVec = player.getLookAngle();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
 			Vec3 targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
-			return ItemHelper.actionResultFromType(formBlocks(stack, player, hand, new BlockPos(targVec), null), stack);
+			return ItemHelper.actionResultFromType(formBlocks(stack, player, hand, BlockPos.containing(targVec), null), stack);
 		}
 		return InteractionResultHolder.pass(stack);
 	}
 
 	private void playNoEMCSound(Player player) {
-		player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 	}
 
 	private InteractionResult formBlocks(ItemStack eye, Player player, InteractionHand hand, BlockPos startingPos, @Nullable Direction facing) {
@@ -119,7 +119,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			return InteractionResult.FAIL;
 		}
 
-		Level level = player.getCommandSenderWorld();
+		Level level = player.level();
 		BlockState startingState = level.getBlockState(startingPos);
 		long startingBlockEmc = EMCHelper.getEmcValue(new ItemStack(startingState.getBlock()));
 		ItemStack target = inventory.getStackInSlot(1);
@@ -158,10 +158,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int charge = getCharge(eye);
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
-			if (facing != null && (!startingState.getMaterial().isReplaceable() || player.isSecondaryUseActive() && !startingState.isAir())) {
+			//TODO - 1.20: Should this use a block place context to check canBeReplaced?
+			if (facing != null && (!startingState.canBeReplaced() || player.isSecondaryUseActive() && !startingState.isAir())) {
 				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = level.getBlockState(offsetPos);
-				if (!offsetState.getMaterial().isReplaceable()) {
+				//TODO - 1.20: Should this use a block place context to check canBeReplaced?
+				if (!offsetState.canBeReplaced()) {
 					return InteractionResult.FAIL;
 				}
 				long offsetBlockEmc = EMCHelper.getEmcValue(new ItemStack(offsetState.getBlock()));
@@ -248,7 +250,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 0.8F, 2F / ((float) charge / getNumCharges(eye) + 2F));
 			if (!drops.isEmpty()) {
 				//Make all the drops fall together
-				WorldHelper.createLootDrop(drops, player.getCommandSenderWorld(), startingPos);
+				WorldHelper.createLootDrop(drops, player.level(), startingPos);
 			}
 		}
 		return InteractionResult.CONSUME;
@@ -274,11 +276,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		} else if (ItemPE.getEmc(klein) < newEMC - oldEMC) {
 			playNoEMCSound(player);
 			return false;
-		} else if (WorldHelper.getBlockEntity(player.getCommandSenderWorld(), placePos) != null) {
+		} else if (WorldHelper.getBlockEntity(player.level(), placePos) != null) {
 			return false;
 		}
 
-		if (oldEMC == 0 && oldState.getDestroySpeed(player.level, placePos) == -1.0F) {
+		if (oldEMC == 0 && oldState.getDestroySpeed(player.level(), placePos) == -1.0F) {
 			//Don't allow replacing unbreakable blocks (unless they have an EMC value)
 			return false;
 		}
@@ -287,7 +289,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
-				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).getLevel(), placePos, null, player, eye));
+				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).serverLevel(), placePos, null, player, eye));
 				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC > newEMC) {
 				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);
@@ -306,7 +308,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			VoxelShape bb = startingState.getCollisionShape(level, pos);
 			if (level.isUnobstructed(null, bb)) {
 				BlockState placeState = level.getBlockState(pos);
-				if (placeState.getMaterial().isReplaceable()) {
+				//TODO - 1.20: Should this use a block place context to check canBeReplaced?
+				if (placeState.canBeReplaced()) {
 					//Only replace replaceable blocks
 					long placeBlockEmc = EMCHelper.getEmcValue(placeState.getBlock());
 					//Ensure we are immutable so that changing blocks doesn't act weird

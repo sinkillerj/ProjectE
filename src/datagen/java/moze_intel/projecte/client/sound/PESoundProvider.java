@@ -3,7 +3,7 @@ package moze_intel.projecte.client.sound;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.SoundDefinition;
@@ -11,8 +11,8 @@ import net.minecraftforge.common.data.SoundDefinitionsProvider;
 
 public class PESoundProvider extends SoundDefinitionsProvider {
 
-	public PESoundProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-		super(gen, PECore.MODID, existingFileHelper);
+	public PESoundProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+		super(output, PECore.MODID, existingFileHelper);
 	}
 
 	protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
