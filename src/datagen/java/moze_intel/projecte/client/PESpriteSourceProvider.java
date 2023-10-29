@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.data.PackOutput;
@@ -22,8 +21,9 @@ public class PESpriteSourceProvider extends SpriteSourceProvider {
 
 	@Override
 	protected void addSources() {
-		//TODO - 1.20: Test and validate this? We previously checked if curios was loaded
-		addFiles(atlas(BLOCKS_ATLAS), IntegrationHelper.CURIOS_KLEIN_STAR);
+		//Note: We always stitch this even when curios isn't loaded, but I don't think there is much we can do about that,
+		// and it is only a small texture, so it won't matter too much
+		addFiles(atlas(BLOCKS_ATLAS), PECore.rl("curios/empty_klein_star"));
 	}
 
 	protected void addFiles(SourceList atlas, ResourceLocation... resourceLocations) {

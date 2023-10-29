@@ -482,11 +482,8 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void fuelBlockRecipes(Consumer<FinishedRecipe> consumer, ItemLike fuel, ItemLike block) {
-		ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, block)
-				.pattern("FFF")
-				.pattern("FFF")
-				.pattern("FFF")
-				.define('F', fuel)
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, block)
+				.requires(fuel, 9)
 				.unlockedBy("has_" + getName(fuel), has(fuel))
 				.save(consumer);
 		String blockName = getName(block);

@@ -1,18 +1,36 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "building",
-  "key": {
-    "F": {
+  "ingredients": [
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
+      "item": "projecte:mobius_fuel"
+    },
+    {
       "item": "projecte:mobius_fuel"
     }
-  },
-  "pattern": [
-    "FFF",
-    "FFF",
-    "FFF"
   ],
   "result": {
     "item": "projecte:mobius_fuel_block"
-  },
-  "show_notification": true
+  }
 }

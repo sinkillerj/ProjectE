@@ -1,18 +1,36 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "building",
-  "key": {
-    "F": {
+  "ingredients": [
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
+      "item": "projecte:alchemical_coal"
+    },
+    {
       "item": "projecte:alchemical_coal"
     }
-  },
-  "pattern": [
-    "FFF",
-    "FFF",
-    "FFF"
   ],
   "result": {
     "item": "projecte:alchemical_coal_block"
-  },
-  "show_notification": true
+  }
 }

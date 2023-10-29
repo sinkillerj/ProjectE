@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-29T11:45:33.5326069	Recipes
+// 1.20.1	2023-10-29T17:41:21.6126842	Recipes
 e636f56375f671ebbb445e409db222e692b77ae5 data/projecte/advancements/recipes/building_blocks/aeternalis_fuel_block.json
 c95fcaf2be6d22688a4d767de4a00c45f543f9d3 data/projecte/advancements/recipes/building_blocks/alchemical_coal_block.json
 27d0defd2775e4f07abeb497731132c8c059187e data/projecte/advancements/recipes/building_blocks/dark_matter_block.json
@@ -148,10 +148,10 @@ a96e0a6d6862fc9121e1acb9d7ff605a1bdc6790 data/projecte/advancements/recipes/tool
 8251b70045ee465ea9e5d4b7eeca9bfb031866db data/projecte/advancements/recipes/tools/yellow_alchemical_bag.json
 697b2c034d1422483fe79dc133f24363c591ffed data/projecte/advancements/recipes/tools/zero_ring.json
 1cb710a00819baebc2454a3993f7696d1d6413a2 data/projecte/recipes/aeternalis_fuel.json
-40d3bdc6c70c58c63304e39a4586becbedbdec99 data/projecte/recipes/aeternalis_fuel_block.json
+80dfa67afee0fa3bef4aa664eae77ea645e135d7 data/projecte/recipes/aeternalis_fuel_block.json
 d0096a382a0c7ac9b1e3cefc83f1016b5d703edf data/projecte/recipes/alchemical_chest.json
 80ac2007ed43f18622ac17bb59eabc96156f0e8a data/projecte/recipes/alchemical_coal.json
-95a9eaa04b1368880990aebc9fe918684894b9be data/projecte/recipes/alchemical_coal_block.json
+73d6e074ee88734b149e7e829ad175a16d4fc2df data/projecte/recipes/alchemical_coal_block.json
 4a1d5f8f2a6fb88f93042375032b87279f4d5c37 data/projecte/recipes/arcana_ring.json
 7b965bffd27ce6fff4f6911908d0f463ea817494 data/projecte/recipes/archangel_smite.json
 b5de1143cb3606af879beeda9135f85b58b979af data/projecte/recipes/black_alchemical_bag.json
@@ -253,7 +253,7 @@ a1434db60c3d1156178bdb02fe2118d878a77595 data/projecte/recipes/medium_covalence_
 230b04f8bc5b60f701ed602d9661617abf0b5296 data/projecte/recipes/mercurial_eye.json
 f0cbad2b7f198206201d596026257e7c9bb467c8 data/projecte/recipes/mind_stone.json
 d539e516f605c58a132c3d20c33b9fd118da5dc2 data/projecte/recipes/mobius_fuel.json
-e791628a77bde7286280a79cb45efce0105a9290 data/projecte/recipes/mobius_fuel_block.json
+bd9d95ff7652b7cdb932625147a56c1119921587 data/projecte/recipes/mobius_fuel_block.json
 ef25ba5510b014fdab96fab91bd6b19ca47d6788 data/projecte/recipes/nova_cataclysm.json
 81517f1a279c2fb04b551c0d7dbc1fe5b9987faa data/projecte/recipes/nova_catalyst.json
 76406b4fffa1b4c9f9d7d58fd451a5b76ddb3507 data/projecte/recipes/orange_alchemical_bag.json
