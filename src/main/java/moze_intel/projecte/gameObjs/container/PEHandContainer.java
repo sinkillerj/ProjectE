@@ -13,15 +13,17 @@ public class PEHandContainer extends PEContainer {
 
 	public final InteractionHand hand;
 	private final int selected;
+	protected final ItemStack stack;
 
 	protected PEHandContainer(ContainerTypeRegistryObject<? extends PEHandContainer> typeRO, int windowId, Inventory playerInv, InteractionHand hand, int selected) {
 		super(typeRO, windowId, playerInv);
 		this.hand = hand;
 		this.selected = selected;
-	}
-
-	protected ItemStack getStack() {
-		return hand == InteractionHand.OFF_HAND ? playerInv.player.getOffhandItem() : playerInv.getItem(selected);
+		if (this.hand == null) {//Transmutation container, placed
+			this.stack = ItemStack.EMPTY;
+		} else {
+			this.stack = this.hand == InteractionHand.OFF_HAND ? this.playerInv.player.getOffhandItem() : this.playerInv.getItem(selected);
+		}
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class PEHandContainer extends PEContainer {
 
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return true;
+		return this.hand == null || !this.stack.isEmpty() && player.getItemInHand(this.hand).is(this.stack.getItem());
 	}
 
 	@Override

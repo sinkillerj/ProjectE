@@ -25,7 +25,7 @@ public class EternalDensityContainer extends PEHandContainer {
 
 	public EternalDensityContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected, EternalDensityInventory gemInv) {
 		super(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, windowId, playerInv, hand, selected);
-		inventory = gemInv == null ?  new EternalDensityInventory(getStack()) : gemInv;
+		inventory = gemInv == null ?  new EternalDensityInventory(this.stack) : gemInv;
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				this.addSlot(new SlotGhost(inventory, j + i * 3, 62 + j * 18, 26 + i * 18, SlotPredicates.HAS_EMC));

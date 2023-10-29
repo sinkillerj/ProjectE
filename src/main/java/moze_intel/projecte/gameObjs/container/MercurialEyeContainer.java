@@ -25,7 +25,7 @@ public class MercurialEyeContainer extends PEHandContainer {
 
 	public MercurialEyeContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected) {
 		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, playerInv, hand, selected);
-		IItemHandler handler = getStack().getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
+		IItemHandler handler = this.stack.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
 		//Klein Star
 		this.addSlot(new ValidatedSlot(handler, 0, 50, 26, SlotPredicates.EMC_HOLDER));
 		//Target
