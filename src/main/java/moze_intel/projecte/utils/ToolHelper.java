@@ -20,6 +20,7 @@ import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PEDamageTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -397,13 +398,14 @@ public class ToolHelper {
 		if (!(damager instanceof Player player) || damager.level().isClientSide) {
 			return;
 		}
-		DamageSource dmg = damager.damageSources().playerAttack(player);
+		DamageSource dmg;
 		int charge = getCharge(stack);
 		float totalDmg = baseDmg;
 		if (charge > 0) {
-			//TODO - 1.20: Figure out how to make this bypass armor. It may have to be a custom damage type
-			//dmg.bypassArmor();
+			dmg = PEDamageTypes.BYPASS_ARMOR_PLAYER_ATTACK.source(player);
 			totalDmg += charge;
+		} else {
+			dmg = damager.damageSources().playerAttack(player);
 		}
 		damaged.hurt(dmg, totalDmg);
 	}
@@ -418,8 +420,7 @@ public class ToolHelper {
 		}
 		int charge = getCharge(stack);
 		List<Entity> toAttack = level.getEntities(player, player.getBoundingBox().inflate(2.5F * charge), slayAll ? SLAY_ALL : SLAY_MOB);
-		//TODO - 1.20: Figure out how to make this bypass armor. It may have to be a custom damage type
-		DamageSource src = level.damageSources().playerAttack(player);//.bypassArmor();
+		DamageSource src = PEDamageTypes.BYPASS_ARMOR_PLAYER_ATTACK.source(player);
 		boolean hasAction = false;
 		for (Entity entity : toAttack) {
 			if (ItemPE.consumeFuel(player, stack, emcCost, true)) {

@@ -156,7 +156,7 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	@Override
 	public boolean mouseClicked(double x, double y, int mouseButton) {
 		if (textBoxFilter.isMouseOver(x, y)) {
-			if (mouseButton == 1) {
+			if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 				inv.filter = "";
 				inv.searchpage = 0;
 				inv.updateClientTargets();
