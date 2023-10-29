@@ -1,5 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import net.minecraftforge.gradle.common.util.RunConfig
 
 import java.util.function.Consumer
 
@@ -120,7 +121,12 @@ version = "${projecte_version}"
 group = "java.moze_intel"
 archivesBaseName = "projecte"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.JETBRAINS)
+    }
+}
 
 minecraft {
     if (mappings_channel == "parchment_previous") {
@@ -133,10 +139,7 @@ minecraft {
 
     runs { runSpecContainer ->
         client {
-            workingDirectory file('run')
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            setupRunConfig(it, true)
 
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
@@ -163,46 +166,16 @@ minecraft {
                 // or eclipse's plugin that adds support for ansi escape in console
                 jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
             }
-
-            mods {
-                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-            }
         }
-        server {
-            workingDirectory file('run')
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
-
-            mods {
-                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-            }
-        }
+        server { setupRunConfig(it, true) }
         data {
-            workingDirectory file('run')
+            setupRunConfig(it, false)
             environment 'target', 'fmluserdevdata'
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
 
             args '--all', '--output', file('src/datagen/generated/'), '--mod', 'projecte',
                     '--existing', file('src/main/resources/')
 
-            mods {
-                projecte.sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagen])
-            }
+            mods.named("projecte").configure { source((SourceSet) sourceSets.datagen) }
         }
         project.afterEvaluate {
             def paths = new HashSet<String>()
@@ -219,6 +192,32 @@ minecraft {
                 }
             }
         }
+    }
+}
+
+def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String directory = "run") {
+    runConfig.workingDirectory(file(directory))
+    //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+    runConfig.property 'mixin.env.remapRefMap', 'true'
+    runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    if (supportsGameTests) {
+        //Specify all our mods as domains to look for game tests
+        runConfig.property 'forge.enabledGameTestNamespaces', 'projecte'
+    }
+
+    if (project.hasProperty('forge_force_ansi')) {
+        //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+        // or eclipse's plugin that adds support for ansi escape in console
+        runConfig.jvmArg("-Dterminal.ansi=${project.getProperty('forge_force_ansi')}")
+    }
+
+    runConfig.mods.register("projecte").configure {
+        sources((SourceSet[]) [sourceSets.main, sourceSets.api])
+    }
+
+    //if the selected toolchain is a JBR, enable DCEVM
+    if(project.javaToolchains.launcherFor(java.toolchain).map{it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+        runConfig.jvmArg("-XX:+AllowEnhancedClassRedefinition")
     }
 }
 
