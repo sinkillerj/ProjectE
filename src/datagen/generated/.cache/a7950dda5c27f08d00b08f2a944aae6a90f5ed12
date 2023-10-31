@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-29T11:45:33.521608	Tags for minecraft:item mod id projecte
+// 1.20.1	2023-10-29T19:47:19.689048	Tags for minecraft:item mod id projecte
 b3907f1aa02b78471363a02cc94dc9569664a81d data/curios/tags/items/belt.json
 9090bbbb09865a842a67d6a0c05eaf72df3720f7 data/curios/tags/items/klein_star.json
 58753d63ef9f09a75ea529395bb7c6d282310f2b data/curios/tags/items/necklace.json
@@ -37,6 +37,7 @@ a926b26051d204593656a8109238cdebf578f89f data/forge/tags/items/tools/shovels/red
 cb864a4794366cac4b0441535f70a9cbd8c3d474 data/forge/tags/items/tools/swords/red_matter.json
 1a346587d8b54d375a6aa8c235b3c8d391d3dd9d data/minecraft/tags/items/axes.json
 e2750619a3147db38539ae8ccecab0b32bb6be23 data/minecraft/tags/items/beacon_payment_items.json
+67b55adfd8d09381b6113fc0dcfe76d53a5eebda data/minecraft/tags/items/bookshelf_books.json
 a21477f6ced81fb2173b05a7ff0e6ca53eb87243 data/minecraft/tags/items/freeze_immune_wearables.json
 d71b81a76191fa8b26ebbbfe77edd747a199f58e data/minecraft/tags/items/hoes.json
 39df5f8e8a35ca0874b6c0948de4efa7069c1999 data/minecraft/tags/items/pickaxes.json

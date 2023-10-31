@@ -37,6 +37,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 		for (DyeColor color : DyeColor.values()) {
 			alchemicalBags.add(PEItems.getBag(color));
 		}
+		tag(ItemTags.BOOKSHELF_BOOKS).add(PEItems.TOME_OF_KNOWLEDGE.get());
 		tag(ItemTags.FREEZE_IMMUNE_WEARABLES).add(PEItems.GEM_CHESTPLATE.get());
 		tag(PETags.Items.COLLECTOR_FUEL).add(
 				Items.CHARCOAL,
