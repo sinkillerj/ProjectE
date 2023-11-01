@@ -38,7 +38,6 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 
 	@Override
 	protected void addCustomConversions(@NotNull HolderLookup.Provider registries) {
-		//TODO - 1.20: Pottery sherds, smithing templates, and by proxy netherite gear
 		createConversionBuilder(PECore.rl("metals"))
 				.comment("Sets default conversions for various metals from other mods and their default values.")
 				.before(Tags.Items.INGOTS_IRON, 256)

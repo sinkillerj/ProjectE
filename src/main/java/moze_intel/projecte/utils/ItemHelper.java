@@ -116,7 +116,7 @@ public final class ItemHelper {
 	 * Returns an ItemStack with stacksize 1.
 	 */
 	public static ItemStack getNormalizedStack(ItemStack stack) {
-		return size(stack, 1);
+		return stack.copyWithCount(1);
 	}
 
 	public static IItemHandlerModifiable immutableCopy(IItemHandler toCopy) {
@@ -210,7 +210,6 @@ public final class ItemHelper {
 		return combinedNBT;
 	}
 
-	//TODO - 1.20: Evaluate usages of this method and see what can just call copyWithCount directly
 	public static ItemStack size(ItemStack stack, int size) {
 		if (size <= 0 || stack.isEmpty()) {
 			return ItemStack.EMPTY;

@@ -47,7 +47,7 @@ public interface IInsertableSlot {
 			if (!simulate) {
 				//If we want to actually insert the item, then update the current item
 				//Set the stack to our new stack (we have no simple way to increment the stack size) so we have to set it instead of being able to just grow it
-				self.set(ItemHelper.size(stack, current.getCount() + toAdd));
+				self.set(stack.copyWithCount(current.getCount() + toAdd));
 			}
 			return ItemHelper.size(stack, stack.getCount() - toAdd);
 		}

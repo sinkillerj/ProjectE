@@ -1,6 +1,5 @@
 package moze_intel.projecte.common.loot;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -22,9 +21,21 @@ public class PEBlockLootTable extends BlockLootSubProvider {
 	private final Set<Block> knownBlocks = new HashSet<>();
 
 	public PEBlockLootTable() {
-		//Note: We manually handle explosion resistance on a case by case basis
-		//TODO - 1.20: This isn't necessarily correct for ProjectE, figure out how to handle explosion resistance?
-		super(Collections.emptySet(), FeatureFlags.VANILLA_SET);
+		super(Set.of(
+				PEBlocks.COLLECTOR.getSecondary(),
+				PEBlocks.COLLECTOR_MK2.getSecondary(),
+				PEBlocks.COLLECTOR_MK3.getSecondary(),
+				PEBlocks.CONDENSER.getSecondary(),
+				PEBlocks.CONDENSER_MK2.getSecondary(),
+				PEBlocks.DARK_MATTER.getSecondary(),
+				PEBlocks.DARK_MATTER_FURNACE.getSecondary(),
+				PEBlocks.DARK_MATTER_PEDESTAL.getSecondary(),
+				PEBlocks.RED_MATTER.getSecondary(),
+				PEBlocks.RED_MATTER_FURNACE.getSecondary(),
+				PEBlocks.RELAY.getSecondary(),
+				PEBlocks.RELAY_MK2.getSecondary(),
+				PEBlocks.RELAY_MK3.getSecondary()
+		), FeatureFlags.VANILLA_SET);
 	}
 
 	@Override

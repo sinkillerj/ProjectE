@@ -23,7 +23,6 @@ public class PEBlockEntityTypeTagsProvider extends TagsProvider<BlockEntityType<
 
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
-		//TODO - 1.20: Evaluate if there is a cleaner way to do this
 		tag(BlockEntities.BLACKLIST_TIME_WATCH).add(
 				ForgeRegistries.BLOCK_ENTITY_TYPES.getResourceKey(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.get()).orElseThrow()
 		);
