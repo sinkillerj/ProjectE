@@ -49,7 +49,6 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
-import moze_intel.projecte.network.commands.DumpMissingEmc;
 import moze_intel.projecte.network.commands.EMCCMD;
 import moze_intel.projecte.network.commands.KnowledgeCMD;
 import moze_intel.projecte.network.commands.RemoveEmcCMD;
@@ -353,7 +352,6 @@ public class PECore {
 		CommandBuildContext context = event.getBuildContext();
 		event.getDispatcher().register(Commands.literal("projecte")
 				.requires(PEPermissions.COMMAND)
-				.then(DumpMissingEmc.register(context))
 				.then(RemoveEmcCMD.register(context))
 				.then(ResetEmcCMD.register(context))
 				.then(SetEmcCMD.register(context))

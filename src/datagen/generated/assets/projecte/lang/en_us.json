@@ -59,7 +59,7 @@
   "block.projecte.transmutation_table": "Transmutation Table",
   "command.projecte.clear_knowledge.notify": "Your transmutation knowledge was cleared by %s!",
   "command.projecte.clear_knowledge.success": "Cleared knowledge for: %s",
-  "command.projecte.dump_missing_emc.multiple_missing": "%s Items are missing an EMC value, printing to server log.",
+  "command.projecte.dump_missing_emc.multiple_missing": "%s Items are missing an EMC value, printing to client log.",
   "command.projecte.dump_missing_emc.none_missing": "All Items have an EMC value.",
   "command.projecte.dump_missing_emc.one_missing": "One Item is missing an EMC value, printing to server log.",
   "command.projecte.emc.add.success": "Added %s EMC to %s.",

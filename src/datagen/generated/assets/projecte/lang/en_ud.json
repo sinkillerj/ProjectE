@@ -59,7 +59,7 @@
   "block.projecte.transmutation_table": "ǝꞁqɐ⟘ uoᴉʇɐʇnɯsuɐɹ⟘",
   "command.projecte.clear_knowledge.notify": "¡%s ʎq pǝɹɐǝꞁɔ sɐʍ ǝᵷpǝꞁʍouʞ uoᴉʇɐʇnɯsuɐɹʇ ɹno⅄",
   "command.projecte.clear_knowledge.success": "%s :ɹoɟ ǝᵷpǝꞁʍouʞ pǝɹɐǝꞁƆ",
-  "command.projecte.dump_missing_emc.multiple_missing": "˙ᵷoꞁ ɹǝʌɹǝs oʇ ᵷuᴉʇuᴉɹd 'ǝnꞁɐʌ ƆWƎ uɐ ᵷuᴉssᴉɯ ǝɹɐ sɯǝʇI %s",
+  "command.projecte.dump_missing_emc.multiple_missing": "˙ᵷoꞁ ʇuǝᴉꞁɔ oʇ ᵷuᴉʇuᴉɹd 'ǝnꞁɐʌ ƆWƎ uɐ ᵷuᴉssᴉɯ ǝɹɐ sɯǝʇI %s",
   "command.projecte.dump_missing_emc.none_missing": "˙ǝnꞁɐʌ ƆWƎ uɐ ǝʌɐɥ sɯǝʇI ꞁꞁⱯ",
   "command.projecte.dump_missing_emc.one_missing": "˙ᵷoꞁ ɹǝʌɹǝs oʇ ᵷuᴉʇuᴉɹd 'ǝnꞁɐʌ ƆWƎ uɐ ᵷuᴉssᴉɯ sᴉ ɯǝʇI ǝuO",
   "command.projecte.emc.add.success": "˙%2$s oʇ ƆWƎ %1$s pǝppⱯ",
