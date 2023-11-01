@@ -231,6 +231,18 @@
         },
         {
           "ingredients": [
+            "minecraft:torchflower"
+          ],
+          "output": "minecraft:torchflower_seeds"
+        },
+        {
+          "ingredients": [
+            "minecraft:pitcher_plant"
+          ],
+          "output": "minecraft:pitcher_pod"
+        },
+        {
+          "ingredients": [
             "minecraft:book"
           ],
           "output": "minecraft:enchanted_book"
@@ -241,6 +253,30 @@
             "minecraft:apple": 1
           },
           "output": "minecraft:enchanted_golden_apple"
+        },
+        {
+          "ingredients": [
+            "minecraft:bamboo_block"
+          ],
+          "output": "minecraft:stripped_bamboo_block"
+        },
+        {
+          "ingredients": {
+            "#forge:gems/emerald": 3
+          },
+          "output": "minecraft:globe_banner_pattern"
+        },
+        {
+          "ingredients": [
+            "minecraft:gravel"
+          ],
+          "output": "minecraft:suspicious_gravel"
+        },
+        {
+          "ingredients": [
+            "minecraft:sand"
+          ],
+          "output": "minecraft:suspicious_sand"
         },
         {
           "ingredients": [
@@ -602,6 +638,7 @@
       "#forge:rods/wooden": 4,
       "#forge:seeds/beetroot": 16,
       "#forge:seeds/wheat": 16,
+      "#minecraft:decorated_pot_sherds": 216,
       "#minecraft:leaves": 1,
       "#minecraft:logs": 32,
       "#minecraft:music_discs": 2048,
@@ -636,6 +673,7 @@
       "minecraft:chorus_plant": 64,
       "minecraft:clay_ball": 16,
       "minecraft:coal": 128,
+      "minecraft:coast_armor_trim_smithing_template": 12271,
       "minecraft:cobbled_deepslate": 2,
       "minecraft:cobblestone": 1,
       "minecraft:cobweb": 12,
@@ -664,10 +702,12 @@
       "minecraft:diorite": 16,
       "minecraft:dirt": 1,
       "minecraft:dragon_egg": 262144,
+      "minecraft:dune_armor_trim_smithing_template": 53898,
       "minecraft:echo_shard": 192,
       "minecraft:egg": 32,
       "minecraft:end_stone": 1,
       "minecraft:ender_pearl": 1024,
+      "minecraft:eye_armor_trim_smithing_template": 23017,
       "minecraft:feather": 48,
       "minecraft:fern": 1,
       "minecraft:filled_map": 1472,
@@ -695,6 +735,7 @@
       "minecraft:horn_coral": 16,
       "minecraft:horn_coral_block": 64,
       "minecraft:horn_coral_fan": 16,
+      "minecraft:host_armor_trim_smithing_template": 10176,
       "minecraft:ice": 1,
       "minecraft:ink_sac": 16,
       "minecraft:kelp": 1,
@@ -710,9 +751,13 @@
       "minecraft:nautilus_shell": 1024,
       "minecraft:nether_sprouts": 1,
       "minecraft:netherite_scrap": 12288,
+      "minecraft:netherite_upgrade_smithing_template": 7497,
       "minecraft:netherrack": 1,
       "minecraft:obsidian": 64,
       "minecraft:phantom_membrane": 192,
+      "minecraft:piglin_banner_pattern": 512,
+      "minecraft:piglin_head": 256,
+      "minecraft:pink_petals": 4,
       "minecraft:pointed_dripstone": 16,
       "minecraft:poisonous_potato": 64,
       "minecraft:porkchop": 64,
@@ -723,8 +768,10 @@
       "minecraft:rabbit": 64,
       "minecraft:rabbit_foot": 128,
       "minecraft:rabbit_hide": 16,
+      "minecraft:raiser_armor_trim_smithing_template": 10176,
       "minecraft:red_mushroom": 32,
       "minecraft:red_sand": 1,
+      "minecraft:rib_armor_trim_smithing_template": 10310,
       "minecraft:rotten_flesh": 32,
       "minecraft:saddle": 192,
       "minecraft:salmon": 64,
@@ -734,20 +781,27 @@
       "minecraft:scute": 96,
       "minecraft:sea_pickle": 16,
       "minecraft:seagrass": 1,
+      "minecraft:sentry_armor_trim_smithing_template": 57345,
+      "minecraft:shaper_armor_trim_smithing_template": 10176,
       "minecraft:shulker_shell": 2048,
+      "minecraft:silence_armor_trim_smithing_template": 39465,
       "minecraft:skeleton_skull": 256,
       "minecraft:slime_ball": 32,
       "minecraft:small_dripleaf": 24,
+      "minecraft:sniffer_egg": 2048,
+      "minecraft:snout_armor_trim_smithing_template": 7533,
       "minecraft:snow": 1,
       "minecraft:snowball": 1,
       "minecraft:soul_sand": 49,
       "minecraft:spider_eye": 128,
+      "minecraft:spire_armor_trim_smithing_template": 18588,
       "minecraft:sponge": 128,
       "minecraft:spore_blossom": 64,
       "minecraft:string": 12,
       "minecraft:sugar_cane": 32,
       "minecraft:sweet_berries": 16,
       "minecraft:tall_grass": 1,
+      "minecraft:tide_armor_trim_smithing_template": 22116,
       "minecraft:trident": 16398,
       "minecraft:tropical_fish": 64,
       "minecraft:tube_coral": 16,
@@ -756,10 +810,14 @@
       "minecraft:tuff": 4,
       "minecraft:turtle_egg": 192,
       "minecraft:twisting_vines": 8,
+      "minecraft:vex_armor_trim_smithing_template": 51917,
       "minecraft:vine": 8,
+      "minecraft:ward_armor_trim_smithing_template": 19677,
       "minecraft:warped_fungus": 32,
       "minecraft:warped_roots": 1,
+      "minecraft:wayfinder_armor_trim_smithing_template": 10176,
       "minecraft:weeping_vines": 8,
+      "minecraft:wild_armor_trim_smithing_template": 42641,
       "minecraft:zombie_head": 256
     }
   }

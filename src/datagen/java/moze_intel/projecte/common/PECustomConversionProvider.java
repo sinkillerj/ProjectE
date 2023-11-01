@@ -38,6 +38,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 
 	@Override
 	protected void addCustomConversions(@NotNull HolderLookup.Provider registries) {
+		//TODO - 1.20: Pottery sherds, smithing templates, and by proxy netherite gear
 		createConversionBuilder(PECore.rl("metals"))
 				.comment("Sets default conversions for various metals from other mods and their default values.")
 				.before(Tags.Items.INGOTS_IRON, 256)
@@ -76,8 +77,17 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversion(Items.DIAMOND_HORSE_ARMOR).ingredient(Tags.Items.GEMS_DIAMOND, 8).end()
 				.conversion(Items.DISC_FRAGMENT_5, 9).ingredient(Items.MUSIC_DISC_5).end()
 				.conversion(Items.CARVED_PUMPKIN).ingredient(Items.PUMPKIN).end()
+				.conversion(Items.TORCHFLOWER_SEEDS).ingredient(Items.TORCHFLOWER).end()
+				.conversion(Items.PITCHER_POD).ingredient(Items.PITCHER_PLANT).end()
 				.conversion(Items.ENCHANTED_BOOK).ingredient(Items.BOOK).end()
 				.conversion(Items.ENCHANTED_GOLDEN_APPLE).ingredient(Items.APPLE).ingredient(Tags.Items.STORAGE_BLOCKS_GOLD, 8).end()
+				.conversion(Items.STRIPPED_BAMBOO_BLOCK).ingredient(Items.BAMBOO_BLOCK).end()
+				.conversion(Items.GLOBE_BANNER_PATTERN).ingredient(Tags.Items.GEMS_EMERALD, 3).end()
+				//Note: suspicious blocks only can be gotten by them falling for over thirty seconds (for example bubble column)
+				// and don't keep their loot if placed by a player, so we can just set them as the same as the normal block they
+				// turn into after brushing
+				.conversion(Items.SUSPICIOUS_GRAVEL).ingredient(Items.GRAVEL).end()
+				.conversion(Items.SUSPICIOUS_SAND).ingredient(Items.SAND).end()
 				.conversion(Items.WET_SPONGE).ingredient(Items.SPONGE).end()
 				.conversion(Items.BELL).ingredient(Tags.Items.INGOTS_GOLD, 7).end()
 				.conversion(Items.HONEYCOMB, 3).ingredient(Items.HONEY_BOTTLE).end()
@@ -181,6 +191,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.VINE, 8)
 				.before(Items.MOSS_BLOCK, 12)
 				.before(Items.COBWEB, 12)
+				.before(Items.PINK_PETALS, 4)
 				.before(Items.LILY_PAD, 16)
 				.before(Items.SMALL_DRIPLEAF, 24)
 				.before(Items.BIG_DRIPLEAF, 32)
@@ -294,10 +305,13 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.SKELETON_SKULL, 256)
 				.before(Items.ZOMBIE_HEAD, 256)
 				.before(Items.CREEPER_HEAD, 256)
+				.before(Items.PIGLIN_HEAD, 256)
+				.before(Items.PIGLIN_BANNER_PATTERN, 512)
 				.before(Items.ENDER_PEARL, 1_024)
 				.before(Items.NAUTILUS_SHELL, 1_024)
 				.before(Items.BLAZE_ROD, 1_536)
 				.before(Items.SHULKER_SHELL, 2_048)
+				.before(Items.SNIFFER_EGG, 2_048)
 				.before(Items.GHAST_TEAR, 4_096)
 				.before(Items.TRIDENT, 16_398)
 				.before(Items.HEART_OF_THE_SEA, 32_768)
@@ -317,6 +331,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Tags.Items.GEMS_EMERALD, 16_384)
 				.before(Tags.Items.NETHER_STARS, 139_264)
 				.before(Items.CLAY_BALL, 16)
+				.before(ItemTags.DECORATED_POT_SHERDS, 216)
 				.before(Items.BONE, 144)
 				.before(Items.SNOWBALL, 1)
 				.before(Items.FILLED_MAP, 1_472)
@@ -330,7 +345,28 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.NETHERITE_SCRAP, 12_288)
 				.before(Tags.Items.GEMS_DIAMOND, 8_192)
 				.before(Tags.Items.DUSTS_REDSTONE, 64)
-				.before(Tags.Items.DUSTS_GLOWSTONE, 384);
+				.before(Tags.Items.DUSTS_GLOWSTONE, 384)
+				//Smithing Trims: Based on fractional amounts of the duplication recipe cost and how rare the trim is in the world to begin with:
+				// https://docs.google.com/spreadsheets/d/1DYax3nrIAeEizyby2HpCJsrUbGum-bGSG3AVF2NJk5A/edit?pli=1#gid=0
+				.before(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, 7_497)
+				//Armor trim templates
+				.before(Items.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, 23_017)
+				.before(Items.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, 57_345)
+				.before(Items.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE, 53_898)
+				.before(Items.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, 51_917)
+				.before(Items.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, 42_641)
+				.before(Items.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE, 39_465)
+				.before(Items.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, 22_116)
+				.before(Items.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, 19_677)
+				.before(Items.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, 18_588)
+				.before(Items.COAST_ARMOR_TRIM_SMITHING_TEMPLATE, 12_271)
+				.before(Items.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, 10_310)
+				.before(Items.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, 10_176)
+				.before(Items.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, 10_176)
+				.before(Items.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, 10_176)
+				.before(Items.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, 10_176)
+				.before(Items.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, 7_533)
+				;
 		ConversionGroupBuilder shulkerGroupBuilder = defaultBuilder.group("shulker_box_recoloring")
 				.comment("Propagate shulker box values to colored variants.");
 		for (DyeColor color : DyeColor.values()) {
