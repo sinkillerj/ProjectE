@@ -10,11 +10,6 @@ import org.jetbrains.annotations.Range;
 
 public class EMCProxyImpl implements IEMCProxy {
 
-	public static final EMCProxyImpl instance = new EMCProxyImpl();
-
-	private EMCProxyImpl() {
-	}
-
 	@Override
 	@Range(from = 0, to = Long.MAX_VALUE)
 	public long getValue(@NotNull ItemInfo info) {

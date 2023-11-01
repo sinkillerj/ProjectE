@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.proxy;
 
 import java.util.Objects;
+import java.util.ServiceLoader;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public interface IEMCProxy {
+
+	/**
+	 * The proxy for EMC-based API queries.
+	 */
+	IEMCProxy INSTANCE = ServiceLoader.load(IEMCProxy.class).findFirst()
+			.orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IEMCProxy found, ProjectE may be absent, damaged, or outdated"));
 
 	/**
 	 * Queries the EMC value registry if the given block has an EMC value

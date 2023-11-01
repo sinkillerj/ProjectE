@@ -14,11 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class TransmutationProxyImpl implements ITransmutationProxy {
 
-	public static final TransmutationProxyImpl instance = new TransmutationProxyImpl();
-
-	private TransmutationProxyImpl() {
-	}
-
 	@NotNull
 	@Override
 	public IKnowledgeProvider getKnowledgeProviderFor(@NotNull UUID playerUUID) {
