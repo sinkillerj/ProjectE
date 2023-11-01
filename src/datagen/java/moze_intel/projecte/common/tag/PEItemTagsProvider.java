@@ -143,6 +143,22 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 
 	@SuppressWarnings("unchecked")
 	private void addArmor() {
+		tag(ItemTags.TRIMMABLE_ARMOR).add(
+				PEItems.GEM_HELMET.get(),
+				PEItems.GEM_CHESTPLATE.get(),
+				PEItems.GEM_LEGGINGS.get(),
+				PEItems.GEM_BOOTS.get(),
+
+				PEItems.DARK_MATTER_HELMET.get(),
+				PEItems.DARK_MATTER_CHESTPLATE.get(),
+				PEItems.DARK_MATTER_LEGGINGS.get(),
+				PEItems.DARK_MATTER_BOOTS.get(),
+
+				PEItems.RED_MATTER_HELMET.get(),
+				PEItems.RED_MATTER_CHESTPLATE.get(),
+				PEItems.RED_MATTER_LEGGINGS.get(),
+				PEItems.RED_MATTER_BOOTS.get()
+		);
 		tag(Tags.Items.ARMORS_HELMETS).add(
 				PEItems.GEM_HELMET.get()
 		).addTags(

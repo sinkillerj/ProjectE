@@ -1,5 +1,67 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "projecte:item/rm_helmet_quartz_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.1
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_iron_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.2
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_netherite_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.3
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_redstone_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.4
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_copper_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.5
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_gold_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.6
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_emerald_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.7
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_diamond_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.8
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_lapis_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.9
+      }
+    },
+    {
+      "model": "projecte:item/rm_helmet_amethyst_trim",
+      "predicate": {
+        "minecraft:trim_type": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "projecte:item/rm_armor/head"
   }

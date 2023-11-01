@@ -1,0 +1,16 @@
+{
+  "values": [
+    "projecte:gem_helmet",
+    "projecte:gem_chestplate",
+    "projecte:gem_leggings",
+    "projecte:gem_boots",
+    "projecte:dm_helmet",
+    "projecte:dm_chestplate",
+    "projecte:dm_leggings",
+    "projecte:dm_boots",
+    "projecte:rm_helmet",
+    "projecte:rm_chestplate",
+    "projecte:rm_leggings",
+    "projecte:rm_boots"
+  ]
+}

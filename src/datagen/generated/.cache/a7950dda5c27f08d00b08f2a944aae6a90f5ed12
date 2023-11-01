@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-29T19:47:19.689048	Tags for minecraft:item mod id projecte
+// 1.20.1	2023-10-31T20:29:12.2164187	Tags for minecraft:item mod id projecte
 b3907f1aa02b78471363a02cc94dc9569664a81d data/curios/tags/items/belt.json
 9090bbbb09865a842a67d6a0c05eaf72df3720f7 data/curios/tags/items/klein_star.json
 58753d63ef9f09a75ea529395bb7c6d282310f2b data/curios/tags/items/necklace.json
@@ -43,6 +43,7 @@ d71b81a76191fa8b26ebbbfe77edd747a199f58e data/minecraft/tags/items/hoes.json
 39df5f8e8a35ca0874b6c0948de4efa7069c1999 data/minecraft/tags/items/pickaxes.json
 c0c895aec0eccea5b1e43005bb6a4a229785c6a6 data/minecraft/tags/items/shovels.json
 2f2e661b587b0abe45422503e7f5abb654653311 data/minecraft/tags/items/swords.json
+15bad8476e6c3186e4f675660f2bfb390086c021 data/minecraft/tags/items/trimmable_armor.json
 823df3f383ec8da9f84db57523a1d8ee863903b7 data/projecte/tags/items/alchemical_bags.json
 e4725bb8b1976c0a55fd0ced5bb9741612220299 data/projecte/tags/items/collector_fuel.json
 fd5806da7a4775edf3b8f6520ee2bdd6d4068164 data/projecte/tags/items/covalence_dust.json
