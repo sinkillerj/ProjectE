@@ -221,8 +221,8 @@ public final class WorldHelper {
 			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(level, pos, blockState, fluid.getSource(false));
 			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 		} else {
-			//TODO - 1.20: Validate this if statement
-			if ((!blockState.isSolid() || blockState.canBeReplaced(fluid)) && !blockState.liquid()) {
+			//Based on BucketItem#emptyContents
+			if (blockState.canBeReplaced(fluid) && !blockState.liquid()) {
 				level.destroyBlock(pos, true);
 			}
 			if (player == null) {

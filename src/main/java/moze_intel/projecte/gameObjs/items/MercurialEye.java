@@ -126,17 +126,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		BlockState newState;
 		long newBlockEmc;
 		byte mode = getMode(eye);
-
+		BlockPlaceContext context;
+		BlockHitResult hitResult;
+		if (facing == null) {
+			hitResult = new BlockHitResult(Vec3.atCenterOf(startingPos), Direction.UP, startingPos, true);
+		} else {
+			hitResult = new BlockHitResult(Vec3.atCenterOf(startingPos.relative(facing)), facing, startingPos, false);
+		}
 		if (!target.isEmpty()) {
-			BlockHitResult hitResult;
-			if (facing == null) {
-				hitResult = new BlockHitResult(Vec3.atCenterOf(startingPos), Direction.UP, startingPos, true);
-			} else {
-				hitResult = new BlockHitResult(new Vec3(startingPos.getX() + 0.5 + facing.getStepX(),
-						startingPos.getY() + 0.5 + facing.getStepY(),
-						startingPos.getZ() + 0.5 + facing.getStepZ()), facing, startingPos, false);
-			}
-			BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(level, player, hand, target.copy(), hitResult));
+			context = new BlockPlaceContext(level, player, hand, target.copy(), hitResult);
 			newState = ItemHelper.stackToState(target, context);
 			newBlockEmc = EMCHelper.getEmcValue(target);
 			if (newBlockEmc == 0) {
@@ -147,6 +145,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			//If there is no item key, attempt to determine it for extension mode
 			newState = startingState;
 			newBlockEmc = startingBlockEmc;
+			context = new BlockPlaceContext(level, player, hand, new ItemStack(newState.getBlock()), hitResult);
 		} else {
 			return InteractionResult.FAIL;
 		}
@@ -158,12 +157,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		int charge = getCharge(eye);
 		int hitTargets = 0;
 		if (mode == CREATION_MODE) {
-			//TODO - 1.20: Should this use a block place context to check canBeReplaced?
-			if (facing != null && (!startingState.canBeReplaced() || player.isSecondaryUseActive() && !startingState.isAir())) {
+			if (facing != null && (!context.replacingClickedOnBlock() || player.isSecondaryUseActive() && !startingState.isAir())) {
 				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = level.getBlockState(offsetPos);
-				//TODO - 1.20: Should this use a block place context to check canBeReplaced?
-				if (!offsetState.canBeReplaced()) {
+				if (!offsetState.canBeReplaced(context)) {
 					return InteractionResult.FAIL;
 				}
 				long offsetBlockEmc = EMCHelper.getEmcValue(new ItemStack(offsetState.getBlock()));
@@ -177,10 +174,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 			}
 		} else if (mode == PILLAR_MODE) {
 			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
-			hitTargets += fillGaps(eye, player, level, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
+			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
 		} else if (mode == EXTENSION_MODE_CLASSIC) {
 			//if it is replaceable fill in the gaps in up to a 9x9x1 area
-			hitTargets += fillGaps(eye, player, level, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0), drops);
+			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0), drops);
 		} else if (mode == TRANSMUTATION_MODE_CLASSIC) {
 			//if state is same as the start state replace it in an up to 9x9x1 area
 			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
@@ -301,15 +298,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		return false;
 	}
 
-	private int fillGaps(ItemStack eye, Player player, Level level, BlockState startingState, BlockState newState, long newBlockEmc, Pair<BlockPos, BlockPos> corners,
-			NonNullList<ItemStack> drops) {
+	private int fillGaps(ItemStack eye, Player player, Level level, BlockPlaceContext context, BlockState startingState, BlockState newState, long newBlockEmc,
+			Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
 		int hitTargets = 0;
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
 			VoxelShape bb = startingState.getCollisionShape(level, pos);
 			if (level.isUnobstructed(null, bb)) {
-				BlockState placeState = level.getBlockState(pos);
-				//TODO - 1.20: Should this use a block place context to check canBeReplaced?
-				if (placeState.canBeReplaced()) {
+				BlockPlaceContext adjustedContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
+				if (adjustedContext.replacingClickedOnBlock()) {
+					BlockState placeState = level.getBlockState(pos);
 					//Only replace replaceable blocks
 					long placeBlockEmc = EMCHelper.getEmcValue(placeState.getBlock());
 					//Ensure we are immutable so that changing blocks doesn't act weird
