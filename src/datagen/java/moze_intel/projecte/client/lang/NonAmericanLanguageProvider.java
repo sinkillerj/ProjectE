@@ -16,11 +16,13 @@ import net.minecraft.data.PackOutput;
  */
 public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
 
-	//TODO - 1.20: Add other conversions?
 	private static final List<WordConversion> CONVERSIONS = Util.make(new HashMap<String, String>(), map -> {
 		addEntry(map, "Color", "Colour");
 		addEntry(map, "Armor", "Armour");
 		addEntry(map, "Gray", "Grey");
+		addEntry(map, "Randomizer", "Randomiser");
+		addEntry(map, "Learned", "Learnt");
+		addEntry(map, "Unlearned", "Unlearnt");
 	}).entrySet().stream().map(entry -> new WordConversion(entry.getKey(), entry.getValue())).toList();
 
 	private static void addEntry(Map<String, String> map, String key, String value) {

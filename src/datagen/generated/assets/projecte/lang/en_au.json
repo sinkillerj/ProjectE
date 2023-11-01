@@ -1,7 +1,14 @@
 {
+  "command.projecte.knowledge.invalid": "The item \"%s\" does not  have an EMC value, and cannot be learnt.",
+  "command.projecte.knowledge.learn.success": "%s has successfully learnt %s.",
+  "command.projecte.knowledge.unlearn.success": "%s has successfully unlearnt %s.",
+  "emc.projecte.has_knowledge": "Learnt",
+  "emc.projecte.no_knowledge": "Unlearnt",
+  "entity.projecte.mob_randomizer": "Randomiser Orb",
   "gem.projecte.activate": "Activated Gem Armour Offensive Abilities",
   "gem.projecte.deactivate": "Deactivated Gem Armour Offensive Abilities",
   "gem.projecte.lore.chest": "Infernal Armour",
   "item.projecte.gray_alchemical_bag": "Alchemical Bag (Grey)",
-  "item.projecte.light_gray_alchemical_bag": "Alchemical Bag (Light Grey)"
+  "item.projecte.light_gray_alchemical_bag": "Alchemical Bag (Light Grey)",
+  "tooltip.projecte.tome": "Unlocks all transmutation knowledge when learnt"
 }
