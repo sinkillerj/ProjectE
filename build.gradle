@@ -161,11 +161,6 @@ minecraft {
                 //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
                 args '--accessToken', project.getProperty('mc_accessToken')
             }
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
         }
         server { setupRunConfig(it, true) }
         data {
