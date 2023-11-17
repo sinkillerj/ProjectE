@@ -14,7 +14,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -37,8 +36,9 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	public void init() {
 		super.init();
 
-		this.textBoxFilter = new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, Component.empty());
+		this.textBoxFilter = addWidget(new EditBox(this.font, leftPos + 88, topPos + 8, 45, 10, Component.empty()));
 		this.textBoxFilter.setValue(inv.filter);
+		this.textBoxFilter.setResponder(this::updateFilter);
 
 		addRenderableWidget(Button.builder(Component.literal("<"), b -> {
 					if (inv.searchpage != 0) {
@@ -118,34 +118,14 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 				return true;
 			}
 			//Otherwise have it handle the key press
-			//This is where key combos and deletion is handled
-			if (textBoxFilter.keyPressed(keyCode, scanCode, modifiers)) {
-				//If the filter reacted from the key press, then something happened and we should update the filter
-				updateFilter();
-				return true;
-			}
-			return false;
+			//This is where key combos and deletion is handled, and where we bypass the inventory key closing the screen
+			return textBoxFilter.keyPressed(keyCode, scanCode, modifiers);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-	@Override
-	public boolean charTyped(char c, int keyCode) {
-		if (textBoxFilter.isFocused()) {
-			//If our filter is focused have it handle the character being typed
-			//This is where adding characters is handled
-			if (textBoxFilter.charTyped(c, keyCode)) {
-				//If the filter reacted from to a character being typed, then something happened and we should update the filter
-				updateFilter();
-				return true;
-			}
-			return false;
-		}
-		return super.charTyped(c, keyCode);
-	}
-
-	private void updateFilter() {
-		String search = textBoxFilter.getValue().toLowerCase(Locale.ROOT);
+	private void updateFilter(String text) {
+		String search = text.toLowerCase(Locale.ROOT);
 		if (!inv.filter.equals(search)) {
 			inv.filter = search;
 			inv.searchpage = 0;
@@ -157,16 +137,13 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	public boolean mouseClicked(double x, double y, int mouseButton) {
 		if (textBoxFilter.isMouseOver(x, y)) {
 			if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-				inv.filter = "";
-				inv.searchpage = 0;
-				inv.updateClientTargets();
+				//Note: Clearing filter will be handled by the text box's responder
 				this.textBoxFilter.setValue("");
 			}
-			return this.textBoxFilter.mouseClicked(x, y, mouseButton);
-		}
-		Slot slotUnderMouse = getSlotUnderMouse();
-		if (slotUnderMouse == null || (!slotUnderMouse.hasItem() && menu.getCarried().isEmpty())) {
-			textBoxFilter.setFocused(false);
+		} else if (textBoxFilter.isFocused()) {
+			if (hoveredSlot == null || (!hoveredSlot.hasItem() && menu.getCarried().isEmpty())) {
+				textBoxFilter.setFocused(false);
+			}
 		}
 		return super.mouseClicked(x, y, mouseButton);
 	}
