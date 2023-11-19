@@ -32,6 +32,7 @@ import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
+import moze_intel.projecte.gameObjs.items.rings.TimeWatch;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -94,10 +95,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -169,10 +167,25 @@ public class PECore {
 		MinecraftForge.EVENT_BUS.addListener(this::tagsUpdated);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::onTickEnd);
+		MinecraftForge.EVENT_BUS.addListener(this::onClientTickEnd);
 		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
 
 		//Register our config files
 		ProjectEConfig.register();
+	}
+
+	private void onTickEnd(TickEvent.WorldTickEvent worldTick) {
+		if (worldTick.phase == TickEvent.Phase.END) {
+			Level world = worldTick.world;
+			TimeWatch.completeTick(world, worldTick::haveTime);
+		}
+	}
+
+	private void onClientTickEnd(TickEvent.ClientTickEvent clientTick) {
+		if (clientTick.phase == TickEvent.Phase.END) {
+			TimeWatch.completeTick(null, () -> true);
+		}
 	}
 
 	private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {

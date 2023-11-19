@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.BooleanSupplier;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -49,6 +51,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
+
+	public static final Map<Level, Long2ObjectOpenHashMap<SpedUpBlockEntity>> queuedBlockEntityTicks = new WeakHashMap<>();
+	public static final Map<Level, Long2ObjectOpenHashMap<SpedUpRandomBlock>> queuedRandomTicks = new WeakHashMap<>();
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -133,33 +138,17 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
+		Long2ObjectOpenHashMap<SpedUpBlockEntity> levelBlockEntityTicks = queuedBlockEntityTicks.computeIfAbsent(level, k -> new Long2ObjectOpenHashMap<>());
 		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
-			if (!blockEntity.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH_LOOKUP.contains(blockEntity.getType())) {
-				BlockPos pos = blockEntity.getBlockPos();
-				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
-					LevelChunk chunk = level.getChunkAt(pos);
-					RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
-					if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
-						if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
-							//In general this should always be the case, so we inline some of the logic
-							// to optimize the calls to try and make extra ticks as cheap as possible
-							if (chunk.isTicking(pos)) {
-								ProfilerFiller profiler = level.getProfiler();
-								profiler.push(tickingWrapper::getType);
-								BlockState state = chunk.getBlockState(pos);
-								if (blockEntity.getType().isValid(state)) {
-									for (int i = 0; i < bonusTicks; i++) {
-										tickingBE.ticker.tick(level, pos, state, blockEntity);
-									}
-								}
-								profiler.pop();
-							}
-						} else {
-							//Fallback to just trying to make it tick extra
-							for (int i = 0; i < bonusTicks; i++) {
-								tickingWrapper.tick();
-							}
-						}
+			// optimistically check if the block entity is already sped up and if so, just increase the bonus ticks
+			if (levelBlockEntityTicks.containsKey(blockEntity.getBlockPos().asLong())) {
+				levelBlockEntityTicks.get(blockEntity.getBlockPos().asLong()).addTicks(bonusTicks);
+			} else {
+				if (!blockEntity.isRemoved() &&
+					!BlockEntities.BLACKLIST_TIME_WATCH_LOOKUP.contains(blockEntity.getType())) {
+					BlockPos pos = blockEntity.getBlockPos();
+					if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+						levelBlockEntityTicks.put(pos.asLong(), new SpedUpBlockEntity(blockEntity, bonusTicks));
 					}
 				}
 			}
@@ -171,19 +160,98 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			// Sanity check the box for chunk unload weirdness
 			return;
 		}
+		Long2ObjectOpenHashMap<SpedUpRandomBlock> levelRandomTicks = queuedRandomTicks.computeIfAbsent(level, k -> new Long2ObjectOpenHashMap<>());
 		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
-			if (WorldHelper.isBlockLoaded(serverLevel, pos)) {
-				BlockState state = serverLevel.getBlockState(pos);
-				Block block = state.getBlock();
-				if (state.isRandomlyTicking() && !state.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
-					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
-					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
-					pos = pos.immutable();
-					for (int i = 0; i < bonusTicks; i++) {
-						state.randomTick(serverLevel, pos, serverLevel.random);
+			// optimistically check if the block is already sped up and if so, just increase the bonus ticks
+			if (levelRandomTicks.containsKey(pos.asLong())) {
+				levelRandomTicks.get(pos.asLong()).addTicks(bonusTicks);
+			} else {
+				if (WorldHelper.isBlockLoaded(serverLevel, pos)) {
+					BlockState state = serverLevel.getBlockState(pos);
+					Block block = state.getBlock();
+					if (state.isRandomlyTicking() && !state.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
+						&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
+						&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
+						pos = pos.immutable();
+						levelRandomTicks.put(pos.asLong(), new SpedUpRandomBlock(serverLevel, pos, state, bonusTicks));
 					}
 				}
 			}
+		}
+	}
+
+	public static void completeTick(Level level, BooleanSupplier haveTime) {
+		long currentTime = System.currentTimeMillis();
+		double maxTPSLost = ProjectEConfig.server.effects.maxTPSLoss.get();
+		double asMS;
+		if (maxTPSLost >= 20 || maxTPSLost < 0) {
+			asMS = 10000;
+		} else {
+			asMS = 1000d / (20 - maxTPSLost) - 50;
+		}
+		// we now need to turn the 2 queues into a schedule that overshoots by the same ratio of ticks done to ticks scheduled for each
+		// we start by combining the 2 queues into a single one
+		// add up the total ticks,
+		// and allocate time accordingly
+
+		int totalTicks = 0;
+		int divisor = -1;
+		List<SpedUpItem> queue = new ArrayList<>();
+		Long2ObjectOpenHashMap<TimeWatch.SpedUpBlockEntity> qBE = queuedBlockEntityTicks.get(level);
+		if (qBE != null) {
+			for (SpedUpItem item : qBE.values()) {
+				queue.add(item);
+				if (divisor == -1 || item.getTicksLeft() < divisor) {
+					divisor = item.getTicksLeft();
+				}
+				totalTicks += item.getTicksLeft();
+			}
+			qBE.clear();
+		}
+		Long2ObjectOpenHashMap<TimeWatch.SpedUpRandomBlock> qRT = queuedRandomTicks.get(level);
+		if (qRT != null) {
+			for (SpedUpItem item : qRT.values()) {
+				queue.add(item);
+				if (divisor == -1 || item.getTicksLeft() < divisor) {
+					divisor = item.getTicksLeft();
+				}
+				totalTicks += item.getTicksLeft();
+			}
+			qRT.clear();
+		}
+		Set<SpedUpItem> toRemove = new HashSet<>();
+
+		int ticksTot = 0;
+
+		while (!queue.isEmpty()) {
+			if (haveTime.getAsBoolean()) currentTime = System.currentTimeMillis();
+			else if (System.currentTimeMillis() - currentTime > asMS) {
+				// we have run out of time, so we will drop the rest of the queue
+//				System.out.println("TimeWatch: Ran out of time, dropping " + (totalTicks - ticksTot) + " extra block ticks");
+				break;
+			}
+
+			// now we run for ticksleft / divisor ticks
+			for (SpedUpItem item : queue) {
+
+				// reasonable range so a single doesn't hog too much
+				int ticks = Mth.clamp(item.getTicksLeft() / divisor, 1, Math.min(totalTicks, 1_000));
+
+				for (int i = 0; i < ticks; i++) {
+					if (item.tick()) {
+						toRemove.add(item);
+						break;
+					}
+				}
+
+				ticksTot += ticks;
+			}
+
+			// remove finished
+			for (SpedUpItem item : toRemove) {
+				queue.remove(item);
+			}
+			toRemove.clear();
 		}
 	}
 
@@ -272,5 +340,100 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
+	}
+
+	private interface SpedUpItem extends Comparable<SpedUpItem> {
+		boolean tick();
+		int getTicksLeft();
+	}
+
+	private static class SpedUpBlockEntity implements SpedUpItem {
+		private final BlockEntity entity;
+		private int ticksLeft;
+		@Nullable
+		private Runnable onTick;
+
+		public SpedUpBlockEntity(BlockEntity entity, int ticks) {
+			this.entity = entity;
+			this.ticksLeft = ticks;
+		}
+
+		public void addTicks(int ticks) {
+			ticksLeft += ticks;
+		}
+
+		public int getTicksLeft() {
+			return ticksLeft;
+		}
+
+		public boolean tick() {
+			if (onTick != null) {
+				onTick.run();
+				return --ticksLeft == 0;
+			}
+			Level level = entity.getLevel();
+			BlockPos pos = entity.getBlockPos();
+			LevelChunk chunk = level.getChunkAt(pos);
+			RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
+			if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
+				if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
+					//In general this should always be the case, so we inline some of the logic
+					// to optimize the calls to try and make extra ticks as cheap as possible
+					if (chunk.isTicking(pos)) {
+						ProfilerFiller profiler = level.getProfiler();
+						profiler.push(tickingWrapper::getType);
+						BlockState state = chunk.getBlockState(pos);
+						if (entity.getType().isValid(state)) {
+							onTick = () -> tickingBE.ticker.tick(level, pos, state, entity);
+						}
+						profiler.pop();
+					}
+				} else {
+					//Fallback to just trying to make it tick extra
+					onTick = tickingWrapper::tick;
+				}
+			}
+			onTick.run();
+			return --ticksLeft == 0;
+		}
+
+		@Override
+		public int compareTo(SpedUpItem o) {
+			return Integer.compare(getTicksLeft(), o.getTicksLeft());
+		}
+
+	}
+
+	public static class SpedUpRandomBlock implements SpedUpItem {
+		private final BlockPos pos;
+		private final BlockState state;
+		private final ServerLevel serverLevel;
+		private int ticksLeft;
+
+		public SpedUpRandomBlock(ServerLevel level, BlockPos pos, BlockState state, int ticks) {
+			this.serverLevel = level;
+			this.pos = pos;
+			this.state = state;
+			this.ticksLeft = ticks;
+		}
+
+		public void addTicks(int ticks) {
+			ticksLeft += ticks;
+		}
+
+		public int getTicksLeft() {
+			return ticksLeft;
+		}
+
+		public boolean tick() {
+			state.randomTick(serverLevel, pos, serverLevel.random);
+			return --ticksLeft == 0;
+		}
+
+		@Override
+		public int compareTo(@NotNull TimeWatch.SpedUpItem o) {
+			return Integer.compare(getTicksLeft(), o.getTicksLeft());
+		}
+
 	}
 }
