@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.container.CondenserMK2Container;
 import moze_intel.projecte.utils.Constants;
@@ -39,9 +40,40 @@ public abstract class AbstractCondenserScreen<T extends CondenserContainer> exte
 	@Override
 	protected void renderLabels(@NotNull PoseStack matrix, int x, int y) {
 		//Don't render title or inventory as we don't have space
-		long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
-		Component emc = TransmutationEMCFormatter.formatEMC(toDisplay);
-		this.font.draw(matrix, emc, 140, 10, 0x404040);
+		switch (ProjectEConfig.client.condenserEmcDisplayMode.get()) {
+		//Normal Old Rendering
+		default:
+			long toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
+			Component emc = TransmutationEMCFormatter.formatEMC(toDisplay);
+			this.font.draw(matrix, emc, 140, 10, 0x404040);
+		break;
+			
+		//Turns green and shows total value if Stored > Required
+		case 1:
+			toDisplay = menu.displayEmc.get();
+			int displayColor = 0x404040;
+			if (toDisplay > menu.requiredEmc.get())
+				displayColor = 0x008000;
+			emc = TransmutationEMCFormatter.formatEMC(toDisplay);
+			this.font.draw(matrix, emc, 140, 10, displayColor);
+		break;
+		
+		case 2:
+			toDisplay = Math.min(menu.displayEmc.get(), menu.requiredEmc.get());
+			emc = TransmutationEMCFormatter.formatEMC(toDisplay);
+			this.font.draw(matrix, emc, 140, 10, 0x404040);
+			
+			if (menu.displayEmc.get() > menu.requiredEmc.get()) {
+				int xOff = 140 + this.font.width(emc);
+				emc = TransmutationEMCFormatter.formatEMC(menu.displayEmc.get());
+				if ((xOff + this.font.width(" / " + emc.getString())) < this.getXSize()) {
+					this.font.draw(matrix, " / " + emc.getString(), xOff, 10, 0x008000);
+				} else {
+					this.font.draw(matrix, " / Overflow", xOff, 10, 0x008000);
+				}
+			}
+		break;
+		}
 	}
 
 	@Override
