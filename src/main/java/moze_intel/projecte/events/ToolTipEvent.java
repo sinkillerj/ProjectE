@@ -3,8 +3,10 @@ package moze_intel.projecte.events;
 import java.util.List;
 import java.util.Optional;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -17,10 +19,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ToolTipEvent {
@@ -33,7 +35,8 @@ public class ToolTipEvent {
 		}
 		Player clientPlayer = Minecraft.getInstance().player;
 		if (ProjectEConfig.client.pedestalToolTips.get()) {
-			current.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+			IPedestalItem pedestalItem = current.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY);
+			if (pedestalItem != null) {
 				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(ChatFormatting.DARK_PURPLE));
 				List<Component> description = pedestalItem.getPedestalDescription();
 				if (description.isEmpty()) {
@@ -41,7 +44,7 @@ public class ToolTipEvent {
 				} else {
 					event.getToolTip().addAll(description);
 				}
-			});
+			}
 		}
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
@@ -56,7 +59,8 @@ public class ToolTipEvent {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
 				if (clientPlayer != null && (!ProjectEConfig.client.shiftLearnedToolTips.get() || Screen.hasShiftDown())) {
-					if (clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).map(k -> k.hasKnowledge(current)).orElse(false)) {
+					IKnowledgeProvider knowledgeProvider = clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+					if (knowledgeProvider != null && knowledgeProvider.hasKnowledge(current)) {
 						event.getToolTip().add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));
 					} else {
 						event.getToolTip().add(PELang.EMC_NO_KNOWLEDGE.translateColored(ChatFormatting.RED));
@@ -71,9 +75,9 @@ public class ToolTipEvent {
 			if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_LONG)) {
 				value = tag.getLong(Constants.NBT_KEY_STORED_EMC);
 			} else {
-				Optional<IItemEmcHolder> holderCapability = current.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (holderCapability.isPresent()) {
-					value = holderCapability.get().getStoredEmc(current);
+				IItemEmcHolder emcHolder = current.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
+					value = emcHolder.getStoredEmc(current);
 				} else {
 					return;
 				}

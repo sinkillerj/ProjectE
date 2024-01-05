@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -38,11 +39,12 @@ public class FallbackRecipeTypeMapper extends BaseRecipeTypeMapper {
 	}
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, RegistryAccess registryAccess, INSSFakeGroupManager fakeGroupManager) {
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RecipeHolder<Recipe<?>> recipeHolder, RegistryAccess registryAccess, INSSFakeGroupManager fakeGroupManager) {
+		Recipe<?> recipe = recipeHolder.value();
 		if (recipe instanceof CraftingRecipe || recipe instanceof AbstractCookingRecipe || recipe instanceof SingleItemRecipe ||
 			//Note: We may be able to do SmithingRecipe instead of checking these two subtypes, but we likely won't be able to retrieve the ingredients
 			recipe instanceof SmithingTransformRecipe || recipe instanceof SmithingTrimRecipe) {
-			return super.handleRecipe(mapper, recipe, registryAccess, fakeGroupManager);
+			return super.handleRecipe(mapper, recipeHolder, registryAccess, fakeGroupManager);
 		}
 		return false;
 	}

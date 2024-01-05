@@ -23,7 +23,7 @@ public interface InterdictionTorchEntityBlock extends PEEntityBlock<Interdiction
 	class InterdictionTorch extends TorchBlock implements InterdictionTorchEntityBlock {
 
 		public InterdictionTorch(Properties props) {
-			super(props, ParticleTypes.SOUL_FIRE_FLAME);
+			super(ParticleTypes.SOUL_FIRE_FLAME, props);
 		}
 
 		@Override
@@ -37,7 +37,7 @@ public interface InterdictionTorchEntityBlock extends PEEntityBlock<Interdiction
 	class InterdictionTorchWall extends WallTorchBlock implements InterdictionTorchEntityBlock {
 
 		public InterdictionTorchWall(Properties props) {
-			super(props, ParticleTypes.SOUL_FIRE_FLAME);
+			super(ParticleTypes.SOUL_FIRE_FLAME, props);
 		}
 
 		@Override

@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_arcana_ring",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_arcana_ring"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/dirt_to_grass"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

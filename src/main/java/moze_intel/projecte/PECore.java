@@ -4,20 +4,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IAlchBagProvider;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
-import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
-import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
-import moze_intel.projecte.api.capabilities.item.IExtraFunction;
-import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.api.capabilities.item.IModeChanger;
-import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.PEModConfig;
@@ -26,27 +15,27 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.PETags;
-import moze_intel.projecte.gameObjs.customRecipes.FullKleinStarsCondition;
-import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.registries.PEArgumentTypes;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
+import moze_intel.projecte.gameObjs.registries.PEBlockTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PECreativeTabs;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.gameObjs.registries.PERecipeConditions;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.handlers.CommonInternalAbilities;
-import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.IMCHandler;
 import moze_intel.projecte.impl.TransmutationOffline;
+import moze_intel.projecte.impl.capability.AlchBagImpl;
+import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.ThreadCheckUUID;
 import moze_intel.projecte.network.ThreadCheckUpdate;
 import moze_intel.projecte.network.commands.EMCCMD;
@@ -60,21 +49,21 @@ import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -84,39 +73,33 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.TntBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 @Mod(PECore.MODID)
-@Mod.EventBusSubscriber(modid = PECore.MODID)
 public class PECore {
 
 	public static final String MODID = ProjectEAPI.PROJECTE_MODID;
@@ -140,62 +123,54 @@ public class PECore {
 		return new ResourceLocation(MODID, path);
 	}
 
+	private static PECore instance;
+
 	@Nullable
 	private EmcUpdateData emcUpdateResourceManager;
+	private final PacketHandler packetHandler;
 
-	public PECore() {
-		MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
+	public PECore(ModContainer modContainer, IEventBus modEventBus) {
+		instance = this;
+		MOD_CONTAINER = modContainer;
 
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::commonSetup);
 		modEventBus.addListener(this::imcQueue);
 		modEventBus.addListener(IMCHandler::handleMessages);
 		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addListener(this::registerCapabilities);
-		modEventBus.addListener(this::registerRecipeSerializers);
+		PEAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
 		PEArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
 		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 		PEBlocks.BLOCKS.register(modEventBus);
+		PEBlockTypes.BLOCK_TYPES.register(modEventBus);
 		PEContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		PECreativeTabs.CREATIVE_TABS.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
 		PEItems.ITEMS.register(modEventBus);
+		PERecipeConditions.CONDITION_CODECS.register(modEventBus);
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
-		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
-		MinecraftForge.EVENT_BUS.addListener(this::tagsUpdated);
-		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-		MinecraftForge.EVENT_BUS.addListener(this::serverQuit);
-		MinecraftForge.EVENT_BUS.addListener(PEPermissions::registerPermissionNodes);
+		NeoForge.EVENT_BUS.addListener(this::addReloadListeners);
+		NeoForge.EVENT_BUS.addListener(this::tagsUpdated);
+		NeoForge.EVENT_BUS.addListener(this::registerCommands);
+		NeoForge.EVENT_BUS.addListener(this::serverStarting);
+		NeoForge.EVENT_BUS.addListener(this::serverQuit);
+		NeoForge.EVENT_BUS.addListener(PEPermissions::registerPermissionNodes);
 
 		//Register our config files
-		ProjectEConfig.register();
+		ProjectEConfig.register(modContainer);
+
+		this.packetHandler = new PacketHandler(modEventBus, modContainer.getModInfo().getVersion());
 	}
 
-	private void registerRecipeSerializers(RegisterEvent event) {
-		event.register(Registries.RECIPE_SERIALIZER, helper -> {
-			//Add our condition serializers
-			CraftingHelper.register(TomeEnabledCondition.SERIALIZER);
-			CraftingHelper.register(FullKleinStarsCondition.SERIALIZER);
-		});
+	public static PacketHandler packetHandler() {
+		return instance.packetHandler;
 	}
 
-	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(IAlchBagProvider.class);
-		event.register(IKnowledgeProvider.class);
-		event.register(InternalTimers.class);
-		event.register(InternalAbilities.class);
-		event.register(CommonInternalAbilities.class);
-		event.register(IAlchBagItem.class);
-		event.register(IAlchChestItem.class);
-		event.register(IExtraFunction.class);
-		event.register(IItemCharge.class);
-		event.register(IItemEmcHolder.class);
-		event.register(IModeChanger.class);
-		event.register(IPedestalItem.class);
-		event.register(IProjectileShooter.class);
-		event.register(IEmcStorage.class);
+	public void registerCapabilities(RegisterCapabilitiesEvent event) {
+		//TODO - 1.20.4: Test that these work as expected and save properly
+		event.registerEntity(PECapabilities.ALCH_BAG_CAPABILITY, EntityType.PLAYER, (player, context) -> new AlchBagImpl(player));
+		event.registerEntity(PECapabilities.KNOWLEDGE_CAPABILITY, EntityType.PLAYER, (player, context) -> new KnowledgeImpl(player));
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
@@ -206,9 +181,6 @@ public class PECore {
 		NBTManager.loadProcessors();
 
 		event.enqueueWork(() -> {
-			//Ensure our tags are all initialized
-			PETags.init();
-			PacketHandler.register();
 			//Dispenser Behavior
 			registerDispenseBehavior(new ShearsDispenseItemBehavior(), PEItems.DARK_MATTER_SHEARS, PEItems.RED_MATTER_SHEARS, PEItems.RED_MATTER_KATAR);
 			DispenserBlock.registerBehavior(PEBlocks.NOVA_CATALYST, PEBlocks.NOVA_CATALYST.getBlock().createDispenseItemBehavior());
@@ -225,10 +197,10 @@ public class PECore {
 							return super.execute(source, stack);
 						}
 					}
-					Level level = source.getLevel();
+					Level level = source.level();
 					setSuccess(true);
-					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-					BlockPos pos = source.getPos().relative(direction);
+					Direction direction = source.state().getValue(DispenserBlock.FACING);
+					BlockPos pos = source.pos().relative(direction);
 					BlockState state = level.getBlockState(pos);
 					if (BaseFireBlock.canBePlacedAt(level, pos, direction)) {
 						level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
@@ -251,17 +223,13 @@ public class PECore {
 				public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
-					Level level = source.getLevel();
-					Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-					BlockPos pos = source.getPos().relative(direction);
-					BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
-					Direction sideHit = direction.getOpposite();
-					if (blockEntity != null) {
-						Optional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, sideHit).resolve();
-						if (capability.isPresent()) {
-							capability.get().fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-							return stack;
-						}
+					Level level = source.level();
+					Direction direction = source.state().getValue(DispenserBlock.FACING);
+					BlockPos pos = source.pos().relative(direction);
+					IFluidHandler fluidHandler = WorldHelper.getCapability(level, FluidHandler.BLOCK, pos, direction.getOpposite());
+					if (fluidHandler != null) {
+						fluidHandler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+						return stack;
 					}
 					BlockState state = level.getBlockState(pos);
 					if (state.getBlock() == Blocks.CAULDRON) {
@@ -280,14 +248,14 @@ public class PECore {
 					return super.execute(source, stack);
 				}
 			});
-			CauldronInteraction.EMPTY.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+			CauldronInteraction.EMPTY.map().put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
 				//Raise the fill level
 				if (!level.isClientSide) {
 					level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
 				}
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
-			CauldronInteraction.WATER.put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+			CauldronInteraction.WATER.map().put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
 				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
 					return InteractionResult.PASS;
 				} else if (!level.isClientSide) {
@@ -296,7 +264,7 @@ public class PECore {
 				}
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
-			CauldronInteraction.EMPTY.put(PEItems.VOLCANITE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
+			CauldronInteraction.EMPTY.map().put(PEItems.VOLCANITE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
 				if (!level.isClientSide && ItemPE.consumeFuel(player, stack, 32, true)) {
 					level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
 				}
@@ -336,7 +304,7 @@ public class PECore {
 			try {
 				EMCMappingHandler.map(emcUpdateResourceManager.serverResources(), emcUpdateResourceManager.registryAccess(), emcUpdateResourceManager.resourceManager());
 				PECore.LOGGER.info("Registered {} EMC values. (took {} ms)", EMCMappingHandler.getEmcMapSize(), System.currentTimeMillis() - start);
-				PacketHandler.sendFragmentedEmcPacketToAll();
+				PacketUtils.sendFragmentedEmcPacketToAll();
 			} catch (Throwable t) {
 				PECore.LOGGER.error("Error calculating EMC values", t);
 			}

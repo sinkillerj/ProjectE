@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:zero_ring"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

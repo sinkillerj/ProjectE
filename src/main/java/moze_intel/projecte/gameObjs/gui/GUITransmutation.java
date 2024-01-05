@@ -104,12 +104,6 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 	}
 
 	@Override
-	protected void containerTick() {
-		super.containerTick();
-		this.textBoxFilter.tick();
-	}
-
-	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (textBoxFilter.isFocused()) {
 			//Manually make it so that hitting escape when the filter is focused will exit the focus

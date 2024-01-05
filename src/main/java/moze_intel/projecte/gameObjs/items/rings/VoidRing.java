@@ -6,8 +6,6 @@ import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
@@ -23,17 +21,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtraFunction {
 
 	public VoidRing(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
 	@Override
@@ -67,7 +63,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			c = lookingAt.getBlockPos();
 		}
 		EntityTeleportEvent event = new EntityTeleportEvent(player, c.getX(), c.getY(), c.getZ());
-		if (!MinecraftForge.EVENT_BUS.post(event)) {
+		if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
 			if (player.isPassenger()) {
 				player.stopRiding();
 			}

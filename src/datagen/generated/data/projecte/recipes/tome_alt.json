@@ -1,86 +1,43 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "neoforge:conditions": [
     {
-      "conditions": [
-        {
-          "type": "projecte:tome_enabled"
-        },
-        {
-          "type": "projecte:full_klein_stars"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "equipment",
-        "group": "projecte:tome",
-        "key": {
-          "B": {
-            "item": "minecraft:book"
-          },
-          "H": {
-            "item": "projecte:high_covalence_dust"
-          },
-          "K": {
-            "type": "forge:partial_nbt",
-            "item": "projecte:klein_star_omega",
-            "nbt": "{StoredEMC:51200000L}"
-          },
-          "L": {
-            "item": "projecte:low_covalence_dust"
-          },
-          "M": {
-            "item": "projecte:medium_covalence_dust"
-          }
-        },
-        "pattern": [
-          "LMH",
-          "KBK",
-          "HML"
-        ],
-        "result": {
-          "item": "projecte:tome"
-        },
-        "show_notification": true
-      }
+      "type": "projecte:tome_enabled"
     },
     {
-      "conditions": [
-        {
-          "type": "projecte:tome_enabled"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "equipment",
-        "group": "projecte:tome",
-        "key": {
-          "B": {
-            "item": "minecraft:book"
-          },
-          "H": {
-            "item": "projecte:high_covalence_dust"
-          },
-          "K": {
-            "item": "projecte:klein_star_omega"
-          },
-          "L": {
-            "item": "projecte:low_covalence_dust"
-          },
-          "M": {
-            "item": "projecte:medium_covalence_dust"
-          }
-        },
-        "pattern": [
-          "LMH",
-          "KBK",
-          "HML"
-        ],
-        "result": {
-          "item": "projecte:tome"
-        },
-        "show_notification": true
+      "type": "neoforge:not",
+      "value": {
+        "type": "projecte:full_klein_stars"
       }
     }
-  ]
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "projecte:tome",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "H": {
+      "item": "projecte:high_covalence_dust"
+    },
+    "K": {
+      "type": "neoforge:nbt",
+      "item": "projecte:klein_star_omega",
+      "tag": "{StoredEMC:51200000L}"
+    },
+    "L": {
+      "item": "projecte:low_covalence_dust"
+    },
+    "M": {
+      "item": "projecte:medium_covalence_dust"
+    }
+  },
+  "pattern": [
+    "LMH",
+    "KBK",
+    "HML"
+  ],
+  "result": {
+    "item": "projecte:tome"
+  }
 }

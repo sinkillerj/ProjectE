@@ -13,7 +13,7 @@ import moze_intel.projecte.api.nss.NSSCreator;
 import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.WorldTransmutations;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 
 public class IMCHandler {
 

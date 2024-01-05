@@ -19,15 +19,16 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
 
 @EMCMapper
 public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -52,12 +53,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 		RecipeManager recipeManager = serverResources.getRecipeManager();
 		//Make a new fake group manager here instead of across the entire mapper so that we can reclaim the memory when we are done with this method
 		NSSFakeGroupManager fakeGroupManager = new NSSFakeGroupManager();
-		for (Map.Entry<ResourceKey<RecipeType<?>>, RecipeType<?>> entry : ForgeRegistries.RECIPE_TYPES.getEntries()) {
+		for (Map.Entry<ResourceKey<RecipeType<?>>, RecipeType<?>> entry : BuiltInRegistries.RECIPE_TYPE.entrySet()) {
 			ResourceLocation typeRegistryName = entry.getKey().location();
 			RecipeType<?> recipeType = entry.getValue();
 			boolean wasHandled = false;
-			List<? extends Recipe<?>> recipes = null;
-			List<Recipe<?>> unhandled = new ArrayList<>();
+			List<? extends RecipeHolder<Recipe<?>>> recipes = null;
+			List<RecipeHolder<Recipe<?>>> unhandled = new ArrayList<>();
 			for (IRecipeTypeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
 				if (EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), recipeMapper.isAvailable())) {
@@ -71,15 +72,15 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							recipes = recipeManager.getAllRecipesFor((RecipeType) recipeType);
 						}
 						int numHandled = 0;
-						for (Recipe<?> recipe : recipes) {
+						for (RecipeHolder<Recipe<?>> recipeHolder : recipes) {
 							try {
-								if (recipeMapper.handleRecipe(mapper, recipe, registryAccess, fakeGroupManager)) {
+								if (recipeMapper.handleRecipe(mapper, recipeHolder, registryAccess, fakeGroupManager)) {
 									numHandled++;
 								} else {
-									unhandled.add(recipe);
+									unhandled.add(recipeHolder);
 								}
 							} catch (Exception e) {
-								PECore.LOGGER.error(LogUtils.FATAL_MARKER, "A fatal error occurred while trying to map the recipe: {}", recipe.getId());
+								PECore.LOGGER.error(LogUtils.FATAL_MARKER, "A fatal error occurred while trying to map the recipe: {}", recipeHolder.id());
 								throw e;
 							}
 						}
@@ -114,12 +115,12 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			ResourceLocation typeRegistryName = entry.getKey();
 			RecipeCountInfo countInfo = entry.getValue();
 			int total = countInfo.getTotalRecipes();
-			List<Recipe<?>> unhandled = countInfo.getUnhandled();
+			List<RecipeHolder<Recipe<?>>> unhandled = countInfo.getUnhandled();
 			PECore.debugLog("Found and handled {} of {} Recipes of Type {}", total - unhandled.size(), total, typeRegistryName);
 			if (!unhandled.isEmpty()) {
 				PECore.debugLog("Unhandled Recipes of Type {}:", typeRegistryName);
-				for (Recipe<?> recipe : unhandled) {
-					PECore.debugLog("Name: {}, Recipe class: {}", recipe.getId(), recipe.getClass().getName());
+				for (RecipeHolder<Recipe<?>> recipeHolder : unhandled) {
+					PECore.debugLog("Name: {}, Recipe class: {}", recipeHolder.id(), recipeHolder.value().getClass().getName());
 				}
 			}
 		}
@@ -142,9 +143,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static class RecipeCountInfo {
 
 		private final int totalRecipes;
-		private List<Recipe<?>> unhandled;
+		private List<RecipeHolder<Recipe<?>>> unhandled;
 
-		private RecipeCountInfo(int totalRecipes, List<Recipe<?>> unhandled) {
+		private RecipeCountInfo(int totalRecipes, List<RecipeHolder<Recipe<?>>> unhandled) {
 			this.totalRecipes = totalRecipes;
 			this.unhandled = unhandled;
 		}
@@ -153,11 +154,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			return totalRecipes;
 		}
 
-		public void setUnhandled(List<Recipe<?>> unhandled) {
+		public void setUnhandled(List<RecipeHolder<Recipe<?>>> unhandled) {
 			this.unhandled = unhandled;
 		}
 
-		public List<Recipe<?>> getUnhandled() {
+		public List<RecipeHolder<Recipe<?>>> getUnhandled() {
 			return unhandled;
 		}
 	}

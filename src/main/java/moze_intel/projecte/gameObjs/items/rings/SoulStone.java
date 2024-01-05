@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -24,14 +25,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class SoulStone extends PEToggleItem implements IPedestalItem {
+public class SoulStone extends PEToggleItem implements IPedestalItem, ICapabilityAware {
 
 	public SoulStone(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -45,14 +45,13 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
-					timers.activateHeal();
-					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-						player.heal(2.0F);
-						removeEmc(stack, 64);
-					}
-				});
+				InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
+				timers.activateHeal();
+				if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
+					level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+					player.heal(2.0F);
+					removeEmc(stack, 64);
+				}
 			}
 		}
 	}
@@ -84,5 +83,10 @@ public class SoulStone extends PEToggleItem implements IPedestalItem {
 			list.add(PELang.PEDESTAL_SOUL_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get())));
 		}
 		return list;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

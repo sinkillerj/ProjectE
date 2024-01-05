@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import moze_intel.projecte.api.ItemInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemInfoHelper {
@@ -37,7 +37,7 @@ public class ItemInfoHelper {
 			CompoundTag enchantNBT = enchantments.getCompound(i);
 			ResourceLocation enchantmentID = ResourceLocation.tryParse(enchantNBT.getString("id"));
 			if (enchantmentID != null) {
-				Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(enchantmentID);
+				Enchantment enchantment = BuiltInRegistries.ENCHANTMENT.get(enchantmentID);
 				if (enchantment != null) {
 					map.put(enchantment, enchantNBT.getInt("lvl"));
 				}
@@ -66,7 +66,7 @@ public class ItemInfoHelper {
 			if (nbt == null) {
 				nbt = new CompoundTag();
 			}
-			nbt.putString("Potion", RegistryUtils.getName(potion).toString());
+			nbt.putString("Potion", BuiltInRegistries.POTION.getKey(potion).toString());
 		}
 		return ItemInfo.fromItem(info.getItem(), nbt);
 	}

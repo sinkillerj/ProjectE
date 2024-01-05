@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_previous",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_previous"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:collector_mk2"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

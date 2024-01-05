@@ -2,9 +2,8 @@ package moze_intel.projecte.client.lang;
 
 import java.util.List;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 /**
  * @apiNote From Mekanism

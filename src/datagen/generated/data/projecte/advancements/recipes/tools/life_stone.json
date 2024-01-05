@@ -34,15 +34,14 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_body",
-      "has_soul",
-      "has_the_recipe"
+      "has_soul"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:life_stone"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

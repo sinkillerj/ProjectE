@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.registries;
 
 import java.util.function.Consumer;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.gameObjs.registration.impl.CreativeTabDeferredRegister;
-import moze_intel.projecte.gameObjs.registration.impl.CreativeTabRegistryObject;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.resources.ResourceKey;
@@ -11,13 +11,13 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class PECreativeTabs {
 
 	public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(PECore.MODID, PECreativeTabs::addToExistingTabs);
 
-	public static final CreativeTabRegistryObject PROJECTE = CREATIVE_TABS.registerMain(PELang.PROJECTE, PEItems.PHILOSOPHERS_STONE, builder ->
+	public static final PEDeferredHolder<CreativeModeTab, CreativeModeTab> PROJECTE = CREATIVE_TABS.registerMain(PELang.PROJECTE, PEItems.PHILOSOPHERS_STONE, builder ->
 			builder.displayItems((displayParameters, output) -> {
 				output.accept(PEItems.PHILOSOPHERS_STONE);
 				output.accept(PEItems.REPAIR_TALISMAN);
@@ -86,7 +86,7 @@ public class PECreativeTabs {
 				output.accept(PEItems.VOID_RING);
 
 				for (byte i = 0; i < PEItems.ARCANA_RING.asItem().getModeCount(); ++i) {
-					ItemStack stack = new ItemStack(PEItems.ARCANA_RING);
+					ItemStack stack = PEItems.ARCANA_RING.asStack();
 					stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
 					output.accept(stack);
 				}
@@ -247,7 +247,7 @@ public class PECreativeTabs {
 			);
 
 			for (byte i = 0; i < PEItems.ARCANA_RING.asItem().getModeCount(); ++i) {
-				ItemStack stack = new ItemStack(PEItems.ARCANA_RING);
+				ItemStack stack = PEItems.ARCANA_RING.asStack();
 				stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
 				event.accept(stack);
 			}

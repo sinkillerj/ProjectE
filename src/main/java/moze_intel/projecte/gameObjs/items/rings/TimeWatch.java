@@ -5,15 +5,13 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
-import moze_intel.projecte.gameObjs.PETags.BlockEntities;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.RegistryUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
@@ -43,7 +41,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunk.BoundTickingBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk.RebindableTickingBlockEntityWrapper;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.IPlantable;
+import net.neoforged.neoforge.common.IPlantable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,8 +49,6 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	public TimeWatch(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(ChargeItemCapabilityWrapper::new);
 	}
 
 	@NotNull
@@ -133,7 +129,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			return;
 		}
 		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
-			if (!blockEntity.isRemoved() && !BlockEntities.BLACKLIST_TIME_WATCH_LOOKUP.contains(blockEntity.getType())) {
+			if (!blockEntity.isRemoved() && !RegistryUtils.getBEHolder(blockEntity.getType()).is(PETags.BlockEntities.BLACKLIST_TIME_WATCH)) {
 				BlockPos pos = blockEntity.getBlockPos();
 				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
 					LevelChunk chunk = level.getChunkAt(pos);

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs;
 
+import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.PECore;
@@ -11,13 +12,15 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum EnumMatterType implements StringRepresentable, Tier {
-	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter"), MapColor.COLOR_BLACK),
-	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER, null, MapColor.COLOR_RED);
+	DARK_MATTER("dark_matter", 3, 14, 12, 4, PETags.Blocks.NEEDS_DARK_MATTER_TOOL, Tiers.NETHERITE, PECore.rl("red_matter"), net.minecraft.world.level.material.MapColor.COLOR_BLACK),
+	RED_MATTER("red_matter", 4, 16, 14, 5, PETags.Blocks.NEEDS_RED_MATTER_TOOL, DARK_MATTER, null, net.minecraft.world.level.material.MapColor.COLOR_RED);
+
+	public static final Codec<EnumMatterType> CODEC = StringRepresentable.fromEnum(EnumMatterType::values);
 
 	private final String name;
 	private final float attackDamage;

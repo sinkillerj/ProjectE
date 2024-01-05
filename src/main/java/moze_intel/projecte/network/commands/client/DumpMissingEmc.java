@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.utils.EMCHelper;
@@ -13,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,8 +22,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.CreativeModeTabRegistry;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.CreativeModeTabRegistry;
 
 public class DumpMissingEmc {
 
@@ -32,7 +33,7 @@ public class DumpMissingEmc {
 
 	private static int execute(CommandContext<CommandSourceStack> ctx) {
 		CommandSourceStack source = ctx.getSource();
-		Set<Item> allItems = new HashSet<>(ForgeRegistries.ITEMS.getValues());
+		Set<Item> allItems = BuiltInRegistries.ITEM.stream().collect(Collectors.toSet());
 		allItems.remove(Items.AIR);//Ignore air
 		Set<ItemInfo> missing = new HashSet<>();
 		CreativeModeTab tab = CreativeModeTabRegistry.getTab(CreativeModeTabs.SEARCH.location());

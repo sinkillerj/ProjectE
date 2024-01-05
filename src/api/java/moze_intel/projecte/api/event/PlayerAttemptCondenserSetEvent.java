@@ -2,19 +2,16 @@ package moze_intel.projecte.api.event;
 
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired on the server when a player is attempting to place an item in the condenser.
  * <p>
- * This event is {@link Cancelable}
- *
- * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
+ * This event is fired on {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}
  */
-@Cancelable
-public class PlayerAttemptCondenserSetEvent extends Event {
+public class PlayerAttemptCondenserSetEvent extends Event implements ICancellableEvent {
 
 	private final Player player;
 	private final ItemInfo sourceInfo;

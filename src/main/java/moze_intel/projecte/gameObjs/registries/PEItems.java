@@ -173,7 +173,7 @@ public class PEItems {
 	}
 
 	private static ItemRegistryObject<AlchemicalFuel> registerAlchemicalFuel(EnumFuelType fuelType) {
-		return ITEMS.register(fuelType.getSerializedName(), properties -> {
+		return ITEMS.registerSimple(fuelType.getSerializedName(), properties -> {
 			if (fuelType == EnumFuelType.AETERNALIS_FUEL) {
 				properties = properties.rarity(Rarity.RARE);
 			}
@@ -182,34 +182,38 @@ public class PEItems {
 	}
 
 	public static AlchemicalBag getBag(DyeColor color) {
+		return getBagReference(color).value();
+	}
+
+	public static ItemRegistryObject<AlchemicalBag> getBagReference(DyeColor color) {
 		return switch (color) {
-			case WHITE -> WHITE_ALCHEMICAL_BAG.get();
-			case ORANGE -> ORANGE_ALCHEMICAL_BAG.get();
-			case MAGENTA -> MAGENTA_ALCHEMICAL_BAG.get();
-			case LIGHT_BLUE -> LIGHT_BLUE_ALCHEMICAL_BAG.get();
-			case YELLOW -> YELLOW_ALCHEMICAL_BAG.get();
-			case LIME -> LIME_ALCHEMICAL_BAG.get();
-			case PINK -> PINK_ALCHEMICAL_BAG.get();
-			case GRAY -> GRAY_ALCHEMICAL_BAG.get();
-			case LIGHT_GRAY -> LIGHT_GRAY_ALCHEMICAL_BAG.get();
-			case CYAN -> CYAN_ALCHEMICAL_BAG.get();
-			case PURPLE -> PURPLE_ALCHEMICAL_BAG.get();
-			case BLUE -> BLUE_ALCHEMICAL_BAG.get();
-			case BROWN -> BROWN_ALCHEMICAL_BAG.get();
-			case GREEN -> GREEN_ALCHEMICAL_BAG.get();
-			case RED -> RED_ALCHEMICAL_BAG.get();
-			case BLACK -> BLACK_ALCHEMICAL_BAG.get();
+			case WHITE -> WHITE_ALCHEMICAL_BAG;
+			case ORANGE -> ORANGE_ALCHEMICAL_BAG;
+			case MAGENTA -> MAGENTA_ALCHEMICAL_BAG;
+			case LIGHT_BLUE -> LIGHT_BLUE_ALCHEMICAL_BAG;
+			case YELLOW -> YELLOW_ALCHEMICAL_BAG;
+			case LIME -> LIME_ALCHEMICAL_BAG;
+			case PINK -> PINK_ALCHEMICAL_BAG;
+			case GRAY -> GRAY_ALCHEMICAL_BAG;
+			case LIGHT_GRAY -> LIGHT_GRAY_ALCHEMICAL_BAG;
+			case CYAN -> CYAN_ALCHEMICAL_BAG;
+			case PURPLE -> PURPLE_ALCHEMICAL_BAG;
+			case BLUE -> BLUE_ALCHEMICAL_BAG;
+			case BROWN -> BROWN_ALCHEMICAL_BAG;
+			case GREEN -> GREEN_ALCHEMICAL_BAG;
+			case RED -> RED_ALCHEMICAL_BAG;
+			case BLACK -> BLACK_ALCHEMICAL_BAG;
 		};
 	}
 
-	public static KleinStar getStar(EnumKleinTier tier) {
+	public static ItemRegistryObject<KleinStar> getStar(EnumKleinTier tier) {
 		return switch (tier) {
-			case EIN -> KLEIN_STAR_EIN.get();
-			case ZWEI -> KLEIN_STAR_ZWEI.get();
-			case DREI -> KLEIN_STAR_DREI.get();
-			case VIER -> KLEIN_STAR_VIER.get();
-			case SPHERE -> KLEIN_STAR_SPHERE.get();
-			case OMEGA -> KLEIN_STAR_OMEGA.get();
+			case EIN -> KLEIN_STAR_EIN;
+			case ZWEI -> KLEIN_STAR_ZWEI;
+			case DREI -> KLEIN_STAR_DREI;
+			case VIER -> KLEIN_STAR_VIER;
+			case SPHERE -> KLEIN_STAR_SPHERE;
+			case OMEGA -> KLEIN_STAR_OMEGA;
 		};
 	}
 }

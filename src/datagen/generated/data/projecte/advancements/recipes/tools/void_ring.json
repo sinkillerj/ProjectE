@@ -46,16 +46,15 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_matter",
       "has_band",
-      "has_gem",
-      "has_the_recipe"
+      "has_gem"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:void_ring"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

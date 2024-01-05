@@ -6,11 +6,13 @@ import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.gameObjs.PETags;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.Tags;
 
 @EMCMapper
 public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
@@ -18,11 +20,15 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		for (Item ore : PETags.Items.ORES_LOOKUP.tag()) {
-			NSSItem nssOre = NSSItem.createItem(ore);
-			mapper.setValueBefore(nssOre, 0L);
-			mapper.setValueAfter(nssOre, 0L);
-		}
+		BuiltInRegistries.ITEM.getTag(Tags.Items.ORES)
+				.stream()
+				.flatMap(ListBacked::stream)
+				.map(Holder::value)
+				.map(NSSItem::createItem)
+				.forEach(nssOre -> {
+					mapper.setValueBefore(nssOre, 0L);
+					mapper.setValueAfter(nssOre, 0L);
+				});
 	}
 
 	@Override

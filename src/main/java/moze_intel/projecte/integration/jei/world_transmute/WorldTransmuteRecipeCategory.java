@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -23,8 +22,8 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransmuteEntry> {
@@ -37,7 +36,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	public WorldTransmuteRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createBlankDrawable(135, 48);
 		arrow = guiHelper.drawableBuilder(PECore.rl("textures/gui/arrow.png"), 0, 0, 22, 15).setTextureSize(32, 32).build();
-		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PEItems.PHILOSOPHERS_STONE));
+		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, PEItems.PHILOSOPHERS_STONE.asStack());
 	}
 
 	@NotNull
@@ -75,7 +74,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 				recipeInput.ifLeft(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 						.addItemStack(input)
 				).ifRight(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
-						.addIngredient(ForgeTypes.FLUID_STACK, input)
+						//TODO - 1.20.4: FIXME
+						//.addIngredient(ForgeTypes.FLUID_STACK, input)
 						.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 				)
 		);
@@ -84,7 +84,8 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 			IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, xPos, 16);
 			output.ifLeft(slot::addItemStack)
 					.ifRight(input -> slot
-							.addIngredient(ForgeTypes.FLUID_STACK, input)
+							//TODO - 1.20.4: FIXME
+							//.addIngredient(ForgeTypes.FLUID_STACK, input)
 							.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 					);
 			xPos += 16;

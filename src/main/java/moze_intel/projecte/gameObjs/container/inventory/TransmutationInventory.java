@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
@@ -25,10 +26,10 @@ import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
 public class TransmutationInventory extends CombinedInvWrapper {
 
@@ -47,10 +48,10 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	private List<ItemInfo> knowledge = Collections.emptyList();
 
 	public TransmutationInventory(Player player) {
-		super((IItemHandlerModifiable) player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new).getInputAndLocks(),
+		super((IItemHandlerModifiable) Objects.requireNonNull(player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY)).getInputAndLocks(),
 				new ItemStackHandler(2), new ItemStackHandler(16));
 		this.player = player;
-		this.provider = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+		this.provider = Objects.requireNonNull(player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY));
 		this.inputLocks = itemHandler[0];
 		this.learning = itemHandler[1];
 		this.outputs = itemHandler[2];
@@ -79,7 +80,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	public void handleKnowledge(ItemInfo info) {
 		ItemInfo cleanedInfo = NBTManager.getPersistentInfo(info);
 		//Pass both stacks to the Attempt Learn Event in case a mod cares about the NBT/damage difference when comparing
-		if (!provider.hasKnowledge(cleanedInfo) && !MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo))) {
+		if (!provider.hasKnowledge(cleanedInfo) && !NeoForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, info, cleanedInfo)).isCanceled()) {
 			if (provider.addKnowledge(cleanedInfo)) {
 				//Only sync the knowledge changed if the provider successfully added it
 				provider.syncKnowledgeChange((ServerPlayer) player, cleanedInfo, true);
@@ -263,9 +264,8 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (holderCapability.isPresent()) {
-					IItemEmcHolder emcHolder = holderCapability.get();
+				IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
 					long shrunkenValue = MathUtils.clampToLong(value);
 					long actualInserted = emcHolder.insertEmc(stack, shrunkenValue, EmcAction.EXECUTE);
 					if (actualInserted > 0) {
@@ -315,9 +315,8 @@ public class TransmutationInventory extends CombinedInvWrapper {
 				}
 				ItemStack stack = inputLocks.getStackInSlot(slotIndex);
 				if (!stack.isEmpty()) {
-					Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-					if (holderCapability.isPresent()) {
-						IItemEmcHolder emcHolder = holderCapability.get();
+					IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+					if (emcHolder != null) {
 						long shrunkenToRemove = MathUtils.clampToLong(toRemove);
 						long actualExtracted = emcHolder.extractEmc(stack, shrunkenToRemove, EmcAction.EXECUTE);
 						if (actualExtracted > 0) {
@@ -388,9 +387,9 @@ public class TransmutationInventory extends CombinedInvWrapper {
 			}
 			ItemStack stack = inputLocks.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				Optional<IItemEmcHolder> emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (emcHolder.isPresent()) {
-					emc = emc.add(BigInteger.valueOf(emcHolder.get().getStoredEmc(stack)));
+				IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
+					emc = emc.add(BigInteger.valueOf(emcHolder.getStoredEmc(stack)));
 				}
 			}
 		}

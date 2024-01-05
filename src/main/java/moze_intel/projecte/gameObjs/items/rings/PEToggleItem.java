@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.Constants;
@@ -17,7 +16,6 @@ public abstract class PEToggleItem extends ItemPE implements IModeChanger {
 
 	public PEToggleItem(Properties props) {
 		super(props);
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override

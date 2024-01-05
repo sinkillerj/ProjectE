@@ -1,14 +1,14 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.config.value.CachedValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public interface IPEConfig {
 
 	String getFileName();
 
-	ForgeConfigSpec getConfigSpec();
+	ModConfigSpec getConfigSpec();
 
 	default boolean isLoaded() {
 		return getConfigSpec().isLoaded();

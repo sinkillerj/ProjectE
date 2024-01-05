@@ -1,12 +1,13 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EternalDensityInventory implements IItemHandlerModifiable {
@@ -87,7 +88,7 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 	public void changeMode() {
 		isInWhitelist = !isInWhitelist;
 		writeBack();
-		PacketHandler.sendToServer(new UpdateGemModePKT(isInWhitelist));
+		PacketUtils.sendToServer(new UpdateGemModePKT(isInWhitelist));
 	}
 
 	public boolean isWhitelistMode() {

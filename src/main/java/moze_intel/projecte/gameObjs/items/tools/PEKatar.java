@@ -4,8 +4,6 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Random;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
@@ -37,9 +35,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.IShearable;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,8 +49,6 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public PEKatar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_KATAR, 19, -2.4F, numCharges, props);
 		modeDesc = new ILangEntry[]{PELang.MODE_KATAR_1, PELang.MODE_KATAR_2};
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
 	}
 
 	@Override
@@ -178,7 +174,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@NotNull
 	@Override
 	public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
-		if (entity instanceof IForgeShearable target) {
+		if (entity instanceof IShearable target) {
 			BlockPos pos = entity.blockPosition();
 			if (target.isShearable(stack, entity.level(), pos)) {
 				if (!entity.level().isClientSide) {

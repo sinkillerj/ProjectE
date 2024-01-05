@@ -57,9 +57,8 @@ public class SlotInput extends InventoryContainerSlot {
 				if (EMCHelper.doesItemHaveEmc(stack)) {
 					inv.handleKnowledge(stack);
 				}
-				Optional<IItemEmcHolder> capability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (capability.isPresent()) {
-					IItemEmcHolder emcHolder = capability.get();
+				IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
 					//Get the emc that the inventory has that is not in any stars
 					long shrunkenAvailableEMC = MathUtils.clampToLong(inv.provider.getEmc());
 					//try to insert it

@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_tnt",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_tnt"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:nova_catalyst"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

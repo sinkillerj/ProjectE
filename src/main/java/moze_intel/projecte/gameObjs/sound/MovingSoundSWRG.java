@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
-// [VanillaCopy] MinecartTickableSound
+// [VanillaCopy] MinecartSoundInstance
 //Only used on the client
 public class MovingSoundSWRG extends AbstractTickableSoundInstance {
 
@@ -21,6 +21,16 @@ public class MovingSoundSWRG extends AbstractTickableSoundInstance {
 		this.y = this.swrgProjectile.getY();
 		this.z = this.swrgProjectile.getZ();
 		this.volume = 0.6F;
+	}
+
+	@Override
+	public boolean canPlaySound() {
+		return !this.swrgProjectile.isSilent();
+	}
+
+	@Override
+	public boolean canStartSilent() {
+		return true;
 	}
 
 	@Override

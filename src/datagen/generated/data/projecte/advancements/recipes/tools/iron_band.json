@@ -34,15 +34,14 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_lava",
-      "has_amulet",
-      "has_the_recipe"
+      "has_amulet"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:iron_band"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

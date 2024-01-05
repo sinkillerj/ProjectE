@@ -2,12 +2,9 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -34,20 +31,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector {
+public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPedestalItem, IFireProtector, ICapabilityAware {
 
 	public VolcaniteAmulet(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -68,14 +63,11 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 		BlockPos pos = ctx.getClickedPos();
 		ItemStack stack = ctx.getItemInHand();
 		if (player != null && !level.isClientSide && PlayerHelper.hasEditPermission((ServerPlayer) player, pos) && consumeFuel(player, stack, 32, true)) {
-			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
 			Direction sideHit = ctx.getClickedFace();
-			if (blockEntity != null) {
-				Optional<IFluidHandler> capability = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, sideHit).resolve();
-				if (capability.isPresent()) {
-					capability.get().fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-					return InteractionResult.CONSUME;
-				}
+			IFluidHandler fluidHandler = WorldHelper.getCapability(level, FluidHandler.BLOCK, pos, sideHit);
+			if (fluidHandler != null) {
+				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+				return InteractionResult.CONSUME;
 			}
 			WorldHelper.placeFluid((ServerPlayer) player, level, pos, sideHit, Fluids.LAVA, false);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.TRANSMUTE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -132,7 +124,12 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IPede
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayer player) {
+	public boolean canProtectAgainstFire(ItemStack stack, Player player) {
 		return true;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

@@ -27,14 +27,13 @@
   },
   "requirements": [
     [
-      "has_alchemical_coal",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alchemical_coal"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:mobius_fuel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

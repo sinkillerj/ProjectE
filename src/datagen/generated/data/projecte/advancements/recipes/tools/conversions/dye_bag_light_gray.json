@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_alchemical_bag",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alchemical_bag"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/dye_bag_light_gray"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

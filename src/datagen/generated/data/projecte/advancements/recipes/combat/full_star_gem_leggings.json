@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projecte:full_klein_stars"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:rm_leggings"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:full_star_gem_leggings"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_leggings"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:full_star_gem_leggings"
+    ]
+  }
+}

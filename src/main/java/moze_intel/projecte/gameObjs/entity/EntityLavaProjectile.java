@@ -6,8 +6,6 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityLavaProjectile extends NoGravityThrowableProjectile {
@@ -52,7 +50,7 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 						if (state.getFluidState().is(FluidTags.WATER)) {
 							pos = pos.immutable();
 							if (PlayerHelper.hasEditPermission(player, pos)) {
-								WorldHelper.drainFluid(level(), pos, state, Fluids.WATER);
+								WorldHelper.drainFluid(player, level(), pos, state, Fluids.WATER);
 								level().playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
 										2.6F + (level().random.nextFloat() - level().random.nextFloat()) * 0.8F);
 							}
@@ -98,14 +96,8 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 		}
 	}
 
-	@NotNull
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public boolean ignoreExplosion() {
+	public boolean ignoreExplosion(@NotNull Explosion explosion) {
 		return true;
 	}
 }

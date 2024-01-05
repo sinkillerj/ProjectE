@@ -1,6 +1,5 @@
 package moze_intel.projecte.api.block_entity;
 
-import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,8 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -23,7 +21,9 @@ import org.jetbrains.annotations.Range;
  */
 public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 
-	private LazyOptional<IEmcStorage> emcStorageCapability;
+	//TODO - 1.20.4: Docs and also actually use this for our impls
+	public static final ICapabilityProvider<BaseEmcBlockEntity, @Nullable Direction, IEmcStorage> EMC_STORAGE_PROVIDER = (blockEntity, context) -> blockEntity;
+
 	private long maximumEMC;
 	private long currentEMC;
 
@@ -174,27 +174,5 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 			set = getMaximumEmc();
 		}
 		currentEMC = set;
-	}
-
-	@NotNull
-	@Override
-	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-		if (cap == PECapabilities.EMC_STORAGE_CAPABILITY) {
-			if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
-				//If the capability has not been retrieved yet, or it is not valid then recreate it
-				emcStorageCapability = LazyOptional.of(() -> this);
-			}
-			return emcStorageCapability.cast();
-		}
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		if (emcStorageCapability != null && emcStorageCapability.isPresent()) {
-			emcStorageCapability.invalidate();
-			emcStorageCapability = null;
-		}
 	}
 }

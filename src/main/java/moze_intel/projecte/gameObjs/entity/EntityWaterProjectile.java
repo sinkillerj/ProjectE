@@ -13,6 +13,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,9 +25,8 @@ import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityWaterProjectile extends NoGravityThrowableProjectile {
@@ -59,12 +59,12 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 							Block block = fluidState.isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
 							//Like: ForgeEventFactory#fireFluidPlaceBlockEvent except checks if it was cancelled
 							BlockEvent.FluidPlaceBlockEvent event = new BlockEvent.FluidPlaceBlockEvent(level(), pos, pos, block.defaultBlockState());
-							if (!MinecraftForge.EVENT_BUS.post(event)) {
+							if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
 								PlayerHelper.checkedPlaceBlock(player, pos, event.getNewState());
 							}
 						} else {
 							//Otherwise if it is lava logged, "void" the lava as we can't place a block in that spot
-							WorldHelper.drainFluid(level(), pos, state, Fluids.LAVA);
+							WorldHelper.drainFluid(player, level(), pos, state, Fluids.LAVA);
 						}
 						playSound(SoundEvents.GENERIC_BURN, 0.5F, 2.6F + (level().random.nextFloat() - level().random.nextFloat()) * 0.8F);
 					}
@@ -107,14 +107,8 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 		}
 	}
 
-	@NotNull
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public boolean ignoreExplosion() {
+	public boolean ignoreExplosion(@NotNull Explosion explosion) {
 		return true;
 	}
 }

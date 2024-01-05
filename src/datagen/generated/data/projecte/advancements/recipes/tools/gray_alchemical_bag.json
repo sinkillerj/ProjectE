@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_alchemical_chest",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alchemical_chest"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:gray_alchemical_bag"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

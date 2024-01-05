@@ -27,14 +27,13 @@
   },
   "requirements": [
     [
-      "has_charcoal",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_charcoal"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/charcoal_to_coal"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

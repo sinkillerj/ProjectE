@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.List;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -18,12 +17,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.NonNullLazy;
+import net.neoforged.neoforge.common.util.NonNullLazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,6 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		super(props);
 		modes = modeDesc;
 		maxModes = modes.length;
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@NotNull
@@ -55,7 +54,7 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
-		NonNullLazy<List<SmeltingRecipe>> furnaceRecipes = NonNullLazy.of(() -> level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
+		NonNullLazy<List<RecipeHolder<SmeltingRecipe>>> furnaceRecipes = NonNullLazy.of(() -> level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
 			if (level.isEmptyBlock(digPos)) {
 				continue;
@@ -68,7 +67,8 @@ public class DiviningRod extends ItemPE implements IItemMode {
 			ItemStack blockStack = drops.get(0);
 			long blockEmc = EMCHelper.getEmcValue(blockStack);
 			if (blockEmc == 0) {
-				for (SmeltingRecipe furnaceRecipe : furnaceRecipes.get()) {
+				for (RecipeHolder<SmeltingRecipe> furnaceRecipeHolder : furnaceRecipes.get()) {
+					SmeltingRecipe furnaceRecipe = furnaceRecipeHolder.value();
 					if (furnaceRecipe.getIngredients().get(0).test(blockStack)) {
 						long currentValue = EMCHelper.getEmcValue(furnaceRecipe.getResultItem(level.registryAccess()));
 						if (currentValue != 0) {

@@ -5,20 +5,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface defines the contract for some object that exposes transmutation knowledge through the Capability system.
  * <p>
- * Acquire an instance of this using {@link net.minecraft.world.entity.Entity#getCapability(Capability, net.minecraft.core.Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.entity.Entity#getCapability(EntityCapability)}.
  */
-public interface IKnowledgeProvider extends INBTSerializable<CompoundTag> {
+public interface IKnowledgeProvider {
 
 	/**
 	 * @return Whether the player has the "tome" flag set, meaning all knowledge checks automatically return true

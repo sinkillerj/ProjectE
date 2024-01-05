@@ -1,7 +1,7 @@
 package moze_intel.projecte.config.value;
 
 import moze_intel.projecte.config.IPEConfig;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 /**
  * From Mekanism

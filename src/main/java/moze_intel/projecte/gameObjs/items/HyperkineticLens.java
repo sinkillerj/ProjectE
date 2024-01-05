@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.entity.EntityLensProjectile;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.Constants;
@@ -19,8 +17,6 @@ public class HyperkineticLens extends ItemPE implements IProjectileShooter, IIte
 
 	public HyperkineticLens(Properties props) {
 		super(props);
-		addItemCapability(ChargeItemCapabilityWrapper::new);
-		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
 	@NotNull

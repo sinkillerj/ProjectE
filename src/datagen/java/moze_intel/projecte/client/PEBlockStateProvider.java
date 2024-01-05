@@ -6,20 +6,18 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class PEBlockStateProvider extends BlockStateProvider {
 
@@ -83,14 +81,14 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void particleOnly(BlockRegistryObject<?, ?> block) {
-		String name = getName(block);
+		String name = block.getName();
 		simpleBlock(block.getBlock(), models().getBuilder(name).texture("particle", modLoc("block/" + name)));
 	}
 
 	private void registerPedestal() {
 		ResourceLocation dm = modLoc("block/dark_matter_block");
 		BlockModelBuilder model = models()
-				.withExistingParent(getName(PEBlocks.DARK_MATTER_PEDESTAL), "block/block")
+				.withExistingParent(PEBlocks.DARK_MATTER_PEDESTAL.getName(), "block/block")
 				.texture("pedestal", dm)
 				.texture("particle", dm)
 				//Base
@@ -130,7 +128,7 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	private void registerTransmutationTable() {
 		ResourceLocation top = modLoc("block/transmutation_stone/top");
 		BlockModelBuilder model = models()
-				.withExistingParent(getName(PEBlocks.TRANSMUTATION_TABLE), "block/block")
+				.withExistingParent(PEBlocks.TRANSMUTATION_TABLE.getName(), "block/block")
 				.texture("bottom", modLoc("block/transmutation_stone/bottom"))
 				.texture("top", top)
 				.texture("side", modLoc("block/transmutation_stone/side"))
@@ -149,23 +147,23 @@ public class PEBlockStateProvider extends BlockStateProvider {
 	}
 
 	private void registerExplosives() {
-		BlockModelBuilder catalyst = models().cubeBottomTop(getName(PEBlocks.NOVA_CATALYST), modLoc("block/explosives/nova_side"),
+		BlockModelBuilder catalyst = models().cubeBottomTop(PEBlocks.NOVA_CATALYST.getName(), modLoc("block/explosives/nova_side"),
 				modLoc("block/explosives/bottom"), modLoc("block/explosives/top"));
 		simpleBlock(PEBlocks.NOVA_CATALYST.getBlock(), catalyst);
-		simpleBlock(PEBlocks.NOVA_CATACLYSM.getBlock(), models().getBuilder(getName(PEBlocks.NOVA_CATACLYSM))
+		simpleBlock(PEBlocks.NOVA_CATACLYSM.getBlock(), models().getBuilder(PEBlocks.NOVA_CATACLYSM.getName())
 				.parent(catalyst)
 				.texture("side", modLoc("block/explosives/nova1_side")));
 	}
 
 	private void registerInterdictionTorch() {
-		simpleBlock(PEBlocks.INTERDICTION_TORCH.getBlock(), models().torch(getName(PEBlocks.INTERDICTION_TORCH), modLoc("block/interdiction_torch"))
+		simpleBlock(PEBlocks.INTERDICTION_TORCH.getBlock(), models().torch(PEBlocks.INTERDICTION_TORCH.getName(), modLoc("block/interdiction_torch"))
 				.renderType(new ResourceLocation("cutout")));
-		horizontalBlock(PEBlocks.INTERDICTION_TORCH.getWallBlock(), models().torchWall(RegistryUtils.getPath(PEBlocks.INTERDICTION_TORCH.getWallBlock()),
+		horizontalBlock(PEBlocks.INTERDICTION_TORCH.getWallBlock(), models().torchWall(PEBlocks.INTERDICTION_TORCH.getWallName(),
 				modLoc("block/interdiction_torch")).renderType(new ResourceLocation("cutout")), 90);
 	}
 
 	private void registerFurnace(BlockRegistryObject<?, ?> furnace, String prefix, String sideTexture) {
-		String name = getName(furnace);
+		String name = furnace.getName();
 		ResourceLocation side = modLoc("block/" + sideTexture);
 		BlockModelBuilder offModel = models().orientable(name, side, modLoc("block/matter_furnace/" + prefix + "_off"), side);
 		BlockModelBuilder onModel = models().getBuilder(name + "_on")
@@ -176,13 +174,13 @@ public class PEBlockStateProvider extends BlockStateProvider {
 
 	private void registerTieredOrientable(String type, BlockRegistryObject<?, ?> base, BlockRegistryObject<?, ?> mk2, BlockRegistryObject<?, ?> mk3) {
 		ResourceLocation side = modLoc("block/" + type + "/other");
-		BlockModelBuilder model = models().orientableWithBottom(getName(base), side, modLoc("block/" + type + "/front"), side,
+		BlockModelBuilder model = models().orientableWithBottom(base.getName(), side, modLoc("block/" + type + "/front"), side,
 				modLoc("block/" + type + "/top_1"));
 		horizontalBlock(base.getBlock(), model);
-		horizontalBlock(mk2.getBlock(), models().getBuilder(getName(mk2))
+		horizontalBlock(mk2.getBlock(), models().getBuilder(mk2.getName())
 				.parent(model)
 				.texture("top", modLoc("block/" + type + "/top_2")));
-		horizontalBlock(mk3.getBlock(), models().getBuilder(getName(mk3))
+		horizontalBlock(mk3.getBlock(), models().getBuilder(mk3.getName())
 				.parent(model)
 				.texture("top", modLoc("block/" + type + "/top_3")));
 	}
@@ -202,9 +200,5 @@ public class PEBlockStateProvider extends BlockStateProvider {
 					.rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
 					.build();
 		}, toSkip);
-	}
-
-	private static String getName(ItemLike itemProvider) {
-		return RegistryUtils.getPath(itemProvider.asItem());
 	}
 }

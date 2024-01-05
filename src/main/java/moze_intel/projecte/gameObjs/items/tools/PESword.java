@@ -1,23 +1,15 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.ItemCapability;
-import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,13 +22,11 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class PESword extends SwordItem implements IExtraFunction, IItemCharge, IBarHelper {
 
-	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
 	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
 	private final EnumMatterType matterType;
 	private final int numCharges;
@@ -45,12 +35,6 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 		super(matterType, damage, -2.4F, props);
 		this.matterType = matterType;
 		this.numCharges = numCharges;
-		addItemCapability(ChargeItemCapabilityWrapper::new);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
-	}
-
-	protected void addItemCapability(Supplier<ItemCapability<?>> capabilitySupplier) {
-		supportedCapabilities.add(capabilitySupplier);
 	}
 
 	@Override
@@ -111,14 +95,6 @@ public class PESword extends SwordItem implements IExtraFunction, IItemCharge, I
 	@Override
 	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		if (supportedCapabilities.isEmpty()) {
-			return super.initCapabilities(stack, nbt);
-		}
-		return new ItemCapabilityWrapper(stack, supportedCapabilities);
 	}
 
 	@Override

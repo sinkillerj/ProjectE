@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import java.util.Optional;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
@@ -11,7 +10,6 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,9 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +45,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		}
 		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 		if (collector != null) {
-			NetworkHooks.openScreen((ServerPlayer) player, collector, pos);
+			player.openMenu(collector, pos);
 		}
 		return InteractionResult.CONSUME;
 	}
@@ -84,16 +81,15 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 			//If something went wrong fallback to default implementation
 			return super.getAnalogOutputSignal(state, level, pos);
 		}
-		Optional<IItemHandler> cap = collector.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).resolve();
-		if (cap.isEmpty()) {
+		IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, state, collector, Direction.UP);
+		if (handler == null) {
 			//If something went wrong fallback to default implementation
 			return super.getAnalogOutputSignal(state, level, pos);
 		}
-		ItemStack charging = cap.get().getStackInSlot(CollectorMK1BlockEntity.UPGRADING_SLOT);
+		ItemStack charging = handler.getStackInSlot(CollectorMK1BlockEntity.UPGRADING_SLOT);
 		if (!charging.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
+			IItemEmcHolder emcHolder = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
 				return MathUtils.scaleToRedstone(emcHolder.getStoredEmc(charging), emcHolder.getMaximumEmc(charging));
 			}
 			return MathUtils.scaleToRedstone(collector.getStoredEmc(), collector.getEmcToNextGoal());

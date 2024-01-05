@@ -53,7 +53,7 @@ public class PEJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addRecipeCatalyst(new ItemStack(PEItems.PHILOSOPHERS_STONE), RecipeTypes.CRAFTING, WorldTransmuteRecipeCategory.RECIPE_TYPE);
+		registry.addRecipeCatalyst(PEItems.PHILOSOPHERS_STONE.asStack(), RecipeTypes.CRAFTING, WorldTransmuteRecipeCategory.RECIPE_TYPE);
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.RECIPE_TYPE);
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.RECIPE_TYPE);
 		registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.RECIPE_TYPE);

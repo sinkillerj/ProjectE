@@ -6,7 +6,7 @@ import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
 /**

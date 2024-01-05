@@ -2,12 +2,9 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.function.Consumer;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ToolHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.HoeItem;
@@ -15,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 
 public class PEHoe extends HoeItem implements IItemCharge, IBarHelper {
@@ -77,11 +73,6 @@ public class PEHoe extends HoeItem implements IItemCharge, IBarHelper {
 	@Override
 	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
 	}
 
 	@NotNull

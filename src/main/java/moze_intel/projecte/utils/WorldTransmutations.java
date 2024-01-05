@@ -9,12 +9,13 @@ import java.util.Map.Entry;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
 import org.jetbrains.annotations.Nullable;
 
 public final class WorldTransmutations {
@@ -153,7 +154,7 @@ public final class WorldTransmutations {
 				// so instead). The other case this may fail is if something changed between
 				// MC versions, and we need to fix some conversion that no longer necessarily
 				// makes sense
-				PECore.LOGGER.error("Something went wrong registering conversions for {}", RegistryUtils.getName(from), e);
+				PECore.LOGGER.error("Something went wrong registering conversions for {}", BuiltInRegistries.BLOCK.getKey(from), e);
 			}
 		}
 	}

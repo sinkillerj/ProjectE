@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.List;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
@@ -69,12 +70,11 @@ public class GemHelmet extends GemArmorBase {
 	@Override
 	public void onArmorTick(ItemStack stack, Level level, Player player) {
 		if (!level.isClientSide) {
-			player.getCapability(InternalTimers.CAPABILITY).ifPresent(handler -> {
-				handler.activateHeal();
-				if (player.getHealth() < player.getMaxHealth() && handler.canHeal()) {
-					player.heal(2.0F);
-				}
-			});
+			InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
+			timers.activateHeal();
+			if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
+				player.heal(2.0F);
+			}
 
 			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
 				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, true, false));

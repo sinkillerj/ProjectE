@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -32,14 +31,13 @@ import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.IPlantable;
+import net.neoforged.neoforge.common.IPlantable;
 import org.jetbrains.annotations.NotNull;
 
 public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 
 	public HarvestGoddess(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
 	@Override
@@ -96,7 +94,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
 				currentPos = currentPos.immutable();
 				BlockState state = serverLevel.getBlockState(currentPos);
-				if (state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(serverLevel, currentPos, state, false) &&
+				if (state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(serverLevel, currentPos, state) &&
 					growable.isBonemealSuccess(serverLevel, serverLevel.random, currentPos, state)) {
 					growable.performBonemeal(serverLevel, serverLevel.random, currentPos, state);
 					level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);

@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_dark_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dark_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:dark_matter_block"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -5,8 +5,7 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -29,15 +28,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
+public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper, ICapabilityAware {
 
 	public Zero(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(ChargeItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -128,5 +125,10 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	@Override
 	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

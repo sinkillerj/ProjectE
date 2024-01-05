@@ -3,9 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.List;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
-import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -39,10 +37,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
+public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter, ICapabilityAware {
 
 	private final static ILangEntry[] modes = new ILangEntry[]{
 			PELang.MODE_ARCANA_1,
@@ -53,10 +52,6 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 
 	public Arcana(Properties props) {
 		super(props);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
-		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -182,12 +177,17 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayer player) {
+	public boolean canProtectAgainstFire(ItemStack stack, Player player) {
 		return true;
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
+	public boolean canProvideFlight(ItemStack stack, Player player) {
 		return true;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

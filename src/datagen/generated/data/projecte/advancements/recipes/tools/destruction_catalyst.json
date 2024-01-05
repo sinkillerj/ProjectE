@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_catalyst",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_catalyst"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:destruction_catalyst"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

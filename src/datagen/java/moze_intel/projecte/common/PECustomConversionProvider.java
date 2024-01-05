@@ -25,9 +25,8 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.Tags.Fluids;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
@@ -163,7 +162,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.conversionFluid(Tags.Fluids.MILK, FluidType.BUCKET_VOLUME).ingredient(singleEMC, 16).end()//One bucket worth of milk is 16 emc
 				.conversion(Items.WATER_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.WATER, FluidType.BUCKET_VOLUME).end()
 				.conversion(Items.LAVA_BUCKET).ingredient(Items.BUCKET).ingredientFluid(FluidTags.LAVA, FluidType.BUCKET_VOLUME).end()
-				.conversion(Items.MILK_BUCKET).ingredient(Items.BUCKET).ingredientFluid(Fluids.MILK, FluidType.BUCKET_VOLUME).end()
+				.conversion(Items.MILK_BUCKET).ingredient(Items.BUCKET).ingredientFluid(Tags.Fluids.MILK, FluidType.BUCKET_VOLUME).end()
 				.end()
 				.before(singleEMC, 1)
 				.beforeFluid(FluidTags.WATER)
@@ -204,7 +203,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Items.OBSIDIAN, 64)
 				.before(Items.CRYING_OBSIDIAN, 768)
 				.before(Items.SPONGE, 128)
-				.before(Items.GRASS, 1)
+				.before(Items.SHORT_GRASS, 1)
 				.before(Items.SEAGRASS, 1)
 				.before(Items.KELP, 1)
 				.before(Items.SEA_PICKLE, 16)

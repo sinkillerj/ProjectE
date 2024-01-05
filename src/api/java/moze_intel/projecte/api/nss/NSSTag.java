@@ -1,7 +1,6 @@
 package moze_intel.projecte.api.nss;
 
 import java.util.function.Consumer;
-import net.minecraftforge.registries.tags.ITag;
 
 /**
  * An extension of {@link NormalizedSimpleStack} that allows for representing stacks that are both "simple" and can have a {@link ITag} representation.

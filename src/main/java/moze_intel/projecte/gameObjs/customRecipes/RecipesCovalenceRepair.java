@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class RecipesCovalenceRepair extends CustomRecipe {
 
-	public RecipesCovalenceRepair(ResourceLocation id, CraftingBookCategory category) {
-		super(id, category);
+	public RecipesCovalenceRepair(CraftingBookCategory category) {
+		super(category);
 	}
 
 	@Nullable

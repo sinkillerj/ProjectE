@@ -1,18 +1,17 @@
 package moze_intel.projecte.api.nss;
 
-import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,12 +61,12 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		if (item == Items.AIR) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(item);
-		if (registryName == null) {
+		Optional<ResourceKey<Item>> registryKey = BuiltInRegistries.ITEM.getResourceKey(item);
+		if (registryKey.isEmpty()) {
 			throw new IllegalArgumentException("Can't make an NSSItem with an unregistered item");
 		}
 		//This should never be null, or it would have crashed on being registered
-		return createItem(registryName, nbt);
+		return createItem(registryKey.get().location(), nbt);
 	}
 
 	/**
@@ -122,8 +121,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	@NotNull
 	@Override
-	protected Optional<Either<Named<Item>, ITag<Item>>> getTag() {
-		return getTag(ForgeRegistries.ITEMS);
+	protected Registry<Item> getRegistry() {
+		return BuiltInRegistries.ITEM;
 	}
 
 	@Override

@@ -56,9 +56,8 @@ public class SlotLock extends InventoryContainerSlot {
 				if (EMCHelper.doesItemHaveEmc(stack)) {
 					inv.handleKnowledge(stack);
 				}
-				Optional<IItemEmcHolder> capability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-				if (capability.isPresent()) {
-					IItemEmcHolder emcHolder = capability.get();
+				IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
 					long actualExtracted = emcHolder.extractEmc(stack, emcHolder.getStoredEmc(stack), EmcAction.EXECUTE);
 					if (actualExtracted > 0) {
 						inv.syncChangedSlots(Collections.singletonList(getSlotIndex()), TargetUpdateType.NONE);

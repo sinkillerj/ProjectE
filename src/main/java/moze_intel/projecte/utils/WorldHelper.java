@@ -2,7 +2,6 @@ package moze_intel.projecte.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -12,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,9 +20,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -67,17 +65,15 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.IShearable;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.fluids.IFluidBlock;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,14 +105,14 @@ public final class WorldHelper {
 	 * Equivalent of World.newExplosion
 	 */
 	public static void createNovaExplosion(Level level, Entity exploder, double x, double y, double z, float power) {
-		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, true, Explosion.BlockInteraction.DESTROY);
-		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion))) {
+		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, Explosion.BlockInteraction.DESTROY);
+		if (!NeoForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion)).isCanceled()) {
 			explosion.explode();
 			explosion.finalizeExplosion(true);
 		}
 	}
 
-	public static void drainFluid(Level level, BlockPos pos, BlockState state, Fluid toMatch) {
+	public static void drainFluid(@Nullable Player player, Level level, BlockPos pos, BlockState state, Fluid toMatch) {
 		Block block = state.getBlock();
 		if (block instanceof IFluidBlock fluidBlock && fluidBlock.getFluid().isSame(toMatch)) {
 			//If it is a fluid block drain it (may be the case for some custom block?)
@@ -126,18 +122,17 @@ public final class WorldHelper {
 		} else if (block instanceof BucketPickup bucketPickup) {
 			//If it is a bucket pickup handler (so may be a fluid logged block) "pick it up"
 			// This includes normal fluid blocks
-			bucketPickup.pickupBlock(level, pos, state);
+			bucketPickup.pickupBlock(player, level, pos, state);
 		}
 	}
 
-	public static void dropInventory(IItemHandler inv, Level level, BlockPos pos) {
-		if (inv == null) {
-			return;
-		}
-		for (int i = 0; i < inv.getSlots(); i++) {
-			ItemStack stack = inv.getStackInSlot(i);
-			if (!stack.isEmpty()) {
-				level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack));
+	public static void dropInventory(@Nullable IItemHandler inv, Level level, BlockPos pos) {
+		if (inv != null) {
+			for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
+				ItemStack stack = inv.getStackInSlot(i);
+				if (!stack.isEmpty()) {
+					level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack));
+				}
 			}
 		}
 	}
@@ -187,8 +182,8 @@ public final class WorldHelper {
 	/**
 	 * Checks if a block is a {@link LiquidBlockContainer} that supports a specific fluid type.
 	 */
-	public static boolean isLiquidContainerForFluid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-		return state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(level, pos, state, fluid);
+	public static boolean isLiquidContainerForFluid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+		return state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(player, level, pos, state, fluid);
 	}
 
 	/**
@@ -196,7 +191,7 @@ public final class WorldHelper {
 	 * on the given side of the clicked block.
 	 */
 	public static void placeFluid(@Nullable ServerPlayer player, Level level, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
-		if (isLiquidContainerForFluid(level, pos, level.getBlockState(pos), fluid)) {
+		if (isLiquidContainerForFluid(player, level, pos, level.getBlockState(pos), fluid)) {
 			//If the spot can be logged with our fluid then try using the position directly
 			placeFluid(player, level, pos, fluid, checkWaterVaporize);
 		} else {
@@ -217,7 +212,7 @@ public final class WorldHelper {
 			for (int l = 0; l < 8; ++l) {
 				level.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 			}
-		} else if (isLiquidContainerForFluid(level, pos, blockState, fluid)) {
+		} else if (isLiquidContainerForFluid(player, level, pos, blockState, fluid)) {
 			((LiquidBlockContainer) blockState.getBlock()).placeLiquid(level, pos, blockState, fluid.getSource(false));
 			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 		} else {
@@ -232,23 +227,6 @@ public final class WorldHelper {
 				level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 			}
 		}
-	}
-
-	/**
-	 * Gets an ItemHandler of a specific block entity from the given side. Falls back to using wrappers if the block entity is an instance of an
-	 * ISidedInventory/IInventory.
-	 */
-	@Nullable
-	public static IItemHandler getItemHandler(@NotNull BlockEntity blockEntity, @Nullable Direction direction) {
-		Optional<IItemHandler> capability = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction).resolve();
-		if (capability.isPresent()) {
-			return capability.get();
-		} else if (blockEntity instanceof WorldlyContainer container) {
-			return new SidedInvWrapper(container, direction);
-		} else if (blockEntity instanceof Container container) {
-			return new InvWrapper(container);
-		}
-		return null;
 	}
 
 	/**
@@ -351,7 +329,7 @@ public final class WorldHelper {
 			Block crop = state.getBlock();
 
 			// Vines, leaves, tallgrass, deadbush, doubleplants
-			if (crop instanceof IForgeShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
+			if (crop instanceof IShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
 				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock || crop instanceof HangingRootsBlock) {
 				if (harvest) {
 					harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
@@ -360,7 +338,7 @@ public final class WorldHelper {
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
 			// Mushroom, potato, sapling, stems, tallgrass
 			else if (crop instanceof BonemealableBlock growable) {
-				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state, false)) {
+				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state)) {
 					if (harvest && !state.is(PETags.Blocks.BLACKLIST_HARVEST)) {
 						if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of kelp but otherwise allow harvesting them
@@ -471,9 +449,9 @@ public final class WorldHelper {
 	}
 
 	private static BlockState getRandomState(TagKey<Block> key, RandomSource random, BlockState fallback) {
-		return LazyTagLookup.tagManager(ForgeRegistries.BLOCKS).getTag(key)
-				.getRandomElement(random)
-				.map(Block::defaultBlockState)
+		return BuiltInRegistries.BLOCK.getTag(key)
+				.flatMap(holderSet -> holderSet.getRandomElement(random))
+				.map(holder -> holder.value().defaultBlockState())
 				.orElse(fallback);
 	}
 
@@ -615,6 +593,45 @@ public final class WorldHelper {
 			return reader.hasChunkAt(pos);
 		}
 		return true;
+	}
+
+	/**
+	 * Gets the capability of a block at a given location if it is loaded
+	 *
+	 * @param level   Level
+	 * @param cap     Capability to look up
+	 * @param pos     position
+	 * @param context Capability context
+	 *
+	 * @return capability if present, null if either not found or not loaded
+	 */
+	@Nullable
+	@Contract("null, _, _, _ -> null")
+	public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
+		return getCapability(level, cap, pos, null, null, context);
+	}
+
+	/**
+	 * Gets the capability of a block at a given location if it is loaded
+	 *
+	 * @param level       Level
+	 * @param cap         Capability to look up
+	 * @param pos         position
+	 * @param state       the block state, if known, or {@code null} if unknown
+	 * @param blockEntity the block entity, if known, or {@code null} if unknown
+	 * @param context     Capability context
+	 *
+	 * @return capability if present, null if either not found or not loaded
+	 */
+	@Nullable
+	@Contract("null, _, _, _, _, _ -> null")
+	public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
+			@Nullable BlockEntity blockEntity, CONTEXT context) {
+		if (!isBlockLoaded(level, pos)) {
+			//If the world is null, or it is a world reader and the block is not loaded, return null
+			return null;
+		}
+		return level.getCapability(cap, pos, state, blockEntity, context);
 	}
 
 	/**

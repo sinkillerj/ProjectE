@@ -1,0 +1,55 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projecte:tome_enabled"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "projecte:full_klein_stars"
+      }
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_covalence_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:low_covalence_dust"
+            ]
+          },
+          {
+            "items": [
+              "projecte:medium_covalence_dust"
+            ]
+          },
+          {
+            "items": [
+              "projecte:high_covalence_dust"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte:tome_alt"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_covalence_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte:tome_alt"
+    ]
+  }
+}

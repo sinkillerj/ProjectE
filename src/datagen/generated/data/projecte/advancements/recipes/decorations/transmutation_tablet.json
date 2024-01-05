@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_table",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_table"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:transmutation_tablet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

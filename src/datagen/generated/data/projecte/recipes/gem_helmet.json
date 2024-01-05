@@ -1,63 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "neoforge:conditions": [
     {
-      "conditions": [
-        {
-          "type": "projecte:full_klein_stars"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shapeless",
-        "category": "equipment",
-        "ingredients": [
-          {
-            "item": "projecte:rm_helmet"
-          },
-          {
-            "item": "projecte:evertide_amulet"
-          },
-          {
-            "item": "projecte:soul_stone"
-          },
-          {
-            "type": "forge:partial_nbt",
-            "item": "projecte:klein_star_omega",
-            "nbt": "{StoredEMC:51200000L}"
-          }
-        ],
-        "result": {
-          "item": "projecte:gem_helmet"
-        }
-      }
-    },
-    {
-      "conditions": [
-        {
-          "type": "forge:true"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shapeless",
-        "category": "equipment",
-        "ingredients": [
-          {
-            "item": "projecte:rm_helmet"
-          },
-          {
-            "item": "projecte:evertide_amulet"
-          },
-          {
-            "item": "projecte:soul_stone"
-          },
-          {
-            "item": "projecte:klein_star_omega"
-          }
-        ],
-        "result": {
-          "item": "projecte:gem_helmet"
-        }
+      "type": "neoforge:not",
+      "value": {
+        "type": "projecte:full_klein_stars"
       }
     }
-  ]
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "projecte:rm_helmet"
+    },
+    {
+      "item": "projecte:evertide_amulet"
+    },
+    {
+      "item": "projecte:soul_stone"
+    },
+    {
+      "item": "projecte:klein_star_omega"
+    }
+  ],
+  "result": {
+    "item": "projecte:gem_helmet"
+  }
 }

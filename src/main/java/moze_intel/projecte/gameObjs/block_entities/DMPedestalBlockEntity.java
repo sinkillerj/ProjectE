@@ -1,13 +1,12 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import java.util.Optional;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -17,12 +16,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements IDMPedestal {
+public class DMPedestalBlockEntity extends EmcBlockEntity implements IDMPedestal {
 
+	public static final ICapabilityProvider<DMPedestalBlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (pedestal, side) -> pedestal.inventory;
 	private static final int RANGE = 4;
+
 	private final StackHandler inventory = new StackHandler(1) {
 		@Override
 		public void onContentsChanged(int slot) {
@@ -41,7 +45,6 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 
 	public DMPedestalBlockEntity(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.DARK_MATTER_PEDESTAL, pos, state, 1_000);
-		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
 	public static void tickClient(Level level, BlockPos pos, BlockState state, DMPedestalBlockEntity pedestal) {
@@ -50,9 +53,9 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				Optional<IPedestalItem> capability = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).resolve();
-				if (capability.isPresent()) {
-					capability.get().updateInPedestal(stack, level, pos, pedestal);
+				IPedestalItem pedestalItem = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY);
+				if (pedestalItem != null) {
+					pedestalItem.updateInPedestal(stack, level, pos, pedestal);
 					if (pedestal.particleCooldown <= 0) {
 						pedestal.spawnParticleTypes();
 						pedestal.particleCooldown = 10;
@@ -72,9 +75,9 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 			if (stack.isEmpty()) {
 				pedestal.setActive(false);
 			} else {
-				Optional<IPedestalItem> capability = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).resolve();
-				if (capability.isPresent()) {
-					if (capability.get().updateInPedestal(stack, level, pos, pedestal)) {
+				IPedestalItem pedestalItem = stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY);
+				if (pedestalItem != null) {
+					if (pedestalItem.updateInPedestal(stack, level, pos, pedestal)) {
 						pedestal.inventory.onContentsChanged(0);
 					}
 				} else {
@@ -132,7 +135,8 @@ public class DMPedestalBlockEntity extends CapabilityEmcBlockEntity implements I
 
 	@Override
 	public AABB getEffectBounds() {
-		return new AABB(worldPosition.offset(-RANGE, -RANGE, -RANGE), worldPosition.offset(RANGE, RANGE, RANGE));
+		//TODO - 1.20.4: View all use cases of this and test and also evaluate cases that are using new AABB
+		return AABB.encapsulatingFullBlocks(worldPosition.offset(-RANGE, -RANGE, -RANGE), worldPosition.offset(RANGE, RANGE, RANGE));
 	}
 
 	@Override

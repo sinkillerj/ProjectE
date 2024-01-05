@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
@@ -227,11 +228,11 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		broadcastPE(true);
 	}
 
-	protected void syncDataChange(IPEPacket packet) {
+	protected void syncDataChange(IPEPacket<?> packet) {
 		//Note: We ignore suppressRemoteUpdates as that is mostly used as a hack for slot syncing
 		// (which we don't sync with this) and also we would have to AT in to access it
 		if (this.playerInv.player instanceof ServerPlayer player) {
-			PacketHandler.sendTo(packet, player);
+			PacketUtils.sendTo(packet, player);
 		}
 	}
 

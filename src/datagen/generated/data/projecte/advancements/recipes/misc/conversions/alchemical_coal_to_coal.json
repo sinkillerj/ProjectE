@@ -27,14 +27,13 @@
   },
   "requirements": [
     [
-      "has_alchemical_coal",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alchemical_coal"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/alchemical_coal_to_coal"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

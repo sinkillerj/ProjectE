@@ -1,63 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "neoforge:conditions": [
     {
-      "conditions": [
-        {
-          "type": "projecte:full_klein_stars"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shapeless",
-        "category": "equipment",
-        "ingredients": [
-          {
-            "item": "projecte:rm_leggings"
-          },
-          {
-            "item": "projecte:black_hole_band"
-          },
-          {
-            "item": "projecte:watch_of_flowing_time"
-          },
-          {
-            "type": "forge:partial_nbt",
-            "item": "projecte:klein_star_omega",
-            "nbt": "{StoredEMC:51200000L}"
-          }
-        ],
-        "result": {
-          "item": "projecte:gem_leggings"
-        }
-      }
-    },
-    {
-      "conditions": [
-        {
-          "type": "forge:true"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shapeless",
-        "category": "equipment",
-        "ingredients": [
-          {
-            "item": "projecte:rm_leggings"
-          },
-          {
-            "item": "projecte:black_hole_band"
-          },
-          {
-            "item": "projecte:watch_of_flowing_time"
-          },
-          {
-            "item": "projecte:klein_star_omega"
-          }
-        ],
-        "result": {
-          "item": "projecte:gem_leggings"
-        }
+      "type": "neoforge:not",
+      "value": {
+        "type": "projecte:full_klein_stars"
       }
     }
-  ]
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "projecte:rm_leggings"
+    },
+    {
+      "item": "projecte:black_hole_band"
+    },
+    {
+      "item": "projecte:watch_of_flowing_time"
+    },
+    {
+      "item": "projecte:klein_star_omega"
+    }
+  ],
+  "result": {
+    "item": "projecte:gem_leggings"
+  }
 }

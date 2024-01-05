@@ -1,15 +1,15 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.config.value.CachedBooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * For config options that only the client cares about
  */
 public class ClientConfig extends BasePEConfig {
 
-	private final ForgeConfigSpec configSpec;
+	private final ModConfigSpec configSpec;
 
 	public final CachedBooleanValue tagToolTips;
 	public final CachedBooleanValue emcToolTips;
@@ -20,7 +20,7 @@ public class ClientConfig extends BasePEConfig {
 	public final CachedBooleanValue pulsatingOverlay;
 
 	ClientConfig() {
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		//We push as client in case we ever want to add an overarching comment to the client config
 		builder.push("client");
 		tagToolTips = CachedBooleanValue.wrap(this, builder
@@ -54,7 +54,7 @@ public class ClientConfig extends BasePEConfig {
 	}
 
 	@Override
-	public ForgeConfigSpec getConfigSpec() {
+	public ModConfigSpec getConfigSpec() {
 		return configSpec;
 	}
 

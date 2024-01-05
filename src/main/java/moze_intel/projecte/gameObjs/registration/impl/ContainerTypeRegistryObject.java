@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
+import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.RegistryObject;
 
-public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends WrappedRegistryObject<MenuType<CONTAINER>> {
+public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends PEDeferredHolder<MenuType<?>, MenuType<CONTAINER>> {
 
-	public ContainerTypeRegistryObject(RegistryObject<MenuType<CONTAINER>> registryObject) {
-		super(registryObject);
+	public ContainerTypeRegistryObject(ResourceKey<MenuType<?>> key) {
+		super(key);
 	}
 }

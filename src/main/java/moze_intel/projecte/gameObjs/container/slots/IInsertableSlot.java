@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.container.slots;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,8 +20,8 @@ public interface IInsertableSlot {
 	 * Inserts an {@link ItemStack} into this {@link IInsertableSlot} and return the remainder as if a player was inserting by trying to interact with the slot. The
 	 * {@link ItemStack} <em>should not</em> be modified in this function!
 	 * </p>
-	 * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
-	 * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+	 * Note: This behaviour is subtly different from {@link net.neoforged.neoforge.fluids.capability.IFluidHandler#fill(net.neoforged.neoforge.fluids.FluidStack,
+	 * net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction)}
 	 *
 	 * @param stack    {@link ItemStack} to insert. This must not be modified by the slot.
 	 * @param simulate Whether to simulate insertion.

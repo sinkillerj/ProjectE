@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -41,7 +39,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,8 +46,6 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
 	public PhilosophersStone(Properties props) {
 		super(props, (byte) 4, PELang.MODE_PHILOSOPHER_1, PELang.MODE_PHILOSOPHER_2, PELang.MODE_PHILOSOPHER_3);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
-		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
 	}
 
 	@Override
@@ -115,7 +110,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (!player.level().isClientSide) {
-			NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(stack));
+			player.openMenu(new ContainerProvider(stack));
 		}
 		return true;
 	}

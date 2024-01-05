@@ -3,17 +3,18 @@ package moze_intel.projecte.gameObjs.registration.impl;
 import com.mojang.brigadier.arguments.ArgumentType;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import moze_intel.projecte.gameObjs.registration.WrappedDeferredRegister;
+import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo.Template;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 
-public class ArgumentTypeInfoDeferredRegister extends WrappedDeferredRegister<ArgumentTypeInfo<?, ?>> {
+public class ArgumentTypeInfoDeferredRegister extends PEDeferredRegister<ArgumentTypeInfo<?, ?>> {
 
 	public ArgumentTypeInfoDeferredRegister(String modid) {
-		super(Registries.COMMAND_ARGUMENT_TYPE, modid);
+		super(Registries.COMMAND_ARGUMENT_TYPE, modid, ArgumentTypeInfoRegistryObject::new);
 	}
 
 	public <TYPE extends ArgumentType<?>> ArgumentTypeInfoRegistryObject<TYPE> registerContextFree(String name, Class<TYPE> argumentClass, Supplier<TYPE> constructor) {
@@ -27,6 +28,7 @@ public class ArgumentTypeInfoDeferredRegister extends WrappedDeferredRegister<Ar
 
 	public <TYPE extends ArgumentType<?>> ArgumentTypeInfoRegistryObject<TYPE> register(String name, Class<TYPE> argumentClass,
 			Supplier<ArgumentTypeInfo<TYPE, ? extends ArgumentTypeInfo.Template<TYPE>>> sup) {
-		return register(name, () -> ArgumentTypeInfos.registerByClass(argumentClass, sup.get()), ArgumentTypeInfoRegistryObject::new);
+		return (ArgumentTypeInfoRegistryObject<TYPE>) super.<ArgumentTypeInfo<TYPE, ? extends Template<TYPE>>>register(name,
+				() -> ArgumentTypeInfos.registerByClass(argumentClass, sup.get()));
 	}
 }

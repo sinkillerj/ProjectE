@@ -15,6 +15,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -151,12 +152,12 @@ public class NSSItemParser {
 	private record ItemResult(Item item, @Nullable CompoundTag nbt) implements NSSItemResult {
 
 		public ItemResult(Holder<Item> item, @Nullable CompoundTag nbt) {
-			this(item.get(), nbt);
+			this(item.value(), nbt);
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			String registryName = RegistryUtils.getName(item).toString();
+			String registryName = BuiltInRegistries.ITEM.getKey(item).toString();
 			if (nbt == null) {
 				return registryName;
 			}

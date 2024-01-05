@@ -2,7 +2,7 @@ package moze_intel.projecte.config.value;
 
 import java.util.function.Supplier;
 import moze_intel.projecte.config.IPEConfig;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

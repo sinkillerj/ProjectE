@@ -1,20 +1,17 @@
 package moze_intel.projecte.api.nss;
 
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.util.Either;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.tags.ITag;
-import net.minecraftforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,14 +21,14 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link ITag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the tag this {@link NormalizedSimpleStack} is for.
  */
 public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	private static final Set<NSSTag> createdTags = new HashSet<>();
 
 	/**
-	 * @return A set of all the {@link NSSTag}s that have been created that represent a {@link ITag}
+	 * @return A set of all the {@link NSSTag}s that have been created that represent a tag
 	 *
 	 * @apiNote This method is meant for internal use of adding Tag -> Type and Type -> Tag conversions
 	 */
@@ -40,7 +37,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent {@link ITag}s
+	 * Clears the cache of what {@link AbstractNSSTag}s have been created that represent tags
 	 *
 	 * @apiNote This method is meant for internal use when the EMC mapper is reloading.
 	 */
@@ -61,7 +58,7 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	}
 
 	/**
-	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a {@link ITag}, or the {@link ResourceLocation} of the object
+	 * @return The {@link ResourceLocation} representing the tag if this {@link NSSTag} represents a tag, or the {@link ResourceLocation} of the object
 	 */
 	@NotNull
 	public ResourceLocation getResourceLocation() {
@@ -90,31 +87,17 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	protected abstract String getJsonPrefix();
 
 	/**
-	 * @return An optional with an object that represents either a named tag or forge's tag representation.
+	 * @return The registry that the element this NSS object represents is a part of.
 	 */
 	@NotNull
-	protected abstract Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag();
+	protected abstract Registry<TYPE> getRegistry();
 
 	/**
 	 * Helper to get the tag representation if this {@link NormalizedSimpleStack} is backed by a vanilla registry.
 	 */
-	protected final Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag(Registry<TYPE> registry) {
+	protected final Optional<HolderSet.Named<TYPE>> getTag(Registry<TYPE> registry) {
 		if (representsTag()) {
-			return registry.getTag(TagKey.create(registry.key(), getResourceLocation())).map(Either::left);
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Helper to get the tag representation if this {@link NormalizedSimpleStack} is backed by a forge registry.
-	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	protected final Optional<Either<Named<TYPE>, ITag<TYPE>>> getTag(IForgeRegistry<? extends TYPE> registry) {
-		if (representsTag()) {
-			ITagManager<? extends TYPE> tags = registry.tags();
-			if (tags != null) {
-				return Optional.of(Either.right(tags.getTag((TagKey) tags.createTagKey(getResourceLocation()))));
-			}
+			return registry.getTag(TagKey.create(registry.key(), getResourceLocation()));
 		}
 		return Optional.empty();
 	}
@@ -128,10 +111,15 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 
 	@Override
 	public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
-		getTag().ifPresent(tag -> tag.map(t -> t.stream().map(Holder::value), ITag::stream)
-				.map(createNew())
-				.forEach(consumer)
-		);
+		if (representsTag()) {
+			Registry<TYPE> registry = getRegistry();
+			registry.getTag(TagKey.create(registry.key(), getResourceLocation()))
+					.stream()
+					.flatMap(ListBacked::stream)
+					.map(Holder::value)
+					.map(createNew())
+					.forEach(consumer);
+		}
 	}
 
 	@Override

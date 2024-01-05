@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_dark_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dark_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:dm_furnace"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

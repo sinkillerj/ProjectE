@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_mobius_fuel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_mobius_fuel"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:mobius_fuel_block"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

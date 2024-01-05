@@ -2,15 +2,13 @@ package moze_intel.projecte.api.event;
 
 import java.util.UUID;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is fired serverside after a players transmutation knowledge is changed
  * <p>
- * This event is not {@link net.minecraftforge.eventbus.api.Cancelable}, and has no result
- * <p>
- * This event is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
+ * This event is fired on {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}
  */
 public class PlayerKnowledgeChangeEvent extends Event {
 

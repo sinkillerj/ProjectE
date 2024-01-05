@@ -16,11 +16,11 @@ license="MIT"
 
 [[dependencies.projecte]]
   modId="minecraft"
-  mandatory=true
+  type="required"
   versionRange="${mc_version}"
   side="BOTH"
 [[dependencies.projecte]]
-  modId="forge"
-  mandatory=true
+  modId="neoforge"
+  type="required"
   versionRange="${forge_version}"
   side="BOTH"

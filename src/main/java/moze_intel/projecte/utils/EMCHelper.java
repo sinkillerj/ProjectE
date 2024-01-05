@@ -3,7 +3,6 @@ package moze_intel.projecte.utils;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
@@ -12,6 +11,7 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.KleinStar;
+import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
@@ -20,8 +20,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -39,7 +39,7 @@ public final class EMCHelper {
 		if (player.isCreative() || minFuel == 0) {
 			return minFuel;
 		}
-		IItemHandler curios = PlayerHelper.getCurios(player);
+		IItemHandler curios = player.getCapability(IntegrationHelper.CURIO_ITEM_HANDLER);
 		if (curios != null) {
 			for (int i = 0; i < curios.getSlots(); i++) {
 				long actualExtracted = tryExtract(curios.getStackInSlot(i), minFuel);
@@ -60,10 +60,9 @@ public final class EMCHelper {
 			}
 		}
 
-		Optional<IItemHandler> itemHandlerCap = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
-		if (itemHandlerCap.isPresent()) {
+		IItemHandler inv = player.getCapability(ItemHandler.ENTITY);
+		if (inv != null) {
 			//Ensure that we have an item handler capability, because if for example the player is dead we will not
-			IItemHandler inv = itemHandlerCap.get();
 			Map<Integer, Integer> map = new LinkedHashMap<>();
 			boolean metRequirement = false;
 			long emcConsumed = 0;
@@ -110,9 +109,8 @@ public final class EMCHelper {
 		if (stack.isEmpty()) {
 			return 0;
 		}
-		Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (holderCapability.isPresent()) {
-			IItemEmcHolder emcHolder = holderCapability.get();
+		IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+		if (emcHolder != null) {
 			long simulatedExtraction = emcHolder.extractEmc(stack, minFuel, EmcAction.SIMULATE);
 			if (simulatedExtraction == minFuel) {
 				return emcHolder.extractEmc(stack, simulatedExtraction, EmcAction.EXECUTE);

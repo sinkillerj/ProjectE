@@ -8,7 +8,6 @@ import java.util.Set;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -16,17 +15,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 
-	public PhiloStoneSmeltingRecipe(ResourceLocation id, CraftingBookCategory category) {
-		super(id, category);
+	public PhiloStoneSmeltingRecipe(CraftingBookCategory category) {
+		super(category);
 	}
 
 	@Override
@@ -38,18 +38,20 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 	@NotNull
 	@Override
 	public ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
-		Set<SmeltingRecipe> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
+		Set<RecipeHolder<SmeltingRecipe>> matchingRecipes = getMatchingRecipes(inv, ServerLifecycleHooks.getCurrentServer().overworld());
 		if (matchingRecipes.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 		//If we have at least one matching recipe, return the output
 		//Note: It is multiplied by seven as we have seven inputs
-		ItemStack output = matchingRecipes.stream().findFirst().get().getResultItem(registryAccess).copy();
-		output.setCount(output.getCount() * 7);
-		return output;
+		ItemStack output = matchingRecipes.stream().findFirst()
+				.map(RecipeHolder::value)
+				.map(recipe -> recipe.getResultItem(registryAccess))
+				.get();
+		return output.copyWithCount(output.getCount() * 7);
 	}
 
-	private Set<SmeltingRecipe> getMatchingRecipes(CraftingContainer inv, @NotNull Level level) {
+	private Set<RecipeHolder<SmeltingRecipe>> getMatchingRecipes(CraftingContainer inv, @NotNull Level level) {
 		List<ItemStack> philoStones = new ArrayList<>();
 		List<ItemStack> coals = new ArrayList<>();
 		List<ItemStack> allItems = new ArrayList<>();
@@ -77,7 +79,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 					//Skip if the philosopher's stone is the same stack as the coal stack
 					// This may be the case if a pack dev added the philosopher's stone to the coals tag
 					if (philoStone != coal) {
-						Set<SmeltingRecipe> matchingRecipes = new HashSet<>();
+						Set<RecipeHolder<SmeltingRecipe>> matchingRecipes = new HashSet<>();
 						for (ItemStack stack : allItems) {
 							//Ignore checking the piece of coal and the philosopher's stone
 							if (stack != philoStone && stack != coal) {
@@ -89,7 +91,7 @@ public class PhiloStoneSmeltingRecipe extends CustomRecipe {
 									if (!matchingRecipes.addAll(level.getRecipeManager().getRecipesFor(RecipeType.SMELTING, furnaceInput, level))) {
 										return Collections.emptySet();
 									}
-								} else if (matchingRecipes.removeIf(recipe -> !recipe.matches(furnaceInput, level))) {
+								} else if (matchingRecipes.removeIf(recipe -> !recipe.value().matches(furnaceInput, level))) {
 									//If any matching recipes are no longer valid (so got removed), check if our set of matching recipes is now empty now
 									if (matchingRecipes.isEmpty()) {
 										//If it is exit due to there being no match

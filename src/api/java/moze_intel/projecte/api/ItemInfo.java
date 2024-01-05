@@ -2,20 +2,21 @@ package moze_intel.projecte.api;
 
 import java.util.Objects;
 import moze_intel.projecte.api.nss.NSSItem;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Class used for keeping track of a combined {@link Item} and {@link CompoundTag}. Unlike {@link ItemStack} this class does not keep track of count, and overrides {@link
- * #equals(Object)} and {@link #hashCode()} so that it can be used properly in a {@link java.util.Set}.
+ * Class used for keeping track of a combined {@link Item} and {@link CompoundTag}. Unlike {@link ItemStack} this class does not keep track of count, and overrides
+ * {@link #equals(Object)} and {@link #hashCode()} so that it can be used properly in a {@link java.util.Set}.
  *
  * @implNote If the {@link CompoundTag} this {@link ItemInfo} is given is empty, then it converts it to being null.
  * @apiNote {@link ItemInfo} and the data it stores is Immutable
@@ -69,11 +70,9 @@ public final class ItemInfo {
 		if (stack.representsTag()) {
 			return null;
 		}
-		Item item = ForgeRegistries.ITEMS.getValue(stack.getResourceLocation());
-		if (item == null) {
-			return null;
-		}
-		return fromItem(item, stack.getNBT());
+		return BuiltInRegistries.ITEM.getOptional(stack.getResourceLocation())
+				.map(item -> fromItem(item, stack.getNBT()))
+				.orElse(null);
 	}
 
 	/**
@@ -90,16 +89,24 @@ public final class ItemInfo {
 			if (registryName == null) {
 				return null;
 			}
-			Item item = ForgeRegistries.ITEMS.getValue(registryName);
-			if (item == null) {
-				return null;
-			}
-			if (nbt.contains("nbt", Tag.TAG_COMPOUND)) {
-				return fromItem(item, nbt.getCompound("nbt"));
-			}
-			return fromItem(item, null);
+			return BuiltInRegistries.ITEM.getOptional(registryName).map(item -> {
+				if (nbt.contains("nbt", Tag.TAG_COMPOUND)) {
+					return fromItem(item, nbt.getCompound("nbt"));
+				}
+				return fromItem(item, null);
+			}).orElse(null);
 		}
 		return null;
+	}
+
+	//TODO - 1.20.4: Docs
+	public static ItemInfo read(@NotNull FriendlyByteBuf buffer) {
+		return fromItem(buffer.readById(BuiltInRegistries.ITEM), buffer.readNbt());
+	}
+
+	public void write(@NotNull FriendlyByteBuf buffer) {
+		buffer.writeId(BuiltInRegistries.ITEM, getItem());
+		buffer.writeNbt(getNBT());
 	}
 
 	/**
@@ -113,8 +120,8 @@ public final class ItemInfo {
 	/**
 	 * @return The {@link CompoundTag} stored in this {@link ItemInfo}, or null if there is no nbt data stored.
 	 *
-	 * @apiNote The returned {@link CompoundTag} is a copy so as to ensure that this {@link ItemInfo} is not accidentally modified via modifying the returned {@link
-	 * CompoundTag}. This means it is safe to modify the returned {@link CompoundTag}
+	 * @apiNote The returned {@link CompoundTag} is a copy so as to ensure that this {@link ItemInfo} is not accidentally modified via modifying the returned
+	 * {@link CompoundTag}. This means it is safe to modify the returned {@link CompoundTag}
 	 */
 	@Nullable
 	public CompoundTag getNBT() {
@@ -193,6 +200,6 @@ public final class ItemInfo {
 	}
 
 	private ResourceLocation getRegistryName() {
-		return ForgeRegistries.ITEMS.getKey(item);
+		return BuiltInRegistries.ITEM.getKey(item);
 	}
 }

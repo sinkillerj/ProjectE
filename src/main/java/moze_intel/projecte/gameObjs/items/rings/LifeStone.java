@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -25,14 +26,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class LifeStone extends PEToggleItem implements IPedestalItem {
+public class LifeStone extends PEToggleItem implements IPedestalItem, ICapabilityAware {
 
 	public LifeStone(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -46,21 +46,20 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 			if (!consumeFuel(player, stack, 2 * 64, false)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				player.getCapability(InternalTimers.CAPABILITY, null).ifPresent(timers -> {
-					timers.activateFeed();
-					if (player.getFoodData().needsFood() && timers.canFeed()) {
-						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
-						player.getFoodData().eat(2, 10);
-						player.gameEvent(GameEvent.EAT);
-						removeEmc(stack, 64);
-					}
-					timers.activateHeal();
-					if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
-						level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
-						player.heal(2.0F);
-						removeEmc(stack, 64);
-					}
-				});
+				InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
+				timers.activateFeed();
+				if (player.getFoodData().needsFood() && timers.canFeed()) {
+					level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
+					player.getFoodData().eat(2, 10);
+					player.gameEvent(GameEvent.EAT);
+					removeEmc(stack, 64);
+				}
+				timers.activateHeal();
+				if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {
+					level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 1, 1);
+					player.heal(2.0F);
+					removeEmc(stack, 64);
+				}
 			}
 		}
 	}
@@ -98,5 +97,10 @@ public class LifeStone extends PEToggleItem implements IPedestalItem {
 			list.add(PELang.PEDESTAL_LIFE_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.life.get())));
 		}
 		return list;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

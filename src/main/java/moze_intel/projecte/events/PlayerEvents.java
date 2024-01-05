@@ -1,122 +1,98 @@
 package moze_intel.projecte.events;
 
-import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.armor.PEArmor;
-import moze_intel.projecte.handlers.CommonInternalAbilities;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalAbilities;
-import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.impl.TransmutationOffline;
-import moze_intel.projecte.impl.capability.AlchBagImpl;
-import moze_intel.projecte.impl.capability.KnowledgeImpl;
-import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.util.thread.SidedThreadGroups;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID)
 public class PlayerEvents {
-
-	// On death or return from end, copy the capability data
-	@SubscribeEvent
-	public static void cloneEvent(PlayerEvent.Clone event) {
-		Player original = event.getOriginal();
-		//Revive the player's caps
-		original.reviveCaps();
-		original.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(old -> {
-			CompoundTag bags = old.serializeNBT();
-			event.getEntity().getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.deserializeNBT(bags));
-		});
-		original.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(old -> {
-			CompoundTag knowledge = old.serializeNBT();
-			event.getEntity().getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.deserializeNBT(knowledge));
-		});
-		//Re-invalidate the player's caps now that we copied ours over
-		original.invalidateCaps();
-	}
 
 	// On death or return from end, sync to the client
 	@SubscribeEvent
 	public static void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer player) {
-			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
-			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+			IKnowledgeProvider knowledge = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+			if (knowledge != null) {
+				knowledge.sync(player);
+			}
+			IAlchBagProvider bagProvider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
+			if (bagProvider != null) {
+				bagProvider.sync(null, player);
+			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-		if (event.getEntity() instanceof ServerPlayer player) {
+		Player player = event.getEntity();
+		if (player instanceof ServerPlayer serverPlayer) {
 			// Sync to the client for "normal" interdimensional teleports (nether portal, etc.)
-			player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(c -> c.sync(player));
-			player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
-		}
-		event.getEntity().getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::onDimensionChange);
-	}
-
-	@SubscribeEvent
-	public static void attachCaps(AttachCapabilitiesEvent<Entity> evt) {
-		if (evt.getObject() instanceof Player player) {
-			attachCapability(evt, AlchBagImpl.Provider.NAME, new AlchBagImpl.Provider());
-			attachCapability(evt, KnowledgeImpl.Provider.NAME, new KnowledgeImpl.Provider(player));
-			attachCapability(evt, CommonInternalAbilities.NAME, new CommonInternalAbilities.Provider(player));
-			if (player instanceof ServerPlayer serverPlayer) {
-				attachCapability(evt, InternalTimers.NAME, new InternalTimers.Provider());
-				attachCapability(evt, InternalAbilities.NAME, new InternalAbilities.Provider(serverPlayer));
+			IKnowledgeProvider knowledge = serverPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+			if (knowledge != null) {
+				knowledge.sync(serverPlayer);
+			}
+			IAlchBagProvider bagProvider = serverPlayer.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
+			if (bagProvider != null) {
+				bagProvider.sync(null, serverPlayer);
 			}
 		}
-	}
-
-	private static void attachCapability(AttachCapabilitiesEvent<Entity> evt, ResourceLocation name, BasicCapabilityResolver<?> cap) {
-		evt.addCapability(name, cap);
-		evt.addListener(cap::invalidateAll);
+		InternalAbilities internalAbilities = player.getData(PEAttachmentTypes.INTERNAL_ABILITIES);
+		if (internalAbilities != null) {
+			internalAbilities.onDimensionChange(player);
+		}
 	}
 
 	@SubscribeEvent
 	public static void playerConnect(PlayerEvent.PlayerLoggedInEvent event) {
 		ServerPlayer player = (ServerPlayer) event.getEntity();
-		PacketHandler.sendFragmentedEmcPacket(player);
+		PacketUtils.sendFragmentedEmcPacket(player);
 
-		player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
+		IKnowledgeProvider knowledge = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+		if (knowledge != null) {
 			knowledge.sync(player);
 			PlayerHelper.updateScore(player, PlayerHelper.SCOREBOARD_EMC, knowledge.getEmc());
-		});
+		}
 
-		player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).ifPresent(c -> c.sync(null, player));
+		IAlchBagProvider alchBagProvider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
+		if (alchBagProvider != null) {
+			alchBagProvider.sync(null, player);
+		}
 
 		PECore.debugLog("Sent knowledge and bag data to {}", player.getName());
 	}
@@ -149,11 +125,11 @@ public class PlayerEvents {
 		if (bag.isEmpty()) {
 			return;
 		}
-		Optional<IAlchBagProvider> cap = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).resolve();
-		if (cap.isEmpty()) {
+		IAlchBagProvider bagProvider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
+		if (bagProvider == null) {
 			return;
 		}
-		IItemHandler handler = cap.get().getBag(((AlchemicalBag) bag.getItem()).color);
+		IItemHandler handler = bagProvider.getBag(((AlchemicalBag) bag.getItem()).color);
 		ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, event.getItem().getItem(), false);
 		if (remainder.isEmpty()) {
 			event.getItem().discard();

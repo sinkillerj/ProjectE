@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_philo_stone",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_philo_stone"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:transmutation_table"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

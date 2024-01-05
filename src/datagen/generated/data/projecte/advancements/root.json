@@ -29,8 +29,6 @@
     "description": {
       "translate": "advancements.projecte.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "projecte:philosophers_stone"
     },

@@ -1,11 +1,7 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import java.util.Optional;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
-import moze_intel.projecte.capability.managing.ICapabilityResolver;
-import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
@@ -29,18 +25,27 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
+public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvider {
+
+	public static final ICapabilityProvider<CollectorMK1BlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (collector, side) -> {
+		if (side == null) {
+			return collector.joined;
+		} else if (side.getAxis().isVertical()) {
+			return collector.automationAuxSlots;
+		}
+		return collector.automationInput;
+	};
 
 	private final ItemStackHandler input = new StackHandler(getInvSize()) {
 		@Override
@@ -63,7 +68,12 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
+	private final IItemHandlerModifiable automationAuxSlots;
+	private final IItemHandlerModifiable automationInput;
+	private final IItemHandler joined;
+
 	private final long emcGen;
+
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	private double unprocessedEMC;
@@ -77,7 +87,26 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	public CollectorMK1BlockEntity(BlockEntityTypeRegistryObject<? extends CollectorMK1BlockEntity> type, BlockPos pos, BlockState state, EnumCollectorTier tier) {
 		super(type, pos, state, tier.getStorage());
 		this.emcGen = tier.getGenRate();
-		itemHandlerResolver = new CollectorItemHandlerProvider();
+
+		//TODO - 1.20.4: Re-evaluate and test this
+		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
+			@NotNull
+			@Override
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+				return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			}
+		};
+		this.automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
+			@NotNull
+			@Override
+			public ItemStack extractItem(int slot, int count, boolean simulate) {
+				if (slot == UPGRADE_SLOT) {
+					return super.extractItem(slot, count, simulate);
+				}
+				return ItemStack.EMPTY;
+			}
+		};
+		this.joined = new CombinedInvWrapper(automationInput, automationAuxSlots);
 	}
 
 	@Override
@@ -142,9 +171,9 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	private void checkFuelOrKlein() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-			if (emcHolder.isPresent()) {
-				if (emcHolder.get().getNeededEmc(upgrading) > 0) {
+			IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
+				if (emcHolder.getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
 					hasFuel = false;
 				} else {
@@ -174,10 +203,11 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
 			if (hasChargeableItem) {
-				upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+				IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				if (emcHolder != null) {
 					long actualInserted = emcHolder.insertEmc(upgrading, Math.min(getStoredEmc(), emcGen), EmcAction.EXECUTE);
 					forceExtractEmc(actualInserted, EmcAction.EXECUTE);
-				});
+				}
 			} else if (hasFuel) {
 				if (FuelMapper.getFuelUpgrade(upgrading).isEmpty()) {
 					auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
@@ -226,7 +256,10 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	public long getItemCharge() {
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
-			return upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).map(emcHolder -> emcHolder.getStoredEmc(upgrading)).orElse(-1L);
+			IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
+				return emcHolder.getStoredEmc(upgrading);
+			}
 		}
 		return -1;
 	}
@@ -237,9 +270,9 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 		if (upgrading.isEmpty() || charge <= 0) {
 			return -1;
 		}
-		Optional<IItemEmcHolder> emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (emcHolder.isPresent()) {
-			long max = emcHolder.get().getMaximumEmc(upgrading);
+		IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+		if (emcHolder != null) {
+			long max = emcHolder.getMaximumEmc(upgrading);
 			if (charge >= max) {
 				return 1;
 			}
@@ -314,53 +347,5 @@ public class CollectorMK1BlockEntity extends CapabilityEmcBlockEntity implements
 	@Override
 	public Component getDisplayName() {
 		return TextComponentUtil.build(PEBlocks.COLLECTOR);
-	}
-
-	private class CollectorItemHandlerProvider extends SidedItemHandlerResolver {
-
-		private final ICapabilityResolver<IItemHandler> automationAuxSlots;
-		private final ICapabilityResolver<IItemHandler> automationInput;
-		private final ICapabilityResolver<IItemHandler> joined;
-
-		protected CollectorItemHandlerProvider() {
-			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
-				@NotNull
-				@Override
-				public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-					return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
-				}
-			});
-			NonNullLazy<IItemHandler> automationAuxSlots = NonNullLazy.of(() -> new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
-				@NotNull
-				@Override
-				public ItemStack extractItem(int slot, int count, boolean simulate) {
-					if (slot == UPGRADE_SLOT) {
-						return super.extractItem(slot, count, simulate);
-					}
-					return ItemStack.EMPTY;
-				}
-			});
-			this.automationInput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationInput);
-			this.automationAuxSlots = BasicCapabilityResolver.getBasicItemHandlerResolver(automationAuxSlots);
-			this.joined = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper((IItemHandlerModifiable) automationInput.get(),
-					(IItemHandlerModifiable) automationAuxSlots.get()));
-		}
-
-		@Override
-		protected ICapabilityResolver<IItemHandler> getResolver(@Nullable Direction side) {
-			if (side == null) {
-				return joined;
-			} else if (side.getAxis().isVertical()) {
-				return automationAuxSlots;
-			}
-			return automationInput;
-		}
-
-		@Override
-		public void invalidateAll() {
-			joined.invalidateAll();
-			automationInput.invalidateAll();
-			automationAuxSlots.invalidateAll();
-		}
 	}
 }

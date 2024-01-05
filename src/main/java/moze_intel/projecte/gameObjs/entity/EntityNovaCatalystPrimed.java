@@ -11,7 +11,6 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityNovaCatalystPrimed extends PrimedTnt {
@@ -36,12 +35,6 @@ public class EntityNovaCatalystPrimed extends PrimedTnt {
 	@Override
 	protected void explode() {
 		WorldHelper.createNovaExplosion(level(), this, getX(), getY(), getZ(), 16.0F);
-	}
-
-	@NotNull
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override

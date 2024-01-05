@@ -2,15 +2,12 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.function.Consumer;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,8 +20,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
@@ -90,11 +86,6 @@ public class PEShears extends ShearsItem implements IItemCharge, IBarHelper {
 	@Override
 	public int getNumCharges(@NotNull ItemStack stack) {
 		return numCharges;
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new ItemCapabilityWrapper(stack, new ChargeItemCapabilityWrapper());
 	}
 
 	@Override

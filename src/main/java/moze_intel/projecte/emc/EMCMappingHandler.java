@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.mapper.IEMCMapper;
@@ -31,17 +32,15 @@ import moze_intel.projecte.emc.mappers.TagMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT.EmcPKTInfo;
-import moze_intel.projecte.network.packets.to_client.knowledge.UpdateTransmutationTargetsPkt;
 import moze_intel.projecte.utils.AnnotationHelper;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -169,19 +168,20 @@ public final class EMCMappingHandler {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		if (server != null) {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-				player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent(knowledge -> {
-					if (knowledge instanceof KnowledgeImpl.DefaultImpl impl && impl.pruneStaleKnowledge()) {
+				IKnowledgeProvider knowledge = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+				if (knowledge != null) {
+					if (knowledge instanceof KnowledgeImpl impl && impl.pruneStaleKnowledge()) {
 						knowledge.sync(player);
 					} else if (player.containerMenu instanceof TransmutationContainer) {
 						//If knowledge didn't get trimmed due to pruning, tell clients that have the transmutation gui open
 						// that they should update targets anyway, as it is possible EMC values changed and the order things
 						// are drawn needs to be changed
-						PacketHandler.sendTo(new UpdateTransmutationTargetsPkt(), player);
+						PECore.packetHandler().updateTransmutationTargets(player);
 					}
-				});
+				}
 			}
 		}
-		MinecraftForge.EVENT_BUS.post(new EMCRemapEvent());
+		NeoForge.EVENT_BUS.post(new EMCRemapEvent());
 	}
 
 	public static int getLoadIndex() {

@@ -25,14 +25,13 @@
   },
   "requirements": [
     [
-      "has_iron_ingot",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_iron_ingot"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/iron_ingot_to_ender_pearl"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

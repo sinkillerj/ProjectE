@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:swiftwolf_rending_gale"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

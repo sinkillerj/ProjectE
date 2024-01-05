@@ -15,11 +15,11 @@ import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Rabbit.RabbitGroupData;
 import net.minecraft.world.entity.animal.Rabbit.Variant;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityMobRandomizer extends NoGravityThrowableProjectile {
@@ -75,7 +75,7 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 				} else {
 					data = null;
 				}
-				ForgeEventFactory.onFinalizeSpawn(randomized, level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
+				EventHooks.onFinalizeSpawn(randomized, level, level.getCurrentDifficultyAt(randomized.blockPosition()), MobSpawnType.CONVERSION, data, null);
 				level.tryAddFreshEntityWithPassengers(randomized);
 				if (randomized.isAddedToWorld()) {
 					randomized.spawnAnim();
@@ -86,14 +86,8 @@ public class EntityMobRandomizer extends NoGravityThrowableProjectile {
 		}
 	}
 
-	@NotNull
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public boolean ignoreExplosion() {
+	public boolean ignoreExplosion(@NotNull Explosion explosion) {
 		return true;
 	}
 }

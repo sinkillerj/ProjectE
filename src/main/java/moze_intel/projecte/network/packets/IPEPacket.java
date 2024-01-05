@@ -1,19 +1,13 @@
 package moze_intel.projecte.network.packets;
 
-import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public interface IPEPacket {
+public interface IPEPacket<CONTEXT extends IPayloadContext> extends CustomPacketPayload {
 
-	void handle(NetworkEvent.Context context);
+	void handle(CONTEXT context);
 
-	void encode(FriendlyByteBuf buffer);
-
-	static <PACKET extends IPEPacket> void handle(final PACKET message, Supplier<NetworkEvent.Context> ctx) {
-		Context context = ctx.get();
-		context.enqueueWork(() -> message.handle(context));
-		context.setPacketHandled(true);
+	default void handleMainThread(CONTEXT context) {
+		context.workHandler().execute(() -> handle(context));
 	}
 }

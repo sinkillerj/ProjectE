@@ -1,11 +1,7 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import java.util.Optional;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
-import moze_intel.projecte.capability.managing.ICapabilityResolver;
-import moze_intel.projecte.capability.managing.SidedItemHandlerResolver;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.container.RelayMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -24,19 +20,34 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements MenuProvider {
+public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider {
+
+	public static final ICapabilityProvider<RelayMK1BlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (relay, side) -> {
+		if (side == null) {
+			return relay.joined;
+		} else if (side.getAxis().isVertical()) {
+			return relay.automationOutput;
+		}
+		return relay.automationInput;
+	};
 
 	private final CompactableStackHandler input;
 	private final ItemStackHandler output = new StackHandler(1);
+
+	private final IItemHandlerModifiable automationOutput;
+	private final IItemHandlerModifiable automationInput;
+	private final IItemHandler joined;
+
 	private final long chargeRate;
+
 	private double bonusEMC;
 
 	public RelayMK1BlockEntity(BlockPos pos, BlockState state) {
@@ -53,7 +64,33 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 				return SlotPredicates.RELAY_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
-		itemHandlerResolver = new RelayItemHandlerProvider();
+
+		//TODO - 1.20.4: Re-evaluate and test this
+		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
+		this.automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
+			@NotNull
+			@Override
+			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+				return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			}
+
+			@NotNull
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate) {
+				ItemStack stack = getStackInSlot(slot);
+				if (!stack.isEmpty()) {
+					IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+					if (emcHolder != null) {
+						if (emcHolder.getNeededEmc(stack) == 0) {
+							return super.extractItem(slot, amount, simulate);
+						}
+						return ItemStack.EMPTY;
+					}
+				}
+				return super.extractItem(slot, amount, simulate);
+			}
+		};
+		this.joined = new CombinedInvWrapper(automationInput, automationOutput);
 	}
 
 	@Override
@@ -87,9 +124,8 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		relay.input.compact();
 		ItemStack stack = relay.getBurn();
 		if (!stack.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
+			IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
 				long simulatedVal = relay.forceInsertEmc(emcHolder.extractEmc(stack, relay.chargeRate, EmcAction.SIMULATE), EmcAction.SIMULATE);
 				if (simulatedVal > 0) {
 					relay.forceInsertEmc(emcHolder.extractEmc(stack, simulatedVal, EmcAction.EXECUTE), EmcAction.EXECUTE);
@@ -105,10 +141,11 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		}
 		ItemStack chargeable = relay.getCharging();
 		if (!chargeable.isEmpty() && relay.getStoredEmc() > 0) {
-			chargeable.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).ifPresent(emcHolder -> {
+			IItemEmcHolder emcHolder = chargeable.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
 				long actualSent = emcHolder.insertEmc(chargeable, Math.min(relay.getStoredEmc(), relay.chargeRate), EmcAction.EXECUTE);
 				relay.forceExtractEmc(actualSent, EmcAction.EXECUTE);
-			});
+			}
 		}
 		relay.updateComparators();
 	}
@@ -127,9 +164,8 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 	public double getItemChargeProportion() {
 		ItemStack charging = getCharging();
 		if (!charging.isEmpty()) {
-			Optional<IItemEmcHolder> holderCapability = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-			if (holderCapability.isPresent()) {
-				IItemEmcHolder emcHolder = holderCapability.get();
+			IItemEmcHolder emcHolder = charging.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			if (emcHolder != null) {
 				return (double) emcHolder.getStoredEmc(charging) / emcHolder.getMaximumEmc(charging);
 			}
 		}
@@ -141,9 +177,8 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 		if (burn.isEmpty()) {
 			return 0;
 		}
-		Optional<IItemEmcHolder> holderCapability = burn.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (holderCapability.isPresent()) {
-			IItemEmcHolder emcHolder = holderCapability.get();
+		IItemEmcHolder emcHolder = burn.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+		if (emcHolder != null) {
 			return (double) emcHolder.getStoredEmc(burn) / emcHolder.getMaximumEmc(burn);
 		}
 		return burn.getCount() / (double) burn.getMaxStackSize();
@@ -191,61 +226,5 @@ public class RelayMK1BlockEntity extends CapabilityEmcBlockEntity implements Men
 	@Override
 	public Component getDisplayName() {
 		return PELang.GUI_RELAY_MK1.translate();
-	}
-
-	private class RelayItemHandlerProvider extends SidedItemHandlerResolver {
-
-		private final ICapabilityResolver<IItemHandler> automationOutput;
-		private final ICapabilityResolver<IItemHandler> automationInput;
-		private final ICapabilityResolver<IItemHandler> joined;
-
-		protected RelayItemHandlerProvider() {
-			NonNullLazy<IItemHandler> automationInput = NonNullLazy.of(() -> new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN));
-			NonNullLazy<IItemHandler> automationOutput = NonNullLazy.of(() -> new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
-				@NotNull
-				@Override
-				public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-					return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
-				}
-
-				@NotNull
-				@Override
-				public ItemStack extractItem(int slot, int amount, boolean simulate) {
-					ItemStack stack = getStackInSlot(slot);
-					if (!stack.isEmpty()) {
-						Optional<IItemEmcHolder> holderCapability = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-						if (holderCapability.isPresent()) {
-							IItemEmcHolder emcHolder = holderCapability.get();
-							if (emcHolder.getNeededEmc(stack) == 0) {
-								return super.extractItem(slot, amount, simulate);
-							}
-							return ItemStack.EMPTY;
-						}
-					}
-					return super.extractItem(slot, amount, simulate);
-				}
-			});
-			this.automationInput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationInput);
-			this.automationOutput = BasicCapabilityResolver.getBasicItemHandlerResolver(automationOutput);
-			this.joined = BasicCapabilityResolver.getBasicItemHandlerResolver(() -> new CombinedInvWrapper((IItemHandlerModifiable) automationInput.get(),
-					(IItemHandlerModifiable) automationOutput.get()));
-		}
-
-		@Override
-		protected ICapabilityResolver<IItemHandler> getResolver(@Nullable Direction side) {
-			if (side == null) {
-				return joined;
-			} else if (side.getAxis().isVertical()) {
-				return automationOutput;
-			}
-			return automationInput;
-		}
-
-		@Override
-		public void invalidateAll() {
-			joined.invalidateAll();
-			automationInput.invalidateAll();
-			automationOutput.invalidateAll();
-		}
 	}
 }

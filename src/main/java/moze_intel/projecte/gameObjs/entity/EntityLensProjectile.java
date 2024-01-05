@@ -11,10 +11,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityLensProjectile extends NoGravityThrowableProjectile {
@@ -65,14 +65,8 @@ public class EntityLensProjectile extends NoGravityThrowableProjectile {
 		charge = nbt.getInt("Charge");
 	}
 
-	@NotNull
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public boolean ignoreExplosion() {
+	public boolean ignoreExplosion(@NotNull Explosion explosion) {
 		return true;
 	}
 }

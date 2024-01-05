@@ -5,11 +5,8 @@ import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.to_server.LeftClickArchangelPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.text.PELang;
@@ -29,19 +26,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
 	public ArchangelSmite(Properties props) {
 		super(props);
-		MinecraftForge.EVENT_BUS.addListener(this::emptyLeftClick);
-		MinecraftForge.EVENT_BUS.addListener(this::leftClickBlock);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
+		NeoForge.EVENT_BUS.addListener(this::emptyLeftClick);
+		NeoForge.EVENT_BUS.addListener(this::leftClickBlock);
 	}
 
 	public void fireVolley(ItemStack stack, Player player) {
@@ -51,7 +47,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	private void emptyLeftClick(PlayerInteractEvent.LeftClickEmpty evt) {
-		PacketHandler.sendToServer(new LeftClickArchangelPKT());
+		PECore.packetHandler().leftClickArchangel();
 	}
 
 	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt) {

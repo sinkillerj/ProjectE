@@ -46,16 +46,15 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_hammer",
       "has_pickaxe",
-      "has_shovel",
-      "has_the_recipe"
+      "has_shovel"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:rm_morning_star"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

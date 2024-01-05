@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -31,7 +30,6 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	public MindStone(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
 	}
 
 	@Override

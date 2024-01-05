@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_red_matter_block",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_red_matter_block"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/red_matter_block_deconstruct"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

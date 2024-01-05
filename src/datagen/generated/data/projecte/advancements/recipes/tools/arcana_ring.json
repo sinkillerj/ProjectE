@@ -70,18 +70,17 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_swrg",
       "has_harvest",
       "has_ignition",
       "has_zero",
-      "has_matter",
-      "has_the_recipe"
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:arcana_ring"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

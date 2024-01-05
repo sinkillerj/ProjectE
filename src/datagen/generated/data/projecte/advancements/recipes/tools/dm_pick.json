@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:dm_pick"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

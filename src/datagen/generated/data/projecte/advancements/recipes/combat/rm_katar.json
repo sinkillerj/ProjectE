@@ -58,17 +58,16 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_shears",
       "has_axe",
       "has_sword",
-      "has_hoe",
-      "has_the_recipe"
+      "has_hoe"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:rm_katar"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

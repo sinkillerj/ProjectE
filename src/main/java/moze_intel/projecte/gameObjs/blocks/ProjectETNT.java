@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.sounds.SoundEvents;
@@ -54,9 +54,9 @@ public class ProjectETNT extends TntBlock {
 			@NotNull
 			@Override
 			protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-				BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-				createAndAddEntity(source.getLevel(), blockpos, null);
-				source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
+				BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+				createAndAddEntity(source.level(), blockpos, null);
+				source.level().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
 				stack.shrink(1);
 				return stack;
 			}

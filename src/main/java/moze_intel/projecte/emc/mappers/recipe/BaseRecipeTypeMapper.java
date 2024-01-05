@@ -13,14 +13,15 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.utils.RegistryUtils;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Fix recipe mapping for things containing EMC not working properly? (aka full klein stars)
@@ -36,19 +37,21 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, RegistryAccess registryAccess, INSSFakeGroupManager fakeGroupManager) {
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RecipeHolder<Recipe<?>> recipeHolder, RegistryAccess registryAccess,
+			INSSFakeGroupManager fakeGroupManager) {
+		Recipe<?> recipe = recipeHolder.value();
 		ItemStack recipeOutput = recipe.getResultItem(registryAccess);
 		if (recipeOutput.isEmpty()) {
 			//If there is no output (for example a special recipe), don't mark it that we handled it
 			return false;
 		}
-		Collection<Ingredient> ingredientsChecked = getIngredientsChecked(recipe);
+		Collection<Ingredient> ingredientsChecked = getIngredientsChecked(recipeHolder);
 		if (ingredientsChecked == null) {
 			//Failed to get matching ingredients, bail but mark that we handled it as there is a 99% chance a later
 			// mapper would fail as well due to it being an invalid recipe
 			return true;
 		}
-		ResourceLocation recipeID = recipe.getId();
+		ResourceLocation recipeID = recipeHolder.id();
 		List<Tuple<NormalizedSimpleStack, List<IngredientMap<NormalizedSimpleStack>>>> dummyGroupInfos = new ArrayList<>();
 		IngredientMap<NormalizedSimpleStack> ingredientMap = new IngredientMap<>();
 		for (Ingredient recipeItem : ingredientsChecked) {
@@ -168,7 +171,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				ingredientMap.addIngredient(NSSItem.createItem(item.getCraftingRemainingItem(stack)), -1);
 			}
 		} catch (Exception e) {
-			ResourceLocation itemName = RegistryUtils.getName(item);
+			ResourceLocation itemName = BuiltInRegistries.ITEM.getKey(item);
 			if (hasContainerItem) {
 				if (isTagException(e)) {
 					PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Item: {} reported that it has a container item, "
@@ -200,11 +203,11 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	}
 
 	@Nullable
-	private Collection<Ingredient> getIngredientsChecked(Recipe<?> recipe) {
+	private Collection<Ingredient> getIngredientsChecked(RecipeHolder<Recipe<?>> recipeHolder) {
 		try {
-			return getIngredients(recipe);
+			return getIngredients(recipeHolder.value());
 		} catch (Exception e) {
-			ResourceLocation recipeID = recipe.getId();
+			ResourceLocation recipeID = recipeHolder.id();
 			if (isTagException(e)) {
 				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Failed to get ingredients due to the recipe not properly deserializing and handling tags. "
 														   + "Please report this to {}.", recipeID, recipeID.getNamespace(), e);

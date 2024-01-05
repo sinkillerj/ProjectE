@@ -1,11 +1,8 @@
 package moze_intel.projecte.handlers;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -15,32 +12,22 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import org.jetbrains.annotations.NotNull;
 
 public class CommonInternalAbilities {
 
-	public static final Capability<CommonInternalAbilities> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
-	public static final ResourceLocation NAME = PECore.rl("common_internal_abilities");
 	private static final AttributeModifier WATER_SPEED_BOOST = new AttributeModifier("Walk on water speed boost", 0.15, Operation.ADDITION);
 	private static final AttributeModifier LAVA_SPEED_BOOST = new AttributeModifier("Walk on lava speed boost", 0.15, Operation.ADDITION);
 
-	private final Player player;
-
-	public CommonInternalAbilities(Player player) {
-		this.player = player;
-	}
-
-	public void tick() {
+	public void tick(Player player) {
 		boolean applyWaterSpeed = false;
 		boolean applyLavaSpeed = false;
-		WalkOnType waterWalkOnType = canWalkOnWater();
-		WalkOnType lavaWalkOnType = canWalkOnLava();
+		WalkOnType waterWalkOnType = canWalkOnWater(player);
+		WalkOnType lavaWalkOnType = canWalkOnLava(player);
 		if (waterWalkOnType.canWalk() || lavaWalkOnType.canWalk()) {
 			int x = (int) Math.floor(player.getX());
-			int y = (int) (player.getY() - player.getMyRidingOffset());
+			//TODO - 1.20.4: FIGURE THIS OUT and why we even use the riding offset
+			//int y = (int) (player.getY() - player.getMyRidingOffset());
+			int y = (int) (player.getY() - (player.getVehicle() == null ? 0 : player.getMyRidingOffset(player.getVehicle())));
 			int z = (int) Math.floor(player.getZ());
 			BlockPos pos = new BlockPos(x, y, z);
 			FluidState below = player.level().getFluidState(pos.below());
@@ -80,11 +67,11 @@ public class CommonInternalAbilities {
 				attribute.addTransientModifier(speedModifier);
 			}
 		} else if (attribute.hasModifier(speedModifier)) {
-			attribute.removeModifier(speedModifier);
+			attribute.removeModifier(speedModifier.getId());
 		}
 	}
 
-	private WalkOnType canWalkOnWater() {
+	private WalkOnType canWalkOnWater(Player player) {
 		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.EVERTIDE_AMULET.get())) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
@@ -92,7 +79,7 @@ public class CommonInternalAbilities {
 		return !helmet.isEmpty() && helmet.getItem() == PEItems.GEM_HELMET.get() ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
-	private WalkOnType canWalkOnLava() {
+	private WalkOnType canWalkOnLava(Player player) {
 		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.VOLCANITE_AMULET.get())) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
@@ -107,19 +94,6 @@ public class CommonInternalAbilities {
 
 		public boolean canWalk() {
 			return this != UNABLE;
-		}
-	}
-
-	public static class Provider extends BasicCapabilityResolver<CommonInternalAbilities> {
-
-		public Provider(Player player) {
-			super(() -> new CommonInternalAbilities(player));
-		}
-
-		@NotNull
-		@Override
-		public Capability<CommonInternalAbilities> getMatchingCapability() {
-			return CAPABILITY;
 		}
 	}
 }

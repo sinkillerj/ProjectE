@@ -1,6 +1,7 @@
 package moze_intel.projecte.api.capabilities.block_entity;
 
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.core.BlockPos;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -11,14 +12,14 @@ import org.jetbrains.annotations.Range;
  * <p>
  * This is exposed through the Capability system.
  * <p>
- * Acquire an instance of this using {@link net.minecraft.world.level.block.entity.BlockEntity#getCapability(Capability, net.minecraft.core.Direction)}.
+ * Acquire an instance of this using {@link net.minecraft.world.level.Level#getCapability(BlockCapability, BlockPos, Object)}.
  *
  * @author williewillus
  */
 public interface IEmcStorage {
 
 	/**
-	 * Like {@link net.minecraftforge.fluids.capability.IFluidHandler.FluidAction} except for EMC in general
+	 * Like {@link net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction} except for EMC in general
 	 */
 	enum EmcAction {
 		EXECUTE,

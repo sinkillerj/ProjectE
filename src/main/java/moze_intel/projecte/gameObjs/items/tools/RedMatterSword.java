@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
 import java.util.List;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.IItemMode;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -20,7 +19,6 @@ public class RedMatterSword extends PESword implements IItemMode {
 	public RedMatterSword(Properties props) {
 		super(EnumMatterType.RED_MATTER, 3, 12, props);
 		modeDesc = new ILangEntry[]{PELang.MODE_RED_SWORD_1, PELang.MODE_RED_SWORD_2};
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override

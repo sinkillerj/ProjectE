@@ -2,52 +2,62 @@ package moze_intel.projecte.impl.capability;
 
 import java.util.EnumMap;
 import java.util.Map;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
-import moze_intel.projecte.api.capabilities.PECapabilities;
-import moze_intel.projecte.capability.managing.SerializableCapabilityResolver;
-import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class AlchBagImpl {
+public final class AlchBagImpl implements IAlchBagProvider {
 
-	public static IAlchBagProvider getDefault() {
-		return new DefaultImpl();
+	private final Player player;
+
+	public AlchBagImpl(Player player) {
+		this.player = player;
 	}
 
-	private static class DefaultImpl implements IAlchBagProvider {
+	private AlchemicalBagAttachment attachment() {
+		return this.player.getData(PEAttachmentTypes.ALCHEMICAL_BAGS);
+	}
+
+	@NotNull
+	@Override
+	public IItemHandler getBag(@NotNull DyeColor color) {
+		return attachment().getBag(color);
+	}
+
+	@Override
+	public void sync(@Nullable DyeColor color, @NotNull ServerPlayer player) {
+		//TODO - 1.20.4: Do we still need to pass the player into this method?
+		PacketUtils.sendTo(new SyncBagDataPKT(attachment().writeNBT(color)), player);
+	}
+
+	public static class AlchemicalBagAttachment implements INBTSerializable<CompoundTag> {
 
 		private final Map<DyeColor, ItemStackHandler> inventories = new EnumMap<>(DyeColor.class);
 
 		@NotNull
-		@Override
-		public IItemHandler getBag(@NotNull DyeColor color) {
-			if (!inventories.containsKey(color)) {
-				inventories.put(color, new ItemStackHandler(104));
-			}
-			return inventories.get(color);
-		}
-
-		@Override
-		public void sync(@Nullable DyeColor color, @NotNull ServerPlayer player) {
-			PacketHandler.sendTo(new SyncBagDataPKT(writeNBT(color)), player);
+		public IItemHandlerModifiable getBag(@NotNull DyeColor color) {
+			return inventories.computeIfAbsent(color, c -> new ItemStackHandler(104));
 		}
 
 		private CompoundTag writeNBT(DyeColor color) {
 			CompoundTag ret = new CompoundTag();
 			DyeColor[] colors = color == null ? DyeColor.values() : new DyeColor[]{color};
 			for (DyeColor c : colors) {
-				if (inventories.containsKey(c)) {
-					ret.put(c.getSerializedName(), inventories.get(c).serializeNBT());
+				ItemStackHandler handler = inventories.get(c);
+				if (handler != null) {
+					ret.put(c.getSerializedName(), handler.serializeNBT());
 				}
 			}
 			return ret;
@@ -61,30 +71,12 @@ public final class AlchBagImpl {
 		@Override
 		public void deserializeNBT(CompoundTag nbt) {
 			for (DyeColor e : DyeColor.values()) {
-				if (nbt.contains(e.getSerializedName())) {
+				if (nbt.contains(e.getSerializedName(), Tag.TAG_COMPOUND)) {
 					ItemStackHandler inv = new ItemStackHandler(104);
 					inv.deserializeNBT(nbt.getCompound(e.getSerializedName()));
 					inventories.put(e, inv);
 				}
 			}
 		}
-	}
-
-	public static class Provider extends SerializableCapabilityResolver<IAlchBagProvider> {
-
-		public static final ResourceLocation NAME = PECore.rl("alch_bags");
-
-		public Provider() {
-			super(getDefault());
-		}
-
-		@NotNull
-		@Override
-		public Capability<IAlchBagProvider> getMatchingCapability() {
-			return PECapabilities.ALCH_BAG_CAPABILITY;
-		}
-	}
-
-	private AlchBagImpl() {
 	}
 }

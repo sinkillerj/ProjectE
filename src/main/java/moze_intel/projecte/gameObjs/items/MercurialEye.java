@@ -2,16 +2,13 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Set;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.capability.ExtraFunctionItemCapabilityWrapper;
-import moze_intel.projecte.capability.IItemCapabilitySerializable;
-import moze_intel.projecte.capability.ItemCapability;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -21,8 +18,6 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -41,18 +36,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MercurialEye extends ItemMode implements IExtraFunction {
+public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilityAware {
 
 	private static final int CREATION_MODE = 0;
 	private static final int EXTENSION_MODE = 1;
@@ -64,15 +56,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	public MercurialEye(Properties props) {
 		super(props, (byte) 4, PELang.MODE_MERCURIAL_EYE_1, PELang.MODE_MERCURIAL_EYE_2, PELang.MODE_MERCURIAL_EYE_3, PELang.MODE_MERCURIAL_EYE_4,
 				PELang.MODE_MERCURIAL_EYE_5, PELang.MODE_MERCURIAL_EYE_6);
-		addItemCapability(ExtraFunctionItemCapabilityWrapper::new);
-		addItemCapability(EyeInventoryHandler::new);
 	}
 
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		int selected = player.getInventory().selected;
 		MenuProvider provider = new SimpleMenuProvider((id, inv, pl) -> new MercurialEyeContainer(id, inv, hand, selected), stack.getHoverName());
-		NetworkHooks.openScreen((ServerPlayer) player, provider, b -> {
+		player.openMenu(provider, b -> {
 			b.writeEnum(hand);
 			b.writeByte(selected);
 		});
@@ -108,13 +98,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private InteractionResult formBlocks(ItemStack eye, Player player, InteractionHand hand, BlockPos startingPos, @Nullable Direction facing) {
-		Optional<IItemHandler> inventoryCapability = eye.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
-		if (inventoryCapability.isEmpty()) {
+		IItemHandler inventory = eye.getCapability(ItemHandler.ITEM);
+		if (inventory == null) {
 			return InteractionResult.FAIL;
 		}
-		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
-		if (klein.isEmpty() || !klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()) {
+		if (klein.isEmpty() || klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY) == null) {
 			playNoEMCSound(player);
 			return InteractionResult.FAIL;
 		}
@@ -181,7 +170,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		} else if (mode == TRANSMUTATION_MODE_CLASSIC) {
 			//if state is same as the start state replace it in an up to 9x9x1 area
 			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
+			for (BlockPos pos : WorldHelper.getPositionsFromBox(AABB.encapsulatingFullBlocks(corners.getLeft(), corners.getRight()))) {
 				BlockState placedState = level.getBlockState(pos);
 				//Ensure we are immutable so that removal/placing doesn't act weird
 				if (placedState == startingState && doBlockPlace(player, placedState, pos.immutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
@@ -254,18 +243,17 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	}
 
 	private boolean doBlockPlace(Player player, BlockState oldState, BlockPos placePos, BlockState newState, ItemStack eye, long oldEMC, long newEMC, NonNullList<ItemStack> drops) {
-		Optional<IItemHandler> inventoryCapability = eye.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
-		if (inventoryCapability.isEmpty()) {
+		IItemHandler inventory = eye.getCapability(ItemHandler.ITEM);
+		if (inventory == null) {
 			return false;
 		}
-		IItemHandler inventory = inventoryCapability.get();
 		ItemStack klein = inventory.getStackInSlot(0);
 		if (klein.isEmpty()) {
 			playNoEMCSound(player);
 			return false;
 		}
-		Optional<IItemEmcHolder> holderCapability = klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).resolve();
-		if (holderCapability.isEmpty()) {
+		IItemEmcHolder emcHolder = klein.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+		if (emcHolder == null) {
 			playNoEMCSound(player);
 			return false;
 		} else if (oldState == newState) {
@@ -283,7 +271,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		}
 
 		if (PlayerHelper.checkedReplaceBlock((ServerPlayer) player, placePos, newState)) {
-			IItemEmcHolder emcHolder = holderCapability.get();
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
 				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).serverLevel(), placePos, null, player, eye));
@@ -301,7 +288,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 	private int fillGaps(ItemStack eye, Player player, Level level, BlockPlaceContext context, BlockState startingState, BlockState newState, long newBlockEmc,
 			Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
 		int hitTargets = 0;
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(new AABB(corners.getLeft(), corners.getRight()))) {
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(AABB.encapsulatingFullBlocks(corners.getLeft(), corners.getRight()))) {
 			VoxelShape bb = startingState.getCollisionShape(level, pos);
 			if (level.isUnobstructed(null, bb)) {
 				BlockPlaceContext adjustedContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
@@ -354,36 +341,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 		return new ImmutablePair<>(start, end);
 	}
 
-	private static class EyeInventoryHandler extends ItemCapability<IItemHandler> implements IItemCapabilitySerializable {
-
-		private final ItemStackHandler inv = new ItemStackHandler(2);
-		private final LazyOptional<IItemHandler> invInst = LazyOptional.of(() -> inv);
-
-		@Override
-		public Tag serializeNBT() {
-			return inv.serializeNBT();
-		}
-
-		@Override
-		public void deserializeNBT(Tag nbt) {
-			if (nbt instanceof CompoundTag tag) {
-				inv.deserializeNBT(tag);
-			}
-		}
-
-		@Override
-		public Capability<IItemHandler> getCapability() {
-			return ForgeCapabilities.ITEM_HANDLER;
-		}
-
-		@Override
-		public LazyOptional<IItemHandler> getLazyCapability() {
-			return invInst;
-		}
-
-		@Override
-		public String getStorageKey() {
-			return "EyeInventory";
-		}
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		//TODO - 1.20.4: Test this
+		event.registerItem(ItemHandler.ITEM, (stack, context) -> stack.getData(PEAttachmentTypes.EYE_INVENTORY), this);
 	}
 }

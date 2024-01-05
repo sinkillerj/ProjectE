@@ -21,11 +21,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -37,11 +37,11 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 	private long lastGameTime;
 
 	public TransmutationRenderingOverlay() {
-		MinecraftForge.EVENT_BUS.addListener(this::onOverlay);
+		NeoForge.EVENT_BUS.addListener(this::onOverlay);
 	}
 
 	@Override
-	public void render(ForgeGui gui, GuiGraphics graphics, float partialTicks, int width, int height) {
+	public void render(ExtendedGui gui, GuiGraphics graphics, float partialTicks, int width, int height) {
 		if (!mc.options.hideGui && transmutationResult != null) {
 			if (transmutationResult.getBlock() instanceof LiquidBlock liquidBlock) {
 				IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(liquidBlock.getFluid());

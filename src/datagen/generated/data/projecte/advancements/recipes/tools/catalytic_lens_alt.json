@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:catalytic_lens_alt"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

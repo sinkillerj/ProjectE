@@ -6,8 +6,8 @@ import java.util.Map;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.config.value.CachedBooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,22 +23,22 @@ public class NBTProcessorConfig extends BasePEConfig {
 
 	/**
 	 * If the config has not already been initialized setup a config the with given list of {@link INBTProcessor}s and creates a dummy "server" config so that it will be
-	 * synced by the {@link net.minecraftforge.fml.config.ConfigTracker} from server to client.
+	 * synced by the {@link net.neoforged.fml.config.ConfigTracker} from server to client.
 	 *
 	 * @implNote We register the dummy config as being owned by our mod container, but we don't tell the mod container about the dummy config so that it does not
 	 * overwrite our main server config.
 	 */
 	public static void setup(@NotNull List<INBTProcessor> processors) {
 		if (INSTANCE == null) {
-			ProjectEConfig.registerConfig(INSTANCE = new NBTProcessorConfig(processors));
+			ProjectEConfig.registerConfig(PECore.MOD_CONTAINER, INSTANCE = new NBTProcessorConfig(processors));
 		}
 	}
 
-	private final ForgeConfigSpec configSpec;
+	private final ModConfigSpec configSpec;
 	private final Map<String, ProcessorConfig> processorConfigs = new HashMap<>();
 
 	private NBTProcessorConfig(@NotNull List<INBTProcessor> processors) {
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		builder.comment("This config is used to control which NBT Processors get used, and which ones actually contribute to the persistent NBT data that gets " +
 						"saved to knowledge/copied in a condenser.",
 				"To disable an NBT Processor set the '" + ENABLED + "' option for it to false.",
@@ -97,7 +97,7 @@ public class NBTProcessorConfig extends BasePEConfig {
 	}
 
 	@Override
-	public ForgeConfigSpec getConfigSpec() {
+	public ModConfigSpec getConfigSpec() {
 		return configSpec;
 	}
 
@@ -117,7 +117,7 @@ public class NBTProcessorConfig extends BasePEConfig {
 		@Nullable
 		public final CachedBooleanValue persistent;
 
-		private ProcessorConfig(IPEConfig config, ForgeConfigSpec.Builder builder, INBTProcessor processor) {
+		private ProcessorConfig(IPEConfig config, ModConfigSpec.Builder builder, INBTProcessor processor) {
 			builder.comment(processor.getDescription()).push(processor.getName());
 			enabled = CachedBooleanValue.wrap(config, builder.define(ENABLED, processor.isAvailable()));
 			if (processor.hasPersistentNBT()) {

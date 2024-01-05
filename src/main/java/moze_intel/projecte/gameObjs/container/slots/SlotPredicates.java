@@ -17,11 +17,11 @@ public final class SlotPredicates {
 
 	public static final Predicate<ItemStack> COLLECTOR_LOCK = input -> !input.isEmpty() && FuelMapper.isStackFuel(input);
 
-	public static final Predicate<ItemStack> COLLECTOR_INV = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent()
+	public static final Predicate<ItemStack> COLLECTOR_INV = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY) != null
 																	  || (FuelMapper.isStackFuel(input) && !FuelMapper.isStackMaxFuel(input));
 
 	// slotrelayklein, slotmercurialklein
-	public static final Predicate<ItemStack> EMC_HOLDER = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).isPresent();
+	public static final Predicate<ItemStack> EMC_HOLDER = input -> !input.isEmpty() && input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY) != null;
 
 	// slotrelayinput
 	public static final Predicate<ItemStack> RELAY_INV = input -> EMC_HOLDER.test(input) || HAS_EMC.test(input);

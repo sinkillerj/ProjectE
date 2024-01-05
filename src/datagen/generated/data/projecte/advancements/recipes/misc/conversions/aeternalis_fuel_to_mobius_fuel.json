@@ -27,14 +27,13 @@
   },
   "requirements": [
     [
-      "has_aeternalis_fuel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_aeternalis_fuel"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/aeternalis_fuel_to_mobius_fuel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

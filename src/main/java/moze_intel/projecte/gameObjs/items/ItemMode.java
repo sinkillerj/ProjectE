@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.capability.ChargeItemCapabilityWrapper;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +19,6 @@ public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge,
 		super(props);
 		this.numCharge = numCharge;
 		this.modes = modeDescrp;
-		addItemCapability(ChargeItemCapabilityWrapper::new);
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
 	}
 
 	@Override

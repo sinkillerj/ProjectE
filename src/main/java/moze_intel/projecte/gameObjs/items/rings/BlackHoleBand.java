@@ -9,10 +9,7 @@ import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
-import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.block_entities.EmcBlockEntity;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
@@ -39,19 +36,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
-public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchChestItem, IPedestalItem {
+public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchChestItem, IPedestalItem, ICapabilityAware {
 
 	public BlackHoleBand(Properties props) {
 		super(props);
-		addItemCapability(AlchBagItemCapabilityWrapper::new);
-		addItemCapability(AlchChestItemCapabilityWrapper::new);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private InteractionResult tryPickupFluid(Level level, Player player, ItemStack stack) {
@@ -63,7 +57,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 		BlockState state = level.getBlockState(fluidPos);
 		if (level.mayInteract(player, fluidPos) && player.mayUseItemAt(fluidPos, result.getDirection(), stack) && state.getBlock() instanceof BucketPickup pickup) {
 			Optional<SoundEvent> sound = pickup.getPickupSound(state);
-			ItemStack itemStack = pickup.pickupBlock(level, fluidPos, state);
+			ItemStack itemStack = pickup.pickupBlock(player, level, fluidPos, state);
 			if (!itemStack.isEmpty()) {
 				sound.ifPresent(soundEvent -> player.level().playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent,
 						SoundSource.PLAYERS, 1.0F, 1.0F));
@@ -104,13 +98,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			if (!level.isClientSide && item.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 1.21) {
 				for (Direction dir : Direction.values()) {
 					//Cache the item handlers in various spots so that we only query each neighboring position once
-					IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> {
-						BlockEntity candidate = WorldHelper.getBlockEntity(level, pos.relative(dir));
-						if (candidate == null) {
-							return null;
-						}
-						return WorldHelper.getItemHandler(candidate, dir);
-					});
+					IItemHandler inv = nearbyHandlers.computeIfAbsent(dir, direction -> WorldHelper.getCapability(level, ItemHandler.BLOCK, pos.relative(dir), dir));
 					ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 					if (result.isEmpty()) {
 						item.discard();
@@ -133,8 +121,8 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Override
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
-			if (chest != null) {
+			IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
+			if (handler != null) {
 				int x = pos.getX();
 				int y = pos.getY();
 				int z = pos.getZ();
@@ -145,14 +133,12 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 				for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, aabb, ent -> !ent.isSpectator() && ent.isAlive())) {
 					WorldHelper.gravitateEntityTowards(e, centeredX, centeredY, centeredZ);
 					if (!level.isClientSide && e.distanceToSqr(centeredX, centeredY, centeredZ) < 1.21) {
-						chest.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> {
-							ItemStack result = ItemHandlerHelper.insertItemStacked(inv, e.getItem(), false);
-							if (!result.isEmpty()) {
-								e.setItem(result);
-							} else {
-								e.discard();
-							}
-						});
+						ItemStack result = ItemHandlerHelper.insertItemStacked(handler, e.getItem(), false);
+						if (!result.isEmpty()) {
+							e.setItem(result);
+						} else {
+							e.discard();
+						}
 					}
 				}
 			}
@@ -168,5 +154,10 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

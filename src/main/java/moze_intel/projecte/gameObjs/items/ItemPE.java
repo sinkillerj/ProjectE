@@ -1,36 +1,17 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-import moze_intel.projecte.capability.ItemCapability;
-import moze_intel.projecte.capability.ItemCapabilityWrapper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Range;
 
 public class ItemPE extends Item {
 
-	private final List<Supplier<ItemCapability<?>>> supportedCapabilities = new ArrayList<>();
-
 	public ItemPE(Properties props) {
 		super(props);
-	}
-
-	protected void addItemCapability(Supplier<ItemCapability<?>> capabilitySupplier) {
-		supportedCapabilities.add(capabilitySupplier);
-	}
-
-	protected void addItemCapability(String modid, Supplier<Supplier<ItemCapability<?>>> capabilitySupplier) {
-		if (ModList.get().isLoaded(modid)) {
-			supportedCapabilities.add(capabilitySupplier.get());
-		}
 	}
 
 	@Override
@@ -48,14 +29,6 @@ public class ItemPE extends Item {
 			return diffActive || diffMode;
 		}
 		return false;
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		if (supportedCapabilities.isEmpty()) {
-			return super.initCapabilities(stack, nbt);
-		}
-		return new ItemCapabilityWrapper(stack, supportedCapabilities);
 	}
 
 	@Range(from = 0, to = Long.MAX_VALUE)

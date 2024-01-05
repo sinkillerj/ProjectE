@@ -3,11 +3,11 @@ package moze_intel.projecte.gameObjs.items.armor;
 import java.util.List;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -33,13 +33,12 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	@Override
 	public void onArmorTick(ItemStack chest, Level level, Player player) {
 		if (!level.isClientSide) {
-			player.getCapability(InternalTimers.CAPABILITY).ifPresent(timers -> {
-				timers.activateFeed();
-				if (player.getFoodData().needsFood() && timers.canFeed()) {
-					player.getFoodData().eat(2, 10);
-					player.gameEvent(GameEvent.EAT);
-				}
-			});
+			InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
+			timers.activateFeed();
+			if (player.getFoodData().needsFood() && timers.canFeed()) {
+				player.getFoodData().eat(2, 10);
+				player.gameEvent(GameEvent.EAT);
+			}
 		}
 	}
 
@@ -50,7 +49,7 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	}
 
 	@Override
-	public boolean canProtectAgainstFire(ItemStack stack, ServerPlayer player) {
+	public boolean canProtectAgainstFire(ItemStack stack, Player player) {
 		return player.getItemBySlot(EquipmentSlot.CHEST) == stack;
 	}
 }

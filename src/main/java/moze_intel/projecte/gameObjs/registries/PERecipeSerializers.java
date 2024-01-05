@@ -4,15 +4,18 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.customRecipes.PhiloStoneSmeltingRecipe;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
-import moze_intel.projecte.gameObjs.registration.impl.IRecipeSerializerDeferredRegister;
-import moze_intel.projecte.gameObjs.registration.impl.IRecipeSerializerRegistryObject;
+import moze_intel.projecte.gameObjs.customRecipes.WrappedShapelessRecipeSerializer;
+import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
+import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 
 public class PERecipeSerializers {
 
-	public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(PECore.MODID);
+	public static final PEDeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = new PEDeferredRegister<>(Registries.RECIPE_SERIALIZER, PECore.MODID);
 
-	public static final IRecipeSerializerRegistryObject<RecipesCovalenceRepair, SimpleCraftingRecipeSerializer<RecipesCovalenceRepair>> COVALENCE_REPAIR = RECIPE_SERIALIZERS.register("covalence_repair", () -> new SimpleCraftingRecipeSerializer<>(RecipesCovalenceRepair::new));
-	public static final IRecipeSerializerRegistryObject<RecipeShapelessKleinStar, RecipeShapelessKleinStar.Serializer> KLEIN = RECIPE_SERIALIZERS.register("crafting_shapeless_kleinstar", RecipeShapelessKleinStar.Serializer::new);
-	public static final IRecipeSerializerRegistryObject<PhiloStoneSmeltingRecipe, SimpleCraftingRecipeSerializer<PhiloStoneSmeltingRecipe>> PHILO_STONE_SMELTING = RECIPE_SERIALIZERS.register("philo_stone_smelting", () -> new SimpleCraftingRecipeSerializer<>(PhiloStoneSmeltingRecipe::new));
+	public static final PEDeferredHolder<RecipeSerializer<?>, SimpleCraftingRecipeSerializer<RecipesCovalenceRepair>> COVALENCE_REPAIR = RECIPE_SERIALIZERS.register("covalence_repair", () -> new SimpleCraftingRecipeSerializer<>(RecipesCovalenceRepair::new));
+	public static final PEDeferredHolder<RecipeSerializer<?>, WrappedShapelessRecipeSerializer<RecipeShapelessKleinStar>> KLEIN = RECIPE_SERIALIZERS.register("crafting_shapeless_kleinstar", () -> new WrappedShapelessRecipeSerializer<>(RecipeShapelessKleinStar::new));
+	public static final PEDeferredHolder<RecipeSerializer<?>, SimpleCraftingRecipeSerializer<PhiloStoneSmeltingRecipe>> PHILO_STONE_SMELTING = RECIPE_SERIALIZERS.register("philo_stone_smelting", () -> new SimpleCraftingRecipeSerializer<>(PhiloStoneSmeltingRecipe::new));
 }

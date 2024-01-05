@@ -28,7 +28,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.DistExecutor;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +65,12 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	private static boolean isJumpPressed() {
-		return DistExecutor.unsafeRunForDist(() -> () -> Minecraft.getInstance().options.keyJump.isDown(), () -> () -> false);
+		//TODO - 1.20.4: Test this, also should we move to the input style thing
+		if (FMLEnvironment.dist.isClient()) {
+			//return Minecraft.getInstance().player.input.jumping;
+			return Minecraft.getInstance().options.keyJump.isDown();
+		}
+		return false;
 	}
 
 	@Override
@@ -111,12 +116,12 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
+	public boolean canProvideFlight(ItemStack stack, Player player) {
 		return player.getItemBySlot(EquipmentSlot.FEET) == stack;
 	}
 
 	@Override
-	public boolean canAssistStep(ItemStack stack, ServerPlayer player) {
+	public boolean canAssistStep(ItemStack stack, Player player) {
 		return player.getItemBySlot(EquipmentSlot.FEET) == stack && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_STEP_ASSIST);
 	}
 }

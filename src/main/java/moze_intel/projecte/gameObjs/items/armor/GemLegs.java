@@ -14,8 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,7 @@ public class GemLegs extends GemArmorBase {
 
 	public GemLegs(Properties props) {
 		super(ArmorItem.Type.LEGGINGS, props);
-		MinecraftForge.EVENT_BUS.addListener(this::onJump);
+		NeoForge.EVENT_BUS.addListener(this::onJump);
 	}
 
 	@Override

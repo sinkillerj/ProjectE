@@ -6,7 +6,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.math.BigInteger;
-import java.util.Optional;
 import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -74,13 +73,11 @@ public class EMCCMD {
 	private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
 		CommandSourceStack source = ctx.getSource();
 		ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
-		Optional<IKnowledgeProvider> cap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).resolve();
-		if (cap.isEmpty()) {
+		IKnowledgeProvider provider = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
+		if (provider == null) {
 			source.sendFailure(PELang.COMMAND_PROVIDER_FAIL.translate(player.getDisplayName()));
 			return 0;
-		}
-		IKnowledgeProvider provider = cap.get();
-		if (action == ActionType.GET) {
+		} else if (action == ActionType.GET) {
 			source.sendSuccess(() -> PELang.COMMAND_EMC_GET_SUCCESS.translate(player.getDisplayName(), formatEMC(provider.getEmc())), true);
 			return Command.SINGLE_SUCCESS;
 		}

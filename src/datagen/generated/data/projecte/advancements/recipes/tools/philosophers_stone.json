@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_glowstone",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_glowstone"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:philosophers_stone"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

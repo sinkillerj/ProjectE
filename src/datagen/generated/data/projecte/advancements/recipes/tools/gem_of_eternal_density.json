@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_matter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_matter"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:gem_of_eternal_density"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

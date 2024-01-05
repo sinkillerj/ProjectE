@@ -1,31 +1,40 @@
 package moze_intel.projecte.network.packets.to_client;
 
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.PEContainer;
+import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.IPEPacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 // Version of SWindowPropertyPacket that supports long values
-public record UpdateWindowLongPKT(short windowId, short propId, long propVal) implements IPEPacket {
+public record UpdateWindowLongPKT(short windowId, short propId, long propVal) implements IPEPacket<PlayPayloadContext> {
 
+	public static final ResourceLocation ID = PECore.rl("update_window_long");
+
+	public UpdateWindowLongPKT(FriendlyByteBuf buffer) {
+		this(buffer.readShort(), buffer.readShort(), buffer.readLong());
+	}
+
+	@NotNull
 	@Override
-	public void handle(NetworkEvent.Context context) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.containerMenu instanceof PEContainer container && player.containerMenu.containerId == windowId) {
-			container.updateProgressBarLong(propId, propVal);
-		}
+	public ResourceLocation id() {
+		return ID;
 	}
 
 	@Override
-	public void encode(FriendlyByteBuf buffer) {
+	public void handle(PlayPayloadContext context) {
+		PacketUtils.container(context, PEContainer.class)
+				.filter(container -> container.containerId == windowId)
+				.ifPresent(container -> container.updateProgressBarLong(propId, propVal));
+	}
+
+	@Override
+	public void write(@NotNull FriendlyByteBuf buffer) {
 		buffer.writeShort(windowId);
 		buffer.writeShort(propId);
 		buffer.writeLong(propVal);
-	}
-
-	public static UpdateWindowLongPKT decode(FriendlyByteBuf buffer) {
-		return new UpdateWindowLongPKT(buffer.readShort(), buffer.readShort(), buffer.readLong());
 	}
 }

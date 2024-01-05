@@ -14,9 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -106,17 +105,15 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 			BlockPos neighboringPos = worldPosition.relative(dir);
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
 			if (level.isLoaded(neighboringPos)) {
-				BlockEntity neighboringBE = WorldHelper.getBlockEntity(level, neighboringPos);
-				if (neighboringBE != null) {
-					neighboringBE.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent(theirEmcStorage -> {
-						if (!isRelay() || !theirEmcStorage.isRelay()) {
-							//If they are both relays don't add the pairing so as to prevent thrashing
-							if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {
-								//If they would be wiling to accept any Emc then we consider them to be an "acceptor"
-								targets.add(theirEmcStorage);
-							}
+				IEmcStorage theirEmcStorage = WorldHelper.getCapability(level, PECapabilities.EMC_STORAGE_CAPABILITY, neighboringPos, dir.getOpposite());
+				if (theirEmcStorage != null) {
+					if (!isRelay() || !theirEmcStorage.isRelay()) {
+						//If they are both relays don't add the pairing so as to prevent thrashing
+						if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {
+							//If they would be wiling to accept any Emc then we consider them to be an "acceptor"
+							targets.add(theirEmcStorage);
 						}
-					});
+					}
 				}
 			}
 		}

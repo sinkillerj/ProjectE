@@ -1,11 +1,11 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,23 +14,28 @@ import java.util.UUID;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
+import moze_intel.projecte.impl.capability.KnowledgeImpl.KnowledgeAttachment;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.fml.util.thread.SidedThreadGroups;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class TransmutationOffline {
 
-	private static final IKnowledgeProvider NOT_FOUND_PROVIDER = immutableCopy(KnowledgeImpl.getDefault());
+	private static final IKnowledgeProvider NOT_FOUND_PROVIDER = immutableView(new KnowledgeAttachment());
 
 	private static final Map<UUID, IKnowledgeProvider> cachedKnowledgeProviders = new HashMap<>();
 
@@ -60,27 +65,29 @@ public class TransmutationOffline {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {
 				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundTag playerDat = NbtIo.readCompressed(in); // No need to create buffered stream, that call does it for us
-					CompoundTag knowledgeProvider = playerDat.getCompound("ForgeCaps").getCompound(KnowledgeImpl.Provider.NAME.toString());
+					CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap()); // No need to create buffered stream, that call does it for us
+					if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+						CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+						KnowledgeAttachment attachment = new KnowledgeAttachment();
+						attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.KNOWLEDGE.getId().toString()));
 
-					IKnowledgeProvider provider = KnowledgeImpl.getDefault();
-					provider.deserializeNBT(knowledgeProvider);
-					cachedKnowledgeProviders.put(playerUUID, immutableCopy(provider));
+						cachedKnowledgeProviders.put(playerUUID, immutableView(attachment));
 
-					PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
-					return true;
+						PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
+						return true;
+					}
 				} catch (IOException e) {
 					PECore.LOGGER.warn("Failed to cache offline data for API calls for UUID: {}", playerUUID);
 				}
 			}
 		}
-
 		return false;
 	}
 
-	private static IKnowledgeProvider immutableCopy(final IKnowledgeProvider toCopy) {
+	private static IKnowledgeProvider immutableView(final KnowledgeAttachment attachment) {
+		final IKnowledgeProvider toCopy = KnowledgeImpl.wrapAttachment(attachment);
 		return new IKnowledgeProvider() {
-			final Set<ItemInfo> immutableKnowledge = ImmutableSet.copyOf(toCopy.getKnowledge());
+			final Set<ItemInfo> immutableKnowledge = Collections.unmodifiableSet(toCopy.getKnowledge());
 			final IItemHandlerModifiable immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
 
 			@Override
@@ -154,15 +161,6 @@ public class TransmutationOffline {
 
 			@Override
 			public void receiveInputsAndLocks(Map<Integer, ItemStack> changes) {
-			}
-
-			@Override
-			public CompoundTag serializeNBT() {
-				return toCopy.serializeNBT();
-			}
-
-			@Override
-			public void deserializeNBT(CompoundTag nbt) {
 			}
 		};
 	}

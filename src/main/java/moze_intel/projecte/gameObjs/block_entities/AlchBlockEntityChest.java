@@ -1,12 +1,13 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
 import moze_intel.projecte.api.capabilities.PECapabilities;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
+import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,9 +17,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AlchBlockEntityChest extends EmcChestBlockEntity {
+
+	public static final ICapabilityProvider<AlchBlockEntityChest, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (chest, side) -> chest.inventory;
 
 	private final StackHandler inventory = new StackHandler(104) {
 		@Override
@@ -33,7 +39,6 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 
 	public AlchBlockEntityChest(BlockPos pos, BlockState state) {
 		super(PEBlockEntityTypes.ALCHEMICAL_CHEST, pos, state, 1_000);
-		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(inventory);
 	}
 
 	@Override
@@ -52,7 +57,10 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> alchChestItem.updateInAlchChest(level, pos, stack));
+				IAlchChestItem alchChestItem = stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY);
+				if (alchChestItem != null) {
+					alchChestItem.updateInAlchChest(level, pos, stack);
+				}
 			}
 		}
 		EmcChestBlockEntity.lidAnimateTick(level, pos, state, alchChest);
@@ -62,12 +70,10 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 		for (int i = 0; i < alchChest.inventory.getSlots(); i++) {
 			ItemStack stack = alchChest.inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				int slotId = i;
-				stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY).ifPresent(alchChestItem -> {
-					if (alchChestItem.updateInAlchChest(level, pos, stack)) {
-						alchChest.inventory.onContentsChanged(slotId);
-					}
-				});
+				IAlchChestItem alchChestItem = stack.getCapability(PECapabilities.ALCH_CHEST_ITEM_CAPABILITY);
+				if (alchChestItem != null && alchChestItem.updateInAlchChest(level, pos, stack)) {
+					alchChest.inventory.onContentsChanged(i);
+				}
 			}
 		}
 		if (alchChest.inventoryChanged) {

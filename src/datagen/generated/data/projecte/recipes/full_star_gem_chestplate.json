@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projecte:full_klein_stars"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "projecte:rm_chestplate"
+    },
+    {
+      "item": "projecte:volcanite_amulet"
+    },
+    {
+      "item": "projecte:body_stone"
+    },
+    {
+      "type": "neoforge:nbt",
+      "item": "projecte:klein_star_omega",
+      "tag": "{StoredEMC:51200000L}"
+    }
+  ],
+  "result": {
+    "item": "projecte:gem_chestplate"
+  }
+}

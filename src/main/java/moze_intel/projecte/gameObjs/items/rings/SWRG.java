@@ -5,12 +5,12 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.capability.PedestalItemCapabilityWrapper;
-import moze_intel.projecte.capability.ProjectileShooterItemCapabilityWrapper;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.integration.IntegrationHelper;
@@ -37,16 +37,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter {
+public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IProjectileShooter, ICapabilityAware {
 
 	public SWRG(Properties props) {
 		super(props);
-		addItemCapability(PedestalItemCapabilityWrapper::new);
-		addItemCapability(ProjectileShooterItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	private void tick(ItemStack stack, Player player) {
@@ -64,13 +62,13 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 				changeMode(player, stack, 0);
 			}
 			if (playerMP.getAbilities().mayfly) {
-				playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::disableSwrgFlightOverride);
+				playerMP.getData(PEAttachmentTypes.INTERNAL_ABILITIES).disableSwrgFlightOverride();
 			}
 			return;
 		}
 
 		if (!playerMP.getAbilities().mayfly) {
-			playerMP.getCapability(InternalAbilities.CAPABILITY).ifPresent(InternalAbilities::enableSwrgFlightOverride);
+			playerMP.getData(PEAttachmentTypes.INTERNAL_ABILITIES).enableSwrgFlightOverride();
 		}
 
 		if (playerMP.getAbilities().flying) {
@@ -151,7 +149,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public boolean canProvideFlight(ItemStack stack, ServerPlayer player) {
+	public boolean canProvideFlight(ItemStack stack, Player player) {
 		// Dummy result - swrg needs special-casing
 		return false;
 	}
@@ -199,5 +197,10 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
 		player.level().addFreshEntity(projectile);
 		return true;
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 // [VanillaCopy] Adapted from ChestBlockEntity
-public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity implements LidBlockEntity, MenuProvider {
+public abstract class EmcChestBlockEntity extends EmcBlockEntity implements LidBlockEntity, MenuProvider {
 
 	private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
 		@Override
@@ -33,7 +34,7 @@ public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity imple
 
 		@Override
 		protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int oldCount, int openCount) {
-			level.blockEvent(pos, state.getBlock(), 1, openCount);
+			level.blockEvent(pos, state.getBlock(), ChestBlock.EVENT_SET_OPEN_COUNT, openCount);
 		}
 
 		@Override
@@ -47,7 +48,7 @@ public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity imple
 		super(type, pos, state);
 	}
 
-	protected EmcChestBlockEntity(BlockEntityTypeRegistryObject<? extends CapabilityEmcBlockEntity> type, BlockPos pos, BlockState state,
+	protected EmcChestBlockEntity(BlockEntityTypeRegistryObject<? extends EmcChestBlockEntity> type, BlockPos pos, BlockState state,
 			@Range(from = 1, to = Long.MAX_VALUE)long maxAmount) {
 		super(type, pos, state, maxAmount);
 	}
@@ -58,7 +59,7 @@ public abstract class EmcChestBlockEntity extends CapabilityEmcBlockEntity imple
 
 	@Override
 	public boolean triggerEvent(int id, int type) {
-		if (id == 1) {
+		if (id == ChestBlock.EVENT_SET_OPEN_COUNT) {
 			this.chestLidController.shouldBeOpen(type > 0);
 			return true;
 		}

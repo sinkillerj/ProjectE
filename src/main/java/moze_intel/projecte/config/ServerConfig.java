@@ -4,15 +4,15 @@ import moze_intel.projecte.config.value.CachedBooleanValue;
 import moze_intel.projecte.config.value.CachedDoubleValue;
 import moze_intel.projecte.config.value.CachedFloatValue;
 import moze_intel.projecte.config.value.CachedIntValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * For config options that the server has absolute say over
  */
 public final class ServerConfig extends BasePEConfig {
 
-	private final ForgeConfigSpec configSpec;
+	private final ModConfigSpec configSpec;
 
 	public final Difficulty difficulty;
 	public final Items items;
@@ -21,7 +21,7 @@ public final class ServerConfig extends BasePEConfig {
 	public final Cooldown cooldown;
 
 	ServerConfig() {
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		builder.comment("All of the config options in this file are server side and will be synced from server to client. ProjectE uses one \"server\" config file for " +
 						"all worlds, for convenience in going from one world to another, but makes it be a \"server\" config file so that forge will automatically sync it when " +
 						"we connect to a multiplayer server.")
@@ -41,7 +41,7 @@ public final class ServerConfig extends BasePEConfig {
 	}
 
 	@Override
-	public ForgeConfigSpec getConfigSpec() {
+	public ModConfigSpec getConfigSpec() {
 		return configSpec;
 	}
 
@@ -57,7 +57,7 @@ public final class ServerConfig extends BasePEConfig {
 		public final CachedDoubleValue covalenceLoss;
 		public final CachedBooleanValue covalenceLossRounding;
 
-		private Difficulty(IPEConfig config, ForgeConfigSpec.Builder builder) {
+		private Difficulty(IPEConfig config, ModConfigSpec.Builder builder) {
 			builder.push("difficulty");
 			offensiveAbilities = CachedBooleanValue.wrap(config, builder
 					.comment("Set to false to disable Gem Armor offensive abilities (helmet zap and chestplate explosion)")
@@ -83,7 +83,7 @@ public final class ServerConfig extends BasePEConfig {
 		public final CachedBooleanValue enableTimeWatch;
 		public final CachedBooleanValue opEvertide;
 
-		private Items(IPEConfig config, ForgeConfigSpec.Builder builder) {
+		private Items(IPEConfig config, ModConfigSpec.Builder builder) {
 			builder.push("items");
 			pickaxeAoeVeinMining = CachedBooleanValue.wrap(config, builder
 					.comment("Instead of vein mining the ore you right click with your Dark/Red Matter Pick/Star it vein mines all ores in an AOE around you like it did in ProjectE before version 1.4.4.")
@@ -110,7 +110,7 @@ public final class ServerConfig extends BasePEConfig {
 		public final CachedDoubleValue timePedMobSlowness;
 		public final CachedBooleanValue interdictionMode;
 
-		private Effects(IPEConfig config, ForgeConfigSpec.Builder builder) {
+		private Effects(IPEConfig config, ModConfigSpec.Builder builder) {
 			builder.push("effects");
 			timePedBonus = CachedIntValue.wrap(config, builder
 					.comment("Bonus ticks given by the Watch of Flowing Time while in the pedestal. 0 = effectively no bonus.")
@@ -130,7 +130,7 @@ public final class ServerConfig extends BasePEConfig {
 		public final CachedBooleanValue unsafeKeyBinds;
 		public final CachedBooleanValue hwylaTOPDisplay;
 
-		private Misc(IPEConfig config, ForgeConfigSpec.Builder builder) {
+		private Misc(IPEConfig config, ModConfigSpec.Builder builder) {
 			builder.push("misc");
 			unsafeKeyBinds = CachedBooleanValue.wrap(config, builder
 					.comment("False requires your hand be empty for Gem Armor Offensive Abilities to be readied or triggered")
@@ -147,7 +147,7 @@ public final class ServerConfig extends BasePEConfig {
 		public final Pedestal pedestal;
 		public final Player player;
 
-		private Cooldown(IPEConfig config, ForgeConfigSpec.Builder builder) {
+		private Cooldown(IPEConfig config, ModConfigSpec.Builder builder) {
 			builder.push("cooldown");
 			builder.comment("Cooldown (in ticks) for various features in ProjectE. A cooldown of -1 will disable the functionality.",
 					"A cooldown of 0 will allow the actions to happen every tick. Use caution as a very low value on features that run automatically could cause TPS issues.")
@@ -165,7 +165,7 @@ public final class ServerConfig extends BasePEConfig {
 			public final CachedIntValue heal;
 			public final CachedIntValue feed;
 
-			private Player(IPEConfig config, ForgeConfigSpec.Builder builder) {
+			private Player(IPEConfig config, ModConfigSpec.Builder builder) {
 				builder.comment("Cooldown for various items in regards to a player.")
 						.push("player");
 				projectile = CachedIntValue.wrap(config, builder
@@ -201,7 +201,7 @@ public final class ServerConfig extends BasePEConfig {
 			public final CachedIntValue volcanite;
 			public final CachedIntValue zero;
 
-			private Pedestal(IPEConfig config, ForgeConfigSpec.Builder builder) {
+			private Pedestal(IPEConfig config, ModConfigSpec.Builder builder) {
 				builder.comment("Cooldown for various items within the pedestal.")
 						.push("pedestal");
 				archangel = CachedIntValue.wrap(config, builder

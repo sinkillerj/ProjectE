@@ -7,6 +7,9 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet.ListBacked;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,7 +21,10 @@ public final class FuelMapper {
 	 * Used on server to load the map based on the tag
 	 */
 	public static void loadMap() {
-		FUEL_MAP = PETags.Items.COLLECTOR_FUEL_LOOKUP.tag().stream()
+		FUEL_MAP = BuiltInRegistries.ITEM.getTag(PETags.Items.COLLECTOR_FUEL)
+				.stream()
+				.flatMap(ListBacked::stream)
+				.map(Holder::value)
 				.filter(EMCHelper::doesItemHaveEmc)
 				.sorted(Comparator.comparing(EMCHelper::getEmcValue))
 				.toList();

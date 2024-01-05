@@ -25,14 +25,13 @@
   },
   "requirements": [
     [
-      "has_emerald",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_emerald"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/emerald_to_diamond"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

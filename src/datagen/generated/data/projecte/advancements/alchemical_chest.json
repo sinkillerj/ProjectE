@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.projecte.alch_chest.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "projecte:alchemical_chest"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.projecte.alch_chest"
     }

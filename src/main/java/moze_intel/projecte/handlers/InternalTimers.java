@@ -1,18 +1,8 @@
 package moze_intel.projecte.handlers;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.config.ProjectEConfig;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import org.jetbrains.annotations.NotNull;
 
 public class InternalTimers {
-
-	public static final Capability<InternalTimers> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
-	public static final ResourceLocation NAME = PECore.rl("internal_timers");
 
 	private final Timer repair = new Timer();
 	private final Timer heal = new Timer();
@@ -61,19 +51,6 @@ public class InternalTimers {
 			return true;
 		}
 		return false;
-	}
-
-	public static class Provider extends BasicCapabilityResolver<InternalTimers> {
-
-		public Provider() {
-			super(InternalTimers::new);
-		}
-
-		@NotNull
-		@Override
-		public Capability<InternalTimers> getMatchingCapability() {
-			return CAPABILITY;
-		}
 	}
 
 	private static class Timer {

@@ -6,12 +6,12 @@ import moze_intel.projecte.gameObjs.PETags.BlockEntities;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ public class PEBlockEntityTypeTagsProvider extends TagsProvider<BlockEntityType<
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		tag(BlockEntities.BLACKLIST_TIME_WATCH).add(
-				ForgeRegistries.BLOCK_ENTITY_TYPES.getResourceKey(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.get()).orElseThrow()
+				BuiltInRegistries.BLOCK_ENTITY_TYPE.getResourceKey(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.get()).orElseThrow()
 		);
 	}
 

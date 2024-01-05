@@ -3,6 +3,10 @@ package moze_intel.projecte.utils;
 import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -11,8 +15,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.Rabbit.Variant;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityRandomizerHelper {
@@ -44,9 +46,8 @@ public class EntityRandomizerHelper {
 
 	@Nullable
 	private static Mob createRandomEntity(Level level, Entity current, TagKey<EntityType<?>> type) {
-		ITag<EntityType<?>> tag = LazyTagLookup.tagManager(ForgeRegistries.ENTITY_TYPES).getTag(type);
 		EntityType<?> currentType = current.getType();
-		EntityType<?> newType = getRandomTagEntry(level.getRandom(), tag, currentType);
+		EntityType<?> newType = getRandomTagEntry(level.getRandom(), BuiltInRegistries.ENTITY_TYPE, type, currentType);
 		if (currentType == newType) {
 			//If the type is identical return null so that nothing happens
 			return null;
@@ -58,20 +59,27 @@ public class EntityRandomizerHelper {
 			//There are "invalid" entries in the list that do not correspond to, kill the new entity
 			newEntity.discard();
 			// and log a warning
-			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.", RegistryUtils.getName(newType),
-					type.location());
+			PECore.LOGGER.warn("Invalid Entity type {} in mob randomizer tag {}. All entities in this tag are expected to be a mob.",
+					BuiltInRegistries.ENTITY_TYPE.getKey(newType), type.location());
 		}
 		return null;
 	}
 
-	private static <T> T getRandomTagEntry(RandomSource random, ITag<T> tag, T toExclude) {
-		int size = tag.size();
-		if (size == 0 || size == 1 && tag.contains(toExclude)) {
+	private static EntityType<?> getRandomTagEntry(RandomSource random, Registry<EntityType<?>> registry, TagKey<EntityType<?>> tagKey, EntityType<?> toExclude) {
+		Optional<HolderSet.Named<EntityType<?>>> optionalTag = registry.getTag(tagKey);
+		if (optionalTag.isEmpty()) {
+			//Failed to get the tag
 			return toExclude;
 		}
-		Optional<T> obj;
+		HolderSet.Named<EntityType<?>> tag = optionalTag.get();
+		int size = tag.size();
+		if (size == 0 || size == 1 && toExclude.is(tagKey)) {
+			return toExclude;
+		}
+		Optional<EntityType<?>> obj;
 		do {
-			obj = tag.getRandomElement(random);
+			obj = tag.getRandomElement(random)
+					.map(Holder::value);
 		} while (obj.isPresent() && obj.get().equals(toExclude));
 		//Fallback to base
 		return obj.orElse(toExclude);

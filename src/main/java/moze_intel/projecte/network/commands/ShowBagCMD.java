@@ -9,15 +9,16 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import moze_intel.projecte.PEPermissions;
-import moze_intel.projecte.api.capabilities.IAlchBagProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.impl.capability.AlchBagImpl;
+import moze_intel.projecte.impl.capability.AlchBagImpl.AlchemicalBagAttachment;
 import moze_intel.projecte.network.commands.argument.ColorArgument;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
@@ -27,7 +28,9 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,9 +41,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class ShowBagCMD {
@@ -68,7 +71,7 @@ public class ShowBagCMD {
 	}
 
 	private static int showBag(ServerPlayer senderPlayer, MenuProvider container) {
-		NetworkHooks.openScreen(senderPlayer, container, b -> {
+		senderPlayer.openMenu(container, b -> {
 			b.writeBoolean(false);
 			b.writeBoolean(false);
 		});
@@ -76,9 +79,7 @@ public class ShowBagCMD {
 	}
 
 	private static MenuProvider createContainer(ServerPlayer sender, ServerPlayer target, DyeColor color) {
-		IItemHandlerModifiable inv = (IItemHandlerModifiable) target.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)
-				.orElseThrow(NullPointerException::new)
-				.getBag(color);
+		IItemHandlerModifiable inv = (IItemHandlerModifiable) Objects.requireNonNull(target.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)).getBag(color);
 		Component name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
@@ -126,13 +127,15 @@ public class ShowBagCMD {
 			File player = new File(playerData, playerUUID.toString() + ".dat");
 			if (player.exists() && player.isFile()) {
 				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundTag playerDat = NbtIo.readCompressed(in);
-					CompoundTag bagProvider = playerDat.getCompound("ForgeCaps").getCompound(AlchBagImpl.Provider.NAME.toString());
+					CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
+					if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+						CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+						//TODO - 1.20.4: TEST THIS, and also see how it behaves in regards to mutating? As I think this is used at times regardless?
+						AlchemicalBagAttachment attachment = new AlchemicalBagAttachment();
+						attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString()));
 
-					IAlchBagProvider provider = AlchBagImpl.getDefault();
-					provider.deserializeNBT(bagProvider);
-
-					return (IItemHandlerModifiable) provider.getBag(color);
+						return attachment.getBag(color);
+					}
 				} catch (IOException e) {
 					// fall through to below
 				}

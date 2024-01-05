@@ -1,12 +1,14 @@
 package moze_intel.projecte.network.packets.to_server;
 
 import java.util.Optional;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.utils.PEKeybind;
@@ -14,22 +16,38 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.NonNullPredicate;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.common.util.NonNullPredicate;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public record KeyPressPKT(PEKeybind key) implements IPEPacket {
+public record KeyPressPKT(PEKeybind key) implements IPEPacket<PlayPayloadContext> {
+
+	public static final ResourceLocation ID = PECore.rl("key_press");
+
+	public KeyPressPKT(FriendlyByteBuf buf) {
+		this(buf.readEnum(PEKeybind.class));
+	}
+
+	@NotNull
+	@Override
+	public ResourceLocation id() {
+		return ID;
+	}
 
 	@Override
-	public void handle(NetworkEvent.Context context) {
-		ServerPlayer player = context.getSender();
-		if (player == null || player.isSpectator()) {
+	public void handle(PlayPayloadContext context) {
+		Optional<Player> optionalPlayer = context.player()
+				.filter(player -> !player.isSpectator());
+		if (optionalPlayer.isEmpty()) {
 			return;
 		}
+		Player player = optionalPlayer.get();
 		if (key == PEKeybind.HELMET_TOGGLE) {
 			ItemStack helm = player.getItemBySlot(EquipmentSlot.HEAD);
 			if (!helm.isEmpty() && helm.getItem() instanceof GemHelmet) {
@@ -38,16 +56,12 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 			return;
 		} else if (key == PEKeybind.BOOTS_TOGGLE) {
 			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-			if (!boots.isEmpty() && boots.getItem() instanceof GemFeet) {
-				((GemFeet) boots.getItem()).toggleStepAssist(boots, player);
+			if (!boots.isEmpty() && boots.getItem() instanceof GemFeet feet) {
+				feet.toggleStepAssist(boots, player);
 			}
 			return;
 		}
-		Optional<InternalAbilities> cap = player.getCapability(InternalAbilities.CAPABILITY).resolve();
-		if (cap.isEmpty()) {
-			return;
-		}
-		InternalAbilities internalAbilities = cap.get();
+		InternalAbilities internalAbilities = player.getData(PEAttachmentTypes.INTERNAL_ABILITIES);
 		for (InteractionHand hand : InteractionHand.values()) {
 			ItemStack stack = player.getItemInHand(hand);
 			switch (key) {
@@ -96,8 +110,9 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 		}
 	}
 
-	private static <CAPABILITY> boolean tryPerformCapability(ItemStack stack, Capability<CAPABILITY> capability, NonNullPredicate<CAPABILITY> perform) {
-		return !stack.isEmpty() && stack.getCapability(capability).filter(perform).isPresent();
+	private static <CAPABILITY> boolean tryPerformCapability(ItemStack stack, ItemCapability<CAPABILITY, Void> capability, NonNullPredicate<CAPABILITY> perform) {
+		CAPABILITY impl = stack.getCapability(capability);
+		return impl != null && perform.test(impl);
 	}
 
 	private static boolean isSafe(ItemStack stack) {
@@ -105,11 +120,7 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 	}
 
 	@Override
-	public void encode(FriendlyByteBuf buffer) {
+	public void write(@NotNull FriendlyByteBuf buffer) {
 		buffer.writeEnum(key);
-	}
-
-	public static KeyPressPKT decode(FriendlyByteBuf buf) {
-		return new KeyPressPKT(buf.readEnum(PEKeybind.class));
 	}
 }

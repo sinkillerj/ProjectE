@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.container.slots;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 //[VanillaCopy] Adapted from FurnaceResultSlot
@@ -46,7 +46,12 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
 		stack.onCraftedBy(player.level(), player, removeCount);
+		//TODO - 1.20.4: Do we want to add this?
+		/*if (player instanceof ServerPlayer serverPlayer && container instanceof AbstractFurnaceBlockEntity blockEntity) {
+			blockEntity.awardUsedRecipesAndPopExperience(serverPlayer);
+		}*/
+
 		removeCount = 0;
-		ForgeEventFactory.firePlayerSmeltedEvent(player, stack);
+		EventHooks.firePlayerSmeltedEvent(player, stack);
 	}
 }

@@ -1,25 +1,26 @@
 package moze_intel.projecte.api;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public final class PESounds {
 
-	public static RegistryObject<SoundEvent> WIND = get("windmagic");
-	public static RegistryObject<SoundEvent> WATER = get("watermagic");
-	public static RegistryObject<SoundEvent> POWER = get("power");
-	public static RegistryObject<SoundEvent> HEAL = get("heal");
-	public static RegistryObject<SoundEvent> DESTRUCT = get("destruct");
-	public static RegistryObject<SoundEvent> CHARGE = get("charge");
-	public static RegistryObject<SoundEvent> UNCHARGE = get("uncharge");
-	public static RegistryObject<SoundEvent> TRANSMUTE = get("transmute");
+	public static Holder<SoundEvent> WIND = get("windmagic");
+	public static Holder<SoundEvent> WATER = get("watermagic");
+	public static Holder<SoundEvent> POWER = get("power");
+	public static Holder<SoundEvent> HEAL = get("heal");
+	public static Holder<SoundEvent> DESTRUCT = get("destruct");
+	public static Holder<SoundEvent> CHARGE = get("charge");
+	public static Holder<SoundEvent> UNCHARGE = get("uncharge");
+	public static Holder<SoundEvent> TRANSMUTE = get("transmute");
 
 	private PESounds() {
 	}
 
-	private static RegistryObject<SoundEvent> get(String name) {
-		return RegistryObject.create(new ResourceLocation(ProjectEAPI.PROJECTE_MODID, name), ForgeRegistries.SOUND_EVENTS);
+	private static Holder<SoundEvent> get(String name) {
+		return DeferredHolder.create(Registries.SOUND_EVENT, new ResourceLocation(ProjectEAPI.PROJECTE_MODID, name));
 	}
 }

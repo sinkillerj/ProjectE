@@ -1,22 +1,22 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.config.value.CachedBooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * For config options that either the server or the client may care about but do not have to agree upon.
  */
 public class CommonConfig extends BasePEConfig {
 
-	private final ForgeConfigSpec configSpec;
+	private final ModConfigSpec configSpec;
 
 	public final CachedBooleanValue debugLogging;
 	public final CachedBooleanValue craftableTome;
 	public final CachedBooleanValue fullKleinStars;
 
 	CommonConfig() {
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		builder.comment("Note: The majority of config options are in the server config file. If you do not see the server config file, try opening up a single player world. " +
 						"ProjectE uses one \"server\" config file for all worlds, for convenience in going from one world to another, but makes it be a \"server\" config file so " +
 						"that forge will automatically sync it when we connect to a multiplayer server.")
@@ -40,7 +40,7 @@ public class CommonConfig extends BasePEConfig {
 	}
 
 	@Override
-	public ForgeConfigSpec getConfigSpec() {
+	public ModConfigSpec getConfigSpec() {
 		return configSpec;
 	}
 

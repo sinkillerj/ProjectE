@@ -25,14 +25,13 @@
   },
   "requirements": [
     [
-      "has_components",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_components"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:klein_star_ein"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

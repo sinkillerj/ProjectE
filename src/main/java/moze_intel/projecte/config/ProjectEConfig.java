@@ -2,7 +2,8 @@ package moze_intel.projecte.config;
 
 import java.nio.file.Path;
 import moze_intel.projecte.PECore;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.loading.FMLPaths;
 
 public class ProjectEConfig {
 
@@ -15,19 +16,19 @@ public class ProjectEConfig {
 		CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(PECore.MODNAME));
 	}
 
-	public static void register() {
-		registerConfig(server);
-		registerConfig(common);
-		registerConfig(client);
+	public static void register(ModContainer modContainer) {
+		registerConfig(modContainer, server);
+		registerConfig(modContainer, common);
+		registerConfig(modContainer, client);
 	}
 
 	/**
-	 * Creates a mod config so that {@link net.minecraftforge.fml.config.ConfigTracker} will track it and sync server configs from server to client.
+	 * Creates a mod config so that {@link net.neoforged.fml.config.ConfigTracker} will track it and sync server configs from server to client.
 	 */
-	public static void registerConfig(IPEConfig config) {
-		PEModConfig peModConfig = new PEModConfig(PECore.MOD_CONTAINER, config);
+	public static void registerConfig(ModContainer modContainer,IPEConfig config) {
+		PEModConfig peModConfig = new PEModConfig(modContainer, config);
 		if (config.addToContainer()) {
-			PECore.MOD_CONTAINER.addConfig(peModConfig);
+			modContainer.addConfig(peModConfig);
 		}
 	}
 }

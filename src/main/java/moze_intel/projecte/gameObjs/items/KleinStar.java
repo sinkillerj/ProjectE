@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
-import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.world.InteractionHand;
@@ -10,19 +9,18 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
-public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
+public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper, ICapabilityAware {
 
 	public final EnumKleinTier tier;
 
 	public KleinStar(Properties props, EnumKleinTier tier) {
 		super(props);
 		this.tier = tier;
-		addItemCapability(EmcHolderItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
@@ -112,5 +110,10 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper {
 	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getMaximumEmc(@NotNull ItemStack stack) {
 		return EMCHelper.getKleinStarMaxEmc(stack);
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 }

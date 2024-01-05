@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.projecte.dark_matter_pickaxe.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "projecte:dm_pick"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.projecte.dark_matter_pickaxe"
     }

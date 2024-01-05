@@ -1,16 +1,14 @@
 package moze_intel.projecte.gameObjs.registration;
 
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEntry {
+public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMARY_REGISTRY, SECONDARY_REGISTRY, SECONDARY extends SECONDARY_REGISTRY> implements INamedEntry {
 
-	@NotNull
-	private final RegistryObject<PRIMARY> primaryRO;
-	@NotNull
-	private final RegistryObject<SECONDARY> secondaryRO;
+	protected final DeferredHolder<PRIMARY_REGISTRY, PRIMARY> primaryRO;
+	protected final DeferredHolder<SECONDARY_REGISTRY, SECONDARY> secondaryRO;
 
-	public DoubleWrappedRegistryObject(@NotNull RegistryObject<PRIMARY> primaryRO, @NotNull RegistryObject<SECONDARY> secondaryRO) {
+	public DoubleWrappedRegistryObject(DeferredHolder<PRIMARY_REGISTRY, PRIMARY> primaryRO, DeferredHolder<SECONDARY_REGISTRY, SECONDARY> secondaryRO) {
 		this.primaryRO = primaryRO;
 		this.secondaryRO = secondaryRO;
 	}
@@ -26,7 +24,7 @@ public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEn
 	}
 
 	@Override
-	public String getInternalRegistryName() {
+	public String getName() {
 		return primaryRO.getId().getPath();
 	}
 }

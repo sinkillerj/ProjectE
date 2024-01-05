@@ -4,14 +4,12 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import java.util.Optional;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.PEPermissions;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeClearPKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
@@ -60,8 +58,7 @@ public class KnowledgeCMD {
 	}
 
 	private static @Nullable IKnowledgeProvider getProvider(ServerPlayer player) {
-		Optional<IKnowledgeProvider> cap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).resolve();
-		return cap.orElse(null);
+		return player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
 	}
 
 	private static ArgumentBuilder<CommandSourceStack, ?> subCommandClear() {
@@ -79,7 +76,7 @@ public class KnowledgeCMD {
 									source.sendFailure(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL.translate(player.getDisplayName()));
 								} else {
 									provider.clearKnowledge();
-									PacketHandler.sendTo(new KnowledgeClearPKT(), player);
+									PECore.packetHandler().clearKnowledge(player);
 									source.sendSuccess(() -> PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
 									successCount++;
 								}

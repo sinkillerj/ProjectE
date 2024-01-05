@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * - Type -> Tag
  *
- * @param <TYPE> The type of the {@link net.minecraftforge.registries.tags.ITag} this {@link NormalizedSimpleStack} is for.
+ * @param <TYPE> The type of the {@link net.neoforged.neoforge.registries.tags.ITag} this {@link NormalizedSimpleStack} is for.
  *
  * @implNote This does not handle NBT on Tags.
  */

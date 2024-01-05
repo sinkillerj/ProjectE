@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.block_entities;
 
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
-import moze_intel.projecte.capability.managing.BasicCapabilityResolver;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
@@ -13,6 +12,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,14 +21,17 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CondenserBlockEntity extends EmcChestBlockEntity {
+
+	public static final ICapabilityProvider<CondenserBlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (condenser, side) -> condenser.automationInventory;
 
 	protected final ItemStackHandler inputInventory = createInput();
 	private final ItemStackHandler outputInventory = createOutput();
@@ -39,6 +42,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	public long requiredEmc;
 	//Start at one less than actual just to ensure we run initially after loading
 	private int loadIndex = EMCMappingHandler.getLoadIndex() - 1;
+	private final IItemHandler automationInventory;
 
 	public CondenserBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.CONDENSER, pos, state);
@@ -46,7 +50,8 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 
 	protected CondenserBlockEntity(BlockEntityTypeRegistryObject<? extends CondenserBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		itemHandlerResolver = BasicCapabilityResolver.getBasicItemHandlerResolver(this::createAutomationInventory);
+		//TODO - 1.20.4: Test this works properly with overrides
+		this.automationInventory = createAutomationInventory();
 	}
 
 	@Override
@@ -190,7 +195,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 			if (!stack.isEmpty()) {
 				ItemInfo sourceInfo = ItemInfo.fromStack(stack);
 				ItemInfo reducedInfo = NBTManager.getPersistentInfo(sourceInfo);
-				if (!MinecraftForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo))) {
+				if (!NeoForge.EVENT_BUS.post(new PlayerAttemptCondenserSetEvent(player, sourceInfo, reducedInfo)).isCanceled()) {
 					lockInfo = reducedInfo;
 					checkLockAndUpdate(true);
 					markDirty(false);

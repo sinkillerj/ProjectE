@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.projecte.philo_stone.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "projecte:philosophers_stone"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.projecte.philo_stone"
     }

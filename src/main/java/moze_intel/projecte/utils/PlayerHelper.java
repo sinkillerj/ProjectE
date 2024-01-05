@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.integration.curios.CuriosIntegration;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.to_client.CooldownResetPKT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
@@ -25,16 +22,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -56,7 +51,7 @@ public final class PlayerHelper {
 		BlockSnapshot before = BlockSnapshot.create(level.dimension(), level, pos);
 		level.setBlockAndUpdate(pos, state);
 		BlockEvent.EntityPlaceEvent evt = new BlockEvent.EntityPlaceEvent(before, Blocks.AIR.defaultBlockState(), player);
-		MinecraftForge.EVENT_BUS.post(evt);
+		NeoForge.EVENT_BUS.post(evt);
 		if (evt.isCanceled()) {
 			level.restoringBlockSnapshots = true;
 			before.restore(true, false);
@@ -89,23 +84,15 @@ public final class PlayerHelper {
 		if (checker.test(player.getOffhandItem())) {
 			return true;
 		}
-		IItemHandler curios = getCurios(player);
+		IItemHandler curios = player.getCapability(IntegrationHelper.CURIO_ITEM_HANDLER);
 		if (curios != null) {
-			for (int i = 0; i < curios.getSlots(); i++) {
+			for (int i = 0, slots = curios.getSlots(); i < slots; i++) {
 				if (checker.test(curios.getStackInSlot(i))) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-
-	@Nullable
-	public static IItemHandler getCurios(Player player) {
-		if (ModList.get().isLoaded(IntegrationHelper.CURIO_MODID)) {
-			return CuriosIntegration.getAll(player);
-		}
-		return null;
 	}
 
 	public static BlockHitResult getBlockLookingAt(Player player, double maxDistance) {
@@ -127,7 +114,7 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasBreakPermission(ServerPlayer player, BlockPos pos) {
-		return hasEditPermission(player, pos) && ForgeHooks.onBlockBreakEvent(player.level(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
+		return hasEditPermission(player, pos) && CommonHooks.onBlockBreakEvent(player.level(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
 	}
 
 	public static boolean hasEditPermission(ServerPlayer player, BlockPos pos) {
@@ -139,7 +126,7 @@ public final class PlayerHelper {
 
 	public static void resetCooldown(Player player) {
 		player.resetAttackStrengthTicker();
-		PacketHandler.sendTo(new CooldownResetPKT(), (ServerPlayer) player);
+		PECore.packetHandler().resetCooldown((ServerPlayer) player);
 	}
 
 	public static void swingItem(Player player, InteractionHand hand) {
@@ -148,11 +135,11 @@ public final class PlayerHelper {
 		}
 	}
 
-	public static void updateClientServerFlight(ServerPlayer player, boolean allowFlying) {
+	public static void updateClientServerFlight(Player player, boolean allowFlying) {
 		updateClientServerFlight(player, allowFlying, allowFlying && player.getAbilities().flying);
 	}
 
-	public static void updateClientServerFlight(ServerPlayer player, boolean allowFlying, boolean isFlying) {
+	public static void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
 		player.getAbilities().mayfly = allowFlying;
 		player.getAbilities().flying = isFlying;
 		player.onUpdateAbilities();
@@ -163,6 +150,6 @@ public final class PlayerHelper {
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, int value) {
-		player.getScoreboard().forAllObjectives(objective, player.getScoreboardName(), score -> score.setScore(value));
+		player.getScoreboard().forAllObjectives(objective, player, score -> score.set(value));
 	}
 }

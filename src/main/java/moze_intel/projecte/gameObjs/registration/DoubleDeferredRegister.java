@@ -3,10 +3,11 @@ package moze_intel.projecte.gameObjs.registration;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
@@ -16,20 +17,33 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 	@NotNull
 	protected final DeferredRegister<SECONDARY> secondaryRegister;
 
-	public DoubleDeferredRegister(IForgeRegistry<PRIMARY> primaryRegistry, IForgeRegistry<SECONDARY> secondaryRegistry, String modid) {
-		primaryRegister = DeferredRegister.create(primaryRegistry, modid);
-		secondaryRegister = DeferredRegister.create(secondaryRegistry, modid);
+	public DoubleDeferredRegister(@NotNull DeferredRegister<PRIMARY> primaryRegistry, @NotNull DeferredRegister<SECONDARY> secondaryRegistry) {
+		this.primaryRegister = primaryRegistry;
+		this.secondaryRegister = secondaryRegistry;
 	}
 
-	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
-			Supplier<? extends S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
+	protected DoubleDeferredRegister(ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName, ResourceKey<? extends Registry<SECONDARY>> secondaryRegistryName,
+			String modid) {
+		this(DeferredRegister.create(primaryRegistryName, modid), DeferredRegister.create(secondaryRegistryName, modid));
+	}
+
+	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,
+			Supplier<? extends P> primarySupplier, Supplier<? extends S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
+			DeferredHolder<SECONDARY, S>, W> objectWrapper) {
 		return objectWrapper.apply(primaryRegister.register(name, primarySupplier), secondaryRegister.register(name, secondarySupplier));
 	}
 
-	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
-			Function<P, S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
-		RegistryObject<P> primaryObject = primaryRegister.register(name, primarySupplier);
-		return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject.get())));
+	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,
+			Supplier<? extends P> primarySupplier, Function<P, S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
+			DeferredHolder<SECONDARY, S>, W> objectWrapper) {
+		return registerAdvanced(name, primarySupplier, secondarySupplier.compose(Supplier::get), objectWrapper);
+	}
+
+	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W registerAdvanced(String name,
+			Supplier<? extends P> primarySupplier, Function<DeferredHolder<PRIMARY, P>, S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
+			DeferredHolder<SECONDARY, S>, W> objectWrapper) {
+		DeferredHolder<PRIMARY, P> primaryObject = primaryRegister.register(name, primarySupplier);
+		return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject)));
 	}
 
 	public void register(IEventBus bus) {

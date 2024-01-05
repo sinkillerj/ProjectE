@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.IPEConfig;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 public abstract class CachedValue<T> {
 

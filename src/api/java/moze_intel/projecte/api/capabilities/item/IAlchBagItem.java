@@ -2,8 +2,8 @@ package moze_intel.projecte.api.capabilities.item;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * This is exposed through the Capability system.
  * <p>
- * Acquire an instance of this using {@link ItemStack#getCapability(Capability, net.minecraft.core.Direction)}.
+ * Acquire an instance of this using {@link ItemStack#getCapability(ItemCapability)}.
  *
  * @author williewillus
  */

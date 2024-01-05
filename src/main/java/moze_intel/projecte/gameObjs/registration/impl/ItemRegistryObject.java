@@ -1,18 +1,17 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import moze_intel.projecte.gameObjs.registration.WrappedRegistryObject;
-import moze_intel.projecte.utils.RegistryUtils;
+import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject<ITEM> implements ItemLike, IHasTranslationKey {
+public class ItemRegistryObject<ITEM extends Item> extends PEDeferredHolder<Item, ITEM> implements ItemLike, IHasTranslationKey {
 
-	public ItemRegistryObject(RegistryObject<ITEM> registryObject) {
-		super(registryObject);
+	public ItemRegistryObject(ResourceKey<Item> key) {
+		super(key);
 	}
 
 	@NotNull
@@ -26,7 +25,11 @@ public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject
 		return get().getDescriptionId();
 	}
 
-	public ResourceLocation getRegistryName() {
-		return RegistryUtils.getName(get());
+	public ItemStack asStack() {
+		return asStack(1);
+	}
+
+	public ItemStack asStack(int count) {
+		return new ItemStack(asItem(), count);
 	}
 }

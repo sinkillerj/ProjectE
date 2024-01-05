@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.List;
 import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
@@ -128,10 +129,11 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 			ItemStack item = pedestal.getInventory().getStackInSlot(0);
 			ItemStack stack = player.getItemInHand(hand);
 			if (stack.isEmpty() && !item.isEmpty()) {
-				item.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).ifPresent(pedestalItem -> {
+				IPedestalItem pedestalItem = item.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY);
+				if (pedestalItem != null) {
 					pedestal.setActive(!pedestal.getActive());
 					level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-				});
+				}
 			} else if (!stack.isEmpty() && item.isEmpty()) {
 				pedestal.getInventory().setStackInSlot(0, stack.split(1));
 				if (stack.getCount() <= 0) {
@@ -151,7 +153,8 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		if (ped != null && ped.previousRedstoneState != hasSignal) {
 			if (hasSignal) {
 				ItemStack stack = ped.getInventory().getStackInSlot(0);
-				if (!stack.isEmpty() && stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+				//Note: Checking the capability is present will validate that the stack is not empty
+				if (stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY) != null) {
 					ped.setActive(!ped.getActive());
 					level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 				}
@@ -174,7 +177,7 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 		if (pedestal != null) {
 			ItemStack stack = pedestal.getInventory().getStackInSlot(0);
 			if (!stack.isEmpty()) {
-				if (stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY).isPresent()) {
+				if (stack.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY) != null) {
 					return pedestal.getActive() ? 15 : 10;
 				}
 				return 5;

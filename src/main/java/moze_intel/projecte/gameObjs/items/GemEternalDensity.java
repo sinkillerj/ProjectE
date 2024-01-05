@@ -7,10 +7,6 @@ import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
-import moze_intel.projecte.capability.AlchBagItemCapabilityWrapper;
-import moze_intel.projecte.capability.AlchChestItemCapabilityWrapper;
-import moze_intel.projecte.capability.ModeChangerItemCapabilityWrapper;
-import moze_intel.projecte.gameObjs.block_entities.EmcBlockEntity;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
 import moze_intel.projecte.gameObjs.registries.PEItems;
@@ -25,12 +21,10 @@ import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
@@ -43,15 +37,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.EntityHandsInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode {
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode, ICapabilityAware {
 
 	private static final ILangEntry[] modes = new ILangEntry[]{
 			Items.IRON_INGOT::getDescriptionId,
@@ -63,16 +58,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	public GemEternalDensity(Properties props) {
 		super(props);
-		addItemCapability(AlchBagItemCapabilityWrapper::new);
-		addItemCapability(AlchChestItemCapabilityWrapper::new);
-		addItemCapability(ModeChangerItemCapabilityWrapper::new);
-		addItemCapability(IntegrationHelper.CURIO_MODID, IntegrationHelper.CURIO_CAP_SUPPLIER);
 	}
 
 	@Override
 	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean isHeld) {
-		if (!level.isClientSide && entity instanceof Player) {
-			entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(inv -> condense(stack, inv));
+		if (!level.isClientSide && entity instanceof Player player) {
+			condense(stack, new EntityHandsInvWrapper(player));
 		}
 	}
 
@@ -155,7 +146,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
 				}
 			} else {
-				NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(hand, stack), buf -> {
+				player.openMenu(new ContainerProvider(hand, stack), buf -> {
 					buf.writeEnum(hand);
 					buf.writeByte(player.getInventory().selected);
 				});
@@ -175,8 +166,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			case 0 -> new ItemStack(Items.IRON_INGOT);
 			case 1 -> new ItemStack(Items.GOLD_INGOT);
 			case 2 -> new ItemStack(Items.DIAMOND);
-			case 3 -> new ItemStack(PEItems.DARK_MATTER);
-			case 4 -> new ItemStack(PEItems.RED_MATTER);
+			case 3 -> PEItems.DARK_MATTER.asStack();
+			case 4 -> PEItems.RED_MATTER.asStack();
 			default -> {
 				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Invalid target for gem of eternal density: {}", target);
 				yield ItemStack.EMPTY;
@@ -231,7 +222,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 	}
 
-	@Nullable
+	//TODO - 1.20.4: Theoretically it will work as is because neo has builtin packet splitting for everything now
+	// but we may want to evaluate moving this off to world save data (and also removing the ItemHelper method)
+	/*@Nullable
 	@Override
 	public CompoundTag getShareTag(ItemStack stack) {
 		if (stack.getItem() instanceof GemEternalDensity) {
@@ -245,7 +238,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			return ItemHelper.copyNBTSkipKey(nbt, Constants.NBT_KEY_GEM_CONSUMED);
 		}
 		return super.getShareTag(stack);
-	}
+	}*/
 
 	private static List<ItemStack> getWhitelist(ItemStack stack) {
 		if (stack.hasTag()) {
@@ -289,13 +282,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		if (!level.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			EmcBlockEntity chest = WorldHelper.getBlockEntity(EmcBlockEntity.class, level, pos, true);
-			if (chest != null) {
-				chest.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(inv -> {
-					if (condense(stack, inv)) {
-						chest.setChanged();
-					}
-				});
+			IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
+			if (handler != null) {
+				if (condense(stack, handler)) {
+					//TODO - 1.20.4: Validate this but I am pretty sure it isn't necessary as it should be marked by the inventory itself if it changes
+					//chest.setChanged();
+				}
 			}
 		}
 		return false;
@@ -304,6 +296,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
 		return !player.level().isClientSide && condense(stack, inv);
+	}
+
+	@Override
+	public void attachCapabilities(RegisterCapabilitiesEvent event) {
+		IntegrationHelper.registerCuriosCapability(event, this);
 	}
 
 	private record ContainerProvider(InteractionHand hand, ItemStack stack) implements MenuProvider {

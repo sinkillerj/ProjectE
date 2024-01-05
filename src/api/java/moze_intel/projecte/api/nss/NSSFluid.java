@@ -1,17 +1,16 @@
 package moze_intel.projecte.api.nss;
 
-import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,12 +48,12 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 		if (fluid == Fluids.EMPTY) {
 			throw new IllegalArgumentException("Can't make NSSFluid with an empty fluid");
 		}
-		ResourceLocation registryName = ForgeRegistries.FLUIDS.getKey(fluid);
-		if (registryName == null) {
+		Optional<ResourceKey<Fluid>> registryKey = BuiltInRegistries.FLUID.getResourceKey(fluid);
+		if (registryKey.isEmpty()) {
 			throw new IllegalArgumentException("Can't make an NSSFluid with an unregistered fluid");
 		}
 		//This should never be null, or it would have crashed on being registered
-		return createFluid(registryName, nbt);
+		return createFluid(registryKey.get().location(), nbt);
 	}
 
 	/**
@@ -108,8 +107,8 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
 	@NotNull
 	@Override
-	protected Optional<Either<Named<Fluid>, ITag<Fluid>>> getTag() {
-		return getTag(ForgeRegistries.FLUIDS);
+	protected Registry<Fluid> getRegistry() {
+		return BuiltInRegistries.FLUID;
 	}
 
 	@Override

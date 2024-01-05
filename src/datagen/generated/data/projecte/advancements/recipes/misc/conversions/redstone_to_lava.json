@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_volcanite_amulet",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_volcanite_amulet"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:conversions/redstone_to_lava"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

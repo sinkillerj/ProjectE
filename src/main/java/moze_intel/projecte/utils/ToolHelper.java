@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.item.IItemCharge;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
@@ -66,10 +68,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.IShearable;
+import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +86,7 @@ public class ToolHelper {
 	public static final Set<ToolAction> DEFAULT_PE_MORNING_STAR_ACTIONS = of(MORNING_STAR_DIG);
 
 	//Note: These all also do the check that super did before of making sure the entity is not spectating
-	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IForgeShearable;
+	private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 	private static final Predicate<Entity> SLAY_MOB = entity -> !entity.isSpectator() && entity instanceof Enemy;
 	private static final Predicate<Entity> SLAY_ALL = entity -> !entity.isSpectator() && (entity instanceof Enemy || entity instanceof LivingEntity);
 
@@ -313,20 +315,20 @@ public class ToolHelper {
 		Direction sideHit = result.getDirection();
 		AABB box = switch (mode) {
 			//3x Tallshot
-			case 1 -> new AABB(pos.below(), pos.above());
+			case 1 -> AABB.encapsulatingFullBlocks(pos.below(), pos.above());
 			//3x Wideshot
 			case 2 -> switch (sideHit.getAxis()) {
-				case X -> new AABB(pos.south(), pos.north());
+				case X -> AABB.encapsulatingFullBlocks(pos.south(), pos.north());
 				case Y -> switch (player.getDirection().getAxis()) {
-					case X -> new AABB(pos.south(), pos.north());
-					case Z -> new AABB(pos.west(), pos.east());
-					default -> new AABB(pos, pos);
+					case X -> AABB.encapsulatingFullBlocks(pos.south(), pos.north());
+					case Z -> AABB.encapsulatingFullBlocks(pos.west(), pos.east());
+					default -> new AABB(pos);
 				};
-				case Z -> new AABB(pos.west(), pos.east());
+				case Z -> AABB.encapsulatingFullBlocks(pos.west(), pos.east());
 			};
 			//3x Longshot
-			case 3 -> new AABB(pos, pos.relative(sideHit.getOpposite(), 2));
-			default -> new AABB(pos, pos);
+			case 3 -> AABB.encapsulatingFullBlocks(pos, pos.relative(sideHit.getOpposite(), 2));
+			default -> new AABB(pos);
 		};
 		List<ItemStack> drops = new ArrayList<>();
 		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
@@ -443,7 +445,7 @@ public class ToolHelper {
 	public static InteractionResult shearBlock(ItemStack stack, BlockPos pos, Player player) {
 		Level level = player.level();
 		Block block = level.getBlockState(pos).getBlock();
-		if (block instanceof IForgeShearable target) {
+		if (block instanceof IShearable target) {
 			if (target.isShearable(stack, level, pos) && (level.isClientSide || PlayerHelper.hasBreakPermission((ServerPlayer) player, pos))) {
 				List<ItemStack> drops = target.onSheared(player, stack, level, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
 				if (!drops.isEmpty()) {
@@ -475,7 +477,7 @@ public class ToolHelper {
 		List<ItemStack> drops = new ArrayList<>();
 		for (Entity ent : list) {
 			BlockPos entityPosition = ent.blockPosition();
-			IForgeShearable target = (IForgeShearable) ent;
+			IShearable target = (IShearable) ent;
 			if (target.isShearable(stack, level, entityPosition)) {
 				if (level.isClientSide) {
 					return InteractionResult.SUCCESS;
@@ -603,11 +605,13 @@ public class ToolHelper {
 	}
 
 	private static int getCharge(ItemStack stack) {
-		return stack.getCapability(PECapabilities.CHARGE_ITEM_CAPABILITY).map(itemCharge -> itemCharge.getCharge(stack)).orElse(0);
+		IItemCharge charge = stack.getCapability(PECapabilities.CHARGE_ITEM_CAPABILITY);
+		return charge == null ? 0 : charge.getCharge(stack);
 	}
 
 	private static byte getMode(ItemStack stack) {
-		return stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY).map(itemMode -> itemMode.getMode(stack)).orElse((byte) 0);
+		IModeChanger itemMode = stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY);
+		return itemMode == null ? 0 : itemMode.getMode(stack);
 	}
 
 	private interface IToolAOEData {

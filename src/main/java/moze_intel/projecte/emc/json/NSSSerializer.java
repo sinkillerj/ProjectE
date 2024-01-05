@@ -23,7 +23,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
 
 public class NSSSerializer implements JsonSerializer<NormalizedSimpleStack>, JsonDeserializer<NormalizedSimpleStack> {
 

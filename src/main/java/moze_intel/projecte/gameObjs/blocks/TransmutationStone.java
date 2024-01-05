@@ -1,11 +1,12 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import com.mojang.serialization.MapCodec;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.registries.PEBlockTypes;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +46,12 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	public TransmutationStone(Properties props) {
 		super(props);
 		this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.UP).setValue(BlockStateProperties.WATERLOGGED, false));
+	}
+
+	@NotNull
+	@Override
+	protected MapCodec<? extends DirectionalBlock> codec() {
+		return PEBlockTypes.TRANSMUTATION_TABLE.value();
 	}
 
 	@Override
@@ -81,7 +87,7 @@ public class TransmutationStone extends DirectionalBlock implements SimpleWaterl
 	public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
 			@NotNull BlockHitResult rtr) {
 		if (!level.isClientSide) {
-			NetworkHooks.openScreen((ServerPlayer) player, new ContainerProvider(), b -> b.writeBoolean(false));
+			player.openMenu(new ContainerProvider(), b -> b.writeBoolean(false));
 		}
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}

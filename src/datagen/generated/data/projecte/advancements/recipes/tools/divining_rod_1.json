@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_covalence_dust",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_covalence_dust"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:divining_rod_1"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

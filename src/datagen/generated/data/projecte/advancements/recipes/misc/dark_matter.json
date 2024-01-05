@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_aeternalis",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_aeternalis"
     ]
   ],
   "rewards": {
     "recipes": [
       "projecte:dark_matter"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
