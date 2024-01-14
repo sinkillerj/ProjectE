@@ -85,7 +85,7 @@ public abstract class AbstractNBTNSSTag<TYPE> extends AbstractNSSTag<TYPE> imple
 	 */
 	protected static <TYPE, NSS extends AbstractNBTNSSTag<TYPE>> MapCodec<NSS> createExplicitCodec(@Nullable Registry<TYPE> registry, boolean allowDefault,
 			NbtNSSConstructor<TYPE, NSS> nssConstructor) {
-		//Note: We return a MapCodecCodec so that dispatch codecs can inline this
+		//Note: We return a MapCodec so that dispatch codecs can inline this
 		return NeoForgeExtraCodecs.withAlternative(
 				createExplicitTagCodec(nssConstructor),
 				RecordCodecBuilder.mapCodec(instance -> instance.group(

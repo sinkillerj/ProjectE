@@ -14,12 +14,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GemLegs extends GemArmorBase {
+
+	private static final Vec3 DOWNWARD_MOVEMENT = new Vec3(0, -0.32F, 0);
 
 	public GemLegs(Properties props) {
 		super(ArmorItem.Type.LEGGINGS, props);
@@ -48,7 +51,7 @@ public class GemLegs extends GemArmorBase {
 	public void onArmorTick(ItemStack stack, Level level, Player player) {
 		if (level.isClientSide) {
 			if (player.isSecondaryUseActive() && !player.onGround() && player.getDeltaMovement().y() > -8 && !jumpedRecently(player)) {
-				player.setDeltaMovement(player.getDeltaMovement().add(0, -0.32F, 0));
+				player.addDeltaMovement(DOWNWARD_MOVEMENT);
 			}
 		}
 		if (player.isSecondaryUseActive()) {

@@ -313,7 +313,7 @@ public final class WorldHelper {
 		double vel = 1.0 - dist / 15.0;
 		if (vel > 0.0D) {
 			vel *= vel;
-			ent.setDeltaMovement(ent.getDeltaMovement().add(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
+			ent.addDeltaMovement(new Vec3(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
 		}
 	}
 
@@ -332,7 +332,7 @@ public final class WorldHelper {
 			if (crop instanceof IShearable || crop instanceof FlowerBlock || crop instanceof DoublePlantBlock ||
 				crop instanceof RootsBlock || crop instanceof NetherSproutsBlock || crop instanceof HangingRootsBlock) {
 				if (harvest) {
-					harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+					harvestBlock(serverLevel, currentPos, player);
 				}
 			}
 			// Carrot, cocoa, wheat, grass (creates flowers and tall grass in vicinity),
@@ -342,7 +342,7 @@ public final class WorldHelper {
 					if (harvest && !state.is(PETags.Blocks.BLACKLIST_HARVEST)) {
 						if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of kelp but otherwise allow harvesting them
-							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+							harvestBlock(serverLevel, currentPos, player);
 						}
 					}
 				} else if (ProjectEConfig.server.items.harvBandGrass.get() || !isGrassLikeBlock(crop)) {
@@ -364,12 +364,12 @@ public final class WorldHelper {
 					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
 						if (serverLevel.getBlockState(currentPos.above()).is(crop) && serverLevel.getBlockState(currentPos.above(2)).is(crop)) {
 							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-								harvestBlock(serverLevel, currentPos.above(i), (ServerPlayer) player);
+								harvestBlock(serverLevel, currentPos.above(i), player);
 							}
 						}
 					} else if (crop == Blocks.NETHER_WART) {
 						if (state.getValue(NetherWartBlock.AGE) == 3) {
-							harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+							harvestBlock(serverLevel, currentPos, player);
 						}
 					}
 				}
@@ -395,8 +395,8 @@ public final class WorldHelper {
 	/**
 	 * Breaks and "harvests" a block if the player has permission to break it or there is no player
 	 */
-	private static void harvestBlock(Level level, BlockPos pos, @Nullable ServerPlayer player) {
-		if (player == null || PlayerHelper.hasBreakPermission(player, pos)) {
+	private static void harvestBlock(Level level, BlockPos pos, @Nullable Player player) {
+		if (!(player instanceof ServerPlayer serverPlayer) || PlayerHelper.hasBreakPermission(serverPlayer, pos)) {
 			level.destroyBlock(pos, true, player);
 		}
 	}
@@ -535,7 +535,7 @@ public final class WorldHelper {
 		Vec3 t = new Vec3(entity.getX(), entity.getY(), entity.getZ());
 		Vec3 r = new Vec3(t.x - vec.x, t.y - vec.y, t.z - vec.z);
 		double distance = vec.distanceTo(t) + 0.1;
-		entity.setDeltaMovement(entity.getDeltaMovement().add(r.scale(1 / 1.5 * 1 / distance)));
+		entity.addDeltaMovement(r.scale(1 / 1.5 * 1 / distance));
 	}
 
 	@NotNull

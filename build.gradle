@@ -58,14 +58,6 @@ sourceSets {
 
 configurations { configContainer ->
     forgeLibrary
-    /*sourceSets.each { sourceSet ->
-        def configName = sourceSet.getTaskName(null, "forgeLibrary")
-        def implementationConfigName = sourceSet.getTaskName(null, "implementation")
-        def libraryConfig = configContainer.maybeCreate(configName)
-        def implementationConfig = configContainer.maybeCreate(implementationConfigName)
-        implementationConfig.extendsFrom libraryConfig
-        libraryConfigs.add(libraryConfig)
-    }*/
     implementation.extendsFrom(forgeLibrary)
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
@@ -259,8 +251,7 @@ dependencies {
     //runtimeOnly("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
-    //TODO - 1.20.4: Switch back to implementation after CrT updates
-    compileOnly("com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}")
+    implementation("com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}")
 
     forgeLibrary group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 }
@@ -306,6 +297,7 @@ tasks.register('apiJar', Jar) {
     manifest.attributes(getManifestAttributes())
 }
 
+//TODO - 1.20.4: Fix this not building??
 shadowJar {
     //Note: We use the include duplicate strategy instead of FAIL as minimize causes
     // the things to get "added" twice but it is filtered separately by the shadow

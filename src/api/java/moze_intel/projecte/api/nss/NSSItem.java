@@ -155,7 +155,7 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	@Override
 	protected NSSItem createNew(Item item) {
-		return NSSItem.createItem(item);
+		return createItem(item);
 	}
 
 	@Override

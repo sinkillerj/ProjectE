@@ -25,7 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -57,8 +56,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			ResourceLocation typeRegistryName = entry.getKey().location();
 			RecipeType<?> recipeType = entry.getValue();
 			boolean wasHandled = false;
-			List<? extends RecipeHolder<Recipe<?>>> recipes = null;
-			List<RecipeHolder<Recipe<?>>> unhandled = new ArrayList<>();
+			List<RecipeHolder<?>> recipes = null;
+			List<RecipeHolder<?>> unhandled = new ArrayList<>();
 			for (IRecipeTypeMapper recipeMapper : recipeMappers) {
 				String configKey = getName() + "." + recipeMapper.getName() + ".enabled";
 				if (EMCMappingHandler.getOrSetDefault(config, configKey, recipeMapper.getDescription(), recipeMapper.isAvailable())) {
@@ -66,13 +65,13 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 					if (recipeMapper.canHandle(recipeType)) {
 						if (recipes == null) {
 							//If we haven't already retrieved the recipes, do so
-							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it
+							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it,
 							// it will not actually compile due to IRecipeType's generic only having to be of IRecipe<?>
 							// so no information is stored about the type of inventory for the recipe
 							recipes = recipeManager.getAllRecipesFor((RecipeType) recipeType);
 						}
 						int numHandled = 0;
-						for (RecipeHolder<Recipe<?>> recipeHolder : recipes) {
+						for (RecipeHolder<?> recipeHolder : recipes) {
 							try {
 								if (recipeMapper.handleRecipe(mapper, recipeHolder, registryAccess, fakeGroupManager)) {
 									numHandled++;
@@ -115,11 +114,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			ResourceLocation typeRegistryName = entry.getKey();
 			RecipeCountInfo countInfo = entry.getValue();
 			int total = countInfo.getTotalRecipes();
-			List<RecipeHolder<Recipe<?>>> unhandled = countInfo.getUnhandled();
+			List<RecipeHolder<?>> unhandled = countInfo.getUnhandled();
 			PECore.debugLog("Found and handled {} of {} Recipes of Type {}", total - unhandled.size(), total, typeRegistryName);
 			if (!unhandled.isEmpty()) {
 				PECore.debugLog("Unhandled Recipes of Type {}:", typeRegistryName);
-				for (RecipeHolder<Recipe<?>> recipeHolder : unhandled) {
+				for (RecipeHolder<?> recipeHolder : unhandled) {
 					PECore.debugLog("Name: {}, Recipe class: {}", recipeHolder.id(), recipeHolder.value().getClass().getName());
 				}
 			}
@@ -143,9 +142,9 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static class RecipeCountInfo {
 
 		private final int totalRecipes;
-		private List<RecipeHolder<Recipe<?>>> unhandled;
+		private List<RecipeHolder<?>> unhandled;
 
-		private RecipeCountInfo(int totalRecipes, List<RecipeHolder<Recipe<?>>> unhandled) {
+		private RecipeCountInfo(int totalRecipes, List<RecipeHolder<?>> unhandled) {
 			this.totalRecipes = totalRecipes;
 			this.unhandled = unhandled;
 		}
@@ -154,11 +153,11 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			return totalRecipes;
 		}
 
-		public void setUnhandled(List<RecipeHolder<Recipe<?>>> unhandled) {
+		public void setUnhandled(List<RecipeHolder<?>> unhandled) {
 			this.unhandled = unhandled;
 		}
 
-		public List<RecipeHolder<Recipe<?>>> getUnhandled() {
+		public List<RecipeHolder<?>> getUnhandled() {
 			return unhandled;
 		}
 	}
@@ -175,7 +174,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				//Doesn't exist, create one with the next index add it as known and return
 				// the group and the fact that we had to create a representation for it
 				// Note: We use an incrementing index here as our crafting mapper sets a namespace
-				// for NSSFake objects so we can safely use integers as the description and not
+				// for NSSFake objects, so we can safely use integers as the description and not
 				// have to worry about intersecting fake stacks. We also for good measure specify in
 				// the IRecipeTypeMapper java docs that if fake stacks are needed by an implementer
 				// they should make sure to make the name more complex than just a simple integer to

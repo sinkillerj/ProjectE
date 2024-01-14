@@ -125,7 +125,7 @@ public final class NSSFluid extends AbstractNBTNSSTag<Fluid> {
 
 	@Override
 	protected NSSFluid createNew(Fluid fluid) {
-		return NSSFluid.createFluid(fluid);
+		return createFluid(fluid);
 	}
 
 	@Override

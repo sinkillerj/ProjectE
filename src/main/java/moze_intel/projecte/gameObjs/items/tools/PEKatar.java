@@ -35,6 +35,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -183,7 +184,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 					drops.forEach(d -> {
 						ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
 						if (ent != null) {
-							ent.setDeltaMovement(ent.getDeltaMovement().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
+							ent.addDeltaMovement(new Vec3((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
 									(rand.nextFloat() - rand.nextFloat()) * 0.1F));
 						}
 					});

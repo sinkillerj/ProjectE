@@ -118,7 +118,7 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasEditPermission(ServerPlayer player, BlockPos pos) {
-		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection((ServerLevel) player.level(), pos, player)) {
+		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection(player.serverLevel(), pos, player)) {
 			return false;
 		}
 		return Arrays.stream(Direction.values()).allMatch(e -> player.mayUseItemAt(pos, e, ItemStack.EMPTY));

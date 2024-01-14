@@ -283,12 +283,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		if (!level.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
-			if (handler != null) {
-				if (condense(stack, handler)) {
-					//TODO - 1.20.4: Validate this but I am pretty sure it isn't necessary as it should be marked by the inventory itself if it changes
-					//chest.setChanged();
-				}
-			}
+			return handler != null && condense(stack, handler);
 		}
 		return false;
 	}

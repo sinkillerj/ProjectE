@@ -270,10 +270,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 			return false;
 		}
 
-		if (PlayerHelper.checkedReplaceBlock((ServerPlayer) player, placePos, newState)) {
+		ServerPlayer serverPlayer = (ServerPlayer) player;
+		if (PlayerHelper.checkedReplaceBlock(serverPlayer, placePos, newState)) {
 			if (oldEMC == 0) {
 				//Drop the block because it doesn't have an emc value
-				drops.addAll(Block.getDrops(oldState, ((ServerPlayer) player).serverLevel(), placePos, null, player, eye));
+				drops.addAll(Block.getDrops(oldState, serverPlayer.serverLevel(), placePos, null, player, eye));
 				emcHolder.extractEmc(klein, newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC > newEMC) {
 				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);

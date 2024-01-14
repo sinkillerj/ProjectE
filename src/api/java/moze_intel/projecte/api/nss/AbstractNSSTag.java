@@ -197,15 +197,15 @@ public abstract class AbstractNSSTag<TYPE> implements NSSTag {
 	 * @param allowDefault   {@code true} to allow ids matching the default element of the registry.
 	 * @param nssConstructor Normalized Simple Stack constructor.
 	 */
-	protected static <TYPE, NSS extends AbstractNSSTag<TYPE>> Codec<NSS> createExplicitCodec(@Nullable Registry<TYPE> registry, boolean allowDefault,
+	protected static <TYPE, NSS extends AbstractNSSTag<TYPE>> MapCodec<NSS> createExplicitCodec(@Nullable Registry<TYPE> registry, boolean allowDefault,
 			NSSTagConstructor<TYPE, NSS> nssConstructor) {
-		//Note: We return a MapCodecCodec so that dispatch codecs can inline this
+		//Note: We return a MapCodec so that dispatch codecs can inline this
 		return NeoForgeExtraCodecs.withAlternative(
 				createExplicitTagCodec(nssConstructor),
 				RecordCodecBuilder.mapCodec(instance -> instance.group(
 						idComponent(registry, allowDefault)
 				).apply(instance, nssConstructor::create))
-		).codec();
+		);
 	}
 
 	/**

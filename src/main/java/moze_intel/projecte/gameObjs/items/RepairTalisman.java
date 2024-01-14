@@ -84,17 +84,7 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 		if (!level.isClientSide) {
 			IItemHandler inv = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
 			if (inv != null) {
-				CompoundTag nbt = stack.getOrCreateTag();
-				byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
-				if (coolDown > 0) {
-					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
-				} else if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
-					nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
-					//TODO - 1.20.4: Validate this, shouldn't updating the slots in the handler cause it to mark the chest as dirty?
-					//Note: We don't need to recheck comparators as repairing doesn't change the number
-					// of items in slots
-					//chest.markDirty(false);
-				}
+				return updateInHandler(inv, stack);
 			}
 		}
 		return false;
@@ -102,13 +92,15 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
-		if (player.level().isClientSide) {
-			return false;
-		}
+		return !player.level().isClientSide && updateInHandler(inv, stack);
+	}
+
+	private boolean updateInHandler(@NotNull IItemHandler inv, @NotNull ItemStack stack) {
 		CompoundTag nbt = stack.getOrCreateTag();
 		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
 		if (coolDown > 0) {
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+			return true;
 		} else if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
 			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
 			return true;

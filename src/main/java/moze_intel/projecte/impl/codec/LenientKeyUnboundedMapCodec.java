@@ -59,6 +59,6 @@ public record LenientKeyUnboundedMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elem
 
 	@Override
 	public String toString() {
-		return "LenientKeyUnboundedMapCodec[" + keyCodec + " -> " + elementCodec + ']';
+		return "projecte:LenientKeyUnboundedMapCodec[" + keyCodec + " -> " + elementCodec + ']';
 	}
 }

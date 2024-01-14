@@ -87,8 +87,6 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	public CollectorMK1BlockEntity(BlockEntityTypeRegistryObject<? extends CollectorMK1BlockEntity> type, BlockPos pos, BlockState state, EnumCollectorTier tier) {
 		super(type, pos, state, tier.getStorage());
 		this.emcGen = tier.getGenRate();
-
-		//TODO - 1.20.4: Re-evaluate and test this
 		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
 			@NotNull
 			@Override
@@ -100,10 +98,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 			@NotNull
 			@Override
 			public ItemStack extractItem(int slot, int count, boolean simulate) {
-				if (slot == UPGRADE_SLOT) {
-					return super.extractItem(slot, count, simulate);
-				}
-				return ItemStack.EMPTY;
+				return slot == UPGRADE_SLOT ? super.extractItem(slot, count, simulate) : ItemStack.EMPTY;
 			}
 		};
 		this.joined = new CombinedInvWrapper(automationInput, automationAuxSlots);
@@ -111,7 +106,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 
 	@Override
 	protected boolean canAcceptEmc() {
-		//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise it sends it to providers
+		//Collector accepts EMC from providers if it has fuel/chargeable. Otherwise, it sends it to providers
 		return hasFuel || hasChargeableItem;
 	}
 
@@ -162,7 +157,8 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	private void rotateUpgraded() {
 		ItemStack upgraded = getUpgraded();
 		if (!upgraded.isEmpty()) {
-			if (getLock().isEmpty() || upgraded.getItem() != getLock().getItem() || upgraded.getCount() >= upgraded.getMaxStackSize()) {
+			ItemStack lock = getLock();
+			if (lock.isEmpty() || upgraded.getItem() != lock.getItem() || upgraded.getCount() >= upgraded.getMaxStackSize()) {
 				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, upgraded.copy(), false));
 			}
 		}
@@ -213,20 +209,21 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 					auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				}
 
-				ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(upgrading) : getLock().copy();
+				ItemStack lock = getLock();
+				ItemStack result = lock.isEmpty() ? FuelMapper.getFuelUpgrade(upgrading) : lock.copy();
 
 				long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(upgrading);
 
 				if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost) {
 					ItemStack upgrade = getUpgraded();
 
-					if (getUpgraded().isEmpty()) {
+					if (upgrade.isEmpty()) {
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 						upgrading.shrink(1);
 					} else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize()) {
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
-						getUpgraded().grow(1);
+						upgrade.grow(1);
 						upgrading.shrink(1);
 						auxSlots.onContentsChanged(UPGRADE_SLOT);
 					}
@@ -289,21 +286,24 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	}
 
 	public double getFuelProgress() {
-		if (getUpgrading().isEmpty() || !FuelMapper.isStackFuel(getUpgrading())) {
+		ItemStack upgrading = getUpgrading();
+		if (upgrading.isEmpty() || !FuelMapper.isStackFuel(upgrading)) {
 			return 0;
 		}
 		long reqEmc;
-		if (!getLock().isEmpty()) {
-			reqEmc = EMCHelper.getEmcValue(getLock()) - EMCHelper.getEmcValue(getUpgrading());
+		ItemStack lock = getLock();
+		if (!lock.isEmpty()) {
+			reqEmc = EMCHelper.getEmcValue(lock) - EMCHelper.getEmcValue(upgrading);
 			if (reqEmc < 0) {
 				return 0;
 			}
 		} else {
-			if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
+			ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(upgrading);
+			if (fuelUpgrade.isEmpty()) {
 				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				return 0;
 			}
-			reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading())) - EMCHelper.getEmcValue(getUpgrading());
+			reqEmc = EMCHelper.getEmcValue(fuelUpgrade) - EMCHelper.getEmcValue(upgrading);
 		}
 		if (getStoredEmc() >= reqEmc) {
 			return 1;

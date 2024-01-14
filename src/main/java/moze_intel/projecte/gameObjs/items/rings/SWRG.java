@@ -5,14 +5,13 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
@@ -23,7 +22,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -56,22 +54,21 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		if (player.level().isClientSide) {
 			return;
 		}
-		ServerPlayer playerMP = (ServerPlayer) player;
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
 			if (nbt.getInt(Constants.NBT_KEY_MODE) > 0) {
 				changeMode(player, stack, 0);
 			}
-			if (playerMP.getAbilities().mayfly) {
-				playerMP.getData(PEAttachmentTypes.INTERNAL_ABILITIES).disableSwrgFlightOverride();
+			if (player.getAbilities().mayfly) {
+				player.getData(PEAttachmentTypes.INTERNAL_ABILITIES).disableSwrgFlightOverride();
 			}
 			return;
 		}
 
-		if (!playerMP.getAbilities().mayfly) {
-			playerMP.getData(PEAttachmentTypes.INTERNAL_ABILITIES).enableSwrgFlightOverride();
+		if (!player.getAbilities().mayfly) {
+			player.getData(PEAttachmentTypes.INTERNAL_ABILITIES).enableSwrgFlightOverride();
 		}
 
-		if (playerMP.getAbilities().flying) {
+		if (player.getAbilities().flying) {
 			if (!isFlyingEnabled(nbt)) {
 				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
 			}
@@ -81,7 +78,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		float toRemove = 0;
 
-		if (playerMP.getAbilities().flying) {
+		if (player.getAbilities().flying) {
 			toRemove = 0.32F;
 		}
 
@@ -93,7 +90,7 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 
 		removeEmc(stack, EMCHelper.removeFractionalEMC(stack, toRemove));
 
-		playerMP.fallDistance = 0;
+		player.fallDistance = 0;
 	}
 
 	private boolean isFlyingEnabled(CompoundTag nbt) {

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public interface IExtraFunction {
 
 	/**
-	 * Called serverside when the server receives a Extra Function key packet
+	 * Called serverside when the server receives an Extra Function key packet
 	 *
 	 * @param stack  The ItemStack performing this function
 	 * @param player The player performing this function

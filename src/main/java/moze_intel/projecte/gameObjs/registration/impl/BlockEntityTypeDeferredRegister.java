@@ -26,7 +26,7 @@ public class BlockEntityTypeDeferredRegister extends PEDeferredRegister<BlockEnt
 	public BlockEntityTypeDeferredRegister(String modid) {
 		//Note: We intentionally don't pass a more restrictive type for holder creation as we ignore the holder that gets created
 		// in favor of one we create ourselves
-		//TODO - 1.20.4:
+		//TODO - 1.20.4: Re-evaluate
 		super(Registries.BLOCK_ENTITY_TYPE, modid);
 	}
 

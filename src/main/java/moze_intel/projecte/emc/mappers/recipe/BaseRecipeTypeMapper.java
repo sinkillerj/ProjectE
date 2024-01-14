@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 
 	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RecipeHolder<Recipe<?>> recipeHolder, RegistryAccess registryAccess,
+	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RecipeHolder<?> recipeHolder, RegistryAccess registryAccess,
 			INSSFakeGroupManager fakeGroupManager) {
 		Recipe<?> recipe = recipeHolder.value();
 		ItemStack recipeOutput = recipe.getResultItem(registryAccess);
@@ -203,7 +203,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	}
 
 	@Nullable
-	private Collection<Ingredient> getIngredientsChecked(RecipeHolder<Recipe<?>> recipeHolder) {
+	private Collection<Ingredient> getIngredientsChecked(RecipeHolder<?> recipeHolder) {
 		try {
 			return getIngredients(recipeHolder.value());
 		} catch (Exception e) {

@@ -56,7 +56,6 @@ public class CrTNSSResolver {
 		return deserialize(IDataOps.INSTANCE, representation);
 	}
 
-	//TODO - 1.20.4: Test this (for both strings and IData)
 	private static <T> NormalizedSimpleStack deserialize(DynamicOps<T> ops, T input) {
 		DataResult<NormalizedSimpleStack> result = IPECodecHelper.INSTANCE.nssCodec().parse(ops, input);
 		Optional<PartialResult<NormalizedSimpleStack>> error = result.error();

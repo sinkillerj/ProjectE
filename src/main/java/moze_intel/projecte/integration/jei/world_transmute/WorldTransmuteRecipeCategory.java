@@ -75,7 +75,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 						.addItemStack(input)
 				).ifRight(input -> builder.addSlot(RecipeIngredientRole.INPUT, 16, 16)
 						//TODO - 1.20.4: FIXME
-						//.addIngredient(ForgeTypes.FLUID_STACK, input)
+						//.addIngredient(NeoForgeTypes.FLUID_STACK, input)
 						.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 				)
 		);
@@ -85,7 +85,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 			output.ifLeft(slot::addItemStack)
 					.ifRight(input -> slot
 							//TODO - 1.20.4: FIXME
-							//.addIngredient(ForgeTypes.FLUID_STACK, input)
+							//.addIngredient(NeoForgeTypes.FLUID_STACK, input)
 							.setFluidRenderer(FluidType.BUCKET_VOLUME, false, 16, 16)
 					);
 			xPos += 16;

@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
-import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
-import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
@@ -41,13 +39,13 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
-		return ((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).updateInPedestal(stack, level, pos, pedestal);
+		return PEItems.BLACK_HOLE_BAND.get().updateInPedestal(stack, level, pos, pedestal);
 	}
 
 	@NotNull
 	@Override
 	public List<Component> getPedestalDescription() {
-		return ((IPedestalItem) PEItems.BLACK_HOLE_BAND.get()).getPedestalDescription();
+		return PEItems.BLACK_HOLE_BAND.get().getPedestalDescription();
 	}
 
 	@Override
@@ -79,12 +77,12 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 	@Override
 	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
 		// super is Gem of Eternal Density
-		return super.updateInAlchBag(inv, player, stack) | ((IAlchBagItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchBag(inv, player, stack);
+		return super.updateInAlchBag(inv, player, stack) | PEItems.BLACK_HOLE_BAND.get().updateInAlchBag(inv, player, stack);
 	}
 
 	@Override
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
 		// super is Gem of Eternal Density
-		return super.updateInAlchChest(level, pos, stack) | ((IAlchChestItem) PEItems.BLACK_HOLE_BAND.get()).updateInAlchChest(level, pos, stack);
+		return super.updateInAlchChest(level, pos, stack) | PEItems.BLACK_HOLE_BAND.get().updateInAlchChest(level, pos, stack);
 	}
 }

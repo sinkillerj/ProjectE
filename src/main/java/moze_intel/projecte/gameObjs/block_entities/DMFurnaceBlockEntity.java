@@ -83,12 +83,11 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
 
-		//TODO - 1.20.4: Re-evaluate and test this
 		this.automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
 			@NotNull
 			@Override
 			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return !getSmeltingResult(stack).isEmpty() ? super.insertItem(slot, stack, simulate) : stack;
+				return getSmeltingResult(stack).isEmpty() ? stack : super.insertItem(slot, stack, simulate);
 			}
 		};
 		this.automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);

@@ -65,7 +65,6 @@ public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider 
 			}
 		};
 
-		//TODO - 1.20.4: Re-evaluate and test this
 		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 		this.automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
 			@NotNull

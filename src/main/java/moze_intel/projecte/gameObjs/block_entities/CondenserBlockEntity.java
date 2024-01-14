@@ -50,7 +50,6 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 
 	protected CondenserBlockEntity(BlockEntityTypeRegistryObject<? extends CondenserBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		//TODO - 1.20.4: Test this works properly with overrides
 		this.automationInventory = createAutomationInventory();
 	}
 
@@ -101,10 +100,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 			@NotNull
 			@Override
 			public ItemStack extractItem(int slot, int max, boolean simulate) {
-				if (!getStackInSlot(slot).isEmpty() && isStackEqualToLock(getStackInSlot(slot))) {
-					return super.extractItem(slot, max, simulate);
-				}
-				return ItemStack.EMPTY;
+				return isStackEqualToLock(getStackInSlot(slot)) ? super.extractItem(slot, max, simulate) : ItemStack.EMPTY;
 			}
 		};
 	}
@@ -174,8 +170,11 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	public boolean isStackEqualToLock(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return false;
+		}
 		ItemInfo lockInfo = getLockInfo();
-		if (lockInfo == null || stack.isEmpty()) {
+		if (lockInfo == null) {
 			return false;
 		}
 		//Compare our lock to the persistent info that the stack would have

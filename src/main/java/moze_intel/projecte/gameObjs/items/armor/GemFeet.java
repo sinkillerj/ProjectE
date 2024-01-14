@@ -17,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssister {
 
 	private static final UUID MODIFIER = UUID.fromString("A4334312-DFF8-4582-9F4F-62AD0C070475");
+	private static final Vec3 VERTICAL_MOVEMENT = new Vec3(0, 0.1, 0);
 
 	private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -65,10 +66,8 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	private static boolean isJumpPressed() {
-		//TODO - 1.20.4: Test this, also should we move to the input style thing
 		if (FMLEnvironment.dist.isClient()) {
-			//return Minecraft.getInstance().player.input.jumping;
-			return Minecraft.getInstance().options.keyJump.isDown();
+			return Minecraft.getInstance().player != null && Minecraft.getInstance().player.input.jumping;
 		}
 		return false;
 	}
@@ -76,17 +75,17 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	@Override
 	public void onArmorTick(ItemStack stack, Level level, Player player) {
 		if (!level.isClientSide) {
-			ServerPlayer playerMP = (ServerPlayer) player;
-			playerMP.fallDistance = 0;
+			player.fallDistance = 0;
 		} else {
-			if (!player.getAbilities().flying && isJumpPressed()) {
-				player.setDeltaMovement(player.getDeltaMovement().add(0, 0.1, 0));
+			boolean flying = player.getAbilities().flying;
+			if (!flying && isJumpPressed()) {
+				player.addDeltaMovement(VERTICAL_MOVEMENT);
 			}
 			if (!player.onGround()) {
 				if (player.getDeltaMovement().y() <= 0) {
 					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
 				}
-				if (!player.getAbilities().flying) {
+				if (!flying) {
 					if (player.zza < 0) {
 						player.setDeltaMovement(player.getDeltaMovement().multiply(0.9, 1, 0.9));
 					} else if (player.zza > 0 && player.getDeltaMovement().lengthSqr() < 3) {

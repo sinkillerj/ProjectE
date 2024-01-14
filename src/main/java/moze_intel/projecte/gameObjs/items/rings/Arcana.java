@@ -3,9 +3,9 @@ package moze_intel.projecte.gameObjs.items.rings;
 import java.util.List;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +32,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -154,24 +156,27 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		if (level.isClientSide) {
 			return false;
 		}
-		switch (getMode(stack)) {
+		SoundEvent sound = null;
+		Projectile projectile = switch (getMode(stack)) {
 			case 0 -> { // zero
-				Snowball snowball = new Snowball(level, player);
-				snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-				level.addFreshEntity(snowball);
-				snowball.playSound(SoundEvents.SNOWBALL_THROW, 1.0F, 1.0F);
+				sound = SoundEvents.SNOWBALL_THROW;
+				yield new Snowball(level, player);
 			}
 			case 1 -> { // ignition
-				EntityFireProjectile fire = new EntityFireProjectile(player, true, level);
-				fire.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-				level.addFreshEntity(fire);
-				fire.playSound(PESoundEvents.POWER.get(), 1.0F, 1.0F);
+				sound = PESoundEvents.POWER.get();
+				yield new EntityFireProjectile(player, true, level);
 			}
-			case 3 -> { // swrg
-				EntitySWRGProjectile lightning = new EntitySWRGProjectile(player, true, level);
-				lightning.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
-				level.addFreshEntity(lightning);
-			}
+			// swrg
+			case 3 -> new EntitySWRGProjectile(player, true, level);
+			default -> null;
+		};
+		if (projectile == null) {
+			return false;
+		}
+		projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.5F, 1);
+		level.addFreshEntity(projectile);
+		if (sound != null) {
+			projectile.playSound(sound, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 		}
 		return true;
 	}
