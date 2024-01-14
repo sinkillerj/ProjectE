@@ -1,51 +1,30 @@
 package moze_intel.projecte.emc.pregenerated;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
+import com.mojang.serialization.Codec;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.json.NSSSerializer;
+import java.util.Optional;
+import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.codec.IPECodecHelper;
+import moze_intel.projecte.impl.codec.PECodecHelper;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class PregeneratedEMC {
 
-	private static final Gson gson = new GsonBuilder()
-			.registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE)
-			.enableComplexMapKeySerialization().setPrettyPrinting().create();
+	//Allow skipping when there are invalid entries in the map as a common case of this might be if a mod is removed after
+	// emc values were pregenerated, and then it will be referencing an item that doesn't exist anymore
+	@VisibleForTesting
+	static final Codec<Map<ItemInfo, Long>> CODEC = IPECodecHelper.INSTANCE.lenientKeyUnboundedMap(ItemInfo.LEGACY_CODEC, IPECodecHelper.INSTANCE.positiveLong());
 
-	public static boolean tryRead(File f, Map<NormalizedSimpleStack, Long> map) {
-		try {
-			Map<NormalizedSimpleStack, Long> m = read(f);
-			map.clear();
-			map.putAll(m);
-			return true;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	public static Optional<Map<ItemInfo, Long>> read(Path path, boolean shouldUsePregenerated) {
+		if (shouldUsePregenerated && Files.isReadable(path)) {
+			return PECodecHelper.readFromFile(path, CODEC, "pregenerated emc");
 		}
+		return Optional.empty();
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
-	private static Map<NormalizedSimpleStack, Long> read(File file) throws IOException {
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Long>>() {}.getType();
-		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			Map<NormalizedSimpleStack, Long> map = gson.fromJson(reader, type);
-			map.remove(null);
-			return map;
-		}
-	}
-
-	@SuppressWarnings("UnstableApiUsage")
-	public static void write(File file, Map<NormalizedSimpleStack, Long> map) throws IOException {
-		Type type = new TypeToken<Map<NormalizedSimpleStack, Integer>>() {}.getType();
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-			gson.toJson(map, type, writer);
-		}
+	public static void write(Path path, Map<ItemInfo, Long> map) {
+		PECodecHelper.writeToFile(path, CODEC, map, "pregenerated emc");
 	}
 }

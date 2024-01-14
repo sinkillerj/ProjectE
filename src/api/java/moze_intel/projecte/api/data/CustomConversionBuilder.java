@@ -1,36 +1,41 @@
 package moze_intel.projecte.api.data;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.conversion.CustomConversionFile;
+import moze_intel.projecte.api.conversion.FixedValues;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper {
 
-	private static final long FREE_ARITHMETIC_VALUE = Long.MIN_VALUE;
 	private final Map<String, ConversionGroupBuilder> groups = new LinkedHashMap<>();
 	private final Map<NormalizedSimpleStack, Long> fixedValueBefore = new LinkedHashMap<>();
 	private final Map<NormalizedSimpleStack, Long> fixedValueAfter = new LinkedHashMap<>();
-	private final List<FixedValueConversionBuilder> fixedValueConversions = new ArrayList<>();
-	private final ResourceLocation id;
+	private final List<ConversionBuilder<?>> fixedValueConversions = new ArrayList<>();
 	private boolean replace;
 	@Nullable
 	private String comment;
 
-	CustomConversionBuilder(ResourceLocation id) {
-		this.id = id;
+	CustomConversionBuilder() {
+	}
+
+	CustomConversionFile build() {
+		return new CustomConversionFile(replace, comment,
+				groups.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().build(), (a, b) -> {
+					throw new IllegalStateException("No duplicate keys");
+				}, LinkedHashMap::new)),
+				new FixedValues(fixedValueBefore, fixedValueAfter, fixedValueConversions.stream().map(ConversionBuilder::build).toList())
+		);
 	}
 
 	/**
@@ -62,7 +67,9 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 	 */
 	public ConversionGroupBuilder group(String groupName) {
 		Objects.requireNonNull(groupName, "Group name cannot be null.");
-		if (groups.containsKey(groupName)) {
+		if (groupName.isEmpty()) {
+			throw new RuntimeException("Group with name cannot be empty.");
+		} else if (groups.containsKey(groupName)) {
 			throw new RuntimeException("Group with name '" + groupName + "' already exists.");
 		}
 		ConversionGroupBuilder builder = new ConversionGroupBuilder(this);
@@ -77,7 +84,7 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 
 	@Override
 	public CustomConversionBuilder before(NormalizedSimpleStack stack) {
-		return fixedValue(stack, FREE_ARITHMETIC_VALUE, fixedValueBefore, "before");
+		return fixedValue(stack, ProjectEAPI.FREE_ARITHMETIC_VALUE, fixedValueBefore, "before");
 	}
 
 	@Override
@@ -87,7 +94,7 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 
 	@Override
 	public CustomConversionBuilder after(NormalizedSimpleStack stack) {
-		return fixedValue(stack, FREE_ARITHMETIC_VALUE, fixedValueAfter, "after");
+		return fixedValue(stack, ProjectEAPI.FREE_ARITHMETIC_VALUE, fixedValueAfter, "after");
 	}
 
 	/**
@@ -95,7 +102,7 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 	 */
 	private CustomConversionBuilder fixedValue(NormalizedSimpleStack stack, long emc, Map<NormalizedSimpleStack, Long> fixedValues, String type) {
 		Objects.requireNonNull(stack, "Normalized Simple Stack cannot be null.");
-		if (emc < 1 && emc != FREE_ARITHMETIC_VALUE) {
+		if (emc < 1 && emc != ProjectEAPI.FREE_ARITHMETIC_VALUE) {
 			throw new IllegalArgumentException("EMC value must be at least one.");
 		} else if (fixedValues.containsKey(stack)) {
 			throw new RuntimeException("Fixed value " + type + " already set for '" + stack + "'.");
@@ -105,101 +112,13 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 	}
 
 	@Override
-	public FixedValueConversionBuilder conversion(NormalizedSimpleStack output, int amount) {
+	public ConversionBuilder<CustomConversionBuilder> conversion(NormalizedSimpleStack output, int amount) {
 		if (amount < 1) {
 			throw new IllegalArgumentException("Output amount for fixed value conversions must be at least one.");
 		}
-		FixedValueConversionBuilder builder = new FixedValueConversionBuilder(output, amount);
+		ConversionBuilder<CustomConversionBuilder> builder = new ConversionBuilder<>(this, output, amount);
 		fixedValueConversions.add(builder);
 		return builder;
-	}
-
-	/**
-	 * Serializes this custom conversion file into the json object representing its contents.
-	 */
-	JsonObject serialize() {
-		JsonObject json = new JsonObject();
-		if (comment != null) {
-			json.addProperty("comment", comment);
-		}
-		if (replace) {
-			json.addProperty("replace", true);
-		}
-		if (!groups.isEmpty()) {
-			JsonObject jsonGroups = new JsonObject();
-			for (Map.Entry<String, ConversionGroupBuilder> entry : groups.entrySet()) {
-				String groupName = entry.getKey();
-				ConversionGroupBuilder group = entry.getValue();
-				JsonObject groupJson = group.serialize();
-				validateNonEmpty(groupJson, group.hasComment(), "Group", groupName);
-				jsonGroups.add(groupName, groupJson);
-			}
-			json.add("groups", jsonGroups);
-		}
-		if (!fixedValueBefore.isEmpty() || !fixedValueAfter.isEmpty() || !fixedValueConversions.isEmpty()) {
-			JsonObject fixedValues = new JsonObject();
-			if (!fixedValueBefore.isEmpty()) {
-				fixedValues.add("before", serializeFixedValues(fixedValueBefore));
-			}
-			if (!fixedValueAfter.isEmpty()) {
-				fixedValues.add("after", serializeFixedValues(fixedValueAfter));
-			}
-			if (!fixedValueConversions.isEmpty()) {
-				fixedValues.add("conversion", serializeConversions(fixedValueConversions));
-			}
-			json.add("values", fixedValues);
-		}
-		validateNonEmpty(json, comment != null, "Custom conversion", id.toString());
-		return json;
-	}
-
-	/**
-	 * Validates that a json object is not empty, or consists only of a comment.
-	 */
-	private static void validateNonEmpty(JsonObject json, boolean hasComment, String type, String name) {
-		int elements = json.size();
-		if (elements == 0) {
-			throw new RuntimeException(type + " '" + name + "' is empty and should be removed.");
-		} else if (elements == 1 && hasComment) {
-			throw new RuntimeException(type + " '" + name + "' consists only of a comment and should be removed.");
-		}
-	}
-
-	/**
-	 * Serializes a map of fixed values into a json object.
-	 */
-	private static JsonObject serializeFixedValues(Map<NormalizedSimpleStack, Long> fixedValues) {
-		JsonObject json = new JsonObject();
-		for (Map.Entry<NormalizedSimpleStack, Long> entry : fixedValues.entrySet()) {
-			String key = entry.getKey().json();
-			long emc = entry.getValue();
-			if (emc == FREE_ARITHMETIC_VALUE) {
-				json.addProperty(key, "free");
-			} else {
-				json.addProperty(key, emc);
-			}
-		}
-		return json;
-	}
-
-	/**
-	 * Serializing a list of conversions into a json array.
-	 */
-	static JsonArray serializeConversions(List<? extends ConversionBuilder<?>> conversions) {
-		Set<JsonObject> addedConversions = new HashSet<>();
-		JsonArray jsonConversions = new JsonArray();
-		for (ConversionBuilder<?> conversion : conversions) {
-			JsonObject jsonConversion = conversion.serialize();
-			//Very simple check to protect against copy paste duplicates
-			// This won't find things where the inputs are in different orders or where an entry isn't
-			// actually needed, but should help against copy paste issues.
-			if (addedConversions.add(jsonConversion)) {
-				jsonConversions.add(jsonConversion);
-			} else {
-				throw new RuntimeException("Duplicate conversion: " + conversion + ". This is likely a copy paste error and should be removed.");
-			}
-		}
-		return jsonConversions;
 	}
 
 	/**
@@ -209,24 +128,6 @@ public class CustomConversionBuilder implements CustomConversionBuilderNSSHelper
 		Objects.requireNonNull(comment, "Comment defaults to null, remove unnecessary call.");
 		if (currentComment != null) {
 			throw new RuntimeException(location + " Builder already has a comment declared.");
-		}
-	}
-
-	public class FixedValueConversionBuilder extends ConversionBuilder<FixedValueConversionBuilder> {
-
-		private FixedValueConversionBuilder(NormalizedSimpleStack output, int count) {
-			super(output, count);
-		}
-
-		/**
-		 * Ends this fixed value conversion builder and returns to the {@link CustomConversionBuilder}.
-		 *
-		 * @apiNote While it is not required to call this method if it is the last line of your builder calls. It is recommended to do so to get better line number errors
-		 * if you accidentally forgot to include any ingredients.
-		 */
-		public CustomConversionBuilder end() {
-			validateIngredients();
-			return CustomConversionBuilder.this;
 		}
 	}
 }

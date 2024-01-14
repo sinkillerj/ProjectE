@@ -1,15 +1,22 @@
 package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DataResult.PartialResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
+import java.util.Optional;
+import moze_intel.projecte.api.codec.IPECodecHelper;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.json.NSSSerializer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
@@ -34,11 +41,29 @@ public class CrTNSSResolver {
 	 */
 	@ZenCodeType.Method
 	public static NormalizedSimpleStack deserialize(String representation) {
-		try {
-			return NSSSerializer.INSTANCE.deserialize(representation);
-		} catch (JsonParseException e) {
-			throw new IllegalArgumentException("Error deserializing NSS string representation", e);
+		return deserialize(JsonOps.INSTANCE, new JsonPrimitive(representation));
+	}
+
+	/**
+	 * Creates a {@link NormalizedSimpleStack} based on its string representation.
+	 *
+	 * @param representation String representation as would be found in custom_emc.json
+	 *
+	 * @return A {@link NormalizedSimpleStack} based on its string representation.
+	 */
+	@ZenCodeType.Method
+	public static NormalizedSimpleStack deserialize(IData representation) {
+		return deserialize(IDataOps.INSTANCE, representation);
+	}
+
+	//TODO - 1.20.4: Test this (for both strings and IData)
+	private static <T> NormalizedSimpleStack deserialize(DynamicOps<T> ops, T input) {
+		DataResult<NormalizedSimpleStack> result = IPECodecHelper.INSTANCE.nssCodec().parse(ops, input);
+		Optional<PartialResult<NormalizedSimpleStack>> error = result.error();
+		if (error.isPresent()) {
+			throw new IllegalArgumentException("Error deserializing NSS representation: " + error.get().message());
 		}
+		return result.result().orElseThrow();
 	}
 
 	/**

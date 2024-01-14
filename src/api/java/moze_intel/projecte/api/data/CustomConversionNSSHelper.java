@@ -22,7 +22,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> {
+interface CustomConversionNSSHelper<BUILDER extends ConversionBuilder<?>> {
 
 	/**
 	 * Creates a {@link BUILDER} that outputs the given amount of the given {@link NormalizedSimpleStack}.

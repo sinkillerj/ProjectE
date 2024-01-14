@@ -5,7 +5,6 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.config.CustomEMCParser;
 import net.minecraft.core.RegistryAccess;
@@ -18,14 +17,11 @@ public class CustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> 
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		for (CustomEMCParser.CustomEMCEntry entry : CustomEMCParser.currentEntries.entries) {
-			PECore.debugLog("Adding custom EMC value for {}: {}", entry.item, entry.emc);
-			mapper.setValueBefore(entry.item, entry.emc);
-			if (entry.item instanceof NSSTag nssTag) {
-				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.emc));
-			}
-		}
+		CustomEMCParser.currentEntries.entries().forEach((item, emc) -> {
+			PECore.debugLog("Adding custom EMC value for {}: {}", item, emc);
+			//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
+			item.forSelfAndEachElement(nss -> mapper.setValueBefore(nss, emc));
+		});
 	}
 
 	@Override

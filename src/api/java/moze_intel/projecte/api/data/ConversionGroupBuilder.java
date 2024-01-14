@@ -1,10 +1,9 @@
 package moze_intel.projecte.api.data;
 
-import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
-import moze_intel.projecte.api.data.ConversionGroupBuilder.GroupConversionBuilder;
+import moze_intel.projecte.api.conversion.ConversionGroup;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.Nullable;
@@ -14,15 +13,19 @@ import org.jetbrains.annotations.Nullable;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ConversionGroupBuilder implements CustomConversionNSSHelper<GroupConversionBuilder> {
+public class ConversionGroupBuilder implements CustomConversionNSSHelper<ConversionBuilder<ConversionGroupBuilder>> {
 
 	private final CustomConversionBuilder customConversionBuilder;
-	private final List<GroupConversionBuilder> conversions = new ArrayList<>();
+	private final List<ConversionBuilder<?>> conversions = new ArrayList<>();
 	@Nullable
 	private String comment;
 
 	ConversionGroupBuilder(CustomConversionBuilder customConversionBuilder) {
 		this.customConversionBuilder = customConversionBuilder;
+	}
+
+	ConversionGroup build() {
+		return new ConversionGroup(comment, conversions.stream().map(ConversionBuilder::build).toList());
 	}
 
 	/**
@@ -37,11 +40,11 @@ public class ConversionGroupBuilder implements CustomConversionNSSHelper<GroupCo
 	}
 
 	@Override
-	public GroupConversionBuilder conversion(NormalizedSimpleStack output, int amount) {
+	public ConversionBuilder<ConversionGroupBuilder> conversion(NormalizedSimpleStack output, int amount) {
 		if (amount < 1) {
 			throw new IllegalArgumentException("Output amount for fixed value conversions must be at least one.");
 		}
-		GroupConversionBuilder builder = new GroupConversionBuilder(output, amount);
+		ConversionBuilder<ConversionGroupBuilder> builder = new ConversionBuilder<>(this, output, amount);
 		conversions.add(builder);
 		return builder;
 	}
@@ -58,39 +61,5 @@ public class ConversionGroupBuilder implements CustomConversionNSSHelper<GroupCo
 	 */
 	boolean hasComment() {
 		return comment != null;
-	}
-
-	/**
-	 * Serializes this conversion group into a json object.
-	 */
-	JsonObject serialize() {
-		JsonObject json = new JsonObject();
-		if (comment != null) {
-			json.addProperty("comment", comment);
-		}
-		if (!conversions.isEmpty()) {
-			//Only add conversions if there are any, if there aren't then we will error with the correct message from our returned
-			// object being empty
-			json.add("conversions", CustomConversionBuilder.serializeConversions(conversions));
-		}
-		return json;
-	}
-
-	public class GroupConversionBuilder extends ConversionBuilder<GroupConversionBuilder> {
-
-		private GroupConversionBuilder(NormalizedSimpleStack output, int count) {
-			super(output, count);
-		}
-
-		/**
-		 * Ends this group conversion builder and returns to the {@link ConversionGroupBuilder}.
-		 *
-		 * @apiNote While it is not required to call this method if it is the last line of your builder calls. It is recommended to do so to get better line number
-		 * errors if you accidentally forgot to include any ingredients.
-		 */
-		public ConversionGroupBuilder end() {
-			validateIngredients();
-			return ConversionGroupBuilder.this;
-		}
 	}
 }

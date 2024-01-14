@@ -1,29 +1,20 @@
 package moze_intel.projecte.emc.mappers.customConversions;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.conversion.CustomConversion;
+import moze_intel.projecte.api.conversion.CustomConversionFile;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFake;
-import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.json.NSSSerializer;
-import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
-import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
-import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
+import moze_intel.projecte.impl.codec.PECodecHelper;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
@@ -32,13 +23,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 @EMCMapper
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
-
-	public static final Gson GSON = new GsonBuilder()
-			.registerTypeAdapter(CustomConversion.class, new CustomConversionDeserializer())
-			.registerTypeAdapter(FixedValues.class, new FixedValuesDeserializer())
-			.registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE)
-			.setPrettyPrinting()
-			.create();
 
 	@Override
 	public String getName() {
@@ -68,70 +52,47 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		int extensionLength = extension.length();
 
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (Map.Entry<ResourceLocation, List<Resource>> entry : resourceManager.listResourceStacks(folder, n -> n.getPath().endsWith(extension)).entrySet()) {
-			// <domain>:foo/bar
-			ResourceLocation file = entry.getKey();
-			ResourceLocation conversionId = new ResourceLocation(file.getNamespace(), file.getPath().substring(folderLength + 1, file.getPath().length() - extensionLength));
+		resourceManager.listResourceStacks(folder, n -> n.getPath().endsWith(extension)).forEach((file /*<domain>:foo/bar*/, resources) -> {
+			ResourceLocation conversionId = file.withPath(path -> path.substring(folderLength + 1, path.length() - extensionLength));
 
 			PECore.LOGGER.info("Considering file {}, ID {}", file, conversionId);
 			NSSFake.setCurrentNamespace(conversionId.toString());
 
 			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
-			try {
-				for (Resource resource : entry.getValue()) {
-					CustomConversionFile result;
-					try (Reader reader = resource.openAsReader()) {
-						result = parseJson(reader);
-					} catch (JsonParseException ex) {
-						PECore.LOGGER.error("Malformed JSON", ex);
-						continue;
-					}
-					loading.merge(conversionId, result, CustomConversionFile::merge);
+			for (Resource resource : resources) {
+				try (Reader reader = resource.openAsReader()) {
+					PECodecHelper.read(reader, CustomConversionFile.CODEC, "custom conversion file")
+							.ifPresent(result -> loading.merge(conversionId, result, CustomConversionFile::merge));
+				} catch (IOException e) {
+					PECore.LOGGER.error("Could not load resource {}", file, e);
 				}
-			} catch (IOException e) {
-				PECore.LOGGER.error("Could not load resource {}", file, e);
 			}
-		}
+		});
 		NSSFake.resetNamespace();
 		return loading;
 	}
 
 	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
-		for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet()) {
-			PECore.debugLog("Adding conversions from group '{}' with comment '{}'", entry.getKey(), entry.getValue().comment);
-			for (CustomConversion conversion : entry.getValue().conversions) {
-				mapper.addConversion(conversion.count, conversion.output, conversion.ingredients);
+		file.groups().forEach((name, group) -> {
+			PECore.debugLog("Adding conversions from group '{}' with comment '{}'", name, group.comment());
+			for (CustomConversion conversion : group.conversions()) {
+				mapper.addConversion(conversion.count(), conversion.output(), conversion.ingredients());
+			}
+		});
+
+		//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
+		file.values().setValueBefore().forEach((stack, value) -> stack.forSelfAndEachElement(nss -> mapper.setValueBefore(nss, value)));
+
+		//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
+		file.values().setValueAfter().forEach((stack, value) -> stack.forSelfAndEachElement(nss -> mapper.setValueAfter(nss, value)));
+
+		for (CustomConversion conversion : file.values().conversions()) {
+			Consumer<NormalizedSimpleStack> consumer = nss -> mapper.setValueFromConversion(conversion.count(), nss, conversion.ingredients());
+			if (conversion.propagateTags()) {
+				conversion.output().forSelfAndEachElement(consumer);
+			} else {
+				consumer.accept(conversion.output());
 			}
 		}
-
-		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueBefore.entrySet()) {
-			NormalizedSimpleStack something = entry.getKey();
-			mapper.setValueBefore(something, entry.getValue());
-			if (something instanceof NSSTag nssTag) {
-				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, entry.getValue()));
-			}
-		}
-
-		for (Map.Entry<NormalizedSimpleStack, Long> entry : file.values.setValueAfter.entrySet()) {
-			NormalizedSimpleStack something = entry.getKey();
-			mapper.setValueAfter(something, entry.getValue());
-			if (something instanceof NSSTag nssTag) {
-				//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueAfter(normalizedSimpleStack, entry.getValue()));
-			}
-		}
-
-		for (CustomConversion conversion : file.values.conversion) {
-			NormalizedSimpleStack out = conversion.output;
-			if (conversion.propagateTags && out instanceof NSSTag nssTag) {
-				nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueFromConversion(conversion.count, normalizedSimpleStack, conversion.ingredients));
-			}
-			mapper.setValueFromConversion(conversion.count, out, conversion.ingredients);
-		}
-	}
-
-	public static CustomConversionFile parseJson(Reader json) {
-		return GSON.fromJson(new BufferedReader(json), CustomConversionFile.class);
 	}
 }

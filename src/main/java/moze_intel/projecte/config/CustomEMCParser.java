@@ -1,142 +1,107 @@
 package moze_intel.projecte.config;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.mojang.logging.LogUtils;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.codec.IPECodecHelper;
 import moze_intel.projecte.api.nss.NSSItem;
-import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import moze_intel.projecte.emc.json.NSSSerializer;
+import moze_intel.projecte.impl.codec.PECodecHelper;
+import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
+import org.jetbrains.annotations.Nullable;
 
 public final class CustomEMCParser {
 
-	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(NormalizedSimpleStack.class, NSSSerializer.INSTANCE).setPrettyPrinting().create();
-	private static final File CONFIG = ProjectEConfig.CONFIG_DIR.resolve("custom_emc.json").toFile();
+	private static final Path CONFIG = ProjectEConfig.CONFIG_DIR.resolve("custom_emc.json");
 
-	//Note: Neither this nor CustomEMCEntry can be records due to gson not supporting creating records yet
-	public static class CustomEMCFile {
+	public record CustomEMCFile(Map<NSSItem, Long> entries, @Nullable String comment) {
 
-		public final List<CustomEMCEntry> entries;
+		private static final NSSItem INVALID_ITEM = NSSItem.createItem(PECore.rl("invalid_custom_emc_nss"));
 
-		public CustomEMCFile(List<CustomEMCEntry> entries) {
-			this.entries = entries;
-		}
-	}
+		private static final MapCodec<NSSItem> LEGACY_KEY_CODEC = IPECodecHelper.INSTANCE.orElseWithLog(NeoForgeExtraCodecs.withAlternative(
+				//True legacy format where it only supported the legacy item representation
+				NSSItem.LEGACY_CODEC.fieldOf("item"),
+				//Extended legacy format to allow more explicit declaration of the item
+				NSSItem.EXPLICIT_MAP_CODEC
+		), INVALID_ITEM, () -> "Unable to deserialize normalized item: {}");
 
-	public static class CustomEMCEntry {
+		private static final Codec<Entry<NSSItem, Long>> LEGACY_ENTRY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				LEGACY_KEY_CODEC.forGetter(Map.Entry::getKey),
+				IPECodecHelper.INSTANCE.nonNegativeLong().fieldOf("emc").forGetter(Map.Entry::getValue)
+		).apply(instance, Map::entry));
 
-		public final NormalizedSimpleStack item;
-		public final long emc;
+		private static final Codec<Map<NSSItem, Long>> ENTRIES_CODEC = NeoForgeExtraCodecs.withAlternative(
+				IPECodecHelper.INSTANCE.modifiableMap(
+						//Skip invalid keys
+						IPECodecHelper.INSTANCE.lenientKeyUnboundedMap(NSSItem.LEGACY_CODEC, IPECodecHelper.INSTANCE.nonNegativeLong()),
+						LinkedHashMap::new
+				),
+				//Load legacy data where it was an array of json objects of an item and emc value
+				//Note: The list does not need to be mutable as when we xmap it into a Map we then make it mutable
+				LEGACY_ENTRY_CODEC.listOf().xmap(
+						list -> list.stream()
+								//Filter out any invalid entries
+								.filter(entry -> entry.getKey() != INVALID_ITEM)
+								.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new)),
+						map -> map.entrySet().stream().toList()
+				)
+		);
 
-		private CustomEMCEntry(NormalizedSimpleStack item, long emc) {
-			this.item = item;
-			this.emc = emc;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			return o == this || o instanceof CustomEMCEntry && item.equals(((CustomEMCEntry) o).item) && emc == ((CustomEMCEntry) o).emc;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = item != null ? item.hashCode() : 0;
-			result = 31 * result + (int) (emc ^ (emc >>> 32));
-			return result;
-		}
+		public static final Codec<CustomEMCFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				ExtraCodecs.NON_EMPTY_STRING.optionalFieldOf("comment").forGetter(file -> Optional.ofNullable(file.comment)),
+				ENTRIES_CODEC.fieldOf("entries").forGetter(CustomEMCFile::entries)
+		).apply(instance, (comment, entries) -> new CustomEMCFile(entries, comment.orElse(null))));
 	}
 
 	public static CustomEMCFile currentEntries;
 	private static boolean dirty = false;
 
+	private static CustomEMCFile createDefault() {
+		return new CustomEMCFile(new LinkedHashMap<>(), "Use the in-game commands to edit this file");
+	}
+
 	public static void init() {
 		flush();
 
-		if (!CONFIG.exists()) {
-			try {
-				if (CONFIG.createNewFile()) {
-					writeDefaultFile();
-				}
-			} catch (IOException e) {
-				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception in file I/O: couldn't create custom configuration files.");
-			}
-		}
-
-		try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG))) {
-			currentEntries = GSON.fromJson(reader, CustomEMCFile.class);
-			currentEntries.entries.removeIf(e -> !(e.item instanceof NSSItem) || e.emc < 0);
-		} catch (IOException | JsonParseException e) {
-			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Couldn't read custom emc file", e);
-			currentEntries = new CustomEMCFile(new ArrayList<>());
-		}
-	}
-
-	private static NormalizedSimpleStack getNss(String str) {
-		return NSSSerializer.INSTANCE.deserialize(str);
-	}
-
-	public static void addToFile(String toAdd, long emc) {
-		NormalizedSimpleStack nss = getNss(toAdd);
-		CustomEMCEntry entry = new CustomEMCEntry(nss, emc);
-		int setAt = -1;
-		for (int i = 0; i < currentEntries.entries.size(); i++) {
-			if (currentEntries.entries.get(i).item.equals(nss)) {
-				setAt = i;
-				break;
-			}
-		}
-		if (setAt == -1) {
-			currentEntries.entries.add(entry);
+		if (Files.exists(CONFIG)) {
+			currentEntries = PECodecHelper.readFromFile(CONFIG, CustomEMCFile.CODEC, "custom emc")
+					.orElseGet(CustomEMCParser::createDefault);
 		} else {
-			currentEntries.entries.set(setAt, entry);
+			currentEntries = createDefault();
+			PECodecHelper.writeToFile(CONFIG, CustomEMCFile.CODEC, currentEntries, "default custom EMC");
 		}
-		dirty = true;
 	}
 
-	public static boolean removeFromFile(String toRemove) {
-		NormalizedSimpleStack nss = getNss(toRemove);
-		Iterator<CustomEMCEntry> iter = currentEntries.entries.iterator();
-		boolean removed = false;
-		while (iter.hasNext()) {
-			if (iter.next().item.equals(nss)) {
-				iter.remove();
-				dirty = true;
-				removed = true;
-			}
+	public static void addToFile(NSSItem toAdd, long emc) {
+		if (emc < 0) {
+			throw new IllegalArgumentException("EMC must be non-negative: " + emc);
+		}
+		Long old = currentEntries.entries().put(toAdd, emc);
+		if (old == null || old != emc) {
+			dirty = true;
+		}
+	}
+
+	public static boolean removeFromFile(NSSItem toRemove) {
+		boolean removed = currentEntries.entries().remove(toRemove) != null;
+		if (removed) {
+			dirty = true;
 		}
 		return removed;
 	}
 
 	public static void flush() {
 		if (dirty) {
-			try {
-				Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(currentEntries));
-			} catch (IOException e) {
-				PECore.LOGGER.error("Failed to write custom EMC file", e);
-			}
+			PECodecHelper.writeToFile(CONFIG, CustomEMCFile.CODEC, currentEntries, "custom EMC");
 			dirty = false;
-		}
-	}
-
-	private static void writeDefaultFile() {
-		JsonObject elem = (JsonObject) GSON.toJsonTree(new CustomEMCFile(new ArrayList<>()));
-		elem.add("__comment", new JsonPrimitive("Use the in-game commands to edit this file"));
-		try {
-			Files.asCharSink(CONFIG, Charsets.UTF_8).write(GSON.toJson(elem));
-		} catch (IOException e) {
-			PECore.LOGGER.error("Failed to write default custom EMC file", e);
 		}
 	}
 }

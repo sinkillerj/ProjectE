@@ -1,6 +1,7 @@
 package moze_intel.projecte.integration.crafttweaker.nss;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
@@ -31,6 +32,22 @@ public class ExpandCrTTypes {
 		@ZenCodeType.Caster(implicit = true)
 		public static NormalizedSimpleStack asNormalizedSimpleStack(Item _this) {
 			return CrTNSSResolver.fromItem(_this);
+		}
+	}
+
+	@ZenRegister
+	@TypedExpansion(IData.class)
+	public static class IDataExpansion {
+
+		private IDataExpansion() {
+		}
+
+		/**
+		 * Allows for casting {@link IData}s to {@link NormalizedSimpleStack}.
+		 */
+		@ZenCodeType.Caster
+		public static NormalizedSimpleStack asNormalizedSimpleStack(IData _this) {
+			return CrTNSSResolver.deserialize(_this);
 		}
 	}
 

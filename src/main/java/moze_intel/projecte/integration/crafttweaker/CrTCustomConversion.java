@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -132,6 +133,6 @@ public class CrTCustomConversion {
 		if (ingredients.length == 0) {
 			throw new IllegalArgumentException("No ingredients specified for conversion.");
 		}
-		setConversion(stack, amount, propagateTags, Arrays.stream(ingredients).collect(Collectors.toMap(ingredient -> ingredient, ingredient -> 1, Integer::sum)));
+		setConversion(stack, amount, propagateTags, Arrays.stream(ingredients).collect(Collectors.toMap(Function.identity(), ingredient -> 1, Integer::sum)));
 	}
 }

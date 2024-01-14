@@ -9,13 +9,12 @@ import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import moze_intel.projecte.utils.RegistryUtils;
+import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -23,7 +22,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,12 +49,12 @@ public class NSSItemParser {
 		this.reader = readerIn;
 	}
 
-	public static NSSItemResult parseResult(HolderLookup<Item> items, StringReader reader) throws CommandSyntaxException {
+	public static NSSItem parseResult(HolderLookup<Item> items, StringReader reader) throws CommandSyntaxException {
 		int cursor = reader.getCursor();
 		try {
 			NSSItemParser nssItemParser = new NSSItemParser(items, reader);
 			nssItemParser.parse();
-			return nssItemParser.result.map(item -> new ItemResult(item, nssItemParser.nbt), TagResult::new);
+			return nssItemParser.result.map(item -> NSSItem.createItem(item, nssItemParser.nbt), NSSItem::createTag);
 		} catch (CommandSyntaxException e) {
 			reader.setCursor(cursor);
 			throw e;
@@ -138,38 +136,5 @@ public class NSSItemParser {
 	private CompletableFuture<Suggestions> suggestTagOrItem(SuggestionsBuilder builder) {
 		suggestTag(builder);
 		return suggestItem(builder);
-	}
-
-	public static NSSItemResult resultOf(ItemStack stack) {
-		return new ItemResult(stack.getItem(), stack.getTag());
-	}
-
-	public interface NSSItemResult {
-
-		String getStringRepresentation();
-	}
-
-	private record ItemResult(Item item, @Nullable CompoundTag nbt) implements NSSItemResult {
-
-		public ItemResult(Holder<Item> item, @Nullable CompoundTag nbt) {
-			this(item.value(), nbt);
-		}
-
-		@Override
-		public String getStringRepresentation() {
-			String registryName = BuiltInRegistries.ITEM.getKey(item).toString();
-			if (nbt == null) {
-				return registryName;
-			}
-			return registryName + nbt;
-		}
-	}
-
-	private record TagResult(ResourceLocation tagName) implements NSSItemResult {
-
-		@Override
-		public String getStringRepresentation() {
-			return SYNTAX_TAG + tagName.toString();
-		}
 	}
 }

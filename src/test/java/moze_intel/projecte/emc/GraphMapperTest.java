@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
 import moze_intel.projecte.api.mapper.generator.IValueGenerator;
@@ -432,7 +433,7 @@ class GraphMapperTest {
 	void testGenerateValuesWaterBucketRecipe() {
 		mappingCollector.setValueBefore("somethingElse", 9L);
 		mappingCollector.setValueBefore("container", 23L);
-		mappingCollector.setValueBefore("fluid", Constants.FREE_ARITHMETIC_VALUE);
+		mappingCollector.setValueBefore("fluid", ProjectEAPI.FREE_ARITHMETIC_VALUE);
 		mappingCollector.addConversion(1, "filledContainer", Arrays.asList("container", "fluid"));
 
 		//Recipe that only consumes fluid:
@@ -633,7 +634,7 @@ class GraphMapperTest {
 	@Test
 	@DisplayName("Test generating values with a free alternative recipe")
 	void testGenerateValuesFreeAlternatives() {
-		mappingCollector.setValueBefore("freeWater", Constants.FREE_ARITHMETIC_VALUE);
+		mappingCollector.setValueBefore("freeWater", ProjectEAPI.FREE_ARITHMETIC_VALUE);
 		mappingCollector.setValueBefore("waterBottle", 0L);
 		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("freeWater"));
 		mappingCollector.addConversion(1, "waterGroup", Collections.singletonList("waterBottle"));

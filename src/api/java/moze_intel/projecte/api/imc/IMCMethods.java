@@ -18,11 +18,4 @@ public class IMCMethods {
 	 * The Object sent must be an instance of {@link CustomEMCRegistration}, or else the message is ignored.
 	 */
 	public static final String REGISTER_CUSTOM_EMC = "register_custom_emc";
-
-	/**
-	 * Declare a deserializer for a custom {@link moze_intel.projecte.api.nss.NormalizedSimpleStack}
-	 *
-	 * The Object sent must be an instance of {@link NSSCreatorInfo}, or else the message is ignored.
-	 */
-	public static final String REGISTER_NSS_SERIALIZER = "register_nss_serializer";
 }

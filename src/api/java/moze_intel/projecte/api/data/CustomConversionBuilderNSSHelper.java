@@ -1,7 +1,6 @@
 package moze_intel.projecte.api.data;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import moze_intel.projecte.api.data.CustomConversionBuilder.FixedValueConversionBuilder;
 import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
@@ -21,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<FixedValueConversionBuilder> {
+interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<ConversionBuilder<CustomConversionBuilder>> {
 
 	/**
 	 * Adds a "before" emc mapping value to the given {@link NormalizedSimpleStack}.

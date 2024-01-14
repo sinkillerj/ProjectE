@@ -1,6 +1,10 @@
 package moze_intel.projecte.api;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
+import java.util.Optional;
+import moze_intel.projecte.api.codec.IPECodecHelper;
 import moze_intel.projecte.api.nss.NSSItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +27,19 @@ import org.jetbrains.annotations.Nullable;
  * @apiNote {@link ItemInfo} and the data it stores is Immutable
  */
 public final class ItemInfo {
+
+	/**
+	 * Codec for encoding ItemInfo to and from strings.
+	 */
+	public static final Codec<ItemInfo> LEGACY_CODEC = IPECodecHelper.INSTANCE.validatePresent(
+			NSSItem.LEGACY_CODEC.xmap(ItemInfo::fromNSS, itemInfo -> NSSItem.createItem(itemInfo.getItem(), itemInfo.getNBT())),
+			() -> "ItemInfo does not support tags or missing items"
+	);
+
+	public static final Codec<ItemInfo> EXPLICIT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemInfo::getItem),
+			CraftingHelper.TAG_CODEC.optionalFieldOf("nbt").forGetter(itemInfo -> Optional.ofNullable(itemInfo.getNBT()))
+	).apply(instance, (item, nbt) -> ItemInfo.fromItem(item, nbt.orElse(null))));
 
 	@NotNull
 	private final Item item;
@@ -78,7 +96,7 @@ public final class ItemInfo {
 	/**
 	 * Reads an {@link ItemInfo} from the given {@link CompoundTag}.
 	 *
-	 * @param nbt {@link CompoundTag} representing a {@link ItemInfo}
+	 * @param nbt {@link CompoundTag} representing an {@link ItemInfo}
 	 *
 	 * @return An {@link ItemInfo} that is represented by the given {@link CompoundTag}, or null if no {@link ItemInfo} is stored or the item is not registered.
 	 */
@@ -99,11 +117,20 @@ public final class ItemInfo {
 		return null;
 	}
 
-	//TODO - 1.20.4: Docs
+	/**
+	 * Reads an {@link ItemInfo} from the given {@link FriendlyByteBuf}.
+	 *
+	 * @param buffer {@link FriendlyByteBuf} containing an {@link ItemInfo}
+	 *
+	 * @return An {@link ItemInfo} that is contained by the given {@link FriendlyByteBuf}.
+	 */
 	public static ItemInfo read(@NotNull FriendlyByteBuf buffer) {
 		return fromItem(buffer.readById(BuiltInRegistries.ITEM), buffer.readNbt());
 	}
 
+	/**
+	 * Writes the item and nbt to a {@link FriendlyByteBuf}.
+	 */
 	public void write(@NotNull FriendlyByteBuf buffer) {
 		buffer.writeId(BuiltInRegistries.ITEM, getItem());
 		buffer.writeNbt(getNBT());

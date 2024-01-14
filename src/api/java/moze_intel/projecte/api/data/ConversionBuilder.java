@@ -1,28 +1,35 @@
 package moze_intel.projecte.api.data;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
+import moze_intel.projecte.api.conversion.CustomConversion;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Builder class to help create conversions.
  */
+@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> implements ConversionBuilderNSSHelper<BUILDER> {
+public class ConversionBuilder<PARENT> implements ConversionBuilderNSSHelper<PARENT> {
+
+	private final PARENT parent;
 
 	private final Map<NormalizedSimpleStack, Integer> ingredients = new LinkedHashMap<>();
 	private final NormalizedSimpleStack output;
 	private final int outputAmount;
 	private boolean propagateTags;
 
-	ConversionBuilder(@NotNull NormalizedSimpleStack output, int outputAmount) {
+	ConversionBuilder(PARENT parent, NormalizedSimpleStack output, int outputAmount) {
+		this.parent = parent;
 		this.output = output;
 		this.outputAmount = outputAmount;
+	}
+
+	CustomConversion build() {
+		return new CustomConversion(outputAmount, output, ingredients, propagateTags);
 	}
 
 	@Override
@@ -30,26 +37,34 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 		return output + " " + outputAmount;
 	}
 
-	@SuppressWarnings("unchecked")
-	private BUILDER getThis() {
-		return (BUILDER) this;
+	/**
+	 * Ends this group conversion builder and returns to the parent.
+	 *
+	 * @apiNote While it is not required to call this method if it is the last line of your builder calls. It is recommended to do so to get better line number
+	 * errors if you accidentally forgot to include any ingredients.
+	 */
+	public PARENT end() {
+		if (ingredients.isEmpty()) {
+			throw new RuntimeException("Conversion does not contain any ingredients.");
+		}
+		return parent;
 	}
 
 	/**
 	 * Enables propagating tags if the output is a tag. This makes it so that the conversion will be applied to all elements in the tag as well, and not just to the tag.
 	 */
-	public BUILDER propagateTags() {
+	public ConversionBuilder<PARENT> propagateTags() {
 		if (propagateTags) {
 			throw new RuntimeException("Propagate tags has already been set, remove unnecessary call.");
 		} else if (output instanceof NSSTag nssTag && !nssTag.representsTag()) {
 			throw new RuntimeException("Propagate tags can only be enabled for conversion outputs that are tags.");
 		}
 		propagateTags = true;
-		return getThis();
+		return this;
 	}
 
 	@Override
-	public BUILDER ingredient(@NotNull NormalizedSimpleStack input, int amount) {
+	public ConversionBuilder<PARENT> ingredient(NormalizedSimpleStack input, int amount) {
 		if (ingredients.containsKey(input)) {
 			throw new RuntimeException("Conversion already contains ingredient '" + input + "', merge identical ingredients.");
 		} else if (amount == 0) {
@@ -57,47 +72,6 @@ public class ConversionBuilder<BUILDER extends ConversionBuilder<BUILDER>> imple
 			throw new RuntimeException("Conversion for empty ingredient '" + input + "' should be removed.");
 		}
 		ingredients.put(input, amount);
-		return getThis();
-	}
-
-	/**
-	 * Validates there are ingredients, and otherwise throws an exception.
-	 */
-	protected void validateIngredients() {
-		if (ingredients.isEmpty()) {
-			throw new RuntimeException("Conversion does not contain any ingredients.");
-		}
-	}
-
-	/**
-	 * Serializes this conversion into a json object.
-	 */
-	JsonObject serialize() {
-		//Validate the ingredients again in case end never was called
-		validateIngredients();
-		JsonObject json = new JsonObject();
-		if (propagateTags) {
-			json.addProperty("propagateTags", true);
-		}
-		json.addProperty("output", output.json());
-		if (outputAmount != 1) {
-			json.addProperty("count", outputAmount);
-		}
-		if (ingredients.values().stream().allMatch(value -> value == 1)) {
-			//If all the ingredients are size one, use the simpler array format
-			JsonArray jsonIngredients = new JsonArray();
-			for (NormalizedSimpleStack stack : ingredients.keySet()) {
-				jsonIngredients.add(stack.json());
-			}
-			json.add("ingredients", jsonIngredients);
-		} else {
-			//Otherwise, use the more extensive format that specifies each ingredients' count
-			JsonObject jsonIngredients = new JsonObject();
-			for (Map.Entry<NormalizedSimpleStack, Integer> entry : ingredients.entrySet()) {
-				jsonIngredients.addProperty(entry.getKey().json(), entry.getValue());
-			}
-			json.add("ingredients", jsonIngredients);
-		}
-		return json;
+		return this;
 	}
 }

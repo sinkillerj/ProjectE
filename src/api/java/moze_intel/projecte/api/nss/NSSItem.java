@@ -1,17 +1,23 @@
 package moze_intel.projecte.api.nss;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import java.util.Optional;
-import java.util.function.Function;
+import moze_intel.projecte.api.codec.NSSCodecHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +25,38 @@ import org.jetbrains.annotations.Nullable;
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
  */
 public final class NSSItem extends AbstractNBTNSSTag<Item> {
+
+	private static Registry<Item> registry() {
+		try {
+			return BuiltInRegistries.ITEM;
+		} catch (Throwable throwable) {
+			if (FMLEnvironment.production) {
+				throw throwable;
+			}
+			//TODO: Come up with a better way to detect this, but when we are in dev if we can't initialize the registry
+			// skip it and don't do the extra element is registered validation
+			return null;
+		}
+	}
+
+	private static final boolean ALLOW_DEFAULT = false;
+
+	private static final Codec<String> OPTIONAL_PREFIX_CODEC = Codec.of(ExtraCodecs.NON_EMPTY_STRING, ExtraCodecs.NON_EMPTY_STRING.flatMap(str -> {
+		if (str.startsWith("ITEM|")) {
+			return DataResult.success(str.substring(5));
+		}
+		return DataResult.success(str);
+	}), ExtraCodecs.NON_EMPTY_STRING + "[projecte:optionalPrefix]");
+
+	/**
+	 * Codec for encoding NSSItems to and from strings.
+	 */
+	public static final Codec<NSSItem> LEGACY_CODEC = createLegacyCodec(registry(), ALLOW_DEFAULT, OPTIONAL_PREFIX_CODEC, NSSItem::new);
+
+	public static final MapCodec<NSSItem> EXPLICIT_MAP_CODEC = createExplicitCodec(registry(), ALLOW_DEFAULT, NSSItem::new);
+	public static final Codec<NSSItem> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
+
+	public static final NSSCodecHolder<NSSItem> CODECS = new NSSCodecHolder<>("ITEM", LEGACY_CODEC, EXPLICIT_CODEC);
 
 	private NSSItem(@NotNull ResourceLocation resourceLocation, boolean isTag, @Nullable CompoundTag nbt) {
 		super(resourceLocation, isTag, nbt);
@@ -50,6 +88,14 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	@NotNull
 	public static NSSItem createItem(@NotNull ItemLike itemProvider) {
 		return createItem(itemProvider, null);
+	}
+
+	/**
+	 * Helper method to create an {@link NSSItem} representing an item from a {@link Holder} and an optional {@link CompoundTag}
+	 */
+	@NotNull
+	public static NSSItem createItem(@NotNull Holder<Item> item, @Nullable CompoundTag nbt) {
+		return createItem(item.value(), nbt);
 	}
 
 	/**
@@ -101,24 +147,6 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		return createTag(tag.location());
 	}
 
-	@Override
-	protected boolean isInstance(AbstractNSSTag<?> o) {
-		return o instanceof NSSItem;
-	}
-
-	@NotNull
-	@Override
-	public String getJsonPrefix() {
-		//We prefer no prefix for NSSItem even though we do support ITEM|
-		return "";
-	}
-
-	@NotNull
-	@Override
-	public String getType() {
-		return "Item";
-	}
-
 	@NotNull
 	@Override
 	protected Registry<Item> getRegistry() {
@@ -126,7 +154,12 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 	}
 
 	@Override
-	protected Function<Item, NormalizedSimpleStack> createNew() {
-		return NSSItem::createItem;
+	protected NSSItem createNew(Item item) {
+		return NSSItem.createItem(item);
+	}
+
+	@Override
+	public NSSCodecHolder<?> codecs() {
+		return CODECS;
 	}
 }

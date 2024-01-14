@@ -1,16 +1,11 @@
 package moze_intel.projecte.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.CustomEMCRegistration;
 import moze_intel.projecte.api.imc.IMCMethods;
-import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
-import moze_intel.projecte.api.nss.NSSCreator;
-import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
@@ -18,40 +13,32 @@ import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 public class IMCHandler {
 
 	public static void handleMessages(InterModProcessEvent event) {
-		List<WorldTransmutationEntry> entries = new ArrayList<>();
-		event.getIMCStream(IMCMethods.REGISTER_WORLD_TRANSMUTATION::equals)
-				.filter(msg -> msg.messageSupplier().get() instanceof WorldTransmutationEntry)
-				.forEach(msg -> {
-					WorldTransmutationEntry transmutationEntry = (WorldTransmutationEntry) msg.messageSupplier().get();
-					entries.add(transmutationEntry);
-					if (transmutationEntry.altResult() == null) {
-						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}'", msg.senderModId(),
-								transmutationEntry.origin(), transmutationEntry.result());
-					} else {
-						PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}', with sneak output of: '{}'", msg.senderModId(),
-								transmutationEntry.origin(), transmutationEntry.result(), transmutationEntry.altResult());
-					}
-				});
-		WorldTransmutations.setWorldTransmutation(entries);
+		WorldTransmutations.setWorldTransmutation(getMessages(event, IMCMethods.REGISTER_WORLD_TRANSMUTATION, WorldTransmutationEntry.class).map(msg -> {
+			WorldTransmutationEntry transmutationEntry = msg.message();
+			if (transmutationEntry.altResult() == null) {
+				PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}'", msg.sender(), transmutationEntry.origin(),
+						transmutationEntry.result());
+			} else {
+				PECore.debugLog("Mod: '{}' registered World Transmutation from: '{}', to: '{}', with sneak output of: '{}'", msg.sender(),
+						transmutationEntry.origin(), transmutationEntry.result(), transmutationEntry.altResult());
+			}
+			return transmutationEntry;
+		}));
 
-		event.getIMCStream(IMCMethods.REGISTER_CUSTOM_EMC::equals)
-				.filter(msg -> msg.messageSupplier().get() instanceof CustomEMCRegistration)
-				.forEach(msg -> APICustomEMCMapper.INSTANCE.registerCustomEMC(msg.senderModId(), (CustomEMCRegistration) msg.messageSupplier().get()));
+		getMessages(event, IMCMethods.REGISTER_CUSTOM_EMC, CustomEMCRegistration.class)
+				.forEach(msg -> APICustomEMCMapper.INSTANCE.registerCustomEMC(msg.sender(), msg.message()));
+	}
 
-		//Note: It is first come, first served. If we already received a value for it, we don't try to overwrite it, but we do log a warning
-		Map<String, NSSCreator> creators = new HashMap<>();
-		event.getIMCStream(IMCMethods.REGISTER_NSS_SERIALIZER::equals)
-				.filter(msg -> msg.messageSupplier().get() instanceof NSSCreatorInfo)
-				.forEach(msg -> {
-					NSSCreatorInfo creatorInfo = (NSSCreatorInfo) msg.messageSupplier().get();
-					String key = creatorInfo.key();
-					if (creators.containsKey(key)) {
-						PECore.LOGGER.warn("Mod: '{}' tried to register NSS creator with key: '{}', but another mod already registered that key.", msg.senderModId(), key);
-					} else {
-						creators.put(key, creatorInfo.creator());
-						PECore.debugLog("Mod: '{}' registered NSS creator with key: '{}'", msg.senderModId(), key);
-					}
-				});
-		NSSSerializer.INSTANCE.setCreators(creators);
+	private record TypedIMCMessage<OBJ>(String sender, OBJ message) {
+	}
+
+	private static <OBJ> Stream<TypedIMCMessage<OBJ>> getMessages(InterModProcessEvent event, String methodName, Class<OBJ> clazz) {
+		return event.getIMCStream(methodName::equals).map(msg -> {
+			Object obj = msg.messageSupplier().get();
+			if (clazz.isInstance(obj)) {
+				return new TypedIMCMessage<>(msg.senderModId(), clazz.cast(obj));
+			}
+			return null;
+		}).filter(Objects::nonNull);
 	}
 }

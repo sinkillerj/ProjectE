@@ -4,11 +4,11 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
@@ -32,19 +32,16 @@ public class CrTConversionEMCMapper implements IEMCMapper<NormalizedSimpleStack,
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, CommentedFileConfig config, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
 		for (CrTConversion apiConversion : storedConversions) {
-			if (apiConversion.propagateTags && apiConversion.output instanceof NSSTag output) {
-				output.forEachElement(normalizedSimpleStack -> {
-					if (apiConversion.set) {
-						mapper.setValueFromConversion(apiConversion.amount, normalizedSimpleStack, apiConversion.ingredients);
-					} else {
-						mapper.addConversion(apiConversion.amount, normalizedSimpleStack, apiConversion.ingredients);
-					}
-				});
-			}
+			Consumer<NormalizedSimpleStack> consumer;
 			if (apiConversion.set) {
-				mapper.setValueFromConversion(apiConversion.amount, apiConversion.output, apiConversion.ingredients);
+				consumer = nss -> mapper.setValueFromConversion(apiConversion.amount, nss, apiConversion.ingredients);
 			} else {
-				mapper.addConversion(apiConversion.amount, apiConversion.output, apiConversion.ingredients);
+				consumer = nss -> mapper.addConversion(apiConversion.amount, nss, apiConversion.ingredients);
+			}
+			if (apiConversion.propagateTags) {
+				apiConversion.output.forSelfAndEachElement(consumer);
+			} else {
+				consumer.accept(apiConversion.output);
 			}
 			PECore.debugLog("CraftTweaker adding conversion for {}", apiConversion.output);
 		}

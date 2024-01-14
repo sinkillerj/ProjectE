@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.WorldTransmutationEntry;
@@ -116,8 +117,8 @@ public final class WorldTransmutations {
 		return ENTRIES;
 	}
 
-	public static void setWorldTransmutation(List<WorldTransmutationEntry> entries) {
-		DEFAULT_ENTRIES = ImmutableList.copyOf(entries);
+	public static void setWorldTransmutation(Stream<WorldTransmutationEntry> entries) {
+		DEFAULT_ENTRIES = entries.toList();
 		resetWorldTransmutations();
 	}
 

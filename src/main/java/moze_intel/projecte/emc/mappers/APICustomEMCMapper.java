@@ -13,7 +13,6 @@ import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSItem;
-import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.core.RegistryAccess;
@@ -78,11 +77,8 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 					NormalizedSimpleStack normStack = entry.getKey();
 					long emc = entry.getValue();
 					if (isAllowedToSet(modId, normStack, emc, config)) {
-						mapper.setValueBefore(normStack, emc);
-						if (normStack instanceof NSSTag nssTag) {
-							//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
-							nssTag.forEachElement(normalizedSimpleStack -> mapper.setValueBefore(normalizedSimpleStack, emc));
-						}
+						//Note: We set it for each of the values in the tag to make sure it is properly taken into account when calculating the individual EMC values
+						normStack.forSelfAndEachElement(nss -> mapper.setValueBefore(nss, emc));
 						PECore.debugLog("{} setting value for {} to {}", modIdOrUnknown, normStack, emc);
 					} else {
 						PECore.debugLog("Disallowed {} to set the value for {} to {}", modIdOrUnknown, normStack, emc);

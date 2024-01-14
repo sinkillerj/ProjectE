@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.ProjectERegistries;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.PEModConfig;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
-import moze_intel.projecte.emc.json.NSSSerializer;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.ItemPE;
@@ -26,6 +26,7 @@ import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.gameObjs.registries.PECreativeTabs;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.gameObjs.registries.PENormalizedSimpleStacks;
 import moze_intel.projecte.gameObjs.registries.PERecipeConditions;
 import moze_intel.projecte.gameObjs.registries.PERecipeSerializers;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -95,6 +96,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -138,6 +140,7 @@ public class PECore {
 		modEventBus.addListener(IMCHandler::handleMessages);
 		modEventBus.addListener(this::onConfigLoad);
 		modEventBus.addListener(this::registerCapabilities);
+		modEventBus.addListener(this::registerRegistries);
 		PEAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
 		PEArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
 		PEBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
@@ -147,6 +150,7 @@ public class PECore {
 		PECreativeTabs.CREATIVE_TABS.register(modEventBus);
 		PEEntityTypes.ENTITY_TYPES.register(modEventBus);
 		PEItems.ITEMS.register(modEventBus);
+		PENormalizedSimpleStacks.NSS_SERIALIZERS.register(modEventBus);
 		PERecipeConditions.CONDITION_CODECS.register(modEventBus);
 		PERecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 		PESoundEvents.SOUND_EVENTS.register(modEventBus);
@@ -165,6 +169,10 @@ public class PECore {
 
 	public static PacketHandler packetHandler() {
 		return instance.packetHandler;
+	}
+
+	private void registerRegistries(NewRegistryEvent event) {
+		event.register(ProjectERegistries.NSS_SERIALIZER);
 	}
 
 	public void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -281,7 +289,6 @@ public class PECore {
 
 	private void imcQueue(InterModEnqueueEvent event) {
 		WorldTransmutations.init();
-		NSSSerializer.init();
 		IntegrationHelper.sendIMCMessages(event);
 	}
 

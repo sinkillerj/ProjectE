@@ -20,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>> {
+interface ConversionBuilderNSSHelper<PARENT> {
 
 	/**
 	 * Adds a {@link NormalizedSimpleStack} as an input ingredient to this conversion with the given amount.
@@ -28,14 +28,14 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @param input  Stack used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	BUILDER ingredient(NormalizedSimpleStack input, int amount);
+	ConversionBuilder<PARENT> ingredient(NormalizedSimpleStack input, int amount);
 
 	/**
 	 * Adds a {@link NormalizedSimpleStack} as an input ingredient to this conversion.
 	 *
 	 * @param input Stack used in the conversion.
 	 */
-	default BUILDER ingredient(NormalizedSimpleStack input) {
+	default ConversionBuilder<PARENT> ingredient(NormalizedSimpleStack input) {
 		return ingredient(input, 1);
 	}
 
@@ -47,7 +47,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @apiNote Either this method or {@link #ingredient(NormalizedSimpleStack, int)} using {@link NSSItem#createItem(ItemLike, net.minecraft.nbt.CompoundTag)}
 	 * should be used if NBT specifics are needed.
 	 */
-	default BUILDER ingredient(ItemStack input) {
+	default ConversionBuilder<PARENT> ingredient(ItemStack input) {
 		return ingredient(NSSItem.createItem(input), input.getCount());
 	}
 
@@ -56,7 +56,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @param input Item used in the conversion.
 	 */
-	default BUILDER ingredient(ItemLike input) {
+	default ConversionBuilder<PARENT> ingredient(ItemLike input) {
 		return ingredient(input, 1);
 	}
 
@@ -66,7 +66,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @param input  Item used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	default BUILDER ingredient(ItemLike input, int amount) {
+	default ConversionBuilder<PARENT> ingredient(ItemLike input, int amount) {
 		return ingredient(NSSItem.createItem(input), amount);
 	}
 
@@ -75,7 +75,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @param input Item tag used in the conversion.
 	 */
-	default BUILDER ingredient(TagKey<Item> input) {
+	default ConversionBuilder<PARENT> ingredient(TagKey<Item> input) {
 		return ingredient(input, 1);
 	}
 
@@ -85,7 +85,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @param input  Item tag used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	default BUILDER ingredient(TagKey<Item> input, int amount) {
+	default ConversionBuilder<PARENT> ingredient(TagKey<Item> input, int amount) {
 		return ingredient(NSSItem.createTag(input), amount);
 	}
 
@@ -97,7 +97,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @apiNote Either this method or {@link #ingredient(NormalizedSimpleStack, int)} using {@link NSSFluid#createFluid(Fluid, net.minecraft.nbt.CompoundTag)} should be
 	 * used if NBT specifics are needed.
 	 */
-	default BUILDER ingredient(FluidStack input) {
+	default ConversionBuilder<PARENT> ingredient(FluidStack input) {
 		return ingredient(NSSFluid.createFluid(input), input.getAmount());
 	}
 
@@ -106,7 +106,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @param input Fluid used in the conversion.
 	 */
-	default BUILDER ingredient(Fluid input) {
+	default ConversionBuilder<PARENT> ingredient(Fluid input) {
 		return ingredient(input, 1);
 	}
 
@@ -116,7 +116,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @param input  Fluid used in the conversion.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	default BUILDER ingredient(Fluid input, int amount) {
+	default ConversionBuilder<PARENT> ingredient(Fluid input, int amount) {
 		return ingredient(NSSFluid.createFluid(input), amount);
 	}
 
@@ -127,7 +127,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER ingredientFluid(TagKey<Fluid> input) {
+	default ConversionBuilder<PARENT> ingredientFluid(TagKey<Fluid> input) {
 		return ingredientFluid(input, 1);
 	}
 
@@ -139,7 +139,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @apiNote The naming of this method is slightly different due to type erasure, and fluid tags being less likely to be used than item tags.
 	 */
-	default BUILDER ingredientFluid(TagKey<Fluid> input, int amount) {
+	default ConversionBuilder<PARENT> ingredientFluid(TagKey<Fluid> input, int amount) {
 		return ingredient(NSSFluid.createTag(input), amount);
 	}
 
@@ -148,7 +148,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 *
 	 * @param fake Description of the "fake" {@link NormalizedSimpleStack}.
 	 */
-	default BUILDER ingredient(String fake) {
+	default ConversionBuilder<PARENT> ingredient(String fake) {
 		return ingredient(fake, 1);
 	}
 
@@ -158,7 +158,7 @@ interface ConversionBuilderNSSHelper<BUILDER extends ConversionBuilder<BUILDER>>
 	 * @param fake   Description of the "fake" {@link NormalizedSimpleStack}.
 	 * @param amount Amount of the input, can be negative.
 	 */
-	default BUILDER ingredient(String fake, int amount) {
+	default ConversionBuilder<PARENT> ingredient(String fake, int amount) {
 		return ingredient(NSSFake.create(fake), amount);
 	}
 }

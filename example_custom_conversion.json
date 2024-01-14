@@ -1,6 +1,6 @@
 /*
   Add a file like this to data/<domain>/pe_custom_conversions/foo.json to have ProjectE load it
-  A grammar is available at: https://gist.github.com/williewillus/9ebb0d04329526e31564
+  A grammar is available at: https://gist.github.com/pupnewfster/7b5c411635e16227c1dea9af5e20e4c3
 */
 
 {
@@ -54,7 +54,7 @@
     "before": {
       // Set values that'll be used to derive other values. You want most of your values here.
       // "FREE" means the item will not contribute anything to the value of any other item it crafts into
-      // All the various item forms (normal, fake, OD, fluid) supported here
+      // All the various item forms (normal, fake, tag, fluid) supported here
       "minecraft:sponge": 1,
       "#forge:gems/diamond": "FREE"
     },
@@ -70,7 +70,7 @@
       {
         "output": "#forge:ingots/gold",
         "ingredients": [ "minecraft:steak" ],
-        "evalOD": true // Peg this value for ALL ingotGold's
+        "propagateTags": true // Peg this value for ALL forge:ingots/gold's
       }
     ]
   }

@@ -5,9 +5,9 @@ import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import moze_intel.projecte.PEPermissions;
+import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
-import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -25,8 +25,7 @@ public class SetEmcCMD {
 
 	}
 
-	private static int setEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack, long emc) {
-		String toSet = stack.getStringRepresentation();
+	private static int setEmc(CommandContext<CommandSourceStack> ctx, NSSItem toSet, long emc) {
 		CustomEMCParser.addToFile(toSet, emc);
 		ctx.getSource().sendSuccess(() -> PELang.COMMAND_SET_SUCCESS.translate(toSet, emc), true);
 		ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE::translate, true);

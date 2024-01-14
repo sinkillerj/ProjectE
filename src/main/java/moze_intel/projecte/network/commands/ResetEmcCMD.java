@@ -6,9 +6,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import moze_intel.projecte.PEPermissions;
+import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.network.commands.argument.NSSItemArgument;
-import moze_intel.projecte.network.commands.parser.NSSItemParser.NSSItemResult;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -26,8 +26,7 @@ public class ResetEmcCMD {
 				.executes(ctx -> resetEmc(ctx, RemoveEmcCMD.getHeldStack(ctx)));
 	}
 
-	private static int resetEmc(CommandContext<CommandSourceStack> ctx, NSSItemResult stack) throws CommandSyntaxException {
-		String toReset = stack.getStringRepresentation();
+	private static int resetEmc(CommandContext<CommandSourceStack> ctx, NSSItem toReset) throws CommandSyntaxException {
 		if (CustomEMCParser.removeFromFile(toReset)) {
 			ctx.getSource().sendSuccess(() -> PELang.COMMAND_RESET_SUCCESS.translate(toReset), true);
 			ctx.getSource().sendSuccess(PELang.RELOAD_NOTICE::translate, true);

@@ -1,18 +1,17 @@
 package moze_intel.projecte.api.data;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.ParametersAreNonnullByDefault;
+import moze_intel.projecte.api.conversion.CustomConversionFile;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,10 +24,10 @@ public abstract class CustomConversionProvider implements DataProvider {
 
 	private final Map<ResourceLocation, CustomConversionBuilder> customConversions = new LinkedHashMap<>();
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
-	private final Path outputFolder;
+	private final PathProvider outputProvider;
 
 	protected CustomConversionProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		this.outputFolder = output.getOutputFolder(Target.DATA_PACK);
+		this.outputProvider = output.createPathProvider(Target.DATA_PACK, "pe_custom_conversions");
 		this.lookupProvider = lookupProvider;
 	}
 
@@ -38,15 +37,11 @@ public abstract class CustomConversionProvider implements DataProvider {
 			customConversions.clear();
 			addCustomConversions(registries);
 			return registries;
-		}).thenCompose(registries -> {
-			List<CompletableFuture<?>> futures = new ArrayList<>();
-			for (Map.Entry<ResourceLocation, CustomConversionBuilder> entry : customConversions.entrySet()) {
-				ResourceLocation customConversion = entry.getKey();
-				Path path = outputFolder.resolve(customConversion.getNamespace() + "/pe_custom_conversions/" + customConversion.getPath() + ".json");
-				futures.add(DataProvider.saveStable(output, entry.getValue().serialize(), path));
-			}
-			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-		});
+		}).thenCompose(registries -> CompletableFuture.allOf(
+				customConversions.entrySet().stream()
+						.map(entry -> DataProvider.saveStable(output, CustomConversionFile.CODEC, entry.getValue().build(), outputProvider.json(entry.getKey())))
+						.toArray(CompletableFuture[]::new)
+		));
 	}
 
 	/**
@@ -68,7 +63,7 @@ public abstract class CustomConversionProvider implements DataProvider {
 		if (customConversions.containsKey(id)) {
 			throw new RuntimeException("Custom conversion '" + id + "' has already been registered.");
 		}
-		CustomConversionBuilder conversionBuilder = new CustomConversionBuilder(id);
+		CustomConversionBuilder conversionBuilder = new CustomConversionBuilder();
 		customConversions.put(id, conversionBuilder);
 		return conversionBuilder;
 	}

@@ -25,7 +25,6 @@ public final class Constants {
 	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[]{4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
 	public static final long[] EXPLOSIVE_LENS_COST = new long[]{384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 
-	public static final long FREE_ARITHMETIC_VALUE = Long.MIN_VALUE;
 	public static final long BLOCK_ENTITY_MAX_EMC = Long.MAX_VALUE;
 
 	public static final int MAX_CONDENSER_PROGRESS = 102;

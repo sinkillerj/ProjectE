@@ -1,10 +1,11 @@
 package moze_intel.projecte.impl;
 
 import com.google.common.base.Preconditions;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,25 +61,22 @@ public class TransmutationOffline {
 	private static boolean cacheOfflineData(UUID playerUUID) {
 		Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		File playerData = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).toFile();
-		if (playerData.exists()) {
-			File player = new File(playerData, playerUUID.toString() + ".dat");
-			if (player.exists() && player.isFile()) {
-				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap()); // No need to create buffered stream, that call does it for us
-					if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
-						CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
-						KnowledgeAttachment attachment = new KnowledgeAttachment();
-						attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.KNOWLEDGE.getId().toString()));
+		Path player = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).resolve(playerUUID.toString() + ".dat");
+		if (Files.exists(player) && Files.isRegularFile(player)) {
+			try (InputStream in = Files.newInputStream(player)) {
+				CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap()); // No need to create buffered stream, that call does it for us
+				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+					KnowledgeAttachment attachment = new KnowledgeAttachment();
+					attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.KNOWLEDGE.getId().toString()));
 
-						cachedKnowledgeProviders.put(playerUUID, immutableView(attachment));
+					cachedKnowledgeProviders.put(playerUUID, immutableView(attachment));
 
-						PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
-						return true;
-					}
-				} catch (IOException e) {
-					PECore.LOGGER.warn("Failed to cache offline data for API calls for UUID: {}", playerUUID);
+					PECore.debugLog("Caching offline data for UUID: {}", playerUUID);
+					return true;
 				}
+			} catch (IOException e) {
+				PECore.LOGGER.warn("Failed to cache offline data for API calls for UUID: {}", playerUUID);
 			}
 		}
 		return false;

@@ -2,15 +2,14 @@ package moze_intel.projecte.emc;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.mojang.logging.LogUtils;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
@@ -99,13 +98,15 @@ public final class EMCMappingHandler {
 																					 "Exploits that derive from conversions that are unknown to ProjectE will not be found.", true);
 
 		if (dumpToFile) {
-			mappingCollector = new DumpToFileCollector<>(ProjectEConfig.CONFIG_DIR.resolve("mappingdump.json").toFile(), mappingCollector);
+			mappingCollector = new DumpToFileCollector<>(ProjectEConfig.CONFIG_DIR.resolve("mappingdump.json"), mappingCollector);
 		}
 
-		File pregeneratedEmcFile = Paths.get("config", PECore.MODNAME, "pregenerated_emc.json").toFile();
-		Map<NormalizedSimpleStack, Long> graphMapperValues;
-		if (shouldUsePregenerated && pregeneratedEmcFile.canRead() && PregeneratedEMC.tryRead(pregeneratedEmcFile, graphMapperValues = new HashMap<>())) {
-			PECore.LOGGER.info("Loaded {} values from pregenerated EMC File", graphMapperValues.size());
+		Path pregeneratedEmcFile = ProjectEConfig.CONFIG_DIR.resolve("pregenerated_emc.json");
+		Map<ItemInfo, Long> graphMapperItemValues;
+		Optional<Map<ItemInfo, Long>> readPregeneratedValues = PregeneratedEMC.read(pregeneratedEmcFile, shouldUsePregenerated);
+		if (readPregeneratedValues.isPresent()) {
+			graphMapperItemValues = readPregeneratedValues.get();
+			PECore.LOGGER.info("Loaded {} values from pregenerated EMC File", graphMapperItemValues.size());
 		} else {
 			SimpleGraphMapper.setLogFoundExploits(logFoundExploits);
 
@@ -132,31 +133,19 @@ public final class EMCMappingHandler {
 			config.save();
 			config.close();
 
-			graphMapperValues = valueGenerator.generateValues();
+			Map<NormalizedSimpleStack, Long> graphMapperValues = valueGenerator.generateValues();
 			PECore.debugLog("Generated Values...");
 
-			filterEMCMap(graphMapperValues);
+			graphMapperItemValues = filterEMCMap(graphMapperValues);
 
 			if (shouldUsePregenerated) {
 				//Should have used pregenerated, but the file was not read => regenerate.
-				try {
-					PregeneratedEMC.write(pregeneratedEmcFile, graphMapperValues);
-					PECore.debugLog("Wrote Pregen-file!");
-				} catch (IOException e) {
-					PECore.LOGGER.error("Failed to write Pregen-file", e);
-				}
+				PregeneratedEMC.write(pregeneratedEmcFile, graphMapperItemValues);
+				PECore.debugLog("Wrote Pregen-file!");
 			}
 		}
 
-		for (Map.Entry<NormalizedSimpleStack, Long> entry : graphMapperValues.entrySet()) {
-			NSSItem normStackItem = (NSSItem) entry.getKey();
-			ItemInfo obj = ItemInfo.fromNSS(normStackItem);
-			if (obj != null) {
-				emc.put(obj, entry.getValue());
-			} else {
-				PECore.LOGGER.warn("Could not add EMC value for {}, item does not exist!", normStackItem.getResourceLocation());
-			}
-		}
+		emc.putAll(graphMapperItemValues);
 
 		fireEmcRemapEvent();
 	}
@@ -188,8 +177,17 @@ public final class EMCMappingHandler {
 		return loadIndex;
 	}
 
-	private static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
-		map.entrySet().removeIf(e -> !(e.getKey() instanceof NSSItem nssItem) || nssItem.representsTag() || e.getValue() <= 0);
+	private static Map<ItemInfo, Long> filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
+		Map<ItemInfo, Long> resultMap = new HashMap<>(map.size());
+		for (Map.Entry<NormalizedSimpleStack, Long> entry : map.entrySet()) {
+			if (entry.getKey() instanceof NSSItem nssItem && entry.getValue() > 0) {
+				ItemInfo info = ItemInfo.fromNSS(nssItem);
+				if (info != null) {//Ensure the item actually exists and is not a tag
+					resultMap.put(info, entry.getValue());
+				}
+			}
+		}
+		return resultMap;
 	}
 
 	public static int getEmcMapSize() {

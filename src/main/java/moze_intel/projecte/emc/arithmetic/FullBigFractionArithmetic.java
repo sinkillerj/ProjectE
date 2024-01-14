@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.arithmetic;
 
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.utils.Constants;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -53,11 +54,11 @@ public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction> 
 
 	@Override
 	public BigFraction getFree() {
-		return new BigFraction(Constants.FREE_ARITHMETIC_VALUE);
+		return new BigFraction(ProjectEAPI.FREE_ARITHMETIC_VALUE);
 	}
 
 	@Override
 	public boolean isFree(BigFraction value) {
-		return value.getNumeratorAsLong() == Constants.FREE_ARITHMETIC_VALUE;
+		return value.getNumeratorAsLong() == ProjectEAPI.FREE_ARITHMETIC_VALUE;
 	}
 }

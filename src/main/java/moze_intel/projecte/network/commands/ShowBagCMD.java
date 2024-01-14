@@ -6,9 +6,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -122,23 +123,20 @@ public class ShowBagCMD {
 	}
 
 	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
-		File playerData = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).toFile();
-		if (playerData.exists()) {
-			File player = new File(playerData, playerUUID.toString() + ".dat");
-			if (player.exists() && player.isFile()) {
-				try (FileInputStream in = new FileInputStream(player)) {
-					CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
-					if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
-						CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
-						//TODO - 1.20.4: TEST THIS, and also see how it behaves in regards to mutating? As I think this is used at times regardless?
-						AlchemicalBagAttachment attachment = new AlchemicalBagAttachment();
-						attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString()));
+		Path player = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).resolve(playerUUID.toString() + ".dat");
+		if (Files.exists(player) && Files.isRegularFile(player)) {
+			try (InputStream in = Files.newInputStream(player)) {
+				CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
+				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+					//TODO - 1.20.4: TEST THIS, and also see how it behaves in regards to mutating? As I think this is used at times regardless?
+					AlchemicalBagAttachment attachment = new AlchemicalBagAttachment();
+					attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString()));
 
-						return attachment.getBag(color);
-					}
-				} catch (IOException e) {
-					// fall through to below
+					return attachment.getBag(color);
 				}
+			} catch (IOException e) {
+				// fall through to below
 			}
 		}
 		throw NOT_FOUND.create();
