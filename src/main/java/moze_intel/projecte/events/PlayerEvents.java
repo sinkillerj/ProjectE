@@ -29,7 +29,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
@@ -99,7 +99,7 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void onConstruct(EntityEvent.EntityConstructing evt) {
-		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER // No world to check yet
+		if (EffectiveSide.get().isServer() // No world to check yet
 			&& evt.getEntity() instanceof Player && !(evt.getEntity() instanceof FakePlayer)) {
 			TransmutationOffline.clear(evt.getEntity().getUUID());
 			PECore.debugLog("Clearing offline data cache in preparation to load online data");

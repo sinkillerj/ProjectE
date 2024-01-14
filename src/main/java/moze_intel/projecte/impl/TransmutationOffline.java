@@ -1,6 +1,5 @@
 package moze_intel.projecte.impl;
 
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,7 +26,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
-import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -59,7 +58,9 @@ public class TransmutationOffline {
 	}
 
 	private static boolean cacheOfflineData(UUID playerUUID) {
-		Preconditions.checkState(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER, "CRITICAL: Trying to read filesystem on client!!");
+		if (EffectiveSide.get().isClient()) {
+			throw new IllegalStateException("CRITICAL: Trying to read filesystem on client!!");
+		}
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		Path player = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).resolve(playerUUID.toString() + ".dat");
 		if (Files.exists(player) && Files.isRegularFile(player)) {

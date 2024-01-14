@@ -42,7 +42,7 @@ public class ContainerTypeDeferredRegister extends PEDeferredRegister<MenuType<?
 	private static <BE extends BlockEntity> BE getBlockEntityFromBuf(FriendlyByteBuf buf, Class<BE> type) {
 		if (buf == null) {
 			throw new IllegalArgumentException("Null packet buffer");
-		} else if (!FMLEnvironment.dist.isClient()) {
+		} else if (FMLEnvironment.dist.isDedicatedServer()) {
 			throw new UnsupportedOperationException("This method is only supported on the client.");
 		}
 		BlockPos pos = buf.readBlockPos();
