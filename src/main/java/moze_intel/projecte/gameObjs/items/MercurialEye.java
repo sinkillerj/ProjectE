@@ -344,7 +344,6 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 
 	@Override
 	public void attachCapabilities(RegisterCapabilitiesEvent event) {
-		//TODO - 1.20.4: Test this
 		event.registerItem(ItemHandler.ITEM, (stack, context) -> stack.getData(PEAttachmentTypes.EYE_INVENTORY), this);
 	}
 }

@@ -84,6 +84,10 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 		alchChest.updateComparators();
 	}
 
+	public IItemHandler getInventory() {
+		return inventory;
+	}
+
 	@NotNull
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerIn) {

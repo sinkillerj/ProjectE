@@ -64,7 +64,7 @@ public final class InternalAbilities {
 		if (!shouldPlayerFly(player)) {
 			if (hadFlightItem) {
 				if (player.getAbilities().mayfly) {
-					PlayerHelper.updateClientServerFlight(player, false);
+					updateClientServerFlight(player, false);
 				}
 				hadFlightItem = false;
 			}
@@ -73,14 +73,14 @@ public final class InternalAbilities {
 		} else {
 			if (!hadFlightItem) {
 				if (!player.getAbilities().mayfly) {
-					PlayerHelper.updateClientServerFlight(player, true);
+					updateClientServerFlight(player, true);
 				}
 				hadFlightItem = true;
 			} else if (wasFlyingGamemode && !isFlyingGamemode) {
 				//Player was in a gamemode that allowed flight, but no longer is, but they still should be allowed to fly
 				//Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
 				//and are still allowed to the gamemode change doesn't force them out of it
-				PlayerHelper.updateClientServerFlight(player, true, wasFlying);
+				updateClientServerFlight(player, true, wasFlying);
 			}
 			wasFlyingGamemode = isFlyingGamemode;
 			wasFlying = player.getAbilities().flying;
@@ -103,7 +103,7 @@ public final class InternalAbilities {
 
 	public void onDimensionChange(Player player) {
 		// Resend everything needed on clientside (all except fire resist)
-		PlayerHelper.updateClientServerFlight(player, player.getAbilities().mayfly);
+		updateClientServerFlight(player, player.getAbilities().mayfly);
 	}
 
 	private boolean shouldPlayerFly(Player player) {
@@ -131,5 +131,15 @@ public final class InternalAbilities {
 
 	public void disableSwrgFlightOverride() {
 		swrgOverride = false;
+	}
+
+	private void updateClientServerFlight(Player player, boolean allowFlying) {
+		updateClientServerFlight(player, allowFlying, allowFlying && player.getAbilities().flying);
+	}
+
+	private void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
+		player.getAbilities().mayfly = allowFlying;
+		player.getAbilities().flying = isFlying;
+		player.onUpdateAbilities();
 	}
 }

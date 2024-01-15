@@ -287,7 +287,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 
 	public double getFuelProgress() {
 		ItemStack upgrading = getUpgrading();
-		if (upgrading.isEmpty() || !FuelMapper.isStackFuel(upgrading)) {
+		if (!FuelMapper.isStackFuel(upgrading)) {
 			return 0;
 		}
 		long reqEmc;

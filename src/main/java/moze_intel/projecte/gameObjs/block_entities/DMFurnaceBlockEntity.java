@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,11 +24,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.DropperBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -69,6 +70,10 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	private final int efficiencyBonus;
 	private final RecipeWrapper dummyFurnace = new RecipeWrapper(new ItemStackHandler());
 
+	@Nullable
+	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullTarget;
+	@Nullable
+	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pushTarget;
 
 	public int furnaceBurnTime;
 	public int currentItemBurnTime;
@@ -100,6 +105,15 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		};
 		this.automationSides = new CombinedInvWrapper(automationFuel, automationOutput);
 		this.joined = new CombinedInvWrapper(automationInput, automationFuel, automationOutput);
+	}
+
+	@Override
+	public void setLevel(@NotNull Level level) {
+		super.setLevel(level);
+		if (level instanceof ServerLevel serverLevel) {
+			pullTarget = BlockCapabilityCache.create(ItemHandler.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN);
+			pushTarget = BlockCapabilityCache.create(ItemHandler.BLOCK, serverLevel, worldPosition.below(), Direction.UP);
+		}
 	}
 
 	@Override
@@ -223,27 +237,28 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	private void pullFromInventories() {
+		if (pullTarget == null) {
+			return;
+		}
 		//TODO - 1.20.4: Re-evaluate this
 		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, worldPosition.above());
 		if (blockEntity instanceof HopperBlockEntity || blockEntity instanceof DropperBlockEntity) {
 			return;
 		}
-		IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, worldPosition.above(), null, blockEntity, Direction.DOWN);
-		if (handler == null) {
-			return;
-		}
-		for (int i = 0; i < handler.getSlots(); i++) {
-			ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
-			if (!extractTest.isEmpty()) {
-				IItemHandler targetInv = AbstractFurnaceBlockEntity.isFuel(extractTest) || extractTest.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY) != null
-										 ? fuelInv : inputInventory;
-				transferItem(targetInv, i, extractTest, handler);
+		IItemHandler handler = pullTarget.getCapability();
+		if (handler != null) {
+			for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
+				ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
+				if (!extractTest.isEmpty()) {
+					IItemHandler targetInv = SlotPredicates.FURNACE_FUEL.test(extractTest) ? fuelInv : inputInventory;
+					transferItem(targetInv, i, extractTest, handler);
+				}
 			}
 		}
 	}
 
 	private void pushToInventories() {
-		if (outputInventory.isEmpty()) {
+		if (outputInventory.isEmpty() || pushTarget == null) {
 			return;
 		}
 		//TODO - 1.20.4: Re-evaluate this
@@ -251,14 +266,13 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		if (blockEntity instanceof HopperBlockEntity) {
 			return;
 		}
-		IItemHandler targetInv = WorldHelper.getCapability(level, ItemHandler.BLOCK, worldPosition.below(), null, blockEntity, Direction.UP);
-		if (targetInv == null) {
-			return;
-		}
-		for (int i = 0; i < outputInventory.getSlots(); i++) {
-			ItemStack extractTest = outputInventory.extractItem(i, Integer.MAX_VALUE, true);
-			if (!extractTest.isEmpty()) {
-				transferItem(targetInv, i, extractTest, outputInventory);
+		IItemHandler targetInv = pushTarget.getCapability();
+		if (targetInv != null) {
+			for (int i = 0, slots = outputInventory.getSlots(); i < slots; i++) {
+				ItemStack extractTest = outputInventory.extractItem(i, Integer.MAX_VALUE, true);
+				if (!extractTest.isEmpty()) {
+					transferItem(targetInv, i, extractTest, outputInventory);
+				}
 			}
 		}
 	}

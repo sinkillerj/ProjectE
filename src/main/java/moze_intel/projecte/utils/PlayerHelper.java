@@ -135,16 +135,6 @@ public final class PlayerHelper {
 		}
 	}
 
-	public static void updateClientServerFlight(Player player, boolean allowFlying) {
-		updateClientServerFlight(player, allowFlying, allowFlying && player.getAbilities().flying);
-	}
-
-	public static void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
-		player.getAbilities().mayfly = allowFlying;
-		player.getAbilities().flying = isFlying;
-		player.onUpdateAbilities();
-	}
-
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, BigInteger value) {
 		updateScore(player, objective, value.compareTo(Constants.MAX_INTEGER) > 0 ? Integer.MAX_VALUE : value.intValueExact());
 	}

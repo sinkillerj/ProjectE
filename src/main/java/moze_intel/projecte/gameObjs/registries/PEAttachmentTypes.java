@@ -54,15 +54,12 @@ public class PEAttachmentTypes {
 
 	//TODO - 1.20.4: Somehow mention not copied and also not serialized
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<CommonInternalAbilities>> COMMON_INTERNAL_ABILITIES = ATTACHMENT_TYPES.register("common_internal_abilities",
-			() -> AttachmentType.builder(CommonInternalAbilities::new)
-					.build()
+			() -> AttachmentType.builder(CommonInternalAbilities::new).build()
 	);
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<InternalTimers>> INTERNAL_TIMERS = ATTACHMENT_TYPES.register("internal_timers",
-			() -> AttachmentType.builder(InternalTimers::new)
-					.build()
+			() -> AttachmentType.builder(InternalTimers::new).build()
 	);
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<InternalAbilities>> INTERNAL_ABILITIES = ATTACHMENT_TYPES.register("internal_abilities",
-			() -> AttachmentType.builder(InternalAbilities::new)
-					.build()
+			() -> AttachmentType.builder(InternalAbilities::new).build()
 	);
 }

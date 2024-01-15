@@ -42,6 +42,9 @@ public final class FuelMapper {
 	}
 
 	public static boolean isStackFuel(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return false;
+		}
 		return FUEL_MAP.contains(stack.getItem());
 	}
 
