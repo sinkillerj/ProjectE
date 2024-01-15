@@ -4,16 +4,14 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.block_entities.CondenserBlockEntity;
-import moze_intel.projecte.gameObjs.blocks.Condenser;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import moze_intel.projecte.network.packets.to_client.UpdateCondenserLockPKT;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -64,13 +62,9 @@ public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBl
 		super.broadcastPE(all);
 	}
 
-	protected BlockRegistryObject<? extends Condenser, ?> getValidBlock() {
-		return PEBlocks.CONDENSER;
-	}
-
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return stillValid(player, blockEntity, getValidBlock());
+		return Container.stillValidBlockEntity(blockEntity, player);
 	}
 
 	@Override

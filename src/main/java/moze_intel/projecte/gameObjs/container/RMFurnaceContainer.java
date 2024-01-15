@@ -2,12 +2,9 @@ package moze_intel.projecte.gameObjs.container;
 
 import java.util.function.Predicate;
 import moze_intel.projecte.gameObjs.block_entities.RMFurnaceBlockEntity;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -53,10 +50,5 @@ public class RMFurnaceContainer extends DMFurnaceContainer {
 		}
 
 		addPlayerInventory(24, 84);
-	}
-
-	@Override
-	protected BlockRegistryObject<MatterFurnace, ?> getValidBlock() {
-		return PEBlocks.RED_MATTER_FURNACE;
 	}
 }

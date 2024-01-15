@@ -4,14 +4,12 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
@@ -85,12 +83,8 @@ public class DMFurnaceContainer extends PEContainer {
 		addPlayerInventory(8, 84);
 	}
 
-	protected BlockRegistryObject<MatterFurnace, ?> getValidBlock() {
-		return PEBlocks.DARK_MATTER_FURNACE;
-	}
-
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return stillValid(player, furnace, getValidBlock());
+		return Container.stillValidBlockEntity(furnace, player);
 	}
 }

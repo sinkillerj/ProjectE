@@ -1,12 +1,9 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK2BlockEntity;
-import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -36,10 +33,5 @@ public class CollectorMK2Container extends CollectorMK1Container {
 		//Upgrade Target
 		this.addSlot(new SlotGhost(aux, CollectorMK2BlockEntity.LOCK_SLOT, 169, 36, SlotPredicates.COLLECTOR_LOCK));
 		addPlayerInventory(20, 84);
-	}
-
-	@Override
-	protected BlockRegistryObject<Collector, ?> getValidBlock() {
-		return PEBlocks.COLLECTOR_MK2;
 	}
 }

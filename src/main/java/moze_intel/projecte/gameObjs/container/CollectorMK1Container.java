@@ -1,14 +1,12 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
-import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -82,13 +80,9 @@ public class CollectorMK1Container extends PEContainer {
 		super.broadcastPE(all);
 	}
 
-	protected BlockRegistryObject<Collector, ?> getValidBlock() {
-		return PEBlocks.COLLECTOR;
-	}
-
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return stillValid(player, collector, getValidBlock());
+		return Container.stillValidBlockEntity(collector, player);
 	}
 
 	public double getKleinChargeProgress() {

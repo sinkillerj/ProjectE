@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.AlchBlockEntityChest;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -25,6 +25,6 @@ public class AlchChestContainer extends EmcChestBlockEntityContainer<AlchBlockEn
 
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return stillValid(player, blockEntity, PEBlocks.ALCHEMICAL_CHEST);
+		return Container.stillValidBlockEntity(blockEntity, player);
 	}
 }

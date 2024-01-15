@@ -1,13 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.RelayMK1BlockEntity;
-import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
@@ -59,13 +57,9 @@ public class RelayMK1Container extends PEContainer {
 		super.broadcastPE(all);
 	}
 
-	protected BlockRegistryObject<Relay, ?> getValidBlock() {
-		return PEBlocks.RELAY;
-	}
-
 	@Override
 	public boolean stillValid(@NotNull Player player) {
-		return stillValid(player, relay, getValidBlock());
+		return Container.stillValidBlockEntity(relay, player);
 	}
 
 	public double getKleinChargeProgress() {

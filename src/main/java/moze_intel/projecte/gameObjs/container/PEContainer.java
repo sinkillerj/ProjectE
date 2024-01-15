@@ -6,14 +6,11 @@ import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.container.slots.IInsertableSlot;
 import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -173,12 +169,6 @@ public abstract class PEContainer extends AbstractContainerMenu {
 			}
 		}
 		return stack;
-	}
-
-	protected static boolean stillValid(Player player, BlockEntity blockEntity, BlockRegistryObject<?, ?> blockRO) {
-		BlockPos pos = blockEntity.getBlockPos();
-		return player.level().getBlockState(pos).getBlock() == blockRO.getBlock() &&
-			   player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64.0;
 	}
 
 	public final void updateProgressBarLong(int idx, long data) {

@@ -1,11 +1,8 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.RelayMK3BlockEntity;
-import moze_intel.projecte.gameObjs.blocks.Relay;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import moze_intel.projecte.gameObjs.registration.impl.BlockRegistryObject;
-import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -32,10 +29,5 @@ public class RelayMK3Container extends RelayMK1Container {
 			}
 		}
 		addPlayerInventory(26, 113);
-	}
-
-	@Override
-	protected BlockRegistryObject<Relay, ?> getValidBlock() {
-		return PEBlocks.RELAY_MK3;
 	}
 }
