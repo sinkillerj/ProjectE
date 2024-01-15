@@ -24,9 +24,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.DropperBlockEntity;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -236,13 +234,13 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return furnaceBurnTime > 0;
 	}
 
+	private boolean isHopper(BlockPos position) {
+		//We let hoppers go at their normal rate
+		return WorldHelper.getBlockEntity(level, position) instanceof Hopper;
+	}
+
 	private void pullFromInventories() {
-		if (pullTarget == null) {
-			return;
-		}
-		//TODO - 1.20.4: Re-evaluate this
-		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, worldPosition.above());
-		if (blockEntity instanceof HopperBlockEntity || blockEntity instanceof DropperBlockEntity) {
+		if (pullTarget == null || isHopper(worldPosition.above())) {
 			return;
 		}
 		IItemHandler handler = pullTarget.getCapability();
@@ -258,12 +256,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	private void pushToInventories() {
-		if (outputInventory.isEmpty() || pushTarget == null) {
-			return;
-		}
-		//TODO - 1.20.4: Re-evaluate this
-		BlockEntity blockEntity = WorldHelper.getBlockEntity(level, worldPosition.below());
-		if (blockEntity instanceof HopperBlockEntity) {
+		if (pushTarget == null || outputInventory.isEmpty() || isHopper(worldPosition.below())) {
 			return;
 		}
 		IItemHandler targetInv = pushTarget.getCapability();
