@@ -1,6 +1,7 @@
 package moze_intel.projecte;
 
 import mezz.jei.api.runtime.IRecipesGui;
+import moze_intel.projecte.gameObjs.container.DMFurnaceContainer;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.AbstractCondenserScreen;
 import moze_intel.projecte.gameObjs.gui.AlchBagScreen;
@@ -66,7 +67,8 @@ public class ClientRegistration {
 	public static void registerContainers(RegisterEvent event) {
 		event.register(Registries.MENU, helper -> {
 			registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
-			registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
+			//noinspection RedundantTypeArguments (necessary for it to actually compile)
+			ClientRegistration.<DMFurnaceContainer, GUIDMFurnace<DMFurnaceContainer>>registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
 			registerScreen(PEContainerTypes.CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
 			registerScreen(PEContainerTypes.CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
 			registerScreen(PEContainerTypes.ALCH_CHEST_CONTAINER, AlchChestScreen::new);
@@ -156,7 +158,7 @@ public class ClientRegistration {
 		}
 	}
 
-	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess < C >> void registerScreen(ContainerTypeRegistryObject < C > type, ScreenConstructor < C, U > factory) {
+	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
 		MenuScreens.register(type.get(), factory);
 	}
 }

@@ -1,6 +1,9 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import java.util.Optional;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
@@ -14,18 +17,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -41,7 +54,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider {
+public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider, RecipeCraftingHolder {
 
 	public static final ICapabilityProvider<DMFurnaceBlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (furnace, side) -> {
 		if (side == null) {
@@ -55,7 +68,29 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	};
 	private static final long EMC_CONSUMPTION = 2;
 
-	private final CompactableStackHandler inputInventory = new CompactableStackHandler(getInvSize());
+	private final CompactableStackHandler inputInventory = new CompactableStackHandler(getInvSize()) {
+		private ItemStack oldInput = ItemStack.EMPTY;
+
+		@Override
+		protected void onLoad() {
+			oldInput = getStackInSlot(0).copy();
+		}
+
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			if (slot == 0) {
+				ItemStack input = getStackInSlot(0);
+				if (!ItemStack.isSameItemSameTags(oldInput, input)) {
+					//Reset the cooking progress
+					RecipeResult recipeResult = level == null ? RecipeResult.EMPTY : getSmeltingRecipe(level, input, getFuelItem());
+					cookingTotalTime = getTotalCookTime(recipeResult);
+					cookingProgress = 0;
+					oldInput = input.copy();
+				}
+			}
+		}
+	};
 	private final CompactableStackHandler outputInventory = new CompactableStackHandler(getInvSize());
 	private final StackHandler fuelInv = new StackHandler(1);
 
@@ -66,16 +101,19 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
-	private final RecipeWrapper dummyFurnace = new RecipeWrapper(new ItemStackHandler());
+	private final RecipeWrapper dummyFurnace = new RecipeWrapper(new ItemStackHandler(3));
+	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+	private final RecipeManager.CachedCheck<Container, SmeltingRecipe> quickCheck;
 
 	@Nullable
 	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullTarget;
 	@Nullable
 	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pushTarget;
 
-	public int furnaceBurnTime;
-	public int currentItemBurnTime;
-	public int furnaceCookTime;
+	public int litTime;
+	public int litDuration;
+	public int cookingProgress;
+	public int cookingTotalTime;
 
 	public DMFurnaceBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.DARK_MATTER_FURNACE, pos, state, 10, 3);
@@ -85,12 +123,13 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		super(type, pos, state, 64);
 		this.ticksBeforeSmelt = ticksBeforeSmelt;
 		this.efficiencyBonus = efficiencyBonus;
+		this.quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
 
 		this.automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
 			@NotNull
 			@Override
 			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return getSmeltingResult(stack).isEmpty() ? stack : super.insertItem(slot, stack, simulate);
+				return hasSmeltingResult(stack) ? super.insertItem(slot, stack, simulate) : stack;
 			}
 		};
 		this.automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
@@ -133,13 +172,23 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return 0.5F;
 	}
 
-	protected float getRawOreDoubleChance() {
-		//Base rate for raw ore doubling chance is: 1 -> 1.333 which means we multiply our ore double chance by 2/3
-		return getOreDoubleChance() * 2 / 3;
+	protected float getDoubleChance(ItemStack input) {
+		if (input.is(Tags.Items.ORES)) {
+			return getOreDoubleChance();
+		} else if (input.is(Tags.Items.RAW_MATERIALS)) {
+			//Base rate for raw ore doubling chance is: 1 -> 1.333 which means we multiply our ore double chance by 2/3
+			return getOreDoubleChance() * 2 / 3;
+		}
+		return 0;
 	}
 
-	public int getCookProgressScaled(int value) {
-		return furnaceCookTime * value / ticksBeforeSmelt;
+	public float getBurnProgress() {
+		if (cookingTotalTime == 0 || level == null) {
+			return 0;
+		}
+		//TODO - 1.20.4: Re-evaluate this check that adjusts progress by one
+		int progress = isLit() && canSmelt(getSmeltingRecipe(level, getItemToSmelt(), getFuelItem())) ? cookingProgress + 1 : cookingProgress;
+		return Mth.clamp(progress / (float) cookingTotalTime, 0, 1);
 	}
 
 	@NotNull
@@ -158,6 +207,10 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return fuelInv;
 	}
 
+	private ItemStack getItemToSmelt() {
+		return inputInventory.getStackInSlot(0);
+	}
+
 	private ItemStack getFuelItem() {
 		return fuelInv.getStackInSlot(0);
 	}
@@ -171,17 +224,19 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	public static void tickServer(Level level, BlockPos pos, BlockState state, DMFurnaceBlockEntity furnace) {
-		boolean wasBurning = furnace.isBurning();
-		int lastFurnaceBurnTime = furnace.furnaceBurnTime;
-		int lastFurnaceCookTime = furnace.furnaceCookTime;
-		if (furnace.isBurning()) {
-			--furnace.furnaceBurnTime;
+		boolean wasBurning = furnace.isLit();
+		int lastLitTime = furnace.litTime;
+		int lastCookingProgress = furnace.cookingProgress;
+		if (furnace.isLit()) {
+			--furnace.litTime;
 		}
 		furnace.inputInventory.compact();
 		furnace.outputInventory.compact();
 		furnace.pullFromInventories();
-		boolean canSmelt = furnace.canSmelt();
 		ItemStack fuelItem = furnace.getFuelItem();
+
+		RecipeResult recipeResult = furnace.getSmeltingRecipe(level, furnace.getItemToSmelt(), fuelItem);
+		boolean canSmelt = furnace.canSmelt(recipeResult);
 		if (canSmelt && !fuelItem.isEmpty()) {
 			IItemEmcHolder emcHolder = fuelItem.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
 			if (emcHolder != null) {
@@ -194,14 +249,14 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		}
 
 		if (furnace.getStoredEmc() >= EMC_CONSUMPTION) {
-			furnace.furnaceBurnTime = 1;
+			furnace.litTime = 1;
 			furnace.forceExtractEmc(EMC_CONSUMPTION, EmcAction.EXECUTE);
 		}
 
 		if (canSmelt) {
-			if (furnace.furnaceBurnTime == 0) {
-				furnace.currentItemBurnTime = furnace.furnaceBurnTime = furnace.getItemBurnTime(fuelItem);
-				if (furnace.isBurning() && !fuelItem.isEmpty()) {
+			if (furnace.litTime == 0) {
+				furnace.litDuration = furnace.litTime = furnace.getItemBurnTime(fuelItem);
+				if (furnace.isLit() && !fuelItem.isEmpty()) {
 					ItemStack copy = fuelItem.copy();
 					fuelItem.shrink(1);
 					furnace.fuelInv.onContentsChanged(0);
@@ -211,27 +266,30 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 					furnace.markDirty(false);
 				}
 			}
-			if (furnace.isBurning() && ++furnace.furnaceCookTime == furnace.ticksBeforeSmelt) {
-				furnace.furnaceCookTime = 0;
-				furnace.smeltItem();
+			if (furnace.isLit() && ++furnace.cookingProgress == furnace.cookingTotalTime) {
+				furnace.cookingProgress = 0;
+				furnace.cookingTotalTime = furnace.getTotalCookTime(recipeResult);
+				furnace.smeltItem(level, recipeResult);
 			}
+		} else {
+			furnace.cookingProgress = 0;
 		}
-		if (wasBurning != furnace.isBurning()) {
+		if (wasBurning != furnace.isLit()) {
 			if (state.getBlock() instanceof MatterFurnace) {
 				//Should always be true, but validate it just in case
-				level.setBlockAndUpdate(pos, state.setValue(MatterFurnace.LIT, furnace.isBurning()));
+				level.setBlockAndUpdate(pos, state.setValue(MatterFurnace.LIT, furnace.isLit()));
 			}
 			furnace.setChanged();
 		}
 		furnace.pushToInventories();
-		if (lastFurnaceBurnTime != furnace.furnaceBurnTime || lastFurnaceCookTime != furnace.furnaceCookTime) {
+		if (lastLitTime != furnace.litTime || lastCookingProgress != furnace.cookingProgress) {
 			furnace.markDirty(false);
 		}
 		furnace.updateComparators();
 	}
 
-	public boolean isBurning() {
-		return furnaceBurnTime > 0;
+	public boolean isLit() {
+		return litTime > 0;
 	}
 
 	private boolean isHopper(BlockPos position) {
@@ -280,39 +338,47 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		}
 	}
 
-	public ItemStack getSmeltingResult(ItemStack in) {
-		dummyFurnace.setItem(0, in);
-		Optional<RecipeHolder<SmeltingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, dummyFurnace, level);
-		dummyFurnace.setItem(0, ItemStack.EMPTY);
-		return recipe
-				.map(RecipeHolder::value)
-				.map(r -> r.getResultItem(level.registryAccess()))
-				.orElse(ItemStack.EMPTY);
+	private RecipeResult getSmeltingRecipe(@NotNull Level level, ItemStack input, ItemStack fuel) {
+		if (input.isEmpty()) {
+			return RecipeResult.EMPTY;
+		}
+		//Note: We copy the input and fuel so that if anyone attempts to mutate the inventory from assemble then there is no side effects that occur
+		dummyFurnace.setItem(0, input.copyWithCount(1));//AbstractFurnaceBlockEntity.SLOT_INPUT
+		dummyFurnace.setItem(1, fuel.copyWithCount(1));//AbstractFurnaceBlockEntity.SLOT_FUEL
+		dummyFurnace.setItem(2, ItemStack.EMPTY);//AbstractFurnaceBlockEntity.SLOT_RESULT
+		RecipeResult recipeResult = quickCheck.getRecipeFor(dummyFurnace, level)
+				.map(recipeHolder -> new RecipeResult(recipeHolder, recipeHolder.value().assemble(dummyFurnace, level.registryAccess())))
+				.orElse(RecipeResult.EMPTY);
+		dummyFurnace.clearContent();
+		return recipeResult;
 	}
 
-	private void smeltItem() {
-		ItemStack toSmelt = inputInventory.getStackInSlot(0);
-		ItemStack smeltResult = getSmeltingResult(toSmelt).copy();
-		if (toSmelt.is(Tags.Items.ORES)) {
-			if (level != null && level.random.nextFloat() < getOreDoubleChance()) {
-				smeltResult.grow(smeltResult.getCount());
-			}
-		} else if (toSmelt.is(Tags.Items.RAW_MATERIALS)) {
-			if (level != null && level.random.nextFloat() < getRawOreDoubleChance()) {
-				smeltResult.grow(smeltResult.getCount());
-			}
-		}
-		ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
-		toSmelt.shrink(1);
-		inputInventory.onContentsChanged(0);
+	public boolean hasSmeltingResult(ItemStack input) {
+		return level != null && !getSmeltingRecipe(level, input, getFuelItem()).result().isEmpty();
 	}
 
-	protected boolean canSmelt() {
-		ItemStack toSmelt = inputInventory.getStackInSlot(0);
-		if (toSmelt.isEmpty()) {
-			return false;
+	private void smeltItem(@NotNull Level level, @NotNull RecipeResult recipeResult) {
+		ItemStack toSmelt = getItemToSmelt();
+		ItemStack smeltResult = recipeResult.scaledResult(level.random, getDoubleChance(toSmelt));
+		if (!smeltResult.isEmpty()) {//Double-check the result isn't somehow empty
+			ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
+
+			if (toSmelt.is(Items.WET_SPONGE)) {
+				//Hardcoded handling of wet sponge to filling a bucket with water
+				ItemStack fuelItem = getFuelItem();
+				if (!fuelItem.isEmpty() && fuelItem.is(Items.BUCKET)) {
+					fuelInv.setStackInSlot(0, new ItemStack(Items.WATER_BUCKET));
+				}
+			}
+
+			toSmelt.shrink(1);
+			inputInventory.onContentsChanged(0);
+			setRecipeUsed(recipeResult.recipeHolder());
 		}
-		ItemStack smeltResult = getSmeltingResult(toSmelt);
+	}
+
+	private boolean canSmelt(RecipeResult recipeResult) {
+		ItemStack smeltResult = recipeResult.result();
 		if (smeltResult.isEmpty()) {
 			return false;
 		}
@@ -330,32 +396,125 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return CommonHooks.getBurnTime(stack, RecipeType.SMELTING) * ticksBeforeSmelt / 200 * efficiencyBonus;
 	}
 
-	public int getBurnTimeRemainingScaled(int value) {
-		//Only used on the client
-		if (this.currentItemBurnTime == 0) {
-			this.currentItemBurnTime = ticksBeforeSmelt;
+	private int getTotalCookTime(RecipeResult recipeResult) {
+		if (recipeResult.recipeHolder() == null) {
+			return ticksBeforeSmelt;
 		}
-		return furnaceBurnTime * value / currentItemBurnTime;
+		int cookingTime = recipeResult.recipeHolder().value().getCookingTime();
+		return Mth.ceil(ticksBeforeSmelt * cookingTime / 200F);
+	}
+
+	public float getLitProgress() {
+		int litDuration = this.litDuration;
+		if (litDuration == 0) {
+			litDuration = ticksBeforeSmelt;
+		}
+		return Mth.clamp(litTime / (float) litDuration, 0, 1);
 	}
 
 	@Override
 	public void load(@NotNull CompoundTag nbt) {
 		super.load(nbt);
-		furnaceBurnTime = nbt.getInt("BurnTime");
-		furnaceCookTime = nbt.getInt("CookTime");
+		litTime = nbt.getInt("BurnTime");
+		cookingProgress = nbt.getInt("CookTime");
+		cookingTotalTime = nbt.getInt("CookTimeTotal");
+		fuelInv.deserializeNBT(nbt.getCompound("Fuel"));
 		inputInventory.deserializeNBT(nbt.getCompound("Input"));
 		outputInventory.deserializeNBT(nbt.getCompound("Output"));
-		fuelInv.deserializeNBT(nbt.getCompound("Fuel"));
-		currentItemBurnTime = getItemBurnTime(getFuelItem());
+		litDuration = getItemBurnTime(getFuelItem());
+		//[VanillaCopy] AbstractFurnaceBlockEntity
+		CompoundTag usedRecipes = nbt.getCompound("RecipesUsed");
+		for (String recipeId : usedRecipes.getAllKeys()) {
+			this.recipesUsed.put(new ResourceLocation(recipeId), usedRecipes.getInt(recipeId));
+		}
 	}
 
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
-		tag.putInt("BurnTime", furnaceBurnTime);
-		tag.putInt("CookTime", furnaceCookTime);
+		tag.putInt("BurnTime", litTime);
+		tag.putInt("CookTime", cookingProgress);
+		tag.putInt("CookTimeTotal", this.cookingTotalTime);
 		tag.put("Input", inputInventory.serializeNBT());
 		tag.put("Output", outputInventory.serializeNBT());
 		tag.put("Fuel", fuelInv.serializeNBT());
+		//[VanillaCopy] AbstractFurnaceBlockEntity
+		CompoundTag usedRecipes = new CompoundTag();
+		this.recipesUsed.forEach((recipeId, timesUsed) -> usedRecipes.putInt(recipeId.toString(), timesUsed));
+		tag.put("RecipesUsed", usedRecipes);
+	}
+
+	@Override
+	public void setRecipeUsed(@Nullable RecipeHolder<?> recipeHolder) {
+		//[VanillaCopy] AbstractFurnaceBlockEntity
+		if (recipeHolder != null) {
+			this.recipesUsed.addTo(recipeHolder.id(), 1);
+		}
+	}
+
+	@Nullable
+	@Override
+	public RecipeHolder<?> getRecipeUsed() {
+		//[VanillaCopy] AbstractFurnaceBlockEntity, always return null
+		return null;
+	}
+
+	@Override
+	public void awardUsedRecipes(@NotNull Player player, @NotNull List<ItemStack> items) {
+		//[VanillaCopy] AbstractFurnaceBlockEntity, no-op
+	}
+
+	//[VanillaCopy] AbstractFurnaceBlockEntity
+	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
+		List<RecipeHolder<?>> recipes = getRecipesToAwardAndPopExperience(player.serverLevel(), player.position());
+		player.awardRecipes(recipes);
+
+		for (RecipeHolder<?> recipeholder : recipes) {
+			//Note: We don't have a good way to access the list of input items that were present, so we just skip it
+			// and only support triggering recipe triggers that are based on the recipe id
+			player.triggerRecipeCrafted(recipeholder, List.of());
+		}
+
+		this.recipesUsed.clear();
+	}
+
+	//[VanillaCopy] AbstractFurnaceBlockEntity
+	public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
+		RecipeManager recipeManager = level.getRecipeManager();
+		List<RecipeHolder<?>> list = new ArrayList<>();
+		for (Object2IntMap.Entry<ResourceLocation> entry : this.recipesUsed.object2IntEntrySet()) {
+			recipeManager.byKey(entry.getKey()).ifPresent(recipeHolder -> {
+				list.add(recipeHolder);
+				//Validate it is actually a cooking recipe
+				if (recipeHolder.value() instanceof SmeltingRecipe recipe) {
+					createExperience(level, popVec, entry.getIntValue(), recipe.getExperience());
+				}
+			});
+		}
+		return list;
+	}
+
+	//[VanillaCopy] AbstractFurnaceBlockEntity
+	private static void createExperience(ServerLevel level, Vec3 popVec, int recipeIndex, float experience) {
+		float indexBasedExperience = recipeIndex * experience;
+		int amount = Mth.floor(indexBasedExperience);
+		float partial = indexBasedExperience - amount;
+		if (partial != 0.0F && Math.random() < (double) partial) {
+			++amount;
+		}
+
+		ExperienceOrb.award(level, popVec, amount);
+	}
+
+	private record RecipeResult(@Nullable RecipeHolder<SmeltingRecipe> recipeHolder, ItemStack result) {
+
+		private static final RecipeResult EMPTY = new RecipeResult(null, ItemStack.EMPTY);
+
+		public ItemStack scaledResult(RandomSource random, float doubleChance) {
+			if (random.nextFloat() < doubleChance) {
+				return result.copyWithCount(2 * result.getCount());
+			}
+			return result.copy();
+		}
 	}
 }

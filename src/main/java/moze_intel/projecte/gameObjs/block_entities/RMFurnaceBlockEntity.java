@@ -27,11 +27,6 @@ public class RMFurnaceBlockEntity extends DMFurnaceBlockEntity {
 		return 1F;
 	}
 
-	@Override
-	public int getCookProgressScaled(int value) {
-		return (furnaceCookTime + (isBurning() && canSmelt() ? 1 : 0)) * value / ticksBeforeSmelt;
-	}
-
 	@NotNull
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inv, @NotNull Player player) {
