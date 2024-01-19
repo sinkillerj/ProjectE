@@ -15,7 +15,6 @@ import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK3;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
 import moze_intel.projecte.gameObjs.gui.PEContainerScreen;
-import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -30,18 +29,12 @@ import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -52,10 +45,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -64,25 +57,23 @@ public class ClientRegistration {
 	public static final ResourceLocation MODE_OVERRIDE = PECore.rl("mode");
 
 	@SubscribeEvent
-	public static void registerContainers(RegisterEvent event) {
-		event.register(Registries.MENU, helper -> {
-			registerScreen(PEContainerTypes.RM_FURNACE_CONTAINER, GUIRMFurnace::new);
-			//noinspection RedundantTypeArguments (necessary for it to actually compile)
-			ClientRegistration.<DMFurnaceContainer, GUIDMFurnace<DMFurnaceContainer>>registerScreen(PEContainerTypes.DM_FURNACE_CONTAINER, GUIDMFurnace::new);
-			registerScreen(PEContainerTypes.CONDENSER_CONTAINER, AbstractCondenserScreen.MK1::new);
-			registerScreen(PEContainerTypes.CONDENSER_MK2_CONTAINER, AbstractCondenserScreen.MK2::new);
-			registerScreen(PEContainerTypes.ALCH_CHEST_CONTAINER, AlchChestScreen::new);
-			registerScreen(PEContainerTypes.ALCH_BAG_CONTAINER, AlchBagScreen::new);
-			registerScreen(PEContainerTypes.ETERNAL_DENSITY_CONTAINER, GUIEternalDensity::new);
-			registerScreen(PEContainerTypes.TRANSMUTATION_CONTAINER, GUITransmutation::new);
-			registerScreen(PEContainerTypes.RELAY_MK1_CONTAINER, GUIRelayMK1::new);
-			registerScreen(PEContainerTypes.RELAY_MK2_CONTAINER, GUIRelayMK2::new);
-			registerScreen(PEContainerTypes.RELAY_MK3_CONTAINER, GUIRelayMK3::new);
-			registerScreen(PEContainerTypes.COLLECTOR_MK1_CONTAINER, AbstractCollectorScreen.MK1::new);
-			registerScreen(PEContainerTypes.COLLECTOR_MK2_CONTAINER, AbstractCollectorScreen.MK2::new);
-			registerScreen(PEContainerTypes.COLLECTOR_MK3_CONTAINER, AbstractCollectorScreen.MK3::new);
-			registerScreen(PEContainerTypes.MERCURIAL_EYE_CONTAINER, GUIMercurialEye::new);
-		});
+	public static void registerScreens(RegisterMenuScreensEvent event) {
+		event.register(PEContainerTypes.RM_FURNACE_CONTAINER.get(), GUIRMFurnace::new);
+		//noinspection RedundantTypeArguments (necessary for it to actually compile)
+		event.<DMFurnaceContainer, GUIDMFurnace<DMFurnaceContainer>>register(PEContainerTypes.DM_FURNACE_CONTAINER.get(), GUIDMFurnace::new);
+		event.register(PEContainerTypes.CONDENSER_CONTAINER.get(), AbstractCondenserScreen.MK1::new);
+		event.register(PEContainerTypes.CONDENSER_MK2_CONTAINER.get(), AbstractCondenserScreen.MK2::new);
+		event.register(PEContainerTypes.ALCH_CHEST_CONTAINER.get(), AlchChestScreen::new);
+		event.register(PEContainerTypes.ALCH_BAG_CONTAINER.get(), AlchBagScreen::new);
+		event.register(PEContainerTypes.ETERNAL_DENSITY_CONTAINER.get(), GUIEternalDensity::new);
+		event.register(PEContainerTypes.TRANSMUTATION_CONTAINER.get(), GUITransmutation::new);
+		event.register(PEContainerTypes.RELAY_MK1_CONTAINER.get(), GUIRelayMK1::new);
+		event.register(PEContainerTypes.RELAY_MK2_CONTAINER.get(), GUIRelayMK2::new);
+		event.register(PEContainerTypes.RELAY_MK3_CONTAINER.get(), GUIRelayMK3::new);
+		event.register(PEContainerTypes.COLLECTOR_MK1_CONTAINER.get(), AbstractCollectorScreen.MK1::new);
+		event.register(PEContainerTypes.COLLECTOR_MK2_CONTAINER.get(), AbstractCollectorScreen.MK2::new);
+		event.register(PEContainerTypes.COLLECTOR_MK3_CONTAINER.get(), AbstractCollectorScreen.MK3::new);
+		event.register(PEContainerTypes.MERCURIAL_EYE_CONTAINER.get(), GUIMercurialEye::new);
 	}
 
 	@SubscribeEvent
@@ -156,9 +147,5 @@ public class ClientRegistration {
 		for (ItemLike itemProvider : itemProviders) {
 			ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
 		}
-	}
-
-	private static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
-		MenuScreens.register(type.get(), factory);
 	}
 }
