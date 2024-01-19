@@ -1,4 +1,4 @@
-package moze_intel.projecte.integration.wtht;
+package moze_intel.projecte.integration.wthit;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
