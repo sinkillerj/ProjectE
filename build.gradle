@@ -297,7 +297,6 @@ tasks.register('apiJar', Jar) {
     manifest.attributes(getManifestAttributes())
 }
 
-//TODO - 1.20.4: Fix this not building??
 shadowJar {
     //Note: We use the include duplicate strategy instead of FAIL as minimize causes
     // the things to get "added" twice but it is filtered separately by the shadow
@@ -317,9 +316,7 @@ shadowJar {
     // Relocate apache commons-math3 to prevent conflicts with other mods that include it
     relocate 'org.apache.commons.math3', 'moze_intel.projecte.shaded.org.apache.commons.math3'
     // Minimize the required files so we only include what is needed
-    minimize {
-        include dependency('org.apache.commons:commons-math3:.*')
-    }
+    minimize()
 }
 
 tasks.register('updateJSON') {
@@ -344,4 +341,5 @@ tasks.withType(JavaCompile).configureEach({
 
 artifacts {
     archives apiJar
+    archives shadowJar
 }
