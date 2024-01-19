@@ -229,10 +229,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
-    //TODO - 1.20.4: Re-enable after jei updates
-    //runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     //TODO - 1.20.4: Re-enable after curios updates
