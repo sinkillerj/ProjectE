@@ -136,8 +136,7 @@ public class ClientRegistration {
 	@SubscribeEvent
 	public static void addLayers(EntityRenderersEvent.AddLayers event) {
 		for (PlayerSkin.Model model : event.getSkins()) {
-			PlayerRenderer skin = event.getSkin(model);
-			if (skin != null) {
+			if (event.getSkin(model) instanceof PlayerRenderer skin) {
 				skin.addLayer(new LayerYue(skin));
 			}
 		}

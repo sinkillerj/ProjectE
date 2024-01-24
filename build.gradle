@@ -8,7 +8,7 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.80'//https://projects.neoforged.net/neoforged/neogradle
+    id 'net.neoforged.gradle.userdev' version '7.0.84'//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -234,8 +234,7 @@ dependencies {
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
-    //TODO - 1.20.4: Re-enable after curios updates
-    //runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+    runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
