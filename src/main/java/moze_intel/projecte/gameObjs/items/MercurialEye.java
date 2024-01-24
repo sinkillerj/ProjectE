@@ -39,8 +39,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,10 +82,8 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 			if (level.isClientSide) {
 				return InteractionResultHolder.success(stack);
 			}
-			Vec3 eyeVec = new Vec3(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
-			Vec3 lookVec = player.getLookAngle();
 			//I'm not sure why there has to be a one point offset to the X coordinate here, but it's pretty consistent in testing.
-			Vec3 targVec = eyeVec.add(lookVec.x * 2, lookVec.y * 2, lookVec.z * 2);
+			Vec3 targVec = PlayerHelper.getLookTarget(player, 2);
 			return ItemHelper.actionResultFromType(formBlocks(stack, player, hand, BlockPos.containing(targVec), null), stack);
 		}
 		return InteractionResultHolder.pass(stack);
@@ -163,14 +159,16 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 			}
 		} else if (mode == PILLAR_MODE) {
 			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
-			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, getCorners(startingPos, facing, 1, 3 * charge + 2), drops);
+			AABB bounds = getBounds(startingPos, facing, 1, 3 * charge + 2);
+			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, bounds, drops);
 		} else if (mode == EXTENSION_MODE_CLASSIC) {
 			//if it is replaceable fill in the gaps in up to a 9x9x1 area
-			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, getCorners(startingPos, facing, charge, 0), drops);
+			AABB bounds = getBounds(startingPos, facing, charge, 0);
+			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, bounds, drops);
 		} else if (mode == TRANSMUTATION_MODE_CLASSIC) {
 			//if state is same as the start state replace it in an up to 9x9x1 area
-			Pair<BlockPos, BlockPos> corners = getCorners(startingPos, facing, charge, 0);
-			for (BlockPos pos : WorldHelper.getPositionsFromBox(AABB.encapsulatingFullBlocks(corners.getLeft(), corners.getRight()))) {
+			AABB bounds = getBounds(startingPos, facing, charge, 0);
+			for (BlockPos pos : WorldHelper.getPositionsInBox(bounds)) {
 				BlockState placedState = level.getBlockState(pos);
 				//Ensure we are immutable so that removal/placing doesn't act weird
 				if (placedState == startingState && doBlockPlace(player, placedState, pos.immutable(), newState, eye, startingBlockEmc, newBlockEmc, drops)) {
@@ -287,9 +285,9 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 	}
 
 	private int fillGaps(ItemStack eye, Player player, Level level, BlockPlaceContext context, BlockState startingState, BlockState newState, long newBlockEmc,
-			Pair<BlockPos, BlockPos> corners, NonNullList<ItemStack> drops) {
+			AABB bounds, NonNullList<ItemStack> drops) {
 		int hitTargets = 0;
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(AABB.encapsulatingFullBlocks(corners.getLeft(), corners.getRight()))) {
+		for (BlockPos pos : WorldHelper.getPositionsInBox(bounds)) {
 			VoxelShape bb = startingState.getCollisionShape(level, pos);
 			if (level.isUnobstructed(null, bb)) {
 				BlockPlaceContext adjustedContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
@@ -307,39 +305,11 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 		return hitTargets;
 	}
 
-	private Pair<BlockPos, BlockPos> getCorners(BlockPos startingPos, Direction facing, int strength, int depth) {
+	private AABB getBounds(BlockPos startingPos, @Nullable Direction facing, int strength, int depth) {
 		if (facing == null) {
-			return new ImmutablePair<>(startingPos, startingPos);
+			return new AABB(startingPos);
 		}
-		BlockPos start = startingPos;
-		BlockPos end = startingPos;
-		switch (facing) {
-			case UP -> {
-				start = start.offset(-strength, -depth, -strength);
-				end = end.offset(strength, 0, strength);
-			}
-			case DOWN -> {
-				start = start.offset(-strength, 0, -strength);
-				end = end.offset(strength, depth, strength);
-			}
-			case SOUTH -> {
-				start = start.offset(-strength, -strength, -depth);
-				end = end.offset(strength, strength, 0);
-			}
-			case NORTH -> {
-				start = start.offset(-strength, -strength, 0);
-				end = end.offset(strength, strength, depth);
-			}
-			case EAST -> {
-				start = start.offset(-depth, -strength, -strength);
-				end = end.offset(0, strength, strength);
-			}
-			case WEST -> {
-				start = start.offset(0, -strength, -strength);
-				end = end.offset(depth, strength, strength);
-			}
-		}
-		return new ImmutablePair<>(start, end);
+		return WorldHelper.getBroadDeepBox(startingPos, facing, strength, depth);
 	}
 
 	@Override

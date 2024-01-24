@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
@@ -46,6 +47,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
+
+	private static final Predicate<BlockEntity> VALID_TARGET = be -> !be.isRemoved() && !RegistryUtils.getBEHolder(be.getType()).is(PETags.BlockEntities.BLACKLIST_TIME_WATCH);
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -107,53 +110,53 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-		AABB bBox = player.getBoundingBox().inflate(8);
-		speedUpBlockEntities(level, bonusTicks, bBox);
-		speedUpRandomTicks(level, bonusTicks, bBox);
-		slowMobs(level, bBox, mobSlowdown);
+		AABB effectBounds = player.getBoundingBox().inflate(8);
+		speedUpBlocks(level, bonusTicks, effectBounds);
+		slowMobs(level, effectBounds, mobSlowdown);
 	}
 
-	private void slowMobs(Level level, AABB bBox, double mobSlowdown) {
-		if (bBox == null) {
-			// Sanity check for chunk unload weirdness
-			return;
-		}
-		for (Mob ent : level.getEntitiesOfClass(Mob.class, bBox)) {
-			ent.setDeltaMovement(ent.getDeltaMovement().multiply(mobSlowdown, 1, mobSlowdown));
+	private void slowMobs(Level level, AABB effectBounds, double mobSlowdown) {
+		if (mobSlowdown < 1) {
+			for (Mob ent : level.getEntitiesOfClass(Mob.class, effectBounds)) {
+				ent.setDeltaMovement(ent.getDeltaMovement().multiply(mobSlowdown, 1, mobSlowdown));
+			}
 		}
 	}
 
-	private void speedUpBlockEntities(Level level, int bonusTicks, AABB bBox) {
-		if (bBox == null || bonusTicks == 0) {
-			// Sanity check the box for chunk unload weirdness
-			return;
+	private void speedUpBlocks(Level level, int bonusTicks, AABB effectBounds) {
+		if (bonusTicks > 0) {
+			speedUpBlockEntities(level, bonusTicks, effectBounds);
+			speedUpRandomTicks(level, bonusTicks, effectBounds);
 		}
-		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, bBox)) {
-			if (!blockEntity.isRemoved() && !RegistryUtils.getBEHolder(blockEntity.getType()).is(PETags.BlockEntities.BLACKLIST_TIME_WATCH)) {
-				BlockPos pos = blockEntity.getBlockPos();
-				if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
-					LevelChunk chunk = level.getChunkAt(pos);
-					RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
-					if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
-						if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
-							//In general this should always be the case, so we inline some of the logic
-							// to optimize the calls to try and make extra ticks as cheap as possible
-							if (chunk.isTicking(pos)) {
-								ProfilerFiller profiler = level.getProfiler();
-								profiler.push(tickingWrapper::getType);
-								BlockState state = chunk.getBlockState(pos);
-								if (blockEntity.getType().isValid(state)) {
-									for (int i = 0; i < bonusTicks; i++) {
-										tickingBE.ticker.tick(level, pos, state, blockEntity);
-									}
+	}
+
+	private void speedUpBlockEntities(Level level, int bonusTicks, AABB effectBounds) {
+		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, effectBounds, VALID_TARGET)) {
+			BlockPos pos = blockEntity.getBlockPos();
+			if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+				LevelChunk chunk = level.getChunkAt(pos);
+				RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
+				if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
+					//TODO - 1.20.4: Look at TimeTracker (basically what neo patches in for BoundTickingBlockEntity#tick)
+					// And whether the tracking data for the pedestal gets screwed up if we have to fallback to the other if branch
+					if (tickingWrapper.ticker instanceof BoundTickingBlockEntity tickingBE) {
+						//In general this should always be the case, so we inline some of the logic
+						// to optimize the calls to try and make extra ticks as cheap as possible
+						if (chunk.isTicking(pos)) {
+							ProfilerFiller profiler = level.getProfiler();
+							profiler.push(tickingWrapper::getType);
+							BlockState state = chunk.getBlockState(pos);
+							if (blockEntity.getType().isValid(state)) {
+								for (int i = 0; i < bonusTicks; i++) {
+									tickingBE.ticker.tick(level, pos, state, blockEntity);
 								}
-								profiler.pop();
 							}
-						} else {
-							//Fallback to just trying to make it tick extra
-							for (int i = 0; i < bonusTicks; i++) {
-								tickingWrapper.tick();
-							}
+							profiler.pop();
+						}
+					} else {
+						//Fallback to just trying to make it tick extra
+						for (int i = 0; i < bonusTicks; i++) {
+							tickingWrapper.tick();
 						}
 					}
 				}
@@ -161,21 +164,20 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		}
 	}
 
-	private void speedUpRandomTicks(Level level, int bonusTicks, AABB bBox) {
-		if (bBox == null || bonusTicks == 0 || !(level instanceof ServerLevel serverLevel)) {
-			// Sanity check the box for chunk unload weirdness
+	private void speedUpRandomTicks(Level level, int bonusTicks, AABB effectBounds) {
+		if (!(level instanceof ServerLevel serverLevel)) {
 			return;
 		}
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
-			if (WorldHelper.isBlockLoaded(serverLevel, pos)) {
-				BlockState state = serverLevel.getBlockState(pos);
+		for (BlockPos pos : WorldHelper.getPositionsInBox(effectBounds)) {
+			if (WorldHelper.isBlockLoaded(level, pos)) {
+				BlockState state = level.getBlockState(pos);
 				Block block = state.getBlock();
 				if (state.isRandomlyTicking() && !state.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
 					pos = pos.immutable();
 					for (int i = 0; i < bonusTicks; i++) {
-						state.randomTick(serverLevel, pos, serverLevel.random);
+						state.randomTick(serverLevel, pos, level.random);
 					}
 				}
 			}
@@ -219,14 +221,9 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			@NotNull PEDESTAL pedestal) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
 		if (!level.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
-			AABB bBox = pedestal.getEffectBounds();
-			if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
-				speedUpBlockEntities(level, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
-				speedUpRandomTicks(level, ProjectEConfig.server.effects.timePedBonus.get(), bBox);
-			}
-			if (ProjectEConfig.server.effects.timePedMobSlowness.get() < 1.0F) {
-				slowMobs(level, bBox, ProjectEConfig.server.effects.timePedMobSlowness.get());
-			}
+			AABB effectBounds = pedestal.getEffectBounds();
+			speedUpBlocks(level, ProjectEConfig.server.effects.timePedBonus.get(), effectBounds);
+			slowMobs(level, effectBounds, ProjectEConfig.server.effects.timePedMobSlowness.get());
 		}
 		return false;
 	}

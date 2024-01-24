@@ -135,8 +135,7 @@ public class DMPedestalBlockEntity extends EmcBlockEntity implements IDMPedestal
 
 	@Override
 	public AABB getEffectBounds() {
-		//TODO - 1.20.4: View all use cases of this and test and also evaluate cases that are using new AABB
-		return AABB.encapsulatingFullBlocks(worldPosition.offset(-RANGE, -RANGE, -RANGE), worldPosition.offset(RANGE, RANGE, RANGE));
+		return new AABB(worldPosition).inflate(RANGE);
 	}
 
 	@Override

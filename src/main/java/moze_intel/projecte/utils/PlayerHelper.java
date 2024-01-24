@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,8 +27,6 @@ import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -96,21 +93,15 @@ public final class PlayerHelper {
 	}
 
 	public static BlockHitResult getBlockLookingAt(Player player, double maxDistance) {
-		Pair<Vec3, Vec3> vecs = getLookVec(player, maxDistance);
-		ClipContext ctx = new ClipContext(vecs.getLeft(), vecs.getRight(), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player);
-		return player.level().clip(ctx);
+		return (BlockHitResult) player.pick(maxDistance, 1.0F, false);
 	}
 
 	/**
 	 * Returns a vec representing where the player is looking, capped at maxDistance away.
 	 */
-	public static Pair<Vec3, Vec3> getLookVec(Player player, double maxDistance) {
-		// Thank you ForgeEssentials
-		Vec3 look = player.getViewVector(1.0F);
-		Vec3 playerPos = new Vec3(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
-		Vec3 src = playerPos.add(0, player.getEyeHeight(), 0);
-		Vec3 dest = src.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
-		return ImmutablePair.of(src, dest);
+	public static Vec3 getLookTarget(Player player, double maxDistance) {
+		Vec3 lookAngle = player.getLookAngle();
+		return player.getEyePosition().add(lookAngle.x * maxDistance, lookAngle.y * maxDistance, lookAngle.z * maxDistance);
 	}
 
 	public static boolean hasBreakPermission(ServerPlayer player, BlockPos pos) {

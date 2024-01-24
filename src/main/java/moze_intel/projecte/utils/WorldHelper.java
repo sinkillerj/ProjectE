@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -138,21 +139,20 @@ public final class WorldHelper {
 	}
 
 	public static void extinguishNearby(Level level, Player player) {
-		BlockPos.betweenClosedStream(player.blockPosition().offset(-1, -1, -1), player.blockPosition().offset(1, 1, 1)).forEach(pos -> {
+		for (BlockPos pos : getPositionsInBox(player.getBoundingBox().inflate(1))) {
 			pos = pos.immutable();
-			if (level.getBlockState(pos).getBlock() == Blocks.FIRE && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
+			if (level.getBlockState(pos).is(Blocks.FIRE) && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
 				level.removeBlock(pos, false);
 			}
-		});
+		}
 	}
 
 	public static void freezeInBoundingBox(Level level, AABB box, Player player, boolean random) {
-		for (BlockPos pos : getPositionsFromBox(box)) {
+		for (BlockPos pos : getPositionsInBox(box)) {
 			BlockState state = level.getBlockState(pos);
-			Block b = state.getBlock();
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			pos = pos.immutable();
-			if (b == Blocks.WATER && (!random || level.random.nextInt(128) == 0)) {
+			if (state.is(Blocks.WATER) && (!random || level.random.nextInt(128) == 0)) {
 				if (player != null) {
 					PlayerHelper.checkedReplaceBlock((ServerPlayer) player, pos, Blocks.ICE.defaultBlockState());
 				} else {
@@ -165,7 +165,7 @@ public final class WorldHelper {
 
 				if (stateUp.isAir() && (!random || level.random.nextInt(128) == 0)) {
 					newState = Blocks.SNOW.defaultBlockState();
-				} else if (stateUp.getBlock() == Blocks.SNOW && stateUp.getValue(SnowLayerBlock.LAYERS) < 8 && level.random.nextInt(512) == 0) {
+				} else if (stateUp.is(Blocks.SNOW) && stateUp.getValue(SnowLayerBlock.LAYERS) < 8 && level.random.nextInt(512) == 0) {
 					newState = stateUp.setValue(SnowLayerBlock.LAYERS, stateUp.getValue(SnowLayerBlock.LAYERS) + 1);
 				}
 				if (newState != null) {
@@ -233,38 +233,39 @@ public final class WorldHelper {
 	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
 	public static AABB getBroadDeepBox(BlockPos pos, Direction direction, int offset) {
-		return switch (direction) {
-			case EAST -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX(), pos.getY() + offset, pos.getZ() + offset);
-			case WEST -> new AABB(pos.getX(), pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case UP -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
-			case DOWN -> new AABB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-			case SOUTH -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ() - offset, pos.getX() + offset, pos.getY() + offset, pos.getZ());
-			case NORTH -> new AABB(pos.getX() - offset, pos.getY() - offset, pos.getZ(), pos.getX() + offset, pos.getY() + offset, pos.getZ() + offset);
-		};
+		return getBroadDeepBox(pos, direction, offset, offset);
+	}
+
+	/**
+	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
+	 */
+	public static AABB getBroadDeepBox(BlockPos pos, Direction direction, int breadth, int depth) {
+		AABB box = getBroadBox(pos, direction, breadth);
+		if (depth == 0) {//Short circuit if a zero depth is passed
+			return box;
+		}
+		return box.expandTowards(depth * -direction.getStepX(), depth * -direction.getStepY(), depth * -direction.getStepZ());
 	}
 
 	/**
 	 * Returns in AABB that is always 3x3 orthogonal to the side hit, but varies in depth in the direction of the side hit
 	 */
 	public static AABB getDeepBox(BlockPos pos, Direction direction, int depth) {
-		return switch (direction) {
-			case EAST -> new AABB(pos.getX() - depth, pos.getY() - 1, pos.getZ() - 1, pos.getX(), pos.getY() + 1, pos.getZ() + 1);
-			case WEST -> new AABB(pos.getX(), pos.getY() - 1, pos.getZ() - 1, pos.getX() + depth, pos.getY() + 1, pos.getZ() + 1);
-			case UP -> new AABB(pos.getX() - 1, pos.getY() - depth, pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1);
-			case DOWN -> new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + depth, pos.getZ() + 1);
-			case SOUTH -> new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - depth, pos.getX() + 1, pos.getY() + 1, pos.getZ());
-			case NORTH -> new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + depth);
-		};
+		return getBroadDeepBox(pos, direction, 1, depth);
 	}
 
 	/**
 	 * Returns in AABB that is always a single block deep but is size x size orthogonal to the side hit
 	 */
-	public static AABB getBroadBox(BlockPos pos, Direction direction, int size) {
+	public static AABB getBroadBox(BlockPos pos, Direction direction, int breadth) {
+		AABB point = new AABB(pos);
+		if (breadth == 0) {//Short circuit to just returning the block itself
+			return point;
+		}
 		return switch (direction) {
-			case EAST, WEST -> new AABB(pos.getX(), pos.getY() - size, pos.getZ() - size, pos.getX(), pos.getY() + size, pos.getZ() + size);
-			case UP, DOWN -> new AABB(pos.getX() - size, pos.getY(), pos.getZ() - size, pos.getX() + size, pos.getY(), pos.getZ() + size);
-			case SOUTH, NORTH -> new AABB(pos.getX() - size, pos.getY() - size, pos.getZ(), pos.getX() + size, pos.getY() + size, pos.getZ());
+			case EAST, WEST -> point.inflate(0, breadth, breadth);
+			case UP, DOWN -> point.inflate(breadth, 0, breadth);
+			case SOUTH, NORTH -> point.inflate(breadth, breadth, 0);
 		};
 	}
 
@@ -272,29 +273,46 @@ public final class WorldHelper {
 	 * Gets an AABB for AOE digging operations. The charge increases only the breadth of the box. Y level remains constant. As such, a direction hit is unneeded.
 	 */
 	public static AABB getFlatYBox(BlockPos pos, int offset) {
-		return new AABB(pos.getX() - offset, pos.getY(), pos.getZ() - offset, pos.getX() + offset, pos.getY(), pos.getZ() + offset);
+		return getBroadBox(pos, Direction.UP, offset);
 	}
 
 	/**
-	 * Wrapper around BlockPos.getAllInBox() with an AABB Note that this is inclusive of all positions in the AABB!
+	 * Similar to vanilla's {@link BlockPos#betweenClosedStream(AABB)} but calling {@link BlockPos#betweenClosed(int, int, int, int, int, int)} instead of
+	 * {@link BlockPos#betweenClosedStream(int, int, int, int, int, int)}
+	 *
+	 * Note that this is inclusive of all positions in the AABB (except those that start on the edge)! This is different from vanilla's method which contains blocks on
+	 * the edge.
 	 */
-	public static Iterable<BlockPos> getPositionsFromBox(AABB box) {
-		return getPositionsFromBox(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ));
+	public static Iterable<BlockPos> getPositionsInBox(AABB box) {
+		float epsilon = com.mojang.math.Constants.EPSILON;
+		//Similar to as if we did box = box.deflate(epsilon), but without creating the extra intermediary AABB
+		return BlockPos.betweenClosed(
+				Mth.floor(box.minX - epsilon),
+				Mth.floor(box.minY - epsilon),
+				Mth.floor(box.minZ - epsilon),
+				Mth.floor(box.maxX - epsilon),
+				Mth.floor(box.maxY - epsilon),
+				Mth.floor(box.maxZ - epsilon)
+		);
 	}
 
-	/**
-	 * Wrapper around BlockPos.getAllInBox()
-	 */
-	public static Iterable<BlockPos> getPositionsFromBox(BlockPos corner1, BlockPos corner2) {
-		return () -> BlockPos.betweenClosedStream(corner1, corner2).iterator();
+	public static Iterable<BlockPos> horizontalPositionsAround(BlockPos pos, int horizontalRadius) {
+		return positionsAround(pos, horizontalRadius, 0, horizontalRadius);
 	}
 
+	public static Iterable<BlockPos> positionsAround(BlockPos pos, int radius) {
+		return positionsAround(pos, radius, radius, radius);
+	}
 
-	public static List<BlockEntity> getBlockEntitiesWithinAABB(Level level, AABB bBox) {
+	public static Iterable<BlockPos> positionsAround(BlockPos pos, int xRadius, int yRadius, int zRadius) {
+		return BlockPos.betweenClosed(pos.offset(-xRadius, -yRadius, -zRadius), pos.offset(xRadius, yRadius, zRadius));
+	}
+
+	public static List<BlockEntity> getBlockEntitiesWithinAABB(Level level, AABB box, Predicate<BlockEntity> predicate) {
 		List<BlockEntity> list = new ArrayList<>();
-		for (BlockPos pos : getPositionsFromBox(bBox)) {
+		for (BlockPos pos : getPositionsInBox(box)) {
 			BlockEntity blockEntity = getBlockEntity(level, pos);
-			if (blockEntity != null) {
+			if (blockEntity != null && predicate.test(blockEntity)) {
 				list.add(blockEntity);
 			}
 		}
@@ -304,26 +322,29 @@ public final class WorldHelper {
 	/**
 	 * Gravitates an entity, vanilla xp orb style, towards a position Code adapted from EntityXPOrb and OpenBlocks Vacuum Hopper, mostly the former
 	 */
-	public static void gravitateEntityTowards(Entity ent, double x, double y, double z) {
-		double dX = x - ent.getX();
-		double dY = y - ent.getY();
-		double dZ = z - ent.getZ();
-		double dist = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
-
-		double vel = 1.0 - dist / 15.0;
+	public static void gravitateEntityTowards(Entity ent, Vec3 target) {
+		Vec3 difference = target.subtract(ent.position());
+		double vel = 1.0 - difference.length() / 15.0;
 		if (vel > 0.0D) {
 			vel *= vel;
-			ent.addDeltaMovement(new Vec3(dX / dist * vel * 0.1, dY / dist * vel * 0.2, dZ / dist * vel * 0.1));
+			ent.addDeltaMovement(difference.normalize()
+					.scale(vel)
+					.multiply(0.1, 0.2, 0.1)
+			);
 		}
 	}
 
-	public static void growNearbyRandomly(boolean harvest, Level level, BlockPos pos, Player player) {
+	public static void growNearbyRandomly(boolean harvest, Level level, Player player) {
+		growNearbyRandomly(harvest, level, player.getBoundingBox().inflate(5, 3, 5), player);
+	}
+
+	public static void growNearbyRandomly(boolean harvest, Level level, AABB box, @Nullable Player player) {
 		if (!(level instanceof ServerLevel serverLevel)) {
 			return;
 		}
 		boolean grewWater = false;
 		int chance = harvest ? 16 : 32;
-		for (BlockPos currentPos : getPositionsFromBox(pos.offset(-5, -3, -5), pos.offset(5, 3, 5))) {
+		for (BlockPos currentPos : getPositionsInBox(box)) {
 			currentPos = currentPos.immutable();
 			BlockState state = serverLevel.getBlockState(currentPos);
 			Block crop = state.getBlock();
@@ -340,7 +361,7 @@ public final class WorldHelper {
 			else if (crop instanceof BonemealableBlock growable) {
 				if (!growable.isValidBonemealTarget(serverLevel, currentPos, state)) {
 					if (harvest && !state.is(PETags.Blocks.BLACKLIST_HARVEST)) {
-						if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
+						if (!leaveBottomBlock(state) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
 							//Don't harvest the bottom of kelp but otherwise allow harvesting them
 							harvestBlock(serverLevel, currentPos, player);
 						}
@@ -361,13 +382,13 @@ public final class WorldHelper {
 					}
 				}
 				if (harvest) {
-					if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
+					if (state.is(Blocks.SUGAR_CANE) || state.is(Blocks.CACTUS)) {
 						if (serverLevel.getBlockState(currentPos.above()).is(crop) && serverLevel.getBlockState(currentPos.above(2)).is(crop)) {
-							for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
+							for (int i = state.is(Blocks.SUGAR_CANE) ? 1 : 0; i < 3; i++) {
 								harvestBlock(serverLevel, currentPos.above(i), player);
 							}
 						}
-					} else if (crop == Blocks.NETHER_WART) {
+					} else if (state.is(Blocks.NETHER_WART)) {
 						if (state.getValue(NetherWartBlock.AGE) == 3) {
 							harvestBlock(serverLevel, currentPos, player);
 						}
@@ -382,8 +403,8 @@ public final class WorldHelper {
 		}
 	}
 
-	private static boolean leaveBottomBlock(Block crop) {
-		return crop == Blocks.KELP_PLANT || crop == Blocks.BAMBOO;
+	private static boolean leaveBottomBlock(BlockState crop) {
+		return crop.is(Blocks.KELP_PLANT) || crop.is(Blocks.BAMBOO);
 	}
 
 	private static boolean isGrassLikeBlock(Block crop) {
@@ -462,8 +483,8 @@ public final class WorldHelper {
 		if (numMined >= Constants.MAX_VEIN_SIZE) {
 			return numMined;
 		}
-		AABB b = new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-		for (BlockPos currentPos : getPositionsFromBox(b)) {
+		//TODO - 1.20.4: Make this more like mek where it isn't recursive
+		for (BlockPos currentPos : positionsAround(pos, 1)) {
 			BlockState currentState = level.getBlockState(currentPos);
 			if (currentState.getBlock() == target) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
@@ -483,7 +504,7 @@ public final class WorldHelper {
 	}
 
 	public static void igniteNearby(Level level, Player player) {
-		for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-8, -5, -8), player.blockPosition().offset(8, 5, 8))) {
+		for (BlockPos pos : getPositionsInBox(player.getBoundingBox().inflate(8, 5, 8))) {
 			if (level.random.nextInt(128) == 0 && level.isEmptyBlock(pos)) {
 				PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 			}
@@ -502,13 +523,19 @@ public final class WorldHelper {
 	}
 
 	/**
+	 * Repels projectiles and mobs in the given AABB away from the center
+	 */
+	public static void repelEntitiesInterdiction(Level level, AABB effectBounds) {
+		repelEntitiesInterdiction(level, effectBounds, effectBounds.getCenter());
+	}
+
+	/**
 	 * Repels projectiles and mobs in the given AABB away from a given point
 	 */
-	public static void repelEntitiesInterdiction(Level level, AABB effectBounds, double x, double y, double z) {
-		Vec3 vec = new Vec3(x, y, z);
+	public static void repelEntitiesInterdiction(Level level, AABB effectBounds, Vec3 point) {
 		Predicate<Entity> repelPredicate = ProjectEConfig.server.effects.interdictionMode.get() ? INTERDICTION_REPEL_HOSTILE_PREDICATE : INTERDICTION_REPEL_PREDICATE;
 		for (Entity ent : level.getEntitiesOfClass(Entity.class, effectBounds, repelPredicate)) {
-			repelEntity(vec, ent);
+			repelEntity(point, ent);
 		}
 	}
 
@@ -532,10 +559,10 @@ public final class WorldHelper {
 	}
 
 	private static void repelEntity(Vec3 vec, Entity entity) {
-		Vec3 t = new Vec3(entity.getX(), entity.getY(), entity.getZ());
-		Vec3 r = new Vec3(t.x - vec.x, t.y - vec.y, t.z - vec.z);
-		double distance = vec.distanceTo(t) + 0.1;
-		entity.addDeltaMovement(r.scale(1 / 1.5 * 1 / distance));
+		Vec3 r = entity.position().subtract(vec);
+		double distance = vec.distanceTo(entity.position()) + 0.1;
+		//TODO - 1.20.4: Do we want to use Entity#push?
+		entity.addDeltaMovement(r.scale(1 / (1.5 * distance)));
 	}
 
 	@NotNull

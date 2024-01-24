@@ -98,7 +98,7 @@ public class PEShovel extends ShovelItem implements IItemCharge, IBarHelper {
 		return ToolHelper.performActions(ToolHelper.flattenAOE(context, state, 0),
 				() -> ToolHelper.dowseCampfire(context, state),
 				() -> {
-					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+					if (state.is(Tags.Blocks.GRAVEL) || state.is(Blocks.CLAY)) {
 						return ToolHelper.tryVeinMine(player, stack, pos, sideHit);
 					}
 					return InteractionResult.PASS;

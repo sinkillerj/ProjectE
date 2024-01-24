@@ -50,13 +50,10 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	@Override
 	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, level, entity, slot, held);
-		if (!level.isClientSide && entity instanceof Player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
-			AABB box = new AABB(entity.getX() - 3, entity.getY() - 3, entity.getZ() - 3,
-					entity.getX() + 3, entity.getY() + 3, entity.getZ() + 3);
-			WorldHelper.freezeInBoundingBox(level, box, (Player) entity, true);
+		if (!level.isClientSide && entity instanceof Player player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+			WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(3), player, true);
 		}
 	}
-
 
 	@NotNull
 	@Override
@@ -64,9 +61,8 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			int offset = 3 + this.getCharge(stack);
-			AABB box = player.getBoundingBox().inflate(offset);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-			WorldHelper.freezeInBoundingBox(level, box, player, false);
+			WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(offset), player, false);
 		}
 		return InteractionResultHolder.success(stack);
 	}

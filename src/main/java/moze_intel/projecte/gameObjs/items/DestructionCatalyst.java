@@ -41,11 +41,11 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 		int numRows = calculateDepthFromCharge(stack);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), --numRows))) {
-			if (level.isEmptyBlock(pos)) {
+		for (BlockPos pos : WorldHelper.getPositionsInBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), --numRows))) {
+			BlockState state = level.getBlockState(pos);
+			if (state.isAir()) {
 				continue;
 			}
-			BlockState state = level.getBlockState(pos);
 			float hardness = state.getDestroySpeed(level, pos);
 			if (hardness == -1.0F || hardness >= 50.0F) {
 				continue;

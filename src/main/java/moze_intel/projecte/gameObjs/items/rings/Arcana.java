@@ -76,7 +76,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 			switch (getMode(stack)) {
 				case 0 -> WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(5), player, true);
 				case 1 -> WorldHelper.igniteNearby(level, player);
-				case 2 -> WorldHelper.growNearbyRandomly(true, level, player.blockPosition(), player);
+				case 2 -> WorldHelper.growNearbyRandomly(true, level, player);
 				case 3 -> WorldHelper.repelEntitiesSWRG(level, player.getBoundingBox().inflate(5), player);
 			}
 		}
@@ -130,24 +130,20 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		}
 		if (getMode(stack) == 1) { // ignition
 			switch (player.getDirection()) {
-				case SOUTH, NORTH -> {
-					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-30, -5, -3), player.blockPosition().offset(30, 5, 3))) {
-						if (level.isEmptyBlock(pos)) {
-							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
-						}
-					}
-				}
-				case WEST, EAST -> {
-					for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-3, -5, -30), player.blockPosition().offset(3, 5, 30))) {
-						if (level.isEmptyBlock(pos)) {
-							PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
-						}
-					}
-				}
+				case SOUTH, NORTH -> igniteNear((ServerPlayer) player, 30, 5, 3);
+				case WEST, EAST -> igniteNear((ServerPlayer) player, 3, 5, 30);
 			}
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return true;
+	}
+
+	private void igniteNear(ServerPlayer player, int xOffset, int yOffset, int zOffset) {
+		for (BlockPos pos : WorldHelper.getPositionsInBox(player.getBoundingBox().inflate(xOffset, yOffset, zOffset))) {
+			if (player.level().isEmptyBlock(pos)) {
+				PlayerHelper.checkedPlaceBlock(player, pos.immutable(), Blocks.FIRE.defaultBlockState());
+			}
+		}
 	}
 
 	@Override

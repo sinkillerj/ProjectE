@@ -70,20 +70,18 @@ public class EntityHomingArrow extends Arrow {
 		}
 
 		if (tickCount > 3 && hasTarget() && !this.inGround) {
-			double mX = getDeltaMovement().x();
-			double mY = getDeltaMovement().y();
-			double mZ = getDeltaMovement().z();
+			Vec3 arrowMotion = getDeltaMovement();
+			double mX = arrowMotion.x();
+			double mY = arrowMotion.y();
+			double mZ = arrowMotion.z();
 			this.level().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			this.level().addParticle(ParticleTypes.FLAME, getX() + mX / 4.0D, getY() + mY / 4.0D, getZ() + mZ / 4.0D, -mX / 2, -mY / 2 + 0.2D, -mZ / 2);
 			Entity target = getTarget();
 
-			Vec3 arrowLoc = new Vec3(getX(), getY(), getZ());
 			Vec3 targetLoc = new Vec3(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
 
 			// Get the vector that points straight from the arrow to the target
-			Vec3 lookVec = targetLoc.subtract(arrowLoc);
-
-			Vec3 arrowMotion = new Vec3(mX, mY, mZ);
+			Vec3 lookVec = targetLoc.subtract(position());
 
 			// Find the angle between the direct vec and arrow vec, and then clamp it so it arcs a bit
 			double theta = wrap180Radian(angleBetween(arrowMotion, lookVec));

@@ -52,11 +52,11 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
 				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
 			} else {
-				WorldHelper.growNearbyRandomly(true, level, player.blockPosition(), player);
+				WorldHelper.growNearbyRandomly(true, level, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));
 			}
 		} else {
-			WorldHelper.growNearbyRandomly(false, level, player.blockPosition(), player);
+			WorldHelper.growNearbyRandomly(false, level, player);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 	private boolean useBoneMeal(Level level, BlockPos pos, Direction side) {
 		if (level instanceof ServerLevel serverLevel) {
 			boolean result = false;
-			for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-15, 0, -15), pos.offset(15, 0, 15))) {
+			for (BlockPos currentPos : WorldHelper.horizontalPositionsAround(pos, 15)) {
 				currentPos = currentPos.immutable();
 				BlockState state = serverLevel.getBlockState(currentPos);
 				if (state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(serverLevel, currentPos, state) &&
@@ -115,11 +115,11 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			return false;
 		}
 		boolean result = false;
-		for (BlockPos currentPos : BlockPos.betweenClosed(pos.offset(-8, 0, -8), pos.offset(8, 0, 8))) {
-			if (level.isEmptyBlock(currentPos)) {
+		for (BlockPos currentPos : WorldHelper.horizontalPositionsAround(pos, 8)) {
+			BlockState state = level.getBlockState(currentPos);
+			if (state.isAir()) {
 				continue;
 			}
-			BlockState state = level.getBlockState(currentPos);
 			//Ensure we are immutable so that changing blocks doesn't act weird
 			currentPos = currentPos.immutable();
 			for (int i = 0; i < seeds.size(); i++) {
@@ -171,7 +171,7 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 			@NotNull PEDESTAL pedestal) {
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.harvest.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
-				WorldHelper.growNearbyRandomly(true, level, pos, null);
+				WorldHelper.growNearbyRandomly(true, level, pedestal.getEffectBounds(), null);
 				pedestal.setActivityCooldown(ProjectEConfig.server.cooldown.pedestal.harvest.get());
 			} else {
 				pedestal.decrementActivityCooldown();

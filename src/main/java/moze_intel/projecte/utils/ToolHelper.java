@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +57,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -66,10 +66,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
@@ -132,13 +131,11 @@ public class ToolHelper {
 		if (charge == 0) {
 			return InteractionResult.PASS;
 		}
-		int scaled1 = 5 * charge;
-		int scaled2 = 10 * charge;
-		BlockPos corner1 = player.blockPosition().offset(-scaled1, -scaled2, -scaled1);
-		BlockPos corner2 = player.blockPosition().offset(scaled1, scaled2, scaled1);
+		int horizontalRadius = 5 * charge;
+		int verticalRadius = 2 * horizontalRadius;
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(corner1, corner2)) {
+		for (BlockPos pos : WorldHelper.getPositionsInBox(player.getBoundingBox().inflate(horizontalRadius, verticalRadius, horizontalRadius))) {
 			BlockState state = level.getBlockState(pos);
 			if (state.is(tag)) {
 				if (level.isClientSide) {
@@ -177,7 +174,7 @@ public class ToolHelper {
 			Level level = context.getLevel();
 			BlockPos pos = context.getClickedPos();
 			if (!level.isClientSide()) {
-				level.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
+				level.levelEvent(LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
 			}
 			CampfireBlock.dowse(player, level, pos, state);
 			if (!level.isClientSide()) {
@@ -250,7 +247,7 @@ public class ToolHelper {
 		level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
 		level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
 		if (particle != -1) {
-			level.levelEvent(null, particle, pos, 0);
+			level.levelEvent(particle, pos, 0);
 		}
 		ItemStack stack = context.getItemInHand();
 		int charge = getCharge(stack);
@@ -282,7 +279,7 @@ public class ToolHelper {
 						// told that we are allowed to use our item.
 						level.setBlock(newPos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
 						if (particle != -1) {
-							level.levelEvent(null, particle, newPos, 0);
+							level.levelEvent(particle, newPos, 0);
 						}
 					} else {
 						//If we failed to consume EMC but needed EMC just break out early as we won't have the required EMC for any of the future blocks
@@ -307,36 +304,15 @@ public class ToolHelper {
 			//Standard
 			return;
 		}
-		HitResult mop = tracePointer.rayTrace(level, player, ClipContext.Fluid.NONE);
-		if (!(mop instanceof BlockHitResult result) || result.getType() == Type.MISS || !pos.equals(result.getBlockPos())) {
+		BlockHitResult result = tracePointer.rayTrace(level, player, ClipContext.Fluid.NONE);
+		if (result.getType() == Type.MISS || !pos.equals(result.getBlockPos())) {
 			//Ensure that the ray trace agrees with the position we were told about
 			return;
 		}
-		Direction sideHit = result.getDirection();
-		AABB box = switch (mode) {
-			//3x Tallshot
-			case 1 -> AABB.encapsulatingFullBlocks(pos.below(), pos.above());
-			//3x Wideshot
-			case 2 -> switch (sideHit.getAxis()) {
-				case X -> AABB.encapsulatingFullBlocks(pos.south(), pos.north());
-				case Y -> switch (player.getDirection().getAxis()) {
-					case X -> AABB.encapsulatingFullBlocks(pos.south(), pos.north());
-					case Z -> AABB.encapsulatingFullBlocks(pos.west(), pos.east());
-					default -> new AABB(pos);
-				};
-				case Z -> AABB.encapsulatingFullBlocks(pos.west(), pos.east());
-			};
-			//3x Longshot
-			case 3 -> AABB.encapsulatingFullBlocks(pos, pos.relative(sideHit.getOpposite(), 2));
-			default -> new AABB(pos);
-		};
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos digPos : WorldHelper.getPositionsFromBox(box)) {
-			if (level.isEmptyBlock(digPos)) {
-				continue;
-			}
+		for (BlockPos digPos : getTargets(pos, player, result.getDirection(), mode)) {
 			BlockState state = level.getBlockState(digPos);
-			if (state.getDestroySpeed(level, digPos) != -1 && stack.isCorrectToolForDrops(state)) {
+			if (!state.isAir() && state.getDestroySpeed(level, digPos) != -1 && stack.isCorrectToolForDrops(state)) {
 				//Ensure we are immutable so that changing blocks doesn't act weird
 				digPos = digPos.immutable();
 				if (PlayerHelper.hasBreakPermission((ServerPlayer) player, digPos)) {
@@ -346,6 +322,22 @@ public class ToolHelper {
 			}
 		}
 		WorldHelper.createLootDrop(drops, level, pos);
+	}
+
+	private static Iterable<BlockPos> getTargets(BlockPos pos, Player player, Direction sideHit, byte mode) {
+		return switch (mode) {
+			//3x Tallshot
+			case 1 -> BlockPos.betweenClosed(pos.below(), pos.above());
+			//3x Wideshot (if the axis is vertical then try to use the player's facing direction to determine which direction to break
+			case 2 -> switch (sideHit.getAxis() == Axis.Y ? player.getDirection().getAxis() : sideHit.getAxis()) {
+				case X -> BlockPos.betweenClosed(pos.south(), pos.north());
+				case Z -> BlockPos.betweenClosed(pos.west(), pos.east());
+				default -> Collections.singleton(pos);
+			};
+			//3x Longshot
+			case 3 -> BlockPos.betweenClosed(pos, pos.relative(sideHit.getOpposite(), 2));
+			default -> Collections.singleton(pos);
+		};
 	}
 
 	/**
@@ -362,12 +354,9 @@ public class ToolHelper {
 		AABB box = affectDepth ? WorldHelper.getBroadDeepBox(pos, sideHit, charge) : WorldHelper.getFlatYBox(pos, charge);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos newPos : WorldHelper.getPositionsFromBox(box)) {
-			if (level.isEmptyBlock(newPos)) {
-				continue;
-			}
+		for (BlockPos newPos : WorldHelper.getPositionsInBox(box)) {
 			BlockState state = level.getBlockState(newPos);
-			if (state.getDestroySpeed(level, newPos) != -1 && stack.isCorrectToolForDrops(state)) {
+			if (!state.isAir() && state.getDestroySpeed(level, newPos) != -1 && stack.isCorrectToolForDrops(state)) {
 				if (level.isClientSide) {
 					return InteractionResult.SUCCESS;
 				}
@@ -537,17 +526,15 @@ public class ToolHelper {
 		}
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos newPos : WorldHelper.getPositionsFromBox(WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack)))) {
-			if (!level.isEmptyBlock(newPos)) {
-				BlockState state = level.getBlockState(newPos);
-				if (target.getBlock() == state.getBlock()) {
-					if (level.isClientSide) {
-						return InteractionResult.SUCCESS;
-					}
-					//Ensure we are immutable so that changing blocks doesn't act weird
-					if (WorldHelper.harvestVein(level, player, stack, newPos.immutable(), state.getBlock(), drops, 0) > 0) {
-						hasAction = true;
-					}
+		for (BlockPos newPos : WorldHelper.getPositionsInBox(WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack)))) {
+			BlockState state = level.getBlockState(newPos);
+			if (target.getBlock() == state.getBlock()) {
+				if (level.isClientSide) {
+					return InteractionResult.SUCCESS;
+				}
+				//Ensure we are immutable so that changing blocks doesn't act weird
+				if (WorldHelper.harvestVein(level, player, stack, newPos.immutable(), state.getBlock(), drops, 0) > 0) {
+					hasAction = true;
 				}
 			}
 		}
@@ -570,10 +557,8 @@ public class ToolHelper {
 		ItemStack stack = player.getItemInHand(hand);
 		boolean hasAction = false;
 		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(player.getBoundingBox().inflate(getCharge(stack) + 3))) {
-			if (level.isEmptyBlock(pos)) {
-				continue;
-			}
+		AABB bounds = player.getBoundingBox().inflate(getCharge(stack) + 3);
+		for (BlockPos pos : WorldHelper.getPositionsInBox(bounds)) {
 			BlockState state = level.getBlockState(pos);
 			if (ItemHelper.isOre(state) && state.getDestroySpeed(level, pos) != -1 && stack.isCorrectToolForDrops(state)) {
 				if (level.isClientSide) {
@@ -628,7 +613,7 @@ public class ToolHelper {
 
 		@Override
 		public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
-			return BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
+			return WorldHelper.horizontalPositionsAround(pos, radius);
 		}
 	}
 
@@ -681,7 +666,7 @@ public class ToolHelper {
 
 		@Override
 		public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
-			return WorldHelper.getPositionsFromBox(WorldHelper.getBroadBox(pos, side, radius));
+			return WorldHelper.getPositionsInBox(WorldHelper.getBroadBox(pos, side, radius));
 		}
 
 		@Nullable
@@ -693,7 +678,7 @@ public class ToolHelper {
 	@FunctionalInterface
 	public interface RayTracePointer {
 
-		HitResult rayTrace(Level level, Player player, Fluid fluidMode);
+		BlockHitResult rayTrace(Level level, Player player, ClipContext.Fluid fluidMode);
 	}
 
 	public static class ChargeAttributeCache {

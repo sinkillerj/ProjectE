@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
@@ -14,6 +13,7 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
@@ -129,36 +129,31 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			//Targeted block has no transmutations, no positions
 			return Collections.emptyMap();
 		}
-		Stream<BlockPos> stream = null;
-		switch (mode) {
+		Iterable<BlockPos> targets = switch (mode) {
 			// Cube
-			case 0 -> stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, -charge), pos.offset(charge, charge, charge));
-			case 1 -> {// Panel
-				if (sideHit == Direction.UP || sideHit == Direction.DOWN) {
-					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, -charge), pos.offset(charge, 0, charge));
-				} else if (sideHit == Direction.EAST || sideHit == Direction.WEST) {
-					stream = BlockPos.betweenClosedStream(pos.offset(0, -charge, -charge), pos.offset(0, charge, charge));
-				} else if (sideHit == Direction.SOUTH || sideHit == Direction.NORTH) {
-					stream = BlockPos.betweenClosedStream(pos.offset(-charge, -charge, 0), pos.offset(charge, charge, 0));
-				}
-			}
-			case 2 -> {// Line
-				Direction playerFacing = player.getDirection();
-				if (playerFacing.getAxis() == Direction.Axis.Z) {
-					stream = BlockPos.betweenClosedStream(pos.offset(0, 0, -charge), pos.offset(0, 0, charge));
-				} else if (playerFacing.getAxis() == Direction.Axis.X) {
-					stream = BlockPos.betweenClosedStream(pos.offset(-charge, 0, 0), pos.offset(charge, 0, 0));
-				}
-			}
-		}
-		if (stream == null) {
+			case 0 -> WorldHelper.positionsAround(pos, charge);
+			// Panel
+			case 1 -> switch (sideHit.getAxis()) {
+				case X -> WorldHelper.positionsAround(pos, 0, charge, charge);
+				case Y -> WorldHelper.horizontalPositionsAround(pos, charge);
+				case Z -> WorldHelper.positionsAround(pos, charge, charge, 0);
+			};
+			// Line
+			case 2 -> switch (player.getDirection().getAxis()) {
+				case X -> WorldHelper.positionsAround(pos, charge, 0, 0);
+				case Y -> null;
+				case Z -> WorldHelper.positionsAround(pos, 0, 0, charge);
+			};
+			default -> null;
+		};
+		if (targets == null) {
 			return Collections.emptyMap();
 		}
 		Map<BlockState, BlockState> conversions = new Object2ObjectArrayMap<>();
 		conversions.put(targeted, result);
 		Map<BlockPos, BlockState> changes = new HashMap<>();
 		Block targetBlock = targeted.getBlock();
-		stream.forEach(currentPos -> {
+		for (BlockPos currentPos : targets) {
 			BlockState state = level.getBlockState(currentPos);
 			if (state.is(targetBlock)) {
 				BlockState actualResult;
@@ -173,7 +168,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 					changes.put(currentPos.immutable(), actualResult);
 				}
 			}
-		});
+		}
 		return changes;
 	}
 

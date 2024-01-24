@@ -229,6 +229,7 @@ public class PECore {
 				@NotNull
 				@Override
 				public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+					//TODO - 1.20.4: Validate these dispense behaviors
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
 					Level level = source.level();
@@ -239,11 +240,12 @@ public class PECore {
 						fluidHandler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 						return stack;
 					}
+					//TODO - 1.20.4: I believe the cauldron based state checks can be handled by neo exposing a capability for cauldrons now?
 					BlockState state = level.getBlockState(pos);
-					if (state.getBlock() == Blocks.CAULDRON) {
+					if (state.is(Blocks.CAULDRON)) {
 						level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
 						return stack;
-					} else if (state.getBlock() == Blocks.WATER_CAULDRON) {
+					} else if (state.is(Blocks.WATER_CAULDRON)) {
 						if (!((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
 							level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
 							return stack;

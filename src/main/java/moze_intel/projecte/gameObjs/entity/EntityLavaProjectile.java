@@ -42,9 +42,8 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	public void tick() {
 		super.tick();
 		if (!level().isClientSide && isAlive()) {
-			Entity thrower = getOwner();
-			if (thrower instanceof ServerPlayer player) {
-				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
+			if (getOwner() instanceof ServerPlayer player) {
+				for (BlockPos pos : WorldHelper.positionsAround(blockPosition(), 3)) {
 					if (level().isLoaded(pos)) {
 						BlockState state = level().getBlockState(pos);
 						if (state.getFluidState().is(FluidTags.WATER)) {
@@ -56,9 +55,9 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 							}
 						}
 					}
-				});
+				}
 			}
-			if (getY() > 128) {
+			if (getY() > level().getMaxBuildHeight()) {
 				LevelData worldInfo = level().getLevelData();
 				worldInfo.setRaining(false);
 				discard();

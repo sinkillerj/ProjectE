@@ -94,7 +94,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 		return ToolHelper.performActions(ToolHelper.flattenAOE(context, state, 0),
 				() -> ToolHelper.dowseCampfire(context, state),
 				() -> {
-					if (state.is(Tags.Blocks.GRAVEL) || state.getBlock() == Blocks.CLAY) {
+					if (state.is(Tags.Blocks.GRAVEL) || state.is(Blocks.CLAY)) {
 						if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 							return ToolHelper.digAOE(level, player, hand, stack, pos, sideHit, false, 0);
 						}

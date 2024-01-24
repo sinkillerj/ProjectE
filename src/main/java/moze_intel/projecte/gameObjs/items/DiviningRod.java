@@ -55,11 +55,11 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
 		NonNullLazy<List<RecipeHolder<SmeltingRecipe>>> furnaceRecipes = NonNullLazy.of(() -> level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING));
-		for (BlockPos digPos : WorldHelper.getPositionsFromBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
-			if (level.isEmptyBlock(digPos)) {
+		for (BlockPos digPos : WorldHelper.getPositionsInBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
+			BlockState state = level.getBlockState(digPos);
+			if (state.isAir()) {
 				continue;
 			}
-			BlockState state = level.getBlockState(digPos);
 			List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, digPos, WorldHelper.getBlockEntity(level, digPos), player, ctx.getItemInHand());
 			if (drops.isEmpty()) {
 				continue;
@@ -94,22 +94,18 @@ public class DiviningRod extends ItemPE implements IItemMode {
 		}
 		player.sendSystemMessage(PELang.DIVINING_AVG_EMC.translate(numBlocks, totalEmc / numBlocks));
 		if (this == PEItems.MEDIUM_DIVINING_ROD.get() || this == PEItems.HIGH_DIVINING_ROD.get()) {
-			long[] maxValues = new long[3];
-			for (int i = 0; i < 3; i++) {
-				maxValues[i] = 1;
-			}
 			emcValues.sort(LongComparators.OPPOSITE_COMPARATOR);
-			int num = Math.min(emcValues.size(), 3);
-			for (int i = 0; i < num; i++) {
-				maxValues[i] = emcValues.getLong(i);
-			}
-			player.sendSystemMessage(PELang.DIVINING_MAX_EMC.translate(maxValues[0]));
+			player.sendSystemMessage(PELang.DIVINING_SECOND_MAX.translate(getOrDefault(emcValues, 0)));
 			if (this == PEItems.HIGH_DIVINING_ROD.get()) {
-				player.sendSystemMessage(PELang.DIVINING_SECOND_MAX.translate(maxValues[1]));
-				player.sendSystemMessage(PELang.DIVINING_THIRD_MAX.translate(maxValues[2]));
+				player.sendSystemMessage(PELang.DIVINING_SECOND_MAX.translate(getOrDefault(emcValues, 1)));
+				player.sendSystemMessage(PELang.DIVINING_THIRD_MAX.translate(getOrDefault(emcValues, 2)));
 			}
 		}
 		return InteractionResult.CONSUME;
+	}
+
+	private static long getOrDefault(LongList emcValues, int index) {
+		return index < emcValues.size() ? emcValues.getLong(index) : 1;
 	}
 
 	private int getDepthFromMode(ItemStack stack) {

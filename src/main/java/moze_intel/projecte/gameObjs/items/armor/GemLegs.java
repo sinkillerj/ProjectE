@@ -13,7 +13,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
@@ -55,16 +54,13 @@ public class GemLegs extends GemArmorBase {
 			}
 		}
 		if (player.isSecondaryUseActive()) {
-			AABB box = new AABB(player.getX() - 3.5, player.getY() - 3.5, player.getZ() - 3.5,
-					player.getX() + 3.5, player.getY() + 3.5, player.getZ() + 3.5);
-			WorldHelper.repelEntitiesSWRG(level, box, player);
+			WorldHelper.repelEntitiesSWRG(level, player.getBoundingBox().inflate(3.5), player);
 			if (!level.isClientSide && player.getDeltaMovement().y() < -0.08) {
-				List<Entity> entities = player.level().getEntities(player, player.getBoundingBox().move(player.getDeltaMovement()).inflate(2.0D),
-						entity -> entity instanceof LivingEntity);
-				for (Entity e : entities) {
-					if (e.isPickable()) {
-						e.hurt(level.damageSources().playerAttack(player), (float) -player.getDeltaMovement().y() * 6F);
-					}
+				for (Entity e : player.level().getEntities(player,
+						player.getBoundingBox().move(player.getDeltaMovement()).inflate(2.0D),
+						entity -> entity.isAlive() && entity.isPickable() && entity instanceof LivingEntity
+				)) {
+					e.hurt(level.damageSources().playerAttack(player), (float) -player.getDeltaMovement().y() * 6F);
 				}
 			}
 		}

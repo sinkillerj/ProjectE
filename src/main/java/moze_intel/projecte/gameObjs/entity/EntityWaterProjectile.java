@@ -5,8 +5,6 @@ import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
@@ -47,9 +45,8 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 	public void tick() {
 		super.tick();
 		if (!this.level().isClientSide && isAlive()) {
-			Entity thrower = getOwner();
-			if (thrower instanceof ServerPlayer player) {
-				BlockPos.betweenClosedStream(blockPosition().offset(-3, -3, -3), blockPosition().offset(3, 3, 3)).forEach(pos -> {
+			if (getOwner() instanceof ServerPlayer player) {
+				for (BlockPos pos : WorldHelper.positionsAround(blockPosition(), 3)) {
 					BlockState state = level().getBlockState(pos);
 					FluidState fluidState = state.getFluidState();
 					if (fluidState.is(FluidTags.LAVA)) {
@@ -68,12 +65,12 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 						}
 						playSound(SoundEvents.GENERIC_BURN, 0.5F, 2.6F + (level().random.nextFloat() - level().random.nextFloat()) * 0.8F);
 					}
-				});
+				}
 			}
 			if (isInWater()) {
 				discard();
 			}
-			if (getY() > 128) {
+			if (getY() > level().getMaxBuildHeight()) {
 				LevelData worldInfo = this.level().getLevelData();
 				worldInfo.setRaining(true);
 				discard();
@@ -98,7 +95,7 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level().isClientSide && getOwner() instanceof Player player) {
+		if (!level().isClientSide) {
 			Entity ent = result.getEntity();
 			if (ent.isOnFire()) {
 				ent.clearFire();

@@ -67,7 +67,7 @@ public class PEBlocks {
 
 	private static BlockRegistryObject<Block, ItemFuelBlock> registerFuelBlock(String name, EnumFuelType fuelType, MapColor mapColor) {
 		return BLOCKS.registerDefaultProperties(name, () -> new Block(BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASEDRUM)
-				.requiresCorrectToolForDrops() .strength(0.5F, 1.5F)),
+				.requiresCorrectToolForDrops().strength(0.5F, 1.5F)),
 				(block, properties) -> new ItemFuelBlock(block, properties, fuelType));
 	}
 
