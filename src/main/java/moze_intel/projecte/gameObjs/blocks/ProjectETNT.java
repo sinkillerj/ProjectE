@@ -49,7 +49,7 @@ public class ProjectETNT extends TntBlock {
 	}
 
 	public DispenseItemBehavior createDispenseItemBehavior() {
-		//Based off vanilla's TNT behavior
+		//[VanillaCopy] Based off vanilla's TNT behavior
 		return new DefaultDispenseItemBehavior() {
 			@NotNull
 			@Override

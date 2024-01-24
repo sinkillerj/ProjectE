@@ -44,6 +44,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.GrassBlock;
@@ -565,6 +567,10 @@ public final class WorldHelper {
 		entity.addDeltaMovement(r.scale(1 / (1.5 * distance)));
 	}
 
+	public static boolean canLight(BlockState state) {
+		return CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state);
+	}
+
 	@NotNull
 	public static InteractionResult igniteBlock(UseOnContext ctx) {
 		Player player = ctx.getPlayer();
@@ -580,7 +586,7 @@ public final class WorldHelper {
 				level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
 				level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 			}
-		} else if (CampfireBlock.canLight(state)) {
+		} else if (canLight(state)) {
 			if (!level.isClientSide && PlayerHelper.hasBreakPermission((ServerPlayer) player, pos)) {
 				level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
 				level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.POWER.get(), SoundSource.PLAYERS, 1.0F, 1.0F);

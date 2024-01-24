@@ -15,7 +15,6 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
 import moze_intel.projecte.gameObjs.registries.PEArgumentTypes;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
@@ -52,7 +51,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -63,16 +61,12 @@ import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -197,7 +191,7 @@ public class PECore {
 				@NotNull
 				@Override
 				protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-					//Based off the flint and steel dispense behavior
+					//[VanillaCopy] Based off the flint and steel dispense behavior
 					if (stack.getItem() instanceof Arcana item) {
 						if (item.getMode(stack) != 1) {
 							//Only allow using the arcana ring to ignite things when on ignition mode
@@ -212,7 +206,7 @@ public class PECore {
 					BlockState state = level.getBlockState(pos);
 					if (BaseFireBlock.canBePlacedAt(level, pos, direction)) {
 						level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
-					} else if (CampfireBlock.canLight(state)) {
+					} else if (WorldHelper.canLight(state)) {
 						level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
 					} else if (state.isFlammable(level, pos, direction.getOpposite())) {
 						state.onCaughtFire(level, pos, direction.getOpposite(), null);
@@ -229,7 +223,6 @@ public class PECore {
 				@NotNull
 				@Override
 				public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-					//TODO - 1.20.4: Validate these dispense behaviors
 					//Based off of vanilla's bucket dispense behaviors
 					// Note: We only do evertide, not volcanite, as placing lava requires EMC
 					Level level = source.level();
@@ -240,45 +233,10 @@ public class PECore {
 						fluidHandler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 						return stack;
 					}
-					//TODO - 1.20.4: I believe the cauldron based state checks can be handled by neo exposing a capability for cauldrons now?
-					BlockState state = level.getBlockState(pos);
-					if (state.is(Blocks.CAULDRON)) {
-						level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
-						return stack;
-					} else if (state.is(Blocks.WATER_CAULDRON)) {
-						if (!((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
-							level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
-							return stack;
-						}
-					} else {
-						WorldHelper.placeFluid(null, level, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
-						level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-						return stack;
-					}
-					return super.execute(source, stack);
+					WorldHelper.placeFluid(null, level, pos, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+					level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+					return stack;
 				}
-			});
-			CauldronInteraction.EMPTY.map().put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
-				//Raise the fill level
-				if (!level.isClientSide) {
-					level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
-				}
-				return InteractionResult.sidedSuccess(level.isClientSide);
-			});
-			CauldronInteraction.WATER.map().put(PEItems.EVERTIDE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
-				if (((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
-					return InteractionResult.PASS;
-				} else if (!level.isClientSide) {
-					//Raise the fill level
-					level.setBlockAndUpdate(pos, state.setValue(LayeredCauldronBlock.LEVEL, state.getValue(LayeredCauldronBlock.LEVEL) + 1));
-				}
-				return InteractionResult.sidedSuccess(level.isClientSide);
-			});
-			CauldronInteraction.EMPTY.map().put(PEItems.VOLCANITE_AMULET.get(), (state, level, pos, player, hand, stack) -> {
-				if (!level.isClientSide && ItemPE.consumeFuel(player, stack, 32, true)) {
-					level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
-				}
-				return InteractionResult.sidedSuccess(level.isClientSide);
 			});
 		});
 	}
