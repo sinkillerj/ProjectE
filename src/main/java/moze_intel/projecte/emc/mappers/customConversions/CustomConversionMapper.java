@@ -16,6 +16,7 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.impl.codec.PECodecHelper;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.Resource;
@@ -23,6 +24,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 @EMCMapper
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
+
+	private static final FileToIdConverter CONVERSION_LISTER = FileToIdConverter.json("pe_custom_conversions");
 
 	@Override
 	public String getName() {
@@ -46,14 +49,9 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	private static Map<ResourceLocation, CustomConversionFile> load(ResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> loading = new HashMap<>();
 
-		String folder = "pe_custom_conversions";
-		String extension = ".json";
-		int folderLength = folder.length();
-		int extensionLength = extension.length();
-
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		resourceManager.listResourceStacks(folder, n -> n.getPath().endsWith(extension)).forEach((file /*<domain>:foo/bar*/, resources) -> {
-			ResourceLocation conversionId = file.withPath(path -> path.substring(folderLength + 1, path.length() - extensionLength));
+		CONVERSION_LISTER.listMatchingResourceStacks(resourceManager).forEach((file /*<domain>:foo/bar*/, resources) -> {
+			ResourceLocation conversionId = CONVERSION_LISTER.fileToId(file);
 
 			PECore.LOGGER.info("Considering file {}, ID {}", file, conversionId);
 			NSSFake.setCurrentNamespace(conversionId.toString());
