@@ -71,6 +71,7 @@ import net.neoforged.neoforge.common.IPlantable;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -493,13 +494,13 @@ public class ToolHelper {
 				if (e != null) {
 					e.setPos(ent.getX(), ent.getY(), ent.getZ());
 					if (e instanceof Mob mob) {
-						mob.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(entityPosition), MobSpawnType.EVENT, null, null);
+						EventHooks.onFinalizeSpawn(mob, (ServerLevel) level, level.getCurrentDifficultyAt(entityPosition), MobSpawnType.EVENT, null, null);
 					}
 					if (e instanceof Sheep sheep) {
-						sheep.setColor(DyeColor.byId(MathUtils.randomIntInRange(0, 15)));
+						sheep.setColor(DyeColor.byId(level.random.nextInt(16)));
 					}
 					if (e instanceof AgeableMob mob) {
-						mob.setAge(-24000);
+						mob.setAge(AgeableMob.BABY_START_AGE);
 					}
 					level.addFreshEntity(e);
 				}

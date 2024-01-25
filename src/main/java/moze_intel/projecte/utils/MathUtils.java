@@ -1,7 +1,6 @@
 package moze_intel.projecte.utils;
 
 import java.math.BigInteger;
-import java.util.Random;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
 
@@ -10,19 +9,6 @@ import net.minecraft.network.chat.Component;
  * alphabetically ordered. Thanks!
  */
 public final class MathUtils {
-
-	public static int parseInteger(String string) {
-		try {
-			return Integer.parseInt(string);
-		} catch (NumberFormatException e) {
-			return -1;
-		}
-	}
-
-	public static int randomIntInRange(int min, int max) {
-		Random rand = new Random();
-		return rand.nextInt(max - min + 1) + min;
-	}
 
 	/**
 	 * Scales this proportion into redstone, where 0 means none, 15 means full, and the rest are an appropriate scaling.
