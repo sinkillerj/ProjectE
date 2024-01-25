@@ -6,7 +6,6 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -42,7 +41,7 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	public void tick() {
 		super.tick();
 		if (!level().isClientSide && isAlive()) {
-			if (getOwner() instanceof ServerPlayer player) {
+			if (getOwner() instanceof Player player) {
 				for (BlockPos pos : WorldHelper.positionsAround(blockPosition(), 3)) {
 					if (level().isLoaded(pos)) {
 						BlockState state = level().getBlockState(pos);
@@ -74,7 +73,7 @@ public class EntityLavaProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, PEItems.VOLCANITE_AMULET.get());
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				WorldHelper.placeFluid(player, level(), result.getBlockPos(), result.getDirection(), Fluids.LAVA, false);

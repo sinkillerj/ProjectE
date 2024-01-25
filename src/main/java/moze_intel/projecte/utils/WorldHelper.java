@@ -1,8 +1,13 @@
 package moze_intel.projecte.utils;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
@@ -10,6 +15,7 @@ import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -32,8 +38,10 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -63,6 +71,7 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -72,6 +81,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.IPlantable;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -192,7 +202,7 @@ public final class WorldHelper {
 	 * Attempts to place a fluid in a specific spot if the spot is a {@link LiquidBlockContainer} that supports the fluid otherwise try to place it in the block that is
 	 * on the given side of the clicked block.
 	 */
-	public static void placeFluid(@Nullable ServerPlayer player, Level level, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
+	public static void placeFluid(@Nullable Player player, Level level, BlockPos pos, Direction sideHit, FlowingFluid fluid, boolean checkWaterVaporize) {
 		if (isLiquidContainerForFluid(player, level, pos, level.getBlockState(pos), fluid)) {
 			//If the spot can be logged with our fluid then try using the position directly
 			placeFluid(player, level, pos, fluid, checkWaterVaporize);
@@ -207,7 +217,7 @@ public final class WorldHelper {
 	 *
 	 * @apiNote Call this from the server side
 	 */
-	public static void placeFluid(@Nullable ServerPlayer player, Level level, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
+	public static void placeFluid(@Nullable Player player, Level level, BlockPos pos, FlowingFluid fluid, boolean checkWaterVaporize) {
 		BlockState blockState = level.getBlockState(pos);
 		if (checkWaterVaporize && level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
 			level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
@@ -478,26 +488,47 @@ public final class WorldHelper {
 				.orElse(fallback);
 	}
 
-	/**
-	 * Recursively mines out a vein of the given Block, starting from the provided coordinates
-	 */
-	public static int harvestVein(Level level, Player player, ItemStack stack, BlockPos pos, Block target, List<ItemStack> currentDrops, int numMined) {
-		if (numMined >= Constants.MAX_VEIN_SIZE) {
-			return numMined;
+	//TODO - 1.20.4: Test this
+	public static int harvestVein(Level level, Player player, ItemStack stack, AABB area, List<ItemStack> currentDrops, Predicate<BlockState> stateChecker) {
+		record TargetInfo(BlockPos pos, BlockState state) {
 		}
-		//TODO - 1.20.4: Make this more like mek where it isn't recursive
-		for (BlockPos currentPos : positionsAround(pos, 1)) {
-			BlockState currentState = level.getBlockState(currentPos);
-			if (currentState.getBlock() == target) {
-				//Ensure we are immutable so that changing blocks doesn't act weird
-				currentPos = currentPos.immutable();
-				if (PlayerHelper.hasBreakPermission((ServerPlayer) player, currentPos)) {
-					numMined++;
-					currentDrops.addAll(Block.getDrops(currentState, (ServerLevel) level, currentPos, getBlockEntity(level, currentPos), player, stack));
-					level.removeBlock(currentPos, false);
-					numMined = harvestVein(level, player, stack, currentPos, target, currentDrops, numMined);
-					if (numMined >= Constants.MAX_VEIN_SIZE) {
-						break;
+		int numMined = 0;
+		Set<BlockPos> traversed = new HashSet<>();
+		Queue<TargetInfo> frontier = new ArrayDeque<>();
+		TriPredicate<BlockState, BlockPos, Player> validState = getVeinStateChecker(stateChecker, level.isClientSide);
+
+		for (BlockPos pos : WorldHelper.getPositionsInBox(area)) {
+			BlockState state = level.getBlockState(pos);
+			if (validState.test(state, pos, player)) {
+				if (level.isClientSide) {
+					return 1;
+				}
+				pos = pos.immutable();
+				frontier.add(new TargetInfo(pos, state));
+			}
+			//Regardless of if it is valid or not mark it as  having been traversed
+			traversed.add(pos.immutable());
+		}
+
+		while (!frontier.isEmpty()) {
+			TargetInfo targetInfo = frontier.poll();
+			BlockPos pos = targetInfo.pos();
+			BlockState state = targetInfo.state();
+			BlockEntity blockEntity = state.hasBlockEntity() ? getBlockEntity(level, pos) : null;
+			//TODO - 1.20.4: Decide if we want to call onDestroyedByPlayer etc??
+			currentDrops.addAll(Block.getDrops(state, (ServerLevel) level, pos, blockEntity, player, stack));
+			level.removeBlock(pos, false);
+			if (++numMined >= Constants.MAX_VEIN_SIZE) {
+				break;
+			}
+
+			for (BlockPos nextPos : positionsAround(pos, 1)) {
+				//Ensure the position is immutable before we add it to what positions we have traversed
+				nextPos = nextPos.immutable();
+				if (traversed.add(nextPos) && isBlockLoaded(level, nextPos)) {
+					BlockState nextState = level.getBlockState(nextPos);
+					if (validState.test(nextState, nextPos, player)) {
+						frontier.add(new TargetInfo(nextPos, nextState));
 					}
 				}
 			}
@@ -505,10 +536,21 @@ public final class WorldHelper {
 		return numMined;
 	}
 
+	@Nonnull
+	private static TriPredicate<BlockState, BlockPos, Player> getVeinStateChecker(Predicate<BlockState> stateChecker, boolean isClientSide) {
+		//Ensure the block can be destroyed and the player can target the block at that position
+		TriPredicate<BlockState, BlockPos, Player> validState = (state, pos, player) -> stateChecker.test(state) && state.getDestroySpeed(player.level(), pos) != -1 && PlayerHelper.hasEditPermission(player, pos);
+		if (!isClientSide) {
+			//If we are server side we want to perform an extra check to determine if the player can break the block
+			return validState.and((state, pos, player) -> PlayerHelper.checkBreakPermission((ServerPlayer) player, pos));
+		}
+		return validState;
+	}
+
 	public static void igniteNearby(Level level, Player player) {
 		for (BlockPos pos : getPositionsInBox(player.getBoundingBox().inflate(8, 5, 8))) {
 			if (level.random.nextInt(128) == 0 && level.isEmptyBlock(pos)) {
-				PlayerHelper.checkedPlaceBlock((ServerPlayer) player, pos.immutable(), Blocks.FIRE.defaultBlockState());
+				PlayerHelper.checkedPlaceBlock(player, pos.immutable(), Blocks.FIRE.defaultBlockState());
 			}
 		}
 	}
@@ -607,6 +649,47 @@ public final class WorldHelper {
 	}
 
 	/**
+	 * Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
+	 *
+	 * @param world world
+	 * @param pos   position
+	 *
+	 * @see #isBlockLoaded(BlockGetter, BlockPos)
+	 */
+	@Contract("null, _ -> false")
+	public static boolean isChunkLoaded(@Nullable LevelReader world, @NotNull BlockPos pos) {
+		return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+	}
+
+	/**
+	 * Checks if the chunk at the given position is loaded.
+	 *
+	 * @param world    world
+	 * @param chunkPos Chunk position
+	 */
+	@Contract("null, _ -> false")
+	public static boolean isChunkLoaded(@Nullable LevelReader world, ChunkPos chunkPos) {
+		return isChunkLoaded(world, chunkPos.x, chunkPos.z);
+	}
+
+	/**
+	 * Checks if the chunk at the given position is loaded.
+	 *
+	 * @param world  world
+	 * @param chunkX Chunk X coordinate
+	 * @param chunkZ Chunk Z coordinate
+	 */
+	@Contract("null, _, _ -> false")
+	public static boolean isChunkLoaded(@Nullable LevelReader world, int chunkX, int chunkZ) {
+		if (world == null) {
+			return false;
+		} else if (world instanceof LevelAccessor accessor) {
+			return accessor.hasChunk(chunkX, chunkZ);
+		}
+		return world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false) != null;
+	}
+
+	/**
 	 * Checks if a position is in bounds of the world, and is loaded
 	 *
 	 * @param world world
@@ -623,7 +706,9 @@ public final class WorldHelper {
 			if (reader instanceof Level level && !level.isInWorldBounds(pos)) {
 				return false;
 			}
-			return reader.hasChunkAt(pos);
+			//TODO: If any cases come up where things are behaving oddly due to the change from reader.hasChunkAt(pos)
+			// re-evaluate this and if the specific case is being handled properly
+			return isChunkLoaded(reader, pos);
 		}
 		return true;
 	}

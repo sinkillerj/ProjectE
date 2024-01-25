@@ -5,7 +5,6 @@ import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +44,7 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 	public void tick() {
 		super.tick();
 		if (!this.level().isClientSide && isAlive()) {
-			if (getOwner() instanceof ServerPlayer player) {
+			if (getOwner() instanceof Player player) {
 				for (BlockPos pos : WorldHelper.positionsAround(blockPosition(), 3)) {
 					BlockState state = level().getBlockState(pos);
 					FluidState fluidState = state.getFluidState();
@@ -87,7 +86,7 @@ public class EntityWaterProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof Player player) {
 			WorldHelper.placeFluid(player, level(), result.getBlockPos(), result.getDirection(), Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 		}
 	}

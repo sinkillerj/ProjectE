@@ -21,11 +21,9 @@ public class PEAttachmentTypes {
 
 	public static final PEDeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = new PEDeferredRegister<>(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, PECore.MODID);
 
-	//TODO - 1.20.4: Can we get it to be an IItemHandler cleanly?
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<ItemStackHandler>> EYE_INVENTORY = ATTACHMENT_TYPES.register("eye_inventory",
 			() -> AttachmentType.serializable(() -> new ItemStackHandler(2))
 					.comparator((a, b) -> {
-						//TODO - 1.20.4: Test this custom comparator?
 						int slots = a.getSlots();
 						if (slots != b.getSlots()) {
 							return false;
@@ -41,7 +39,6 @@ public class PEAttachmentTypes {
 					.build()
 	);
 
-	//TODO - 1.20.4: Object needs to be separated, alch bag can probably make do with how it is, but given the one we would attach wouldn't have a corresponding player...
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<KnowledgeAttachment>> KNOWLEDGE = ATTACHMENT_TYPES.register("knowledge",
 			() -> AttachmentType.serializable(KnowledgeAttachment::new)
 					//Note: Technically this comparator is not needed as by default neo only checks for attachment compatability for item stacks,

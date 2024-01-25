@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -525,26 +526,11 @@ public class ToolHelper {
 		if (target.getDestroySpeed(level, pos) <= -1 || !stack.isCorrectToolForDrops(target)) {
 			return InteractionResult.FAIL;
 		}
-		boolean hasAction = false;
-		List<ItemStack> drops = new ArrayList<>();
-		for (BlockPos newPos : WorldHelper.getPositionsInBox(WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack)))) {
-			BlockState state = level.getBlockState(newPos);
-			if (target.getBlock() == state.getBlock()) {
-				if (level.isClientSide) {
-					return InteractionResult.SUCCESS;
-				}
-				//Ensure we are immutable so that changing blocks doesn't act weird
-				if (WorldHelper.harvestVein(level, player, stack, newPos.immutable(), state.getBlock(), drops, 0) > 0) {
-					hasAction = true;
-				}
-			}
-		}
-		if (hasAction) {
+		AABB area = WorldHelper.getBroadDeepBox(pos, sideHit, getCharge(stack));
+		return harvestVein(level, player, stack, area, state -> state.is(target.getBlock()), drops -> {
 			WorldHelper.createLootDrop(drops, level, pos);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.DESTRUCT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-			return InteractionResult.SUCCESS;
-		}
-		return InteractionResult.PASS;
+		});
 	}
 
 	/**
@@ -556,24 +542,22 @@ public class ToolHelper {
 		}
 		Level level = player.level();
 		ItemStack stack = player.getItemInHand(hand);
-		boolean hasAction = false;
-		List<ItemStack> drops = new ArrayList<>();
-		AABB bounds = player.getBoundingBox().inflate(getCharge(stack) + 3);
-		for (BlockPos pos : WorldHelper.getPositionsInBox(bounds)) {
-			BlockState state = level.getBlockState(pos);
-			if (ItemHelper.isOre(state) && state.getDestroySpeed(level, pos) != -1 && stack.isCorrectToolForDrops(state)) {
-				if (level.isClientSide) {
-					return InteractionResult.SUCCESS;
-				}
-				//Ensure we are immutable so that changing blocks doesn't act weird
-				if (WorldHelper.harvestVein(level, player, stack, pos.immutable(), state.getBlock(), drops, 0) > 0) {
-					hasAction = true;
-				}
-			}
+		Predicate<BlockState> stateChecker = state -> ItemHelper.isOre(state) && stack.isCorrectToolForDrops(state);
+		AABB area = player.getBoundingBox().inflate(getCharge(stack) + 3);
+		return harvestVein(level, player, stack, area, stateChecker, drops -> WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ()));
+	}
+
+	public static InteractionResult harvestVein(Level level, Player player, ItemStack stack, AABB area, Predicate<BlockState> stateChecker,
+			Consumer<List<ItemStack>> spawnDrops) {
+		if (ProjectEConfig.server.items.disableAllRadiusMining.get()) {
+			return InteractionResult.PASS;
 		}
-		if (hasAction) {
-			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
-			return InteractionResult.SUCCESS;
+		List<ItemStack> drops = new ArrayList<>();
+		if (WorldHelper.harvestVein(level, player, stack, area, drops, stateChecker) > 0) {
+			if (!level.isClientSide) {
+				spawnDrops.accept(drops);
+			}
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 		return InteractionResult.PASS;
 	}

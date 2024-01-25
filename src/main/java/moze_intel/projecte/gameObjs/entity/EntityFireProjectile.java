@@ -8,7 +8,6 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +44,7 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level().isClientSide && getOwner() instanceof ServerPlayer player) {
+		if (!level().isClientSide && getOwner() instanceof Player player) {
 			BlockPos pos = result.getBlockPos();
 			BlockState state = level().getBlockState(pos);
 			if (state.is(Blocks.OBSIDIAN)) {
@@ -58,7 +57,7 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 		}
 	}
 
-	private void placeAOE(ServerPlayer player, BlockPos pos, int radius, BlockState newState, Predicate<BlockState> targetCheck) {
+	private void placeAOE(Player player, BlockPos pos, int radius, BlockState newState, Predicate<BlockState> targetCheck) {
 		for (BlockPos currentPos : WorldHelper.positionsAround(pos, radius)) {
 			if (targetCheck.test(level().getBlockState(currentPos))) {
 				PlayerHelper.checkedPlaceBlock(player, pos.immutable(), newState);

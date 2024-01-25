@@ -26,7 +26,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -40,10 +39,11 @@ public final class PlayerHelper {
 	 *
 	 * @return Whether the block was successfully placed
 	 */
-	public static boolean checkedPlaceBlock(ServerPlayer player, BlockPos pos, BlockState state) {
-		if (!hasEditPermission(player, pos)) {
-			return false;
-		}
+	public static boolean checkedPlaceBlock(Player player, BlockPos pos, BlockState state) {
+		return hasEditPermission(player, pos) && partiallyCheckedPlaceBlock(player, pos, state);
+	}
+
+	private static boolean partiallyCheckedPlaceBlock(Player player, BlockPos pos, BlockState state) {
 		Level level = player.level();
 		BlockSnapshot before = BlockSnapshot.create(level.dimension(), level, pos);
 		level.setBlockAndUpdate(pos, state);
@@ -61,7 +61,7 @@ public final class PlayerHelper {
 	}
 
 	public static boolean checkedReplaceBlock(ServerPlayer player, BlockPos pos, BlockState state) {
-		return hasBreakPermission(player, pos) && checkedPlaceBlock(player, pos, state);
+		return hasBreakPermission(player, pos) && partiallyCheckedPlaceBlock(player, pos, state);
 	}
 
 	public static ItemStack findFirstItem(Player player, Item consumeFrom) {
@@ -105,14 +105,15 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasBreakPermission(ServerPlayer player, BlockPos pos) {
-		return hasEditPermission(player, pos) && CommonHooks.onBlockBreakEvent(player.level(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
+		return hasEditPermission(player, pos) && checkBreakPermission(player, pos);
 	}
 
-	public static boolean hasEditPermission(ServerPlayer player, BlockPos pos) {
-		if (ServerLifecycleHooks.getCurrentServer().isUnderSpawnProtection(player.serverLevel(), pos, player)) {
-			return false;
-		}
-		return Arrays.stream(Direction.values()).allMatch(e -> player.mayUseItemAt(pos, e, ItemStack.EMPTY));
+	static boolean checkBreakPermission(ServerPlayer player, BlockPos pos) {
+		return CommonHooks.onBlockBreakEvent(player.level(), player.gameMode.getGameModeForPlayer(), player, pos) != -1;
+	}
+
+	public static boolean hasEditPermission(Player player, BlockPos pos) {
+		return player.mayInteract(player.level(), pos) && Arrays.stream(Direction.values()).allMatch(e -> player.mayUseItemAt(pos, e, ItemStack.EMPTY));
 	}
 
 	public static void resetCooldown(Player player) {

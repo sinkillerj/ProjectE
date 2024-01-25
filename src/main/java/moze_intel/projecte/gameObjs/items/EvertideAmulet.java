@@ -19,7 +19,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
@@ -66,14 +65,14 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		}
 		Level level = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (!level.isClientSide && PlayerHelper.hasEditPermission((ServerPlayer) player, pos)) {
+		if (!level.isClientSide && PlayerHelper.hasEditPermission(player, pos)) {
 			Direction sideHit = ctx.getClickedFace();
 			IFluidHandler fluidHandler = WorldHelper.getCapability(level, FluidHandler.BLOCK, pos, sideHit);
 			if (fluidHandler != null) {
 				fluidHandler.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 				return InteractionResult.CONSUME;
 			}
-			WorldHelper.placeFluid((ServerPlayer) player, level, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
+			WorldHelper.placeFluid(player, level, pos, sideHit, Fluids.WATER, !ProjectEConfig.server.items.opEvertide.get());
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.WATER_MAGIC.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 		return InteractionResult.sidedSuccess(level.isClientSide);
