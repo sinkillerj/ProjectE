@@ -4,6 +4,7 @@ import moze_intel.projecte.config.value.CachedBooleanValue;
 import moze_intel.projecte.config.value.CachedDoubleValue;
 import moze_intel.projecte.config.value.CachedFloatValue;
 import moze_intel.projecte.config.value.CachedIntValue;
+import net.minecraft.SharedConstants;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -176,13 +177,13 @@ public final class ServerConfig extends BasePEConfig {
 						.defineInRange("gemChest", 0, -1, Integer.MAX_VALUE));
 				repair = CachedIntValue.wrap(config, builder
 						.comment("Delay between Talisman of Repair trying to repair player items while in a player's inventory.")
-						.defineInRange("repair", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("repair", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				heal = CachedIntValue.wrap(config, builder
 						.comment("Delay between heal attempts while in a player's inventory. (Soul Stone, Life Stone, Gem Helmet)")
-						.defineInRange("heal", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("heal", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				feed = CachedIntValue.wrap(config, builder
 						.comment("Delay between feed attempts while in a player's inventory. (Body Stone, Life Stone, Gem Helmet)")
-						.defineInRange("feed", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("feed", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				builder.pop();
 			}
 		}
@@ -206,37 +207,37 @@ public final class ServerConfig extends BasePEConfig {
 						.push("pedestal");
 				archangel = CachedIntValue.wrap(config, builder
 						.comment("Delay between Archangel Smite shooting arrows while in the pedestal.")
-						.defineInRange("archangel", 40, -1, Integer.MAX_VALUE));
+						.defineInRange("archangel", 2 * SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				body = CachedIntValue.wrap(config, builder
 						.comment("Delay between Body Stone healing 0.5 shanks while in the pedestal.")
-						.defineInRange("body", 10, -1, Integer.MAX_VALUE));
+						.defineInRange("body", SharedConstants.TICKS_PER_SECOND / 2, -1, Integer.MAX_VALUE));
 				evertide = CachedIntValue.wrap(config, builder
 						.comment("Delay between Evertide Amulet trying to start rain while in the pedestal.")
-						.defineInRange("evertide", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("evertide", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				harvest = CachedIntValue.wrap(config, builder
 						.comment("Delay between Harvest Goddess trying to grow and harvest while in the pedestal.")
-						.defineInRange("harvest", 10, -1, Integer.MAX_VALUE));
+						.defineInRange("harvest", SharedConstants.TICKS_PER_SECOND / 2, -1, Integer.MAX_VALUE));
 				ignition = CachedIntValue.wrap(config, builder
 						.comment("Delay between Ignition Ring trying to light entities on fire while in the pedestal.")
-						.defineInRange("ignition", 40, -1, Integer.MAX_VALUE));
+						.defineInRange("ignition", 2 * SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				life = CachedIntValue.wrap(config, builder
 						.comment("Delay between Life Stone healing both food and hunger by 0.5 shank/heart while in the pedestal.")
-						.defineInRange("life", 5, -1, Integer.MAX_VALUE));
+						.defineInRange("life", SharedConstants.TICKS_PER_SECOND / 4, -1, Integer.MAX_VALUE));
 				repair = CachedIntValue.wrap(config, builder
 						.comment("Delay between Talisman of Repair trying to repair player items while in the pedestal.")
-						.defineInRange("repair", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("repair", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				swrg = CachedIntValue.wrap(config, builder
 						.comment("Delay between SWRG trying to smite mobs while in the pedestal.")
-						.defineInRange("swrg", 70, -1, Integer.MAX_VALUE));
+						.defineInRange("swrg", (int) (3.5 * SharedConstants.TICKS_PER_SECOND), -1, Integer.MAX_VALUE));
 				soul = CachedIntValue.wrap(config, builder
 						.comment("Delay between Soul Stone healing 0.5 hearts while in the pedestal.")
-						.defineInRange("soul", 10, -1, Integer.MAX_VALUE));
+						.defineInRange("soul", SharedConstants.TICKS_PER_SECOND / 2, -1, Integer.MAX_VALUE));
 				volcanite = CachedIntValue.wrap(config, builder
 						.comment("Delay between Volcanite Amulet trying to stop rain while in the pedestal.")
-						.defineInRange("volcanite", 20, -1, Integer.MAX_VALUE));
+						.defineInRange("volcanite", SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				zero = CachedIntValue.wrap(config, builder
 						.comment("Delay between Zero Ring trying to extinguish entities and freezing ground while in the pedestal.")
-						.defineInRange("zero", 40, -1, Integer.MAX_VALUE));
+						.defineInRange("zero", 2 * SharedConstants.TICKS_PER_SECOND, -1, Integer.MAX_VALUE));
 				builder.pop();
 			}
 		}

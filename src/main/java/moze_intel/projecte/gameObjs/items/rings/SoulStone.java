@@ -76,11 +76,11 @@ public class SoulStone extends PEToggleItem implements IPedestalItem, ICapabilit
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.soul.get() != -1) {
 			list.add(PELang.PEDESTAL_SOUL_STONE_1.translateColored(ChatFormatting.BLUE));
-			list.add(PELang.PEDESTAL_SOUL_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get())));
+			list.add(PELang.PEDESTAL_SOUL_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.soul.get(), tickRate)));
 		}
 		return list;
 	}

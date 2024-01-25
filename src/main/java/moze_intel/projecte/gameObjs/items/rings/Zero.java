@@ -87,13 +87,13 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		//Only used on the client
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.zero.get() != -1) {
 			list.add(PELang.PEDESTAL_ZERO_1.translateColored(ChatFormatting.BLUE));
 			list.add(PELang.PEDESTAL_ZERO_2.translateColored(ChatFormatting.BLUE));
-			list.add(PELang.PEDESTAL_ZERO_3.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.zero.get())));
+			list.add(PELang.PEDESTAL_ZERO_3.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.zero.get(), tickRate)));
 		}
 		return list;
 	}

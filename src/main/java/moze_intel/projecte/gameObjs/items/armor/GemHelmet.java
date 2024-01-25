@@ -11,6 +11,7 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -77,7 +78,7 @@ public class GemHelmet extends GemArmorBase {
 			}
 
 			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_NIGHT_VISION)) {
-				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, true, false));
+				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 11 * SharedConstants.TICKS_PER_SECOND, 0, true, false));
 			} else {
 				player.removeEffect(MobEffects.NIGHT_VISION);
 			}

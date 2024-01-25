@@ -115,7 +115,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		return Lists.newArrayList(PELang.PEDESTAL_BLACK_HOLE_BAND_1.translateColored(ChatFormatting.BLUE),
 				PELang.PEDESTAL_BLACK_HOLE_BAND_2.translateColored(ChatFormatting.BLUE));
 	}

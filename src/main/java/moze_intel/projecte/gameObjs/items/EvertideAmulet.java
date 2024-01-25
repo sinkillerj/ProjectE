@@ -16,6 +16,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -106,7 +107,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				if (level.getLevelData() instanceof ServerLevelData worldInfo) {
-					int i = (300 + level.random.nextInt(600)) * 20;
+					int i = (300 + level.random.nextInt(600)) * SharedConstants.TICKS_PER_SECOND;
 					worldInfo.setRainTime(i);
 					worldInfo.setThunderTime(i);
 					worldInfo.setRaining(true);
@@ -121,11 +122,11 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.evertide.get() != -1) {
 			list.add(PELang.PEDESTAL_EVERTIDE_1.translateColored(ChatFormatting.BLUE));
-			list.add(PELang.PEDESTAL_EVERTIDE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get())));
+			list.add(PELang.PEDESTAL_EVERTIDE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.evertide.get(), tickRate)));
 		}
 		return list;
 	}

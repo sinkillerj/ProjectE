@@ -7,6 +7,7 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -44,8 +45,8 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
-		return PEItems.BLACK_HOLE_BAND.get().getPedestalDescription();
+	public List<Component> getPedestalDescription(float tickRate) {
+		return PEItems.BLACK_HOLE_BAND.get().getPedestalDescription(tickRate);
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class VoidRing extends GemEternalDensity implements IPedestalItem, IExtra
 			player.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1, 1);
 			player.fallDistance = 0.0F;
-			player.getCooldowns().addCooldown(this, 10);
+			player.getCooldowns().addCooldown(this, SharedConstants.TICKS_PER_SECOND / 2);
 			return true;
 		}
 		return false;

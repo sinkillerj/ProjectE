@@ -32,5 +32,5 @@ public interface IPedestalItem {
 	 * @return Brief strings describing the item's function in an activated pedestal
 	 */
 	@NotNull
-	List<Component> getPedestalDescription();
+	List<Component> getPedestalDescription(float tickRate);
 }

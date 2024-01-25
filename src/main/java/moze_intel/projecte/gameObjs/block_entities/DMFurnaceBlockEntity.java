@@ -13,6 +13,7 @@ import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObj
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +37,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -116,7 +118,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	public int cookingTotalTime;
 
 	public DMFurnaceBlockEntity(BlockPos pos, BlockState state) {
-		this(PEBlockEntityTypes.DARK_MATTER_FURNACE, pos, state, 10, 3);
+		this(PEBlockEntityTypes.DARK_MATTER_FURNACE, pos, state, SharedConstants.TICKS_PER_SECOND / 2, 3);
 	}
 
 	protected DMFurnaceBlockEntity(BlockEntityTypeRegistryObject<? extends DMFurnaceBlockEntity> type, BlockPos pos, BlockState state, int ticksBeforeSmelt, int efficiencyBonus) {
@@ -393,7 +395,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	private int getItemBurnTime(ItemStack stack) {
-		return CommonHooks.getBurnTime(stack, RecipeType.SMELTING) * ticksBeforeSmelt / 200 * efficiencyBonus;
+		return CommonHooks.getBurnTime(stack, RecipeType.SMELTING) * ticksBeforeSmelt / AbstractFurnaceBlockEntity.BURN_TIME_STANDARD * efficiencyBonus;
 	}
 
 	private int getTotalCookTime(RecipeResult recipeResult) {
@@ -401,7 +403,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 			return ticksBeforeSmelt;
 		}
 		int cookingTime = recipeResult.recipeHolder().value().getCookingTime();
-		return Mth.ceil(ticksBeforeSmelt * cookingTime / 200F);
+		return Mth.ceil(ticksBeforeSmelt * cookingTime / (float) AbstractFurnaceBlockEntity.BURN_TIME_STANDARD);
 	}
 
 	public float getLitProgress() {

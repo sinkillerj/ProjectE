@@ -180,7 +180,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		return Lists.newArrayList(PELang.PEDESTAL_MIND_STONE.translateColored(ChatFormatting.BLUE));
 	}
 }

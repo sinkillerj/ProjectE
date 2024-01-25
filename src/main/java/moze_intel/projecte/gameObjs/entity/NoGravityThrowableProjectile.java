@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.entity;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -25,7 +26,7 @@ public abstract class NoGravityThrowableProjectile extends ThrowableProjectile {
 	public void tick() {
 		super.tick();
 		if (!this.level().isClientSide) {
-			if (tickCount > 400 || getDeltaMovement().equals(Vec3.ZERO) || !level().isLoaded(blockPosition())) {
+			if (tickCount > (20 * SharedConstants.TICKS_PER_SECOND) || getDeltaMovement().equals(Vec3.ZERO) || !level().isLoaded(blockPosition())) {
 				discard();
 			}
 		}

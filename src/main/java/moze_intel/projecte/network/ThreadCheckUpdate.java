@@ -5,6 +5,7 @@ import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.util.TimeUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -42,7 +43,7 @@ public class ThreadCheckUpdate extends Thread {
 				result = res;
 			}
 			try {
-				Thread.sleep(1000L);
+				Thread.sleep(TimeUtil.MILLISECONDS_PER_SECOND);
 			} catch (InterruptedException ignored) {
 			}
 			tries++;

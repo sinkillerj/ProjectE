@@ -1,7 +1,6 @@
 package moze_intel.projecte.events;
 
 import java.util.List;
-import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -12,6 +11,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
@@ -19,10 +19,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 @Mod.EventBusSubscriber(modid = PECore.MODID, value = Dist.CLIENT)
 public class ToolTipEvent {
@@ -33,12 +34,12 @@ public class ToolTipEvent {
 		if (current.isEmpty()) {
 			return;
 		}
-		Player clientPlayer = Minecraft.getInstance().player;
 		if (ProjectEConfig.client.pedestalToolTips.get()) {
 			IPedestalItem pedestalItem = current.getCapability(PECapabilities.PEDESTAL_ITEM_CAPABILITY);
 			if (pedestalItem != null) {
 				event.getToolTip().add(PELang.PEDESTAL_ON.translateColored(ChatFormatting.DARK_PURPLE));
-				List<Component> description = pedestalItem.getPedestalDescription();
+				Level level = Minecraft.getInstance().level;
+				List<Component> description = pedestalItem.getPedestalDescription(level == null ? SharedConstants.TICKS_PER_SECOND : level.tickRateManager().tickrate());
 				if (description.isEmpty()) {
 					event.getToolTip().add(PELang.PEDESTAL_DISABLED.translateColored(ChatFormatting.RED));
 				} else {
@@ -58,6 +59,7 @@ public class ToolTipEvent {
 				if (current.getCount() > 1) {
 					event.getToolTip().add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
+				Player clientPlayer = Minecraft.getInstance().player;
 				if (clientPlayer != null && (!ProjectEConfig.client.shiftLearnedToolTips.get() || Screen.hasShiftDown())) {
 					IKnowledgeProvider knowledgeProvider = clientPlayer.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
 					if (knowledgeProvider != null && knowledgeProvider.hasKnowledge(current)) {

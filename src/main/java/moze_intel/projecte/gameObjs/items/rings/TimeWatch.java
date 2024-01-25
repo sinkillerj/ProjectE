@@ -230,7 +230,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.effects.timePedBonus.get() > 0) {
 			list.add(PELang.PEDESTAL_TIME_WATCH_1.translateColored(ChatFormatting.BLUE, ProjectEConfig.server.effects.timePedBonus.get()));

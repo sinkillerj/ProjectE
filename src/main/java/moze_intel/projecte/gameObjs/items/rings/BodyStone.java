@@ -80,11 +80,11 @@ public class BodyStone extends PEToggleItem implements IPedestalItem, ICapabilit
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.body.get() != -1) {
 			list.add(PELang.PEDESTAL_BODY_STONE_1.translateColored(ChatFormatting.BLUE));
-			list.add(PELang.PEDESTAL_BODY_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get())));
+			list.add(PELang.PEDESTAL_BODY_STONE_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.body.get(), tickRate)));
 		}
 		return list;
 	}

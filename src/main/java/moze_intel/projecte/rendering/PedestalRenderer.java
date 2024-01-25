@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import moze_intel.projecte.gameObjs.block_entities.DMPedestalBlockEntity;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -43,7 +44,7 @@ public class PedestalRenderer implements BlockEntityRenderer<DMPedestalBlockEnti
 				long gameTime = pedestal.getLevel().getGameTime();
 				matrix.translate(0, Mth.sin((gameTime + partialTick) / 10.0F) * 0.1 + 0.1, 0);
 				matrix.scale(0.75F, 0.75F, 0.75F);
-				float angle = (gameTime + partialTick) / 20.0F * (180F / (float) Math.PI);
+				float angle = (gameTime + partialTick) / ((float) SharedConstants.TICKS_PER_SECOND) * (180F / (float) Math.PI);
 				matrix.mulPose(Axis.YP.rotationDegrees(angle));
 				this.context.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlayLight, matrix, renderer, pedestal.getLevel(), (int) pedestal.getBlockPos().asLong());
 				matrix.popPose();

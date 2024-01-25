@@ -84,11 +84,11 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 
 	@NotNull
 	@Override
-	public List<Component> getPedestalDescription() {
+	public List<Component> getPedestalDescription(float tickRate) {
 		List<Component> list = new ArrayList<>();
 		if (ProjectEConfig.server.cooldown.pedestal.ignition.get() != -1) {
 			list.add(PELang.PEDESTAL_IGNITION_1.translateColored(ChatFormatting.BLUE));
-			list.add(PELang.PEDESTAL_IGNITION_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get())));
+			list.add(PELang.PEDESTAL_IGNITION_2.translateColored(ChatFormatting.BLUE, MathUtils.tickToSecFormatted(ProjectEConfig.server.cooldown.pedestal.ignition.get(), tickRate)));
 		}
 		return list;
 	}
