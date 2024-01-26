@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
 	public BlockDeferredRegister(String modid) {
-		super(Registries.BLOCK, Registries.ITEM, modid);
+		super(Registries.BLOCK, new ItemDeferredRegister(modid), modid);
 	}
 
 	public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {

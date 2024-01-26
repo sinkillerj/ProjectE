@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -16,16 +14,14 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends PEDeferredRegister<Item> {
-
-	private final List<ItemLike> allItems = new ArrayList<>();
 
 	public ItemDeferredRegister(String modid) {
 		super(Registries.ITEM, modid, ItemRegistryObject::new);
@@ -38,8 +34,8 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 	}
 
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		for (ItemLike itemLike : allItems) {
-			Item item = itemLike.asItem();
+		for (Holder<Item> entry : getEntries()) {
+			Item item = entry.value();
 			if (item instanceof IAlchBagItem) {
 				event.registerItem(PECapabilities.ALCH_BAG_ITEM_CAPABILITY, (stack, context) -> (IAlchBagItem) stack.getItem(), item);
 			}
@@ -102,8 +98,6 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(@NotNull String name, @NotNull Supplier<? extends ITEM> sup) {
-		ItemRegistryObject<ITEM> registeredItem = (ItemRegistryObject<ITEM>) super.register(name, sup);
-		allItems.add(registeredItem);
-		return registeredItem;
+		return (ItemRegistryObject<ITEM>) super.register(name, sup);
 	}
 }

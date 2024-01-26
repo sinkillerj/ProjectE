@@ -8,6 +8,7 @@ import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 @ParametersAreNonnullByDefault
@@ -33,6 +34,11 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 		return getBlock().getDescriptionId();
 	}
 
+	@Internal
+	Block[] getBlocks() {
+		return new Block[]{getBlock()};
+	}
+
 	public static class WallOrFloorBlockRegistryObject<BLOCK extends Block, WALL_BLOCK extends Block, ITEM extends StandingAndWallBlockItem> extends BlockRegistryObject<BLOCK, ITEM> {
 
 		@NotNull
@@ -51,6 +57,12 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 
 		public String getWallName() {
 			return wallRO.getId().getPath();
+		}
+
+		@Internal
+		@Override
+		Block[] getBlocks() {
+			return new Block[]{getBlock(), getWallBlock()};
 		}
 	}
 }

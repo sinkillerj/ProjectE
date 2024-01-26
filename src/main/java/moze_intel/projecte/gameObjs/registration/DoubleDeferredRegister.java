@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.registration;
 
+import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,7 +25,11 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 
 	protected DoubleDeferredRegister(ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName, ResourceKey<? extends Registry<SECONDARY>> secondaryRegistryName,
 			String modid) {
-		this(DeferredRegister.create(primaryRegistryName, modid), DeferredRegister.create(secondaryRegistryName, modid));
+		this(primaryRegistryName, PEDeferredRegister.create(secondaryRegistryName, modid), modid);
+	}
+
+	protected DoubleDeferredRegister(ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName, DeferredRegister<SECONDARY> secondaryRegistry, String modid) {
+		this(PEDeferredRegister.create(primaryRegistryName, modid), secondaryRegistry);
 	}
 
 	public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,
@@ -49,5 +54,13 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 	public void register(IEventBus bus) {
 		primaryRegister.register(bus);
 		secondaryRegister.register(bus);
+	}
+
+	public Collection<DeferredHolder<PRIMARY, ? extends PRIMARY>> getPrimaryEntries() {
+		return primaryRegister.getEntries();
+	}
+
+	public Collection<DeferredHolder<SECONDARY, ? extends SECONDARY>> getSecondaryEntries() {
+		return secondaryRegister.getEntries();
 	}
 }

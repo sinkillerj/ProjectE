@@ -1,12 +1,9 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,51 +15,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockEntityTypeRegistryObject<BE extends BlockEntity> extends PEDeferredHolder<BlockEntityType<?>, BlockEntityType<BE>> {
 
+	@Nullable
 	private List<CapabilityData<BE, ?, ?>> capabilityProviders;
 	@Nullable
 	private BlockEntityTicker<BE> clientTicker;
 	@Nullable
 	private BlockEntityTicker<BE> serverTicker;
 
-	public BlockEntityTypeRegistryObject(ResourceLocation key) {
-		this(ResourceKey.create(Registries.BLOCK_ENTITY_TYPE, key));
-	}
-
 	public BlockEntityTypeRegistryObject(ResourceKey<BlockEntityType<?>> key) {
 		super(key);
-	}
-
-	@Internal
-	void clientTicker(BlockEntityTicker<BE> ticker) {
-		if (clientTicker != null) {
-			throw new IllegalStateException("Client ticker may only be set once.");
-		}
-		clientTicker = ticker;
-	}
-
-	@Internal
-	void serverTicker(BlockEntityTicker<BE> ticker) {
-		if (serverTicker != null) {
-			throw new IllegalStateException("Server ticker may only be set once.");
-		}
-		serverTicker = ticker;
-	}
-
-	/**
-	 * @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it based on
-	 *                    loaded mods or a block's attributes.
-	 */
-	<CAP, CONTEXT> void addCapability(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider, BooleanSupplier shouldApply) {
-		if (capabilityProviders == null) {
-			capabilityProviders = new ArrayList<>();
-		}
-		capabilityProviders.add(new CapabilityData<>(capability, provider, shouldApply));
-	}
-
-	void removeCapability(BlockCapability<?, ?> capability) {
-		if (capabilityProviders != null) {
-			capabilityProviders.removeIf(data -> data.capability() == capability);
-		}
 	}
 
 	@Nullable
@@ -70,6 +31,18 @@ public class BlockEntityTypeRegistryObject<BE extends BlockEntity> extends PEDef
 		return isClient ? clientTicker : serverTicker;
 	}
 
+	@Internal
+	void tickers(@Nullable BlockEntityTicker<BE> clientTicker, @Nullable BlockEntityTicker<BE> serverTicker) {
+		this.clientTicker = clientTicker;
+		this.serverTicker = serverTicker;
+	}
+
+	@Internal
+	void capabilities(@Nullable List<CapabilityData<BE, ?, ?>> capabilityProviders) {
+		this.capabilityProviders = capabilityProviders;
+	}
+
+	@Internal
 	void registerCapabilityProviders(RegisterCapabilitiesEvent event) {
 		if (capabilityProviders != null) {
 			for (CapabilityData<BE, ?, ?> capabilityProvider : capabilityProviders) {
@@ -78,7 +51,8 @@ public class BlockEntityTypeRegistryObject<BE extends BlockEntity> extends PEDef
 		}
 	}
 
-	private record CapabilityData<BE extends BlockEntity, CAP, CONTEXT>(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
+	@Internal
+	record CapabilityData<BE extends BlockEntity, CAP, CONTEXT>(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
 																		BooleanSupplier shouldApply) {
 
 		private void registerProvider(RegisterCapabilitiesEvent event, BlockEntityType<BE> type) {
