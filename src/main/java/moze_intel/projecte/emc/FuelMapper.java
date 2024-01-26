@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import moze_intel.projecte.PECore;
@@ -15,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 public final class FuelMapper {
 
-	private static List<Item> FUEL_MAP = Collections.emptyList();
+	private static List<Item> FUEL_MAP = List.of();
 
 	/**
 	 * Used on server to load the map based on the tag

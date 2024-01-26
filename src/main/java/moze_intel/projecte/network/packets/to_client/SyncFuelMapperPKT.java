@@ -8,10 +8,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket<PlayPayloadContext> {
+public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket<IPayloadContext> {
 
 	public static final ResourceLocation ID = PECore.rl("sync_fuel_mapper");
 
@@ -26,7 +26,7 @@ public record SyncFuelMapperPKT(List<Item> items) implements IPEPacket<PlayPaylo
 	}
 
 	@Override
-	public void handle(PlayPayloadContext context) {
+	public void handle(IPayloadContext context) {
 		FuelMapper.setFuelMap(items);
 	}
 

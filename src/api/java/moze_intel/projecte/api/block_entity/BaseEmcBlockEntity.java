@@ -21,7 +21,10 @@ import org.jetbrains.annotations.Range;
  */
 public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 
-	//TODO - 1.20.4: Docs and also actually use this for our impls
+	/**
+	 * To expose the EMC Storage capability this provider or one similar should be registered for your block entity inside of
+	 * {@link net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent}
+	 */
 	public static final ICapabilityProvider<BaseEmcBlockEntity, @Nullable Direction, IEmcStorage> EMC_STORAGE_PROVIDER = (blockEntity, context) -> blockEntity;
 
 	private long maximumEMC;

@@ -60,12 +60,8 @@ public class PacketUtils {
 				.map(clazz::cast);
 	}
 
-	private static boolean isLocal(ServerPlayer player) {
-		return player.server.isSingleplayerOwner(player.getGameProfile());
-	}
-
 	private static void sendFragmentedEmcPacket(ServerPlayer player, SyncEmcPKT pkt, SyncFuelMapperPKT fuelPkt) {
-		if (!isLocal(player)) {
+		if (!player.connection.getConnection().isMemoryConnection()) {
 			sendTo(pkt, player);
 			sendTo(fuelPkt, player);
 		}
@@ -85,7 +81,7 @@ public class PacketUtils {
 		}
 	}
 
-	private static EmcPKTInfo[] serializeEmcData() {
+	public static EmcPKTInfo[] serializeEmcData() {
 		EmcPKTInfo[] data = EMCMappingHandler.createPacketData();
 		//Simulate encoding the EMC packet to get an accurate size
 		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());

@@ -9,7 +9,6 @@ import moze_intel.projecte.gameObjs.items.armor.PEArmor;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.impl.TransmutationOffline;
-import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
@@ -81,8 +80,6 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void playerConnect(PlayerEvent.PlayerLoggedInEvent event) {
 		ServerPlayer player = (ServerPlayer) event.getEntity();
-		PacketUtils.sendFragmentedEmcPacket(player);
-
 		IKnowledgeProvider knowledge = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
 		if (knowledge != null) {
 			knowledge.sync(player);

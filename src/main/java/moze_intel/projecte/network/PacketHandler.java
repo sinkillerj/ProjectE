@@ -14,6 +14,8 @@ import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateCondenserLockPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
+import moze_intel.projecte.network.packets.to_client.configuration.SyncAllEmcData;
+import moze_intel.projecte.network.packets.to_client.configuration.SyncFuelData;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncChangePKT;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncInputsAndLocksPKT;
@@ -24,11 +26,13 @@ import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.FriendlyByteBuf.Reader;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.network.event.OnGameConfigurationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.handling.ConfigurationPayloadContext;
 import net.neoforged.neoforge.network.handling.IConfigurationPayloadHandler;
@@ -64,6 +68,11 @@ public final class PacketHandler {
 			registerClientToServer(new PacketRegistrar(registrar, IDirectionAwarePayloadHandlerBuilder::server));
 			registerServerToClient(new PacketRegistrar(registrar, IDirectionAwarePayloadHandlerBuilder::client));
 		});
+		modEventBus.addListener(OnGameConfigurationEvent.class, event -> {
+			ServerConfigurationPacketListener listener = event.getListener();
+			event.register(new SyncAllEmcData(listener));
+			event.register(new SyncFuelData(listener));
+		});
 	}
 
 	private void registerClientToServer(PacketRegistrar registrar) {
@@ -79,7 +88,9 @@ public final class PacketHandler {
 	}
 
 	private void registerServerToClient(PacketRegistrar registrar) {
-		//Server to client messages
+		registrar.common(SyncEmcPKT.ID, SyncEmcPKT::new);
+		registrar.common(SyncFuelMapperPKT.ID, SyncFuelMapperPKT::new);
+
 		resetCooldown = registrar.playInstanced(PECore.rl("reset_cooldown"), context -> context.player().ifPresent(Player::resetAttackStrengthTicker));
 		clearKnowledge = registrar.playInstanced(PECore.rl("clear_knowledge"), context -> context.player().ifPresent(player -> {
 			IKnowledgeProvider knowledge = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
@@ -95,8 +106,6 @@ public final class PacketHandler {
 		registrar.play(KnowledgeSyncInputsAndLocksPKT.ID, KnowledgeSyncInputsAndLocksPKT::new);
 		registrar.play(KnowledgeSyncChangePKT.ID, KnowledgeSyncChangePKT::new);
 		registrar.play(SyncBagDataPKT.ID, SyncBagDataPKT::new);
-		registrar.play(SyncEmcPKT.ID, SyncEmcPKT::new);
-		registrar.play(SyncFuelMapperPKT.ID, SyncFuelMapperPKT::new);
 		registrar.play(UpdateCondenserLockPKT.ID, UpdateCondenserLockPKT::new);
 		updateTransmutationTargets = registrar.playInstanced(PECore.rl("update_transmutation_targets"), context ->
 				PacketUtils.container(context, TransmutationContainer.class)

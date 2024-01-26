@@ -8,11 +8,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record SyncEmcPKT(EmcPKTInfo[] data) implements IPEPacket<PlayPayloadContext> {
+public record SyncEmcPKT(EmcPKTInfo[] data) implements IPEPacket<IPayloadContext> {
 
 	public static final ResourceLocation ID = PECore.rl("sync_emc");
 
@@ -27,7 +27,7 @@ public record SyncEmcPKT(EmcPKTInfo[] data) implements IPEPacket<PlayPayloadCont
 	}
 
 	@Override
-	public void handle(PlayPayloadContext context) {
+	public void handle(IPayloadContext context) {
 		PECore.LOGGER.info("Receiving EMC data from server.");
 		EMCMappingHandler.fromPacket(data);
 	}
