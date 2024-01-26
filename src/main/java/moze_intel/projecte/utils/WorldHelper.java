@@ -603,10 +603,11 @@ public final class WorldHelper {
 	}
 
 	private static void repelEntity(Vec3 vec, Entity entity) {
-		Vec3 r = entity.position().subtract(vec);
 		double distance = vec.distanceTo(entity.position()) + 0.1;
-		//TODO - 1.20.4: Do we want to use Entity#push?
-		entity.addDeltaMovement(r.scale(1 / (1.5 * distance)));
+		Vec3 r = entity.position()
+				.subtract(vec)
+				.scale(1 / (1.5 * distance));
+		entity.push(r.x(), r.y(), r.z());
 	}
 
 	public static boolean canLight(BlockState state) {

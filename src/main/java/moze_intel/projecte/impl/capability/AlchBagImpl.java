@@ -38,7 +38,6 @@ public final class AlchBagImpl implements IAlchBagProvider {
 
 	@Override
 	public void sync(@Nullable DyeColor color, @NotNull ServerPlayer player) {
-		//TODO - 1.20.4: Do we still need to pass the player into this method?
 		PacketUtils.sendTo(new SyncBagDataPKT(attachment().writeNBT(color)), player);
 	}
 
