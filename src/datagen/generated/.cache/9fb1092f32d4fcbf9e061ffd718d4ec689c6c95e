@@ -1,4 +1,4 @@
-// 1.20.4	2024-01-05T13:18:06.4179209	Recipes
+// 1.20.4	2024-01-26T18:20:22.4661964	Recipes
 6dcaeb8509c84a0e513daa6014415d039364f466 data/projecte/advancements/recipes/building_blocks/aeternalis_fuel_block.json
 9b840ce571c41bebd449a66b2bb589901765557e data/projecte/advancements/recipes/building_blocks/alchemical_coal_block.json
 72450dfc68c9cdac2742688f25af94843a659152 data/projecte/advancements/recipes/building_blocks/dark_matter_block.json
@@ -299,8 +299,8 @@ f80dccead19dfc8423da26d7f7c180a10c8e6fb5 data/projecte/recipes/rm_katar.json
 20728d578473fed612355ea6ba70be0ef3bdc64b data/projecte/recipes/rm_sword.json
 71abd677c2b334fa57895e12d11501f5ad884228 data/projecte/recipes/soul_stone.json
 0841168552973f9fa34895ae24ac55447b09675c data/projecte/recipes/swiftwolf_rending_gale.json
-759021d6810e4416368448fa38f9f93161e717b6 data/projecte/recipes/tome.json
-5451cc7fe1994c471abed5db7c097729be55f14d data/projecte/recipes/tome_alt.json
+3904ebb33ead87b9b7996705feb063c6f651046e data/projecte/recipes/tome.json
+1ec6770f40d485806981f367ab292dfea06a3407 data/projecte/recipes/tome_alt.json
 39871b123f470730d673fd42abd440fba29abc6c data/projecte/recipes/transmutation_table.json
 e7592be0b50e9b760daeade8b1823710ee79ae80 data/projecte/recipes/transmutation_tablet.json
 f4e8ad8be2c5fd093fce4f4a399da7a4d8c6627c data/projecte/recipes/void_ring.json

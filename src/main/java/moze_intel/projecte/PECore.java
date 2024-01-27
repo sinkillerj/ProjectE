@@ -170,7 +170,6 @@ public class PECore {
 	}
 
 	public void registerCapabilities(RegisterCapabilitiesEvent event) {
-		//TODO - 1.20.4: Test that these work as expected and save properly
 		event.registerEntity(PECapabilities.ALCH_BAG_CAPABILITY, EntityType.PLAYER, (player, context) -> new AlchBagImpl(player));
 		event.registerEntity(PECapabilities.KNOWLEDGE_CAPABILITY, EntityType.PLAYER, (player, context) -> new KnowledgeImpl(player));
 	}

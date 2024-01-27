@@ -112,7 +112,6 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void tomeRecipe(RecipeOutput recipeOutput, boolean alternate) {
-		//TODO - 1.20.4: Test this
 		ResourceLocation name = PECore.rl(alternate ? "tome_alt" : "tome");
 		//Tome is enabled and should use full stars
 		baseTomeRecipe(alternate)
@@ -120,25 +119,8 @@ public class PERecipeProvider extends RecipeProvider {
 				.save(recipeOutput.withConditions(TomeEnabledCondition.INSTANCE, FullKleinStarsCondition.INSTANCE), name.withPrefix("full_star_"));
 		//Tome enabled but should not use full stars
 		baseTomeRecipe(alternate)
-				.define('K', getFullKleinStarIngredient(EnumKleinTier.OMEGA))
+				.define('K', PEItems.KLEIN_STAR_OMEGA)
 				.save(recipeOutput.withConditions(TomeEnabledCondition.INSTANCE, new NotCondition(FullKleinStarsCondition.INSTANCE)), name);
-
-		/*new ConditionalRecipe.Builder()
-				//Tome is enabled and should use full stars
-				.addCondition(TomeEnabledCondition.INSTANCE)
-				.addCondition(FullKleinStarsCondition.INSTANCE)
-				.addRecipe(c -> baseTomeRecipe(alternate)
-						.define('K', getFullKleinStarIngredient(EnumKleinTier.OMEGA))
-						.save(c))
-				//Tome enabled but should not use full stars
-				.addCondition(TomeEnabledCondition.INSTANCE)
-				.addRecipe(c -> baseTomeRecipe(alternate)
-						.define('K', PEItems.KLEIN_STAR_OMEGA)
-						.save(c))
-				//Add the advancement json
-				.generateAdvancement()
-				//Build the recipe
-				.build(recipeOutput, PECore.MODID, alternate ? "tome_alt" : "tome");*/
 	}
 
 	private static ShapedRecipeBuilder baseTomeRecipe(boolean alternate) {
@@ -467,7 +449,6 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static void gemArmorRecipe(RecipeOutput recipeOutput, Supplier<ShapelessRecipeBuilder> builder, ItemRegistryObject<?> result) {
-		//TODO - 1.20.4: Test this
 		//Full stars should be used
 		builder.get()
 				.requires(getFullKleinStarIngredient(EnumKleinTier.OMEGA))
@@ -476,21 +457,6 @@ public class PERecipeProvider extends RecipeProvider {
 		builder.get()
 				.requires(PEItems.KLEIN_STAR_OMEGA)
 				.save(recipeOutput.withConditions(new NotCondition(FullKleinStarsCondition.INSTANCE)), result.getId());
-		/*new ConditionalRecipe.Builder()
-				//Full stars should be used
-				.addCondition(FullKleinStarsCondition.INSTANCE)
-				.addRecipe(c -> builder.get()
-						.requires(getFullKleinStarIngredient(EnumKleinTier.OMEGA))
-						.save(c))
-				//Full stars should not be used (Always true, this is the fallback)
-				.addCondition(TrueCondition.INSTANCE)
-				.addRecipe(c -> builder.get()
-						.requires(PEItems.KLEIN_STAR_OMEGA)
-						.save(c))
-				//Add the advancement json
-				.generateAdvancement()
-				//Build the recipe
-				.build(recipeOutput, result.getRegistryName());*/
 	}
 
 	private static void fuelUpgradeRecipe(RecipeOutput recipeOutput, ItemLike input, ItemLike output) {

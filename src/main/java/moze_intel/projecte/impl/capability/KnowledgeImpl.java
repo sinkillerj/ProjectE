@@ -286,7 +286,6 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 		return attachment.knowledge.addAll(toAdd) || hasRemoved;
 	}
 
-	//TODO - 1.20.4: Test this stuff works fine
 	public static class KnowledgeAttachment implements INBTSerializable<CompoundTag> {
 
 		private final Set<ItemInfo> knowledge = new HashSet<>();

@@ -21,9 +21,7 @@
       "item": "projecte:high_covalence_dust"
     },
     "K": {
-      "type": "neoforge:nbt",
-      "item": "projecte:klein_star_omega",
-      "tag": "{StoredEMC:51200000L}"
+      "item": "projecte:klein_star_omega"
     },
     "L": {
       "item": "projecte:low_covalence_dust"
