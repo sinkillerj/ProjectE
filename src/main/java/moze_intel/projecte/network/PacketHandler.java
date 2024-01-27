@@ -8,6 +8,7 @@ import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.items.rings.ArchangelSmite;
 import moze_intel.projecte.network.packets.IPEPacket;
+import moze_intel.projecte.network.packets.to_client.NovaExplosionSyncPKT;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
@@ -105,6 +106,7 @@ public final class PacketHandler {
 		registrar.play(KnowledgeSyncEmcPKT.ID, KnowledgeSyncEmcPKT::new);
 		registrar.play(KnowledgeSyncInputsAndLocksPKT.ID, KnowledgeSyncInputsAndLocksPKT::new);
 		registrar.play(KnowledgeSyncChangePKT.ID, KnowledgeSyncChangePKT::new);
+		registrar.play(NovaExplosionSyncPKT.ID, NovaExplosionSyncPKT::new);
 		registrar.play(SyncBagDataPKT.ID, SyncBagDataPKT::new);
 		registrar.play(UpdateCondenserLockPKT.ID, UpdateCondenserLockPKT::new);
 		updateTransmutationTargets = registrar.playInstanced(PECore.rl("update_transmutation_targets"), context ->

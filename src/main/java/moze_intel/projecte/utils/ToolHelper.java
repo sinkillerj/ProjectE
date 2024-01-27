@@ -161,7 +161,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
+			WorldHelper.createLootDrop(drops, level, player.position());
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -508,7 +508,7 @@ public class ToolHelper {
 			}
 		}
 		if (hasAction) {
-			WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ());
+			WorldHelper.createLootDrop(drops, level, player.position());
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -544,7 +544,7 @@ public class ToolHelper {
 		ItemStack stack = player.getItemInHand(hand);
 		Predicate<BlockState> stateChecker = state -> ItemHelper.isOre(state) && stack.isCorrectToolForDrops(state);
 		AABB area = player.getBoundingBox().inflate(getCharge(stack) + 3);
-		return harvestVein(level, player, stack, area, stateChecker, drops -> WorldHelper.createLootDrop(drops, level, player.getX(), player.getY(), player.getZ()));
+		return harvestVein(level, player, stack, area, stateChecker, drops -> WorldHelper.createLootDrop(drops, level, player.position()));
 	}
 
 	public static InteractionResult harvestVein(Level level, Player player, ItemStack stack, AABB area, Predicate<BlockState> stateChecker,

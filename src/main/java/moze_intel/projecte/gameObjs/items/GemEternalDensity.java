@@ -137,7 +137,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 					List<ItemStack> items = getItems(stack);
 					if (!items.isEmpty()) {
-						WorldHelper.createLootDrop(items, level, player.getX(), player.getY(), player.getZ());
+						WorldHelper.createLootDrop(items, level, player.position());
 						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}

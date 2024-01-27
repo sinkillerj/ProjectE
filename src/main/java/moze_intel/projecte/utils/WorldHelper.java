@@ -12,6 +12,8 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
+import moze_intel.projecte.network.PacketUtils;
+import moze_intel.projecte.network.packets.to_client.NovaExplosionSyncPKT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -40,6 +42,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -80,9 +83,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.IPlantable;
 import net.neoforged.neoforge.common.IShearable;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriPredicate;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -105,6 +107,10 @@ public final class WorldHelper {
 		createLootDrop(drops, level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
+	public static void createLootDrop(List<ItemStack> drops, Level level, Vec3 pos) {
+		createLootDrop(drops, level, pos.x(), pos.y(), pos.z());
+	}
+
 	public static void createLootDrop(List<ItemStack> drops, Level level, double x, double y, double z) {
 		if (!drops.isEmpty()) {
 			ItemHelper.compactItemListNoStacksize(drops);
@@ -115,13 +121,23 @@ public final class WorldHelper {
 	}
 
 	/**
-	 * Equivalent of World.newExplosion
+	 * Equivalent of Level#explode and ServerLevel#explode
 	 */
 	public static void createNovaExplosion(Level level, Entity exploder, double x, double y, double z, float power) {
-		NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, Explosion.BlockInteraction.DESTROY);
-		if (!NeoForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion)).isCanceled()) {
-			explosion.explode();
-			explosion.finalizeExplosion(true);
+		if (level instanceof ServerLevel serverLevel) {
+			Explosion.BlockInteraction mode = level.getGameRules().getBoolean(GameRules.RULE_TNT_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY;
+			NovaExplosion explosion = new NovaExplosion(level, exploder, x, y, z, power, mode);
+			if (!EventHooks.onExplosionStart(level, explosion)) {
+				explosion.explode();
+				List<BlockPos> particlePositions = explosion.finalizeExplosion();
+				NovaExplosionSyncPKT packet = new NovaExplosionSyncPKT(explosion.center(), explosion.radius(), explosion.getExplosionSound(), particlePositions);
+				for (ServerPlayer player : serverLevel.players()) {
+					//Based on ServerLevel#explode's range check
+					if (player.distanceToSqr(x, y, z) < 4096.0) {
+						PacketUtils.sendTo(packet, player);
+					}
+				}
+			}
 		}
 	}
 
