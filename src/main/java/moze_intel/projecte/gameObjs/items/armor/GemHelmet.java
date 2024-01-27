@@ -28,7 +28,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,7 +92,7 @@ public class GemHelmet extends GemArmorBase {
 				Level level = player.level();
 				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
 				if (lightning != null) {
-					lightning.moveTo(Vec3.atCenterOf(strikePos));
+					lightning.moveTo(strikePos.getCenter());
 					lightning.setCause((ServerPlayer) player);
 					level.addFreshEntity(lightning);
 				}

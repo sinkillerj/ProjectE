@@ -17,6 +17,7 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -78,7 +79,7 @@ public final class EMCHelper {
 				} else if (!metRequirement) {
 					if (FuelMapper.isStackFuel(stack)) {
 						long emc = getEmcValue(stack);
-						int toRemove = (int) Math.ceil((double) (minFuel - emcConsumed) / emc);
+						int toRemove = Mth.ceil((double) (minFuel - emcConsumed) / emc);
 
 						if (stack.getCount() >= toRemove) {
 							map.put(i, toRemove);
@@ -164,7 +165,7 @@ public final class EMCHelper {
 		if (originalValue == 0) {
 			return 0;
 		}
-		long emc = (long) Math.floor(originalValue * ProjectEConfig.server.difficulty.covalenceLoss.get());
+		long emc = Mth.lfloor(originalValue * ProjectEConfig.server.difficulty.covalenceLoss.get());
 		if (emc < 1) {
 			if (ProjectEConfig.server.difficulty.covalenceLossRounding.get()) {
 				emc = 1;

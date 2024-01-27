@@ -156,7 +156,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
 		boolean sucked = false;
-		Vec3 target = Vec3.atCenterOf(pos);
+		Vec3 target = pos.getCenter();
 		for (ExperienceOrb orb : level.getEntitiesOfClass(ExperienceOrb.class, pedestal.getEffectBounds())) {
 			WorldHelper.gravitateEntityTowards(orb, target);
 			if (!level.isClientSide && orb.distanceToSqr(target) < 1.21) {

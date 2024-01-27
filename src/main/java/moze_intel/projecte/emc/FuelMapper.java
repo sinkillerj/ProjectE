@@ -25,7 +25,7 @@ public final class FuelMapper {
 				.flatMap(HolderSet::stream)
 				.map(Holder::value)
 				.filter(EMCHelper::doesItemHaveEmc)
-				.sorted(Comparator.comparing(EMCHelper::getEmcValue))
+				.sorted(Comparator.comparingLong(EMCHelper::getEmcValue))
 				.toList();
 	}
 

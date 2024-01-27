@@ -1,5 +1,7 @@
 package moze_intel.projecte.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public class AnnotationHelper {
 	public static List<INBTProcessor> getNBTProcessors() {
 		ModList modList = ModList.get();
 		List<INBTProcessor> nbtProcessors = new ArrayList<>();
-		Map<INBTProcessor, Integer> priorities = new HashMap<>();
+		Object2IntMap<INBTProcessor> priorities = new Object2IntOpenHashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (NBT_PROCESSOR_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -50,14 +51,14 @@ public class AnnotationHelper {
 				}
 			}
 		}
-		nbtProcessors.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
+		nbtProcessors.sort(Collections.reverseOrder(Comparator.comparingInt(priorities::getInt)));
 		return nbtProcessors;
 	}
 
 	public static List<IRecipeTypeMapper> getRecipeTypeMappers() {
 		ModList modList = ModList.get();
 		List<IRecipeTypeMapper> recipeTypeMappers = new ArrayList<>();
-		Map<IRecipeTypeMapper, Integer> priorities = new HashMap<>();
+		Object2IntMap<IRecipeTypeMapper> priorities = new Object2IntOpenHashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (RECIPE_TYPE_MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -72,7 +73,7 @@ public class AnnotationHelper {
 				}
 			}
 		}
-		recipeTypeMappers.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
+		recipeTypeMappers.sort(Collections.reverseOrder(Comparator.comparingInt(priorities::getInt)));
 		return recipeTypeMappers;
 	}
 
@@ -80,7 +81,7 @@ public class AnnotationHelper {
 	public static List<IEMCMapper<NormalizedSimpleStack, Long>> getEMCMappers() {
 		ModList modList = ModList.get();
 		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = new ArrayList<>();
-		Map<IEMCMapper<NormalizedSimpleStack, Long>, Integer> priorities = new HashMap<>();
+		Object2IntMap<IEMCMapper<NormalizedSimpleStack, Long>> priorities = new Object2IntOpenHashMap<>();
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -100,7 +101,7 @@ public class AnnotationHelper {
 				}
 			}
 		}
-		emcMappers.sort(Collections.reverseOrder(Comparator.comparing(priorities::get)));
+		emcMappers.sort(Collections.reverseOrder(Comparator.comparingInt(priorities::getInt)));
 		return emcMappers;
 	}
 

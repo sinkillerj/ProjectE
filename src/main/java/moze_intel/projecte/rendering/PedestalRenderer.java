@@ -44,7 +44,7 @@ public class PedestalRenderer implements BlockEntityRenderer<DMPedestalBlockEnti
 				long gameTime = pedestal.getLevel().getGameTime();
 				matrix.translate(0, Mth.sin((gameTime + partialTick) / 10.0F) * 0.1 + 0.1, 0);
 				matrix.scale(0.75F, 0.75F, 0.75F);
-				float angle = (gameTime + partialTick) / ((float) SharedConstants.TICKS_PER_SECOND) * (180F / (float) Math.PI);
+				float angle = (gameTime + partialTick) / ((float) SharedConstants.TICKS_PER_SECOND) * Mth.RAD_TO_DEG;
 				matrix.mulPose(Axis.YP.rotationDegrees(angle));
 				this.context.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlayLight, matrix, renderer, pedestal.getLevel(), (int) pedestal.getBlockPos().asLong());
 				matrix.popPose();

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
@@ -144,7 +143,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		}
 		knowledge = provider.getKnowledge().stream()
 				.filter(EMCHelper::doesItemHaveEmc)
-				.sorted(Collections.reverseOrder(Comparator.comparing(EMCHelper::getEmcValue)))
+				.sorted(Collections.reverseOrder(Comparator.comparingLong(EMCHelper::getEmcValue)))
 				.collect(Collectors.toList());//Note: cannot use .toList() as that is immutable, and we remove lower down
 		for (int i = 0; i < outputs.getSlots(); i++) {
 			outputs.setStackInSlot(i, ItemStack.EMPTY);

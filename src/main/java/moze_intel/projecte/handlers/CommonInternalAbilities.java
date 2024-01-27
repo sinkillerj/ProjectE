@@ -4,6 +4,7 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -24,11 +25,11 @@ public class CommonInternalAbilities {
 		WalkOnType waterWalkOnType = canWalkOnWater(player);
 		WalkOnType lavaWalkOnType = canWalkOnLava(player);
 		if (waterWalkOnType.canWalk() || lavaWalkOnType.canWalk()) {
-			int x = (int) Math.floor(player.getX());
+			int x = Mth.floor(player.getX());
 			//TODO - 1.20.4: FIGURE THIS OUT and why we even use the riding offset
 			//int y = (int) (player.getY() - player.getMyRidingOffset());
 			int y = (int) (player.getY() - (player.getVehicle() == null ? 0 : player.getMyRidingOffset(player.getVehicle())));
-			int z = (int) Math.floor(player.getZ());
+			int z = Mth.floor(player.getZ());
 			BlockPos pos = new BlockPos(x, y, z);
 			FluidState below = player.level().getFluidState(pos.below());
 			boolean water = waterWalkOnType.canWalk() && below.is(FluidTags.WATER);

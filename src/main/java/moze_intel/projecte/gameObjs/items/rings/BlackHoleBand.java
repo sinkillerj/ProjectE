@@ -93,7 +93,7 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	@Override
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
-		Vec3 target = Vec3.atCenterOf(pos);
+		Vec3 target = pos.getCenter();
 		Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
 		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, pedestal.getEffectBounds(), ent -> !ent.isSpectator() && ent.isAlive())) {
 			WorldHelper.gravitateEntityTowards(item, target);

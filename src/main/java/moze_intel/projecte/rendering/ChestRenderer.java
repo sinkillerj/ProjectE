@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -53,7 +54,7 @@ public class ChestRenderer implements BlockEntityRenderer<EmcChestBlockEntity> {
 		float lidAngle = 1.0F - chest.getOpenNess(partialTick);
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 		VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
-		lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
+		lid.xRot = -(lidAngle * Mth.HALF_PI);
 		lock.xRot = lid.xRot;
 		lid.render(matrix, builder, light, overlayLight);
 		lock.render(matrix, builder, light, overlayLight);

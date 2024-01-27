@@ -6,8 +6,6 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -20,7 +18,6 @@ import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
@@ -71,7 +68,7 @@ public class EntitySWRGProjectile extends NoGravityThrowableProjectile {
 				BlockPos pos = result.getBlockPos();
 				LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level());
 				if (lightning != null) {
-					lightning.moveTo(Vec3.atCenterOf(pos));
+					lightning.moveTo(pos.getCenter());
 					lightning.setCause(player);
 					level().addFreshEntity(lightning);
 				}
