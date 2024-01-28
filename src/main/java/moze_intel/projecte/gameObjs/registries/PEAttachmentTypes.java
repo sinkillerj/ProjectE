@@ -41,10 +41,6 @@ public class PEAttachmentTypes {
 
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<KnowledgeAttachment>> KNOWLEDGE = ATTACHMENT_TYPES.register("knowledge",
 			() -> AttachmentType.serializable(KnowledgeAttachment::new)
-					//Note: Technically this comparator is not needed as by default neo only checks for attachment compatability for item stacks,
-					// but we set it regardless just so that if anyone is checking it for entities then they can bypass the serialization for it
-					//TODO - 1.20.4: Re-evaluate
-					//.comparator(Objects::equals)
 					.copyOnDeath()
 					.build()
 	);

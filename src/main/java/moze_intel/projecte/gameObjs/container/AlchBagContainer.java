@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -85,6 +86,16 @@ public class AlchBagContainer extends PEHandContainer {
 			};
 		}
 		return super.createHotBarSlot(inv, index, x, y);
+	}
+
+	@Override
+	public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
+		return !immutable && super.canTakeItemForPickAll(stack, slot);
+	}
+
+	@Override
+	public boolean canDragTo(@NotNull Slot slot) {
+		return !immutable && super.canDragTo(slot);
 	}
 
 	@NotNull

@@ -504,7 +504,6 @@ public final class WorldHelper {
 				.orElse(fallback);
 	}
 
-	//TODO - 1.20.4: Test this
 	public static int harvestVein(Level level, Player player, ItemStack stack, AABB area, List<ItemStack> currentDrops, Predicate<BlockState> stateChecker) {
 		record TargetInfo(BlockPos pos, BlockState state) {
 		}

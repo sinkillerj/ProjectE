@@ -129,7 +129,6 @@ public class ShowBagCMD {
 				CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
 				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
 					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
-					//TODO - 1.20.4: TEST THIS, and also see how it behaves in regards to mutating? As I think this is used at times regardless?
 					AlchemicalBagAttachment attachment = new AlchemicalBagAttachment();
 					attachment.deserializeNBT(attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString()));
 
