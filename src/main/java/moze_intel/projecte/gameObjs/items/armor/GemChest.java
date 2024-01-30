@@ -8,6 +8,7 @@ import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -31,13 +32,14 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 	}
 
 	@Override
-	public void onArmorTick(ItemStack chest, Level level, Player player) {
-		if (!level.isClientSide) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (isArmorSlot(slot) && !level.isClientSide && entity instanceof Player player) {
 			InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
 			timers.activateFeed();
 			if (player.getFoodData().needsFood() && timers.canFeed()) {
 				player.getFoodData().eat(2, 10);
-				player.gameEvent(GameEvent.EAT);
+				entity.gameEvent(GameEvent.EAT);
 			}
 		}
 	}

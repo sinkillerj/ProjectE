@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -40,11 +39,11 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int inventorySlot, boolean held) {
-		if (level.isClientSide || inventorySlot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
-		super.inventoryTick(stack, level, entity, inventorySlot, held);
 		CompoundTag nbt = stack.getOrCreateTag();
 		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {

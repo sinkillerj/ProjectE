@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -72,5 +73,9 @@ public class ItemPE extends Item {
 			removeEmc(stack, amount);
 		}
 		return true;
+	}
+
+	public static boolean hotBarOrOffHand(int slot) {
+		return slot < Inventory.getSelectionSize() || slot == Inventory.SLOT_OFFHAND;
 	}
 }

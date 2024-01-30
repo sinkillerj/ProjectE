@@ -1,5 +1,6 @@
 package moze_intel.projecte.integration.curios;
 
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -17,7 +18,8 @@ public record CurioItemCapability(ItemStack stack) implements ICurio {
 	@Override
 	public void curioTick(SlotContext context) {
 		if (!context.cosmetic()) {
-			getStack().inventoryTick(context.entity().level(), context.entity(), context.index(), false);
+			//Note: We act as if curios are being held by the offhand when it comes to ticking
+			getStack().inventoryTick(context.entity().level(), context.entity(), Inventory.SLOT_OFFHAND, false);
 		}
 	}
 

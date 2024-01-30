@@ -178,7 +178,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IPedes
 		}
 
 		private boolean isWater(FluidStack stack) {
-			return stack.getFluid().is(FluidTags.WATER);
+			return stack.is(FluidTags.WATER);
 		}
 
 		@NotNull

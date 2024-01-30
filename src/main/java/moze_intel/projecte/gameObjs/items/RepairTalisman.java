@@ -44,7 +44,8 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int invSlot, boolean isSelected) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
 		if (!level.isClientSide && entity instanceof Player player) {
 			InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
 			timers.activateRepair();

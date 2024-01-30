@@ -22,7 +22,6 @@ import moze_intel.projecte.common.tag.PEItemTagsProvider;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
@@ -64,7 +63,7 @@ public class ProjectEDataGenerator {
 		gen.addProvider(event.includeServer(), new LootTableProvider(output, Collections.emptySet(), List.of(
 				new SubProviderEntry(PEBlockLootTable::new, LootContextParamSets.BLOCK)
 		)));
-		gen.addProvider(event.includeServer(), new PERecipeProvider(output, lookupProvider));
+		gen.addProvider(event.includeServer(), new PERecipeProvider(output));
 		gen.addProvider(event.includeServer(), new PECustomConversionProvider(output, lookupProvider));
 	}
 }

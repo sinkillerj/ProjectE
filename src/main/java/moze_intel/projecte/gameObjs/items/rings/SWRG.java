@@ -30,7 +30,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -98,8 +97,9 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int invSlot, boolean isHeldItem) {
-		if (invSlot < Inventory.getSelectionSize() && entity instanceof Player player) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (hotBarOrOffHand(slot) && entity instanceof Player player) {
 			tick(stack, player);
 		}
 	}

@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
@@ -68,8 +69,9 @@ public class GemHelmet extends GemArmorBase {
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level level, Player player) {
-		if (!level.isClientSide) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (isArmorSlot(slot) && !level.isClientSide && entity instanceof Player player) {
 			InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
 			timers.activateHeal();
 			if (player.getHealth() < player.getMaxHealth() && timers.canHeal()) {

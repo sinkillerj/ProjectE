@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -73,23 +74,26 @@ public class GemFeet extends GemArmorBase implements IFlightProvider, IStepAssis
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level level, Player player) {
-		if (!level.isClientSide) {
-			player.fallDistance = 0;
-		} else {
-			boolean flying = player.getAbilities().flying;
-			if (!flying && isJumpPressed()) {
-				player.addDeltaMovement(VERTICAL_MOVEMENT);
-			}
-			if (!player.onGround()) {
-				if (player.getDeltaMovement().y() <= 0) {
-					player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (isArmorSlot(slot) && entity instanceof Player player) {
+			if (!level.isClientSide) {
+				player.fallDistance = 0;
+			} else {
+				boolean flying = player.getAbilities().flying;
+				if (!flying && isJumpPressed()) {
+					player.addDeltaMovement(VERTICAL_MOVEMENT);
 				}
-				if (!flying) {
-					if (player.zza < 0) {
-						player.setDeltaMovement(player.getDeltaMovement().multiply(0.9, 1, 0.9));
-					} else if (player.zza > 0 && player.getDeltaMovement().lengthSqr() < 3) {
-						player.setDeltaMovement(player.getDeltaMovement().multiply(1.1, 1, 1.1));
+				if (!player.onGround()) {
+					if (player.getDeltaMovement().y() <= 0) {
+						player.setDeltaMovement(player.getDeltaMovement().multiply(1, 0.9, 1));
+					}
+					if (!flying) {
+						if (player.zza < 0) {
+							player.setDeltaMovement(player.getDeltaMovement().multiply(0.9, 1, 0.9));
+						} else if (player.zza > 0 && player.getDeltaMovement().lengthSqr() < 3) {
+							player.setDeltaMovement(player.getDeltaMovement().multiply(1.1, 1, 1.1));
+						}
 					}
 				}
 			}

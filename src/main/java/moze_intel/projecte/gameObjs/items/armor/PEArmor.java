@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.function.Consumer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
@@ -59,5 +59,9 @@ public abstract class PEArmor extends ArmorItem {
 			return 0.3F;
 		}
 		return 0;
+	}
+
+	protected static boolean isArmorSlot(int slot) {
+		return slot >= Inventory.INVENTORY_SIZE && slot < Inventory.INVENTORY_SIZE + 4;
 	}
 }

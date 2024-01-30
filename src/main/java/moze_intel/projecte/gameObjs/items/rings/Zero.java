@@ -5,9 +5,9 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
+import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.Constants;
@@ -22,7 +22,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -48,9 +47,9 @@ public class Zero extends PEToggleItem implements IPedestalItem, IItemCharge, IB
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean held) {
-		super.inventoryTick(stack, level, entity, slot, held);
-		if (!level.isClientSide && entity instanceof Player player && slot < Inventory.getSelectionSize() && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (!level.isClientSide && entity instanceof Player player && hotBarOrOffHand(slot) && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
 			WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(3), player, true);
 		}
 	}

@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items.tools;
 
 import com.google.common.collect.Multimap;
 import java.util.List;
-import java.util.Random;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
@@ -25,7 +24,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,8 +32,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -177,19 +175,14 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
 		if (entity instanceof IShearable target) {
 			BlockPos pos = entity.blockPosition();
-			if (target.isShearable(stack, entity.level(), pos)) {
-				if (!entity.level().isClientSide) {
-					List<ItemStack> drops = target.onSheared(player, stack, entity.level(), pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
-					Random rand = new Random();
-					drops.forEach(d -> {
-						ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
-						if (ent != null) {
-							ent.addDeltaMovement(new Vec3((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F,
-									(rand.nextFloat() - rand.nextFloat()) * 0.1F));
-						}
-					});
+			Level level = entity.level();
+			if (target.isShearable(stack, level, pos)) {
+				if (!level.isClientSide) {
+					target.onSheared(player, stack, level, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE))
+							.forEach(drop -> target.spawnShearedDrop(level, pos, drop));
+					entity.gameEvent(GameEvent.SHEAR, player);
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
 		}
 		return InteractionResult.PASS;

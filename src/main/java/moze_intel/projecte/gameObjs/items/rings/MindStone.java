@@ -15,7 +15,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,15 +33,14 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean held) {
-		if (level.isClientSide || slot >= Inventory.getSelectionSize() || !(entity instanceof Player player)) {
-			return;
-		}
-		super.inventoryTick(stack, level, entity, slot, held);
-		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
-			int toAdd = Math.min(getXP(player), TRANSFER_RATE);
-			addStoredXP(stack, toAdd);
-			removeXP(player, TRANSFER_RATE);
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
+		super.inventoryTick(stack, level, entity, slot, isHeld);
+		if (!level.isClientSide && hotBarOrOffHand(slot) && entity instanceof Player player) {
+			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
+				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
+				addStoredXP(stack, toAdd);
+				removeXP(player, TRANSFER_RATE);
+			}
 		}
 	}
 

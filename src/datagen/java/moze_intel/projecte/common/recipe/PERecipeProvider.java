@@ -1,6 +1,5 @@
 package moze_intel.projecte.common.recipe;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import moze_intel.projecte.PECore;
@@ -22,7 +21,6 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -51,8 +49,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PERecipeProvider extends RecipeProvider {
 
-	public PERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(output, lookupProvider);
+	public PERecipeProvider(PackOutput output) {
+		super(output);
 	}
 
 	@Override
