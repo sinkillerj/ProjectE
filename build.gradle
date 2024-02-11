@@ -8,7 +8,7 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.84'//https://projects.neoforged.net/neoforged/neogradle
+    id 'net.neoforged.gradle.userdev' version '7.0.93'//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -240,10 +240,9 @@ dependencies {
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    //TODO - 1.20.4: Re-enable after top updates
-    /*runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }*/
+    }
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     //TODO - 1.20.4: Re-enable after jade updates
     //runtimeOnly("curse.maven:jade-324717:${jade_id}")

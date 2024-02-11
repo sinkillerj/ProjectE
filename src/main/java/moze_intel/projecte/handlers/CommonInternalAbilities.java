@@ -65,19 +65,19 @@ public class CommonInternalAbilities {
 	}
 
 	private WalkOnType canWalkOnWater(Player player) {
-		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.EVERTIDE_AMULET.get())) {
+		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.is(PEItems.EVERTIDE_AMULET))) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
 		ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-		return !helmet.isEmpty() && helmet.getItem() == PEItems.GEM_HELMET.get() ? WalkOnType.ABLE : WalkOnType.UNABLE;
+		return !helmet.isEmpty() && helmet.is(PEItems.GEM_HELMET) ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
 	private WalkOnType canWalkOnLava(Player player) {
-		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.VOLCANITE_AMULET.get())) {
+		if (PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.is(PEItems.VOLCANITE_AMULET))) {
 			return WalkOnType.ABLE_WITH_SPEED;
 		}
 		ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-		return !chestplate.isEmpty() && chestplate.getItem() == PEItems.GEM_CHESTPLATE.get() ? WalkOnType.ABLE : WalkOnType.UNABLE;
+		return !chestplate.isEmpty() && chestplate.is(PEItems.GEM_CHESTPLATE) ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
 	private enum WalkOnType {

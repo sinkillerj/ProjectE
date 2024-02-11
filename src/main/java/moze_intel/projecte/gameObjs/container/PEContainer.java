@@ -9,13 +9,11 @@ import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.IPEPacket;
-import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +24,6 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
 	protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
 	protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
-	// Vanilla only syncs int fields in the superclass as shorts (yay legacy)
-	// here we hold fields we really want to use 32 bits for
-	private final List<DataSlot> intFields = new ArrayList<>();
 	protected final List<BoxedLong> longFields = new ArrayList<>();
 	protected final Inventory playerInv;
 
@@ -175,17 +170,6 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		longFields.get(idx).set(data);
 	}
 
-	public final void updateProgressBarInt(int idx, int data) {
-		intFields.get(idx).set(data);
-	}
-
-	@NotNull
-	@Override
-	protected DataSlot addDataSlot(@NotNull DataSlot referenceHolder) {
-		intFields.add(referenceHolder);
-		return referenceHolder;
-	}
-
 	protected void broadcastPE(boolean all) {
 		//Note: We use the old way of comparing if it is dirty rather than storing a separate list
 		// and comparing entries as there is no real reason to do that if we already have a concept
@@ -195,13 +179,6 @@ public abstract class PEContainer extends AbstractContainerMenu {
 			//Note: Check all after isDirty as the isDirty resets the dirty state
 			if (boxedLong.isDirty() || all) {
 				syncDataChange(new UpdateWindowLongPKT((short) containerId, (short) i, boxedLong.get()));
-			}
-		}
-		for (int i = 0; i < intFields.size(); i++) {
-			DataSlot referenceHolder = intFields.get(i);
-			//Note: Check all after isDirty as the isDirty resets the dirty state
-			if (referenceHolder.checkAndClearUpdateFlag() || all) {
-				syncDataChange(new UpdateWindowIntPKT((short) containerId, (short) i, referenceHolder.get()));
 			}
 		}
 	}

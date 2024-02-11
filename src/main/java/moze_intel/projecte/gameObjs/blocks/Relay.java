@@ -1,15 +1,24 @@
 package moze_intel.projecte.gameObjs.blocks;
 
+import java.util.List;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumRelayTier;
 import moze_intel.projecte.gameObjs.block_entities.RelayMK1BlockEntity;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
+import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -42,6 +51,15 @@ public class Relay extends BlockDirection implements PEEntityBlock<RelayMK1Block
 			player.openMenu(relay, pos);
 		}
 		return InteractionResult.CONSUME;
+	}
+
+	@Override
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flag) {
+		super.appendHoverText(stack, level, tooltips, flag);
+		if (ProjectEConfig.client.statToolTips.get()) {
+			tooltips.add(PELang.EMC_MAX_OUTPUT_RATE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getChargeRate())));
+			tooltips.add(PELang.EMC_MAX_STORAGE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, Constants.EMC_FORMATTER.format(tier.getStorage())));
+		}
 	}
 
 	@Nullable

@@ -65,7 +65,7 @@ public final class PlayerHelper {
 	}
 
 	public static ItemStack findFirstItem(Player player, Item consumeFrom) {
-		return player.getInventory().items.stream().filter(s -> !s.isEmpty() && s.getItem() == consumeFrom).findFirst().orElse(ItemStack.EMPTY);
+		return player.getInventory().items.stream().filter(s -> !s.isEmpty() && s.is(consumeFrom)).findFirst().orElse(ItemStack.EMPTY);
 	}
 
 	public static boolean checkArmorHotbarCurios(Player player, Predicate<ItemStack> checker) {

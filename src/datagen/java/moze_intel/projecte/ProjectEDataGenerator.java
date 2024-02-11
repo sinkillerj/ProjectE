@@ -10,6 +10,7 @@ import moze_intel.projecte.client.lang.PELangProvider;
 import moze_intel.projecte.client.sound.PESoundProvider;
 import moze_intel.projecte.common.PEAdvancementsGenerator;
 import moze_intel.projecte.common.PECustomConversionProvider;
+import moze_intel.projecte.common.PEDataMapsProvider;
 import moze_intel.projecte.common.PEDatapackRegistryProvider;
 import moze_intel.projecte.common.PEPackMetadataGenerator;
 import moze_intel.projecte.common.loot.PEBlockLootTable;
@@ -64,6 +65,7 @@ public class ProjectEDataGenerator {
 				new SubProviderEntry(PEBlockLootTable::new, LootContextParamSets.BLOCK)
 		)));
 		gen.addProvider(event.includeServer(), new PERecipeProvider(output));
+		gen.addProvider(event.includeServer(), new PEDataMapsProvider(output, lookupProvider));
 		gen.addProvider(event.includeServer(), new PECustomConversionProvider(output, lookupProvider));
 	}
 }

@@ -1,10 +1,8 @@
 package moze_intel.projecte.gameObjs.registries;
 
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.EnumFuelType;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
-import moze_intel.projecte.gameObjs.items.AlchemicalFuel;
 import moze_intel.projecte.gameObjs.items.CataliticLens;
 import moze_intel.projecte.gameObjs.items.DestructionCatalyst;
 import moze_intel.projecte.gameObjs.items.DiviningRod;
@@ -90,9 +88,9 @@ public class PEItems {
 	public static final ItemRegistryObject<KleinStar> KLEIN_STAR_SPHERE = registerKleinStar(EnumKleinTier.SPHERE);
 	public static final ItemRegistryObject<KleinStar> KLEIN_STAR_OMEGA = registerKleinStar(EnumKleinTier.OMEGA);
 
-	public static final ItemRegistryObject<AlchemicalFuel> ALCHEMICAL_COAL = registerAlchemicalFuel(EnumFuelType.ALCHEMICAL_COAL);
-	public static final ItemRegistryObject<AlchemicalFuel> MOBIUS_FUEL = registerAlchemicalFuel(EnumFuelType.MOBIUS_FUEL);
-	public static final ItemRegistryObject<AlchemicalFuel> AETERNALIS_FUEL = registerAlchemicalFuel(EnumFuelType.AETERNALIS_FUEL);
+	public static final ItemRegistryObject<Item> ALCHEMICAL_COAL = ITEMS.register("alchemical_coal");
+	public static final ItemRegistryObject<Item> MOBIUS_FUEL = ITEMS.register("mobius_fuel");
+	public static final ItemRegistryObject<Item> AETERNALIS_FUEL = ITEMS.registerSimple("aeternalis_fuel", properties -> new Item(properties.rarity(Rarity.RARE)));
 	public static final ItemRegistryObject<Item> DARK_MATTER = ITEMS.registerFireImmune("dark_matter");
 	public static final ItemRegistryObject<Item> RED_MATTER = ITEMS.registerFireImmune("red_matter");
 
@@ -169,15 +167,6 @@ public class PEItems {
 				properties = properties.rarity(Rarity.EPIC);
 			}
 			return new KleinStar(properties, tier);
-		});
-	}
-
-	private static ItemRegistryObject<AlchemicalFuel> registerAlchemicalFuel(EnumFuelType fuelType) {
-		return ITEMS.registerSimple(fuelType.getSerializedName(), properties -> {
-			if (fuelType == EnumFuelType.AETERNALIS_FUEL) {
-				properties = properties.rarity(Rarity.RARE);
-			}
-			return new AlchemicalFuel(properties, fuelType);
 		});
 	}
 

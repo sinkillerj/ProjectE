@@ -1,0 +1,22 @@
+{
+  "values": {
+    "projecte:aeternalis_fuel": {
+      "burn_time": 102400
+    },
+    "projecte:aeternalis_fuel_block": {
+      "burn_time": 921600
+    },
+    "projecte:alchemical_coal": {
+      "burn_time": 6400
+    },
+    "projecte:alchemical_coal_block": {
+      "burn_time": 57600
+    },
+    "projecte:mobius_fuel": {
+      "burn_time": 25600
+    },
+    "projecte:mobius_fuel_block": {
+      "burn_time": 230400
+    }
+  }
+}

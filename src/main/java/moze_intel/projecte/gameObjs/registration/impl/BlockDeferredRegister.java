@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import moze_intel.projecte.gameObjs.registration.DoubleDeferredRegister;
@@ -21,11 +20,11 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 	}
 
 	public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
-		return registerDefaultProperties(name, () -> new Block(properties), BlockItem::new);
+		return register(name, () -> new Block(properties));
 	}
 
 	public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
-		return registerDefaultProperties(name, blockSupplier, BlockItem::new);
+		return register(name, blockSupplier, block -> new BlockItem(block, new Item.Properties()));
 	}
 
 	public <BLOCK extends Block, WALL_BLOCK extends Block> WallOrFloorBlockRegistryObject<BLOCK, WALL_BLOCK, StandingAndWallBlockItem> registerWallOrFloorItem(String name,
@@ -35,11 +34,6 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 		DeferredHolder<Block, WALL_BLOCK> wallObject = primaryRegister.register("wall_" + name, () -> wallBlockSupplier.apply(baseProperties.lootFrom(primaryObject)));
 		return new WallOrFloorBlockRegistryObject<>(primaryObject, wallObject, secondaryRegister.register(name, () -> new StandingAndWallBlockItem(primaryObject.get(), wallObject.get(),
 				new Item.Properties(), Direction.DOWN)));
-	}
-
-	public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerDefaultProperties(String name, Supplier<? extends BLOCK> blockSupplier,
-			BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-		return register(name, blockSupplier, block -> itemCreator.apply(block, new Item.Properties()));
 	}
 
 	public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,

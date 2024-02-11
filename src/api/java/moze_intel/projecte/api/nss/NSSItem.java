@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,16 +71,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		if (stack.isEmpty()) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		if (stack.isDamageableItem() && stack.hasTag()) {
-			//If the stack is damageable check if the NBT is identical to what it would be without the damage attached
-			// as creating a new ItemStack auto sets the NBT for the damage value, which we ideally do not want as it may
-			// throw off various calculations
-			if (stack.getOrCreateTag().equals(new ItemStack(stack.getItem()).getTag())) {
-				//Skip including the NBT for the item as it auto gets added on stack creation anyways
-				return createItem(stack.getItem(), null);
-			}
-		}
-		return createItem(stack.getItem(), stack.getTag());
+		//Skip adding any nbt that will be added by default
+		return createItem(stack.getItem(), CraftingHelper.getTagForWriting(stack));
 	}
 
 	/**

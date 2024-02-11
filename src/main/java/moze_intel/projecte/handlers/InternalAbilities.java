@@ -122,7 +122,7 @@ public final class InternalAbilities {
 	}
 
 	private boolean hasSwrg(Player player) {
-		return PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.getItem() == PEItems.SWIFTWOLF_RENDING_GALE.get());
+		return PlayerHelper.checkHotbarCurios(player, stack -> !stack.isEmpty() && stack.is(PEItems.SWIFTWOLF_RENDING_GALE));
 	}
 
 	public void enableSwrgFlightOverride() {

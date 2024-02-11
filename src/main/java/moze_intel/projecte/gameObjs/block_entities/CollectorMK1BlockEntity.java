@@ -221,7 +221,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						auxSlots.setStackInSlot(UPGRADE_SLOT, result);
 						upgrading.shrink(1);
-					} else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize()) {
+					} else if (result.is(upgrade.getItem()) && upgrade.getCount() < upgrade.getMaxStackSize()) {
 						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
 						upgrade.grow(1);
 						upgrading.shrink(1);

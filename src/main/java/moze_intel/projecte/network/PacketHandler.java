@@ -13,7 +13,6 @@ import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
 import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateCondenserLockPKT;
-import moze_intel.projecte.network.packets.to_client.UpdateWindowIntPKT;
 import moze_intel.projecte.network.packets.to_client.UpdateWindowLongPKT;
 import moze_intel.projecte.network.packets.to_client.configuration.SyncAllEmcData;
 import moze_intel.projecte.network.packets.to_client.configuration.SyncFuelData;
@@ -113,7 +112,6 @@ public final class PacketHandler {
 				PacketUtils.container(context, TransmutationContainer.class)
 						.ifPresent(container -> container.transmutationInventory.updateClientTargets())
 		);
-		registrar.play(UpdateWindowIntPKT.ID, UpdateWindowIntPKT::new);
 		registrar.play(UpdateWindowLongPKT.ID, UpdateWindowLongPKT::new);
 	}
 

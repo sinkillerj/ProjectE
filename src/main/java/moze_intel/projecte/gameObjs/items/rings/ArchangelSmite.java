@@ -51,7 +51,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt) {
-		if (!evt.getLevel().isClientSide && evt.getUseItem() != Event.Result.DENY && !evt.getItemStack().isEmpty() && evt.getItemStack().getItem() == this) {
+		if (!evt.getLevel().isClientSide && evt.getUseItem() != Event.Result.DENY && !evt.getItemStack().isEmpty() && evt.getItemStack().is(this)) {
 			fireVolley(evt.getItemStack(), evt.getEntity());
 		}
 	}
