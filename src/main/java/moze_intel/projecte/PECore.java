@@ -16,6 +16,7 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.mappers.recipe.CraftingMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.rings.Arcana;
+import moze_intel.projecte.gameObjs.items.rings.Arcana.ArcanaMode;
 import moze_intel.projecte.gameObjs.registries.PEArgumentTypes;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
@@ -192,7 +193,7 @@ public class PECore {
 				protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
 					//[VanillaCopy] Based off the flint and steel dispense behavior
 					if (stack.getItem() instanceof Arcana item) {
-						if (item.getMode(stack) != 1) {
+						if (item.getMode(stack) != ArcanaMode.IGNITION) {
 							//Only allow using the arcana ring to ignite things when on ignition mode
 							setSuccess(false);
 							return super.execute(source, stack);

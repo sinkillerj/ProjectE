@@ -1,8 +1,9 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.utils.Constants;
+import java.util.Objects;
+import moze_intel.projecte.api.capabilities.item.IModeChanger;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -19,30 +20,24 @@ public class ItemPE extends Item {
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
 		if (oldStack.getItem() != newStack.getItem()) {
 			return true;
+		} else if (oldStack.getData(PEAttachmentTypes.ACTIVE) != newStack.getData(PEAttachmentTypes.ACTIVE)) {
+			return true;
 		}
-		if (oldStack.hasTag() && newStack.hasTag()) {
-			CompoundTag newTag = newStack.getOrCreateTag();
-			CompoundTag oldTag = oldStack.getOrCreateTag();
-			boolean diffActive = oldTag.contains(Constants.NBT_KEY_ACTIVE) && newTag.contains(Constants.NBT_KEY_ACTIVE)
-								 && !oldTag.get(Constants.NBT_KEY_ACTIVE).equals(newTag.get(Constants.NBT_KEY_ACTIVE));
-			boolean diffMode = oldTag.contains(Constants.NBT_KEY_MODE) && newTag.contains(Constants.NBT_KEY_MODE)
-							   && !oldTag.get(Constants.NBT_KEY_MODE).equals(newTag.get(Constants.NBT_KEY_MODE));
-			return diffActive || diffMode;
-		}
-		return false;
+		//TODO - 1.20.4: Evaluate this and test it
+		return this instanceof IModeChanger<?> modeChanger && modeMatches(modeChanger, oldStack, newStack);
+	}
+
+	private static <MODE> boolean modeMatches(IModeChanger<MODE> modeChanger, ItemStack oldStack, ItemStack newStack) {
+		return Objects.equals(modeChanger.getMode(oldStack), modeChanger.getMode(newStack));
 	}
 
 	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmc(ItemStack stack) {
-		return stack.hasTag() ? stack.getTag().getLong(Constants.NBT_KEY_STORED_EMC) : 0;
+		return stack.hasData(PEAttachmentTypes.STORED_EMC) ? stack.getData(PEAttachmentTypes.STORED_EMC) : 0;
 	}
 
 	public static void setEmc(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-		setEmc(stack.getOrCreateTag(), amount);
-	}
-
-	public static void setEmc(CompoundTag nbt, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-		nbt.putLong(Constants.NBT_KEY_STORED_EMC, amount);
+		stack.setData(PEAttachmentTypes.STORED_EMC, amount);
 	}
 
 	public static void addEmcToStack(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {

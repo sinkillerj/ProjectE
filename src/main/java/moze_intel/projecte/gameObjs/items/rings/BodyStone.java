@@ -10,7 +10,6 @@ import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
@@ -41,10 +40,10 @@ public class BodyStone extends PEToggleItem implements IPedestalItem, ICapabilit
 			return;
 		}
 		CompoundTag nbt = stack.getOrCreateTag();
-		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			long itemEmc = getEmc(stack);
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false)) {
-				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				stack.removeData(PEAttachmentTypes.ACTIVE);
 			} else {
 				InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
 				timers.activateFeed();

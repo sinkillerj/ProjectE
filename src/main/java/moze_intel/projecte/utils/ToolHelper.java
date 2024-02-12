@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.items.tools.PEPickaxe.PickaxeMode;
 import moze_intel.projecte.gameObjs.registries.PEDamageTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.core.BlockPos;
@@ -297,13 +297,8 @@ public class ToolHelper {
 	/**
 	 * Called by multiple tools' left click function. Charge has no effect. Free operation.
 	 */
-	public static void digBasedOnMode(ItemStack stack, Level level, BlockPos pos, LivingEntity living, RayTracePointer tracePointer) {
-		if (level.isClientSide || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof Player player)) {
-			return;
-		}
-		byte mode = getMode(stack);
-		if (mode == 0) {
-			//Standard
+	public static void digBasedOnMode(ItemStack stack, Level level, BlockPos pos, LivingEntity living, RayTracePointer tracePointer, PickaxeMode mode) {
+		if (level.isClientSide || mode == PickaxeMode.STANDARD || ProjectEConfig.server.items.disableAllRadiusMining.get() || !(living instanceof Player player)) {
 			return;
 		}
 		BlockHitResult result = tracePointer.rayTrace(level, player, ClipContext.Fluid.NONE);
@@ -326,18 +321,16 @@ public class ToolHelper {
 		WorldHelper.createLootDrop(drops, level, pos);
 	}
 
-	private static Iterable<BlockPos> getTargets(BlockPos pos, Player player, Direction sideHit, byte mode) {
+	private static Iterable<BlockPos> getTargets(BlockPos pos, Player player, Direction sideHit, PickaxeMode mode) {
 		return switch (mode) {
-			//3x Tallshot
-			case 1 -> BlockPos.betweenClosed(pos.below(), pos.above());
-			//3x Wideshot (if the axis is vertical then try to use the player's facing direction to determine which direction to break
-			case 2 -> switch (sideHit.getAxis() == Axis.Y ? player.getDirection().getAxis() : sideHit.getAxis()) {
+			case TALLSHOT -> BlockPos.betweenClosed(pos.below(), pos.above());
+			//if the axis is vertical then try to use the player's facing direction to determine which direction to break
+			case WIDESHOT -> switch (sideHit.getAxis() == Axis.Y ? player.getDirection().getAxis() : sideHit.getAxis()) {
 				case X -> BlockPos.betweenClosed(pos.south(), pos.north());
 				case Z -> BlockPos.betweenClosed(pos.west(), pos.east());
 				default -> Collections.singleton(pos);
 			};
-			//3x Longshot
-			case 3 -> BlockPos.betweenClosed(pos, pos.relative(sideHit.getOpposite(), 2));
+			case LONGSHOT -> BlockPos.betweenClosed(pos, pos.relative(sideHit.getOpposite(), 2));
 			default -> Collections.singleton(pos);
 		};
 	}
@@ -577,11 +570,6 @@ public class ToolHelper {
 	private static int getCharge(ItemStack stack) {
 		IItemCharge charge = stack.getCapability(PECapabilities.CHARGE_ITEM_CAPABILITY);
 		return charge == null ? 0 : charge.getCharge(stack);
-	}
-
-	private static byte getMode(ItemStack stack) {
-		IModeChanger itemMode = stack.getCapability(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY);
-		return itemMode == null ? 0 : itemMode.getMode(stack);
 	}
 
 	private interface IToolAOEData {

@@ -6,11 +6,11 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IItemMode;
+import moze_intel.projecte.gameObjs.items.tools.PEPickaxe.PickaxeMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
-import moze_intel.projecte.utils.text.ILangEntry;
-import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -31,25 +31,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PEMorningStar extends PETool implements IItemMode {
+public class PEMorningStar extends PETool implements IItemMode<PickaxeMode> {
 
 	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
-	private final ILangEntry[] modeDesc;
 
 	public PEMorningStar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_MORNING_STAR, 16, -3, numCharges, props);
-		modeDesc = new ILangEntry[]{PELang.MODE_MORNING_STAR_1, PELang.MODE_MORNING_STAR_2, PELang.MODE_MORNING_STAR_3, PELang.MODE_MORNING_STAR_4};
-	}
-
-	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modeDesc;
 	}
 
 	@Override
@@ -72,7 +66,7 @@ public class PEMorningStar extends PETool implements IItemMode {
 
 	@Override
 	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity living) {
-		ToolHelper.digBasedOnMode(stack, level, pos, living, Item::getPlayerPOVHitResult);
+		ToolHelper.digBasedOnMode(stack, level, pos, living, Item::getPlayerPOVHitResult, getMode(stack));
 		return true;
 	}
 
@@ -129,5 +123,10 @@ public class PEMorningStar extends PETool implements IItemMode {
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, ItemStack stack) {
 		return attributeCache.addChargeAttributeModifier(super.getAttributeModifiers(slot, stack), slot, stack);
+	}
+
+	@Override
+	public AttachmentType<PickaxeMode> getAttachmentType() {
+		return PEAttachmentTypes.PICKAXE_MODE.get();
 	}
 }

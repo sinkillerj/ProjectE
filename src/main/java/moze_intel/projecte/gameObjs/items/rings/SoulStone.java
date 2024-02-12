@@ -10,12 +10,10 @@ import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -39,10 +37,9 @@ public class SoulStone extends PEToggleItem implements IPedestalItem, ICapabilit
 		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
-		CompoundTag nbt = stack.getOrCreateTag();
-		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			if (getEmc(stack) < 64 && !consumeFuel(player, stack, 64, false)) {
-				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				stack.removeData(PEAttachmentTypes.ACTIVE);
 			} else {
 				InternalTimers timers = player.getData(PEAttachmentTypes.INTERNAL_TIMERS);
 				timers.activateHeal();

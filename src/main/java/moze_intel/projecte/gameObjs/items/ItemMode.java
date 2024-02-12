@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
-import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -10,20 +9,13 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ItemMode extends ItemPE implements IItemMode, IItemCharge, IBarHelper {
+public abstract class ItemMode<MODE extends Enum<MODE> & IModeEnum<MODE>> extends ItemPE implements IItemMode<MODE>, IItemCharge, IBarHelper {
 
 	private final int numCharge;
-	private final ILangEntry[] modes;
 
-	public ItemMode(Properties props, int numCharge, ILangEntry... modeDescrp) {
+	public ItemMode(Properties props, int numCharge) {
 		super(props);
 		this.numCharge = numCharge;
-		this.modes = modeDescrp;
-	}
-
-	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modes;
 	}
 
 	@Override

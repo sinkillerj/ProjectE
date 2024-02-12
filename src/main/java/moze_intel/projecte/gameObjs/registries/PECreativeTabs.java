@@ -2,9 +2,9 @@ package moze_intel.projecte.gameObjs.registries;
 
 import java.util.function.Consumer;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.items.rings.Arcana.ArcanaMode;
 import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.gameObjs.registration.impl.CreativeTabDeferredRegister;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -85,9 +85,9 @@ public class PECreativeTabs {
 				output.accept(PEItems.MERCURIAL_EYE);
 				output.accept(PEItems.VOID_RING);
 
-				for (byte i = 0; i < PEItems.ARCANA_RING.asItem().getModeCount(); ++i) {
+				for (ArcanaMode value : ArcanaMode.values()) {
 					ItemStack stack = PEItems.ARCANA_RING.asStack();
-					stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
+					stack.setData(PEAttachmentTypes.ARCANA_MODE, value);
 					output.accept(stack);
 				}
 
@@ -246,9 +246,9 @@ public class PECreativeTabs {
 					PEItems.VOID_RING
 			);
 
-			for (byte i = 0; i < PEItems.ARCANA_RING.asItem().getModeCount(); ++i) {
+			for (ArcanaMode value : ArcanaMode.values()) {
 				ItemStack stack = PEItems.ARCANA_RING.asStack();
-				stack.getOrCreateTag().putByte(Constants.NBT_KEY_MODE, i);
+				stack.setData(PEAttachmentTypes.ARCANA_MODE, value);
 				event.accept(stack);
 			}
 

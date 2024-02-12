@@ -12,14 +12,12 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.handlers.InternalTimers;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -97,13 +95,12 @@ public class RepairTalisman extends ItemPE implements IAlchBagItem, IAlchChestIt
 	}
 
 	private boolean updateInHandler(@NotNull IItemHandler inv, @NotNull ItemStack stack) {
-		CompoundTag nbt = stack.getOrCreateTag();
-		byte coolDown = nbt.getByte(Constants.NBT_KEY_COOLDOWN);
+		byte coolDown = stack.getData(PEAttachmentTypes.COOLDOWN);
 		if (coolDown > 0) {
-			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) (coolDown - 1));
+			stack.setData(PEAttachmentTypes.COOLDOWN, (byte) (coolDown - 1));
 			return true;
 		} else if (repairAllItems(inv, CAN_REPAIR_ITEM)) {
-			nbt.putByte(Constants.NBT_KEY_COOLDOWN, (byte) 19);
+			stack.setData(PEAttachmentTypes.COOLDOWN, (byte) 19);
 			return true;
 		}
 		return false;

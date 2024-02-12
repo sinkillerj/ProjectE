@@ -30,17 +30,4 @@ public final class Constants {
 	public static final int MAX_CONDENSER_PROGRESS = 102;
 
 	public static final int MAX_VEIN_SIZE = 250;
-
-	public static final String NBT_KEY_STORED_EMC = "StoredEMC";
-	public static final String NBT_KEY_GEM_WHITELIST = "Whitelist";
-	public static final String NBT_KEY_COOLDOWN = "Cooldown";
-	public static final String NBT_KEY_ACTIVE = "Active";
-	public static final String NBT_KEY_MODE = "Mode";
-	public static final String NBT_KEY_STEP_ASSIST = "StepAssist";
-	public static final String NBT_KEY_NIGHT_VISION = "NightVision";
-	public static final String NBT_KEY_UNPROCESSED_EMC = "UnprocessedEMC";
-	public static final String NBT_KEY_GEM_CONSUMED = "Consumed";
-	public static final String NBT_KEY_GEM_ITEMS = "Items";
-	public static final String NBT_KEY_TIME_MODE = "TimeMode";
-	public static final String NBT_KEY_STORED_XP = "StoredXP";
 }

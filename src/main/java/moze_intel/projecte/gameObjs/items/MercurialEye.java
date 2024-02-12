@@ -8,12 +8,14 @@ import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.items.MercurialEye.MercurialEyeMode;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
+import moze_intel.projecte.utils.text.IHasTranslationKey;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,24 +38,17 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilityAware {
-
-	private static final int CREATION_MODE = 0;
-	private static final int EXTENSION_MODE = 1;
-	private static final int EXTENSION_MODE_CLASSIC = 2;
-	private static final int TRANSMUTATION_MODE = 3;
-	private static final int TRANSMUTATION_MODE_CLASSIC = 4;
-	private static final int PILLAR_MODE = 5;
+public class MercurialEye extends ItemMode<MercurialEyeMode> implements IExtraFunction, ICapabilityAware {
 
 	public MercurialEye(Properties props) {
-		super(props, (byte) 4, PELang.MODE_MERCURIAL_EYE_1, PELang.MODE_MERCURIAL_EYE_2, PELang.MODE_MERCURIAL_EYE_3, PELang.MODE_MERCURIAL_EYE_4,
-				PELang.MODE_MERCURIAL_EYE_5, PELang.MODE_MERCURIAL_EYE_6);
+		super(props, 4);
 	}
 
 	@Override
@@ -78,7 +73,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (getMode(stack) == CREATION_MODE) {
+		if (getMode(stack) == MercurialEyeMode.CREATION) {
 			if (level.isClientSide) {
 				return InteractionResultHolder.success(stack);
 			}
@@ -110,7 +105,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 		ItemStack target = inventory.getStackInSlot(1);
 		BlockState newState;
 		long newBlockEmc;
-		byte mode = getMode(eye);
+		MercurialEyeMode mode = getMode(eye);
 		BlockPlaceContext context;
 		BlockHitResult hitResult;
 		if (facing == null) {
@@ -126,7 +121,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 				//If the target no longer has an EMC value fail
 				return InteractionResult.FAIL;
 			}
-		} else if (startingBlockEmc != 0 && (mode == EXTENSION_MODE || mode == EXTENSION_MODE_CLASSIC)) {
+		} else if (startingBlockEmc != 0 && mode.isExtension()) {
 			//If there is no item key, attempt to determine it for extension mode
 			newState = startingState;
 			newBlockEmc = startingBlockEmc;
@@ -141,7 +136,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 		NonNullList<ItemStack> drops = NonNullList.create();
 		int charge = getCharge(eye);
 		int hitTargets = 0;
-		if (mode == CREATION_MODE) {
+		if (mode == MercurialEyeMode.CREATION) {
 			if (facing != null && (!context.replacingClickedOnBlock() || player.isSecondaryUseActive() && !startingState.isAir())) {
 				BlockPos offsetPos = startingPos.relative(facing);
 				BlockState offsetState = level.getBlockState(offsetPos);
@@ -157,15 +152,15 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 				//Otherwise replace it (it may have been air), or it may have been something like tall grass
 				hitTargets++;
 			}
-		} else if (mode == PILLAR_MODE) {
+		} else if (mode == MercurialEyeMode.PILLAR) {
 			//Fills in replaceable blocks in up to a 3x3x3/6/9/12/15 area
 			AABB bounds = getBounds(startingPos, facing, 1, 3 * charge + 2);
 			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, bounds, drops);
-		} else if (mode == EXTENSION_MODE_CLASSIC) {
+		} else if (mode == MercurialEyeMode.EXTENSION_CLASSIC) {
 			//if it is replaceable fill in the gaps in up to a 9x9x1 area
 			AABB bounds = getBounds(startingPos, facing, charge, 0);
 			hitTargets += fillGaps(eye, player, level, context, startingState, newState, newBlockEmc, bounds, drops);
-		} else if (mode == TRANSMUTATION_MODE_CLASSIC) {
+		} else if (mode == MercurialEyeMode.TRANSMUTATION_CLASSIC) {
 			//if state is same as the start state replace it in an up to 9x9x1 area
 			AABB bounds = getBounds(startingPos, facing, charge, 0);
 			for (BlockPos pos : WorldHelper.getPositionsInBox(bounds)) {
@@ -198,13 +193,13 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 				BlockState offsetState = level.getBlockState(offsetPos);
 				if (!offsetState.isFaceSturdy(level, offsetPos, facing)) {
 					boolean hit = false;
-					if (mode == EXTENSION_MODE) {
+					if (mode == MercurialEyeMode.EXTENSION) {
 						VoxelShape cbBox = startingState.getCollisionShape(level, offsetPos);
 						if (level.isUnobstructed(null, cbBox)) {
 							long offsetBlockEmc = EMCHelper.getEmcValue(offsetState.getBlock());
 							hit = doBlockPlace(player, offsetState, offsetPos, newState, eye, offsetBlockEmc, newBlockEmc, drops);
 						}
-					} else if (mode == TRANSMUTATION_MODE) {
+					} else if (mode == MercurialEyeMode.TRANSMUTATION) {
 						hit = doBlockPlace(player, checkState, pos, newState, eye, startingBlockEmc, newBlockEmc, drops);
 					}
 
@@ -315,5 +310,46 @@ public class MercurialEye extends ItemMode implements IExtraFunction, ICapabilit
 	@Override
 	public void attachCapabilities(RegisterCapabilitiesEvent event) {
 		event.registerItem(ItemHandler.ITEM, (stack, context) -> stack.getData(PEAttachmentTypes.EYE_INVENTORY), this);
+	}
+
+	@Override
+	public AttachmentType<MercurialEyeMode> getAttachmentType() {
+		return PEAttachmentTypes.MERCURIAL_EYE_MODE.get();
+	}
+
+	public enum MercurialEyeMode implements IModeEnum<MercurialEyeMode> {
+		CREATION(PELang.MODE_MERCURIAL_EYE_1),
+		EXTENSION(PELang.MODE_MERCURIAL_EYE_2),
+		EXTENSION_CLASSIC(PELang.MODE_MERCURIAL_EYE_3),
+		TRANSMUTATION(PELang.MODE_MERCURIAL_EYE_4),
+		TRANSMUTATION_CLASSIC(PELang.MODE_MERCURIAL_EYE_5),
+		PILLAR(PELang.MODE_MERCURIAL_EYE_6);
+
+		private final IHasTranslationKey langEntry;
+
+		MercurialEyeMode(IHasTranslationKey langEntry) {
+			this.langEntry = langEntry;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return langEntry.getTranslationKey();
+		}
+
+		public boolean isExtension() {
+			return this == EXTENSION || this == EXTENSION_CLASSIC;
+		}
+
+		@Override
+		public MercurialEyeMode next(ItemStack stack) {
+			return switch (this) {
+				case CREATION -> EXTENSION;
+				case EXTENSION -> EXTENSION_CLASSIC;
+				case EXTENSION_CLASSIC -> TRANSMUTATION;
+				case TRANSMUTATION -> TRANSMUTATION_CLASSIC;
+				case TRANSMUTATION_CLASSIC -> PILLAR;
+				case PILLAR -> CREATION;
+			};
+		}
 	}
 }

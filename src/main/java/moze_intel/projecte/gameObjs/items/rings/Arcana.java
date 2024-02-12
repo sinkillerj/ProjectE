@@ -9,18 +9,18 @@ import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IItemMode;
+import moze_intel.projecte.gameObjs.items.IModeEnum;
 import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.items.rings.Arcana.ArcanaMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.IHasTranslationKey;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -38,18 +38,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter, ICapabilityAware {
-
-	private final static ILangEntry[] modes = new ILangEntry[]{
-			PELang.MODE_ARCANA_1,
-			PELang.MODE_ARCANA_2,
-			PELang.MODE_ARCANA_3,
-			PELang.MODE_ARCANA_4
-	};
+public class Arcana extends ItemPE implements IItemMode<ArcanaMode>, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter, ICapabilityAware {
 
 	public Arcana(Properties props) {
 		super(props);
@@ -65,18 +59,13 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		return stack.copy();
 	}
 
-	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modes;
-	}
-
 	private void tick(ItemStack stack, Level level, ServerPlayer player) {
-		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			switch (getMode(stack)) {
-				case 0 -> WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(5), player, true);
-				case 1 -> WorldHelper.igniteNearby(level, player);
-				case 2 -> WorldHelper.growNearbyRandomly(true, level, player);
-				case 3 -> WorldHelper.repelEntitiesSWRG(level, player.getBoundingBox().inflate(5), player);
+				case ZERO -> WorldHelper.freezeInBoundingBox(level, player.getBoundingBox().inflate(5), player, true);
+				case IGNITION -> WorldHelper.igniteNearby(level, player);
+				case HARVEST -> WorldHelper.growNearbyRandomly(true, level, player);
+				case SWRG -> WorldHelper.repelEntitiesSWRG(level, player.getBoundingBox().inflate(5), player);
 			}
 		}
 	}
@@ -92,7 +81,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
-		if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			tooltips.add(getToolTip(stack));
 		} else {
 			tooltips.add(PELang.TOOLTIP_ARCANA_INACTIVE.translateColored(ChatFormatting.RED));
@@ -103,8 +92,8 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
-			CompoundTag compound = player.getItemInHand(hand).getOrCreateTag();
-			compound.putBoolean(Constants.NBT_KEY_ACTIVE, !compound.getBoolean(Constants.NBT_KEY_ACTIVE));
+			ItemStack stack = player.getItemInHand(hand);
+			stack.setData(PEAttachmentTypes.ACTIVE, !stack.getData(PEAttachmentTypes.ACTIVE));
 		}
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
@@ -112,7 +101,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
-		if (getMode(ctx.getItemInHand()) == 1) {
+		if (getMode(ctx.getItemInHand()) == ArcanaMode.IGNITION) {
 			InteractionResult result = WorldHelper.igniteBlock(ctx);
 			if (result != InteractionResult.PASS) {
 				return result;
@@ -128,7 +117,7 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		if (level.isClientSide) {
 			return true;
 		}
-		if (getMode(stack) == 1) { // ignition
+		if (getMode(stack) == ArcanaMode.IGNITION) {
 			switch (player.getDirection()) {
 				case SOUTH, NORTH -> igniteNear(player, 30, 5, 3);
 				case WEST, EAST -> igniteNear(player, 3, 5, 30);
@@ -154,16 +143,15 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 		}
 		SoundEvent sound = null;
 		Projectile projectile = switch (getMode(stack)) {
-			case 0 -> { // zero
+			case ZERO -> {
 				sound = SoundEvents.SNOWBALL_THROW;
 				yield new Snowball(level, player);
 			}
-			case 1 -> { // ignition
+			case IGNITION -> {
 				sound = PESoundEvents.POWER.get();
 				yield new EntityFireProjectile(player, true, level);
 			}
-			// swrg
-			case 3 -> new EntitySWRGProjectile(player, true, level);
+			case SWRG -> new EntitySWRGProjectile(player, true, level);
 			default -> null;
 		};
 		if (projectile == null) {
@@ -190,5 +178,38 @@ public class Arcana extends ItemPE implements IItemMode, IFlightProvider, IFireP
 	@Override
 	public void attachCapabilities(RegisterCapabilitiesEvent event) {
 		IntegrationHelper.registerCuriosCapability(event, this);
+	}
+
+	@Override
+	public AttachmentType<ArcanaMode> getAttachmentType() {
+		return PEAttachmentTypes.ARCANA_MODE.get();
+	}
+
+	public enum ArcanaMode implements IModeEnum<ArcanaMode> {
+		ZERO(PELang.MODE_ARCANA_1),
+		IGNITION(PELang.MODE_ARCANA_2),
+		HARVEST(PELang.MODE_ARCANA_3),
+		SWRG(PELang.MODE_ARCANA_4);
+
+		private final IHasTranslationKey langEntry;
+
+		ArcanaMode(IHasTranslationKey langEntry) {
+			this.langEntry = langEntry;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return langEntry.getTranslationKey();
+		}
+
+		@Override
+		public ArcanaMode next(ItemStack stack) {
+			return switch (this) {
+				case ZERO -> IGNITION;
+				case IGNITION -> HARVEST;
+				case HARVEST -> SWRG;
+				case SWRG -> ZERO;
+			};
+		}
 	}
 }

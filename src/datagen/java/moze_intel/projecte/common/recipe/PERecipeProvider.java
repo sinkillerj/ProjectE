@@ -10,7 +10,6 @@ import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
-import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registration.impl.ItemRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -441,8 +440,9 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static Ingredient getFullKleinStarIngredient(EnumKleinTier tier) {
+		//TODO - 1.20.4: Attachment ingredient
 		CompoundTag nbt = new CompoundTag();
-		ItemPE.setEmc(nbt, Constants.MAX_KLEIN_EMC[tier.ordinal()]);
+		nbt.putLong("StoredEMC", Constants.MAX_KLEIN_EMC[tier.ordinal()]);
 		return NBTIngredient.of(false, nbt, PEItems.getStar(tier));
 	}
 

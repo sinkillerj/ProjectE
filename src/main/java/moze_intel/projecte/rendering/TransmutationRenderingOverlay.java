@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.PhilosophersStone;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone.PhilosophersStoneMode;
 import moze_intel.projecte.utils.WorldTransmutations;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -92,7 +93,7 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 			if (transmutationResult != null) {
 				Vec3 viewPosition = activeRenderInfo.getPosition();
 				int charge = philoStone.getCharge(stack);
-				byte mode = philoStone.getMode(stack);
+				PhilosophersStoneMode mode = philoStone.getMode(stack);
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
 				VertexConsumer builder = event.getMultiBufferSource().getBuffer(PERenderType.TRANSMUTATION_OVERLAY);
 				PoseStack matrix = event.getPoseStack();

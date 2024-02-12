@@ -1,29 +1,25 @@
 package moze_intel.projecte.gameObjs.items;
 
 import com.mojang.logging.LogUtils;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.items.GemEternalDensity.GemMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,7 +32,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -46,15 +44,7 @@ import net.neoforged.neoforge.items.wrapper.EntityHandsInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode, ICapabilityAware {
-
-	private static final ILangEntry[] modes = new ILangEntry[]{
-			Items.IRON_INGOT::getDescriptionId,
-			Items.GOLD_INGOT::getDescriptionId,
-			Items.DIAMOND::getDescriptionId,
-			PEItems.DARK_MATTER::getTranslationKey,
-			PEItems.RED_MATTER::getTranslationKey
-	};
+public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IItemMode<GemMode>, ICapabilityAware {
 
 	public GemEternalDensity(Properties props) {
 		super(props);
@@ -72,7 +62,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	 * @return Whether the inventory was changed
 	 */
 	private static boolean condense(ItemStack gem, IItemHandler inv) {
-		if (!gem.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) || ItemPE.getEmc(gem) == Constants.BLOCK_ENTITY_MAX_EMC) {
+		if (!gem.hasData(PEAttachmentTypes.ACTIVE) || !gem.getData(PEAttachmentTypes.ACTIVE) || ItemPE.getEmc(gem) == Constants.BLOCK_ENTITY_MAX_EMC) {
 			return false;
 		}
 		ItemStack target = getTarget(gem);
@@ -82,8 +72,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			return false;
 		}
 		boolean hasChanged = false;
-		boolean isWhitelist = ItemHelper.checkItemNBT(gem, Constants.NBT_KEY_GEM_WHITELIST);
-		List<ItemStack> whitelist = getWhitelist(gem);
+		boolean isWhitelist = gem.getData(PEAttachmentTypes.GEM_WHITELIST);
+		List<ItemStack> whitelist = gem.getData(PEAttachmentTypes.GEM_TARGETS);
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 			if (stack.isEmpty()) {
@@ -122,7 +112,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				return false;
 			}
 			ItemPE.removeEmc(gem, value);
-			setItems(gem, new ArrayList<>());
+			gem.removeData(PEAttachmentTypes.GEM_CONSUMED);
 			hasChanged = true;
 		}
 		return hasChanged;
@@ -134,17 +124,15 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
 			if (player.isSecondaryUseActive()) {
-				CompoundTag nbt = stack.getOrCreateTag();
-				if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
-					List<ItemStack> items = getItems(stack);
-					if (!items.isEmpty()) {
+				if (stack.getData(PEAttachmentTypes.ACTIVE)) {
+					List<ItemStack> items = stack.removeData(PEAttachmentTypes.GEM_CONSUMED);
+					if (items != null && !items.isEmpty()) {
 						WorldHelper.createLootDrop(items, level, player.position());
-						setItems(stack, new ArrayList<>());
 						ItemPE.setEmc(stack, 0);
 					}
-					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
+					stack.removeData(PEAttachmentTypes.ACTIVE);
 				} else {
-					nbt.putBoolean(Constants.NBT_KEY_ACTIVE, true);
+					stack.setData(PEAttachmentTypes.ACTIVE, true);
 				}
 			} else {
 				player.openMenu(new ContainerProvider(hand, stack), buf -> {
@@ -162,48 +150,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Invalid gem of eternal density: {}", stack);
 			return ItemStack.EMPTY;
 		}
-		byte target = gem.getMode(stack);
-		return switch (target) {
-			case 0 -> new ItemStack(Items.IRON_INGOT);
-			case 1 -> new ItemStack(Items.GOLD_INGOT);
-			case 2 -> new ItemStack(Items.DIAMOND);
-			case 3 -> PEItems.DARK_MATTER.asStack();
-			case 4 -> PEItems.RED_MATTER.asStack();
-			default -> {
-				PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Invalid target for gem of eternal density: {}", target);
-				yield ItemStack.EMPTY;
-			}
-		};
-	}
-
-	private static void setItems(ItemStack stack, List<ItemStack> list) {
-		ListTag tList = new ListTag();
-		for (ItemStack s : list) {
-			CompoundTag nbt = new CompoundTag();
-			s.save(nbt);
-			tList.add(nbt);
-		}
-		stack.getOrCreateTag().put(Constants.NBT_KEY_GEM_CONSUMED, tList);
-	}
-
-	private static List<ItemStack> getItems(ItemStack stack) {
-		List<ItemStack> list = new ArrayList<>();
-		if (stack.hasTag()) {
-			ListTag tList = stack.getOrCreateTag().getList(Constants.NBT_KEY_GEM_CONSUMED, Tag.TAG_COMPOUND);
-			for (int i = 0; i < tList.size(); i++) {
-				list.add(ItemStack.of(tList.getCompound(i)));
-			}
-		}
-		return list;
+		return gem.getMode(stack).getTarget();
 	}
 
 	private static void addToList(ItemStack gem, ItemStack stack) {
-		List<ItemStack> list = getItems(gem);
-		addToList(list, stack);
-		setItems(gem, list);
-	}
-
-	private static void addToList(List<ItemStack> list, ItemStack stack) {
+		List<ItemStack> list = gem.getData(PEAttachmentTypes.GEM_CONSUMED);
 		boolean hasFound = false;
 		for (ItemStack s : list) {
 			if (s.getCount() < s.getMaxStackSize() && ItemHandlerHelper.canItemStacksStack(s, stack)) {
@@ -241,21 +192,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return super.getShareTag(stack);
 	}*/
 
-	private static List<ItemStack> getWhitelist(ItemStack stack) {
-		if (stack.hasTag()) {
-			CompoundTag compound = stack.getOrCreateTag().getCompound(Constants.NBT_KEY_GEM_ITEMS);
-			ListTag list = compound.getList(Constants.NBT_KEY_GEM_ITEMS, Tag.TAG_COMPOUND);
-			List<ItemStack> result = new ArrayList<>(list.size());
-			for (int i = 0; i < list.size(); i++) {
-				ItemStack s = ItemStack.of(list.getCompound(i));
-				if (!s.isEmpty() && result.stream().noneMatch(r -> ItemHandlerHelper.canItemStacksStack(r, s))) {
-					//Only add unique whitelist entries
-					result.add(s);
-				}
-			}
-			return result;
-		}
-		return Collections.emptyList();
+	@Override
+	public AttachmentType<GemMode> getAttachmentType() {
+		return PEAttachmentTypes.GEM_MODE.get();
 	}
 
 	@Override
@@ -264,16 +203,11 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modes;
-	}
-
-	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
 		if (stack.hasTag()) {
-			tooltips.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getModeLangEntry(stack)));
+			tooltips.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getMode(stack)));
 		}
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
 		tooltips.add(PELang.TOOLTIP_GEM_DENSITY_4.translate());
@@ -282,7 +216,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@Override
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
-		if (!level.isClientSide && ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (!level.isClientSide && stack.getData(PEAttachmentTypes.ACTIVE)) {
 			IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
 			return handler != null && condense(stack, handler);
 		}
@@ -311,6 +245,40 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		@Override
 		public Component getDisplayName() {
 			return TextComponentUtil.build(PEItems.GEM_OF_ETERNAL_DENSITY.get());
+		}
+	}
+
+	public enum GemMode implements IModeEnum<GemMode> {
+		IRON(Items.IRON_INGOT),
+		GOLD(Items.GOLD_INGOT),
+		DIAMOND(Items.DIAMOND),
+		DARK_MATTER(PEItems.DARK_MATTER),
+		RED_MATTER(PEItems.RED_MATTER);
+
+		private final ItemLike target;
+
+		GemMode(ItemLike target) {
+			this.target = target;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return target.asItem().getDescriptionId();
+		}
+
+		public ItemStack getTarget() {
+			return new ItemStack(target);
+		}
+
+		@Override
+		public GemMode next(ItemStack stack) {
+			return switch (this) {
+				case IRON -> GOLD;
+				case GOLD -> DIAMOND;
+				case DIAMOND -> DARK_MATTER;
+				case DARK_MATTER -> RED_MATTER;
+				case RED_MATTER -> IRON;
+			};
 		}
 	}
 }

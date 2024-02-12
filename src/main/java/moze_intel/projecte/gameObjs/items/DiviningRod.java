@@ -4,10 +4,12 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.List;
+import moze_intel.projecte.gameObjs.items.DiviningRod.DiviningMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.WorldHelper;
-import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.IHasTranslationKey;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,19 +25,18 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.NonNullLazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DiviningRod extends ItemPE implements IItemMode {
+public class DiviningRod extends ItemPE implements IItemMode<DiviningMode> {
 
-	private final ILangEntry[] modes;
 	private final int maxModes;
 
-	public DiviningRod(Properties props, ILangEntry... modeDesc) {
+	public DiviningRod(Properties props, int maxModes) {
 		super(props);
-		modes = modeDesc;
-		maxModes = modes.length;
+		this.maxModes = maxModes;
 	}
 
 	@NotNull
@@ -109,26 +110,54 @@ public class DiviningRod extends ItemPE implements IItemMode {
 	}
 
 	private int getDepthFromMode(ItemStack stack) {
-		byte mode = getMode(stack);
-		if (mode < 0 || mode >= maxModes) {
+		DiviningMode mode = IItemMode.super.getMode(stack);
+		if (mode.ordinal() > maxModes) {
 			//No range something went wrong
 			return 0;
-		} else if (mode == 0) {
-			return 3;
-		} else if (mode == 1) {
-			return 16;
-		}//mode == 2
-		return 64;
-	}
-
-	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modes;
+		}
+		return mode.range;
 	}
 
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(getToolTip(stack));
+	}
+
+	@Override
+	public AttachmentType<DiviningMode> getAttachmentType() {
+		return PEAttachmentTypes.DIVINING_ROD_MODE.get();
+	}
+
+	public enum DiviningMode implements IModeEnum<DiviningMode> {
+		LOW(PELang.DIVINING_RANGE_3, 3),
+		MEDIUM(PELang.DIVINING_RANGE_16, 16),
+		HIGH(PELang.DIVINING_RANGE_64, 64);
+
+		private final IHasTranslationKey langEntry;
+		private final int range;
+
+		DiviningMode(IHasTranslationKey langEntry, int range) {
+			this.langEntry = langEntry;
+			this.range = range;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return langEntry.getTranslationKey();
+		}
+
+		@Override
+		public DiviningMode next(ItemStack stack) {
+			if (ordinal() > ((DiviningRod) stack.getItem()).maxModes) {
+				//Don't increment
+				return this;
+			}
+			return switch (this) {
+				case LOW -> MEDIUM;
+				case MEDIUM -> HIGH;
+				case HIGH -> LOW;
+			};
+		}
 	}
 }

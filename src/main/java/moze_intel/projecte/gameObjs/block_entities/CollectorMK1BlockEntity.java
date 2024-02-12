@@ -7,9 +7,9 @@ import moze_intel.projecte.gameObjs.EnumCollectorTier;
 import moze_intel.projecte.gameObjs.container.CollectorMK1Container;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registration.impl.BlockEntityTypeRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.WorldHelper;
@@ -76,7 +76,6 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
-	private double unprocessedEMC;
 	//Start as needing to check for compacting when loaded
 	private boolean needsCompacting = true;
 
@@ -187,11 +186,13 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 
 	private void updateEmc() {
 		if (!this.hasMaxedEmc()) {
+			double unprocessedEMC = getData(PEAttachmentTypes.UNPROCESSED_EMC);
 			unprocessedEMC += emcGen * (getSunLevel() / 320.0f);
 			if (unprocessedEMC >= 1) {
 				//Force add the EMC regardless of if we can receive EMC from external sources
 				unprocessedEMC -= forceInsertEmc((long) unprocessedEMC, EmcAction.EXECUTE);
 			}
+			setData(PEAttachmentTypes.UNPROCESSED_EMC, unprocessedEMC);
 			//Note: We don't need to recheck comparators because it doesn't take the unprocessed emc into account
 			markDirty(false);
 		}
@@ -316,7 +317,6 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		super.load(nbt);
 		input.deserializeNBT(nbt.getCompound("Input"));
 		auxSlots.deserializeNBT(nbt.getCompound("AuxSlots"));
-		unprocessedEMC = nbt.getDouble(Constants.NBT_KEY_UNPROCESSED_EMC);
 	}
 
 	@Override
@@ -324,7 +324,6 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		super.saveAdditional(tag);
 		tag.put("Input", input.serializeNBT());
 		tag.put("AuxSlots", auxSlots.serializeNBT());
-		tag.putDouble(Constants.NBT_KEY_UNPROCESSED_EMC, unprocessedEMC);
 	}
 
 	private void sendRelayBonus() {

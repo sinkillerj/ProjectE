@@ -336,7 +336,6 @@ public class PELangProvider extends BaseLanguageProvider {
 
 	private void addModes() {
 		add(PELang.CURRENT_MODE, "Mode: %s");
-		add(PELang.INVALID_MODE, "Invalid Mode");
 		add(PELang.MODE_SWITCH, "Switched to %s Mode");
 		add(PELang.MODE_ARCANA_1, "Zero");
 		add(PELang.MODE_ARCANA_2, "Ignition");
@@ -350,10 +349,6 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.MODE_MERCURIAL_EYE_4, "Transmutation");
 		add(PELang.MODE_MERCURIAL_EYE_5, "Transmutation-Classic");
 		add(PELang.MODE_MERCURIAL_EYE_6, "Pillar");
-		add(PELang.MODE_MORNING_STAR_1, "Standard");
-		add(PELang.MODE_MORNING_STAR_2, "3x Tallshot");
-		add(PELang.MODE_MORNING_STAR_3, "3x Wideshot");
-		add(PELang.MODE_MORNING_STAR_4, "3x Longshot");
 		add(PELang.MODE_PHILOSOPHER_1, "Cube");
 		add(PELang.MODE_PHILOSOPHER_2, "Panel");
 		add(PELang.MODE_PHILOSOPHER_3, "Line");
@@ -361,8 +356,6 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.MODE_PICK_2, "3x Tallshot");
 		add(PELang.MODE_PICK_3, "3x Wideshot");
 		add(PELang.MODE_PICK_4, "3x Longshot");
-		add(PELang.MODE_RED_SWORD_1, "Slay Hostile");
-		add(PELang.MODE_RED_SWORD_2, "Slay All");
 	}
 
 	private void addPedestalTooltips() {

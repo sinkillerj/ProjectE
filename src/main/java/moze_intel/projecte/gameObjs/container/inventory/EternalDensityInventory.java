@@ -1,25 +1,30 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import moze_intel.projecte.network.PacketHandler;
+import java.util.ArrayList;
+import java.util.List;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
-import moze_intel.projecte.utils.Constants;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EternalDensityInventory implements IItemHandlerModifiable {
 
-	private final ItemStackHandler inventory = new ItemStackHandler(9);
+	private final NonNullList<ItemStack> inventoryStacks = NonNullList.withSize(9, ItemStack.EMPTY);
+	private final ItemStackHandler inventory = new ItemStackHandler(inventoryStacks);
 	private boolean isInWhitelist;
 	public final ItemStack invItem;
 
 	public EternalDensityInventory(ItemStack stack) {
 		this.invItem = stack;
-		if (stack.hasTag()) {
-			readFromNBT(stack.getOrCreateTag());
+		this.isInWhitelist = stack.getData(PEAttachmentTypes.GEM_WHITELIST);
+		List<ItemStack> targets = stack.getData(PEAttachmentTypes.GEM_TARGETS);
+		for (int i = 0, size = Math.min(targets.size(), 9); i < size; i++) {
+			inventoryStacks.set(i, targets.get(i).copy());
 		}
 	}
 
@@ -72,17 +77,16 @@ public class EternalDensityInventory implements IItemHandlerModifiable {
 				inventory.setStackInSlot(i, ItemStack.EMPTY);
 			}
 		}
-		writeToNBT(invItem.getOrCreateTag());
-	}
-
-	public void readFromNBT(CompoundTag nbt) {
-		isInWhitelist = nbt.getBoolean(Constants.NBT_KEY_GEM_WHITELIST);
-		inventory.deserializeNBT(nbt.getCompound(Constants.NBT_KEY_GEM_ITEMS));
-	}
-
-	public void writeToNBT(CompoundTag nbt) {
-		nbt.putBoolean(Constants.NBT_KEY_GEM_WHITELIST, isInWhitelist);
-		nbt.put(Constants.NBT_KEY_GEM_ITEMS, inventory.serializeNBT());
+		invItem.setData(PEAttachmentTypes.GEM_WHITELIST, isInWhitelist);
+		//TODO - 1.20.4: Test this
+		List<ItemStack> targets = new ArrayList<>(inventoryStacks.size());
+		for (int i = 0, size = inventoryStacks.size(); i < size; i++) {
+			ItemStack target = inventoryStacks.get(i);
+			if (!target.isEmpty() && targets.stream().noneMatch(r -> ItemHandlerHelper.canItemStacksStack(r, target))) {
+				targets.set(i, target.copy());
+			}
+		}
+		invItem.setData(PEAttachmentTypes.GEM_TARGETS, targets);
 	}
 
 	public void changeMode() {

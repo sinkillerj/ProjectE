@@ -7,6 +7,7 @@ import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -14,8 +15,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -71,11 +70,10 @@ public class ToolTipEvent {
 			}
 		}
 
-		if (current.hasTag()) {
+		if (current.hasTag() || current.hasAttachments()) {
 			long value;
-			CompoundTag tag = current.getOrCreateTag();
-			if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_LONG)) {
-				value = tag.getLong(Constants.NBT_KEY_STORED_EMC);
+			if (current.hasData(PEAttachmentTypes.STORED_EMC)) {
+				value = current.getData(PEAttachmentTypes.STORED_EMC);
 			} else {
 				IItemEmcHolder emcHolder = current.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
 				if (emcHolder != null) {

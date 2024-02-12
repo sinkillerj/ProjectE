@@ -9,15 +9,14 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,10 +43,9 @@ public class Ignition extends PEToggleItem implements IPedestalItem, IFireProtec
 		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
-		CompoundTag nbt = stack.getOrCreateTag();
-		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				stack.removeData(PEAttachmentTypes.ACTIVE);
 			} else {
 				WorldHelper.igniteNearby(level, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));

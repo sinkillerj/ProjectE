@@ -48,7 +48,6 @@ import moze_intel.projecte.gameObjs.items.tools.PESword;
 import moze_intel.projecte.gameObjs.items.tools.RedMatterSword;
 import moze_intel.projecte.gameObjs.registration.impl.ItemDeferredRegister;
 import moze_intel.projecte.gameObjs.registration.impl.ItemRegistryObject;
-import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -146,9 +145,9 @@ public class PEItems {
 	public static final ItemRegistryObject<MindStone> MIND_STONE = ITEMS.registerNoStackFireImmune("mind_stone", MindStone::new);
 	public static final ItemRegistryObject<LifeStone> LIFE_STONE = ITEMS.registerNoStackFireImmune("life_stone", LifeStone::new);
 
-	public static final ItemRegistryObject<DiviningRod> LOW_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_1", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3));
-	public static final ItemRegistryObject<DiviningRod> MEDIUM_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_2", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16));
-	public static final ItemRegistryObject<DiviningRod> HIGH_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_3", properties -> new DiviningRod(properties, PELang.DIVINING_RANGE_3, PELang.DIVINING_RANGE_16, PELang.DIVINING_RANGE_64));
+	public static final ItemRegistryObject<DiviningRod> LOW_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_1", properties -> new DiviningRod(properties, 1));
+	public static final ItemRegistryObject<DiviningRod> MEDIUM_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_2", properties -> new DiviningRod(properties, 2));
+	public static final ItemRegistryObject<DiviningRod> HIGH_DIVINING_ROD = ITEMS.registerNoStack("divining_rod_3", properties -> new DiviningRod(properties, 3));
 
 	public static final ItemRegistryObject<DestructionCatalyst> DESTRUCTION_CATALYST = ITEMS.registerNoStack("destruction_catalyst", DestructionCatalyst::new);
 	public static final ItemRegistryObject<HyperkineticLens> HYPERKINETIC_LENS = ITEMS.registerNoStackFireImmune("hyperkinetic_lens", HyperkineticLens::new);

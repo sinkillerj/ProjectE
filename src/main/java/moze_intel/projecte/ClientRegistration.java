@@ -15,6 +15,7 @@ import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK2;
 import moze_intel.projecte.gameObjs.gui.GUIRelay.GUIRelayMK3;
 import moze_intel.projecte.gameObjs.gui.GUITransmutation;
 import moze_intel.projecte.gameObjs.gui.PEContainerScreen;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -27,8 +28,6 @@ import moze_intel.projecte.rendering.NovaRenderer;
 import moze_intel.projecte.rendering.PedestalRenderer;
 import moze_intel.projecte.rendering.TransmutationRenderingOverlay;
 import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -94,12 +93,12 @@ public class ClientRegistration {
 
 		evt.enqueueWork(() -> {
 			//Property Overrides
-			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, level, entity, seed) -> ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) ? 1F : 0F,
+			addPropertyOverrides(ACTIVE_OVERRIDE, (stack, level, entity, seed) -> stack.getData(PEAttachmentTypes.ACTIVE) ? 1F : 0F,
 					PEItems.GEM_OF_ETERNAL_DENSITY, PEItems.VOID_RING, PEItems.ARCANA_RING, PEItems.ARCHANGEL_SMITE, PEItems.BLACK_HOLE_BAND, PEItems.BODY_STONE,
 					PEItems.HARVEST_GODDESS_BAND, PEItems.IGNITION_RING, PEItems.LIFE_STONE, PEItems.MIND_STONE, PEItems.SOUL_STONE, PEItems.WATCH_OF_FLOWING_TIME,
 					PEItems.ZERO_RING);
-			addPropertyOverrides(MODE_OVERRIDE, (stack, level, entity, seed) -> stack.hasTag() ? stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE) : 0F,
-					PEItems.ARCANA_RING, PEItems.SWIFTWOLF_RENDING_GALE);
+			addPropertyOverrides(MODE_OVERRIDE, (stack, level, entity, seed) -> stack.getData(PEAttachmentTypes.ARCANA_MODE).ordinal(), PEItems.ARCANA_RING);
+			addPropertyOverrides(MODE_OVERRIDE, (stack, level, entity, seed) -> stack.getData(PEAttachmentTypes.SWRG_MODE).ordinal(), PEItems.SWIFTWOLF_RENDING_GALE);
 		});
 	}
 

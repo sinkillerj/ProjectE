@@ -9,12 +9,15 @@ import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.entity.EntityMobRandomizer;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone.PhilosophersStoneMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.utils.ClientKeyHelper;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
+import moze_intel.projecte.utils.text.IHasTranslationKey;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,13 +42,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
+public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implements IProjectileShooter, IExtraFunction {
 
 	public PhilosophersStone(Properties props) {
-		super(props, (byte) 4, PELang.MODE_PHILOSOPHER_1, PELang.MODE_PHILOSOPHER_2, PELang.MODE_PHILOSOPHER_3);
+		super(props, 4);
 	}
 
 	@Override
@@ -121,7 +125,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		tooltips.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
-	public static Map<BlockPos, BlockState> getChanges(Level level, BlockPos pos, Player player, Direction sideHit, int mode, int charge) {
+	public static Map<BlockPos, BlockState> getChanges(Level level, BlockPos pos, Player player, Direction sideHit, PhilosophersStoneMode mode, int charge) {
 		BlockState targeted = level.getBlockState(pos);
 		boolean isSneaking = player.isSecondaryUseActive();
 		BlockState result = WorldTransmutations.getWorldTransmutation(targeted, isSneaking);
@@ -130,21 +134,17 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 			return Collections.emptyMap();
 		}
 		Iterable<BlockPos> targets = switch (mode) {
-			// Cube
-			case 0 -> WorldHelper.positionsAround(pos, charge);
-			// Panel
-			case 1 -> switch (sideHit.getAxis()) {
+			case CUBE -> WorldHelper.positionsAround(pos, charge);
+			case PANEL -> switch (sideHit.getAxis()) {
 				case X -> WorldHelper.positionsAround(pos, 0, charge, charge);
 				case Y -> WorldHelper.horizontalPositionsAround(pos, charge);
 				case Z -> WorldHelper.positionsAround(pos, charge, charge, 0);
 			};
-			// Line
-			case 2 -> switch (player.getDirection().getAxis()) {
+			case LINE -> switch (player.getDirection().getAxis()) {
 				case X -> WorldHelper.positionsAround(pos, charge, 0, 0);
 				case Y -> null;
 				case Z -> WorldHelper.positionsAround(pos, 0, 0, charge);
 			};
-			default -> null;
 		};
 		if (targets == null) {
 			return Collections.emptyMap();
@@ -172,6 +172,11 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		return changes;
 	}
 
+	@Override
+	public AttachmentType<PhilosophersStoneMode> getAttachmentType() {
+		return PEAttachmentTypes.PHILOSOPHERS_STONE_MODE.get();
+	}
+
 	private record ContainerProvider(ItemStack stack) implements MenuProvider {
 
 		@NotNull
@@ -184,6 +189,32 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 		@Override
 		public Component getDisplayName() {
 			return stack.getHoverName();
+		}
+	}
+
+	public enum PhilosophersStoneMode implements IModeEnum<PhilosophersStoneMode> {
+		CUBE(PELang.MODE_PHILOSOPHER_1),
+		PANEL(PELang.MODE_PHILOSOPHER_2),
+		LINE(PELang.MODE_PHILOSOPHER_3);
+
+		private final IHasTranslationKey langEntry;
+
+		PhilosophersStoneMode(IHasTranslationKey langEntry) {
+			this.langEntry = langEntry;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return langEntry.getTranslationKey();
+		}
+
+		@Override
+		public PhilosophersStoneMode next(ItemStack stack) {
+			return switch (this) {
+				case CUBE -> PANEL;
+				case PANEL -> LINE;
+				case LINE -> CUBE;
+			};
 		}
 	}
 }

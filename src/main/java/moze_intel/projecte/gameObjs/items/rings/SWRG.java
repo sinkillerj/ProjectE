@@ -13,14 +13,12 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -45,8 +43,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	}
 
 	private void tick(ItemStack stack, Player player) {
-		CompoundTag nbt = stack.getOrCreateTag();
-		if (nbt.getInt(Constants.NBT_KEY_MODE) > 1) {
+		SWRGMode mode = getMode(stack);
+		if (mode.hasShield()) {
 			// Repel on both sides - smooth animation
 			WorldHelper.repelEntitiesSWRG(player.level(), player.getBoundingBox().inflate(5), player);
 		}
@@ -54,9 +52,8 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			return;
 		}
 		if (getEmc(stack) == 0 && !consumeFuel(player, stack, 64, false)) {
-			if (nbt.getInt(Constants.NBT_KEY_MODE) > 0) {
-				changeMode(player, stack, 0);
-			}
+			//If it is already off changeMode will just NO-OP
+			changeMode(player, stack, mode, SWRGMode.OFF);
 			if (player.getAbilities().mayfly) {
 				player.getData(PEAttachmentTypes.INTERNAL_ABILITIES).disableSwrgFlightOverride();
 			}
@@ -68,11 +65,11 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 
 		if (player.getAbilities().flying) {
-			if (!isFlyingEnabled(nbt)) {
-				changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 0 ? 1 : 3);
+			if (!mode.hasFlight()) {
+				mode = changeMode(player, stack, mode, mode == SWRGMode.OFF ? SWRGMode.FLIGHT : SWRGMode.SHIELDED_FLIGHT);
 			}
-		} else if (isFlyingEnabled(nbt)) {
-			changeMode(player, stack, nbt.getInt(Constants.NBT_KEY_MODE) == 1 ? 0 : 2);
+		} else if (mode.hasFlight()) {
+			mode = changeMode(player, stack, mode, mode == SWRGMode.FLIGHT ? SWRGMode.OFF : SWRGMode.SHIELD);
 		}
 
 		float toRemove = 0;
@@ -81,19 +78,15 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 			toRemove = 0.32F;
 		}
 
-		if (nbt.getInt(Constants.NBT_KEY_MODE) == 2) {
+		if (mode == SWRGMode.SHIELD) {
 			toRemove = 0.32F;
-		} else if (nbt.getInt(Constants.NBT_KEY_MODE) == 3) {
+		} else if (mode == SWRGMode.SHIELDED_FLIGHT) {
 			toRemove = 0.64F;
 		}
 
 		removeEmc(stack, EMCHelper.removeFractionalEMC(stack, toRemove));
 
 		player.fallDistance = 0;
-	}
-
-	private boolean isFlyingEnabled(CompoundTag nbt) {
-		return nbt.getInt(Constants.NBT_KEY_MODE) == 1 || nbt.getInt(Constants.NBT_KEY_MODE) == 3;
 	}
 
 	@Override
@@ -104,45 +97,39 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 		}
 	}
 
+	private SWRGMode getMode(ItemStack stack) {
+		return stack.getData(PEAttachmentTypes.SWRG_MODE);
+	}
+
 	@NotNull
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide) {
-			int newMode = switch (stack.getOrCreateTag().getInt(Constants.NBT_KEY_MODE)) {
-				case 0 -> 2;
-				case 1 -> 3;
-				case 2 -> 0;
-				case 3 -> 1;
-				default -> 0;
-			};
-			changeMode(player, stack, newMode);
+			SWRGMode oldMode = getMode(stack);
+			changeMode(player, stack, oldMode, oldMode.next());
 		}
 		return InteractionResultHolder.success(stack);
 	}
 
-	/**
-	 * Change the mode of SWRG. Modes:<p> 0 = Ring Off<p> 1 = Flight<p> 2 = Shield<p> 3 = Flight + Shield<p>
-	 */
-	public void changeMode(Player player, ItemStack stack, int mode) {
-		CompoundTag nbt = stack.getOrCreateTag();
-		int oldMode = nbt.getInt(Constants.NBT_KEY_MODE);
+	private SWRGMode changeMode(Player player, ItemStack stack, SWRGMode oldMode, SWRGMode mode) {
 		if (mode == oldMode) {
-			return;
+			return mode;
 		}
-		nbt.putInt(Constants.NBT_KEY_MODE, mode);
+		stack.setData(PEAttachmentTypes.SWRG_MODE, mode);
 		if (player == null) {
 			//Don't do sounds if the player is null
-			return;
+			return mode;
 		}
-		if (mode == 0 || oldMode == 3) {
+		if (mode == SWRGMode.OFF || oldMode == SWRGMode.SHIELDED_FLIGHT) {
 			//At least one mode deactivated
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.UNCHARGE.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
-		} else if (oldMode == 0 || mode == 3) {
+		} else if (oldMode == SWRGMode.OFF || mode == SWRGMode.SHIELDED_FLIGHT) {
 			//At least one mode activated
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), PESoundEvents.HEAL.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 		}
 		//Doesn't handle going from mode 1 to 2 or 2 to 1
+		return mode;
 	}
 
 	@Override
@@ -199,5 +186,29 @@ public class SWRG extends ItemPE implements IPedestalItem, IFlightProvider, IPro
 	@Override
 	public void attachCapabilities(RegisterCapabilitiesEvent event) {
 		IntegrationHelper.registerCuriosCapability(event, this);
+	}
+
+	public enum SWRGMode {//Change the mode of SWRG. Modes:<p> 0 = Ring Off<p> 1 = Flight<p> 2 = Shield<p> 3 = Flight + Shield<p>
+		OFF,
+		FLIGHT,
+		SHIELD,
+		SHIELDED_FLIGHT;
+
+		public boolean hasFlight() {
+			return this == FLIGHT || this == SHIELDED_FLIGHT;
+		}
+
+		public boolean hasShield() {
+			return this == SHIELD || this == SHIELDED_FLIGHT;
+		}
+
+		public SWRGMode next() {
+			return switch (this) {
+				case OFF -> SHIELD;
+				case SHIELD -> OFF;
+				case FLIGHT -> SHIELDED_FLIGHT;
+				case SHIELDED_FLIGHT -> FLIGHT;
+			};
+		}
 	}
 }

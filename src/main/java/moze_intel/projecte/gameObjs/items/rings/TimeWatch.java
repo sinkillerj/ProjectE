@@ -7,11 +7,11 @@ import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.PETags;
+import moze_intel.projecte.gameObjs.PETags.BlockEntities;
+import moze_intel.projecte.gameObjs.PETags.Blocks;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
-import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.RegistryUtils;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -20,7 +20,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -47,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
-	private static final Predicate<BlockEntity> VALID_TARGET = be -> !be.isRemoved() && !RegistryUtils.getBEHolder(be.getType()).is(PETags.BlockEntities.BLACKLIST_TIME_WATCH);
+	private static final Predicate<BlockEntity> VALID_TARGET = be -> !be.isRemoved() && !RegistryUtils.getBEHolder(be.getType()).is(BlockEntities.BLACKLIST_TIME_WATCH);
 
 	public TimeWatch(Properties props) {
 		super(props);
@@ -62,8 +61,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				player.sendSystemMessage(PELang.TIME_WATCH_DISABLED.translate());
 				return InteractionResultHolder.fail(stack);
 			}
-			byte current = getTimeBoost(stack);
-			setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
+			stack.setData(PEAttachmentTypes.TIME_WATCH_MODE, stack.getData(PEAttachmentTypes.TIME_WATCH_MODE).next());
 			player.sendSystemMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)));
 		}
 		return InteractionResultHolder.success(stack);
@@ -75,12 +73,12 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		if (!(entity instanceof Player player) || !hotBarOrOffHand(slot) || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
-		byte timeControl = getTimeBoost(stack);
+		TimeWatchMode timeControl = stack.getData(PEAttachmentTypes.TIME_WATCH_MODE);
 		if (!level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
 			ServerLevel serverWorld = (ServerLevel) level;
-			if (timeControl == 1) {
+			if (timeControl == TimeWatchMode.FAST_FORWARD) {
 				serverWorld.setDayTime(Math.min(level.getDayTime() + (getCharge(stack) + 1) * 4L, Long.MAX_VALUE));
-			} else if (timeControl == 2) {
+			} else if (timeControl == TimeWatchMode.REWIND) {
 				long charge = getCharge(stack) + 1;
 				if (level.getDayTime() - charge * 4 < 0) {
 					serverWorld.setDayTime(0);
@@ -89,7 +87,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 				}
 			}
 		}
-		if (level.isClientSide || !ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE)) {
+		if (level.isClientSide || !stack.getData(PEAttachmentTypes.ACTIVE)) {
 			return;
 		}
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
@@ -171,7 +169,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 			if (WorldHelper.isBlockLoaded(level, pos)) {
 				BlockState state = level.getBlockState(pos);
 				Block block = state.getBlock();
-				if (state.isRandomlyTicking() && !state.is(PETags.Blocks.BLACKLIST_TIME_WATCH)
+				if (state.isRandomlyTicking() && !state.is(Blocks.BLACKLIST_TIME_WATCH)
 					&& !(block instanceof LiquidBlock) // Don't speed non-source fluid blocks - dupe issues
 					&& !(block instanceof BonemealableBlock) && !(block instanceof IPlantable)) {// All plants should be sped using Harvest Goddess
 					pos = pos.immutable();
@@ -184,21 +182,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	private ILangEntry getTimeName(ItemStack stack) {
-		byte mode = getTimeBoost(stack);
-		return switch (mode) {
-			case 0 -> PELang.TIME_WATCH_OFF;
-			case 1 -> PELang.TIME_WATCH_FAST_FORWARD;
-			case 2 -> PELang.TIME_WATCH_REWIND;
-			default -> PELang.INVALID_MODE;
-		};
-	}
-
-	private byte getTimeBoost(ItemStack stack) {
-		return stack.hasTag() ? stack.getOrCreateTag().getByte(Constants.NBT_KEY_TIME_MODE) : 0;
-	}
-
-	private void setTimeBoost(ItemStack stack, byte time) {
-		stack.getOrCreateTag().putByte(Constants.NBT_KEY_TIME_MODE, (byte) Mth.clamp(time, 0, 2));
+		return stack.getData(PEAttachmentTypes.TIME_WATCH_MODE).name;
 	}
 
 	public double getEmcPerTick(int charge) {
@@ -210,9 +194,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 		super.appendHoverText(stack, level, tooltips, flags);
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
 		tooltips.add(PELang.TOOLTIP_TIME_WATCH_2.translate());
-		if (stack.hasTag()) {
-			tooltips.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
-		}
+		tooltips.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
 	}
 
 	@Override
@@ -263,5 +245,25 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	@Override
 	public int getBarColor(@NotNull ItemStack stack) {
 		return getColorForBar(stack);
+	}
+
+	public enum TimeWatchMode {
+		OFF(PELang.TIME_WATCH_OFF),
+		FAST_FORWARD(PELang.TIME_WATCH_FAST_FORWARD),
+		REWIND(PELang.TIME_WATCH_REWIND);
+
+		private final ILangEntry name;
+
+		TimeWatchMode(ILangEntry name) {
+			this.name = name;
+		}
+
+		public TimeWatchMode next() {
+			return switch (this) {
+				case OFF -> FAST_FORWARD;
+				case FAST_FORWARD -> REWIND;
+				case REWIND -> OFF;
+			};
+		}
 	}
 }

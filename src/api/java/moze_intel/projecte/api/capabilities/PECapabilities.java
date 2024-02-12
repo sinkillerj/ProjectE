@@ -69,7 +69,7 @@ public class PECapabilities {
 	/**
 	 * The capability object for IModeChanger
 	 */
-	public static final ItemCapability<IModeChanger, Void> MODE_CHANGER_ITEM_CAPABILITY = ItemCapability.createVoid(rl("mode_changer"), IModeChanger.class);
+	public static final ItemCapability<IModeChanger<?>, Void> MODE_CHANGER_ITEM_CAPABILITY = ItemCapability.createVoid(rl("mode_changer"), (Class) IModeChanger.class);//TODO - 1.20.4: Re-evaluate
 
 	/**
 	 * The capability object for IPedestalItem

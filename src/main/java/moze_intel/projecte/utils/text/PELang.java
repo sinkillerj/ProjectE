@@ -98,7 +98,6 @@ public enum PELang implements ILangEntry {
 	GUI_RELAY_MK3("gui", "relay.mk3"),
 	//Mode
 	CURRENT_MODE("mode", "current"),
-	INVALID_MODE("mode", "invalid"),
 	MODE_SWITCH("mode", "switch"),
 	MODE_ARCANA_1("mode", "arcana.1"),
 	MODE_ARCANA_2("mode", "arcana.2"),
@@ -112,10 +111,6 @@ public enum PELang implements ILangEntry {
 	MODE_MERCURIAL_EYE_4("mode", "mercurial_eye.4"),
 	MODE_MERCURIAL_EYE_5("mode", "mercurial_eye.5"),
 	MODE_MERCURIAL_EYE_6("mode", "mercurial_eye.6"),
-	MODE_MORNING_STAR_1("mode", "morning_star.1"),
-	MODE_MORNING_STAR_2("mode", "morning_star.2"),
-	MODE_MORNING_STAR_3("mode", "morning_star.3"),
-	MODE_MORNING_STAR_4("mode", "morning_star.4"),
 	MODE_PHILOSOPHER_1("mode", "philosopher.1"),
 	MODE_PHILOSOPHER_2("mode", "philosopher.2"),
 	MODE_PHILOSOPHER_3("mode", "philosopher.3"),

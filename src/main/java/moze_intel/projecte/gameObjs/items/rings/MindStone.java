@@ -4,8 +4,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
@@ -36,7 +35,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
 		super.inventoryTick(stack, level, entity, slot, isHeld);
 		if (!level.isClientSide && hotBarOrOffHand(slot) && entity instanceof Player player) {
-			if (ItemHelper.checkItemNBT(stack, Constants.NBT_KEY_ACTIVE) && getXP(player) > 0) {
+			if (stack.getData(PEAttachmentTypes.ACTIVE) && getXP(player) > 0) {
 				int toAdd = Math.min(getXP(player), TRANSFER_RATE);
 				addStoredXP(stack, toAdd);
 				removeXP(player, TRANSFER_RATE);
@@ -48,7 +47,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide && !stack.getOrCreateTag().getBoolean(Constants.NBT_KEY_ACTIVE) && getStoredXP(stack) != 0) {
+		if (!level.isClientSide && !stack.getData(PEAttachmentTypes.ACTIVE) && getStoredXP(stack) != 0) {
 			int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 			if (toAdd > 0) {
 				addXP(player, toAdd);
@@ -118,19 +117,20 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	}
 
 	private int getStoredXP(ItemStack stack) {
-		return stack.hasTag() ? stack.getOrCreateTag().getInt(Constants.NBT_KEY_STORED_XP) : 0;
+		return stack.getData(PEAttachmentTypes.STORED_EXP);
 	}
 
 	private void setStoredXP(ItemStack stack, int XP) {
-		stack.getOrCreateTag().putInt(Constants.NBT_KEY_STORED_XP, XP);
+		stack.setData(PEAttachmentTypes.STORED_EXP, XP);
 	}
 
 	private void addStoredXP(ItemStack stack, int XP) {
-		long result = (long) getStoredXP(stack) + XP;
-		if (result > Integer.MAX_VALUE) {
-			result = Integer.MAX_VALUE;
+		int stored = getStoredXP(stack);
+		if (stored > Integer.MAX_VALUE - XP) {
+			setStoredXP(stack, Integer.MAX_VALUE);
+		} else {
+			setStoredXP(stack, stored + XP);
 		}
-		setStoredXP(stack, (int) result);
 	}
 
 	private int removeStoredXP(ItemStack stack, int XP) {

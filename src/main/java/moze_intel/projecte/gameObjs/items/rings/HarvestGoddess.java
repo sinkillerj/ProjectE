@@ -5,7 +5,7 @@ import java.util.List;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -14,7 +14,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -45,11 +44,10 @@ public class HarvestGoddess extends PEToggleItem implements IPedestalItem {
 		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
-		CompoundTag nbt = stack.getOrCreateTag();
-		if (nbt.getBoolean(Constants.NBT_KEY_ACTIVE)) {
+		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			long storedEmc = getEmc(stack);
 			if (storedEmc == 0 && !consumeFuel(player, stack, 64, true)) {
-				nbt.putBoolean(Constants.NBT_KEY_ACTIVE, false);
+				stack.removeData(PEAttachmentTypes.ACTIVE);
 			} else {
 				WorldHelper.growNearbyRandomly(true, level, player);
 				removeEmc(stack, EMCHelper.removeFractionalEMC(stack, 0.32F));

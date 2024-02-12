@@ -36,18 +36,6 @@ public final class ItemHelper {
 	}
 
 	/**
-	 * Checks the item's NBT for a given boolean value.
-	 *
-	 * @param stack Stack, assumes it has already been validated to not be empty
-	 * @param key   NBT Key to check.
-	 *
-	 * @return {@code true} if the item NBT matches.
-	 */
-	public static boolean checkItemNBT(ItemStack stack, String key) {
-		return stack.hasTag() && stack.getOrCreateTag().getBoolean(key);
-	}
-
-	/**
 	 * Compacts an inventory and returns if the inventory is/was empty.
 	 *
 	 * @return True if the inventory was empty.

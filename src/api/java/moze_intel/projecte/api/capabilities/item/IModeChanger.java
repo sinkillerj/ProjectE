@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Acquire an instance of this using {@link ItemStack#getCapability(ItemCapability)}.
  */
-public interface IModeChanger {
+public interface IModeChanger<MODE> {
 
 	/**
 	 * Gets the mode from this ItemStack
@@ -23,7 +23,7 @@ public interface IModeChanger {
 	 *
 	 * @return The mode of this ItemStack
 	 */
-	byte getMode(@NotNull ItemStack stack);
+	MODE getMode(@NotNull ItemStack stack);
 
 	/**
 	 * Called serverside when the player presses change mode

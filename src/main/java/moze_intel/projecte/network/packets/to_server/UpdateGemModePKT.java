@@ -2,8 +2,8 @@ package moze_intel.projecte.network.packets.to_server;
 
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.network.packets.IPEPacket;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public record UpdateGemModePKT(boolean mode) implements IPEPacket<PlayPayloadCon
 				})
 				//Note: Void Ring extends gem of eternal density, so we only need to check if it is an instance of the base class
 				.filter(stack -> !stack.isEmpty() && stack.getItem() instanceof GemEternalDensity)
-				.ifPresent(stack -> stack.getOrCreateTag().putBoolean(Constants.NBT_KEY_GEM_WHITELIST, mode));
+				.ifPresent(stack -> stack.setData(PEAttachmentTypes.GEM_WHITELIST, mode));
 	}
 
 	@Override

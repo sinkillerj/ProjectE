@@ -7,11 +7,14 @@ import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.items.IItemMode;
+import moze_intel.projecte.gameObjs.items.IModeEnum;
+import moze_intel.projecte.gameObjs.items.tools.PEKatar.KatarMode;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.ToolHelper;
 import moze_intel.projecte.utils.ToolHelper.ChargeAttributeCache;
-import moze_intel.projecte.utils.text.ILangEntry;
+import moze_intel.projecte.utils.text.IHasTranslationKey;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -34,25 +37,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PEKatar extends PETool implements IItemMode, IExtraFunction {
+public class PEKatar extends PETool implements IItemMode<KatarMode>, IExtraFunction {
 
 	private final ChargeAttributeCache attributeCache = new ChargeAttributeCache();
-	private final ILangEntry[] modeDesc;
 
 	public PEKatar(EnumMatterType matterType, int numCharges, Properties props) {
 		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_KATAR, 19, -2.4F, numCharges, props);
-		modeDesc = new ILangEntry[]{PELang.MODE_KATAR_1, PELang.MODE_KATAR_2};
-	}
-
-	@Override
-	public ILangEntry[] getModeLangEntries() {
-		return modeDesc;
 	}
 
 	@Override
@@ -143,7 +140,7 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 	@Override
 	public boolean doExtraFunction(@NotNull ItemStack stack, @NotNull Player player, InteractionHand hand) {
 		if (player.getAttackStrengthScale(0F) == 1) {
-			ToolHelper.attackAOE(stack, player, getMode(stack) == 1, ProjectEConfig.server.difficulty.katarDeathAura.get(), 0, hand);
+			ToolHelper.attackAOE(stack, player, getMode(stack) == KatarMode.SLAY_ALL, ProjectEConfig.server.difficulty.katarDeathAura.get(), 0, hand);
 			PlayerHelper.resetCooldown(player);
 			return true;
 		}
@@ -186,5 +183,34 @@ public class PEKatar extends PETool implements IItemMode, IExtraFunction {
 			}
 		}
 		return InteractionResult.PASS;
+	}
+
+	@Override
+	public AttachmentType<KatarMode> getAttachmentType() {
+		return PEAttachmentTypes.KATAR_MODE.get();
+	}
+
+	public enum KatarMode implements IModeEnum<KatarMode> {
+		SLAY_HOSTILE(PELang.MODE_KATAR_1),
+		SLAY_ALL(PELang.MODE_KATAR_2);
+
+		private final IHasTranslationKey langEntry;
+
+		KatarMode(IHasTranslationKey langEntry) {
+			this.langEntry = langEntry;
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return langEntry.getTranslationKey();
+		}
+
+		@Override
+		public KatarMode next(ItemStack stack) {
+			return switch (this) {
+				case SLAY_HOSTILE -> SLAY_ALL;
+				case SLAY_ALL -> SLAY_HOSTILE;
+			};
+		}
 	}
 }

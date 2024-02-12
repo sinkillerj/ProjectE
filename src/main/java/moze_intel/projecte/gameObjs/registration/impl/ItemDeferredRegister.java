@@ -51,8 +51,8 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 			if (item instanceof IItemEmcHolder) {
 				event.registerItem(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY, (stack, context) -> (IItemEmcHolder) stack.getItem(), item);
 			}
-			if (item instanceof IModeChanger) {
-				event.registerItem(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY, (stack, context) -> (IModeChanger) stack.getItem(), item);
+			if (item instanceof IModeChanger<?>) {
+				event.registerItem(PECapabilities.MODE_CHANGER_ITEM_CAPABILITY, (stack, context) -> (IModeChanger<?>) stack.getItem(), item);
 			}
 			if (item instanceof IPedestalItem) {
 				event.registerItem(PECapabilities.PEDESTAL_ITEM_CAPABILITY, (stack, context) -> (IPedestalItem) stack.getItem(), item);
