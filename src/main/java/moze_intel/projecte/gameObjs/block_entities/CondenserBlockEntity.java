@@ -177,7 +177,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 		if (lockInfo == null) {
 			return false;
 		}
-		//Compare our lock to the persistent info that the stack would have
+		//Compare our lock to the persistent item that the stack would have
 		return lockInfo.equals(NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)));
 	}
 
@@ -202,7 +202,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 				}
 				return false;
 			}
-			//If the lock info is actually null and the player didn't carry anything don't do anything
+			//If the lock item is actually null and the player didn't carry anything don't do anything
 			// otherwise just fall through as we need to update it to actually being empty
 			if (lockInfo == null) {
 				return false;

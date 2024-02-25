@@ -2,8 +2,8 @@ package moze_intel.projecte.gameObjs.items;
 
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.integration.IntegrationHelper;
-import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +25,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper, ICa
 
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack stack) {
-		return stack.hasTag();
+		return stack.hasData(PEAttachmentTypes.STORED_EMC);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper, ICa
 		if (starEmc == 0) {
 			return 1;
 		}
-		return (float) (1 - starEmc / (double) EMCHelper.getKleinStarMaxEmc(stack));
+		return (float) (1 - starEmc / (double) tier.maxEmc);
 	}
 
 	@Override
@@ -51,25 +51,27 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper, ICa
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide && !FMLEnvironment.production) {
-			setEmc(stack, EMCHelper.getKleinStarMaxEmc(stack));
+		if (!level.isClientSide && !FMLEnvironment.production && player.isCreative()) {
+			setEmc(stack, tier.maxEmc);
 			return InteractionResultHolder.success(stack);
 		}
 		return InteractionResultHolder.pass(stack);
 	}
 
 	public enum EnumKleinTier {
-		EIN("ein"),
-		ZWEI("zwei"),
-		DREI("drei"),
-		VIER("vier"),
-		SPHERE("sphere"),
-		OMEGA("omega");
+		EIN("ein", 50_000),
+		ZWEI("zwei", 200_000),
+		DREI("drei", 800_000),
+		VIER("vier", 3_200_000),
+		SPHERE("sphere", 12_800_000),
+		OMEGA("omega", 51_200_000);
 
 		public final String name;
+		public final long maxEmc;
 
-		EnumKleinTier(String name) {
+		EnumKleinTier(String name, long maxEmc) {
 			this.name = name;
+			this.maxEmc = maxEmc;
 		}
 	}
 
@@ -109,7 +111,7 @@ public class KleinStar extends ItemPE implements IItemEmcHolder, IBarHelper, ICa
 	@Override
 	@Range(from = 1, to = Long.MAX_VALUE)
 	public long getMaximumEmc(@NotNull ItemStack stack) {
-		return EMCHelper.getKleinStarMaxEmc(stack);
+		return tier.maxEmc;
 	}
 
 	@Override

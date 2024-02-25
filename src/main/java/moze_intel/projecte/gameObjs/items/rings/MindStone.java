@@ -59,7 +59,7 @@ public class MindStone extends PEToggleItem implements IPedestalItem {
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, level, tooltips, flags);
-		if (stack.hasTag()) {
+		if (stack.hasData(PEAttachmentTypes.STORED_EXP)) {
 			tooltips.add(PELang.TOOLTIP_STORED_XP.translateColored(ChatFormatting.DARK_GREEN, ChatFormatting.GREEN, String.format("%,d", getStoredXP(stack))));
 		}
 	}

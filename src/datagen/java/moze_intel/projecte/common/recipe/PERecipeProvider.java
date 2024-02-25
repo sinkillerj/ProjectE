@@ -12,9 +12,9 @@ import moze_intel.projecte.gameObjs.customRecipes.TomeEnabledCondition;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
 import moze_intel.projecte.gameObjs.items.KleinStar.EnumKleinTier;
 import moze_intel.projecte.gameObjs.registration.impl.ItemRegistryObject;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
@@ -28,12 +28,12 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -440,10 +440,9 @@ public class PERecipeProvider extends RecipeProvider {
 	}
 
 	private static Ingredient getFullKleinStarIngredient(EnumKleinTier tier) {
-		//TODO - 1.20.4: Attachment ingredient
-		CompoundTag nbt = new CompoundTag();
-		nbt.putLong("StoredEMC", Constants.MAX_KLEIN_EMC[tier.ordinal()]);
-		return NBTIngredient.of(false, nbt, PEItems.getStar(tier));
+		ItemStack star = PEItems.getStar(tier).asStack(1);
+		star.setData(PEAttachmentTypes.STORED_EMC, tier.maxEmc);
+		return NBTIngredient.of(false, star);
 	}
 
 	private static void gemArmorRecipe(RecipeOutput recipeOutput, Supplier<ShapelessRecipeBuilder> builder, ItemRegistryObject<?> result) {

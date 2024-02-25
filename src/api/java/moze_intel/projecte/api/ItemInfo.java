@@ -15,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,7 @@ public final class ItemInfo {
 	public static final Codec<ItemInfo> EXPLICIT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemInfo::getItem),
 			CraftingHelper.TAG_CODEC.optionalFieldOf("nbt").forGetter(itemInfo -> Optional.ofNullable(itemInfo.getNBT()))
-	).apply(instance, (item, nbt) -> ItemInfo.fromItem(item, nbt.orElse(null))));
+	).apply(instance, (item, nbt) -> new ItemInfo(item, nbt.orElse(null))));
 
 	@NotNull
 	private final Item item;
@@ -57,7 +58,7 @@ public final class ItemInfo {
 	 * @apiNote While it is not required that the item is not air, it is expected to check yourself to make sure it is not air.
 	 */
 	public static ItemInfo fromItem(@NotNull ItemLike item, @Nullable CompoundTag nbt) {
-		return new ItemInfo(item, nbt);
+		return new ItemInfo(item, nbt == null ? null : nbt.copy());
 	}
 
 	/**
@@ -75,7 +76,7 @@ public final class ItemInfo {
 	 * @apiNote While it is not required that the stack is not empty, it is expected to check yourself to make sure it is not empty.
 	 */
 	public static ItemInfo fromStack(@NotNull ItemStack stack) {
-		return fromItem(stack.getItem(), stack.getTag());
+		return new ItemInfo(stack.getItem(), PEAttachments.addAttachmentsToNbt(stack.getTag(), stack.serializeAttachments()));
 	}
 
 	/**
@@ -111,7 +112,7 @@ public final class ItemInfo {
 				if (nbt.contains("nbt", Tag.TAG_COMPOUND)) {
 					return fromItem(item, nbt.getCompound("nbt"));
 				}
-				return fromItem(item, null);
+				return fromItem(item);
 			}).orElse(null);
 		}
 		return null;
@@ -125,7 +126,7 @@ public final class ItemInfo {
 	 * @return An {@link ItemInfo} that is contained by the given {@link FriendlyByteBuf}.
 	 */
 	public static ItemInfo read(@NotNull FriendlyByteBuf buffer) {
-		return fromItem(buffer.readById(BuiltInRegistries.ITEM), buffer.readNbt());
+		return new ItemInfo(buffer.readById(BuiltInRegistries.ITEM), buffer.readNbt());
 	}
 
 	/**
@@ -133,7 +134,7 @@ public final class ItemInfo {
 	 */
 	public void write(@NotNull FriendlyByteBuf buffer) {
 		buffer.writeId(BuiltInRegistries.ITEM, getItem());
-		buffer.writeNbt(getNBT());
+		buffer.writeNbt(this.nbt);
 	}
 
 	/**
@@ -171,6 +172,7 @@ public final class ItemInfo {
 	 *
 	 * @return True if it is contained.
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean is(TagKey<Item> tag) {
 		return getItem().builtInRegistryHolder().is(tag);
 	}
@@ -179,10 +181,20 @@ public final class ItemInfo {
 	 * @return A new {@link ItemStack} created from the stored {@link Item} and {@link CompoundTag}
 	 */
 	public ItemStack createStack() {
-		ItemStack stack = new ItemStack(item);
 		CompoundTag nbt = getNBT();
+		CompoundTag attachmentNbt = null;
+		if (nbt != null && nbt.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+			//Note: getNBT returns a copy of the stored nbt, so we don't have to copy it or the attachment sub-compound
+			attachmentNbt = nbt.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+			if (nbt.size() > 1) {
+				nbt.remove(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+			} else {
+				nbt = null;
+			}
+		}
+		ItemStack stack = new ItemStack(item, 1, attachmentNbt);
 		if (nbt != null) {
-			//Only set the NBT if we have some, other then allow the item to use its default NBT
+			//Only set the NBT if we have some, other than allowing the item to use its default NBT
 			stack.setTag(nbt);
 		}
 		return stack;
@@ -194,7 +206,7 @@ public final class ItemInfo {
 	public CompoundTag write(@NotNull CompoundTag nbt) {
 		nbt.putString("item", getRegistryName().toString());
 		if (this.nbt != null) {
-			nbt.put("nbt", this.nbt);
+			nbt.put("nbt", this.nbt.copy());
 		}
 		return nbt;
 	}

@@ -128,7 +128,7 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 				return false;
 			}
 			//If it does have extra data, pretend we don't have full knowledge and try adding it as what we have is persistent.
-			// Note: We ignore the tome here being a separate entity because it should not have any persistent info
+			// Note: We ignore the tome here being a separate entity because it should not have any persistent item
 			return tryAdd(attachment, persistentInfo);
 		}
 		if (info.getItem() instanceof Tome) {
@@ -137,7 +137,7 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 				info = ItemInfo.fromItem(info.getItem());
 			}
 			//Note: We don't bother checking if we already somehow know the tome without having full knowledge
-			// as we are learning it without any NBT which means that it doesn't have any extra persistent info
+			// as we are learning it without any NBT which means that it doesn't have any extra persistent item
 			// so can just check if it is already in it by nature of it being a set
 			attachment.knowledge.add(info);
 			attachment.fullKnowledge = true;

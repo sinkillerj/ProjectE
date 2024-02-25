@@ -220,18 +220,13 @@ public final class EMCMappingHandler {
 	public static void fromPacket(EmcPKTInfo[] data) {
 		emc.clear();
 		for (EmcPKTInfo info : data) {
-			emc.put(ItemInfo.fromItem(info.item(), info.nbt()), info.emc());
+			emc.put(info.item(), info.emc());
 		}
 	}
 
 	public static EmcPKTInfo[] createPacketData() {
-		EmcPKTInfo[] ret = new EmcPKTInfo[emc.size()];
-		int i = 0;
-		for (Map.Entry<ItemInfo, Long> entry : emc.entrySet()) {
-			ItemInfo info = entry.getKey();
-			ret[i] = new EmcPKTInfo(info.getItem(), info.getNBT(), entry.getValue());
-			i++;
-		}
-		return ret;
+		return emc.entrySet().stream()
+				.map(entry -> new EmcPKTInfo(entry.getKey(), entry.getValue()))
+				.toArray(EmcPKTInfo[]::new);
 	}
 }

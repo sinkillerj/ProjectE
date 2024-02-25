@@ -3,10 +3,9 @@ package moze_intel.projecte.api.proxy;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import moze_intel.projecte.api.ItemInfo;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -19,33 +18,18 @@ public interface IEMCProxy {
 			.orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IEMCProxy found, ProjectE may be absent, damaged, or outdated"));
 
 	/**
-	 * Queries the EMC value registry if the given block has an EMC value
-	 * <p>
-	 * Can be called at any time, but will only return valid results if a world is loaded
-	 * <p>
-	 * Can be called on both sides
-	 *
-	 * @param block The block we want to query
-	 *
-	 * @return Whether the block has an emc value
-	 */
-	default boolean hasValue(@NotNull Block block) {
-		return hasValue(Objects.requireNonNull(block).asItem());
-	}
-
-	/**
 	 * Queries the EMC value registry if the given item has an EMC value
 	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
 	 * <p>
 	 * Can be called on both sides
 	 *
-	 * @param item The item we want to query
+	 * @param itemLike The item we want to query
 	 *
 	 * @return Whether the item has an emc value
 	 */
-	default boolean hasValue(@NotNull Item item) {
-		return Objects.requireNonNull(item) != Items.AIR && hasValue(ItemInfo.fromItem(item));
+	default boolean hasValue(@NotNull ItemLike itemLike) {
+		return Objects.requireNonNull(itemLike).asItem() != Items.AIR && hasValue(ItemInfo.fromItem(itemLike));
 	}
 
 	/**
@@ -81,35 +65,19 @@ public interface IEMCProxy {
 	}
 
 	/**
-	 * Queries the EMC value for the provided block
-	 * <p>
-	 * Can be called at any time, but will only return valid results if a world is loaded
-	 * <p>
-	 * Can be called on both sides
-	 *
-	 * @param block The block we want to query
-	 *
-	 * @return The block's EMC value, or 0 if there is none
-	 */
-	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getValue(@NotNull Block block) {
-		return getValue(Objects.requireNonNull(block).asItem());
-	}
-
-	/**
 	 * Queries the EMC value for the provided item
 	 * <p>
 	 * Can be called at any time, but will only return valid results if a world is loaded
 	 * <p>
 	 * Can be called on both sides
 	 *
-	 * @param item The item we want to query
+	 * @param itemLike The item we want to query
 	 *
 	 * @return The item's EMC value, or 0 if there is none
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
-	default long getValue(@NotNull Item item) {
-		return Objects.requireNonNull(item) == Items.AIR ? 0 : getValue(ItemInfo.fromItem(item));
+	default long getValue(@NotNull ItemLike itemLike) {
+		return Objects.requireNonNull(itemLike).asItem() == Items.AIR ? 0 : getValue(ItemInfo.fromItem(itemLike));
 	}
 
 	/**

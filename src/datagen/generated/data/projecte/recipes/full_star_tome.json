@@ -20,7 +20,7 @@
     "K": {
       "type": "neoforge:nbt",
       "item": "projecte:klein_star_omega",
-      "tag": "{StoredEMC:51200000L}"
+      "neoforge:attachments": "{\"projecte:stored_emc\":51200000L}"
     },
     "L": {
       "item": "projecte:low_covalence_dust"

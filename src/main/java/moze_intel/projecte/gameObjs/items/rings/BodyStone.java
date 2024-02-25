@@ -14,7 +14,6 @@ import moze_intel.projecte.utils.MathUtils;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -39,7 +38,6 @@ public class BodyStone extends PEToggleItem implements IPedestalItem, ICapabilit
 		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
-		CompoundTag nbt = stack.getOrCreateTag();
 		if (stack.getData(PEAttachmentTypes.ACTIVE)) {
 			long itemEmc = getEmc(stack);
 			if (itemEmc < 64 && !consumeFuel(player, stack, 64, false)) {

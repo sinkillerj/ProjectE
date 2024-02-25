@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import java.util.Optional;
+import moze_intel.projecte.api.PEAttachments;
 import moze_intel.projecte.api.codec.NSSCodecHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
  */
-public final class NSSItem extends AbstractNBTNSSTag<Item> {
+public final class NSSItem extends AbstractNBTNSSTag<Item> {//TODO - 1.20.4: Attachment support
 
 	private static Registry<Item> registry() {
 		try {
@@ -71,8 +72,8 @@ public final class NSSItem extends AbstractNBTNSSTag<Item> {
 		if (stack.isEmpty()) {
 			throw new IllegalArgumentException("Can't make NSSItem with empty stack");
 		}
-		//Skip adding any nbt that will be added by default
-		return createItem(stack.getItem(), CraftingHelper.getTagForWriting(stack));
+		//Skip adding any nbt that will be added by default, but make sure to include the attachments as nbt
+		return createItem(stack.getItem(), PEAttachments.addAttachmentsToNbt(CraftingHelper.getTagForWriting(stack), stack.serializeAttachments()));
 	}
 
 	/**

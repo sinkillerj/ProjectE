@@ -10,7 +10,6 @@ import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -205,14 +204,6 @@ public final class EMCHelper {
 			sell = Constants.EMC_FORMATTER.format(emcSellValue);
 		}
 		return prefix.translateColored(ChatFormatting.YELLOW, ChatFormatting.WHITE, value, ChatFormatting.BLUE, sell);
-	}
-
-	@Range(from = 1, to = Long.MAX_VALUE)
-	public static long getKleinStarMaxEmc(ItemStack stack) {
-		if (stack.getItem() instanceof KleinStar star) {
-			return Constants.MAX_KLEIN_EMC[star.tier.ordinal()];
-		}
-		return Constants.MAX_KLEIN_EMC[0];
 	}
 
 	@Range(from = 0, to = Long.MAX_VALUE)

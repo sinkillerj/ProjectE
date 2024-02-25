@@ -1,15 +1,19 @@
 package moze_intel.projecte.integration.jei;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.emc.FuelMapper;
@@ -17,16 +21,19 @@ import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
+import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
 import moze_intel.projecte.integration.jei.collectors.FuelUpgradeRecipe;
 import moze_intel.projecte.integration.jei.world_transmute.WorldTransmuteRecipeCategory;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -34,10 +41,32 @@ public class PEJeiPlugin implements IModPlugin {
 
 	private static final ResourceLocation UID = PECore.rl("main");
 
+	private static final IIngredientSubtypeInterpreter<ItemStack> PROJECTE_INTERPRETER = (stack, context) -> {
+		if (context == UidContext.Ingredient && stack.hasData(PEAttachmentTypes.STORED_EMC)) {
+			long stored = stack.getData(PEAttachmentTypes.STORED_EMC);
+			if (stored > 0) {
+				return Long.toString(stored);
+			}
+		}
+		return IIngredientSubtypeInterpreter.NONE;
+	};
+
 	@NotNull
 	@Override
 	public ResourceLocation getPluginUid() {
 		return UID;
+	}
+
+	public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
+		for (Holder<? extends ItemLike> itemProvider : itemProviders) {
+			registry.registerSubtypeInterpreter(itemProvider.value().asItem(), PROJECTE_INTERPRETER);
+		}
+	}
+
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistration registry) {
+		registerItemSubtypes(registry, PEItems.ITEMS.getEntries());
+		registerItemSubtypes(registry, PEBlocks.BLOCKS.getSecondaryEntries());
 	}
 
 	@Override
