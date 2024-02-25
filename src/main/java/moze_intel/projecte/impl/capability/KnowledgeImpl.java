@@ -15,6 +15,7 @@ import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import moze_intel.projecte.gameObjs.items.Tome;
+import moze_intel.projecte.gameObjs.registration.impl.AttachmentTypeDeferredRegister;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.to_client.knowledge.KnowledgeSyncChangePKT;
@@ -28,6 +29,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -288,10 +290,34 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 
 	public static class KnowledgeAttachment implements INBTSerializable<CompoundTag> {
 
-		private final Set<ItemInfo> knowledge = new HashSet<>();
-		private final ItemStackHandler inputLocks = new ItemStackHandler(9);
-		private BigInteger emc = BigInteger.ZERO;
-		private boolean fullKnowledge = false;
+		private final ItemStackHandler inputLocks;
+		private final Set<ItemInfo> knowledge;
+		private boolean fullKnowledge;
+		private BigInteger emc;
+
+		public KnowledgeAttachment() {
+			this(new HashSet<>(), new ItemStackHandler(9), BigInteger.ZERO, false);
+		}
+
+		private KnowledgeAttachment(Set<ItemInfo> knowledge, ItemStackHandler inputLocks, BigInteger emc, boolean fullKnowledge) {
+			this.knowledge = knowledge;
+			this.inputLocks = inputLocks;
+			this.emc = emc;
+			this.fullKnowledge = fullKnowledge;
+		}
+
+		@Nullable
+		public KnowledgeAttachment copy(IAttachmentHolder holder) {
+			//Note: ItemInfo and BigInteger are both immutable, so we can just add them directly
+			return new KnowledgeAttachment(new HashSet<>(knowledge), AttachmentTypeDeferredRegister.copyHandler(inputLocks, ItemStackHandler::new), emc, fullKnowledge);
+		}
+
+		public boolean isCompatible(KnowledgeAttachment other) {
+			if (other == this) {
+				return true;
+			}
+			return fullKnowledge == other.fullKnowledge && emc.equals(other.emc) && knowledge.equals(other.knowledge) && AttachmentTypeDeferredRegister.HANDLER_COMPARATOR.areCompatible(inputLocks, other.inputLocks);
+		}
 
 		@Override
 		public CompoundTag serializeNBT() {

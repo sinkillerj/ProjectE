@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.registries;
 
 import java.util.List;
-import java.util.stream.IntStream;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.DiviningRod.DiviningMode;
 import moze_intel.projecte.gameObjs.items.GemEternalDensity.GemMode;
@@ -32,24 +31,27 @@ public class PEAttachmentTypes {
 
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<ItemStackHandler>> EYE_INVENTORY = ATTACHMENT_TYPES.register("eye_inventory",
 			() -> AttachmentType.serializable(() -> new ItemStackHandler(2))
-					.comparator((a, b) -> {
-						int slots = a.getSlots();
-						if (slots != b.getSlots()) {
-							return false;
-						}
-						return IntStream.range(0, slots).allMatch(slot -> ItemStack.matches(a.getStackInSlot(slot), b.getStackInSlot(slot)));
-					})
+					.copyHandler((holder, handler) -> {
+						ItemStackHandler copy = new ItemStackHandler(2);
+						copy.setStackInSlot(0, handler.getStackInSlot(0).copy());
+						copy.setStackInSlot(1, handler.getStackInSlot(1).copy());
+						return copy;
+					}).comparator(AttachmentTypeDeferredRegister.HANDLER_COMPARATOR)
 					.build()
 	);
 
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<AlchemicalBagAttachment>> ALCHEMICAL_BAGS = ATTACHMENT_TYPES.register("alchemical_bags",
 			() -> AttachmentType.serializable(AlchemicalBagAttachment::new)
+					.copyHandler((holder, attachment) -> attachment.copy(holder))
+					.comparator(AlchemicalBagAttachment::isCompatible)
 					.copyOnDeath()
 					.build()
 	);
 
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<KnowledgeAttachment>> KNOWLEDGE = ATTACHMENT_TYPES.register("knowledge",
 			() -> AttachmentType.serializable(KnowledgeAttachment::new)
+					.copyHandler((holder, attachment) -> attachment.copy(holder))
+					.comparator(KnowledgeAttachment::isCompatible)
 					.copyOnDeath()
 					.build()
 	);

@@ -1,9 +1,12 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
 import net.minecraft.FieldsAreNonnullByDefault;
@@ -17,9 +20,14 @@ import net.minecraft.nbt.LongTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentComparator;
+import net.neoforged.neoforge.attachment.IAttachmentCopyHandler;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +44,7 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 		return register(name, () -> AttachmentType.builder(() -> defaultValue)
 				//If we are true by default we only care about serializing the value when it is false
 				.serialize(defaultValue ? FALSE_SERIALIZER : TRUE_SERIALIZER)
+				.copyHandler(defaultValue ? FALSE_COPIER : TRUE_COPIER)
 				.comparator(Boolean::equals)
 				.build());
 	}
@@ -61,7 +70,8 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 						}
 						return value > max ? max : value;
 					}
-				}).comparator(Byte::equals)
+				}).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_BYTE : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+				.comparator(Byte::equals)
 				.build());
 	}
 
@@ -86,7 +96,8 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 					public Integer read(@NotNull IAttachmentHolder holder, @NotNull IntTag tag) {
 						return Mth.clamp(tag.getAsInt(), min, max);
 					}
-				}).comparator(Integer::equals)
+				}).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_INT : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+				.comparator(Integer::equals)
 				.build());
 	}
 
@@ -111,7 +122,8 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 					public Long read(@NotNull IAttachmentHolder holder, @NotNull LongTag tag) {
 						return Mth.clamp(tag.getAsLong(), min, max);
 					}
-				}).comparator(Long::equals)
+				}).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_LONG : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+				.comparator(Long::equals)
 				.build());
 	}
 
@@ -136,7 +148,8 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 					public Double read(@NotNull IAttachmentHolder holder, @NotNull DoubleTag tag) {
 						return Mth.clamp(tag.getAsDouble(), min, max);
 					}
-				}).comparator(Double::equals)
+				}).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_DOUBLE : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+				.comparator(Double::equals)
 				.build());
 	}
 
@@ -180,7 +193,13 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 						}
 						return list;
 					}
-				}).comparator(List::equals)
+				}).copyHandler((holder, list) -> {
+					List<ItemStack> copy = list.stream().filter(serializationChecker)
+							.map(ItemStack::copy)
+							.collect(Collectors.toList());
+					return copy.isEmpty() ? null : copy;
+				})
+				.comparator(List::equals)
 				.build());
 	}
 
@@ -203,7 +222,8 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 						//TODO - 1.20.4: Sanitize value
 						return values[tag.getAsInt()];
 					}
-				}).comparator((a, b) -> a == b)
+				}).copyHandler((holder, attachment) -> attachment == defaultValue ? null : attachment)
+				.comparator((a, b) -> a == b)
 				.build());
 	}
 
@@ -232,4 +252,31 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 			return tag.getAsByte() != 0;
 		}
 	};
+
+	private static final IAttachmentCopyHandler<Boolean> TRUE_COPIER = (holder, bool) -> bool ? true : null;
+	private static final IAttachmentCopyHandler<Boolean> FALSE_COPIER = (holder, bool) -> bool ? null : false;
+	private static final IAttachmentCopyHandler<Byte> COPY_NON_ZERO_BYTE = (holder, b) -> b == 0 ? null : b;
+	private static final IAttachmentCopyHandler<Integer> COPY_NON_ZERO_INT = (holder, i) -> i == 0 ? null : i;
+	private static final IAttachmentCopyHandler<Long> COPY_NON_ZERO_LONG = (holder, l) -> l == 0 ? null : l;
+	private static final IAttachmentCopyHandler<Double> COPY_NON_ZERO_DOUBLE = (holder, d) -> d == 0 ? null : d;
+
+	public static final IAttachmentComparator<ItemStackHandler> HANDLER_COMPARATOR = (a, b) -> {
+		int slots = a.getSlots();
+		if (slots != b.getSlots()) {
+			return false;
+		}
+		return IntStream.range(0, slots).allMatch(slot -> ItemStack.matches(a.getStackInSlot(slot), b.getStackInSlot(slot)));
+	};
+
+	public static <HANDLER extends IItemHandlerModifiable> HANDLER copyHandler(IItemHandler handler, Int2ObjectFunction<HANDLER> handlerCreator) {
+		int slots = handler.getSlots();
+		HANDLER handlerCopy = handlerCreator.get(slots);
+		for (int i = 0; i < slots; i++) {
+			ItemStack stack = handler.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				handlerCopy.setStackInSlot(i, stack.copy());
+			}
+		}
+		return handlerCopy;
+	}
 }

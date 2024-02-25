@@ -3,6 +3,7 @@ package moze_intel.projecte.impl.capability;
 import java.util.EnumMap;
 import java.util.Map;
 import moze_intel.projecte.api.capabilities.IAlchBagProvider;
+import moze_intel.projecte.gameObjs.registration.impl.AttachmentTypeDeferredRegister;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.network.PacketUtils;
 import moze_intel.projecte.network.packets.to_client.SyncBagDataPKT;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -44,6 +46,28 @@ public final class AlchBagImpl implements IAlchBagProvider {
 	public static class AlchemicalBagAttachment implements INBTSerializable<CompoundTag> {
 
 		private final Map<DyeColor, ItemStackHandler> inventories = new EnumMap<>(DyeColor.class);
+
+		@Nullable
+		public AlchemicalBagAttachment copy(IAttachmentHolder holder) {
+			AlchemicalBagAttachment copy = new AlchemicalBagAttachment();
+			inventories.forEach((color, handler) -> copy.inventories.put(color, AttachmentTypeDeferredRegister.copyHandler(handler, ItemStackHandler::new)));
+			return copy;
+		}
+
+		public boolean isCompatible(AlchemicalBagAttachment other) {
+			if (other == this) {
+				return true;
+			} else if (inventories.size() != other.inventories.size()) {
+				return false;
+			}
+			for (Map.Entry<DyeColor, ItemStackHandler> entry : inventories.entrySet()) {
+				ItemStackHandler otherHandler = other.inventories.get(entry.getKey());
+				if (otherHandler == null || !AttachmentTypeDeferredRegister.HANDLER_COMPARATOR.areCompatible(entry.getValue(), otherHandler)) {
+					return false;
+				}
+			}
+			return true;
+		}
 
 		@NotNull
 		public IItemHandlerModifiable getBag(@NotNull DyeColor color) {
