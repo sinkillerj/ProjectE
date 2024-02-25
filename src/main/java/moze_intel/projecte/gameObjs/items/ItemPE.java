@@ -23,8 +23,7 @@ public class ItemPE extends Item {
 		} else if (oldStack.getData(PEAttachmentTypes.ACTIVE) != newStack.getData(PEAttachmentTypes.ACTIVE)) {
 			return true;
 		}
-		//TODO - 1.20.4: Evaluate this and test it
-		return this instanceof IModeChanger<?> modeChanger && modeMatches(modeChanger, oldStack, newStack);
+		return this instanceof IModeChanger<?> modeChanger && !modeMatches(modeChanger, oldStack, newStack);
 	}
 
 	private static <MODE> boolean modeMatches(IModeChanger<MODE> modeChanger, ItemStack oldStack, ItemStack newStack) {

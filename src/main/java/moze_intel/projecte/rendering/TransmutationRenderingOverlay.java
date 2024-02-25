@@ -97,8 +97,6 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 				float alpha = ProjectEConfig.client.pulsatingOverlay.get() ? getPulseProportion() * 0.60F : 0.35F;
 				VertexConsumer builder = event.getMultiBufferSource().getBuffer(PERenderType.TRANSMUTATION_OVERLAY);
 				PoseStack matrix = event.getPoseStack();
-				matrix.pushPose();
-				matrix.translate(-viewPosition.x, -viewPosition.y, -viewPosition.z);
 				CollisionContext selectionContext = CollisionContext.of(player);
 				for (BlockPos pos : PhilosophersStone.getChanges(level, rtr.getBlockPos(), player, rtr.getDirection(), mode, charge).keySet()) {
 					BlockState state = level.getBlockState(pos);
@@ -106,7 +104,8 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 						VoxelShape shape = state.getShape(level, pos, selectionContext);
 						if (!shape.isEmpty()) {
 							matrix.pushPose();
-							matrix.translate(pos.getX(), pos.getY(), pos.getZ());
+							//Shift by view position here so that we don't have floating point issues at large values
+							matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
 							Matrix4f matrix4f = matrix.last().pose();
 							shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> addBox(builder, matrix4f, alpha,
 									(float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ));
@@ -114,7 +113,6 @@ public class TransmutationRenderingOverlay implements IGuiOverlay {
 						}
 					}
 				}
-				matrix.popPose();
 			}
 		} else {
 			transmutationResult = null;
