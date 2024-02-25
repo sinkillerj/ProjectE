@@ -174,24 +174,6 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 	}
 
-	//TODO - 1.20.4: Theoretically it will work as is because neo has builtin packet splitting for everything now
-	// but we may want to evaluate moving this off to world save data (and also removing the ItemHelper method)
-	/*@Nullable
-	@Override
-	public CompoundTag getShareTag(ItemStack stack) {
-		if (stack.getItem() instanceof GemEternalDensity) {
-			//Double check it is actually a stack of the correct type
-			CompoundTag nbt = stack.getTag();
-			if (nbt == null || !nbt.contains(Constants.NBT_KEY_GEM_CONSUMED, Tag.TAG_LIST)) {
-				//If we don't have any NBT or already don't have the key just return the NBT as is
-				return nbt;
-			}
-			//Don't sync the list of consumed stacks to the client to make sure it doesn't overflow the packet
-			return ItemHelper.copyNBTSkipKey(nbt, Constants.NBT_KEY_GEM_CONSUMED);
-		}
-		return super.getShareTag(stack);
-	}*/
-
 	@Override
 	public AttachmentType<GemMode> getAttachmentType() {
 		return PEAttachmentTypes.GEM_MODE.get();

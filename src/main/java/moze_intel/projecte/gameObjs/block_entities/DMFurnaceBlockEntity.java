@@ -188,7 +188,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		if (cookingTotalTime == 0 || level == null) {
 			return 0;
 		}
-		//TODO - 1.20.4: Re-evaluate this check that adjusts progress by one
+		//Adjust by one so that it can look like it is actually reaching the end of the bar
 		int progress = isLit() && canSmelt(getSmeltingRecipe(level, getItemToSmelt(), getFuelItem())) ? cookingProgress + 1 : cookingProgress;
 		return Mth.clamp(progress / (float) cookingTotalTime, 0, 1);
 	}

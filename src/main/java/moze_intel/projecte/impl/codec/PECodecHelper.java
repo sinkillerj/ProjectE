@@ -113,10 +113,8 @@ public class PECodecHelper implements IPECodecHelper {
 
 	@Override
 	public void setSerializers(Registry<NSSCodecHolder<?>> registry) {
-		if (nssSerializerCodec != null || !nssLegacyCodecs.isEmpty()) {
-			//TODO - 1.20.4: Figure out if this causes issues due to the fact I think baking might also happen to some degree on registry id sync
-			throw new IllegalStateException("This method may only be called once");
-		}
+		//Ensure there are no set legacy codecs, in case we are getting called after snapshot injection while joining a server
+		nssLegacyCodecs.clear();
 		for (NSSCodecHolder<?> codecHolder : registry) {
 			nssLegacyCodecs.put(codecHolder.legacyPrefix(), codecHolder.legacy());
 		}

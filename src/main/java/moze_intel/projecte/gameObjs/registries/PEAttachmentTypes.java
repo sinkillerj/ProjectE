@@ -69,6 +69,8 @@ public class PEAttachmentTypes {
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> NIGHT_VISION = ATTACHMENT_TYPES.registerBoolean("night_vision", false);
 
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> GEM_WHITELIST = ATTACHMENT_TYPES.registerBoolean("gem_whitelist", false);
+	//TODO - 1.20.4: Theoretically it will work as is because neo has builtin packet splitting for everything now
+	// but we may want to evaluate moving this off to world save data (and also removing the ItemHelper method)
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<List<ItemStack>>> GEM_CONSUMED = ATTACHMENT_TYPES.registerItemList("gem_consumed");
 	public static final PEDeferredHolder<AttachmentType<?>, AttachmentType<List<ItemStack>>> GEM_TARGETS = ATTACHMENT_TYPES.registerNonDuplicateItemList("gem_targets");
 

@@ -27,9 +27,11 @@ public interface IPECodecHelper {
 			.orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IPECodecHelper found, ProjectE may be absent, damaged, or outdated"));
 
 	/**
+	 * <STRONG>DO NOT CALL THIS METHOD</STRONG>
+	 * <p>
 	 * Called after the {@link moze_intel.projecte.api.ProjectERegistries#NSS_SERIALIZER} registry is baked to initialize the legacy codecs.
 	 *
-	 * @apiNote This method is for internal use only and if called more than once will error.
+	 * @apiNote This method is for internal use only.
 	 */
 	@Internal
 	void setSerializers(Registry<NSSCodecHolder<?>> registry);

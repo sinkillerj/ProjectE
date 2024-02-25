@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Item}s.
  */
-public final class NSSItem extends AbstractNBTNSSTag<Item> {//TODO - 1.20.4: Attachment support
+public final class NSSItem extends AbstractNBTNSSTag<Item> {
 
 	private static Registry<Item> registry() {
 		try {

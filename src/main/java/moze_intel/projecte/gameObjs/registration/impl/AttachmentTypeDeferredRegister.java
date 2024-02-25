@@ -219,8 +219,11 @@ public class AttachmentTypeDeferredRegister extends PEDeferredRegister<Attachmen
 
 					@Override
 					public ENUM read(@NotNull IAttachmentHolder holder, @NotNull IntTag tag) {
-						//TODO - 1.20.4: Sanitize value
-						return values[tag.getAsInt()];
+						int index = tag.getAsInt();
+						if (index >= 0 && index < values.length) {
+							return values[index];
+						}
+						return defaultValue;
 					}
 				}).copyHandler((holder, attachment) -> attachment == defaultValue ? null : attachment)
 				.comparator((a, b) -> a == b)
