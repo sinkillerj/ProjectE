@@ -26,6 +26,7 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.items.tools.PEPickaxe.PickaxeMode;
 import moze_intel.projecte.gameObjs.registries.PEDamageTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -246,6 +247,7 @@ public class ToolHelper {
 		}
 		//Process the block we interacted with initially and play the sound
 		//Note: For more detailed comments on why/how we set the block and remove the block above see the for loop below
+		CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer) player, pos, context.getItemInHand());
 		level.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
 		level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
 		if (particle != -1) {
@@ -273,6 +275,7 @@ public class ToolHelper {
 						//Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
 						// matter we make sure to get an immutable instance of newPos
 						newPos = newPos.immutable();
+						CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer) player, newPos, context.getItemInHand());
 						//Run it without simulation in case there are any side effects
 						state.getToolModifiedState(adjustedContext, action, false);
 						//Replace the block. Note it just directly sets it (in the same way the normal tools do), rather than using our

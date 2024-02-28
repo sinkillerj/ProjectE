@@ -136,6 +136,8 @@
   "entity.projecte.nova_catalyst_primed": "Primed Nova Catalyst",
   "entity.projecte.swrg_projectile": "SWRG Projectile",
   "entity.projecte.water_projectile": "Water Orb",
+  "fml.menu.mods.info.description.projecte": "A complete rewrite of EE2 for modern Minecraft versions.",
+  "fml.menu.mods.info.displayname.projecte": "ProjectE",
   "gem.projecte.activate": "Activated Gem Armor Offensive Abilities",
   "gem.projecte.deactivate": "Deactivated Gem Armor Offensive Abilities",
   "gem.projecte.disabled": "DISABLED",

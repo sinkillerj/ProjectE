@@ -15,9 +15,11 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
 	private final ConvertibleLanguageProvider[] altProviders;
+	private final String modid;
 
 	public BaseLanguageProvider(PackOutput output, String modid) {
 		super(output, modid, "en_us");
+		this.modid = modid;
 		altProviders = new ConvertibleLanguageProvider[]{
 				new UpsideDownLanguageProvider(output, modid),
 				new NonAmericanLanguageProvider(output, modid, "en_au"),
@@ -27,6 +29,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
 	protected void add(IHasTranslationKey key, String value) {
 		add(key.getTranslationKey(), value);
+	}
+
+	protected void addModInfo(String modName, String description) {
+		add("fml.menu.mods.info.displayname." + modid, modName);
+		add("fml.menu.mods.info.description." + modid, description);
 	}
 
 	@Override
