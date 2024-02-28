@@ -32,7 +32,7 @@ public class ItemPE extends Item {
 
 	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmc(ItemStack stack) {
-		return stack.hasData(PEAttachmentTypes.STORED_EMC) ? stack.getData(PEAttachmentTypes.STORED_EMC) : 0;
+		return stack.getExistingData(PEAttachmentTypes.STORED_EMC).orElse(0L);
 	}
 
 	public static void setEmc(ItemStack stack, @Range(from = 0, to = Long.MAX_VALUE) long amount) {

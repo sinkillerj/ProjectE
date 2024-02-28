@@ -21,7 +21,7 @@ import moze_intel.projecte.gameObjs.container.PhilosStoneContainer;
 import moze_intel.projecte.gameObjs.gui.AbstractCollectorScreen;
 import moze_intel.projecte.gameObjs.gui.GUIDMFurnace;
 import moze_intel.projecte.gameObjs.gui.GUIRMFurnace;
-import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
+import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.integration.jei.collectors.CollectorRecipeCategory;
@@ -42,8 +42,8 @@ public class PEJeiPlugin implements IModPlugin {
 	private static final ResourceLocation UID = PECore.rl("main");
 
 	private static final IIngredientSubtypeInterpreter<ItemStack> PROJECTE_INTERPRETER = (stack, context) -> {
-		if (context == UidContext.Ingredient && stack.hasData(PEAttachmentTypes.STORED_EMC)) {
-			long stored = stack.getData(PEAttachmentTypes.STORED_EMC);
+		if (context == UidContext.Ingredient) {
+			long stored = ItemPE.getEmc(stack);
 			if (stored > 0) {
 				return Long.toString(stored);
 			}

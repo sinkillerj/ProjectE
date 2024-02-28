@@ -1,6 +1,7 @@
 package moze_intel.projecte.events;
 
 import java.util.List;
+import java.util.Optional;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -72,8 +73,9 @@ public class ToolTipEvent {
 
 		if (current.hasTag() || current.hasAttachments()) {
 			long value;
-			if (current.hasData(PEAttachmentTypes.STORED_EMC)) {
-				value = current.getData(PEAttachmentTypes.STORED_EMC);
+			Optional<Long> existingData = current.getExistingData(PEAttachmentTypes.STORED_EMC);
+			if (existingData.isPresent()) {
+				value = existingData.get();
 			} else {
 				IItemEmcHolder emcHolder = current.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
 				if (emcHolder != null) {
