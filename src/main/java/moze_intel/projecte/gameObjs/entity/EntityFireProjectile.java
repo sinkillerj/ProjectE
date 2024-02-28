@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -49,8 +50,8 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 			BlockState state = level().getBlockState(pos);
 			if (state.is(Blocks.OBSIDIAN)) {
 				level().setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
-			} else if (state.is(Blocks.SAND)) {//TODO - 1.20.4: do we want this to check other sand types? For example red sand
-				placeAOE(player, pos, 2, Blocks.GLASS.defaultBlockState(), s -> s.is(Blocks.SAND));
+			} else if (state.is(BlockTags.SAND)) {
+				placeAOE(player, pos, 2, Blocks.GLASS.defaultBlockState(), s -> s.is(BlockTags.SAND));
 			} else {
 				placeAOE(player, pos, 1, Blocks.FIRE.defaultBlockState(), BlockStateBase::isAir);
 			}
