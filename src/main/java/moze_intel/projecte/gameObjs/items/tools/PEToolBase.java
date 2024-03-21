@@ -129,6 +129,7 @@ public abstract class PEToolBase extends ItemMode
 			}
 
 			ItemStack s = new ItemStack(block);
+			if(s.isEmpty()) continue;
 			int[] oreIds = OreDictionary.getOreIDs(s);
 
 			String oreName;
