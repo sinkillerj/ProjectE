@@ -121,7 +121,16 @@ public class GUITransmutation extends PEContainerScreen<TransmutationContainer> 
 			//This is where key combos and deletion is handled, and where we bypass the inventory key closing the screen
 			return textBoxFilter.keyPressed(keyCode, scanCode, modifiers);
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		boolean passedThrough = super.keyPressed(keyCode, scanCode, modifiers);
+		if (passedThrough) {
+			return true;
+		}
+		// try passing the unhandled key to textbox
+		boolean handled = textBoxFilter.keyPressed(keyCode, scanCode, modifiers);
+		if (handled) {
+			textBoxFilter.setFocused(true);
+		}
+		return handled;
 	}
 
 	private void updateFilter(String text) {
