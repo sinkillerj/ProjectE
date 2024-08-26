@@ -134,7 +134,7 @@ public final class WorldTransmutations {
 	}
 
 	private static void registerDefault(Block from, Block result, @Nullable Block altResult) {
-		registerIMC(from.defaultBlockState(), result.defaultBlockState(), null);
+		registerIMC(from.defaultBlockState(), result.defaultBlockState(), altResult == null ? null : altResult.defaultBlockState());
 	}
 
 	private static void registerAllStates(Block from, Block result, @Nullable Block altResult) {
