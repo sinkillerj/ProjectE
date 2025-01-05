@@ -172,16 +172,16 @@ neoForge.runs {
         // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
         if (project.hasProperty('mc_uuid')) {
             //Your uuid without any dashes in the middle
-            programArguments('--uuid', (String) project.property('mc_uuid'))
+            programArguments.addAll('--uuid', (String) project.property('mc_uuid'))
         }
         if (project.hasProperty('mc_username')) {
             //Your username/display name, this is the name that shows up in chat
             // Note: This is not your email, even if you have a Mojang account
-            programArguments('--username', (String) project.property('mc_username'))
+            programArguments.addAll('--username', (String) project.property('mc_username'))
         }
         if (project.hasProperty('mc_accessToken')) {
             //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
-            programArguments('--accessToken', (String) project.property('mc_accessToken'))
+            programArguments.addAll('--accessToken', (String) project.property('mc_accessToken'))
         }
     }
     server {
