@@ -4,17 +4,15 @@ import groovy.json.JsonSlurper
 import java.util.function.Consumer
 
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.+"
-    id 'java'
-    id 'eclipse'
+    id "com.gradleup.shadow" version "8.3.5"
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.93'
-//https://projects.neoforged.net/neoforged/neogradle
+    // https://projects.neoforged.net/neoforged/ModDevGradle
+    id 'net.neoforged.moddev' version '2.0.73'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.5'
+    gradleVersion = '8.12'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -58,8 +56,6 @@ sourceSets {
 }
 
 configurations { configContainer ->
-    forgeLibrary
-    implementation.extendsFrom(forgeLibrary)
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
     extendConfigurations(implementation, apiImplementation, testImplementation, datagenImplementation)
@@ -118,21 +114,35 @@ java {
     }
 }
 
-minecraft {
-    accessTransformers {
-        files(
-                file('src/main/resources/META-INF/accesstransformer.cfg'),
-                //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
-                file('src/datagen/resources/META-INF/datagen_ats.cfg')
-        )
+neoForge {
+    version = forge_version
+    addModdingDependenciesTo(sourceSets.api)
+    addModdingDependenciesTo(sourceSets.datagen)
+    addModdingDependenciesTo(sourceSets.test)
+
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
+
+    //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
+    accessTransformers.from(file('src/datagen/resources/META-INF/datagen_ats.cfg'))
+}
+
+neoForge.mods {
+    projecte {
+        sourceSet sourceSets.main
+        sourceSet sourceSets.api
+    }
+    projecte_datagen {
+        sourceSet sourceSets.main
+        sourceSet sourceSets.api
+        sourceSet sourceSets.datagen
     }
 }
 
-runs {
-    configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
-        run.workingDirectory(file("run"))
+neoForge.runs {
+    configureEach { net.neoforged.moddevgradle.dsl.RunModel run ->
+        run.gameDirectory = file("run")
 
-        boolean supportsGameTests = !run.isDataGenerator.get()
+        boolean supportsGameTests = run.name != "data"
         if (supportsGameTests) {
             //Specify all our mods as domains to look for game tests
             run.systemProperty('neoforge.enabledGameTestNamespaces', 'projecte')
@@ -144,18 +154,15 @@ runs {
             run.jvmArgument("-Dterminal.ansi=${run.project.property('forge_force_ansi')}")
         }
 
-        run.modSources(sourceSets.main, sourceSets.api)
-
         //if the selected toolchain is a JBR, enable DCEVM
-        if (run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+        final vmVendor = run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("")
+        if (vmVendor.contains("JetBrains")) {
+            run.jvmArgument("-XX:+IgnoreUnrecognizedVMOptions")
             run.jvmArgument("-XX:+AllowEnhancedClassRedefinition")
-        }
-
-        dependencies {
-            runtime project.configurations.forgeLibrary
         }
     }
     client {
+        client()
         //The below if statements are to add args to your gradle.properties file in user home
         // (DO NOT add them directly to the gradle.properties file for this project)
         // Setting the below properties allows use of your normal Minecraft account in the
@@ -178,13 +185,15 @@ runs {
         }
     }
     server {
+        server()
         programArgument('--nogui')
     }
     data {
-        programArguments('--all', '--output', project.file('src/datagen/generated/').getAbsolutePath(),
+        data()
+        programArguments.addAll('--all', '--output', project.file('src/datagen/generated/').getAbsolutePath(),
                 '--mod', 'projecte', '--existing', project.file('src/main/resources/').getAbsolutePath())
 
-        modSource(sourceSets.datagen)
+        loadedMods = [neoForge.mods.projecte_datagen]
     }
 }
 
@@ -224,8 +233,6 @@ test {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${forge_version}"
-
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
@@ -249,7 +256,7 @@ dependencies {
 
     implementation("com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}")
 
-    forgeLibrary group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
+    additionalRuntimeClasspath(implementation(shadow(group: "org.apache.commons", name: "commons-math3", version: "3.6.1")))
 }
 
 //Set the various variables/settings for the different process resources tasks
@@ -284,6 +291,7 @@ tasks.named('jar', Jar).configure {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     from([sourceSets.api.output, sourceSets.main.output])
     manifest.attributes(getManifestAttributes())
+    finalizedBy shadowJar
 }
 
 tasks.register('apiJar', Jar) {
@@ -299,13 +307,8 @@ shadowJar {
     // plugin anyways
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
     archiveClassifier.set("universal") // Replace the default JAR
-    dependsOn(classes, apiClasses)
-    from([sourceSets.api.output, sourceSets.main.output])
 
-    // Only shadow apache commons-math3
-    dependencies {
-        include dependency('org.apache.commons:commons-math3:.*')
-    }
+    configurations = [project.configurations.shadow]
     exclude('assets/org/**')
     exclude('META-INF/maven/**')
     exclude('META-INF/*.txt')
