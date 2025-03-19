@@ -93,23 +93,23 @@ public class PEItems {
 	public static final ItemRegistryObject<Item> DARK_MATTER = ITEMS.registerFireImmune("dark_matter");
 	public static final ItemRegistryObject<Item> RED_MATTER = ITEMS.registerFireImmune("red_matter");
 
-	public static final ItemRegistryObject<PEPickaxe> DARK_MATTER_PICKAXE = ITEMS.registerNoStackFireImmune("dm_pick", properties -> new PEPickaxe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEAxe> DARK_MATTER_AXE = ITEMS.registerNoStackFireImmune("dm_axe", properties -> new PEAxe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEShovel> DARK_MATTER_SHOVEL = ITEMS.registerNoStackFireImmune("dm_shovel", properties -> new PEShovel(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PESword> DARK_MATTER_SWORD = ITEMS.registerNoStackFireImmune("dm_sword", properties -> new PESword(EnumMatterType.DARK_MATTER, 2, 9, properties));
-	public static final ItemRegistryObject<PEHoe> DARK_MATTER_HOE = ITEMS.registerNoStackFireImmune("dm_hoe", properties -> new PEHoe(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEShears> DARK_MATTER_SHEARS = ITEMS.registerNoStackFireImmune("dm_shears", properties -> new PEShears(EnumMatterType.DARK_MATTER, 2, properties));
-	public static final ItemRegistryObject<PEHammer> DARK_MATTER_HAMMER = ITEMS.registerNoStackFireImmune("dm_hammer", properties -> new PEHammer(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEPickaxe> DARK_MATTER_PICKAXE = ITEMS.registerTool("dm_pick", properties -> new PEPickaxe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEAxe> DARK_MATTER_AXE = ITEMS.registerTool("dm_axe", properties -> new PEAxe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEShovel> DARK_MATTER_SHOVEL = ITEMS.registerTool("dm_shovel", properties -> new PEShovel(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PESword> DARK_MATTER_SWORD = ITEMS.registerTool("dm_sword", properties -> new PESword(EnumMatterType.DARK_MATTER, 2, 9, properties));
+	public static final ItemRegistryObject<PEHoe> DARK_MATTER_HOE = ITEMS.registerTool("dm_hoe", properties -> new PEHoe(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEShears> DARK_MATTER_SHEARS = ITEMS.registerTool("dm_shears", properties -> new PEShears(EnumMatterType.DARK_MATTER, 2, properties));
+	public static final ItemRegistryObject<PEHammer> DARK_MATTER_HAMMER = ITEMS.registerTool("dm_hammer", properties -> new PEHammer(EnumMatterType.DARK_MATTER, 2, properties));
 
-	public static final ItemRegistryObject<PEPickaxe> RED_MATTER_PICKAXE = ITEMS.registerNoStackFireImmune("rm_pick", properties -> new PEPickaxe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEAxe> RED_MATTER_AXE = ITEMS.registerNoStackFireImmune("rm_axe", properties -> new PEAxe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEShovel> RED_MATTER_SHOVEL = ITEMS.registerNoStackFireImmune("rm_shovel", properties -> new PEShovel(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<RedMatterSword> RED_MATTER_SWORD = ITEMS.registerNoStackFireImmune("rm_sword", RedMatterSword::new);
-	public static final ItemRegistryObject<PEHoe> RED_MATTER_HOE = ITEMS.registerNoStackFireImmune("rm_hoe", properties -> new PEHoe(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEShears> RED_MATTER_SHEARS = ITEMS.registerNoStackFireImmune("rm_shears", properties -> new PEShears(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEHammer> RED_MATTER_HAMMER = ITEMS.registerNoStackFireImmune("rm_hammer", properties -> new PEHammer(EnumMatterType.RED_MATTER, 3, properties));
-	public static final ItemRegistryObject<PEKatar> RED_MATTER_KATAR = ITEMS.registerNoStackFireImmune("rm_katar", properties -> new PEKatar(EnumMatterType.RED_MATTER, 4, properties));
-	public static final ItemRegistryObject<PEMorningStar> RED_MATTER_MORNING_STAR = ITEMS.registerNoStackFireImmune("rm_morning_star", properties -> new PEMorningStar(EnumMatterType.RED_MATTER, 4, properties));
+	public static final ItemRegistryObject<PEPickaxe> RED_MATTER_PICKAXE = ITEMS.registerTool("rm_pick", properties -> new PEPickaxe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEAxe> RED_MATTER_AXE = ITEMS.registerTool("rm_axe", properties -> new PEAxe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEShovel> RED_MATTER_SHOVEL = ITEMS.registerTool("rm_shovel", properties -> new PEShovel(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<RedMatterSword> RED_MATTER_SWORD = ITEMS.registerTool("rm_sword", RedMatterSword::new);
+	public static final ItemRegistryObject<PEHoe> RED_MATTER_HOE = ITEMS.registerTool("rm_hoe", properties -> new PEHoe(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEShears> RED_MATTER_SHEARS = ITEMS.registerTool("rm_shears", properties -> new PEShears(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEHammer> RED_MATTER_HAMMER = ITEMS.registerTool("rm_hammer", properties -> new PEHammer(EnumMatterType.RED_MATTER, 3, properties));
+	public static final ItemRegistryObject<PEKatar> RED_MATTER_KATAR = ITEMS.registerTool("rm_katar", properties -> new PEKatar(EnumMatterType.RED_MATTER, 4, properties));
+	public static final ItemRegistryObject<PEMorningStar> RED_MATTER_MORNING_STAR = ITEMS.registerTool("rm_morning_star", properties -> new PEMorningStar(EnumMatterType.RED_MATTER, 4, properties));
 
 	public static final ItemRegistryObject<DMArmor> DARK_MATTER_HELMET = ITEMS.registerNoStackFireImmune("dm_helmet", properties -> new DMArmor(ArmorItem.Type.HELMET, properties));
 	public static final ItemRegistryObject<DMArmor> DARK_MATTER_CHESTPLATE = ITEMS.registerNoStackFireImmune("dm_chestplate", properties -> new DMArmor(ArmorItem.Type.CHESTPLATE, properties));

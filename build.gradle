@@ -131,10 +131,10 @@ java {
 }
 
 neoForge {
-    version = neo_version
-    addModdingDependenciesTo(sourceSets.api)
-    addModdingDependenciesTo(sourceSets.datagen)
-    addModdingDependenciesTo(sourceSets.test)
+    enable {
+        version = neo_version
+        enabledSourceSets = sourceSets // All source sets use Minecraft code
+    }
 
     accessTransformers.from(
             file('src/main/resources/META-INF/accesstransformer.cfg'),
@@ -241,7 +241,9 @@ test {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
-    testImplementation("net.neoforged:testframework:${neo_version}")
+    testImplementation("net.neoforged:testframework:${neo_version}") {
+        transitive = false
+    }
 
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
