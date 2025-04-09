@@ -365,9 +365,9 @@ public final class WorldHelper {
 		float epsilon = com.mojang.math.Constants.EPSILON;
 		//Similar to as if we did box = box.deflate(epsilon), but without creating the extra intermediary AABB
 		return BlockPos.betweenClosed(
-				Mth.floor(box.minX - epsilon),
-				Mth.floor(box.minY - epsilon),
-				Mth.floor(box.minZ - epsilon),
+				Mth.floor(box.minX + epsilon),
+				Mth.floor(box.minY + epsilon),
+				Mth.floor(box.minZ + epsilon),
 				Mth.floor(box.maxX - epsilon),
 				Mth.floor(box.maxY - epsilon),
 				Mth.floor(box.maxZ - epsilon)

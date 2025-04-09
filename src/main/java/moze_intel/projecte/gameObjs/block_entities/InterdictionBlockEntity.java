@@ -11,6 +11,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -22,7 +23,11 @@ public class InterdictionBlockEntity extends BlockEntity {
 	private static final Predicate<Entity> INTERDICTION_REPEL_HOSTILE_PREDICATE = INTERDICTION_REPEL_PREDICATE.and(entity -> entity instanceof Enemy || entity instanceof Projectile);
 
 	public InterdictionBlockEntity(BlockPos pos, BlockState state) {
-		super(PEBlockEntityTypes.INTERDICTION_TORCH.get(), pos, state);
+		this(PEBlockEntityTypes.INTERDICTION_TORCH.get(), pos, state);
+	}
+
+	public InterdictionBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, InterdictionBlockEntity torch) {
