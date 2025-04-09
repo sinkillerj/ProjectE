@@ -42,19 +42,19 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.PROJECTE, PECore.MODNAME);
 		add(PELang.PACK_DESCRIPTION, "Resources used for " + PECore.MODNAME);
 		addModInfo(PECore.MODNAME, "A complete rewrite of EE2 for modern Minecraft versions.");
-		add(PELang.SECONDS, "%s seconds");
-		add(PELang.EVERY_TICK, "%s seconds (every tick)");
-		add(PELang.HIGH_ALCHEMIST, "High alchemist %s has joined the server");
-		add(PELang.UPDATE_AVAILABLE, "New " + PECore.MODNAME + " update available! Version: %s");
+		add(PELang.SECONDS, "%1$s seconds");
+		add(PELang.EVERY_TICK, "%1$s seconds (every tick)");
+		add(PELang.HIGH_ALCHEMIST, "High alchemist %1$s has joined the server");
+		add(PELang.UPDATE_AVAILABLE, "New " + PECore.MODNAME + " update available! Version: %1$s");
 		add(PELang.UPDATE_GET_IT, "Get it here!");
 		add(PELang.BLACKLIST, "Blacklist");
 		add(PELang.WHITELIST, "Whitelist");
-		add(PELang.DENSITY_MODE_TARGET, "Set target to: %s");
+		add(PELang.DENSITY_MODE_TARGET, "Set target to: %1$s");
 		//Divining Rod
-		add(PELang.DIVINING_AVG_EMC, "Average EMC for %s blocks: %s");
-		add(PELang.DIVINING_MAX_EMC, "Max EMC: %s");
-		add(PELang.DIVINING_SECOND_MAX, "Second Max EMC: %s");
-		add(PELang.DIVINING_THIRD_MAX, "Third Max EMC: %s");
+		add(PELang.DIVINING_AVG_EMC, "Average EMC for %1$s blocks: %2$s");
+		add(PELang.DIVINING_MAX_EMC, "Max EMC: %1$s");
+		add(PELang.DIVINING_SECOND_MAX, "Second Max EMC: %1$s");
+		add(PELang.DIVINING_THIRD_MAX, "Third Max EMC: %1$s");
 		add(PELang.DIVINING_RANGE_3, "3x3x3");
 		add(PELang.DIVINING_RANGE_16, "16x3x3");
 		add(PELang.DIVINING_RANGE_64, "64x3x3");
@@ -68,7 +68,7 @@ public class PELangProvider extends BaseLanguageProvider {
 		//JEI
 		add(PELang.JEI_COLLECTOR, "Collector Fuel Upgrades");
 		add(PELang.WORLD_TRANSMUTE, "World Transmutation");
-		add(PELang.WORLD_TRANSMUTE_DESCRIPTION, "Right click in world, shift right click for alternate output");
+		add(PELang.WORLD_TRANSMUTE_DESCRIPTION, "Use item (%1$s) in world, hold %2$s while interacting for alternate output");
 		//Curios
 		add(PELang.CURIOS_KLEIN_STAR, "Klein Star");
 		//Gem Armor
@@ -76,18 +76,18 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.GEM_DISABLED, "DISABLED");
 		add(PELang.GEM_ACTIVATE, "Activated Gem Armor Offensive Abilities");
 		add(PELang.GEM_DEACTIVATE, "Deactivated Gem Armor Offensive Abilities");
-		add(PELang.NIGHT_VISION, "Night Vision: %s");
-		add(PELang.NIGHT_VISION_PROMPT, "Press %s to toggle Night Vision");
-		add(PELang.STEP_ASSIST, "Step Assist: %s");
-		add(PELang.STEP_ASSIST_PROMPT, "Press %s to toggle Step Assist");
+		add(PELang.NIGHT_VISION, "Night Vision: %1$s");
+		add(PELang.NIGHT_VISION_PROMPT, "Press %1$s to toggle Night Vision");
+		add(PELang.STEP_ASSIST, "Step Assist: %1$s");
+		add(PELang.STEP_ASSIST_PROMPT, "Press %1$s to toggle Step Assist");
 		add(PELang.GEM_LORE_HELM, "Abyss Helmet");
 		add(PELang.GEM_LORE_CHEST, "Infernal Armor");
 		add(PELang.GEM_LORE_LEGS, "Gravity Greaves");
 		add(PELang.GEM_LORE_FEET, "Hurricane Boots");
 		//Watch of Flowing Time
 		add(PELang.TIME_WATCH_DISABLED, "Item disabled by server admin");
-		add(PELang.TIME_WATCH_MODE, "Time control mode: %s");
-		add(PELang.TIME_WATCH_MODE_SWITCH, "Time control mode set to: %s");
+		add(PELang.TIME_WATCH_MODE, "Time control mode: %1$s");
+		add(PELang.TIME_WATCH_MODE_SWITCH, "Time control mode set to: %1$s");
 		add(PELang.TIME_WATCH_OFF, "Off");
 		add(PELang.TIME_WATCH_FAST_FORWARD, "Fast-Forward");
 		add(PELang.TIME_WATCH_REWIND, "Rewind");
@@ -170,37 +170,37 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addCommands() {
-		add(PELang.CLEAR_KNOWLEDGE_NOTIFY, "Your transmutation knowledge was cleared by %s!");
-		add(PELang.CLEAR_KNOWLEDGE_SUCCESS, "Cleared knowledge for: %s");
+		add(PELang.CLEAR_KNOWLEDGE_NOTIFY, "Your transmutation knowledge was cleared by %1$s!");
+		add(PELang.CLEAR_KNOWLEDGE_SUCCESS, "Cleared knowledge for: %1$s");
 		add(PELang.DUMP_MISSING_EMC_NONE_MISSING, "All Items have an EMC value.");
 		add(PELang.DUMP_MISSING_EMC_ONE_MISSING, "One Item is missing an EMC value, printing to server log.");
-		add(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING, "%s Items are missing an EMC value, printing to client log.");
-		add(PELang.COMMAND_INVALID_ITEM, "Error: The item or tag \"%s\" was not found!");
+		add(PELang.DUMP_MISSING_EMC_MULTIPLE_MISSING, "%1$s Items are missing an EMC value, printing to client log.");
+		add(PELang.COMMAND_INVALID_ITEM, "Error: The item or tag \"%1$s\" was not found!");
 		add(PELang.COMMAND_NO_ITEM, "Please give an item or tag to change");
-		add(PELang.COMMAND_REMOVE_SUCCESS, "Removed EMC value for %s.");
-		add(PELang.COMMAND_RESET_SUCCESS, "Reset EMC value for %s.");
-		add(PELang.COMMAND_SET_SUCCESS, "Set EMC value for %s to %s!");
-		add(PELang.COMMAND_EMC_INVALID, "The value \"%s\" is invalid, it must be a positive integer.");
-		add(PELang.COMMAND_EMC_NEGATIVE, "Cannot remove %s EMC from %s as this would make their EMC negative.");
-		add(PELang.COMMAND_EMC_ADD_SUCCESS, "Added %s EMC to %s.");
-		add(PELang.COMMAND_EMC_REMOVE_SUCCESS, "Removed %s EMC from %s.");
-		add(PELang.COMMAND_EMC_SET_SUCCESS, "Set the EMC of %s to %s.");
-		add(PELang.COMMAND_EMC_TEST_SUCCESS, "%s does have enough EMC to remove %s.");
-		add(PELang.COMMAND_EMC_TEST_FAIL, "%s does not have enough EMC to remove %s.");
-		add(PELang.COMMAND_EMC_GET_SUCCESS, "%s has %s EMC.");
-		add(PELang.COMMAND_KNOWLEDGE_INVALID, "The item \"%s\" does not  have an EMC value, and cannot be learned.");
-		add(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS, "Successfully cleared the knowledge of %s.");
-		add(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL, "%s does not have any knowledge to clear.");
-		add(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS, "%s has successfully learned %s.");
-		add(PELang.COMMAND_KNOWLEDGE_LEARN_FAIL, "%s already has knowledge of %s.");
-		add(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS, "%s has successfully unlearned %s.");
-		add(PELang.COMMAND_KNOWLEDGE_UNLEARN_FAIL, "%s does not have knowledge of %s.");
-		add(PELang.COMMAND_KNOWLEDGE_TEST_SUCCESS, "%s has knowledge of %s.");
-		add(PELang.COMMAND_KNOWLEDGE_TEST_FAIL, "%s does not have knowledge of %s.");
-		add(PELang.COMMAND_PROVIDER_FAIL, "Failed to get provider for %s.");
+		add(PELang.COMMAND_REMOVE_SUCCESS, "Removed EMC value for %1$s.");
+		add(PELang.COMMAND_RESET_SUCCESS, "Reset EMC value for %1$s.");
+		add(PELang.COMMAND_SET_SUCCESS, "Set EMC value for %1$s to %2$s!");
+		add(PELang.COMMAND_EMC_INVALID, "The value \"%1$s\" is invalid, it must be a positive integer.");
+		add(PELang.COMMAND_EMC_NEGATIVE, "Cannot remove %1$s EMC from %2$s as this would make their EMC negative.");
+		add(PELang.COMMAND_EMC_ADD_SUCCESS, "Added %1$s EMC to %2$s.");
+		add(PELang.COMMAND_EMC_REMOVE_SUCCESS, "Removed %1$s EMC from %2$s.");
+		add(PELang.COMMAND_EMC_SET_SUCCESS, "Set the EMC of %1$s to %2$s.");
+		add(PELang.COMMAND_EMC_TEST_SUCCESS, "%1$s does have enough EMC to remove %2$s.");
+		add(PELang.COMMAND_EMC_TEST_FAIL, "%1$s does not have enough EMC to remove %2$s.");
+		add(PELang.COMMAND_EMC_GET_SUCCESS, "%1$s has %2$s EMC.");
+		add(PELang.COMMAND_KNOWLEDGE_INVALID, "The item \"%1$s\" does not  have an EMC value, and cannot be learned.");
+		add(PELang.COMMAND_KNOWLEDGE_CLEAR_SUCCESS, "Successfully cleared the knowledge of %1$s.");
+		add(PELang.COMMAND_KNOWLEDGE_CLEAR_FAIL, "%1$s does not have any knowledge to clear.");
+		add(PELang.COMMAND_KNOWLEDGE_LEARN_SUCCESS, "%1$s has successfully learned %2$s.");
+		add(PELang.COMMAND_KNOWLEDGE_LEARN_FAIL, "%1$s already has knowledge of %2$s.");
+		add(PELang.COMMAND_KNOWLEDGE_UNLEARN_SUCCESS, "%1$s has successfully unlearned %2$s.");
+		add(PELang.COMMAND_KNOWLEDGE_UNLEARN_FAIL, "%1$s does not have knowledge of %2$s.");
+		add(PELang.COMMAND_KNOWLEDGE_TEST_SUCCESS, "%1$s has knowledge of %2$s.");
+		add(PELang.COMMAND_KNOWLEDGE_TEST_FAIL, "%1$s does not have knowledge of %2$s.");
+		add(PELang.COMMAND_PROVIDER_FAIL, "Failed to get provider for %1$s.");
 		add(PELang.RELOAD_NOTICE, "Restart or use \"/reload\" when all changes are complete.");
-		add(PELang.SHOWBAG_NOT_FOUND, "UUID %s not found in playerdata/");
-		add(PELang.SHOWBAG_NAMED, "%s (%s)");
+		add(PELang.SHOWBAG_NOT_FOUND, "UUID %1$s not found in playerdata/");
+		add(PELang.SHOWBAG_NAMED, "%1$s (%2$s)");
 	}
 
 	private void addConfigs() {
@@ -209,17 +209,17 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addEMC() {
-		add(PELang.EMC, "%s EMC");
-		add(PELang.EMC_MAX_GEN_RATE, "Maximum Generation Rate: %s EMC/t");
-		add(PELang.EMC_MAX_OUTPUT_RATE, "Maximum Output Rate: %s EMC/t");
-		add(PELang.EMC_MAX_STORAGE, "Maximum Storage: %s EMC");
-		add(PELang.EMC_STORED, "Stored EMC: %s");
+		add(PELang.EMC, "%1$s EMC");
+		add(PELang.EMC_MAX_GEN_RATE, "Maximum Generation Rate: %1$s EMC/t");
+		add(PELang.EMC_MAX_OUTPUT_RATE, "Maximum Output Rate: %1$s EMC/t");
+		add(PELang.EMC_MAX_STORAGE, "Maximum Storage: %1$s EMC");
+		add(PELang.EMC_STORED, "Stored EMC: %1$s");
 		add(PELang.EMC_HAS_KNOWLEDGE, "Learned");
 		add(PELang.EMC_NO_KNOWLEDGE, "Unlearned");
-		add(PELang.EMC_TOOLTIP, "EMC: %s");
-		add(PELang.EMC_STACK_TOOLTIP, "Stack EMC: %s");
-		add(PELang.EMC_TOOLTIP_WITH_SELL, "EMC: %s (%s)");
-		add(PELang.EMC_STACK_TOOLTIP_WITH_SELL, "Stack EMC: %s (%s)");
+		add(PELang.EMC_TOOLTIP, "EMC: %1$s");
+		add(PELang.EMC_STACK_TOOLTIP, "Stack EMC: %1$s");
+		add(PELang.EMC_TOOLTIP_WITH_SELL, "EMC: %1$s (%2$s)");
+		add(PELang.EMC_STACK_TOOLTIP_WITH_SELL, "Stack EMC: %1$s (%2$s)");
 		add(PELang.EMC_TOO_MUCH, "WAY TOO MUCH");
 		//Postfix names for large EMC values. Names gotten from: https://en.wikipedia.org/wiki/Names_of_large_numbers
 		addPostfix(0, "Trillion");
@@ -243,7 +243,7 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addPostfix(int index, String postfix) {
-		add(Util.makeDescriptionId("emc", PECore.rl("postfix." + index)), "%s " + postfix);
+		add(Util.makeDescriptionId("emc", PECore.rl("postfix." + index)), "%1$s " + postfix);
 	}
 
 	private void addEntityTypes() {
@@ -390,8 +390,8 @@ public class PELangProvider extends BaseLanguageProvider {
 	}
 
 	private void addModes() {
-		add(PELang.CURRENT_MODE, "Mode: %s");
-		add(PELang.MODE_SWITCH, "Switched to %s Mode");
+		add(PELang.CURRENT_MODE, "Mode: %1$s");
+		add(PELang.MODE_SWITCH, "Switched to %1$s Mode");
 		add(PELang.MODE_ARCANA_1, "Zero");
 		add(PELang.MODE_ARCANA_2, "Ignition");
 		add(PELang.MODE_ARCANA_3, "Harvest");
@@ -416,37 +416,37 @@ public class PELangProvider extends BaseLanguageProvider {
 	private void addPedestalTooltips() {
 		add(PELang.PEDESTAL_DISABLED, "Pedestal function has been disabled!");
 		add(PELang.PEDESTAL_ON, "On Pedestal:");
-		add(PELang.PEDESTAL_TOOLTIP1, "Right click to insert an item, left click to remove.");
-		add(PELang.PEDESTAL_TOOLTIP2, "Right click with empty hand to activate!");
+		add(PELang.PEDESTAL_TOOLTIP1, "Interact (%1$s) with to insert an item, %2$s to remove.");
+		add(PELang.PEDESTAL_TOOLTIP2, "Interact (%1$s) with an empty hand to activate!");
 		add(PELang.PEDESTAL_ARCHANGEL_1, "Fires arrows at nearby mobs");
-		add(PELang.PEDESTAL_ARCHANGEL_2, "Triggers every %s");
+		add(PELang.PEDESTAL_ARCHANGEL_2, "Triggers every %1$s");
 		add(PELang.PEDESTAL_BLACK_HOLE_BAND_1, "Sucks in nearby item drops");
 		add(PELang.PEDESTAL_BLACK_HOLE_BAND_2, "Dumps in adjacent inventories");
 		add(PELang.PEDESTAL_BODY_STONE_1, "Restores nearby players' hunger");
-		add(PELang.PEDESTAL_BODY_STONE_2, "Half a shank every %s");
+		add(PELang.PEDESTAL_BODY_STONE_2, "Half a shank every %1$s");
 		add(PELang.PEDESTAL_EVERTIDE_1, "Create rain/snow storms");
-		add(PELang.PEDESTAL_EVERTIDE_2, "Attempts to start rain every %s");
+		add(PELang.PEDESTAL_EVERTIDE_2, "Attempts to start rain every %1$s");
 		add(PELang.PEDESTAL_HARVEST_GODDESS_1, "Accelerates growth of nearby crops");
 		add(PELang.PEDESTAL_HARVEST_GODDESS_2, "Harvests nearby grown crops");
-		add(PELang.PEDESTAL_HARVEST_GODDESS_3, "Activates every %s");
+		add(PELang.PEDESTAL_HARVEST_GODDESS_3, "Activates every %1$s");
 		add(PELang.PEDESTAL_IGNITION_1, "Nearby mobs combust");
-		add(PELang.PEDESTAL_IGNITION_2, "Activates every %s");
+		add(PELang.PEDESTAL_IGNITION_2, "Activates every %1$s");
 		add(PELang.PEDESTAL_LIFE_STONE_1, "Restores both hunger and hearts");
-		add(PELang.PEDESTAL_LIFE_STONE_2, "Half a heart and shank every %s");
+		add(PELang.PEDESTAL_LIFE_STONE_2, "Half a heart and shank every %1$s");
 		add(PELang.PEDESTAL_MIND_STONE, "Sucks nearby XP orbs into the Mind Stone");
 		add(PELang.PEDESTAL_REPAIR_TALISMAN_1, "Repairs nearby players' items");
-		add(PELang.PEDESTAL_REPAIR_TALISMAN_2, "Restores 1 durability every %s");
+		add(PELang.PEDESTAL_REPAIR_TALISMAN_2, "Restores 1 durability every %1$s");
 		add(PELang.PEDESTAL_SOUL_STONE_1, "Heals nearby players");
-		add(PELang.PEDESTAL_SOUL_STONE_2, "Half a heart every %s");
+		add(PELang.PEDESTAL_SOUL_STONE_2, "Half a heart every %1$s");
 		add(PELang.PEDESTAL_SWRG_1, "Shoots lightning at nearby mobs");
-		add(PELang.PEDESTAL_SWRG_2, "Activates every %s");
-		add(PELang.PEDESTAL_TIME_WATCH_1, "Gives %s bonus ticks to nearby blocks every tick");
-		add(PELang.PEDESTAL_TIME_WATCH_2, "Each tick, nearby mobs move %s times the speed");
+		add(PELang.PEDESTAL_SWRG_2, "Activates every %1$s");
+		add(PELang.PEDESTAL_TIME_WATCH_1, "Gives %1$s bonus ticks to nearby blocks every tick");
+		add(PELang.PEDESTAL_TIME_WATCH_2, "Each tick, nearby mobs move %1$s times the speed");
 		add(PELang.PEDESTAL_VOLCANITE_1, "Prevents rain/snow storms");
-		add(PELang.PEDESTAL_VOLCANITE_2, "Attempts to stop weather every %s");
+		add(PELang.PEDESTAL_VOLCANITE_2, "Attempts to stop weather every %1$s");
 		add(PELang.PEDESTAL_ZERO_1, "Extinguishes entities");
 		add(PELang.PEDESTAL_ZERO_2, "Freezes surroundings");
-		add(PELang.PEDESTAL_ZERO_3, "Activates every %s");
+		add(PELang.PEDESTAL_ZERO_3, "Activates every %1$s");
 	}
 
 	private void addSubtitles() {
@@ -463,23 +463,23 @@ public class PELangProvider extends BaseLanguageProvider {
 
 	private void addTooltips() {
 		add(PELang.TOOLTIP_ARCANA_INACTIVE, "Inactive!");
-		add(PELang.TOOLTIP_EVERTIDE_1, "Press %s to fire a water projectile");
+		add(PELang.TOOLTIP_EVERTIDE_1, "Press %1$s to fire a water projectile");
 		add(PELang.TOOLTIP_EVERTIDE_2, "Acts as an infinite water bucket");
-		add(PELang.TOOLTIP_EVERTIDE_3, "Right click to fill tanks and cauldrons");
+		add(PELang.TOOLTIP_EVERTIDE_3, "Interact with tanks and cauldrons to fill them");
 		add(PELang.TOOLTIP_EVERTIDE_4, "All operations are completely free!");
 		add(PELang.TOOLTIP_GEM_DENSITY_1, "Condenses items on the go");
-		add(PELang.TOOLTIP_GEM_DENSITY_2, "Current target: %s");
-		add(PELang.TOOLTIP_GEM_DENSITY_3, "Press %s to change target");
-		add(PELang.TOOLTIP_GEM_DENSITY_4, "Right click to set up blacklist/whitelist");
-		add(PELang.TOOLTIP_GEM_DENSITY_5, "Shift right click to toggle");
-		add(PELang.TOOLTIP_PHILOSTONE, "Press %s to open a crafting grid");
-		add(PELang.TOOLTIP_STORED_XP, "Stored XP: %s");
+		add(PELang.TOOLTIP_GEM_DENSITY_2, "Current target: %1$s");
+		add(PELang.TOOLTIP_GEM_DENSITY_3, "Press %1$s to change target");
+		add(PELang.TOOLTIP_GEM_DENSITY_4, "Interact (%1$s) to set up blacklist/whitelist");
+		add(PELang.TOOLTIP_GEM_DENSITY_5, "Hold %1$s and interact (%2$s) with the air to toggle");
+		add(PELang.TOOLTIP_PHILOSTONE, "Press %1$s to open a crafting grid");
+		add(PELang.TOOLTIP_STORED_XP, "Stored XP: %1$s");
 		add(PELang.TOOLTIP_TIME_WATCH_1, "Become the master of time");
-		add(PELang.TOOLTIP_TIME_WATCH_2, "Right click to change mode");
+		add(PELang.TOOLTIP_TIME_WATCH_2, "Interact (%1$s) to change mode");
 		add(PELang.TOOLTIP_TOME, "Unlocks all transmutation knowledge when learned");
-		add(PELang.TOOLTIP_VOLCANITE_1, "Press %s to fire a lava projectile");
+		add(PELang.TOOLTIP_VOLCANITE_1, "Press %1$s to fire a lava projectile");
 		add(PELang.TOOLTIP_VOLCANITE_2, "Acts as infinitely full lava bucket");
-		add(PELang.TOOLTIP_VOLCANITE_3, "Right click to fill tanks and cauldrons");
+		add(PELang.TOOLTIP_VOLCANITE_3, "Interact with tanks and cauldrons to fill them");
 		add(PELang.TOOLTIP_VOLCANITE_4, "All operations cost 32 EMC!");
 	}
 

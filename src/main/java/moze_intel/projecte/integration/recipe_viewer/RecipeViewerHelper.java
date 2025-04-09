@@ -7,8 +7,10 @@ import java.util.SequencedSet;
 import java.util.Set;
 import moze_intel.projecte.api.world_transmutation.IWorldTransmutation;
 import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.world_transmutation.WorldTransmutationManager;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
@@ -44,5 +46,9 @@ public class RecipeViewerHelper {
 			}
 		}
 		return recipes;
+	}
+
+	public static Component getTransmuteDescription() {
+		return PELang.WORLD_TRANSMUTE_DESCRIPTION.translate(Component.keybind("key.use"), Component.keybind("key.sneak"));
 	}
 }

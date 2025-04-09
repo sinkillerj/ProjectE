@@ -200,8 +200,9 @@ public class Pedestal extends Block implements SimpleWaterloggedBlock, PEEntityB
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
 		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate());
-		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate());
+		Component interact = Component.keybind("key.use");
+		tooltip.add(PELang.PEDESTAL_TOOLTIP1.translate(interact, Component.keybind("key.attack")));
+		tooltip.add(PELang.PEDESTAL_TOOLTIP2.translate(interact));
 	}
 
 	@Nullable

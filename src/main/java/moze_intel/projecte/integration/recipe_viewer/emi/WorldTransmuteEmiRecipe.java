@@ -12,6 +12,7 @@ import dev.emi.emi.api.widget.TextureWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.integration.recipe_viewer.RecipeViewerHelper;
 import moze_intel.projecte.integration.recipe_viewer.WorldTransmuteEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -81,7 +82,7 @@ public class WorldTransmuteEmiRecipe implements EmiRecipe {
 				.drawBack(false);
 		Bounds inputBounds = inputSlot.getBounds();
 		TextureWidget arrow = widgets.addFillingArrow(3 + inputBounds.right(), inputBounds.y(), (int) (5 * TimeUtil.MILLISECONDS_PER_SECOND))
-				.tooltip(List.of(ClientTooltipComponent.create(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate().getVisualOrderText())));
+				.tooltip(List.of(ClientTooltipComponent.create(RecipeViewerHelper.getTransmuteDescription().getVisualOrderText())));
 		int xPos = arrow.getBounds().right() + 3;
 		for (EmiStack emiStack : outputs) {
 			SlotWidget slot = widgets.addSlot(emiStack, xPos, inputBounds.y())

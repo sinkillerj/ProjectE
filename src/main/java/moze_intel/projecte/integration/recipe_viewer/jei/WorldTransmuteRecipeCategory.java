@@ -20,6 +20,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.integration.recipe_viewer.RecipeViewerHelper;
 import moze_intel.projecte.integration.recipe_viewer.WorldTransmuteEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
@@ -99,7 +100,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	@Override
 	public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull WorldTransmuteEntry recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
 		if (mouseX >= 25 && mouseX < 49 && mouseY >= 5 && mouseY < 21) {
-			tooltip.add(PELang.WORLD_TRANSMUTE_DESCRIPTION.translate());
+			tooltip.add(RecipeViewerHelper.getTransmuteDescription());
 		}
 	}
 

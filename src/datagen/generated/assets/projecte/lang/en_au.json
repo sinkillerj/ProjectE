@@ -1,7 +1,7 @@
 {
-  "command.projecte.knowledge.invalid": "The item \"%s\" does not  have an EMC value, and cannot be learnt.",
-  "command.projecte.knowledge.learn.success": "%s has successfully learnt %s.",
-  "command.projecte.knowledge.unlearn.success": "%s has successfully unlearnt %s.",
+  "command.projecte.knowledge.invalid": "The item \"%1$s\" does not  have an EMC value, and cannot be learnt.",
+  "command.projecte.knowledge.learn.success": "%1$s has successfully learnt %2$s.",
+  "command.projecte.knowledge.unlearn.success": "%1$s has successfully unlearnt %2$s.",
   "configuration.projecte.client.tooltips.learned.shift": "Shift Learnt Tooltips",
   "configuration.projecte.client.tooltips.learned.shift.tooltip": "Requires holding shift to display the learnt/unlearnt text as a tooltip on items and blocks. Note: this does nothing if EMC Tooltips are disabled.",
   "configuration.projecte.common.crafting.full_klein.tooltip": "Require full omega klein stars in the tome of knowledge and gem armour recipes. This is the same behavior that EE2 had.",
