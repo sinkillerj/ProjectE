@@ -177,7 +177,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 					hasChargeableItem = false;
 				}
 			} else {
-				hasFuel = true;
+				hasFuel = FuelMapper.isStackFuel(upgrading);
 				hasChargeableItem = false;
 			}
 		} else {
@@ -205,37 +205,36 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 					long actualInserted = emcHolder.insertEmc(upgrading, Math.min(getStoredEmc(), emcGen), EmcAction.EXECUTE);
 					forceExtractEmc(actualInserted, EmcAction.EXECUTE);
 				}
+				return;
 			} else if (hasFuel) {
 				ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(upgrading);
-				if (fuelUpgrade.isEmpty()) {
-					auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
-				}
+				if (!fuelUpgrade.isEmpty()) {
+					ItemStack lock = getLock();
+					ItemStack result = lock.isEmpty() ? fuelUpgrade : lock.copy();
 
-				ItemStack lock = getLock();
-				ItemStack result = lock.isEmpty() ? fuelUpgrade : lock.copy();
+					long upgradeCost = IEMCProxy.INSTANCE.getValue(result) - IEMCProxy.INSTANCE.getValue(upgrading);
 
-				long upgradeCost = IEMCProxy.INSTANCE.getValue(result) - IEMCProxy.INSTANCE.getValue(upgrading);
+					if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost) {
+						ItemStack upgrade = getUpgraded();
 
-				if (upgradeCost >= 0 && this.getStoredEmc() >= upgradeCost) {
-					ItemStack upgrade = getUpgraded();
-
-					if (upgrade.isEmpty()) {
-						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
-						auxSlots.setStackInSlot(UPGRADE_SLOT, result);
-						upgrading.shrink(1);
-					} else if (result.is(upgrade.getItem()) && upgrade.getCount() < upgrade.getMaxStackSize()) {
-						forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
-						upgrade.grow(1);
-						upgrading.shrink(1);
-						auxSlots.onContentsChanged(UPGRADE_SLOT);
+						if (upgrade.isEmpty()) {
+							forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
+							auxSlots.setStackInSlot(UPGRADE_SLOT, result);
+							upgrading.shrink(1);
+						} else if (result.is(upgrade.getItem()) && upgrade.getCount() < upgrade.getMaxStackSize()) {
+							forceExtractEmc(upgradeCost, EmcAction.EXECUTE);
+							upgrade.grow(1);
+							upgrading.shrink(1);
+							auxSlots.onContentsChanged(UPGRADE_SLOT);
+						}
 					}
+					return;
 				}
-			} else {
-				//Only send EMC when we are not upgrading fuel or charging an item
-				long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
-				this.sendToAllAcceptors(level, pos, toSend);
-				sendRelayBonus(level, pos);
 			}
+			//Only send EMC when we are not upgrading fuel or charging an item
+			long toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
+			this.sendToAllAcceptors(level, pos, toSend);
+			sendRelayBonus(level, pos);
 		}
 	}
 
@@ -304,7 +303,6 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		} else {
 			ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(upgrading);
 			if (fuelUpgrade.isEmpty()) {
-				auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
 				return 0;
 			}
 			reqEmc = IEMCProxy.INSTANCE.getValue(fuelUpgrade) - IEMCProxy.INSTANCE.getValue(upgrading);
