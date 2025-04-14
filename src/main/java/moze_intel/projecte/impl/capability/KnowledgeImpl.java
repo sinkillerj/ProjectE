@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.codec.IPECodecHelper;
@@ -299,7 +300,9 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 
 		private static final int LOCK_SLOTS = 9;
 
-		private static final Codec<Set<ItemInfo>> MUTABLE_KNOWLEDGE_CODEC = ItemInfo.CODEC.listOf().xmap(HashSet::new, List::copyOf);
+		private static final Codec<Set<ItemInfo>> MUTABLE_KNOWLEDGE_CODEC = ItemInfo.CODEC.listOf()
+			.promotePartial(error -> PECore.LOGGER.error("Failed to load stored knowledge: {}", error))
+			.xmap(HashSet::new, List::copyOf);
 		public static final Codec<KnowledgeAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				MUTABLE_KNOWLEDGE_CODEC.fieldOf("knowledge").forGetter(attachment -> attachment.knowledge),
 				PECodecHelper.MUTABLE_HANDLER_CODEC.fieldOf("input_locks").forGetter(attachment -> attachment.inputLocks),
