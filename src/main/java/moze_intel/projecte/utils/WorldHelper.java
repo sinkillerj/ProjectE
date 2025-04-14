@@ -311,7 +311,7 @@ public final class WorldHelper {
 	 * Gets an AABB for AOE digging operations. The offset increases both the breadth and depth of the box.
 	 */
 	public static AABB getBroadDeepBox(BlockPos pos, Direction direction, int offset) {
-		return getBroadDeepBox(pos, direction, offset, offset);
+		return getBroadDeepBox(pos, direction, offset, 2 * offset);
 	}
 
 	/**
