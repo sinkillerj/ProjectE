@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.gameObjs.container.slots.HotBarSlot;
 import moze_intel.projecte.gameObjs.container.slots.IInsertableSlot;
-import moze_intel.projecte.gameObjs.container.slots.InventoryContainerSlot;
+import moze_intel.projecte.gameObjs.container.slots.IInventoryContainerSlot;
 import moze_intel.projecte.gameObjs.container.slots.MainInventorySlot;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.network.packets.IPEPacket;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class PEContainer extends AbstractContainerMenu {
 
-	protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
+	protected final List<IInventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
 	protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
 	protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
 	protected final List<BoxedLong> longFields = new ArrayList<>();
@@ -61,7 +61,7 @@ public abstract class PEContainer extends AbstractContainerMenu {
 	protected Slot addSlot(@NotNull Slot slot) {
 		super.addSlot(slot);
 		switch (slot) {
-			case InventoryContainerSlot containerSlot -> inventoryContainerSlots.add(containerSlot);
+			case IInventoryContainerSlot containerSlot -> inventoryContainerSlots.add(containerSlot);
 			case MainInventorySlot inventorySlot -> mainInventorySlots.add(inventorySlot);
 			case HotBarSlot hotBarSlot -> hotBarSlots.add(hotBarSlot);
 			default -> {
@@ -94,7 +94,7 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		}
 		ItemStack slotStack = currentSlot.getItem();
 		ItemStack stackToInsert = slotStack;
-		if (currentSlot instanceof InventoryContainerSlot) {
+		if (currentSlot instanceof IInventoryContainerSlot) {
 			//Insert into stacks that already contain an item in the order hot bar -> main inventory
 			stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
 			stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
@@ -106,11 +106,11 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		} else {
 			//We are in the main inventory or the hot bar
 			//Start by trying to insert it into the block entity's inventory slots, first attempting to stack with other items
-			stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true);
+			stackToInsert = insertItem(inventoryContainerSlots(), stackToInsert, true);
 			if (slotStack.getCount() == stackToInsert.getCount()) {
 				//Then as long as if we still have the same number of items (failed to insert), try to insert it into the block entity's inventory slots allowing
 				// for empty items
-				stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
+				stackToInsert = insertItem(inventoryContainerSlots(), stackToInsert, false);
 				if (slotStack.getCount() == stackToInsert.getCount()) {
 					//Else if we failed to do that also, try transferring to main inventory or the hot bar, depending on which one we currently are in
 					if (currentSlot instanceof MainInventorySlot) {
@@ -129,6 +129,12 @@ public abstract class PEContainer extends AbstractContainerMenu {
 		}
 		//Otherwise, decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
 		return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+    private <SLOT extends Slot & IInsertableSlot> List<SLOT> inventoryContainerSlots() {
+		//We check this on insertion
+		return (List) inventoryContainerSlots;
 	}
 
 	@NotNull

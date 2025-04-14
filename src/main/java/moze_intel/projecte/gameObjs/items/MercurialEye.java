@@ -13,6 +13,7 @@ import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.items.MercurialEye.MercurialEyeMode;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
@@ -51,8 +52,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -285,14 +288,19 @@ public class MercurialEye extends ItemMode<MercurialEyeMode> implements IExtraFu
 
 		ServerPlayer serverPlayer = (ServerPlayer) player;
 		if (PlayerHelper.checkedReplaceBlock(serverPlayer, level, placePos, newState)) {
+			//Note: We have to copy it, as components are immutable
+			ItemStack replacement = klein.copy();
 			if (oldEMC > newEMC) {
-				emcHolder.insertEmc(klein, oldEMC - newEMC, EmcAction.EXECUTE);
+				emcHolder.insertEmc(replacement, oldEMC - newEMC, EmcAction.EXECUTE);
 			} else if (oldEMC != newEMC) {
 				if (oldEMC == 0) {
 					//Drop the block because it doesn't have an emc value
 					drops.addAll(Block.getDrops(oldState, serverPlayer.serverLevel(), placePos, null, player, eye));
 				}
-				emcHolder.extractEmc(klein, newEMC - oldEMC, EmcAction.EXECUTE);
+				emcHolder.extractEmc(replacement, newEMC - oldEMC, EmcAction.EXECUTE);
+			}
+			if (inventory instanceof IItemHandlerModifiable modifiable) {
+				modifiable.setStackInSlot(0, replacement);
 			}
 			return true;
 		}
@@ -336,7 +344,7 @@ public class MercurialEye extends ItemMode<MercurialEyeMode> implements IExtraFu
 
 	@Override
 	public void attachCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerItem(ItemHandler.ITEM, (stack, context) -> new ComponentItemHandler(stack, PEDataComponentTypes.EYE_INVENTORY.get(), 2), this);
+		event.registerItem(ItemHandler.ITEM, (stack, context) -> new EyeItemHandler(stack), this);
 	}
 
 	@Override
@@ -347,6 +355,34 @@ public class MercurialEye extends ItemMode<MercurialEyeMode> implements IExtraFu
 	@Override
 	public MercurialEyeMode getDefaultMode() {
 		return MercurialEyeMode.CREATION;
+	}
+
+	private static class EyeItemHandler extends ComponentItemHandler {
+
+		public EyeItemHandler(MutableDataComponentHolder parent) {
+			super(parent, PEDataComponentTypes.EYE_INVENTORY.get(), 2);
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+			if (stack.isEmpty()) {
+				return true;
+			} else if (slot == 0) {
+				return SlotPredicates.EMC_HOLDER.test(stack);
+			} //slot == 1
+			return SlotPredicates.MERCURIAL_TARGET.test(stack);
+		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 1;
+		}
+
+		@Override
+		protected void updateContents(@NotNull ItemContainerContents contents, @NotNull ItemStack stack, int slot) {
+			//Note: We just do a copy with count of one as the empty stack will stay empty
+			super.updateContents(contents, stack.copyWithCount(1), slot);
+		}
 	}
 
 	public enum MercurialEyeMode implements IModeEnum<MercurialEyeMode> {

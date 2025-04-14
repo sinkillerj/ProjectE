@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.gameObjs.block_entities.CollectorMK1BlockEntity;
+import moze_intel.projecte.gameObjs.container.slots.ISlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
@@ -12,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,12 +63,10 @@ public class CollectorMK1Container extends PEContainer {
 	@Override
 	public void clicked(int slotID, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotID);
-		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
-			super.clicked(slotID, button, flag, player);
-		}
-	}
+        if (!(slot instanceof ISlotGhost ghost) || !ghost.tryClear()) {
+            super.clicked(slotID, button, flag, player);
+        }
+    }
 
 	@Override
 	protected void broadcastPE(boolean all) {

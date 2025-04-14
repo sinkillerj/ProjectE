@@ -1,9 +1,9 @@
 package moze_intel.projecte.gameObjs.container;
 
 import java.util.Objects;
-import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
-import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
-import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
+import moze_intel.projecte.gameObjs.container.slots.ComponentSlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.ISlotGhost;
+import moze_intel.projecte.gameObjs.container.slots.InventoryContainerCopySlot;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -22,24 +22,22 @@ public class MercurialEyeContainer extends PEHandContainer {
 		return new MercurialEyeContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), buf.readByte());
 	}
 
-	private final SlotGhost mercurialTarget;
+	private final ComponentSlotGhost mercurialTarget;
 
 	public MercurialEyeContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected) {
 		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, playerInv, hand, selected);
 		IItemHandler handler = Objects.requireNonNull(this.stack.getCapability(ItemHandler.ITEM));
 		//Klein Star
-		this.addSlot(new ValidatedSlot(handler, 0, 50, 26, SlotPredicates.EMC_HOLDER));
+		this.addSlot(new InventoryContainerCopySlot(handler, 0, 50, 26));
 		//Target
-		this.addSlot(mercurialTarget = new SlotGhost(handler, 1, 104, 26, SlotPredicates.MERCURIAL_TARGET));
+		this.addSlot(mercurialTarget = new ComponentSlotGhost(handler, 1, 104, 26));
 		addPlayerInventory(6, 56);
 	}
 
 	@Override
 	public void clickPostValidate(int slotId, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotId);
-		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
+		if (!(slot instanceof ISlotGhost ghost) || !ghost.tryClear()) {
 			super.clickPostValidate(slotId, button, flag, player);
 		}
 	}
@@ -54,8 +52,7 @@ public class MercurialEyeContainer extends PEHandContainer {
 				return ItemStack.EMPTY;
 			}
 			ItemStack slotStack = currentSlot.getItem();
-			if (!slotStack.isEmpty() && mercurialTarget.isValid(slotStack)) {
-				mercurialTarget.set(slotStack);
+			if (!slotStack.isEmpty() && mercurialTarget.mayPlace(slotStack)) {
 				//Fake that it is now empty, so we don't move the stack to a different spot of the inventory
 				return ItemStack.EMPTY;
 			}

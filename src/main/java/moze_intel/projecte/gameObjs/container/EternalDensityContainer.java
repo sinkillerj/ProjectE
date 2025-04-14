@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.components.GemData;
 import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.container.slots.ISlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
@@ -58,9 +59,7 @@ public class EternalDensityContainer extends PEHandContainer {
 	@Override
 	public void clickPostValidate(int slotIndex, int button, @NotNull ClickType flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotIndex);
-		if (slot instanceof SlotGhost && !slot.getItem().isEmpty()) {
-			slot.set(ItemStack.EMPTY);
-		} else {
+		if (!(slot instanceof ISlotGhost ghost) || !ghost.tryClear()) {
 			super.clickPostValidate(slotIndex, button, flag, player);
 		}
 	}
