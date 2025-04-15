@@ -1,6 +1,5 @@
 package moze_intel.projecte.common.tag;
 
-import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.PETags;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
@@ -17,6 +16,8 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unchecked")
 public class PEBlockTagsProvider extends BlockTagsProvider {
@@ -49,10 +50,10 @@ public class PEBlockTagsProvider extends BlockTagsProvider {
 				BlockTags.LEAVES,
 				//Note: All vanilla tall flowers are bonemealable, so will get handled before being used by this tag
 				// but if a mod adds a tall flower that doesn't inherit the class hierarchy, having this could be useful
-				BlockTags.FLOWERS
+				BlockTags.FLOWERS,
+				Tags.Blocks.PUMPKINS_NORMAL
 		).add(
-				Blocks.MELON,
-				Blocks.PUMPKIN
+				Blocks.MELON
 		);
 		for (Block block : BuiltInRegistries.BLOCK) {
 			if (WorldHelper.isPlantableImplementation(block)) {

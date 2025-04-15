@@ -1,6 +1,5 @@
 package moze_intel.projecte.common;
 
-import java.util.concurrent.CompletableFuture;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.data.CustomConversionProvider;
 import moze_intel.projecte.api.nss.NSSFake;
@@ -11,16 +10,14 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Instrument;
-import net.minecraft.world.item.InstrumentItem;
-import net.minecraft.world.item.Instruments;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
 
 public class PECustomConversionProvider extends CustomConversionProvider {
 
@@ -267,7 +264,7 @@ public class PECustomConversionProvider extends CustomConversionProvider {
 				.before(Tags.Items.CROPS_WHEAT, 24)
 				.before(Tags.Items.CROPS_NETHER_WART, 24)
 				.before(Items.APPLE, 128)
-				.before(Items.PUMPKIN, 144)
+				.before(Tags.Items.PUMPKINS_NORMAL, 144)
 				.before(Items.HONEY_BOTTLE, 48)
 				.before(Items.PORKCHOP, 64)
 				.before(Items.BEEF, 64)

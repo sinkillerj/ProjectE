@@ -1587,7 +1587,7 @@
       {
         "type": "projecte:item",
         "emc_value": 144,
-        "id": "minecraft:pumpkin"
+        "tag": "c:pumpkins/normal"
       },
       {
         "type": "projecte:item",

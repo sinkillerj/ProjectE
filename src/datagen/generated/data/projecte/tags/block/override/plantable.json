@@ -2,8 +2,8 @@
   "values": [
     "#minecraft:leaves",
     "#minecraft:flowers",
+    "#c:pumpkins/normal",
     "minecraft:melon",
-    "minecraft:pumpkin",
     "minecraft:oak_sapling",
     "minecraft:spruce_sapling",
     "minecraft:birch_sapling",

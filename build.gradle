@@ -81,7 +81,7 @@ configurations { configContainer ->
     extendConfigurations(runtimeOnly, apiRuntimeOnly, datagenRuntimeOnly)
     extendConfigurations(localRuntime, apiLocalRuntime)
     sourceSets.main.runtimeClasspath += localRuntime
-    sourceSets.api.runtimeClasspath += apiLocalRuntime
+    sourceSets.runMain.runtimeClasspath += sourceSets.main.runtimeClasspath
 }
 
 static void extendConfigurations(Configuration base, Configuration... configurations) {
