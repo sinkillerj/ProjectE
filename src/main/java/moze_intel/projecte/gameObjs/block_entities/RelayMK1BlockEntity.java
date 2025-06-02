@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
+import moze_intel.projecte.api.block_entity.IRelay;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.proxy.IEMCProxy;
@@ -29,7 +30,7 @@ import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider {
+public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider, IRelay {
 
 	public static final ICapabilityProvider<RelayMK1BlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (relay, side) -> {
 		if (side == null) {
@@ -187,11 +188,13 @@ public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider 
 		tag.putDouble("bonus_emc", bonusEMC);
 	}
 
-	protected double getBonusToAdd() {
+	@Override
+	public double getBonusToAdd() {
 		return 0.05;
 	}
 
-	void addBonus(@NotNull Level level, @NotNull BlockPos pos) {
+	@Override
+	public void addBonus(@NotNull Level level, @NotNull BlockPos pos) {
 		bonusEMC += getBonusToAdd();
 		if (bonusEMC >= 1) {
 			long emcToInsert = (long) bonusEMC;

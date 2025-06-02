@@ -31,7 +31,7 @@ public class RelayMK3BlockEntity extends RelayMK1BlockEntity {
 	}
 
 	@Override
-	protected double getBonusToAdd() {
+	public double getBonusToAdd() {
 		return 0.5;
 	}
 }
