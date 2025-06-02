@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
+import moze_intel.projecte.api.block_entity.IRelay;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.api.proxy.IEMCProxy;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -332,9 +334,8 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	private static void sendRelayBonus(@NotNull Level level, @NotNull BlockPos pos) {
 		for (Direction dir : Constants.DIRECTIONS) {
 			BlockPos relayPos = pos.relative(dir);
-			RelayMK1BlockEntity relay = WorldHelper.getBlockEntity(RelayMK1BlockEntity.class, level, relayPos);
-			if (relay != null) {
-				//The other tiers of relay extend RelayMK1BlockEntity and add the correct bonus
+			BlockEntity blockEntity = WorldHelper.getBlockEntity(level, relayPos);
+			if (blockEntity instanceof IRelay relay) {
 				relay.addBonus(level, relayPos);
 			}
 		}
