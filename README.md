@@ -1,4 +1,4 @@
-![](/src/main/resources/assets/projecte/logo.png?raw=true)
+![](/src/main/resources/logo.png?raw=true)
 
 Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions. Transmutation tables, collectors, condensers, flying rings, and all the other trinkets you love are here.
 
