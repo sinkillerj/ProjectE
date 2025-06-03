@@ -16,7 +16,7 @@ https://www.curseforge.com/minecraft/mc-mods/projecte/files
 # Support Development
 ![](/patreon.png?raw=true)
 
-We accept donations via Patreon, visit the team members section to learn more.
+We accept donations via Patreon and other methods, visit the team members section to learn more.
 
 # Join the Conversation
 
@@ -27,12 +27,13 @@ Members actively working on ProjectE.
 
 SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 
-* Twitter: https://twitter.com/sinkillerj
+* Bluesky: https://bsky.app/profile/sinkillerj.bsky.social
 * Patreon: https://www.patreon.com/sinkillerj
 
-pupnewfster - Rising Superstar - Current Lead of New Version Ports
+pupnewfster - Alchemical Adaptation - Lead of New Version Ports
 
 * Twitter: https://twitter.com/pupnewfster
+* Bluesky: https://legacy.curseforge.com/linkout?remoteUrl=https%253a%252f%252fbsky.app%252fprofile%252fpupnewfster.bsky.social
 * GitHub Sponsors: https://github.com/sponsors/pupnewfster
 * Ko-fi: https://ko-fi.com/pupnewfster
 * Patreon: https://www.patreon.com/pupnewfster
@@ -41,23 +42,14 @@ MaPePeR(Blubberbub) - Alchemical Value Archivist - Lead EMC Mapper Developer:
 
 * Twitter: https://twitter.com/Blubb3rbub
 
-Lilylicious - Lady of Little Big Things - Assistant Developer:
-
-* Twitter: https://twitter.com/Lilyliciously
-
-# Emeritus (Retired Team Members)
-Members that have retired from their role, but are welcome to return and contribute further.
-
+# Former Team Members
 MozeIntel - Original lead developer: https://twitter.com/Moze_Intel
+
+Kolatra - Former collaborator: https://twitter.com/ItsKolatra
 
 Williewillus - Maintainer, 1.8.x-1.13.x: https://twitter.com/williewillus
 
-# Former Team Members
-Members that are no longer part of the team.
-
-Magic Banana - Former texture artist: https://twitter.com/Magic_Banana_
-
-Kolatra - Former collaborator: https://twitter.com/ItsKolatra
+Lilylicious - Assistant Developer: https://twitter.com/Lilyliciously
 
 # Thanks To
 x3n0ph0b3 - EE2 creator, Allowed use of EE2 assets: https://twitter.com/x3n0ph0b3x
