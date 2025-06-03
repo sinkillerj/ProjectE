@@ -32,8 +32,7 @@ SinKillerJ - Head of Alchemical Studies - Main Project & Community Lead:
 
 pupnewfster - Alchemical Adaptation - Lead of New Version Ports
 
-* Twitter: https://twitter.com/pupnewfster
-* Bluesky: https://legacy.curseforge.com/linkout?remoteUrl=https%253a%252f%252fbsky.app%252fprofile%252fpupnewfster.bsky.social
+* Bluesky: https://bsky.app/profile/sara.freimer.dev
 * GitHub Sponsors: https://github.com/sponsors/pupnewfster
 * Ko-fi: https://ko-fi.com/pupnewfster
 * Patreon: https://www.patreon.com/pupnewfster
