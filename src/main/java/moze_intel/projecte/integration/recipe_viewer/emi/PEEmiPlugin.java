@@ -51,7 +51,6 @@ public class PEEmiPlugin implements EmiPlugin {
 		}
 
 		//Workstations for vanilla categories
-		registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(PEItems.PHILOSOPHERS_STONE));
 		registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiIngredient.of(PETags.Items.MATTER_FURNACES));
 		registry.addWorkstation(CollectorEmiRecipe.CATEGORY, EmiIngredient.of(PETags.Items.COLLECTORS));
 		registry.addWorkstation(WorldTransmuteEmiRecipe.CATEGORY, EmiStack.of(PEItems.PHILOSOPHERS_STONE));
