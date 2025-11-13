@@ -52,6 +52,7 @@ public class PETags {
 		//Curios tags
 		public static final TagKey<Item> CURIOS_BELT = curiosTag("belt");
 		public static final TagKey<Item> CURIOS_KLEIN_STAR = curiosTag("klein_star");
+		public static final TagKey<Item> CURIOS_TRANSMUTATION_TABLET = curiosTag("transmutation_tablet");
 		public static final TagKey<Item> CURIOS_NECKLACE = curiosTag("necklace");
 		public static final TagKey<Item> CURIOS_RING = curiosTag("ring");
 		//Forge tools/armor tags

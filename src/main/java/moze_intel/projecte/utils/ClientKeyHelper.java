@@ -25,6 +25,7 @@ public class ClientKeyHelper {
 		addKeyBinding(event, builder, PEKeybind.EXTRA_FUNCTION, KeyModifier.NONE, GLFW.GLFW_KEY_C);
 		addKeyBinding(event, builder, PEKeybind.FIRE_PROJECTILE, KeyModifier.NONE, GLFW.GLFW_KEY_R);
 		addKeyBinding(event, builder, PEKeybind.MODE, KeyModifier.NONE, GLFW.GLFW_KEY_G);
+		addKeyBinding(event, builder, PEKeybind.TRANSMUTATION_TABLET, KeyModifier.NONE, GLFW.GLFW_KEY_K);
 		peToMc = builder.build();
 	}
 

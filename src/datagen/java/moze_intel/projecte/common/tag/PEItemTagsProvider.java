@@ -91,6 +91,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 			kleinStarBuilder.add(PEItems.getStar(tier).value());
 		}
 		tag(PETags.Items.CURIOS_KLEIN_STAR).addTag(PETags.Items.KLEIN_STARS);
+		tag(PETags.Items.CURIOS_TRANSMUTATION_TABLET).add(PEItems.TRANSMUTATION_TABLET.get());
 		tag(PETags.Items.CURIOS_NECKLACE).add(
 				PEItems.BODY_STONE.get(),
 				PEItems.EVERTIDE_AMULET.get(),
