@@ -7,6 +7,7 @@ import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
+import moze_intel.projecte.api.item.ITransmutationTablet;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
@@ -75,10 +76,8 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
             IItemHandlerModifiable curios = curiosInv.get();
             for (int i = 0; i < curios.getSlots(); i++) {
                 ItemStack stack = curios.getStackInSlot(i);
-                if (stack.getItem() == PEItems.TRANSMUTATION_TABLET.get()) {
-                    player.openMenu(new TransmutationTabletContainerProvider(), (buf) -> {
-                        buf.writeBoolean(false);
-                    });
+                if (stack.getItem() instanceof ITransmutationTablet tablet) {
+                    tablet.openContainer(player);
                     break;
                 }
             }
