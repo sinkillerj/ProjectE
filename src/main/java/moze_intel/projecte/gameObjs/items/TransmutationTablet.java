@@ -25,11 +25,7 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
-			player.openMenu(new ContainerProvider(hand), buf -> {
-				buf.writeBoolean(true);
-				buf.writeEnum(hand);
-				buf.writeByte(player.getInventory().selected);
-			});
+            openContainerWithSelected(player, hand, player.getInventory().selected);
 		}
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
