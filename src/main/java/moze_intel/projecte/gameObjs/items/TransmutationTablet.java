@@ -25,13 +25,13 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
-            openContainerWithSelected(player, hand, player.getInventory().selected);
+            openContainer(player, hand, player.getInventory().selected);
 		}
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
     @Override
-    public void openContainerWithSelected(Player player, InteractionHand hand, int selected) {
+    public void openContainer(Player player, InteractionHand hand, int selected) {
         player.openMenu(new ContainerProvider(hand), buf -> {
             buf.writeBoolean(true);
             buf.writeEnum(hand);
@@ -41,9 +41,7 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
 
     @Override
     public void openContainer(Player player) {
-        player.openMenu(new ContainerProvider(null), buf -> {
-            buf.writeBoolean(false);
-        });
+        player.openMenu(new ContainerProvider(null), buf -> buf.writeBoolean(false));
     }
 
     private record ContainerProvider(@Nullable InteractionHand hand) implements MenuProvider {
