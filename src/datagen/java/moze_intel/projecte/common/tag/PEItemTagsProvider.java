@@ -72,6 +72,9 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
+        tag(PETags.Items.TRANSMUTATION_TABLET).add(
+                PEItems.TRANSMUTATION_TABLET.get()
+        );
 		tag(PETags.Items.RELAYS).add(
 				PEBlocks.RELAY.asItem(),
 				PEBlocks.RELAY_MK2.asItem(),
@@ -91,7 +94,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 			kleinStarBuilder.add(PEItems.getStar(tier).value());
 		}
 		tag(PETags.Items.CURIOS_KLEIN_STAR).addTag(PETags.Items.KLEIN_STARS);
-		tag(PETags.Items.CURIOS_TRANSMUTATION_TABLET).add(PEItems.TRANSMUTATION_TABLET.get());
+		tag(PETags.Items.CURIOS_TRANSMUTATION_TABLET).addTag(PETags.Items.TRANSMUTATION_TABLET);
 		tag(PETags.Items.CURIOS_NECKLACE).add(
 				PEItems.BODY_STONE.get(),
 				PEItems.EVERTIDE_AMULET.get(),

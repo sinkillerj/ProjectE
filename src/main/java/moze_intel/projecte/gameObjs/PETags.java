@@ -48,6 +48,10 @@ public class PETags {
 		 * Items in this tag will be checked against being a BlockItem, and attempt to be placed by the harvest goddess band.
 		 */
 		public static final TagKey<Item> PLANTABLE_SEEDS = tag("plantable_seeds");
+		/**
+		 * Items in this tag will be valid for the Transmutation Tablet curios slot, and should implement {@link moze_intel.projecte.api.item.ITransmutationTablet}
+		 */
+		public static final TagKey<Item> TRANSMUTATION_TABLET = tag("transmutation_tablets");
 
 		//Curios tags
 		public static final TagKey<Item> CURIOS_BELT = curiosTag("belt");
