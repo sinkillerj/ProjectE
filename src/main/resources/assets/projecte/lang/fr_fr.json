@@ -242,7 +242,7 @@
     "pedestal.projecte.harvest_goddess.3": "Actif toutes les %s",
 
     "pedestal.projecte.ignition.1": "Les montres à proximité prennent feu",
-    "pedestal.projecte.ignition.2": "Actif toutes les %s",
+    "pedestal.projecte.ignition.2": "Déclenchement toutes les %s",
 
     "mode.projecte.switch": "Passage en mode %s",
 
@@ -286,7 +286,7 @@
     "pedestal.projecte.soul_stone.2": "Un demi-cœur toutes les %s",
 
     "pedestal.projecte.swrg.1": "Foudroie les monstres à proximité",
-    "pedestal.projecte.swrg.2": "Actif toutes les %s",
+    "pedestal.projecte.swrg.2": "Déclenchement toutes les %s",
 
     "time_watch.projecte.disabled": "Item désactivé par l'administrateur du serveur",
     "time_watch.projecte.fast_forward": "Avance rapide",
@@ -332,8 +332,8 @@
     "pedestal.projecte.volcanite.2": "Tente d'arrêter les intempéries toutes les %s",
 
     "pedestal.projecte.zero.1": "Éteint les entités",
-    "pedestal.projecte.zero.2": "Gèle les environs",
-    "pedestal.projecte.zero.3": "Active chaque %s",
+    "pedestal.projecte.zero.2": "Et gèle les environs",
+    "pedestal.projecte.zero.3": "Déclenchement toutes les %s",
 
     "jei.projecte.world_transmute": "Transmutation du monde",
     "jei.projecte.collector": "Amélioration du collecteur"
