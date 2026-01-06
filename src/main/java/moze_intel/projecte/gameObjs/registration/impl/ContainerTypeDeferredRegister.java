@@ -41,6 +41,14 @@ public class ContainerTypeDeferredRegister extends PEDeferredRegister<MenuType<?
 
 	private static <BE extends BlockEntity> BE getBlockEntityFromBuf(FriendlyByteBuf buf, Class<BE> type) {
 		if (buf == null) {
+			net.minecraft.world.phys.HitResult hit = Minecraft.getInstance().hitResult;
+			if (hit instanceof net.minecraft.world.phys.BlockHitResult blockHit) {
+				BlockPos pos = blockHit.getBlockPos();
+				BE blockEntity = WorldHelper.getBlockEntity(type, Minecraft.getInstance().level, pos);
+				if (blockEntity != null) {
+					return blockEntity;
+				}
+			}
 			throw new IllegalArgumentException("Null packet buffer");
 		} else if (FMLEnvironment.dist.isDedicatedServer()) {
 			throw new UnsupportedOperationException("This method is only supported on the client.");
