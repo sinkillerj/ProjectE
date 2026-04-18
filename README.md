@@ -1,5 +1,25 @@
 ![](/src/main/resources/logo.png?raw=true)
 
+---
+
+## ⚠️ Crash Fix Fork — NeoForge 1.21.1
+
+This is a community fork of ProjectE that fixes a server crash introduced in PE1.1.0 on NeoForge 1.21.1.
+
+**The bug:** Crafting any DM/RM tool or armor (Dark Matter Pickaxe, Red Matter Sword, etc.) causes the server to crash immediately with `IllegalStateException: Value must be positive: 0`. Every player on the server is kicked and the server cannot restart until the item is removed from the player's inventory.
+
+**The fix:** DM/RM tools and armor are now registered with a real `max_damage` data component (required by NeoForge 1.21.1's serialization system). Durability is still never consumed — the items work exactly as intended.
+
+### How to install
+
+1. Go to the [**Releases**](../../releases) tab and download the latest `projecte-1.1.0.jar`
+2. Replace the existing `ProjectE-1.21.1-PE1.1.0.jar` in your `mods/` folder with the downloaded jar
+3. **Both the server and all clients must use this jar** (NeoForge requires matching mod versions)
+
+> Once an official fix is released by the ProjectE team, switch back to the official jar from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/projecte/files).
+
+---
+
 Repository for ProjectE, a complete rewrite of EE2 (Equivalent Exchange 2) for modern Minecraft versions. Transmutation tables, collectors, condensers, flying rings, and all the other trinkets you love are here.
 
 Discover powerful alchemical tools, items, and devices. Break down unwanted items into EMC (Energy-Matter Covalence) and use that EMC to create new items.
