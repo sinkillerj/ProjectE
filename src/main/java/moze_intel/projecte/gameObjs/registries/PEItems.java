@@ -111,20 +111,20 @@ public class PEItems {
 	public static final ItemRegistryObject<PEKatar> RED_MATTER_KATAR = ITEMS.registerTool("rm_katar", properties -> new PEKatar(EnumMatterType.RED_MATTER, 4, properties));
 	public static final ItemRegistryObject<PEMorningStar> RED_MATTER_MORNING_STAR = ITEMS.registerTool("rm_morning_star", properties -> new PEMorningStar(EnumMatterType.RED_MATTER, 4, properties));
 
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_HELMET = ITEMS.registerNoStackFireImmune("dm_helmet", properties -> new DMArmor(ArmorItem.Type.HELMET, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_CHESTPLATE = ITEMS.registerNoStackFireImmune("dm_chestplate", properties -> new DMArmor(ArmorItem.Type.CHESTPLATE, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_LEGGINGS = ITEMS.registerNoStackFireImmune("dm_leggings", properties -> new DMArmor(ArmorItem.Type.LEGGINGS, properties));
-	public static final ItemRegistryObject<DMArmor> DARK_MATTER_BOOTS = ITEMS.registerNoStackFireImmune("dm_boots", properties -> new DMArmor(ArmorItem.Type.BOOTS, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_HELMET = ITEMS.registerArmor("dm_helmet", properties -> new DMArmor(ArmorItem.Type.HELMET, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_CHESTPLATE = ITEMS.registerArmor("dm_chestplate", properties -> new DMArmor(ArmorItem.Type.CHESTPLATE, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_LEGGINGS = ITEMS.registerArmor("dm_leggings", properties -> new DMArmor(ArmorItem.Type.LEGGINGS, properties));
+	public static final ItemRegistryObject<DMArmor> DARK_MATTER_BOOTS = ITEMS.registerArmor("dm_boots", properties -> new DMArmor(ArmorItem.Type.BOOTS, properties));
 
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_HELMET = ITEMS.registerNoStackFireImmune("rm_helmet", properties -> new RMArmor(ArmorItem.Type.HELMET, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_CHESTPLATE = ITEMS.registerNoStackFireImmune("rm_chestplate", properties -> new RMArmor(ArmorItem.Type.CHESTPLATE, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_LEGGINGS = ITEMS.registerNoStackFireImmune("rm_leggings", properties -> new RMArmor(ArmorItem.Type.LEGGINGS, properties));
-	public static final ItemRegistryObject<RMArmor> RED_MATTER_BOOTS = ITEMS.registerNoStackFireImmune("rm_boots", properties -> new RMArmor(ArmorItem.Type.BOOTS, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_HELMET = ITEMS.registerArmor("rm_helmet", properties -> new RMArmor(ArmorItem.Type.HELMET, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_CHESTPLATE = ITEMS.registerArmor("rm_chestplate", properties -> new RMArmor(ArmorItem.Type.CHESTPLATE, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_LEGGINGS = ITEMS.registerArmor("rm_leggings", properties -> new RMArmor(ArmorItem.Type.LEGGINGS, properties));
+	public static final ItemRegistryObject<RMArmor> RED_MATTER_BOOTS = ITEMS.registerArmor("rm_boots", properties -> new RMArmor(ArmorItem.Type.BOOTS, properties));
 
-	public static final ItemRegistryObject<GemHelmet> GEM_HELMET = ITEMS.registerNoStackFireImmune("gem_helmet", GemHelmet::new);
-	public static final ItemRegistryObject<GemChest> GEM_CHESTPLATE = ITEMS.registerNoStackFireImmune("gem_chestplate", GemChest::new);
-	public static final ItemRegistryObject<GemLegs> GEM_LEGGINGS = ITEMS.registerNoStackFireImmune("gem_leggings", GemLegs::new);
-	public static final ItemRegistryObject<GemFeet> GEM_BOOTS = ITEMS.registerNoStackFireImmune("gem_boots", GemFeet::new);
+	public static final ItemRegistryObject<GemHelmet> GEM_HELMET = ITEMS.registerArmor("gem_helmet", GemHelmet::new);
+	public static final ItemRegistryObject<GemChest> GEM_CHESTPLATE = ITEMS.registerArmor("gem_chestplate", GemChest::new);
+	public static final ItemRegistryObject<GemLegs> GEM_LEGGINGS = ITEMS.registerArmor("gem_leggings", GemLegs::new);
+	public static final ItemRegistryObject<GemFeet> GEM_BOOTS = ITEMS.registerArmor("gem_boots", GemFeet::new);
 
 	public static final ItemRegistryObject<Item> IRON_BAND = ITEMS.register("iron_band");
 	public static final ItemRegistryObject<BlackHoleBand> BLACK_HOLE_BAND = ITEMS.registerNoStackFireImmune("black_hole_band", BlackHoleBand::new);
