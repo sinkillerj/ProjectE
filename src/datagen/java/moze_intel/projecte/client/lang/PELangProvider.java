@@ -65,12 +65,14 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PEKeybind.EXTRA_FUNCTION, "Extra Function");
 		add(PEKeybind.FIRE_PROJECTILE, "Fire Projectile");
 		add(PEKeybind.MODE, "Change Mode");
+		add(PEKeybind.TRANSMUTATION_TABLET, "Transmutation Tablet");
 		//JEI
 		add(PELang.JEI_COLLECTOR, "Collector Fuel Upgrades");
 		add(PELang.WORLD_TRANSMUTE, "World Transmutation");
 		add(PELang.WORLD_TRANSMUTE_DESCRIPTION, "Use item (%1$s) in world, hold %2$s while interacting for alternate output");
 		//Curios
 		add(PELang.CURIOS_KLEIN_STAR, "Klein Star");
+		add(PELang.CURIOS_TRANSMUTATION_TABLET, "Transmutation Tablet");
 		//Gem Armor
 		add(PELang.GEM_ENABLED, "ENABLED");
 		add(PELang.GEM_DISABLED, "DISABLED");
@@ -260,6 +262,7 @@ public class PELangProvider extends BaseLanguageProvider {
 
 	private void addTags() {
 		add(PETags.Items.CURIOS_KLEIN_STAR, "Klein Stars");
+		add(PETags.Items.CURIOS_TRANSMUTATION_TABLET, "Transmutation Tablets");
 		add(PETags.Items.ALCHEMICAL_BAGS, "Alchemical Bags");
 		add(PETags.Items.COLLECTOR_FUEL, "Collector Fuels");
 		add(PETags.Items.DATA_COMPONENT_WHITELIST, "Data Component Whitelist");

@@ -1,5 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
+import moze_intel.projecte.api.item.ITransmutationTablet;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
@@ -12,8 +13,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class TransmutationTablet extends ItemPE {
+public class TransmutationTablet extends ItemPE implements ITransmutationTablet {
 
 	public TransmutationTablet(Properties props) {
 		super(props);
@@ -23,20 +25,34 @@ public class TransmutationTablet extends ItemPE {
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		if (!level.isClientSide) {
-			player.openMenu(new ContainerProvider(hand), buf -> {
-				buf.writeBoolean(true);
-				buf.writeEnum(hand);
-				buf.writeByte(player.getInventory().selected);
-			});
+            openContainer(player, hand, player.getInventory().selected);
 		}
 		return InteractionResultHolder.success(player.getItemInHand(hand));
 	}
 
-	private record ContainerProvider(InteractionHand hand) implements MenuProvider {
+    @Override
+    public void openContainer(Player player, InteractionHand hand, int selected) {
+        player.openMenu(new ContainerProvider(hand), buf -> {
+            buf.writeBoolean(true);
+            buf.writeEnum(hand);
+            buf.writeByte(player.getInventory().selected);
+        });
+    }
+
+    @Override
+    public void openContainer(Player player) {
+        player.openMenu(new ContainerProvider(null), buf -> buf.writeBoolean(false));
+    }
+
+    private record ContainerProvider(@Nullable InteractionHand hand) implements MenuProvider {
 
 		@Override
 		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
-			return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.selected);
+            if (hand == null) {
+                return new TransmutationContainer(windowId, playerInventory);
+            } else {
+                return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.selected);
+            }
 		}
 
 		@NotNull

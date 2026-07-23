@@ -77,6 +77,7 @@ public enum PELang implements ILangEntry {
 	WORLD_TRANSMUTE_DESCRIPTION("jei", "world_transmute.description"),
 	//Curios
 	CURIOS_KLEIN_STAR("curios.identifier.klein_star"),
+    CURIOS_TRANSMUTATION_TABLET("curios.identifier.transmutation_tablet"),
 	//Gem armor
 	GEM_ENABLED("gem", "enabled"),
 	GEM_DISABLED("gem", "disabled"),

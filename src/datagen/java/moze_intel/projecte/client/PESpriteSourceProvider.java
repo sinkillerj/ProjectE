@@ -26,6 +26,7 @@ public class PESpriteSourceProvider extends SpriteSourceProvider {
 		//Note: We always stitch this even when curios isn't loaded, but I don't think there is much we can do about that,
 		// and it is only a small texture, so it won't matter too much
 		addFiles(atlas(BLOCKS_ATLAS), PECore.rl("curios/empty_klein_star"));
+		addFiles(atlas(BLOCKS_ATLAS), PECore.rl("curios/transmutation_tablet"));
 	}
 
 	protected void addFiles(SourceList atlas, ResourceLocation... resourceLocations) {

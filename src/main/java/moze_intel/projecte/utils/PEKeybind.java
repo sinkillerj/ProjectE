@@ -16,7 +16,8 @@ public enum PEKeybind implements IHasEnumNameTranslationKey {
 	CHARGE,
 	EXTRA_FUNCTION,
 	FIRE_PROJECTILE,
-	MODE;
+	MODE,
+    TRANSMUTATION_TABLET;
 
 	public static final IntFunction<PEKeybind> BY_ID = ByIdMap.continuous(PEKeybind::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
 	public static final StreamCodec<ByteBuf, PEKeybind> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PEKeybind::ordinal);
