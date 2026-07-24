@@ -35,7 +35,7 @@ public class TransmutationContainer extends PEHandContainer {
 	private SlotUnlearn unlearn;
 
 	public static TransmutationContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
-		if (buf.readBoolean()) {
+		if (buf != null && buf.readBoolean()) {
 			return new TransmutationContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), buf.readByte());
 		}
 		return new TransmutationContainer(windowId, playerInv);
