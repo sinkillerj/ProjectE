@@ -90,8 +90,16 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 		return register(name, sup, properties -> properties.stacksTo(1).fireResistant());
 	}
 
+	// Use for armor items — sets a real max_damage so the minecraft:max_damage component is present.
+	// damageItem() in PEArmor always returns 0, so durability is never actually consumed.
+	public <ITEM extends Item> ItemRegistryObject<ITEM> registerArmor(String name, Function<Item.Properties, ITEM> sup) {
+		return register(name, sup, properties -> properties.durability(Integer.MAX_VALUE).stacksTo(1).fireResistant());
+	}
+
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerTool(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, () -> sup.apply(new NoDurabilityItemProperties().stacksTo(1).fireResistant()));
+		// Use real durability so minecraft:max_damage component is present on the ItemStack.
+		// damageItem() in PETool/PEPickaxe always returns 0 so durability is never actually consumed.
+		return register(name, () -> sup.apply(new Item.Properties().durability(Integer.MAX_VALUE).stacksTo(1).fireResistant()));
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup, UnaryOperator<Item.Properties> propertyModifier) {
@@ -103,15 +111,5 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 	@SuppressWarnings("unchecked")
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(@NotNull String name, @NotNull Supplier<? extends ITEM> sup) {
 		return (ItemRegistryObject<ITEM>) super.register(name, sup);
-	}
-
-	private static class NoDurabilityItemProperties extends Item.Properties {
-
-		@NotNull
-		@Override
-		public Item.Properties durability(int maxDamage) {
-			//NO-OP super setting durability components
-			return this;
-		}
 	}
 }
