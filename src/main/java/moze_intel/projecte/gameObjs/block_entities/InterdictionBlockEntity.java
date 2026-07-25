@@ -8,6 +8,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,7 +21,7 @@ public class InterdictionBlockEntity extends BlockEntity {
 
 	private static final Predicate<Entity> INTERDICTION_REPEL_PREDICATE = entity -> WorldHelper.validRepelEntity(entity, PETags.Entities.BLACKLIST_INTERDICTION);
 	//Note: We don't need to check if the projectile entity is on the ground here or not, as if it is we would not get past validRepelEntity
-	private static final Predicate<Entity> INTERDICTION_REPEL_HOSTILE_PREDICATE = INTERDICTION_REPEL_PREDICATE.and(entity -> entity instanceof Enemy || entity instanceof Projectile);
+	private static final Predicate<Entity> INTERDICTION_REPEL_HOSTILE_PREDICATE = INTERDICTION_REPEL_PREDICATE.and(entity -> entity instanceof Enemy || entity instanceof Projectile).and(entity -> !(entity instanceof TamableAnimal tamable && tamable.isTame()));
 
 	public InterdictionBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.INTERDICTION_TORCH.get(), pos, state);
