@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,8 +32,8 @@ public class AnnotationHelper {
 
 	public static List<IDataComponentProcessor> getDataComponentProcessors() {
 		ModList modList = ModList.get();
-		List<IDataComponentProcessor> dataComponentProcessors = new ArrayList<>();
-		Object2IntMap<IDataComponentProcessor> priorities = new Object2IntOpenHashMap<>();
+		List<PrioritizedElement<IDataComponentProcessor>> dataComponentProcessors = new ArrayList<>();
+		int discoveryOrder = 0;
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (DATA_COMPONENT_PROCESSOR_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -43,21 +41,19 @@ public class AnnotationHelper {
 					IDataComponentProcessor processor = getDataComponentProcessor(data.memberName());
 					if (processor != null) {
 						int priority = getPriority(data);
-						dataComponentProcessors.add(processor);
-						priorities.put(processor, priority);
+						dataComponentProcessors.add(new PrioritizedElement<>(processor, priority, discoveryOrder++));
 						PECore.debugLog("Found and loaded Data Component Processor: {}, with priority {}", processor.getName(), priority);
 					}
 				}
 			}
 		}
-		dataComponentProcessors.sort(Comparator.comparingInt(priorities::getInt).reversed());
-		return dataComponentProcessors;
+		return sortByPriority(dataComponentProcessors);
 	}
 
 	public static List<IRecipeTypeMapper> getRecipeTypeMappers() {
 		ModList modList = ModList.get();
-		List<IRecipeTypeMapper> recipeTypeMappers = new ArrayList<>();
-		Object2IntMap<IRecipeTypeMapper> priorities = new Object2IntOpenHashMap<>();
+		List<PrioritizedElement<IRecipeTypeMapper>> recipeTypeMappers = new ArrayList<>();
+		int discoveryOrder = 0;
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (RECIPE_TYPE_MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -65,22 +61,20 @@ public class AnnotationHelper {
 					IRecipeTypeMapper mapper = getRecipeTypeMapper(data.memberName());
 					if (mapper != null) {
 						int priority = getPriority(data);
-						recipeTypeMappers.add(mapper);
-						priorities.put(mapper, priority);
+						recipeTypeMappers.add(new PrioritizedElement<>(mapper, priority, discoveryOrder++));
 						PECore.debugLog("Found and loaded RecipeType Mapper: {}, with priority {}", mapper.getName(), priority);
 					}
 				}
 			}
 		}
-		recipeTypeMappers.sort(Comparator.comparingInt(priorities::getInt).reversed());
-		return recipeTypeMappers;
+		return sortByPriority(recipeTypeMappers);
 	}
 
 	//Note: We don't bother caching this value because EMCMappingHandler#loadMappers caches our processed result
 	public static List<IEMCMapper<NormalizedSimpleStack, Long>> getEMCMappers() {
 		ModList modList = ModList.get();
-		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = new ArrayList<>();
-		Object2IntMap<IEMCMapper<NormalizedSimpleStack, Long>> priorities = new Object2IntOpenHashMap<>();
+		List<PrioritizedElement<IEMCMapper<NormalizedSimpleStack, Long>>> emcMappers = new ArrayList<>();
+		int discoveryOrder = 0;
 		for (ModFileScanData scanData : modList.getAllScanData()) {
 			for (AnnotationData data : scanData.getAnnotations()) {
 				if (MAPPER_TYPE.equals(data.annotationType()) && checkRequiredMods(data)) {
@@ -90,8 +84,7 @@ public class AnnotationHelper {
 						try {
 							IEMCMapper<NormalizedSimpleStack, Long> emcMapper = (IEMCMapper<NormalizedSimpleStack, Long>) mapper;
 							int priority = getPriority(data);
-							emcMappers.add(emcMapper);
-							priorities.put(emcMapper, priority);
+							emcMappers.add(new PrioritizedElement<>(emcMapper, priority, discoveryOrder++));
 							PECore.debugLog("Found and loaded EMC mapper: {}, with priority {}", mapper.getName(), priority);
 						} catch (ClassCastException e) {
 							PECore.LOGGER.error("{}: Is not a mapper for {}, to {}", mapper.getClass(), NormalizedSimpleStack.class, Long.class, e);
@@ -100,8 +93,19 @@ public class AnnotationHelper {
 				}
 			}
 		}
-		emcMappers.sort(Comparator.comparingInt(priorities::getInt).reversed());
-		return emcMappers;
+		return sortByPriority(emcMappers);
+	}
+
+	static <T> List<T> sortByPriority(List<PrioritizedElement<T>> elements) {
+		return elements.stream()
+				.sorted(Comparator.<PrioritizedElement<T>>comparingInt(PrioritizedElement::priority)
+						.reversed()
+						.thenComparingInt(PrioritizedElement::discoveryOrder)
+				).map(PrioritizedElement::value)
+				.toList();
+	}
+
+	record PrioritizedElement<T>(T value, int priority, int discoveryOrder) {
 	}
 
 	@Nullable

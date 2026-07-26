@@ -67,6 +67,15 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		}
 	}
 
+	private void replaceConversionInIngredientUsages(Conversion conversion) {
+		//Ensure the exact overwrite instance is retained if an equivalent regular conversion was already registered.
+		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+			Set<Conversion> usesForIngredient = getUsesFor(ingredient);
+			usesForIngredient.remove(conversion);
+			usesForIngredient.add(conversion);
+		}
+	}
+
 	@Override
 	public void addConversion(int outnumber, T output, Object2IntMap<T> ingredientsWithAmount, A arithmeticForConversion) {
 		if (output == null || ingredientsWithAmount.containsKey(null)) {
@@ -86,6 +95,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	public void setValueBefore(T something, V value) {
 		if (something == null || value == null) {
 			return;
+		} else if (arithmetic.isLessThanZero(value) && !arithmetic.isFree(value)) {
+			PECore.debugLog("Ignoring invalid negative fixed value before inheritance for {}: {}", something, value);
+			return;
 		}
 		V valueBeforeInherit = fixValueBeforeInherit.get(something);
 		if (valueBeforeInherit != null) {
@@ -98,6 +110,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	@Override
 	public void setValueAfter(T something, V value) {
 		if (something == null || value == null) {
+			return;
+		} else if (arithmetic.isLessThanZero(value)) {
+			PECore.debugLog("Ignoring invalid negative fixed value after inheritance for {}: {}", something, value);
 			return;
 		}
 		V valueAfterInherit = fixValueAfterInherit.get(something);
@@ -124,7 +139,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 				removeUseFor(ingredient, oldConversion);
 			}
 		}
-		addConversionToIngredientUsages(conversion);
+		replaceConversionInIngredientUsages(conversion);
 		overwriteConversion.put(something, conversion);
 	}
 
@@ -160,7 +175,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 			}
 			this.arithmeticForConversion = arithmeticForConversion;
 			this.value = value;
-			this.hash = Objects.hash(this.output, this.value, this.ingredientsWithAmount);
+			this.hash = Objects.hash(this.output, this.outnumber, this.value, this.ingredientsWithAmount, this.arithmeticForConversion);
 		}
 
 		@Override
@@ -190,8 +205,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 
 		@Override
 		public boolean equals(Object o) {
-			return o instanceof MappingCollector<?, ?, ?>.Conversion other && Objects.equals(output, other.output) && Objects.equals(value, other.value) &&
-				   Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
+			return o instanceof MappingCollector<?, ?, ?>.Conversion other && outnumber == other.outnumber && Objects.equals(output, other.output) &&
+				   Objects.equals(value, other.value) && Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount) &&
+				   Objects.equals(arithmeticForConversion, other.arithmeticForConversion);
 		}
 
 		@Override

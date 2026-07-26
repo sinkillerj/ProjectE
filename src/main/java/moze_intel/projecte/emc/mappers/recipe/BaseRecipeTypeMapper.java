@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
@@ -92,19 +93,10 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 				}
 			} else {
 				Object2IntMap<NormalizedSimpleStack> rawNSSMatches = new Object2IntOpenHashMap<>(matches.length);
-				List<ItemStack> stacks = new ArrayList<>(matches.length);
-				for (ItemStack match : matches) {
-					if (!match.isEmpty() && !representsEmptyTag(match)) {
-						//Validate it is not an empty stack in case mods do weird things in custom ingredients
-						// Note: We don't have to worry about duplicates, as Ingredient#getItems, returns a distinct set of items
-						rawNSSMatches.put(NSSItem.createItem(match), 1);
-						stacks.add(match);
-					}
-				}
+				List<ItemStack> stacks = getNormalizableMatches(matches, recipeID, rawNSSMatches);
 				int count = stacks.size();
 				if (count == 0) {
-					//If we don't have any matches for the ingredient just return that we handled it, as if it is an accidentally empty ingredient,
-					// nothing will be able to handle it. If it was explicitly empty, then it will be skipped above
+					//All alternatives were empty, represented an empty tag, or could not be normalized. No later generic mapper can safely use them.
 					return true;
 				} else if (count > 1) {
 					//Handle this ingredient as the representation of all the stacks it supports
@@ -121,8 +113,6 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 						for (ItemStack stack : stacks) {
 							//Note: We use a capacity of two as it will only contain the stack itself and potentially a container
 							Object2IntMap<NormalizedSimpleStack> groupIngredientMap = new Object2IntArrayMap<>(2);
-							//Copy the stack to ensure a mod that is implemented poorly doesn't end up changing
-							// the source stack in the recipe
 							if (!addIngredient(groupIngredientMap, stack, recipeID)) {
 								mapper.addConversion(1, dummy, groupIngredientMap);
 								success = true;
@@ -134,15 +124,58 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 							return true;
 						}
 					}
-				} else if (addIngredient(ingredientMap, stacks.getFirst(), recipeID)) {//There is only actually one non-empty ingredient
-					//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
-					// mapper would fail as well due to it being an invalid recipe
+				} else if (addIngredient(ingredientMap, stacks.getFirst(), recipeID)) {
+					//There is only one valid alternative. Failed to add it, so later generic mappers would encounter the same invalid state.
 					return true;
 				}
 			}
 		}
-		mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+		NormalizedSimpleStack normalizedOutput = normalizeStack(recipeOutput, recipeID, "recipe output");
+		if (normalizedOutput == null) {
+			//The recipe is malformed and later generic mappers would encounter the same invalid output.
+			return true;
+		}
+		mapper.addConversion(recipeOutput.getCount(), normalizedOutput, ingredientMap);
 		return true;
+	}
+
+	static List<ItemStack> getNormalizableMatches(ItemStack[] matches, ResourceLocation recipeID,
+			Object2IntMap<NormalizedSimpleStack> rawNSSMatches) {
+		return getNormalizableMatches(matches, recipeID, rawNSSMatches, NSSItem::createItem);
+	}
+
+	static List<ItemStack> getNormalizableMatches(ItemStack[] matches, ResourceLocation recipeID,
+			Object2IntMap<NormalizedSimpleStack> rawNSSMatches, Function<ItemStack, NormalizedSimpleStack> normalizer) {
+		List<ItemStack> normalizableMatches = new ArrayList<>(matches.length);
+		for (ItemStack match : matches) {
+			if (!match.isEmpty() && !representsEmptyTag(match)) {
+				NormalizedSimpleStack normalizedStack = normalizeStack(match, recipeID, "ingredient alternative", normalizer);
+				if (normalizedStack != null) {
+					rawNSSMatches.put(normalizedStack, 1);
+					normalizableMatches.add(match);
+				}
+			}
+		}
+		return normalizableMatches;
+	}
+
+	@Nullable
+	static NormalizedSimpleStack normalizeStack(ItemStack stack, ResourceLocation recipeID, String stackRole) {
+		return normalizeStack(stack, recipeID, stackRole, NSSItem::createItem);
+	}
+
+	@Nullable
+	static NormalizedSimpleStack normalizeStack(ItemStack stack, ResourceLocation recipeID, String stackRole,
+			Function<ItemStack, NormalizedSimpleStack> normalizer) {
+		try {
+			return normalizer.apply(stack);
+		} catch (RuntimeException e) {
+			ResourceLocation itemName = BuiltInRegistries.ITEM.getKey(stack.getItem());
+			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Failed to normalize the {} stack for item {} ({}). "
+													 + "Ignoring this stack so malformed recipe data cannot abort the entire EMC remap.", recipeID, stackRole,
+					itemName, stack.getItem().getClass().getName(), e);
+			return null;
+		}
 	}
 
 	private static boolean representsEmptyTag(ItemStack stack) {
@@ -182,8 +215,13 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			// there is a chance their hasContainerItem is checking something about tags, and
 			hasContainerItem = item.hasCraftingRemainingItem(stack);
 			if (hasContainerItem) {
-				//If this item has a container for the stack, we remove the cost of the container itself
-				ingredientMap.mergeInt(NSSItem.createItem(item.getCraftingRemainingItem(stack)), -1, Constants.INT_SUM);
+				//If this item has a container for the stack, remove the full returned stack cost. Most vanilla remainders have a count of one,
+				//but the API returns an ItemStack and third-party items may legitimately return more than one item.
+				ItemStack craftingRemainingItem = item.getCraftingRemainingItem(stack);
+				if (craftingRemainingItem.isEmpty()) {
+					throw new IllegalStateException("Item reported a crafting remainder but returned an empty stack");
+				}
+				subtractCraftingRemainder(ingredientMap, NSSItem.createItem(craftingRemainingItem), craftingRemainingItem.getCount());
 			}
 		} catch (Exception e) {
 			ResourceLocation itemName = BuiltInRegistries.ITEM.getKey(item);
@@ -199,8 +237,19 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			// as there is a 99% chance it will just fail again anyways
 			return true;
 		}
-		ingredientMap.mergeInt(NSSItem.createItem(stack), 1, Constants.INT_SUM);
+		NormalizedSimpleStack normalizedStack = normalizeStack(stack, recipeID, "ingredient");
+		if (normalizedStack == null) {
+			return true;
+		}
+		ingredientMap.mergeInt(normalizedStack, 1, Constants.INT_SUM);
 		return false;
+	}
+
+	static <TYPE> void subtractCraftingRemainder(Object2IntMap<TYPE> ingredientMap, TYPE remainder, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("Crafting remainder count must be positive");
+		}
+		ingredientMap.mergeInt(remainder, Math.negateExact(count), Math::addExact);
 	}
 
 	@Nullable

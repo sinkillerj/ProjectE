@@ -14,6 +14,7 @@ public @interface EMCMapper {
 
 	/**
 	 * Gets the priority of this {@link EMCMapper}. This is used when loading the list of emc mappers. The higher this number is the earlier it gets ran.
+	 * Elements with equal priority retain loader discovery order; integrations that require a defined precedence must use distinct priorities.
 	 *
 	 * @return Sort priority of this {@link EMCMapper}
 	 */

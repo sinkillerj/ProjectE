@@ -3,7 +3,10 @@ package moze_intel.projecte.emc.components;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToLongFunction;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.components.IDataComponentProcessor;
 import moze_intel.projecte.config.MappingConfig;
@@ -18,6 +21,7 @@ import org.jetbrains.annotations.Range;
 public class DataComponentManager {
 
 	private static final List<IDataComponentProcessor> processors = new ArrayList<>();
+	private static final Set<Class<?>> failedProcessorClasses = ConcurrentHashMap.newKeySet();
 
 	public static List<IDataComponentProcessor> loadProcessors() {
 		if (processors.isEmpty()) {
@@ -28,6 +32,8 @@ public class DataComponentManager {
 
 	//TODO: Do we want to eventually try and make this support ProjectEAPI.FREE_ARITHMETIC_VALUE
 	public static void updateCachedValues(@Nullable ToLongFunction<ItemInfo> emcLookup) {
+		//Allow one fresh diagnostic per processor after each remap/configuration refresh without adding work to successful lookups.
+		failedProcessorClasses.clear();
 		ComponentProcessorHelper.instance().updateCachedValues(emcLookup);
 		for (IDataComponentProcessor processor : processors) {
 			//Note: We only have to update enabled processors, as when a processor gets enabled it will update the cached values
@@ -55,34 +61,41 @@ public class DataComponentManager {
 
 	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(@NotNull ItemInfo info) {
-		//TODO: Fix this, as it does not catch the edge case that we have an exact match and then there are random added Data Components on top of it
-		// but that can be thought about more once we have the first pass complete. For example if someone put an enchantment on a potion
 		long emcValue = EMCMappingHandler.getStoredEmcValue(info);
-		if (!info.hasModifiedComponents()) {
-			//If our item has no custom Data Components anyway, just return based on the value we got for it
+		if (!info.hasModifiedComponents() || emcValue > 0) {
+			//An exact component-bearing mapping is authoritative. Recipe mappers, custom conversions, and integrations may have already
+			//included the component-specific cost in this value, so running the processors again would double count that state.
 			return emcValue;
-		} else if (emcValue == 0) {
-			//Try getting a base emc value from the Data Component less variant if we don't have one matching our Data Components
-			emcValue = EMCMappingHandler.getStoredEmcValue(info.itemOnly());
-			if (emcValue == 0) {
-				//The base item doesn't have an EMC value either so just exit
-				return 0;
-			}
+		}
+
+		//Try the component-less item when there is no exact mapping for the complete component state.
+		emcValue = EMCMappingHandler.getStoredEmcValue(info.itemOnly());
+		if (emcValue == 0) {
+			//The base item doesn't have an EMC value either so just exit
+			return 0;
 		}
 
 		//Note: We continue to use our initial ItemInfo so that we are calculating based on the Data Components
 		for (IDataComponentProcessor processor : processors) {
-			if (MappingConfig.isEnabled(processor)) {
-				try {
+			try {
+				if (MappingConfig.isEnabled(processor)) {
 					emcValue = processor.recalculateEMC(info, emcValue);
-				} catch (ArithmeticException e) {
-					//Exit with it not having an EMC value, as it most likely overflowed, and we don't want to allow wasting EMC
-					return 0;
+					if (emcValue <= 0) {
+						//Exit if it gets to zero (also safety check for less than zero in case a mod didn't bother sanctifying their data)
+						return 0;
+					}
 				}
-				if (emcValue <= 0) {
-					//Exit if it gets to zero (also safety check for less than zero in case a mod didn't bother sanctifying their data)
-					return 0;
+			} catch (ArithmeticException e) {
+				//Exit with it not having an EMC value, as it most likely overflowed, and we don't want to allow wasting EMC
+				return 0;
+			} catch (RuntimeException e) {
+				//A broken integration must not crash EMC consumers or leave a partially processed value. Log only once per processor class
+				//between cache refreshes so a repeatedly queried malformed stack cannot flood the log or become a TPS problem.
+				if (failedProcessorClasses.add(processor.getClass())) {
+					PECore.LOGGER.error("Data Component Processor {} failed while calculating EMC. Treating the item as having no EMC.",
+							processor.getClass().getName(), e);
 				}
+				return 0;
 			}
 		}
 		return emcValue;

@@ -106,6 +106,43 @@ class HiddenFractionSpecificTest {
 
 
 	@Test
+	@DisplayName("Test exact fractions can recover after exceeding long denominator range")
+	void recoverFractionWithLargeDenominator() {
+		FullBigFractionArithmetic fullFractionArithmetic = new FullBigFractionArithmetic();
+		int scale = Integer.MAX_VALUE;
+		mappingCollector.setValueBefore("base", 1L);
+		mappingCollector.addConversion(scale, "subunit1", EMCHelper.intMapOf("base", 1), fullFractionArithmetic);
+		mappingCollector.addConversion(scale, "subunit2", EMCHelper.intMapOf("subunit1", 1), fullFractionArithmetic);
+		mappingCollector.addConversion(scale, "subunit3", EMCHelper.intMapOf("subunit2", 1), fullFractionArithmetic);
+		mappingCollector.addConversion(1, "recovered1", EMCHelper.intMapOf("subunit3", scale));
+		mappingCollector.addConversion(1, "recovered2", EMCHelper.intMapOf("recovered1", scale));
+		mappingCollector.addConversion(1, "recovered3", EMCHelper.intMapOf("recovered2", scale));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(0, values.getLong("subunit1"));
+		Assertions.assertEquals(0, values.getLong("subunit2"));
+		Assertions.assertEquals(0, values.getLong("subunit3"));
+		Assertions.assertEquals(1, values.getLong("recovered3"));
+	}
+
+
+	@Test
+	@DisplayName("Test exact fraction arithmetic retains a finite denominator bound")
+	void fullFractionArithmeticHasFiniteDenominatorBound() {
+		FullBigFractionArithmetic arithmetic = new FullBigFractionArithmetic();
+		BigFraction value = new BigFraction(1);
+		int divisions = 0;
+		while (!arithmetic.isZero(value) && divisions < 1_000) {
+			value = arithmetic.div(value, 2);
+			divisions++;
+		}
+
+		Assertions.assertTrue(arithmetic.isZero(value), "Descending exact fractions must eventually stop instead of growing forever");
+		Assertions.assertTrue(divisions > Long.SIZE, "The exact range should extend beyond the former long-denominator limit");
+		Assertions.assertTrue(divisions < 1_000, "The finite denominator guard must converge predictably");
+	}
+
+	@Test
 	@DisplayName("Test reliquary vial recipe EMC calculations")
 	void reliquaryVials() {
 		mappingCollector.setValueBefore("glass", 1L);

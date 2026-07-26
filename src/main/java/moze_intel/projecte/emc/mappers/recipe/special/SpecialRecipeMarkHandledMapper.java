@@ -16,6 +16,7 @@ import moze_intel.projecte.emc.components.processor.MapScaleProcessor;
 import moze_intel.projecte.gameObjs.customRecipes.PhiloStoneSmeltingRecipe;
 import moze_intel.projecte.gameObjs.customRecipes.RecipesCovalenceRepair;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.crafting.ArmorDyeRecipe;
 import net.minecraft.world.item.crafting.BannerDuplicateRecipe;
 import net.minecraft.world.item.crafting.BookCloningRecipe;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -30,9 +31,12 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
+import org.jetbrains.annotations.Nullable;
 
 @RecipeTypeMapper
 public class SpecialRecipeMarkHandledMapper implements IRecipeTypeMapper {
+
+	static final String ARMOR_DYE_SKIP_REASON = "Output color is calculated from and preserves the input item's data components.";
 
 	@Override
 	public final boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RecipeHolder<?> recipeHolder, RegistryAccess registryAccess,
@@ -51,6 +55,7 @@ public class SpecialRecipeMarkHandledMapper implements IRecipeTypeMapper {
 				return MappingConfig.isEnabled(FireworkProcessor.INSTANCE);
 			}
 			//TODO: Do we eventually want to try and figure out how to handle the armor dye recipe?
+			//It is currently left unmapped and classified separately because its output is dynamic.
 			//Not needed, it just recreates the smelting recipes
 			return recipe instanceof PhiloStoneSmeltingRecipe
 				   //Cloning recipes, creates something from itself, doesn't change overall emc values as amounts all balance out
@@ -64,6 +69,12 @@ public class SpecialRecipeMarkHandledMapper implements IRecipeTypeMapper {
 	@Override
 	public final boolean canHandle(RecipeType<?> recipeType) {
 		return recipeType == RecipeType.CRAFTING;
+	}
+
+	@Override
+	@Nullable
+	public final String getExpectedUnhandledReason(RecipeHolder<?> recipeHolder, RegistryAccess registryAccess) {
+		return recipeHolder.value() instanceof ArmorDyeRecipe ? ARMOR_DYE_SKIP_REASON : null;
 	}
 
 	@Override

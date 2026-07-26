@@ -13,6 +13,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(EphemeralTestServerProvider.class)
 @DisplayName("Test Serialization of Normalized Simple Stacks")
 class SerializationTest {
+
+	@AfterEach
+	void resetFakeNamespace() {
+		NSSFake.resetNamespace();
+	}
 
 	private static NormalizedSimpleStack parseJson(HolderLookup.Provider registryAccess, String json) {
 		return CodecTestHelper.parseJson(registryAccess, IPECodecHelper.INSTANCE.nssCodec(), "serialization test", json);

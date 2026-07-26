@@ -35,20 +35,27 @@ public class DamageProcessor implements IDataComponentProcessor {
 		ItemStack fakeStack = info.createStack();
 		if (fakeStack.isDamaged()) {
 			int maxDamage = fakeStack.getMaxDamage();
-			//If mods implement their custom damage values incorrectly damage may be greater than max damage,
-			// in which case we just ignore the damage data rather than making the item have no emc
 			int remainingDurability = maxDamage - fakeStack.getDamageValue();
-			if (remainingDurability == 0) {
-				//Note: Shouldn't happen anymore as vanilla properly destroys tools when they get used at Durability: 1/ max
-				// if we do have this case for some reason, return that it isn't worth any emc anymore
+			if (remainingDurability <= 0) {
+				//Vanilla normally destroys an item at zero durability. Malformed or modded stacks may survive at or beyond that point;
+				//fail closed rather than allowing invalid damage state to preserve the full base EMC value.
 				return 0;
-			} else if (remainingDurability == 1) {
-				//Skip the multiplication
-				currentEMC /= maxDamage;
-			} else if (remainingDurability > 1) {
-				currentEMC = Math.multiplyExact(currentEMC, remainingDurability) / maxDamage;
+			} else if (remainingDurability < maxDamage) {
+				currentEMC = multiplyDivide(currentEMC, remainingDurability, maxDamage);
 			}
 		}
 		return currentEMC;
+	}
+
+	/**
+	 * Calculates {@code value * multiplier / divisor} without overflowing when the final result fits in a long.
+	 */
+	private static long multiplyDivide(long value, int multiplier, int divisor) {
+		long quotient = value / divisor;
+		long remainder = value % divisor;
+		return Math.addExact(
+				Math.multiplyExact(quotient, multiplier),
+				Math.multiplyExact(remainder, multiplier) / divisor
+		);
 	}
 }

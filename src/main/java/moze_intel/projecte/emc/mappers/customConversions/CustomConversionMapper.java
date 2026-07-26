@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMaps;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -58,38 +59,50 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> files = load(registryAccess, resourceManager);
-		for (CustomConversionFile file : files.values()) {
-			addMappingsFromFile(file, mapper);
-		}
+		addMappingsFromFiles(files, mapper);
 	}
 
 	private static Map<ResourceLocation, CustomConversionFile> load(RegistryAccess registryAccess, ResourceManager resourceManager) {
 		Map<ResourceLocation, CustomConversionFile> loading = new HashMap<>();
 
 		RegistryOps<JsonElement> serializationContext = registryAccess.createSerializationContext(JsonOps.INSTANCE);
-		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (Map.Entry<ResourceLocation, List<Resource>> entry : CONVERSION_LISTER.listMatchingResourceStacks(resourceManager).entrySet()) {
-			ResourceLocation file = entry.getKey();//<domain>:foo/bar
-			ResourceLocation conversionId = CONVERSION_LISTER.fileToId(file);
+		try {
+			// Find all data/<domain>/pe_custom_conversions/foo/bar.json
+			for (Map.Entry<ResourceLocation, List<Resource>> entry : CONVERSION_LISTER.listMatchingResourceStacks(resourceManager).entrySet()) {
+				ResourceLocation file = entry.getKey();//<domain>:foo/bar
+				ResourceLocation conversionId = CONVERSION_LISTER.fileToId(file);
 
-			PECore.debugLog("Considering file {}, ID {}", file, conversionId);
-			NSSFake.setCurrentNamespace(conversionId.toString());
+				PECore.debugLog("Considering file {}, ID {}", file, conversionId);
+				NSSFake.setCurrentNamespace(conversionId.toString());
 
-			// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
-			for (Resource resource : entry.getValue()) {
-				try (Reader reader = resource.openAsReader()) {
-					Optional<CustomConversionFile> fileOptional = PECodecHelper.read(serializationContext, reader, CustomConversionFile.CODEC, "custom conversion file");
-					//noinspection OptionalIsPresent - Capturing lambda
-					if (fileOptional.isPresent()) {
-						loading.merge(conversionId, fileOptional.get(), CustomConversionFile::merge);
+				// Iterate through all copies of this conversion, from lowest to highest priority datapack, merging the results together
+				for (Resource resource : entry.getValue()) {
+					try (Reader reader = resource.openAsReader()) {
+						Optional<CustomConversionFile> fileOptional = PECodecHelper.read(serializationContext, reader, CustomConversionFile.CODEC, "custom conversion file");
+						//noinspection OptionalIsPresent - Capturing lambda
+						if (fileOptional.isPresent()) {
+							loading.merge(conversionId, fileOptional.get(), CustomConversionFile::merge);
+						}
+					} catch (IOException e) {
+						PECore.LOGGER.error("Could not load resource {}", file, e);
 					}
-				} catch (IOException e) {
-					PECore.LOGGER.error("Could not load resource {}", file, e);
 				}
 			}
+		} finally {
+			NSSFake.resetNamespace();
 		}
-		NSSFake.resetNamespace();
 		return loading;
+	}
+
+	static void addMappingsFromFiles(Map<ResourceLocation, CustomConversionFile> files, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+		//FileToIdConverter returns a Map without an ordering contract. Apply files by resource ID so conflicting fixed values and forced
+		//conversions have stable precedence that cannot change when an unrelated file changes the backing map's iteration order.
+		List<ResourceLocation> orderedIds = new ArrayList<>(files.keySet());
+		orderedIds.sort(null);
+		for (ResourceLocation id : orderedIds) {
+			PECore.debugLog("Adding mappings from custom conversion file {}", id);
+			addMappingsFromFile(files.get(id), mapper);
+		}
 	}
 
 	private static void addMappingsFromFile(CustomConversionFile file, IMappingCollector<NormalizedSimpleStack, Long> mapper) {
