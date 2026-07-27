@@ -14,6 +14,7 @@ public @interface RecipeTypeMapper {
 
 	/**
 	 * Gets the priority of this {@link RecipeTypeMapper}. This is used when loading the list of recipe type mappers. The higher this number is the earlier it gets ran.
+	 * Elements with equal priority retain loader discovery order; integrations that require a defined precedence must use distinct priorities.
 	 *
 	 * @return Sort priority of this {@link RecipeTypeMapper}
 	 */

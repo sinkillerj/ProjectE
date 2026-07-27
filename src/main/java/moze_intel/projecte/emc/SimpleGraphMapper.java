@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SequencedSet;
 import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -20,6 +21,31 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	private final V ZERO;
 
 	private static boolean logFoundExploits = true;
+
+	enum ConversionValueRelation {
+		LOSS,
+		EXACT,
+		PROFITABLE
+	}
+
+	record ConversionValueComparison<V>(ConversionValueRelation relation, V ingredientCost, V outputValue, int outputCount, V totalOutputValue) {
+	}
+
+	/**
+	 * Compares the complete ingredient cost against the complete output value. Diagnostics must use the output count rather than comparing the
+	 * ingredient total to a single output item's value.
+	 */
+	static <V extends Comparable<V>> ConversionValueComparison<V> compareConversionValues(IValueArithmetic<V> arithmetic, V ingredientCost,
+			V outputValue, int outputCount) {
+		if (outputCount <= 0) {
+			throw new IllegalArgumentException("outputCount has to be > 0");
+		}
+		V totalOutputValue = arithmetic.mul(outputCount, outputValue);
+		int comparison = totalOutputValue.compareTo(ingredientCost);
+		ConversionValueRelation relation = comparison < 0 ? ConversionValueRelation.LOSS
+				: comparison > 0 ? ConversionValueRelation.PROFITABLE : ConversionValueRelation.EXACT;
+		return new ConversionValueComparison<>(relation, ingredientCost, outputValue, outputCount, totalOutputValue);
+	}
 
 	public SimpleGraphMapper(A arithmetic) {
 		super(arithmetic);
@@ -78,6 +104,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 			}
 		}
 
+		Map<@NotNull T, @NotNull V> invalidValues = new HashMap<>();
 		while (changedValues != null && !changedValues.isEmpty()) {
 			while (changedValues != null && !changedValues.isEmpty()) {
 				// Changes that happened when processing current changes
@@ -95,7 +122,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 							debugFormat("Set Value for {} to {} because {}", key, value, reasonForChange.get(key));
 						}
 						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
-						Set<Conversion> usesFor = usedIn.get(key);
+						SequencedSet<Conversion> usesFor = usedIn.get(key);
 						if (usesFor == null) {
 							continue;
 						}
@@ -128,80 +155,125 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 				changedValues = nextChangedValues;
 			}
-			//Iterate over all Conversions for a single conversion output
-			for (Map.Entry<T, Set<Conversion>> entry : conversionsFor.entrySet()) {
-				T key = entry.getKey();
-				@Nullable
-				V minConversionValue = null;
-				//What is the actual emc value for the conversion output
-				@Nullable
-				V resultValueActual = values.get(key);
-				if (resultValueActual != null && arithmetic.isZero(resultValueActual)) {
-					//Note: If the result is actually zero, then we pretend it is null, so that we can optimize our comparison check
-					// when comparing the value from the conversion
-					resultValueActual = null;
-				}
-				//For all Conversions. All these have the same output.
-				for (Conversion conversion : entry.getValue()) {
-					//entry.getKey() == conversion.output
-					//How much do the ingredients cost:
-					V ingredientValue = valueForConversion(values, conversion);
-					//What would the output cost be, if that conversion would be used
-					V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
-					//Find the smallest EMC value for the conversion.output
-					if (arithmetic.isGreaterThanZero(resultValueConversion) || conversion.arithmeticForConversion.isFree(resultValueConversion)) {
-						if (minConversionValue == null || minConversionValue.compareTo(resultValueConversion) > 0) {
-							minConversionValue = resultValueConversion;
-						}
-					}
-					//the cost for the ingredients is greater zero, but smaller than the value that the output has.
-					//This is a Loophole. We remove it by setting the value to 0.
-					if (arithmetic.isGreaterThanZero(ingredientValue) && isLessThan(resultValueConversion, resultValueActual)) {
-						Conversion oldConversion = overwriteConversion.get(conversion.output);
-						if (oldConversion != null && oldConversion != conversion) {
-							if (logFoundExploits) {
-								PECore.LOGGER.warn("EMC Exploit: \"{}\" ingredient cost: {} value of result: {} setValueFromConversion: {}", conversion,
-										ingredientValue, valueOrZero(resultValueActual), oldConversion);
-							}
-						} else if (canOverrideZero(key)) {
-							if (isDebugGraphmapper()) {
-								debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", key, valueOrZero(resultValueActual), ingredientValue, conversion);
-								addReason(reasonForChange, conversion.output, "exploit recipe");
-							}
-							if (changedValues == null) {//Lazily init changedValues so if there aren't any we don't have to initialize it
-								changedValues = new HashMap<>();
-							}
-							changedValues.put(conversion.output, ZERO);
-						} else if (logFoundExploits) {
-							PECore.LOGGER.warn("EMC Exploit: ingredients ({}) cost {} but output value is {}", conversion, ingredientValue, valueOrZero(resultValueActual));
-						}
-					}
-				}
-				if (minConversionValue == null) {//|| arithmetic.isZero(minConversionValue)
-					//we could not find any valid conversion
-					// Note: We know that minConversionValue is not zero, as the only cases we update it are:
-					// - to a value that we have checked is greater than zero
-					// - to a value that represents it is free
-					// While it does have a negative value when free, this is still not directly equal to zero, so we can skip the check
-					//Note: We can use resultValueActual even though we might have made it null if it was zero.
-					// That is fine, as even if it was zero instead of being null, it would fail for the check ensuring it is greater than zero
-					if (resultValueActual != null && arithmetic.isGreaterThanZero(resultValueActual) && canOverrideZero(key)) {
-						//but the value for the conversion output is > 0, so we set it to 0.
-						debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", key);
-						if (changedValues == null) {//Lazily init changedValues so if there aren't any we don't have to initialize it
-							changedValues = new HashMap<>();
-						}
-						changedValues.put(key, ZERO);
-						addReason(reasonForChange, key, "all conversions dead");
-					}
-				}
-			}
+			invalidValues.clear();
+			collectInvalidValues(values, reasonForChange, invalidValues);
+			changedValues = invalidValues.isEmpty() ? null : invalidValues;
 		}
 		debugPrintln("");
 		values.putAll(fixValueAfterInherit);
 		//Remove all 'free' items from the output-values
 		values.entrySet().removeIf(something -> arithmetic.isFree(something.getValue()));
 		return values;
+	}
+
+	private void collectInvalidValues(Map<T, V> values, @Nullable Map<T, Object> reasonForChange,
+			Map<@NotNull T, @NotNull V> invalidValues) {
+		for (Map.Entry<T, SequencedSet<Conversion>> entry : conversionsFor.entrySet()) {
+			T key = entry.getKey();
+			Conversion overwrite = overwriteConversion.get(key);
+			validateConversionOutput(values, invalidValues, reasonForChange, key, entry.getValue(), overwrite);
+		}
+		for (Map.Entry<T, Conversion> entry : overwriteConversion.entrySet()) {
+			if (!conversionsFor.containsKey(entry.getKey())) {
+				validateConversionOutput(values, invalidValues, reasonForChange, entry.getKey(), Set.of(), entry.getValue());
+			}
+		}
+	}
+
+	@Nullable
+	private V validateActiveConversion(Map<T, V> values, Map<T, V> invalidValues, @Nullable Map<T, Object> reasonForChange, T key,
+			@Nullable V resultValueActual, @Nullable V minConversionValue, Conversion conversion) {
+		V ingredientValue = valueForConversion(values, conversion);
+		V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
+		if (arithmetic.isGreaterThanZero(resultValueConversion) || conversion.arithmeticForConversion.isFree(resultValueConversion)) {
+			if (minConversionValue == null || minConversionValue.compareTo(resultValueConversion) > 0) {
+				minConversionValue = resultValueConversion;
+			}
+		}
+		if (arithmetic.isGreaterThanZero(ingredientValue) && isLessThan(resultValueConversion, resultValueActual)) {
+			if (canOverrideZero(key)) {
+				if (isDebugGraphmapper()) {
+					debugFormat("Setting {} to 0 because result ({}) > cost ({}): {}", key, valueOrZero(resultValueActual), ingredientValue, conversion);
+					addReason(reasonForChange, conversion.output, "exploit recipe");
+				}
+				invalidValues.put(conversion.output, ZERO);
+			} else if (logFoundExploits) {
+				logProfitableConversionMismatch(conversion, ingredientValue, resultValueActual, null);
+			}
+		}
+		return minConversionValue;
+	}
+
+	private void validateConversionOutput(Map<T, V> values, Map<T, V> invalidValues, @Nullable Map<T, Object> reasonForChange, T key,
+			Set<Conversion> regularConversions, @Nullable Conversion overwrite) {
+		@Nullable
+		V minConversionValue = null;
+		//What is the actual EMC value for the conversion output
+		@Nullable
+		V resultValueActual = values.get(key);
+		if (resultValueActual != null && arithmetic.isZero(resultValueActual)) {
+			//If the result is actually zero, pretend it is null to optimize comparisons against conversion values.
+			resultValueActual = null;
+		}
+
+		if (overwrite == null) {
+			for (Conversion conversion : regularConversions) {
+				minConversionValue = validateActiveConversion(values, invalidValues, reasonForChange, key, resultValueActual, minConversionValue, conversion);
+			}
+		} else {
+			minConversionValue = validateActiveConversion(values, invalidValues, reasonForChange, key, resultValueActual, null, overwrite);
+		}
+
+		if (overwrite != null) {
+			for (Conversion conversion : regularConversions) {
+				V ingredientValue = valueForConversion(values, conversion);
+				V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
+				if (arithmetic.isGreaterThanZero(ingredientValue) && isLessThan(resultValueConversion, resultValueActual) && logFoundExploits) {
+					logProfitableConversionMismatch(conversion, ingredientValue, resultValueActual, overwrite);
+				}
+			}
+		}
+
+		if (minConversionValue == null && resultValueActual != null && arithmetic.isGreaterThanZero(resultValueActual) && canOverrideZero(key)) {
+			debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", key);
+			invalidValues.put(key, ZERO);
+			addReason(reasonForChange, key, "all conversions dead");
+		}
+	}
+
+	private void logProfitableConversionMismatch(Conversion conversion, V ingredientValue, @Nullable V resultValueActual,
+			@Nullable Conversion forcedConversion) {
+		V outputValue = valueOrZero(resultValueActual);
+		try {
+			ConversionValueComparison<V> comparison = compareConversionValues(conversion.arithmeticForConversion, ingredientValue, outputValue,
+					conversion.outnumber);
+			if (comparison.relation() != ConversionValueRelation.PROFITABLE) {
+				//A custom arithmetic implementation may not preserve the usual multiply/divide relationship. Avoid emitting a false exploit warning.
+				PECore.debugLog("Skipped profitable EMC mismatch warning for {} because total output relation was {} (cost {}, total output {}).",
+						conversion, comparison.relation(), comparison.ingredientCost(), comparison.totalOutputValue());
+				return;
+			}
+			if (forcedConversion == null) {
+				PECore.LOGGER.warn("Profitable EMC conversion mismatch: recipe ({}) costs {} total but produces {} x {} = {} total. "
+						+ "The fixed/custom output value was retained.", conversion, comparison.ingredientCost(), comparison.outputCount(),
+						comparison.outputValue(), comparison.totalOutputValue());
+			} else {
+				PECore.LOGGER.warn("Profitable EMC conversion mismatch against forced mapping: recipe ({}) costs {} total but produces {} x {} = {} total. "
+						+ "Forced mapping: {}", conversion, comparison.ingredientCost(), comparison.outputCount(), comparison.outputValue(),
+						comparison.totalOutputValue(), forcedConversion);
+			}
+		} catch (RuntimeException e) {
+			//Diagnostics must never interfere with mapping. Fall back to the values already known to be safe to render.
+			if (forcedConversion == null) {
+				PECore.LOGGER.warn("Profitable EMC conversion mismatch: recipe ({}) costs {} total but its output value is {} each. "
+						+ "The fixed/custom output value was retained; total output value could not be calculated for diagnostics.", conversion,
+						ingredientValue, outputValue);
+			} else {
+				PECore.LOGGER.warn("Profitable EMC conversion mismatch against forced mapping: recipe ({}) costs {} total but its output value is {} each. "
+						+ "Forced mapping: {}; total output value could not be calculated for diagnostics.", conversion, ingredientValue, outputValue,
+						forcedConversion);
+			}
+		}
 	}
 
 	private V valueOrZero(@Nullable V value) {

@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +59,65 @@ class GraphMapperTest {
 		Assertions.assertEquals(1, values.getLong("a1"));
 		Assertions.assertEquals(2, values.getLong("b2"));
 		Assertions.assertEquals(2, values.getLong("c4")); //2 * c4 = 2 * b2 => 2 * (2) = 2 * (2)
+	}
+
+	@Test
+	@DisplayName("Test recipe output count is part of conversion identity when higher yield is added second")
+	void testGenerateValuesSameIngredientsDifferentOutputCountHigherYieldSecond() {
+		assertOutputCountIdentity(false);
+	}
+
+	@Test
+	@DisplayName("Test recipe output count is part of conversion identity when lower yield is added second")
+	void testGenerateValuesSameIngredientsDifferentOutputCountLowerYieldSecond() {
+		assertOutputCountIdentity(true);
+	}
+
+	private void assertOutputCountIdentity(boolean higherYieldFirst) {
+		mappingCollector.setValueBefore("ingredient", 10L);
+		if (higherYieldFirst) {
+			mappingCollector.addConversion(2, "output", List.of("ingredient"));
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+		} else {
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+			mappingCollector.addConversion(2, "output", List.of("ingredient"));
+		}
+
+		Assertions.assertEquals(5, valueGenerator.generateValues().getLong("output"));
+	}
+
+	@Test
+	@DisplayName("Test conversion arithmetic is part of conversion identity when lower result is added second")
+	void testGenerateValuesSameRecipeDifferentArithmeticLowerResultSecond() {
+		assertArithmeticIdentity(false);
+	}
+
+	@Test
+	@DisplayName("Test conversion arithmetic is part of conversion identity when higher result is added second")
+	void testGenerateValuesSameRecipeDifferentArithmeticHigherResultSecond() {
+		assertArithmeticIdentity(true);
+	}
+
+	private void assertArithmeticIdentity(boolean halvingArithmeticFirst) {
+		mappingCollector.setValueBefore("ingredient", 10L);
+		if (halvingArithmeticFirst) {
+			mappingCollector.addConversion(1, "output", List.of("ingredient"), halvingArithmetic());
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+		} else {
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+			mappingCollector.addConversion(1, "output", List.of("ingredient"), halvingArithmetic());
+		}
+
+		Assertions.assertEquals(5, valueGenerator.generateValues().getLong("output"));
+	}
+
+	private IValueArithmetic<BigFraction> halvingArithmetic() {
+		return new HiddenBigFractionArithmetic() {
+			@Override
+			public BigFraction div(BigFraction a, long b) {
+				return super.div(a, b).divide(2);
+			}
+		};
 	}
 
 	@Test
@@ -257,6 +317,31 @@ class GraphMapperTest {
 	}
 
 	@Test
+	@DisplayName("Test ingredient alternatives choose the cheapest valid value when the cheap option is added last")
+	void testIngredientAlternativesChooseCheapestValidValueCheapLast() {
+		assertCheapestAlternative(false);
+	}
+
+	@Test
+	@DisplayName("Test ingredient alternatives choose the cheapest valid value when the cheap option is added first")
+	void testIngredientAlternativesChooseCheapestValidValueCheapFirst() {
+		assertCheapestAlternative(true);
+	}
+
+	private void assertCheapestAlternative(boolean cheapFirst) {
+		mappingCollector.setValueBefore("cheap", 10L);
+		mappingCollector.setValueBefore("expensive", 30L);
+		mappingCollector.addConversion(1, "ingredient_group", List.of(cheapFirst ? "cheap" : "expensive"));
+		mappingCollector.addConversion(1, "ingredient_group", List.of("invalid"));
+		mappingCollector.addConversion(1, "ingredient_group", List.of(cheapFirst ? "expensive" : "cheap"));
+		mappingCollector.addConversion(1, "output", List.of("ingredient_group"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(10, values.getLong("ingredient_group"));
+		Assertions.assertEquals(10, values.getLong("output"));
+	}
+
+	@Test
 	@DisplayName("Test generating values from recipes that have a cycle")
 	void testGenerateValuesCycleRecipe() {
 		mappingCollector.setValueBefore("a1", 1L);
@@ -288,6 +373,66 @@ class GraphMapperTest {
 		Assertions.assertEquals(1, values.getLong("cycle-3"));
 		Assertions.assertEquals(1, values.getLong("cycle-4"));
 		Assertions.assertEquals(1, values.getLong("cycle-5"));
+	}
+
+	@Test
+	@DisplayName("Test unanchored cycles do not create EMC")
+	void testGenerateValuesUnanchoredCycle() {
+		mappingCollector.addConversion(1, "cycle-1", List.of("cycle-2"));
+		mappingCollector.addConversion(1, "cycle-2", List.of("cycle-1"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(0, values.getLong("cycle-1"));
+		Assertions.assertEquals(0, values.getLong("cycle-2"));
+	}
+
+	@Test
+	@DisplayName("Test anchored cycle results are independent of conversion registration order")
+	void testGenerateValuesCycleRegistrationOrderIndependent() {
+		mappingCollector.addConversion(1, "cycle-1", List.of("cycle-2"));
+		mappingCollector.addConversion(1, "cycle-2", List.of("cycle-1"));
+		mappingCollector.addConversion(1, "cycle-1", List.of("anchor"));
+		mappingCollector.setValueBefore("anchor", 7L);
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(7, values.getLong("cycle-1"));
+		Assertions.assertEquals(7, values.getLong("cycle-2"));
+	}
+
+	@Test
+	@DisplayName("Test changing a fixed anchor recalculates the existing graph")
+	void testGenerateValuesChangedAnchorDoesNotRetainStaleValues() {
+		mappingCollector.setValueBefore("anchor", 5L);
+		mappingCollector.addConversion(1, "derived", List.of("anchor", "anchor"));
+
+		Object2LongMap<String> initialValues = valueGenerator.generateValues();
+		Assertions.assertEquals(10, initialValues.getLong("derived"));
+
+		mappingCollector.setValueBefore("anchor", 11L);
+		Object2LongMap<String> recalculatedValues = valueGenerator.generateValues();
+		Assertions.assertEquals(22, recalculatedValues.getLong("derived"));
+	}
+
+	@Test
+	@DisplayName("Test forced conversions are cleared after their dependency chain becomes invalid")
+	void testForcedConversionClearedAfterDependencyInvalidation() {
+		mappingCollector.setValueBefore("root", 1L);
+		mappingCollector.addConversion(1, "cycle", List.of("root"));
+		mappingCollector.addConversion(2, "cycle", List.of("cycle"));
+
+		//Amplify the final positive fraction before the exploit cycle is invalidated. Each regular output is
+		//correctly cleared in turn; the forced output must be cleared as well rather than retain its last value.
+		mappingCollector.addConversion(1, "amplified-1", EMCHelper.intMapOf("cycle", Integer.MAX_VALUE));
+		mappingCollector.addConversion(1, "amplified-2", EMCHelper.intMapOf("amplified-1", Integer.MAX_VALUE));
+		mappingCollector.addConversion(1, "amplified-3", EMCHelper.intMapOf("amplified-2", Integer.MAX_VALUE));
+		mappingCollector.setValueFromConversion(1, "forced", List.of("amplified-3"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(0, values.getLong("cycle"));
+		Assertions.assertEquals(0, values.getLong("amplified-1"));
+		Assertions.assertEquals(0, values.getLong("amplified-2"));
+		Assertions.assertEquals(0, values.getLong("amplified-3"));
+		Assertions.assertEquals(0, values.getLong("forced"));
 	}
 
 	@Test
@@ -726,4 +871,117 @@ class GraphMapperTest {
 		Assertions.assertEquals(6, values.getLong("c"));
 
 	}
+
+	@Test
+	@DisplayName("Test equivalent forced conversion remains active when a normal conversion is added first")
+	void testEquivalentForcedConversionNormalFirst() {
+		assertEquivalentForcedConversion(true);
+	}
+
+	@Test
+	@DisplayName("Test equivalent forced conversion remains active when a normal conversion is added second")
+	void testEquivalentForcedConversionNormalSecond() {
+		assertEquivalentForcedConversion(false);
+	}
+
+	private void assertEquivalentForcedConversion(boolean normalFirst) {
+		mappingCollector.setValueBefore("ingredient", 10L);
+		if (normalFirst) {
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+			mappingCollector.setValueFromConversion(1, "output", List.of("ingredient"));
+		} else {
+			mappingCollector.setValueFromConversion(1, "output", List.of("ingredient"));
+			mappingCollector.addConversion(1, "output", List.of("ingredient"));
+		}
+		mappingCollector.addConversion(1, "downstream", List.of("output", "output"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(10, values.getLong("output"));
+		Assertions.assertEquals(20, values.getLong("downstream"));
+	}
+
+	@Test
+	@DisplayName("Test replacing a forced conversion removes the old dependency")
+	void testReplacingForcedConversionRemovesOldDependency() {
+		mappingCollector.setValueBefore("old", 10L);
+		mappingCollector.setValueBefore("replacement", 30L);
+		mappingCollector.setValueFromConversion(1, "output", List.of("old"));
+		mappingCollector.setValueFromConversion(1, "output", List.of("replacement"));
+		mappingCollector.addConversion(1, "downstream", List.of("output", "output"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(30, values.getLong("output"));
+		Assertions.assertEquals(60, values.getLong("downstream"));
+	}
+
+	@Test
+	@DisplayName("Test replacing a forced conversion preserves shared dependencies")
+	void testReplacingForcedConversionPreservesSharedDependencies() {
+		mappingCollector.setValueBefore("shared", 4L);
+		mappingCollector.setValueBefore("old", 10L);
+		mappingCollector.setValueBefore("replacement", 30L);
+		mappingCollector.setValueFromConversion(1, "output", EMCHelper.intMapOf("shared", 1, "old", 1));
+		mappingCollector.setValueFromConversion(1, "output", EMCHelper.intMapOf("shared", 1, "replacement", 1));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(34, values.getLong("output"));
+	}
+
+	@Test
+	@DisplayName("Test invalid negative fixed values before inheritance cannot subsidize conversions")
+	void testInvalidNegativeFixedValueBeforeIsIgnored() {
+		mappingCollector.setValueBefore("invalid", -5L);
+		mappingCollector.setValueBefore("valid", 10L);
+		mappingCollector.addConversion(1, "output", List.of("invalid", "valid"));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertFalse(values.containsKey("invalid"));
+		Assertions.assertEquals(10, values.getLong("valid"));
+		Assertions.assertFalse(values.containsKey("output"));
+	}
+
+	@Test
+	@DisplayName("Test invalid negative fixed values after inheritance are ignored")
+	void testInvalidNegativeFixedValueAfterIsIgnored() {
+		mappingCollector.setValueAfter("invalid", -5L);
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertFalse(values.containsKey("invalid"));
+	}
+
+	@Test
+	@DisplayName("Test conversion ingredient maps are defensively copied")
+	void testConversionIngredientMapIsDefensivelyCopied() {
+		mappingCollector.setValueBefore("ingredient", 10L);
+		Object2IntOpenHashMap<String> ingredients = new Object2IntOpenHashMap<>();
+		ingredients.put("ingredient", 1);
+		mappingCollector.addConversion(1, "output", ingredients);
+		ingredients.clear();
+		ingredients.put("replacement", 1);
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(10, values.getLong("output"));
+	}
+
+	@Test
+	@DisplayName("Test invalid conversion output counts are rejected")
+	void testInvalidConversionOutputCountsAreRejected() {
+		Assertions.assertThrows(IllegalArgumentException.class, () -> mappingCollector.addConversion(0, "output", List.of("ingredient")));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> mappingCollector.addConversion(-1, "output", List.of("ingredient")));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> mappingCollector.setValueFromConversion(0, "output", List.of("ingredient")));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> mappingCollector.setValueFromConversion(-1, "output", List.of("ingredient")));
+	}
+
+	@Test
+	@DisplayName("Test zero-amount ingredients are ignored")
+	void testZeroAmountIngredientsAreIgnored() {
+		mappingCollector.setValueBefore("ingredient", 10L);
+		mappingCollector.addConversion(1, "normal", EMCHelper.intMapOf("ingredient", 1, "ignored", 0));
+		mappingCollector.setValueFromConversion(1, "forced", EMCHelper.intMapOf("ingredient", 1, "ignored", 0));
+
+		Object2LongMap<String> values = valueGenerator.generateValues();
+		Assertions.assertEquals(10, values.getLong("normal"));
+		Assertions.assertEquals(10, values.getLong("forced"));
+	}
+
 }
