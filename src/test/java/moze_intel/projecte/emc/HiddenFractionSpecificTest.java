@@ -130,7 +130,7 @@ class HiddenFractionSpecificTest {
 	@DisplayName("Test exact fraction arithmetic retains a finite denominator bound")
 	void fullFractionArithmeticHasFiniteDenominatorBound() {
 		FullBigFractionArithmetic arithmetic = new FullBigFractionArithmetic();
-		BigFraction value = new BigFraction(1);
+		BigFraction value = BigFraction.ONE;
 		int divisions = 0;
 		while (!arithmetic.isZero(value) && divisions < 1_000) {
 			value = arithmetic.div(value, 2);

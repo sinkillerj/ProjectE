@@ -61,6 +61,8 @@ public class DataComponentManager {
 
 	@Range(from = 0, to = Long.MAX_VALUE)
 	public static long getEmcValue(@NotNull ItemInfo info) {
+		//TODO: Account for extra components layered onto an exact component-bearing mapping (for example an enchanted potion),
+		//without reprocessing the components that define the mapped variant itself.
 		long emcValue = EMCMappingHandler.getStoredEmcValue(info);
 		if (!info.hasModifiedComponents() || emcValue > 0) {
 			//An exact component-bearing mapping is authoritative. Recipe mappers, custom conversions, and integrations may have already

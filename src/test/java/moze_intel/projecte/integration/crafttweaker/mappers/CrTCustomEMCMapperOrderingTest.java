@@ -1,10 +1,14 @@
 package moze_intel.projecte.integration.crafttweaker.mappers;
 
+import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import moze_intel.projecte.api.mapper.collector.NoOpMappingCollector;
 import moze_intel.projecte.api.nss.NSSFake;
+import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -58,9 +62,75 @@ class CrTCustomEMCMapperOrderingTest {
 		Assertions.assertEquals(List.of(20L, 30L), collector.values);
 	}
 
+	@Test
+	@DisplayName("An identical specific value can intentionally restore precedence after a broad tag")
+	void testIdenticalRegistrationRestoresSpecificOverride() {
+		NormalizedSimpleStack specific = NSSFake.create("specific_item");
+		NormalizedSimpleStack broadTag = new TestTagNSS("broad_tag", specific);
+		register(specific, 100);
+		register(broadTag, 200);
+		//This is intentionally the same value as the first action. Reasserting it after the broad tag restores
+		//the script author's specific-item override without changing the value itself.
+		CrTCustomEMCMapper.registerCustomEMC(specific, 100);
+
+		RecordingCollector collector = new RecordingCollector();
+		new CrTCustomEMCMapper().addMappings(collector, null, null, null);
+
+		Assertions.assertEquals(List.of(broadTag, specific, specific), collector.order);
+		Assertions.assertEquals(List.of(200L, 200L, 100L), collector.values,
+				"The final identical item action must run after the broad tag expansion and restore the specific value");
+	}
+
 	private void register(NormalizedSimpleStack stack, long value) {
 		registered.add(stack);
 		CrTCustomEMCMapper.registerCustomEMC(stack, value);
+	}
+
+	private static final class TestTagNSS implements NSSTag {
+
+		private final String name;
+		private final NormalizedSimpleStack element;
+
+		private TestTagNSS(String name, NormalizedSimpleStack element) {
+			this.name = name;
+			this.element = element;
+		}
+
+		@Override
+		public boolean representsTag() {
+			return true;
+		}
+
+		@Override
+		public void forEachElement(Consumer<NormalizedSimpleStack> consumer) {
+			consumer.accept(element);
+		}
+
+		@Override
+		public <CONTEXT, DATA> void forEachElement(CONTEXT context, DATA data,
+				TriConsumer<CONTEXT, NormalizedSimpleStack, DATA> consumer) {
+			consumer.accept(context, element, data);
+		}
+
+		@Override
+		public MapCodec<? extends NormalizedSimpleStack> codec() {
+			return NSSFake.CODEC;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return obj instanceof TestTagNSS other && name.equals(other.name) && element.equals(other.element);
+		}
+
+		@Override
+		public int hashCode() {
+			return 31 * name.hashCode() + element.hashCode();
+		}
+
+		@Override
+		public String toString() {
+			return "TestTagNSS[" + name + "]";
+		}
 	}
 
 	private static class RecordingCollector extends NoOpMappingCollector<NormalizedSimpleStack, Long> {

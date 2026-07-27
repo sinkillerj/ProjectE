@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SequencedSet;
 import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -18,7 +18,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 
 	private static final boolean DEBUG_GRAPHMAPPER = false;
 
-	private final Function<T, Set<Conversion>> CREATE_CONVERSIONS = t -> new LinkedHashSet<>();
+	private final Function<T, SequencedSet<Conversion>> CREATE_CONVERSIONS = t -> new LinkedHashSet<>();
 	protected final A arithmetic;
 
 	protected MappingCollector(A arithmetic) {
@@ -41,23 +41,23 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	}
 
 	protected final Map<@NotNull T, @NotNull Conversion> overwriteConversion = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> conversionsFor = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> usedIn = new HashMap<>();
+	protected final Map<@NotNull T, @NotNull SequencedSet<Conversion>> conversionsFor = new HashMap<>();
+	protected final Map<@NotNull T, @NotNull SequencedSet<Conversion>> usedIn = new HashMap<>();
 	protected final Map<@NotNull T, @NotNull V> fixValueBeforeInherit = new HashMap<>();
 	protected final Map<@NotNull T, @NotNull V> fixValueAfterInherit = new HashMap<>();
 
-	private Set<Conversion> getConversionsFor(@NotNull T something) {
+	private SequencedSet<Conversion> getConversionsFor(@NotNull T something) {
 		return conversionsFor.computeIfAbsent(something, CREATE_CONVERSIONS);
 	}
 
 	protected void removeUseFor(@NotNull T something, @NotNull Conversion conversion) {
-		Set<Conversion> conversions = usedIn.get(something);
+		SequencedSet<Conversion> conversions = usedIn.get(something);
 		if (conversions != null) {
 			conversions.remove(conversion);
 		}
 	}
 
-	protected Set<Conversion> getUsesFor(@NotNull T something) {
+	protected SequencedSet<Conversion> getUsesFor(@NotNull T something) {
 		return usedIn.computeIfAbsent(something, CREATE_CONVERSIONS);
 	}
 
@@ -70,7 +70,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	private void replaceConversionInIngredientUsages(Conversion conversion) {
 		//Ensure the exact overwrite instance is retained if an equivalent regular conversion was already registered.
 		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
-			Set<Conversion> usesForIngredient = getUsesFor(ingredient);
+			SequencedSet<Conversion> usesForIngredient = getUsesFor(ingredient);
+			//Remove first so re-adding moves the replacement to the end of the sequenced set, giving the newer
+			//forced conversion higher precedence than the equivalent instance it replaces.
 			usesForIngredient.remove(conversion);
 			usesForIngredient.add(conversion);
 		}

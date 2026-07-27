@@ -2,7 +2,6 @@ package moze_intel.projecte.emc.components;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,6 +14,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,7 +101,7 @@ class DataComponentManagerTest {
 
 	@Test
 	@DisplayName("A broken third-party processor fails closed without publishing partial EMC")
-	void testUnexpectedProcessorFailureFailsClosed() throws ReflectiveOperationException {
+	void testUnexpectedProcessorFailureFailsClosed() {
 		ItemInfo base = ItemInfo.fromItem(Items.DIAMOND_PICKAXE);
 		ItemInfo damaged = createDamagedPickaxe(1);
 		Object2LongMap<ItemInfo> values = new Object2LongOpenHashMap<>();
@@ -132,6 +132,7 @@ class DataComponentManagerTest {
 			Assertions.assertFalse(laterProcessorRan.get(),
 					"Processors after a failure must not observe or publish a partially calculated value");
 		} finally {
+			//Restore the shared backing processor list so injected test processors cannot leak into and break later tests.
 			processors.remove(failing);
 			processors.remove(later);
 		}
@@ -170,6 +171,7 @@ class DataComponentManagerTest {
 		values.put(ItemInfo.fromItem(Items.STONE), 4);
 		EMCMappingHandler.updateEmcValues(values);
 
+		//Vanilla shulker boxes cannot be nested, but modded backpacks or containers may allow nested component-bearing inventories.
 		ItemStack inner = createContainerStack(new ItemStack(Items.STONE, 2));
 		ItemInfo outer = createContainer(inner);
 		Assertions.assertEquals(208, DataComponentManager.getEmcValue(outer),
@@ -204,11 +206,24 @@ class DataComponentManagerTest {
 				"An unrepresentable nested value must fail closed rather than wrap or publish partial EMC");
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<IDataComponentProcessor> mutableProcessors() throws ReflectiveOperationException {
-		Field field = DataComponentManager.class.getDeclaredField("processors");
-		field.setAccessible(true);
-		return (List<IDataComponentProcessor>) field.get(null);
+	private List<IDataComponentProcessor> mutableProcessors() {
+		return ObfuscationReflectionHelper.getPrivateValue(DataComponentManager.class, null, "processors");
+	}
+
+	private ItemInfo createContainer(ItemStack... contents) {
+		return ItemInfo.fromStack(createContainerStack(contents));
+	}
+
+	private ItemStack createContainerStack(ItemStack... contents) {
+		ItemStack container = new ItemStack(Items.SHULKER_BOX);
+		container.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(contents)));
+		return container;
+	}
+
+	private ItemInfo createDamagedPickaxe(int damage) {
+		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
+		stack.setDamageValue(damage);
+		return ItemInfo.fromStack(stack);
 	}
 
 	private abstract static class TestProcessor implements IDataComponentProcessor {
@@ -233,21 +248,5 @@ class DataComponentManagerTest {
 		public String getDescription() {
 			return name;
 		}
-	}
-
-	private ItemInfo createContainer(ItemStack... contents) {
-		return ItemInfo.fromStack(createContainerStack(contents));
-	}
-
-	private ItemStack createContainerStack(ItemStack... contents) {
-		ItemStack container = new ItemStack(Items.SHULKER_BOX);
-		container.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(contents)));
-		return container;
-	}
-
-	private ItemInfo createDamagedPickaxe(int damage) {
-		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
-		stack.setDamageValue(damage);
-		return ItemInfo.fromStack(stack);
 	}
 }

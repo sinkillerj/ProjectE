@@ -32,10 +32,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 @RecipeTypeMapper
 public class SpecialRecipeMarkHandledMapper implements IRecipeTypeMapper {
 
+	@VisibleForTesting
 	static final String ARMOR_DYE_SKIP_REASON = "Output color is calculated from and preserves the input item's data components.";
 
 	@Override

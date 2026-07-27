@@ -1,6 +1,5 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 import moze_intel.projecte.utils.AnnotationHelper.PrioritizedElement;
 import org.junit.jupiter.api.Assertions;
@@ -16,11 +15,11 @@ class AnnotationHelperTest {
 		Object first = new Object();
 		Object second = new Object();
 		Object highPriority = new Object();
-		List<PrioritizedElement<Object>> elements = new ArrayList<>(List.of(
+		List<PrioritizedElement<Object>> elements = List.of(
 				new PrioritizedElement<>(second, 0, 1),
 				new PrioritizedElement<>(first, 0, 0),
 				new PrioritizedElement<>(highPriority, 10, 2)
-		));
+		);
 
 		List<Object> sorted = AnnotationHelper.sortByPriority(elements);
 
@@ -34,10 +33,10 @@ class AnnotationHelperTest {
 	void testEqualObjectsDoNotCollide() {
 		EqualElement lowPriority = new EqualElement("low");
 		EqualElement highPriority = new EqualElement("high");
-		List<PrioritizedElement<EqualElement>> elements = new ArrayList<>(List.of(
+		List<PrioritizedElement<EqualElement>> elements = List.of(
 				new PrioritizedElement<>(lowPriority, -10, 0),
 				new PrioritizedElement<>(highPriority, 10, 1)
-		));
+		);
 
 		List<EqualElement> sorted = AnnotationHelper.sortByPriority(elements);
 
@@ -45,7 +44,18 @@ class AnnotationHelperTest {
 		Assertions.assertSame(lowPriority, sorted.get(1));
 	}
 
-	private record EqualElement(String name) {
+	private static class EqualElement {
+
+		private final String name;
+
+		private EqualElement(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 
 		@Override
 		public boolean equals(Object obj) {

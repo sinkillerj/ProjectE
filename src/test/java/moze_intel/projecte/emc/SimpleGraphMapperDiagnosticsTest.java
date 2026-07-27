@@ -4,13 +4,19 @@ import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.emc.arithmetic.HiddenBigFractionArithmetic;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Test graph mapper conversion diagnostics")
 class SimpleGraphMapperDiagnosticsTest {
 
-	private final IValueArithmetic<BigFraction> arithmetic = new HiddenBigFractionArithmetic();
+	private IValueArithmetic<BigFraction> arithmetic;
+
+	@BeforeEach
+	void setup() {
+		arithmetic = new HiddenBigFractionArithmetic();
+	}
 
 	@Test
 	@DisplayName("Test multiple outputs are compared by total value")
@@ -47,7 +53,7 @@ class SimpleGraphMapperDiagnosticsTest {
 	@DisplayName("Test invalid output counts are rejected by diagnostics")
 	void testInvalidOutputCount() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> SimpleGraphMapper.compareConversionValues(
-				arithmetic, new BigFraction(1), new BigFraction(1), 0
+				arithmetic, BigFraction.ONE, BigFraction.ONE, 0
 		));
 	}
 }

@@ -59,7 +59,4 @@ public final class MathUtils {
 		return bigInt.compareTo(MAX_LONG) >= 0 ? Long.MAX_VALUE : bigInt.longValue();
 	}
 
-	public static boolean isGreaterThanLong(BigInteger bigInt) {
-		return bigInt.compareTo(MAX_LONG) > 0;
-	}
 }

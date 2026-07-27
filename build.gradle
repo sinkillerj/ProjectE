@@ -227,6 +227,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('mezz.jei')
         filter.includeGroup('org.openzen.zencode')
     })
+    exclusiveRepo(handler, 'https://repo.sleeping.town/', 'dev.emi')
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
@@ -249,9 +250,8 @@ dependencies {
         localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    //CurseForge does not publish EMI's API classifier separately, so this uses the pinned full jar from the same source as our other Curse dependencies.
-    def emi = "curse.maven:emi-580555:${emi_file_id}"
-    compileOnly(emi)
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenCompileOnly(emi)

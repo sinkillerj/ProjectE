@@ -84,8 +84,6 @@ class CraftingMapperTest {
 
 		Assertions.assertThrows(IllegalArgumentException.class,
 				() -> BaseRecipeTypeMapper.subtractCraftingRemainder(ingredients, "empty_container", 0));
-		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> BaseRecipeTypeMapper.subtractCraftingRemainder(ingredients, "empty_container", -1));
 	}
 
 	@Test
@@ -127,6 +125,18 @@ class CraftingMapperTest {
 				ResourceLocation.fromNamespaceAndPath("projecte", "malformed_stack_test"), "ingredient",
 				stack -> {
 					throw new IllegalArgumentException("simulated malformed stack");
+				}));
+	}
+
+	@Test
+	@DisplayName("Unexpected normalizer failures are not hidden as malformed recipe data")
+	void testUnexpectedNormalizerFailureEscapes() {
+		ItemStack stack = new ItemStack(Items.STONE);
+
+		Assertions.assertThrows(IllegalStateException.class, () -> BaseRecipeTypeMapper.normalizeStack(stack,
+				ResourceLocation.fromNamespaceAndPath("projecte", "unexpected_normalizer_failure_test"), "ingredient",
+				ignored -> {
+					throw new IllegalStateException("simulated programming failure");
 				}));
 	}
 

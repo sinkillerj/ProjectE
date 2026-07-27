@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SequencedSet;
 import java.util.Set;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -121,7 +122,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 							debugFormat("Set Value for {} to {} because {}", key, value, reasonForChange.get(key));
 						}
 						//We have a new value for 'entry.getKey()' now we need to update everything that uses it as an ingredient.
-						Set<Conversion> usesFor = usedIn.get(key);
+						SequencedSet<Conversion> usesFor = usedIn.get(key);
 						if (usesFor == null) {
 							continue;
 						}
@@ -167,7 +168,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 	private void collectInvalidValues(Map<T, V> values, @Nullable Map<T, Object> reasonForChange,
 			Map<@NotNull T, @NotNull V> invalidValues) {
-		for (Map.Entry<T, Set<Conversion>> entry : conversionsFor.entrySet()) {
+		for (Map.Entry<T, SequencedSet<Conversion>> entry : conversionsFor.entrySet()) {
 			T key = entry.getKey();
 			Conversion overwrite = overwriteConversion.get(key);
 			validateConversionOutput(values, invalidValues, reasonForChange, key, entry.getValue(), overwrite);

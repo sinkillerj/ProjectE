@@ -29,6 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 //TODO: Fix recipe mapping for things containing EMC not working properly? (aka full klein stars)
 // We probably could do it with a set value before, make it a grouping of a fake stack that has
@@ -58,7 +59,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 		}
 		Collection<Ingredient> ingredientsChecked = getIngredientsChecked(recipeHolder);
 		if (ingredientsChecked == null) {
-			//Failed to get matching ingredients, bail but mark that we handled it as there is a 99% chance a later
+			//Failed to get matching ingredients, bail but mark that we handled it as there is an extremely high chance a later
 			// mapper would fail as well due to it being an invalid recipe
 			return true;
 		}
@@ -87,7 +88,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 					// Return that we handled it, as if it is an accidentally empty ingredient, nothing will be able to handle it
 					return true;
 				} else if (addIngredient(ingredientMap, match, recipeID)) {
-					//Failed to add ingredient, bail but mark that we handled it as there is a 99% chance a later
+					//Failed to add ingredient, bail but mark that we handled it as there is an extremely high chance a later
 					// mapper would fail as well due to it being an invalid recipe
 					return true;
 				}
@@ -119,7 +120,7 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 							}
 						}
 						if (!success) {
-							//Failed to add any of the ingredients, bail but mark that we handled it as there is a 99% chance a later
+							//Failed to add any of the ingredients, bail but mark that we handled it as there is an extremely high chance a later
 							// mapper would fail as well due to it being an invalid recipe
 							return true;
 						}
@@ -139,11 +140,13 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 		return true;
 	}
 
+	@VisibleForTesting
 	static List<ItemStack> getNormalizableMatches(ItemStack[] matches, ResourceLocation recipeID,
 			Object2IntMap<NormalizedSimpleStack> rawNSSMatches) {
 		return getNormalizableMatches(matches, recipeID, rawNSSMatches, NSSItem::createItem);
 	}
 
+	@VisibleForTesting
 	static List<ItemStack> getNormalizableMatches(ItemStack[] matches, ResourceLocation recipeID,
 			Object2IntMap<NormalizedSimpleStack> rawNSSMatches, Function<ItemStack, NormalizedSimpleStack> normalizer) {
 		List<ItemStack> normalizableMatches = new ArrayList<>(matches.length);
@@ -169,7 +172,9 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 			Function<ItemStack, NormalizedSimpleStack> normalizer) {
 		try {
 			return normalizer.apply(stack);
-		} catch (RuntimeException e) {
+		} catch (IllegalArgumentException e) {
+			//NSSItem rejects malformed identities with IllegalArgumentException: empty/default stacks, unbound direct holders,
+			//and items that are not registered. Unexpected runtime failures should escape and abort the remap instead of being hidden.
 			ResourceLocation itemName = BuiltInRegistries.ITEM.getKey(stack.getItem());
 			PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Error mapping recipe {}. Failed to normalize the {} stack for item {} ({}). "
 													 + "Ignoring this stack so malformed recipe data cannot abort the entire EMC remap.", recipeID, stackRole,
@@ -246,10 +251,10 @@ public abstract class BaseRecipeTypeMapper implements IRecipeTypeMapper {
 	}
 
 	static <TYPE> void subtractCraftingRemainder(Object2IntMap<TYPE> ingredientMap, TYPE remainder, int count) {
-		if (count <= 0) {
+		if (count == 0) {
 			throw new IllegalArgumentException("Crafting remainder count must be positive");
 		}
-		ingredientMap.mergeInt(remainder, Math.negateExact(count), Math::addExact);
+		ingredientMap.mergeInt(remainder, -count, Math::addExact);
 	}
 
 	@Nullable

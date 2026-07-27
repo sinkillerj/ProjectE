@@ -98,7 +98,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 		//FileToIdConverter returns a Map without an ordering contract. Apply files by resource ID so conflicting fixed values and forced
 		//conversions have stable precedence that cannot change when an unrelated file changes the backing map's iteration order.
 		List<ResourceLocation> orderedIds = new ArrayList<>(files.keySet());
-		orderedIds.sort(null);
+		orderedIds.sort(ResourceLocation::compareNamespaced);
 		for (ResourceLocation id : orderedIds) {
 			PECore.debugLog("Adding mappings from custom conversion file {}", id);
 			addMappingsFromFile(files.get(id), mapper);

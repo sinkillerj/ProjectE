@@ -22,6 +22,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Type;
 
 public class AnnotationHelper {
@@ -96,6 +97,7 @@ public class AnnotationHelper {
 		return sortByPriority(emcMappers);
 	}
 
+	@VisibleForTesting
 	static <T> List<T> sortByPriority(List<PrioritizedElement<T>> elements) {
 		return elements.stream()
 				.sorted(Comparator.<PrioritizedElement<T>>comparingInt(PrioritizedElement::priority)
@@ -105,6 +107,7 @@ public class AnnotationHelper {
 				.toList();
 	}
 
+	@VisibleForTesting
 	record PrioritizedElement<T>(T value, int priority, int discoveryOrder) {
 	}
 
