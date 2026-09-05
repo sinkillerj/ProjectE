@@ -26,14 +26,21 @@ public class TransmutationEMCFormatter {
 			return PELang.EMC_TOO_MUCH.translate();
 		}
 		//Otherwise we need to manually format it
+		//Extract leading significant digits directly via char arithmetic to avoid string concatenation + Double.parseDouble
 		int extraDigits = length % 3;
 		double value;
 		if (extraDigits == 0) {
-			value = Double.parseDouble(emcAsString.substring(0, 3) + "." + emcAsString.substring(3, 5));
+			int intPart = (emcAsString.charAt(0) - '0') * 100 + (emcAsString.charAt(1) - '0') * 10 + (emcAsString.charAt(2) - '0');
+			int fracPart = (emcAsString.charAt(3) - '0') * 10 + (emcAsString.charAt(4) - '0');
+			value = intPart + fracPart / 100.0;
 		} else if (extraDigits == 1) {
-			value = Double.parseDouble(emcAsString.charAt(0) + "." + emcAsString.substring(1, 3));
+			int intPart = emcAsString.charAt(0) - '0';
+			int fracPart = (emcAsString.charAt(1) - '0') * 10 + (emcAsString.charAt(2) - '0');
+			value = intPart + fracPart / 100.0;
 		} else {//if (extraDigits == 2)
-			value = Double.parseDouble(emcAsString.substring(0, 2) + "." + emcAsString.substring(2, 4));
+			int intPart = (emcAsString.charAt(0) - '0') * 10 + (emcAsString.charAt(1) - '0');
+			int fracPart = (emcAsString.charAt(2) - '0') * 10 + (emcAsString.charAt(3) - '0');
+			value = intPart + fracPart / 100.0;
 		}
 		return TextComponentUtil.smartTranslate(Util.makeDescriptionId("emc", PECore.rl("postfix." + postfixIndex)), EMCHelper.formatEmc(value));
 	}
