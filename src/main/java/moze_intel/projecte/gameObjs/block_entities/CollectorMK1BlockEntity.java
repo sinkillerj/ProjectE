@@ -80,6 +80,9 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	private double unprocessedEMC;
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
+	//Cached EMC holder capability for the item in the upgrading slot, refreshed each tick in checkFuelOrKlein
+	@Nullable
+	private IItemEmcHolder cachedEmcHolder;
 	//Start as needing to check for compacting when loaded
 	private boolean needsCompacting = true;
 
@@ -171,6 +174,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		ItemStack upgrading = getUpgrading();
 		if (!upgrading.isEmpty()) {
 			IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+			cachedEmcHolder = emcHolder;
 			if (emcHolder != null) {
 				if (emcHolder.getNeededEmc(upgrading) > 0) {
 					hasChargeableItem = true;
@@ -183,6 +187,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 				hasChargeableItem = false;
 			}
 		} else {
+			cachedEmcHolder = null;
 			hasFuel = false;
 			hasChargeableItem = false;
 		}
@@ -202,7 +207,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		if (this.getStoredEmc() > 0) {
 			ItemStack upgrading = getUpgrading();
 			if (hasChargeableItem) {
-				IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+				IItemEmcHolder emcHolder = cachedEmcHolder;
 				if (emcHolder != null) {
 					long actualInserted = emcHolder.insertEmc(upgrading, Math.min(getStoredEmc(), emcGen), EmcAction.EXECUTE);
 					forceExtractEmc(actualInserted, EmcAction.EXECUTE);

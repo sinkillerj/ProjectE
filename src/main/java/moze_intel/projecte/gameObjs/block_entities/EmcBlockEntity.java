@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import java.util.ArrayList;
-import java.util.List;
 import moze_intel.projecte.api.block_entity.BaseEmcBlockEntity;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
@@ -113,7 +111,9 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		}
 		emc = Math.min(getEmcExtractLimit(), emc);
 		long sentEmc = 0;
-		List<IEmcStorage> targets = new ArrayList<>();
+		//There are at most 6 adjacent directions, use a fixed size array to avoid allocating a list each tick
+		IEmcStorage[] targets = new IEmcStorage[6];
+		int targetCount = 0;
 		for (Direction dir : Constants.DIRECTIONS) {
 			//Make sure the neighboring block is loaded as if we are on a chunk border on the edge of loaded chunks this may not be the case
 			IEmcStorage theirEmcStorage = WorldHelper.getCapability(level, PECapabilities.EMC_STORAGE_CAPABILITY, pos.relative(dir), dir.getOpposite());
@@ -122,15 +122,16 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 					//If they are both relays don't add the pairing to prevent thrashing
 					if (theirEmcStorage.insertEmc(1, EmcAction.SIMULATE) > 0) {
 						//If they are wiling to accept any Emc then we consider them to be an "acceptor"
-						targets.add(theirEmcStorage);
+						targets[targetCount++] = theirEmcStorage;
 					}
 				}
 			}
 		}
 
-		if (!targets.isEmpty()) {
-			long emcPer = emc / targets.size();
-			for (IEmcStorage target : targets) {
+		if (targetCount > 0) {
+			long emcPer = emc / targetCount;
+			for (int i = 0; i < targetCount; i++) {
+				IEmcStorage target = targets[i];
 				long emcCanProvide = extractEmc(emcPer, EmcAction.SIMULATE);
 				long acceptedEmc = target.insertEmc(emcCanProvide, EmcAction.EXECUTE);
 				extractEmc(acceptedEmc, EmcAction.EXECUTE);
