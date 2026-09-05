@@ -4,12 +4,12 @@ import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 	//Note: None of our defaults just directly support all recipe types, as mods may extend it for "random" things and have more input types required than just items
 	// We also do this via annotations to allow for broader support for looping specific recipes and handling them
-	private final Map<String, BooleanSupplier> enabledRecipeMappers = new HashMap<>();
+	private final Map<String, BooleanSupplier> enabledRecipeMappers = new Object2ObjectOpenHashMap<>();
 	private final List<IRecipeTypeMapper> recipeMappers;
 
 	public CraftingMapper() {
@@ -204,8 +204,8 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 				.map(entry -> entry.getKey() + ":" + entry.getIntValue()).collect(Collectors.joining(", "));
 		private static final boolean DEBUG_GROUP_CONTENTS = false;
 
-		private final Map<Object2IntMap<NormalizedSimpleStack>, FakeGroupData> ingredientGroupsWithCount = new HashMap<>();
-		private final Map<Object2IntMap<NormalizedSimpleStack>, FakeGroupData> groupsWithCount = new HashMap<>();
+		private final Map<Object2IntMap<NormalizedSimpleStack>, FakeGroupData> ingredientGroupsWithCount = new Object2ObjectOpenHashMap<>();
+		private final Map<Object2IntMap<NormalizedSimpleStack>, FakeGroupData> groupsWithCount = new Object2ObjectOpenHashMap<>();
 		private final IMappingCollector<NormalizedSimpleStack, Long> mapper;
 		private int fakeIndex;
 

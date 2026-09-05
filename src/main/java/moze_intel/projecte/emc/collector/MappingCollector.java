@@ -3,7 +3,7 @@ package moze_intel.projecte.emc.collector;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -40,11 +40,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 		debugFormat(s);
 	}
 
-	protected final Map<@NotNull T, @NotNull Conversion> overwriteConversion = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> conversionsFor = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> usedIn = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull V> fixValueBeforeInherit = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull V> fixValueAfterInherit = new HashMap<>();
+	protected final Map<@NotNull T, @NotNull Conversion> overwriteConversion = new Object2ObjectOpenHashMap<>();
+	protected final Map<@NotNull T, @NotNull Set<Conversion>> conversionsFor = new Object2ObjectOpenHashMap<>();
+	protected final Map<@NotNull T, @NotNull Set<Conversion>> usedIn = new Object2ObjectOpenHashMap<>();
+	protected final Map<@NotNull T, @NotNull V> fixValueBeforeInherit = new Object2ObjectOpenHashMap<>();
+	protected final Map<@NotNull T, @NotNull V> fixValueAfterInherit = new Object2ObjectOpenHashMap<>();
 
 	private Set<Conversion> getConversionsFor(@NotNull T something) {
 		return conversionsFor.computeIfAbsent(something, CREATE_CONVERSIONS);
