@@ -2,7 +2,7 @@ package moze_intel.projecte.emc;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -64,15 +64,15 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 	@Override
 	public Map<T, V> generateValues() {
-		Map<@NotNull T, @NotNull V> values = new HashMap<>();
+		Map<@NotNull T, @NotNull V> values = new Object2ObjectOpenHashMap<>();
 
 		// All values that changed in previous iteration, so everything depending on it needs to be updated
 		@Nullable
-		Map<@NotNull T, @NotNull V> changedValues = new HashMap<>(fixValueBeforeInherit);
+		Map<@NotNull T, @NotNull V> changedValues = new Object2ObjectOpenHashMap<>(fixValueBeforeInherit);
 		@Nullable
 		Map<@NotNull T, @NotNull Object> reasonForChange = null;
 		if (isDebugGraphmapper()) {
-			reasonForChange = new HashMap<>(changedValues.size());
+			reasonForChange = new Object2ObjectOpenHashMap<>(changedValues.size());
 			for (Map.Entry<T, V> entry : fixValueBeforeInherit.entrySet()) {
 				reasonForChange.put(entry.getKey(), "fixValueBefore");
 			}
@@ -114,7 +114,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 								if (storedValue == null || storedValue.compareTo(resultValueConversion) > 0) {
 									//And there is no smaller value for that conversion output yet
 									if (nextChangedValues == null) {//Lazily init nextChangedValues so if there aren't any we don't have to initialize it
-										nextChangedValues = new HashMap<>();
+										nextChangedValues = new Object2ObjectOpenHashMap<>();
 									}
 									if (updateMapWithMinimum(nextChangedValues, conversion.output, resultValueConversion)) {
 										//So we mark that new value to set it in the next iteration.
@@ -169,7 +169,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 								addReason(reasonForChange, conversion.output, "exploit recipe");
 							}
 							if (changedValues == null) {//Lazily init changedValues so if there aren't any we don't have to initialize it
-								changedValues = new HashMap<>();
+								changedValues = new Object2ObjectOpenHashMap<>();
 							}
 							changedValues.put(conversion.output, ZERO);
 						} else if (logFoundExploits) {
@@ -189,7 +189,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 						//but the value for the conversion output is > 0, so we set it to 0.
 						debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", key);
 						if (changedValues == null) {//Lazily init changedValues so if there aren't any we don't have to initialize it
-							changedValues = new HashMap<>();
+							changedValues = new Object2ObjectOpenHashMap<>();
 						}
 						changedValues.put(key, ZERO);
 						addReason(reasonForChange, key, "all conversions dead");
