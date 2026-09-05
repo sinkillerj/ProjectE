@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items.rings;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import moze_intel.projecte.api.block_entity.IDMPedestal;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -97,16 +95,18 @@ public class BlackHoleBand extends PEToggleItem implements IAlchBagItem, IAlchCh
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
 		Vec3 target = pos.getCenter();
-		Map<Direction, IItemHandler> nearbyHandlers = new EnumMap<>(Direction.class);
+		//Cache the item handlers for neighboring positions in a fixed-size array (6 directions) to avoid EnumMap allocation each tick
+		IItemHandler[] nearbyHandlers = new IItemHandler[6];
 		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, pedestal.getEffectBounds(), ent -> !ent.isSpectator() && ent.isAlive())) {
 			WorldHelper.gravitateEntityTowards(item, target);
 			if (!level.isClientSide && item.distanceToSqr(target) < 1.21) {
-				for (Direction dir : Constants.DIRECTIONS) {
+				for (int i = 0; i < Constants.DIRECTIONS.length; i++) {
+					Direction dir = Constants.DIRECTIONS[i];
 					//Cache the item handlers in various spots so that we only query each neighboring position once
-					IItemHandler inv = nearbyHandlers.get(dir);
+					IItemHandler inv = nearbyHandlers[i];
 					if (inv == null) {
 						inv = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos.relative(dir), dir);
-						nearbyHandlers.put(dir, inv);
+						nearbyHandlers[i] = inv;
 					}
 					ItemStack result = ItemHandlerHelper.insertItemStacked(inv, item.getItem(), false);
 					if (result.isEmpty()) {
