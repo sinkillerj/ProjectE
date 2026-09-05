@@ -23,8 +23,9 @@ public final class MathUtils {
 		} else if (currentAmount >= max) {
 			return 15;
 		}
-		double proportion = currentAmount / (double) max;
-		return (int) Math.round(proportion * 13 + 1);
+		//Integer arithmetic equivalent to Math.round(currentAmount * 13.0 / max + 1)
+		//Avoids floating point overhead; numerator cannot overflow for realistic EMC storage values
+		return (int) ((currentAmount * 26L + 3L * max) / (2L * max));
 	}
 
 	public static float tickToSec(int ticks, float tickRate) {
