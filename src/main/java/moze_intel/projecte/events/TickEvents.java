@@ -24,30 +24,36 @@ import net.neoforged.neoforge.items.IItemHandler;
 @EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents {
 
+	//Reusable EnumSets to avoid per-tick allocation. Player tick events fire sequentially on the main thread.
+	private static final EnumSet<DyeColor> COLORS_PRESENT = EnumSet.noneOf(DyeColor.class);
+	private static final EnumSet<DyeColor> COLORS_CHANGED = EnumSet.noneOf(DyeColor.class);
+
 	@SubscribeEvent
 	public static void playerTick(PlayerTickEvent.Post event) {
 		Player player = event.getEntity();
 		IAlchBagProvider provider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
 		if (provider != null) {
-			Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
-			for (DyeColor color : getBagColorsPresent(player)) {
+			COLORS_CHANGED.clear();
+			collectBagColorsPresent(player, COLORS_PRESENT);
+			for (DyeColor color : COLORS_PRESENT) {
 				IItemHandler inv = provider.getBag(color);
 				for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
 					ItemStack current = inv.getStackInSlot(i);
 					IAlchBagItem alchBagItem = current.getCapability(PECapabilities.ALCH_BAG_ITEM_CAPABILITY);
 					if (alchBagItem != null && alchBagItem.updateInAlchBag(inv, player, current)) {
-						colorsChanged.add(color);
+						COLORS_CHANGED.add(color);
 					}
 				}
 			}
+			COLORS_PRESENT.clear();
 
 			if (player instanceof ServerPlayer serverPlayer) {
 				//Only sync for when it ticks on the server
 				if (serverPlayer.containerMenu instanceof AlchBagContainer container && serverPlayer.getItemInHand(container.hand).getItem() instanceof AlchemicalBag bag) {
 					// Do not sync if this color is open, the container system does it for us and we'll stay out of its way.
-					colorsChanged.remove(bag.color);
+					COLORS_CHANGED.remove(bag.color);
 				}
-				provider.sync(serverPlayer, colorsChanged);
+				provider.sync(serverPlayer, COLORS_CHANGED);
 			}
 		}
 
@@ -68,8 +74,8 @@ public class TickEvents {
 		return PlayerHelper.checkHotbarCurios(player, (p, stack) -> stack.getItem() instanceof IFireProtector protector && protector.canProtectAgainstFire(stack, p));
 	}
 
-	private static Set<DyeColor> getBagColorsPresent(Player player) {
-		Set<DyeColor> bagsPresent = EnumSet.noneOf(DyeColor.class);
+	private static void collectBagColorsPresent(Player player, Set<DyeColor> bagsPresent) {
+		bagsPresent.clear();
 		IItemHandler inv = player.getCapability(ItemHandler.ENTITY);
 		if (inv != null) {
 			for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
@@ -79,6 +85,5 @@ public class TickEvents {
 				}
 			}
 		}
-		return bagsPresent;
 	}
 }

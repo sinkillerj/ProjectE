@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -14,10 +14,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class InternalAbilities {
 
@@ -28,8 +30,60 @@ public class InternalAbilities {
 	public static void tick(Player player) {
 		Predicate<Player> applyWaterSpeed = Predicates.alwaysFalse();
 		Predicate<Player> applyLavaSpeed = Predicates.alwaysFalse();
-		WalkOnType waterWalkOnType = canWalkOnWater(player);
-		WalkOnType lavaWalkOnType = canWalkOnLava(player);
+		//Single inventory scan to detect all ability items at once (instead of 4 separate hotbar/curios passes)
+		boolean hasEvertide = false;
+		boolean hasVolcanite = false;
+		boolean hasArcana = false;
+		ItemStack swrgStack = ItemStack.EMPTY;
+		for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.isEmpty()) {
+				continue;
+			}
+			if (stack.is(PEItems.EVERTIDE_AMULET)) {
+				hasEvertide = true;
+			} else if (stack.is(PEItems.VOLCANITE_AMULET)) {
+				hasVolcanite = true;
+			} else if (stack.is(PEItems.ARCANA_RING)) {
+				hasArcana = true;
+			} else if (swrgStack.isEmpty() && stack.is(PEItems.SWIFTWOLF_RENDING_GALE)) {
+				swrgStack = stack;
+			}
+		}
+		ItemStack offhand = player.getOffhandItem();
+		if (!offhand.isEmpty()) {
+			if (offhand.is(PEItems.EVERTIDE_AMULET)) {
+				hasEvertide = true;
+			} else if (offhand.is(PEItems.VOLCANITE_AMULET)) {
+				hasVolcanite = true;
+			} else if (swrgStack.isEmpty() && offhand.is(PEItems.SWIFTWOLF_RENDING_GALE)) {
+				swrgStack = offhand;
+			}
+		}
+		//Single curios capability query for the whole tick (cached instead of re-querying per check)
+		IItemHandler curios = player.getCapability(IntegrationHelper.CURIO_ITEM_HANDLER);
+		if (curios != null) {
+			for (int i = 0, slots = curios.getSlots(); i < slots; i++) {
+				ItemStack stack = curios.getStackInSlot(i);
+				if (stack.isEmpty()) {
+					continue;
+				}
+				if (stack.is(PEItems.EVERTIDE_AMULET)) {
+					hasEvertide = true;
+				} else if (stack.is(PEItems.VOLCANITE_AMULET)) {
+					hasVolcanite = true;
+				} else if (swrgStack.isEmpty() && stack.is(PEItems.SWIFTWOLF_RENDING_GALE)) {
+					swrgStack = stack;
+				}
+			}
+		}
+		ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+		boolean hasGemHelmet = !helmet.isEmpty() && helmet.is(PEItems.GEM_HELMET);
+		ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+		boolean hasGemChestplate = !chestplate.isEmpty() && chestplate.is(PEItems.GEM_CHESTPLATE);
+
+		WalkOnType waterWalkOnType = hasEvertide ? WalkOnType.ABLE_WITH_SPEED : (hasGemHelmet ? WalkOnType.ABLE : WalkOnType.UNABLE);
+		WalkOnType lavaWalkOnType = hasVolcanite ? WalkOnType.ABLE_WITH_SPEED : (hasGemChestplate ? WalkOnType.ABLE : WalkOnType.UNABLE);
 		if (waterWalkOnType.canWalk() || lavaWalkOnType.canWalk()) {
 			FluidState below = player.level().getFluidState(player.getOnPos());
 			boolean water = waterWalkOnType.canWalk() && below.is(FluidTags.WATER);
@@ -56,7 +110,10 @@ public class InternalAbilities {
 		if (!player.level().isClientSide) {
 			updateAttribute(player, Attributes.MOVEMENT_SPEED, WATER_SPEED_BOOST, applyWaterSpeed);
 			updateAttribute(player, Attributes.MOVEMENT_SPEED, LAVA_SPEED_BOOST, applyLavaSpeed);
-			updateAttribute(player, NeoForgeMod.CREATIVE_FLIGHT, FLIGHT, InternalAbilities::shouldPlayerFly);
+			//Note: Curios, and the offhand are handled by the attribute on the arcana ring. We want it to provide flight in other slots on the hotbar as well
+			// so we have to do it here. We do this rather than only doing a hotbar curios check with no attribute, so that the tooltip shows it provides flight
+			boolean shouldFly = (!swrgStack.isEmpty() && ItemPE.hasEmc(player, swrgStack, 64, true)) || hasArcana;
+			updateAttribute(player, NeoForgeMod.CREATIVE_FLIGHT, FLIGHT, shouldFly ? Predicates.alwaysTrue() : Predicates.alwaysFalse());
 		}
 	}
 
@@ -75,29 +132,6 @@ public class InternalAbilities {
 				attributeInstance.removeModifier(modifier.id());
 			}
 		}
-	}
-
-	private static boolean shouldPlayerFly(Player player) {
-		return PlayerHelper.checkHotbarCurios(player, (p, stack) -> stack.is(PEItems.SWIFTWOLF_RENDING_GALE) && ItemPE.hasEmc(p, stack, 64, true))
-			   //Note: Curios, and the offhand are handled by the attribute on the arcana ring. We want it to provide flight in other slots on the hotbar as well
-			   // so we have to do it here. We do this rather than only doing a hotbar curios check with no attribute, so that the tooltip shows it provides flight
-			   || PlayerHelper.checkHotbar(player, (p, stack) -> stack.is(PEItems.ARCANA_RING));
-	}
-
-	private static WalkOnType canWalkOnWater(Player player) {
-		if (PlayerHelper.checkHotbarCurios(player, (p, stack) -> stack.is(PEItems.EVERTIDE_AMULET))) {
-			return WalkOnType.ABLE_WITH_SPEED;
-		}
-		ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-		return !helmet.isEmpty() && helmet.is(PEItems.GEM_HELMET) ? WalkOnType.ABLE : WalkOnType.UNABLE;
-	}
-
-	private static WalkOnType canWalkOnLava(Player player) {
-		if (PlayerHelper.checkHotbarCurios(player, (p, stack) -> stack.is(PEItems.VOLCANITE_AMULET))) {
-			return WalkOnType.ABLE_WITH_SPEED;
-		}
-		ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-		return !chestplate.isEmpty() && chestplate.is(PEItems.GEM_CHESTPLATE) ? WalkOnType.ABLE : WalkOnType.UNABLE;
 	}
 
 	private enum WalkOnType {
