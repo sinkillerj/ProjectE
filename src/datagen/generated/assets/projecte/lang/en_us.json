@@ -255,6 +255,8 @@
   "configuration.projecte.mapping.processors": "Data Component Processors",
   "configuration.projecte.mapping.processors.button": "Edit Processors",
   "configuration.projecte.mapping.processors.tooltip": "Used to configure settings for the various Data Component Processors.",
+  "configuration.projecte.mapping.recover_missing_items": "Recover Missing Item EMC (Experimental)",
+  "configuration.projecte.mapping.recover_missing_items.tooltip": "Opt-in modpack policy: retain acyclic recipe values, defer positive item values below 1 EMC to a minimum of 1, and recover missing items from valued recipes after cleanup. Can retain profitable recipe cycles and changes balance; does not guarantee exploit-free EMC. Disable pregenerated EMC to recalculate after changing this setting.",
   "configuration.projecte.processing.data_component_processor.armor_trim": "Armor Trim Processor",
   "configuration.projecte.processing.data_component_processor.armor_trim.button": "Edit Armor Trim Processor",
   "configuration.projecte.processing.data_component_processor.armor_trim.tooltip": "Calculates EMC value of trimmed armor.",

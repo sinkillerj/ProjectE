@@ -3,10 +3,12 @@ package moze_intel.projecte.emc;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SequencedSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.generator.IValueGenerator;
@@ -19,6 +21,9 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	private static final boolean OVERWRITE_FIXED_VALUES = false;
 
 	private final V ZERO;
+	@Nullable
+	private final V minimumPublishableValue;
+	private final Predicate<T> publishableItem;
 
 	private static boolean logFoundExploits = true;
 
@@ -48,8 +53,20 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	}
 
 	public SimpleGraphMapper(A arithmetic) {
+		this(arithmetic, null, key -> false);
+	}
+
+	/** Opt-in modpack recovery policy; the one-argument constructor retains normal exploit cleanup. */
+	public SimpleGraphMapper(A arithmetic, @Nullable V minimumPublishableValue, Predicate<T> publishableItem) {
 		super(arithmetic);
 		ZERO = arithmetic.getZero();
+		this.minimumPublishableValue = minimumPublishableValue;
+		this.publishableItem = publishableItem;
+	}
+
+	private boolean belowMinimum(T key, V value) {
+		return minimumPublishableValue != null && publishableItem.test(key) && arithmetic.isGreaterThanZero(value)
+				&& value.compareTo(minimumPublishableValue) < 0;
 	}
 
 	static void setLogFoundExploits(boolean log) {
@@ -64,7 +81,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 	private boolean updateMapWithMinimum(Map<T, V> m, T key, V value) {
 		V stored = m.get(key);
-		if (stored == null || stored.compareTo(value) > 0) {
+		if (stored == null || stored.compareTo(value) > 0
+				|| (minimumPublishableValue != null && arithmetic.isZero(stored) && arithmetic.isGreaterThanZero(value))) {
 			//No Value or a value that is smaller than this
 			m.put(key, value);
 			return true;
@@ -91,6 +109,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 	@Override
 	public Map<T, V> generateValues() {
 		Map<@NotNull T, @NotNull V> values = new HashMap<>();
+		Map<T, Set<T>> dependencies = new HashMap<>();
+		Map<T, Set<T>> changedDependencies = new HashMap<>();
+		Set<T> fallbackCandidates = new HashSet<>();
+		Set<T> activatedFallbacks = new HashSet<>();
 
 		// All values that changed in previous iteration, so everything depending on it needs to be updated
 		@Nullable
@@ -110,12 +132,14 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				// Changes that happened when processing current changes
 				@Nullable
 				Map<@NotNull T, @NotNull V> nextChangedValues = null;
+				Map<T, Set<T>> nextDependencies = new HashMap<>();
 
 				debugPrintln("Loop");
 				for (Map.Entry<T, V> entry : changedValues.entrySet()) {
 					T key = entry.getKey();
 					V value = entry.getValue();
 					if (canOverride(key, value) && updateMapWithMinimum(values, key, value)) {
+						dependencies.put(key, changedDependencies.getOrDefault(key, Set.of()));
 						//The new Value is now set in 'values'
 						if (reasonForChange != null) {
 							//Note: We include a manual check we are tracking the reasons, so that we can skip looking the reason up when it won't actually be used
@@ -133,8 +157,18 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 								continue;
 							}
 							//Calculate how much the conversion-output costs with the new Value for entry.getKey
+							Set<T> resultDependencies = dependenciesFor(dependencies, conversion);
+							if (resultDependencies.contains(conversion.output)) {
+								continue;
+							}
 							V ingredientValue = valueForConversion(values, conversion);
 							V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
+							if (belowMinimum(conversion.output, resultValueConversion)) {
+								if (!activatedFallbacks.contains(conversion.output)) {
+									fallbackCandidates.add(conversion.output);
+								}
+								continue;
+							}
 							if (arithmetic.isGreaterThanZero(resultValueConversion) || conversion.arithmeticForConversion.isFree(resultValueConversion)) {
 								//We could calculate a valid value for the conversion
 								V storedValue = values.get(conversion.output);
@@ -144,6 +178,7 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 										nextChangedValues = new HashMap<>();
 									}
 									if (updateMapWithMinimum(nextChangedValues, conversion.output, resultValueConversion)) {
+										nextDependencies.put(conversion.output, resultDependencies);
 										//So we mark that new value to set it in the next iteration.
 										addReason(reasonForChange, conversion.output, key);
 									}
@@ -154,11 +189,26 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 				}
 
 				changedValues = nextChangedValues;
+				changedDependencies = nextDependencies;
 			}
 			invalidValues.clear();
-			collectInvalidValues(values, reasonForChange, invalidValues);
+			collectInvalidValues(values, dependencies, activatedFallbacks, reasonForChange, invalidValues);
 			changedValues = invalidValues.isEmpty() ? null : invalidValues;
+			changedDependencies = new HashMap<>();
+			if (changedValues == null && minimumPublishableValue != null) {
+				changedValues = new HashMap<>();
+				for (T key : fallbackCandidates) {
+					V stored = values.get(key);
+					if (!fixValueBeforeInherit.containsKey(key) && !fixValueAfterInherit.containsKey(key)
+							&& (stored == null || arithmetic.isZero(stored))) {
+						changedValues.put(key, minimumPublishableValue);
+						activatedFallbacks.add(key);
+					}
+				}
+				fallbackCandidates.clear();
+			}
 		}
+		restoreMissingItems(values, dependencies);
 		debugPrintln("");
 		values.putAll(fixValueAfterInherit);
 		//Remove all 'free' items from the output-values
@@ -166,25 +216,86 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		return values;
 	}
 
-	private void collectInvalidValues(Map<T, V> values, @Nullable Map<T, Object> reasonForChange,
+	private Set<T> dependenciesFor(Map<T, Set<T>> dependencies, Conversion conversion) {
+		if (minimumPublishableValue == null) {
+			return Set.of();
+		}
+		Set<T> result = new HashSet<>();
+		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+			result.add(ingredient);
+			result.addAll(dependencies.getOrDefault(ingredient, Set.of()));
+		}
+		return result;
+	}
+
+	// Run once validation settles. Only fill gaps; existing free and explicitly fixed values remain authoritative.
+	private void restoreMissingItems(Map<T, V> values, Map<T, Set<T>> dependencies) {
+		if (minimumPublishableValue == null) {
+			return;
+		}
+		boolean changed;
+		do {
+			changed = false;
+			Set<T> outputs = new HashSet<>(conversionsFor.keySet());
+			outputs.addAll(overwriteConversion.keySet());
+			for (T key : outputs) {
+				V current = values.get(key);
+				if (!publishableItem.test(key) || fixValueBeforeInherit.containsKey(key) || fixValueAfterInherit.containsKey(key)
+						|| (current != null && !arithmetic.isZero(current))) {
+					continue;
+				}
+				Conversion overwrite = overwriteConversion.get(key);
+				Set<Conversion> candidates = overwrite == null ? conversionsFor.get(key) : Set.of(overwrite);
+				V best = null;
+				Set<T> bestDependencies = Set.of();
+				for (Conversion conversion : candidates) {
+					Set<T> candidateDependencies = dependenciesFor(dependencies, conversion);
+					if (candidateDependencies.contains(key)) {
+						continue;
+					}
+					V candidate = conversion.arithmeticForConversion.div(valueForConversion(values, conversion), conversion.outnumber);
+					if (arithmetic.isGreaterThanZero(candidate) && !belowMinimum(key, candidate)
+							&& (best == null || candidate.compareTo(best) < 0)) {
+						best = candidate;
+						bestDependencies = candidateDependencies;
+					}
+				}
+				if (best != null) {
+					values.put(key, best);
+					dependencies.put(key, bestDependencies);
+					changed = true;
+				}
+			}
+		} while (changed);
+	}
+
+	private void collectInvalidValues(Map<T, V> values, Map<T, Set<T>> dependencies, Set<T> activatedFallbacks,
+			@Nullable Map<T, Object> reasonForChange,
 			Map<@NotNull T, @NotNull V> invalidValues) {
 		for (Map.Entry<T, SequencedSet<Conversion>> entry : conversionsFor.entrySet()) {
 			T key = entry.getKey();
 			Conversion overwrite = overwriteConversion.get(key);
-			validateConversionOutput(values, invalidValues, reasonForChange, key, entry.getValue(), overwrite);
+			validateConversionOutput(values, dependencies, activatedFallbacks, invalidValues, reasonForChange, key, entry.getValue(), overwrite);
 		}
 		for (Map.Entry<T, Conversion> entry : overwriteConversion.entrySet()) {
 			if (!conversionsFor.containsKey(entry.getKey())) {
-				validateConversionOutput(values, invalidValues, reasonForChange, entry.getKey(), Set.of(), entry.getValue());
+				validateConversionOutput(values, dependencies, activatedFallbacks, invalidValues, reasonForChange, entry.getKey(), Set.of(), entry.getValue());
 			}
 		}
 	}
 
 	@Nullable
-	private V validateActiveConversion(Map<T, V> values, Map<T, V> invalidValues, @Nullable Map<T, Object> reasonForChange, T key,
+	private V validateActiveConversion(Map<T, V> values, Map<T, Set<T>> dependencies, Map<T, V> invalidValues,
+			@Nullable Map<T, Object> reasonForChange, T key,
 			@Nullable V resultValueActual, @Nullable V minConversionValue, Conversion conversion) {
+		if (dependenciesFor(dependencies, conversion).contains(conversion.output)) {
+			return minConversionValue;
+		}
 		V ingredientValue = valueForConversion(values, conversion);
 		V resultValueConversion = conversion.arithmeticForConversion.div(ingredientValue, conversion.outnumber);
+		if (belowMinimum(conversion.output, resultValueConversion)) {
+			return minConversionValue;
+		}
 		if (arithmetic.isGreaterThanZero(resultValueConversion) || conversion.arithmeticForConversion.isFree(resultValueConversion)) {
 			if (minConversionValue == null || minConversionValue.compareTo(resultValueConversion) > 0) {
 				minConversionValue = resultValueConversion;
@@ -204,7 +315,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 		return minConversionValue;
 	}
 
-	private void validateConversionOutput(Map<T, V> values, Map<T, V> invalidValues, @Nullable Map<T, Object> reasonForChange, T key,
+	private void validateConversionOutput(Map<T, V> values, Map<T, Set<T>> dependencies, Set<T> activatedFallbacks,
+			Map<T, V> invalidValues, @Nullable Map<T, Object> reasonForChange, T key,
 			Set<Conversion> regularConversions, @Nullable Conversion overwrite) {
 		@Nullable
 		V minConversionValue = null;
@@ -218,10 +330,10 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 
 		if (overwrite == null) {
 			for (Conversion conversion : regularConversions) {
-				minConversionValue = validateActiveConversion(values, invalidValues, reasonForChange, key, resultValueActual, minConversionValue, conversion);
+				minConversionValue = validateActiveConversion(values, dependencies, invalidValues, reasonForChange, key, resultValueActual, minConversionValue, conversion);
 			}
 		} else {
-			minConversionValue = validateActiveConversion(values, invalidValues, reasonForChange, key, resultValueActual, null, overwrite);
+			minConversionValue = validateActiveConversion(values, dependencies, invalidValues, reasonForChange, key, resultValueActual, null, overwrite);
 		}
 
 		if (overwrite != null) {
@@ -234,7 +346,8 @@ public class SimpleGraphMapper<T, V extends Comparable<V>, A extends IValueArith
 			}
 		}
 
-		if (minConversionValue == null && resultValueActual != null && arithmetic.isGreaterThanZero(resultValueActual) && canOverrideZero(key)) {
+		if (minConversionValue == null && resultValueActual != null && arithmetic.isGreaterThanZero(resultValueActual) && canOverrideZero(key)
+				&& !activatedFallbacks.contains(key)) {
 			debugFormat("Removing Value for {} because it does not have any nonzero-conversions anymore.", key);
 			invalidValues.put(key, ZERO);
 			addReason(reasonForChange, key, "all conversions dead");

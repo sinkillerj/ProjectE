@@ -115,6 +115,10 @@ public enum PEConfigTranslations implements IConfigTranslation {
 	MAPPING_PREGENERATED("mapping.pregenerated", "Pregenerate EMC",
 			"When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again when that file "
 			+ "does not exist, this setting is set to false, or an error occurred parsing that file."),
+	MAPPING_RECOVER_MISSING_ITEMS("mapping.recover_missing_items", "Recover Missing Item EMC (Experimental)",
+			"Opt-in modpack policy: retain acyclic recipe values, defer positive item values below 1 EMC to a minimum of 1, and recover missing items "
+			+ "from valued recipes after cleanup. Can retain profitable recipe cycles and changes balance; does not guarantee exploit-free EMC. "
+			+ "Disable pregenerated EMC to recalculate after changing this setting."),
 	MAPPING_LOG_EXPLOITS("mapping.log_exploits", "Log Profitable EMC Conversion Mismatches",
 			"Logs known profitable EMC conversion mismatches where a recipe costs less than the total EMC value of its outputs and the output value "
 			+ "is retained because it is fixed/custom or comes from a forced conversion. This cannot find conversions that are unknown to ProjectE."),

@@ -73,7 +73,9 @@ public final class EMCMappingHandler {
 	public static void map(ReloadableServerResources serverResources, RegistryAccess registryAccess, ResourceManager resourceManager) {
 		//Keep the current values available until a complete replacement is ready. updateEmcValues swaps the entire map,
 		// so values removed by the remap still disappear without exposing a temporary empty map or losing the last good map if remapping fails.
-		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = MappingConfig.recoverMissingItemEmc()
+				? new SimpleGraphMapper<>(new HiddenBigFractionArithmetic(), BigFraction.ONE, stack -> stack instanceof NSSItem item && !item.representsTag())
+				: new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		BigFractionToLongGenerator<NormalizedSimpleStack> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 
