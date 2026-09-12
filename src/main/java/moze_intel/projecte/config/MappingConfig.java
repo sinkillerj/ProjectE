@@ -38,6 +38,7 @@ public class MappingConfig extends BasePEConfig {
 	public final CachedBooleanValue dumpToFile;
 	public final CachedBooleanValue usePregenerated;
 	public final CachedBooleanValue logExploits;
+	public final CachedBooleanValue recoverMissingItemEmc;
 
 	private final ModConfigSpec configSpec;
 	private final Map<String, BooleanSupplier> mappersEnabledConfig;
@@ -49,6 +50,8 @@ public class MappingConfig extends BasePEConfig {
 		dumpToFile = CachedBooleanValue.wrap(this, PEConfigTranslations.MAPPING_DUMP_TO_FILE.applyToBuilder(builder).define("dumpToFile", false));
 		usePregenerated = CachedBooleanValue.wrap(this, PEConfigTranslations.MAPPING_PREGENERATED.applyToBuilder(builder).define("usePregenerated", false));
 		logExploits = CachedBooleanValue.wrap(this, PEConfigTranslations.MAPPING_LOG_EXPLOITS.applyToBuilder(builder).define("logFoundExploits", true));
+		recoverMissingItemEmc = CachedBooleanValue.wrap(this, PEConfigTranslations.MAPPING_RECOVER_MISSING_ITEMS.applyToBuilder(builder)
+				.define("recoverMissingItemEmc", false));
 
 		PEConfigTranslations.MAPPING_MAPPERS.applyToBuilder(builder).push("mappers");
 		mappersEnabledConfig = new HashMap<>(mappers.size());
@@ -85,6 +88,10 @@ public class MappingConfig extends BasePEConfig {
 
 	public static boolean logExploits() {
 		return INSTANCE == null || INSTANCE.logExploits.get();
+	}
+
+	public static boolean recoverMissingItemEmc() {
+		return INSTANCE != null && INSTANCE.recoverMissingItemEmc.get();
 	}
 
 	/**

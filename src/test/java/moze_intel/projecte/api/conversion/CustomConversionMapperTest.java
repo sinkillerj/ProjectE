@@ -11,6 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Items;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(EphemeralTestServerProvider.class)
 @DisplayName("Test Custom Conversion Mappers")
 class CustomConversionMapperTest {
+
+	@AfterEach
+	void resetFakeNamespace() {
+		NSSFake.resetNamespace();
+	}
 
 	private static CustomConversionFile parseJson(HolderLookup.Provider registryAccess, String json) {
 		return CodecTestHelper.parseJson(registryAccess, CustomConversionFile.CODEC, "custom conversion test", json);

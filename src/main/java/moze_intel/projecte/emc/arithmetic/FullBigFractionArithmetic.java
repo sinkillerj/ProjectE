@@ -3,10 +3,12 @@ package moze_intel.projecte.emc.arithmetic;
 import java.math.BigInteger;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
-import moze_intel.projecte.utils.MathUtils;
 import org.apache.commons.math3.fraction.BigFraction;
 
 public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction> {
+
+	//Keep exact intermediate fractions beyond long range, but bound descending cycles so BigInteger denominators cannot grow forever.
+	private static final int MAX_EXACT_DENOMINATOR_BITS = 256;
 
 	private static final BigInteger FREE_BIG_INT_VALUE = BigInteger.valueOf(ProjectEAPI.FREE_ARITHMETIC_VALUE);
 	private static final BigFraction FREE_FRACTION_VALUE = new BigFraction(FREE_BIG_INT_VALUE);
@@ -80,13 +82,10 @@ public class FullBigFractionArithmetic implements IValueArithmetic<BigFraction> 
 			return getZero();
 		}
 		BigFraction result = a.divide(b);
-		//TODO: I believe checking the numerator is not necessary as we will clamp it further down the line
-		if (/*MathUtils.isGreaterThanLong(result.getNumerator()) ||*/ MathUtils.isGreaterThanLong(result.getDenominator())) {
-			//Overflowed a long as BigFraction can go past Long.MAX_VALUE
-			// This means we reached (something > 1) /infinity, which is ~0
-			return getZero();
-		}
-		return result;
+		//A denominator outside long range is not itself an overflow: later conversions can cancel those factors and return
+		//the value to a publishable range. Keep substantially more exact precision than the old Long.MAX_VALUE check, while
+		//retaining a finite bound so descending fractional recipe cycles still converge and cannot grow BigIntegers forever.
+		return result.getDenominator().bitLength() > MAX_EXACT_DENOMINATOR_BITS ? getZero() : result;
 	}
 
 	@Override

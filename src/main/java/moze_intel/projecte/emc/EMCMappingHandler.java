@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc;
 
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -11,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.ToLongFunction;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -19,6 +20,8 @@ import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
 import moze_intel.projecte.api.mapper.collector.IExtendedMappingCollector;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.config.MappingConfig;
@@ -68,9 +71,11 @@ public final class EMCMappingHandler {
 	}
 
 	public static void map(ReloadableServerResources serverResources, RegistryAccess registryAccess, ResourceManager resourceManager) {
-		//Start by clearing the cached map so if values are removed say by setting EMC to zero then we respect the change
-		clearEmcMap();
-		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
+		//Keep the current values available until a complete replacement is ready. updateEmcValues swaps the entire map,
+		// so values removed by the remap still disappear without exposing a temporary empty map or losing the last good map if remapping fails.
+		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = MappingConfig.recoverMissingItemEmc()
+				? new SimpleGraphMapper<>(new HiddenBigFractionArithmetic(), BigFraction.ONE, stack -> stack instanceof NSSItem item && !item.representsTag())
+				: new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
 		BigFractionToLongGenerator<NormalizedSimpleStack> valueGenerator = new BigFractionToLongGenerator<>(mapper);
 		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<BigFraction>> mappingCollector = new LongToBigFractionCollector<>(mapper);
 
@@ -88,22 +93,10 @@ public final class EMCMappingHandler {
 			SimpleGraphMapper.setLogFoundExploits(MappingConfig.logExploits());
 
 			PECore.debugLog("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : mappers) {
-				if (MappingConfig.isEnabled(emcMapper)) {
-					DumpToFileCollector.currentGroupName = emcMapper.getName();
-					try {
-						emcMapper.addMappings(mappingCollector, serverResources, registryAccess, resourceManager);
-						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
-					} catch (Exception e) {
-						PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!",
-								emcMapper.getClass().getName(), e);
-					}
-				}
-			}
-			DumpToFileCollector.currentGroupName = "NSSHelper";
+			collectMappings(mappers, MappingConfig::isEnabled, mappingCollector, serverResources, registryAccess, resourceManager);
 
 			PECore.debugLog("Mapping Collection finished");
-			mappingCollector.finishCollection(registryAccess);
+			finishCollection(mappingCollector, registryAccess);
 
 			PECore.debugLog("Starting to generate Values:");
 			Object2LongMap<NormalizedSimpleStack> graphMapperValues = valueGenerator.generateValues();
@@ -120,6 +113,39 @@ public final class EMCMappingHandler {
 		}
 
 		fireEmcRemapEvent();
+	}
+
+	static void collectMappings(Iterable<IEMCMapper<NormalizedSimpleStack, Long>> mapperList,
+			Predicate<IEMCMapper<NormalizedSimpleStack, Long>> isEnabled, IMappingCollector<NormalizedSimpleStack, Long> mappingCollector,
+			ReloadableServerResources serverResources, RegistryAccess registryAccess, ResourceManager resourceManager) {
+		for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : mapperList) {
+			if (!isEnabled.test(emcMapper)) {
+				continue;
+			}
+			DumpToFileCollector.currentGroupName = emcMapper.getName();
+			try {
+				emcMapper.addMappings(mappingCollector, serverResources, registryAccess, resourceManager);
+				PECore.debugLog("Collected Mappings from {}", emcMapper.getClass().getName());
+			} catch (Exception e) {
+				throw new IllegalStateException("Failed to collect EMC mappings from " + emcMapper.getClass().getName()
+						+ "; remap aborted before publishing incomplete values", e);
+			} finally {
+				//Mappers should clean up their own temporary state, but enforce the boundary here so a broken third-party mapper cannot leak it.
+				NSSFake.resetNamespace();
+				DumpToFileCollector.currentGroupName = "default";
+			}
+		}
+	}
+
+	static void finishCollection(IMappingCollector<NormalizedSimpleStack, Long> mappingCollector, RegistryAccess registryAccess) {
+		DumpToFileCollector.currentGroupName = "NSSHelper";
+		try {
+			mappingCollector.finishCollection(registryAccess);
+		} finally {
+			//finishCollection may create helper NSSFake entries. Do not let a failed collector leak temporary mapper or diagnostic state.
+			NSSFake.resetNamespace();
+			DumpToFileCollector.currentGroupName = "default";
+		}
 	}
 
 	private static void fireEmcRemapEvent() {
@@ -181,8 +207,7 @@ public final class EMCMappingHandler {
 	}
 
 	public static void clearEmcMap() {
-		emc = null;
-		DataComponentManager.updateCachedValues(null);
+		replaceEmcValues(null, DataComponentManager::updateCachedValues);
 	}
 
 	/**
@@ -197,9 +222,31 @@ public final class EMCMappingHandler {
 
 	@ApiStatus.Internal
 	public static int updateEmcValues(Object2LongMap<ItemInfo> data) {
+		replaceEmcValues(data, DataComponentManager::updateCachedValues);
+		return data.size();
+	}
+
+	static void replaceEmcValues(@Nullable Object2LongMap<ItemInfo> data, CachedValueUpdater cacheUpdater) {
+		Object2LongMap<ItemInfo> previous = emc;
+		ToLongFunction<ItemInfo> lookup = data == null ? null : data::getLong;
+		try {
+			//Prepare dependent caches first. The server thread cannot observe the brief preparation window, and the live map is only swapped after success.
+			cacheUpdater.update(lookup);
+		} catch (RuntimeException | Error failure) {
+			try {
+				cacheUpdater.update(previous == null ? null : previous::getLong);
+			} catch (RuntimeException | Error rollbackFailure) {
+				failure.addSuppressed(rollbackFailure);
+			}
+			throw failure;
+		}
 		emc = data;
-		DataComponentManager.updateCachedValues(emc::getLong);
-		return emc.size();
+	}
+
+	@FunctionalInterface
+	interface CachedValueUpdater {
+
+		void update(@Nullable ToLongFunction<ItemInfo> emcLookup);
 	}
 
 	public static SyncEmcPKT createPacketData() {

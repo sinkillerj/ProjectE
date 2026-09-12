@@ -115,9 +115,13 @@ public enum PEConfigTranslations implements IConfigTranslation {
 	MAPPING_PREGENERATED("mapping.pregenerated", "Pregenerate EMC",
 			"When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again when that file "
 			+ "does not exist, this setting is set to false, or an error occurred parsing that file."),
-	MAPPING_LOG_EXPLOITS("mapping.log_exploits", "Log Known EMC Exploits",
-			"Logs known EMC Exploits. This can not and will not find all possible exploits. This will only find exploits that result in fixed/custom emc values "
-			+ "that the algorithm did not overwrite. Exploits that derive from conversions that are unknown to ProjectE will not be found."),
+	MAPPING_RECOVER_MISSING_ITEMS("mapping.recover_missing_items", "Recover Missing Item EMC (Experimental)",
+			"Opt-in modpack policy: retain acyclic recipe values, defer positive item values below 1 EMC to a minimum of 1, and recover missing items "
+			+ "from valued recipes after cleanup. Can retain profitable recipe cycles and changes balance; does not guarantee exploit-free EMC. "
+			+ "Disable pregenerated EMC to recalculate after changing this setting."),
+	MAPPING_LOG_EXPLOITS("mapping.log_exploits", "Log Profitable EMC Conversion Mismatches",
+			"Logs known profitable EMC conversion mismatches where a recipe costs less than the total EMC value of its outputs and the output value "
+			+ "is retained because it is fixed/custom or comes from a forced conversion. This cannot find conversions that are unknown to ProjectE."),
 
 	MAPPING_MAPPERS("mapping.mapper", "EMC Mappers", "Used to configure settings for the various EMC Mappers.", true),
 
@@ -153,8 +157,8 @@ public enum PEConfigTranslations implements IConfigTranslation {
 			+ "this mapper will still catch the vanilla recipes.", true),
 
 	MAPPING_CRAFTING_MAPPER_MARK_HANDLED("mapping.mapper.crafting.mark_handled", "Mark Special Recipes Handled",
-			"This mapper does not actually map anything, but instead just marks recipe classes as having been handled, if we either expose a processor for them, "
-			+ "or they are self referencing (for example map cloning recipes).", "Edit Special Recipes"),
+			"This mapper does not add conversions. It marks self-referencing recipes or recipes supported by data component processors as handled, "
+			+ "and classifies known dynamic recipes that cannot be represented by a deterministic EMC conversion.", "Edit Special Recipes"),
 	MAPPING_CRAFTING_MAPPER_SHULKER_RECOLORING("mapping.mapper.crafting.shulker_recoloring", "Shulker Recoloring Mapper",
 			"Propagates shulker box values to colored variants.", "Edit Shulker Recoloring"),
 	MAPPING_CRAFTING_MAPPER_TIPPED_ARROW("mapping.mapper.crafting.tipped_arrow", "Tipped Arrow Mapper",

@@ -34,8 +34,17 @@ public class StoredEMCProcessor implements IDataComponentProcessor {
 		ItemStack stack = info.createStack();
 		IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
 		if (emcHolder != null) {
-			return Math.addExact(currentEMC, emcHolder.getStoredEmc(stack));
+			return addStoredEmc(currentEMC, emcHolder.getStoredEmc(stack));
 		}
 		return currentEMC;
+	}
+
+	static long addStoredEmc(long currentEMC, long storedEMC) throws ArithmeticException {
+		if (storedEMC < 0) {
+			//The capability contract requires a non-negative amount. A broken third-party implementation must not be allowed to
+			//subtract from the item value while still leaving a plausible positive result.
+			throw new ArithmeticException("Stored EMC cannot be negative");
+		}
+		return Math.addExact(currentEMC, storedEMC);
 	}
 }

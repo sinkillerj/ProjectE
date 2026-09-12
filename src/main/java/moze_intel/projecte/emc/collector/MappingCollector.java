@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SequencedSet;
 import java.util.function.Function;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.arithmetic.IValueArithmetic;
@@ -18,7 +18,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 
 	private static final boolean DEBUG_GRAPHMAPPER = false;
 
-	private final Function<T, Set<Conversion>> CREATE_CONVERSIONS = t -> new LinkedHashSet<>();
+	private final Function<T, SequencedSet<Conversion>> CREATE_CONVERSIONS = t -> new LinkedHashSet<>();
 	protected final A arithmetic;
 
 	protected MappingCollector(A arithmetic) {
@@ -41,29 +41,40 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	}
 
 	protected final Map<@NotNull T, @NotNull Conversion> overwriteConversion = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> conversionsFor = new HashMap<>();
-	protected final Map<@NotNull T, @NotNull Set<Conversion>> usedIn = new HashMap<>();
+	protected final Map<@NotNull T, @NotNull SequencedSet<Conversion>> conversionsFor = new HashMap<>();
+	protected final Map<@NotNull T, @NotNull SequencedSet<Conversion>> usedIn = new HashMap<>();
 	protected final Map<@NotNull T, @NotNull V> fixValueBeforeInherit = new HashMap<>();
 	protected final Map<@NotNull T, @NotNull V> fixValueAfterInherit = new HashMap<>();
 
-	private Set<Conversion> getConversionsFor(@NotNull T something) {
+	private SequencedSet<Conversion> getConversionsFor(@NotNull T something) {
 		return conversionsFor.computeIfAbsent(something, CREATE_CONVERSIONS);
 	}
 
 	protected void removeUseFor(@NotNull T something, @NotNull Conversion conversion) {
-		Set<Conversion> conversions = usedIn.get(something);
+		SequencedSet<Conversion> conversions = usedIn.get(something);
 		if (conversions != null) {
 			conversions.remove(conversion);
 		}
 	}
 
-	protected Set<Conversion> getUsesFor(@NotNull T something) {
+	protected SequencedSet<Conversion> getUsesFor(@NotNull T something) {
 		return usedIn.computeIfAbsent(something, CREATE_CONVERSIONS);
 	}
 
 	private void addConversionToIngredientUsages(Conversion conversion) {
 		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
 			getUsesFor(ingredient).add(conversion);
+		}
+	}
+
+	private void replaceConversionInIngredientUsages(Conversion conversion) {
+		//Ensure the exact overwrite instance is retained if an equivalent regular conversion was already registered.
+		for (T ingredient : conversion.ingredientsWithAmount.keySet()) {
+			SequencedSet<Conversion> usesForIngredient = getUsesFor(ingredient);
+			//Remove first so re-adding moves the replacement to the end of the sequenced set, giving the newer
+			//forced conversion higher precedence than the equivalent instance it replaces.
+			usesForIngredient.remove(conversion);
+			usesForIngredient.add(conversion);
 		}
 	}
 
@@ -86,6 +97,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	public void setValueBefore(T something, V value) {
 		if (something == null || value == null) {
 			return;
+		} else if (arithmetic.isLessThanZero(value) && !arithmetic.isFree(value)) {
+			PECore.debugLog("Ignoring invalid negative fixed value before inheritance for {}: {}", something, value);
+			return;
 		}
 		V valueBeforeInherit = fixValueBeforeInherit.get(something);
 		if (valueBeforeInherit != null) {
@@ -98,6 +112,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 	@Override
 	public void setValueAfter(T something, V value) {
 		if (something == null || value == null) {
+			return;
+		} else if (arithmetic.isLessThanZero(value)) {
+			PECore.debugLog("Ignoring invalid negative fixed value after inheritance for {}: {}", something, value);
 			return;
 		}
 		V valueAfterInherit = fixValueAfterInherit.get(something);
@@ -124,7 +141,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 				removeUseFor(ingredient, oldConversion);
 			}
 		}
-		addConversionToIngredientUsages(conversion);
+		replaceConversionInIngredientUsages(conversion);
 		overwriteConversion.put(something, conversion);
 	}
 
@@ -160,7 +177,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 			}
 			this.arithmeticForConversion = arithmeticForConversion;
 			this.value = value;
-			this.hash = Objects.hash(this.output, this.value, this.ingredientsWithAmount);
+			this.hash = Objects.hash(this.output, this.outnumber, this.value, this.ingredientsWithAmount, this.arithmeticForConversion);
 		}
 
 		@Override
@@ -190,8 +207,9 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
 
 		@Override
 		public boolean equals(Object o) {
-			return o instanceof MappingCollector<?, ?, ?>.Conversion other && Objects.equals(output, other.output) && Objects.equals(value, other.value) &&
-				   Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount);
+			return o instanceof MappingCollector<?, ?, ?>.Conversion other && outnumber == other.outnumber && Objects.equals(output, other.output) &&
+				   Objects.equals(value, other.value) && Objects.equals(ingredientsWithAmount, other.ingredientsWithAmount) &&
+				   Objects.equals(arithmeticForConversion, other.arithmeticForConversion);
 		}
 
 		@Override

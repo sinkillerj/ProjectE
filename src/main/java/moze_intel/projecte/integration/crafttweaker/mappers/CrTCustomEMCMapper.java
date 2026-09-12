@@ -2,7 +2,7 @@ package moze_intel.projecte.integration.crafttweaker.mappers;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import java.util.Iterator;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.mapper.EMCMapper;
@@ -18,9 +18,13 @@ import org.jetbrains.annotations.NotNull;
 @EMCMapper(requiredMods = "crafttweaker")
 public class CrTCustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	private static final Object2LongMap<NormalizedSimpleStack> customEmcValues = new Object2LongOpenHashMap<>();
+	//CraftTweaker actions are ordered. Preserve that order so overlapping tag and item assignments have deterministic, script-defined precedence.
+	private static final Object2LongMap<NormalizedSimpleStack> customEmcValues = new Object2LongLinkedOpenHashMap<>();
 
 	public static void registerCustomEMC(@NotNull NormalizedSimpleStack stack, long emcValue) {
+		//Linked maps keep a key's original position when replacing its value. Reinsert repeats so a later tag or item action
+		//still runs after any overlapping registrations that appeared between the two script actions.
+		customEmcValues.removeLong(stack);
 		customEmcValues.put(stack, emcValue);
 	}
 

@@ -10,6 +10,9 @@ import org.jetbrains.annotations.Range;
 
 /**
  * Class used for processing what Data Components modifies the EMC value, and what Data Components are needed/should be saved when transmuting an item.
+ *
+ * @apiNote Processors calculate component state only when EMC falls back to the component-less item. An exact mapping for the complete
+ * {@link ItemInfo} is authoritative and is returned without invoking processors, because that mapping may already include the component-specific cost.
  */
 public interface IDataComponentProcessor extends IConfigurableElement {
 
@@ -54,6 +57,9 @@ public interface IDataComponentProcessor extends IConfigurableElement {
 	 *
 	 * @throws ArithmeticException If an overflow happened or some calculation went really bad and we should just hard exit and return that the item doesn't have an EMC
 	 *                             representation; for example if it would be worth more EMC than our max value.
+	 *
+	 * @apiNote ProjectE also treats any unexpected {@link RuntimeException} as a failed component calculation: the item receives no EMC and the processor
+	 * failure is logged once per cache refresh. Processors should use {@link ArithmeticException} for expected unrepresentable-value cases.
 	 */
 	@Range(from = 0, to = Long.MAX_VALUE)
 	long recalculateEMC(@NotNull ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC) throws ArithmeticException;

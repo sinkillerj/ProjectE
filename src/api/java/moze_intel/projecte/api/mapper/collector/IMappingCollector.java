@@ -18,8 +18,8 @@ public interface IMappingCollector<T, V extends Comparable<V>> {
 	 * <p>
 	 * <br/>
 	 *
-	 * The Map contains the ingredients and the amount of how many are consumed. It can contain negative amounts, if you get multiple items back. An amount of 0 will
-	 * indicate, that the {@code output} should only get an EMC value assigned, if the zero-amount-ingredient also has an EMC value.
+	 * The Map contains the ingredients and the amount of how many are consumed. It can contain negative amounts, if you get multiple items back. Entries with an
+	 * amount of 0 are ignored and do not contribute value or create a dependency for the conversion.
 	 *
 	 * @param outnumber             How many items are produced
 	 * @param output                What is produced

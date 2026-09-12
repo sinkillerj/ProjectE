@@ -227,7 +227,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('mezz.jei')
         filter.includeGroup('org.openzen.zencode')
     })
-    exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
+    exclusiveRepo(handler, 'https://repo.sleeping.town/', 'dev.emi')
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
